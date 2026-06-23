@@ -472,6 +472,8 @@ def git_status_porcelain(root: Path = ROOT) -> list[str]:
             ["git", "-c", "core.quotePath=false", "status", "--porcelain=v1"],
             cwd=root,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             check=False,

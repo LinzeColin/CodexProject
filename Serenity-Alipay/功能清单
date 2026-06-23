@@ -1,25 +1,43 @@
-# Serenity-Alipay 功能清单
+# 功能清单
 
-本文件保留为历史兼容入口，不再作为独立可编辑事实源。
+## 摘要
 
-Canonical governance sources:
+- project_id: `Serenity-Alipay`
+- product_version: `0.1.0`
+- current_stage: `S4`
+- current_phase: `S4PB`
+- current_task: `S4PBT03`
+- progress: `75.00%`
+- capability_count: `4`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S4PB-GATE`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-- `docs/governance/DELIVERY_PLAN.md`
-- `docs/governance/delivery_tasks.yaml`
-- `docs/governance/TRACEABILITY_MATRIX.csv`
-- `docs/governance/MODEL_SPEC.md`
+## 功能概览
 
-仍然有效的功能摘要：
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-SER-001 | Candidate scoring and risk gates | active | Score fund candidates with data, timeliness, source, return, risk, executable, grade, and action gate logic. | EXTRACTED |
+| FEAT-SER-002 | Top5 ranking and target allocation | active | Filter blocked candidates, preserve manual Serenity priority, select Top5, compute target weights, and map deviations to owner actions. | EXTRACTED |
+| FEAT-SER-003 | Comparison and discipline alerts | active | Compare current recommendations against prior runs and emit drift, replacement, deviation, and overexpansion review signals. | EXTRACTED |
+| FEAT-SER-004 | Business-day automation safety | active | Select due Beijing business-day slots, prevent duplicate runs, and keep automation in dry-run or draft mode unless explicitly enabled. | EXTRACTED |
 
-- Alipay positions CSV 导入。
-- fund rules / candidates / benchmark price history intake。
-- source evidence audit、production unblock matrix、production intake pack。
-- fund-first deterministic scoring。
-- MDD 和 recovery hard gates。
-- benchmark 对比：Shanghai Composite、S&P 500。
-- Top5 target weights 和 current-vs-target deviation。
-- SQLite run/source/score/recommendation/review/notification 持久化。
-- Markdown / offline HTML report / offline index / Mail draft。
-- scheduler-tick 支持 Codex Automation 或 launchd。
+## 证据
 
-后续功能状态、任务、验收和证据必须进入 canonical governance files。
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-SER-README | owner | Serenity-Alipay/README.md | EXTRACTED |
+| EVID-SER-HANDOFF | owner | Serenity-Alipay/HANDOFF.md | RECONSTRUCTED |
+| EVID-SER-MODEL-REGISTRY | external | Serenity-Alipay/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-SER-FORMULA-REGISTRY | external | Serenity-Alipay/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-SER-PARAMETER-REGISTRY | external | Serenity-Alipay/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-SER-MODEL-EXTRACTION | external | Serenity-Alipay/docs/governance/model_extraction.yaml | EXTRACTED |
+| EVID-SER-ROADMAP-DRAFT | external | Serenity-Alipay/docs/governance/roadmap_draft.yaml | EXTRACTED |
+| EVID-SER-LEGACY-LEDGER | external | Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md | RECONSTRUCTED |
+| EVID-SER-LEGACY-EVENTS | external | Serenity-Alipay/docs/governance/development_events.jsonl | RECONSTRUCTED |
+| EVID-REVIEW9-S4PAT01-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json | VERIFIED |
+| EVID-REVIEW9-S4PAT02-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json | VERIFIED |
+| EVID-REVIEW9-S4PAT03-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json | VERIFIED |
+| EVID-REVIEW9-S4PAT03-CI | ci | github-actions://LinzeColin/CodexProject/actions/runs/28028512167 | VERIFIED |
+| EVID-REVIEW9-S4PB-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json | PROPOSED |

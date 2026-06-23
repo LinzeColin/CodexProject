@@ -1,0 +1,1868 @@
+schema_version: "codexproject.project.v1"
+project_id: "Serenity-Alipay"
+project_name: "Serenity-Alipay"
+summary: "Local-first Serenity research workflow for Alipay fund candidates, scoring, Top5 ranking, discipline alerts, scheduling, and draft-safe automation."
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "Owner reviewer and operator"
+current_status: "active"
+limitations:
+  -
+    statement: "FORM-008 applies a 0.30 cap before final renormalization; one-to-four candidate scenarios can exceed 0.30 after final renormalization and are not claimed as universally capped."
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-EXTRACTION"
+      - "EVID-SER-FORMULA-REGISTRY"
+    unknown_task_ids:
+      - "S4PBT03"
+  -
+    statement: "Exact iteration boundaries before ITER-20260621-001 remain unknown and are not inferred from Git commit count."
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-SER-ROADMAP-DRAFT"
+      - "EVID-SER-LEGACY-LEDGER"
+    unknown_task_ids:
+      - "S4PBT01"
+  -
+    statement: "Remote LinzeColin/Serenity-Alipay main HEAD mentioned in HANDOFF.md was not verified during Review9 Stage 4 migration."
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-SER-ROADMAP-DRAFT"
+      - "EVID-SER-HANDOFF"
+    unknown_task_ids:
+      - "S4PCT02"
+features:
+  -
+    feature_id: "FEAT-SER-001"
+    name: "Candidate scoring and risk gates"
+    description: "Score fund candidates with data, timeliness, source, return, risk, executable, grade, and action gate logic."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-003"
+    parameter_ids:
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:73"
+      - "Serenity-Alipay/app/core/metrics.py:39"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_metrics.py:14"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    feature_id: "FEAT-SER-002"
+    name: "Top5 ranking and target allocation"
+    description: "Filter blocked candidates, preserve manual Serenity priority, select Top5, compute target weights, and map deviations to owner actions."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-002"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:191"
+      - "Serenity-Alipay/app/core/pipeline.py:204"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    feature_id: "FEAT-SER-003"
+    name: "Comparison and discipline alerts"
+    description: "Compare current recommendations against prior runs and emit drift, replacement, deviation, and overexpansion review signals."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-004"
+    parameter_ids:
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:128"
+      - "Serenity-Alipay/app/core/discipline.py:15"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    feature_id: "FEAT-SER-004"
+    name: "Business-day automation safety"
+    description: "Select due Beijing business-day slots, prevent duplicate runs, and keep automation in dry-run or draft mode unless explicitly enabled."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+    parameter_ids:
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+    code_refs:
+      - "Serenity-Alipay/app/scheduler.py:8"
+      - "Serenity-Alipay/app/core/automation_tick.py:26"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scheduler.py:12"
+      - "Serenity-Alipay/tests/test_automation_tick.py:8"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Candidate scoring and action rule engine"
+    purpose: "Score fund candidates, assign grades, apply risk/data gates, and derive research action labels."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-004"
+      - "ASM-006"
+    formula_ids:
+      - "FORM-003"
+      - "FORM-004"
+      - "FORM-005"
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+    input_refs:
+      - "Candidate"
+      - "FundRule or None"
+      - "AssetMetrics"
+      - "Shanghai Composite returns"
+      - "S&P 500 returns"
+      - "Settings"
+    output_refs:
+      - "ScoreResult.total_score"
+      - "grade"
+      - "hard_block_reason"
+      - "action_label"
+      - "trigger_reason"
+      - "manual_review_required"
+      - "missing_fields"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:73"
+      - "Serenity-Alipay/app/core/scoring.py:105"
+      - "Serenity-Alipay/app/core/scoring.py:148"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_risk_gate_regression.py:8"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    model_id: "MOD-002"
+    name: "Recommendation ranking and Top5 allocation"
+    purpose: "Filter blocked candidates, rank eligible funds, select Top5, and compute target weights."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-006"
+    formula_ids:
+      - "FORM-007"
+      - "FORM-008"
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+    input_refs:
+      - "scored candidate rows"
+      - "candidate_index"
+      - "ScoreResult"
+      - "current or baseline weights"
+      - "Settings"
+    output_refs:
+      - "ranked rows"
+      - "target_weight"
+      - "deviation"
+      - "action_label"
+      - "trigger_reason"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:191"
+      - "Serenity-Alipay/app/core/pipeline.py:204"
+      - "Serenity-Alipay/app/core/pipeline.py:220"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    model_id: "MOD-003"
+    name: "Metrics and time-window calculation"
+    purpose: "Calculate 1m, 3m, 10d returns, max drawdown, recovery time, and recent drawdown from daily close history."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-003"
+    formula_ids:
+      - "FORM-001"
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+    input_refs:
+      - "list of PricePoint ordered by date"
+    output_refs:
+      - "AssetMetrics.returns"
+      - "max_drawdown"
+      - "recovery_time_days"
+      - "recovered"
+      - "drawdown_7d"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:39"
+      - "Serenity-Alipay/app/core/metrics.py:52"
+      - "Serenity-Alipay/app/core/metrics.py:90"
+    test_refs:
+      - "Serenity-Alipay/tests/test_metrics.py:14"
+      - "Serenity-Alipay/tests/test_metrics.py:22"
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    model_id: "MOD-004"
+    name: "Comparison and discipline gate engine"
+    purpose: "Detect Top5 drift, new/replaced assets, score sigma shifts, target deviation, and overexpansion events."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-006"
+    formula_ids:
+      - "FORM-010"
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+    input_refs:
+      - "recommendation_snapshot"
+      - "score_snapshot"
+      - "run_log"
+      - "Settings"
+    output_refs:
+      - "ComparisonSummary"
+      - "DisciplineEvent"
+      - "rebalance_event_log"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:128"
+      - "Serenity-Alipay/app/core/comparison.py:201"
+      - "Serenity-Alipay/app/core/discipline.py:15"
+      - "Serenity-Alipay/app/core/discipline.py:32"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+      - "Serenity-Alipay/tests/test_comparison.py:58"
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    model_id: "MOD-005"
+    name: "Automation time-slot and dry-run safety gate"
+    purpose: "Select due Beijing business-day slots, prevent weekend execution, and default automation to dry-run/mail-disabled safety."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-005"
+      - "ASM-006"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+    input_refs:
+      - "current datetime"
+      - "slot ID"
+      - "Settings"
+      - "preflight status"
+    output_refs:
+      - "due slot"
+      - "non_business_day"
+      - "no_due_slot"
+      - "effective_dry_run"
+      - "send/draft behavior"
+    code_refs:
+      - "Serenity-Alipay/app/scheduler.py:8"
+      - "Serenity-Alipay/app/scheduler.py:76"
+      - "Serenity-Alipay/app/core/scheduler_runner.py:28"
+      - "Serenity-Alipay/app/core/automation_tick.py:26"
+    test_refs:
+      - "Serenity-Alipay/tests/test_timezones.py:6"
+      - "Serenity-Alipay/tests/test_scheduler.py:12"
+      - "Serenity-Alipay/tests/test_automation_tick.py:8"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+assumptions:
+  -
+    assumption_id: "ASM-001"
+    statement: "Serenity-Alipay outputs research, ranking, discipline labels, reports, and notification drafts; it does not place trades."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-002"
+    statement: "Manual candidate file order encodes primary Serenity priority before confidence score tie-breaks."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-003"
+    statement: "Price history is daily close data sorted by date and is sufficient for return window, drawdown, and recovery calculations."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-004"
+    statement: "Official source count, conflict flags, fallback flags, and missing field counts are the current evidence-confidence proxies."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-005"
+    statement: "Beijing business-day time slots define automation eligibility; non-business days do not create due slots by default."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-006"
+    statement: "Incomplete production evidence must fail closed into blocker, warning, manual review, Pause New, or draft behavior rather than executable trade action."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-MODEL-REGISTRY"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-003"
+    description: "Extracted formula for MOD-003 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "For window w, return_w = close_last / close_start(w) - 1.0. 1m uses latest date minus 31 calendar days, 3m uses latest date minus 93 calendar days, and 10d uses the point at len(points)-11. If the start point is missing or start close is 0, output None."
+    variables:
+      -
+        name: "points"
+        meaning: "list[PricePoint]; daily close rows; length >= 0 sorted by date"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "close_last"
+        meaning: "float; price; latest close; nonzero not required"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "close_start"
+        meaning: "float; price; window start close; must be nonzero"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:21"
+      - "Serenity-Alipay/app/core/metrics.py:31"
+      - "Serenity-Alipay/app/core/metrics.py:39"
+    test_refs:
+      - "Serenity-Alipay/tests/test_metrics.py:14"
+      - "Serenity-Alipay/tests/test_metrics.py:22"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-003"
+    description: "Extracted formula for MOD-003 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Iterate daily closes, track running peak, compute drawdown = (peak.close - point.close) / peak.close. Max drawdown is the largest drawdown. Recovery time is days from worst trough until a later close >= worst peak, else days from trough to latest point. Recent drawdown uses last 7 points as (max_recent_close - latest_close) / max_recent_close."
+    variables:
+      -
+        name: "peak"
+        meaning: "PricePoint; daily close row; highest close observed so far"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "drawdown"
+        meaning: "float; ratio; 0..unbounded by code, practically >=0"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "recovery_time_days"
+        meaning: "int; days; 0..unbounded"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:52"
+      - "Serenity-Alipay/app/core/metrics.py:79"
+      - "Serenity-Alipay/app/core/metrics.py:90"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_risk_gate_regression.py:8"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-001"
+    description: "Extracted formula for MOD-001 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "total_score = data_score + timeliness_score + source_score + return_score + risk_score + executable_score. data_score = max(0,25 - 8*missing_count). timeliness_score = 15 if max(missing_nav_days,missing_holding_days) <= 2 else 0. source_score = 15 if official_source_count >= 2 and no conflict, 7.5 if official_source_count >= 1 and no conflict, else 0. return_score = 15*(benchmark_wins/6). risk_score starts 0, becomes max(0,20 - 20*max_drawdown) when max_drawdown < 0.40, and is capped to min(risk_score,5) when recovery_time_days >= 365. executable_score = 10 unless rule missing or subscription/redemption/fee schedule fields are unavailable or closed."
+    variables:
+      -
+        name: "missing_count"
+        meaning: "int; fields; 0..unbounded"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "official_source_count"
+        meaning: "int; sources; 0..unbounded"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "benchmark_wins"
+        meaning: "int; wins; 0..6"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "max_drawdown"
+        meaning: "float; ratio; 0..unbounded or None"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:81"
+      - "Serenity-Alipay/app/core/scoring.py:105"
+      - "Serenity-Alipay/app/core/scoring.py:141"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_quality.py:15"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-001"
+    description: "Extracted formula for MOD-001 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Grade decision table: if score >= 85 then Action-Ready; else if score >= 70 then Watch; else if score >= 55 then Manual Review; else Block."
+    variables:
+      -
+        name: "score"
+        meaning: "float; points; 0..100 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:44"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:34"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-001"
+    description: "Extracted formula for MOD-001 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Precise gate order: excluded or conservative -> Block/Block. max_drawdown >= 0.40 -> Block/Clear/manual_review. recovery_time_days >= 365 -> Block if return_score < 7.5 or any missing else Manual Review, action Manual Review. stale_days > 2 -> Manual Review. conflict_flag -> Manual Review. official_source_count < 2 -> cap Action-Ready to Watch and action Pause New. fallback_aggregated -> cap Action-Ready to Watch and action Pause New. executable_score == 0 -> cap Action-Ready to Watch and action Pause New. return_score == 0 -> Reduce. Action-Ready -> Increase. Watch -> Maintain."
+    variables:
+      -
+        name: "max_drawdown"
+        meaning: "float; ratio; 0..unbounded or None"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "recovery_time_days"
+        meaning: "int; days; 0..unbounded or None"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "stale_days"
+        meaning: "int; days; 0..unbounded"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "return_score"
+        meaning: "float; points; 0..15"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:148"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_risk_gate_regression.py:8"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-001"
+    description: "Extracted formula for MOD-001 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "benchmark_wins counts, for each window in 1m,3m,10d, one win if candidate return > Shanghai Composite return when Shanghai value exists, and one win if candidate return > S&P 500 return when S&P value exists. Equal values are not wins. Missing candidate return skips the window. return_score = 15 * benchmark_wins / 6."
+    variables:
+      -
+        name: "candidate_return"
+        meaning: "float; ratio; any float or None"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "benchmark_return"
+        meaning: "float; ratio; any float or None"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "benchmark_wins"
+        meaning: "int; wins; 0..6"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:54"
+      - "Serenity-Alipay/app/core/scoring.py:117"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+      - "Serenity-Alipay/tests/test_metrics.py:22"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-002"
+    description: "Extracted formula for MOD-002 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Eligible rows are rows where score.grade != Block. Sort key is (int(score.manual_review_required), candidate_index default 1000000, -score.total_score, candidate.asset_code). Return first limit rows, default limit 5."
+    variables:
+      -
+        name: "manual_review_required"
+        meaning: "bool; flag; False or True"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "candidate_index"
+        meaning: "int; ordinal; 0..unbounded; default 1000000"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "total_score"
+        meaning: "float; points; 0..100 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:182"
+      - "Serenity-Alipay/app/core/pipeline.py:191"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:100"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-002"
+    description: "Extracted formula for MOD-002 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "For each ranked Top5 item at zero-based index i, serenity_base = 0.82^i. confidence = clamp(score.total_score/100,0,1). confidence_multiplier = 0.85 + 0.15*confidence. raw_weight = serenity_base*confidence_multiplier. Normalize raw weights to sum 1. Cap each normalized weight at 0.30. Normalize capped weights again to sum 1."
+    variables:
+      -
+        name: "index"
+        meaning: "int; rank offset; 0..4"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "score.total_score"
+        meaning: "float; points; any float clamped through confidence"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "raw_weight"
+        meaning: "float; portfolio weight; >=0"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:186"
+      - "Serenity-Alipay/app/core/pipeline.py:204"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-002"
+    description: "Extracted formula for MOD-002 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "deviation = target_weight - current_weight. If grade is Block, return score action/trigger. If manual_review_required, return Manual Review. If abs(deviation) <= 0.01, return Maintain. If deviation > 0, return Increase for Action-Ready else Pause New. If deviation < -0.01, return Reduce."
+    variables:
+      -
+        name: "target_weight"
+        meaning: "float; portfolio weight; 0..1 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "current_weight"
+        meaning: "float; portfolio weight; 0..1 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "deviation"
+        meaning: "float; portfolio weight; -1..1 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:220"
+      - "Serenity-Alipay/app/core/pipeline.py:536"
+    test_refs:
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+      - "Serenity-Alipay/tests/test_integration.py:34"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-010"
+    model_id: "MOD-004"
+    description: "Extracted formula for MOD-004 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "For each compare_type in same_day_previous, previous_day, previous_week, previous_month, choose the latest eligible success/pass business-day base run. change_rate = len(new_assets union removed_assets)/max(len(current_top5),1). Alert if change_rate > 0.20, new_assets count >= 1, replacement_count >= 2, or max_key_field_sigma > 1.0."
+    variables:
+      -
+        name: "change_rate"
+        meaning: "float; ratio; 0..1 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "replacement_count"
+        meaning: "int; assets; 0..5"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "max_key_field_sigma"
+        meaning: "float; standard deviations; 0..unbounded"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:13"
+      - "Serenity-Alipay/app/core/comparison.py:128"
+      - "Serenity-Alipay/app/core/comparison.py:201"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+      - "Serenity-Alipay/tests/test_comparison.py:58"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-011"
+    model_id: "MOD-004"
+    description: "Extracted formula for MOD-004 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Deviation event triggers when abs(deviation) > 0.01. Single-position overexpansion checks last 5 R-slot runs and increments consecutive count while current_weight - target_weight > 0.01; alert when consecutive > 2."
+    variables:
+      -
+        name: "deviation"
+        meaning: "float; portfolio weight; -1..1 nominal"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "consecutive"
+        meaning: "int; runs; 0..5"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/core/discipline.py:15"
+      - "Serenity-Alipay/app/core/discipline.py:32"
+    test_refs:
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+      - "Serenity-Alipay/tests/test_discipline.py:21"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    formula_id: "FORM-012"
+    model_id: "MOD-005"
+    description: "Extracted formula for MOD-005 from formula_registry.yaml."
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "A due slot exists only on Beijing business days by default and when abs(current Beijing time - scheduled slot time) <= tolerance_minutes, default 3. Slots are R1 08:30 through R10 17:30 Beijing. scheduler_tick skips duplicate slot/date unless allow_duplicate is true. automation_tick forces dry-run when preflight blocks."
+    variables:
+      -
+        name: "current"
+        meaning: "datetime; timestamp; timezone-aware or parsed with Asia/Shanghai default"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "tolerance_minutes"
+        meaning: "int; minutes; >=0"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+      -
+        name: "weekday"
+        meaning: "int; day index; 0..6"
+        source: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    code_refs:
+      - "Serenity-Alipay/app/scheduler.py:8"
+      - "Serenity-Alipay/app/scheduler.py:76"
+      - "Serenity-Alipay/app/core/scheduler_runner.py:28"
+      - "Serenity-Alipay/app/core/automation_tick.py:26"
+    test_refs:
+      - "Serenity-Alipay/tests/test_timezones.py:6"
+      - "Serenity-Alipay/tests/test_scheduler.py:12"
+      - "Serenity-Alipay/tests/test_automation_tick.py:8"
+    evidence_refs:
+      - "EVID-SER-FORMULA-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    symbol: "W_1M_DAYS"
+    name: "One month return lookback"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 31
+    unit: "calendar days"
+    source: "EXTRACTED from metrics constant; python_ast_literal:Serenity-Alipay/app/core/metrics.py:42:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:42"
+    test_refs:
+      - "Serenity-Alipay/tests/test_metrics.py:22"
+  -
+    parameter_id: "PARAM-002"
+    symbol: "W_3M_DAYS"
+    name: "Three month return lookback"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 93
+    unit: "calendar days"
+    source: "EXTRACTED from metrics constant; python_ast_literal:Serenity-Alipay/app/core/metrics.py:43:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:43"
+    test_refs:
+      - "Serenity-Alipay/tests/test_metrics.py:22"
+  -
+    parameter_id: "PARAM-003"
+    symbol: "W_10D_POINTS"
+    name: "Ten trading day return points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 11
+    unit: "price points"
+    source: "EXTRACTED from metrics constant; python_ast_literal:Serenity-Alipay/app/core/metrics.py:44:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:44"
+    test_refs:
+      - "Serenity-Alipay/tests/test_metrics.py:14"
+  -
+    parameter_id: "PARAM-004"
+    symbol: "RECENT_DRAWDOWN_COUNT"
+    name: "Recent drawdown count"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 7
+    unit: "price points"
+    source: "EXTRACTED from metrics default argument; python_ast_default:Serenity-Alipay/app/core/metrics.py::drawdown_over_last_n.count"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/metrics.py:79"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+  -
+    parameter_id: "PARAM-005"
+    symbol: "S_DATA_CAP"
+    name: "Data score maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 25.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:105:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:105"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:34"
+  -
+    parameter_id: "PARAM-006"
+    symbol: "P_MISSING_FIELD"
+    name: "Missing field penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 8.0
+    unit: "points per field"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:105:3"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:105"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:108"
+  -
+    parameter_id: "PARAM-007"
+    symbol: "STALE_DAYS_MAX"
+    name: "Freshness stale day boundary"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 2
+    unit: "days"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:108:3"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:107"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:126"
+  -
+    parameter_id: "PARAM-008"
+    symbol: "S_TIMELINESS_CAP"
+    name: "Timeliness score maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 15.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:108:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:108"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:126"
+  -
+    parameter_id: "PARAM-009"
+    symbol: "MIN_OFFICIAL_SRC"
+    name: "Minimum official sources for Action-Ready"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 2
+    unit: "sources"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.min_official_sources_action_ready"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:38"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:38"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:126"
+  -
+    parameter_id: "PARAM-010"
+    symbol: "S_SOURCE_FULL"
+    name: "Full source score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 15.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:111:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:110"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:34"
+  -
+    parameter_id: "PARAM-011"
+    symbol: "S_SOURCE_PARTIAL"
+    name: "Partial source score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 7.5
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:113:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:112"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:108"
+  -
+    parameter_id: "PARAM-012"
+    symbol: "BENCHMARK_WIN_DENOM"
+    name: "Benchmark win denominator"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 6
+    unit: "wins"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:118:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:118"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+  -
+    parameter_id: "PARAM-013"
+    symbol: "S_RETURN_CAP"
+    name: "Return score maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 15.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:118:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:118"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+  -
+    parameter_id: "PARAM-014"
+    symbol: "S_RISK_CAP"
+    name: "Risk score maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 20.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:123:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:123"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+  -
+    parameter_id: "PARAM-015"
+    symbol: "MDD_BLOCK"
+    name: "Maximum drawdown block threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.4
+    unit: "ratio"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.max_drawdown_block"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:33"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:33"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+  -
+    parameter_id: "PARAM-016"
+    symbol: "RECOVERY_BLOCK_DAYS"
+    name: "Recovery time block threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 365
+    unit: "days"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.recovery_time_block_days"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:34"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:34"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:89"
+  -
+    parameter_id: "PARAM-017"
+    symbol: "S_RECOVERY_RISK_CAP"
+    name: "Recovery risk score cap"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 5.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:125:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:124"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:89"
+  -
+    parameter_id: "PARAM-018"
+    symbol: "S_EXECUTABLE_CAP"
+    name: "Executable score maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 10.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:127:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:127"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:126"
+  -
+    parameter_id: "PARAM-019"
+    symbol: "TH_ACTION_READY"
+    name: "Action-Ready grade threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 85.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:45:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:45"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:126"
+  -
+    parameter_id: "PARAM-020"
+    symbol: "TH_WATCH"
+    name: "Watch grade threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 70.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:47:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:47"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"
+  -
+    parameter_id: "PARAM-021"
+    symbol: "TH_MANUAL_REVIEW"
+    name: "Manual Review grade threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 55.0
+    unit: "points"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:49:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:49"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+  -
+    parameter_id: "PARAM-022"
+    symbol: "CONSERVATIVE_KEYWORDS"
+    name: "Conservative exclusion keywords"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "bond|money|cash|yuebao|conservative|fixed income"
+    unit: "keywords"
+    source: "EXTRACTED from scoring code; python_ast_tuple:Serenity-Alipay/app/core/scoring.py::CONSERVATIVE_KEYWORDS|join=pipe"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:10"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:70"
+  -
+    parameter_id: "PARAM-023"
+    symbol: "EVIDENCE_COVERAGE_CAP"
+    name: "Evidence coverage cap"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 1.0
+    unit: "ratio"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:204:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:204"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:126"
+  -
+    parameter_id: "PARAM-024"
+    symbol: "FALLBACK_EVIDENCE_CAP"
+    name: "Aggregated fallback evidence cap"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.5
+    unit: "ratio"
+    source: "EXTRACTED from scoring code; python_ast_literal:Serenity-Alipay/app/core/scoring.py:206:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/scoring.py:205"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scoring.py:108"
+  -
+    parameter_id: "PARAM-025"
+    symbol: "FALLBACK_AGG_ENABLED"
+    name: "Fallback aggregated enabled"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: true
+    unit: "flag"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.fallback_aggregated_enabled"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:55"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:30"
+    test_refs:
+      - "Serenity-Alipay/tests/test_intake_promoter.py:75"
+  -
+    parameter_id: "PARAM-026"
+    symbol: "TOP_LIMIT"
+    name: "Recommendation TopN limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 5
+    unit: "items"
+    source: "EXTRACTED from pipeline default; python_ast_default:Serenity-Alipay/app/core/pipeline.py::_ranked_recommendation_rows.limit"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:191"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62"
+  -
+    parameter_id: "PARAM-027"
+    symbol: "DEFAULT_PRIORITY"
+    name: "Missing candidate priority default"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 1000000
+    unit: "ordinal"
+    source: "EXTRACTED from pipeline code; python_ast_literal:Serenity-Alipay/app/core/pipeline.py:183:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:182"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:100"
+  -
+    parameter_id: "PARAM-028"
+    symbol: "CONF_MULT_MIN"
+    name: "Confidence multiplier base"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.85
+    unit: "multiplier"
+    source: "EXTRACTED from pipeline code; python_ast_literal:Serenity-Alipay/app/core/pipeline.py:188:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:186"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+  -
+    parameter_id: "PARAM-029"
+    symbol: "CONF_MULT_VAR"
+    name: "Confidence multiplier variable coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.15
+    unit: "multiplier"
+    source: "EXTRACTED from pipeline code; python_ast_literal:Serenity-Alipay/app/core/pipeline.py:188:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:188"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+  -
+    parameter_id: "PARAM-030"
+    symbol: "SCORE_DENOM"
+    name: "Score denominator for confidence"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 100.0
+    unit: "points"
+    source: "EXTRACTED from pipeline code; python_ast_literal:Serenity-Alipay/app/core/pipeline.py:187:3"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:187"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+  -
+    parameter_id: "PARAM-031"
+    symbol: "SERENITY_DECAY"
+    name: "Serenity priority exponential decay"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.82
+    unit: "ratio"
+    source: "EXTRACTED from pipeline code; python_ast_literal:Serenity-Alipay/app/core/pipeline.py:209:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:209"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+  -
+    parameter_id: "PARAM-032"
+    symbol: "TARGET_WEIGHT_CAP"
+    name: "Per-asset target weight cap"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.3
+    unit: "portfolio weight"
+    source: "EXTRACTED from pipeline code; python_ast_literal:Serenity-Alipay/app/core/pipeline.py:215:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/pipeline.py:215"
+    test_refs:
+      - "Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85"
+  -
+    parameter_id: "PARAM-033"
+    symbol: "DEVIATION_THRESHOLD"
+    name: "Target-current deviation threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.01
+    unit: "portfolio weight"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.deviation_threshold"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:35"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:35"
+    test_refs:
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+  -
+    parameter_id: "PARAM-034"
+    symbol: "TOP5_CHANGE_RATE_THRESHOLD"
+    name: "Top5 change rate alert threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 0.2
+    unit: "ratio"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.top5_change_rate_threshold"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:36"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:36"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+  -
+    parameter_id: "PARAM-035"
+    symbol: "NEW_ASSET_ALERT_MIN"
+    name: "New Top5 asset alert minimum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 1
+    unit: "assets"
+    source: "EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:211:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:211"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+  -
+    parameter_id: "PARAM-036"
+    symbol: "REPLACEMENT_ALERT_MIN"
+    name: "Replacement alert minimum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 2
+    unit: "assets"
+    source: "EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:218:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:218"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+  -
+    parameter_id: "PARAM-037"
+    symbol: "KEY_FIELD_SIGMA_THRESHOLD"
+    name: "Key field sigma alert threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 1.0
+    unit: "standard deviations"
+    source: "EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:225:1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:225"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+  -
+    parameter_id: "PARAM-038"
+    symbol: "SCORE_SIGMA_HISTORY_LIMIT"
+    name: "Score sigma history limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 20
+    unit: "runs"
+    source: "EXTRACTED from comparison code; text_regex:Serenity-Alipay/app/core/comparison.py::LIMIT\\s+(20)"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:113"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:44"
+  -
+    parameter_id: "PARAM-039"
+    symbol: "OVEREXPANSION_CONSEC_THRESHOLD"
+    name: "Overexpansion consecutive threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 2
+    unit: "runs"
+    source: "EXTRACTED from discipline default argument; python_ast_default:Serenity-Alipay/app/core/discipline.py::single_position_overexpansion_events.consecutive_threshold"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/discipline.py:36"
+    test_refs:
+      - "Serenity-Alipay/tests/test_discipline.py:5"
+  -
+    parameter_id: "PARAM-040"
+    symbol: "PREVIOUS_DAY_OFFSET"
+    name: "Previous day comparison offset"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 1
+    unit: "days"
+    source: "EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:85:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:84"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:58"
+  -
+    parameter_id: "PARAM-041"
+    symbol: "PREVIOUS_WEEK_OFFSET"
+    name: "Previous week comparison offset"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 7
+    unit: "days"
+    source: "EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:86:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:86"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:58"
+  -
+    parameter_id: "PARAM-042"
+    symbol: "PREVIOUS_MONTH_OFFSET"
+    name: "Previous month comparison offset"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 30
+    unit: "days"
+    source: "EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:87:2"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/core/comparison.py:87"
+    test_refs:
+      - "Serenity-Alipay/tests/test_comparison.py:58"
+  -
+    parameter_id: "PARAM-043"
+    symbol: "SCHEDULE_SLOTS"
+    name: "Beijing automation slots"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "R1=08:30|R2=09:30|R3=10:30|R4=11:30|R5=12:30|R6=13:30|R7=14:30|R8=15:30|R9=16:30|R10=17:30"
+    unit: "slot map"
+    source: "EXTRACTED from scheduler code; python_ast_dict:Serenity-Alipay/app/scheduler.py::SCHEDULE_SLOTS|pair=equals|sep=pipe"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/scheduler.py:8"
+    test_refs:
+      - "Serenity-Alipay/tests/test_timezones.py:6"
+  -
+    parameter_id: "PARAM-044"
+    symbol: "DUE_SLOT_TOLERANCE"
+    name: "Due slot tolerance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 3
+    unit: "minutes"
+    source: "EXTRACTED from scheduler default; python_ast_default:Serenity-Alipay/app/scheduler.py::due_slot_at.tolerance_minutes"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/scheduler.py:78"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scheduler.py:12"
+  -
+    parameter_id: "PARAM-045"
+    symbol: "BUSINESS_DAY_MAX_WEEKDAY"
+    name: "Business day max weekday"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: 4
+    unit: "weekday index"
+    source: "EXTRACTED from scheduler code; python_ast_literal:Serenity-Alipay/app/scheduler.py:73:1|subtract=1"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    code_refs:
+      - "Serenity-Alipay/app/scheduler.py:71"
+    test_refs:
+      - "Serenity-Alipay/tests/test_scheduler.py:17"
+  -
+    parameter_id: "PARAM-046"
+    symbol: "TZ_PRIMARY"
+    name: "Primary timezone"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Asia/Shanghai"
+    unit: "IANA timezone"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.timezone_primary"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:25"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:25"
+    test_refs:
+      - "Serenity-Alipay/tests/test_timezones.py:21"
+  -
+    parameter_id: "PARAM-047"
+    symbol: "TZ_SECONDARY"
+    name: "Secondary timezone"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Australia/Sydney"
+    unit: "IANA timezone"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.timezone_secondary"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:26"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:26"
+    test_refs:
+      - "Serenity-Alipay/tests/test_timezones.py:21"
+  -
+    parameter_id: "PARAM-048"
+    symbol: "DRY_RUN_DEFAULT"
+    name: "Dry-run default safety flag"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: true
+    unit: "flag"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.dry_run_default"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:54"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:29"
+    test_refs:
+      - "Serenity-Alipay/tests/test_automation_tick.py:8"
+  -
+    parameter_id: "PARAM-049"
+    symbol: "MAIL_SEND_ENABLED"
+    name: "Mail send enabled default"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: false
+    unit: "flag"
+    source: "EXTRACTED from Settings default; python_ast_attr:Serenity-Alipay/app/config.py::Settings.mail_send_enabled"
+    evidence_refs:
+      - "EVID-SER-PARAMETER-REGISTRY"
+      - "EVID-SER-MODEL-EXTRACTION"
+    config_refs:
+      - "Serenity-Alipay/app/config.py:56"
+    code_refs:
+      - "Serenity-Alipay/app/config.py:31"
+    test_refs:
+      - "Serenity-Alipay/tests/test_preflight.py:21"
+strategies:
+  -
+    strategy_id: "STRAT-SER-001"
+    name: "Fail closed to research/manual/draft behavior"
+    description: "Strategy extracted in S4PAT02 and applied by models: MOD-001, MOD-003, MOD-004, MOD-005."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-003"
+      - "MOD-004"
+      - "MOD-005"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+    evidence_refs:
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    strategy_id: "STRAT-SER-002"
+    name: "Manual Serenity priority precedes score tie-breaks"
+    description: "Strategy extracted in S4PAT02 and applied by models: MOD-002."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-002"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+    evidence_refs:
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    strategy_id: "STRAT-SER-003"
+    name: "Score only applies bounded confidence"
+    description: "Strategy extracted in S4PAT02 and applied by models: MOD-001, MOD-002."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+    parameter_ids:
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+    evidence_refs:
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    strategy_id: "STRAT-SER-004"
+    name: "Deviation thresholds convert model output into discipline labels"
+    description: "Strategy extracted in S4PAT02 and applied by models: MOD-002, MOD-004."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-002"
+      - "MOD-004"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+    evidence_refs:
+      - "EVID-SER-MODEL-EXTRACTION"
+  -
+    strategy_id: "STRAT-SER-005"
+    name: "Automation defaults to dry-run and mail draft unless explicitly enabled"
+    description: "Strategy extracted in S4PAT02 and applied by models: MOD-005."
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+    parameter_ids:
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+    evidence_refs:
+      - "EVID-SER-MODEL-EXTRACTION"
+validations:
+  -
+    validation_id: "VAL-SER-S4PAT01"
+    scope: "Bounded Serenity evidence index"
+    method: "PR #95 and main Project Governance CI run 28027304921"
+    status: "active"
+    fact_level: "VERIFIED"
+    evidence_refs:
+      - "EVID-REVIEW9-S4PAT01-MANIFEST"
+  -
+    validation_id: "VAL-SER-S4PAT02"
+    scope: "Model extraction coverage"
+    method: "PR #96 and main Project Governance CI run 28027843674"
+    status: "active"
+    fact_level: "VERIFIED"
+    evidence_refs:
+      - "EVID-REVIEW9-S4PAT02-MANIFEST"
+  -
+    validation_id: "VAL-SER-S4PAT03"
+    scope: "Roadmap reconstruction and event truth levels"
+    method: "PR #97 and main Project Governance CI run 28028512167"
+    status: "active"
+    fact_level: "VERIFIED"
+    evidence_refs:
+      - "EVID-REVIEW9-S4PAT03-MANIFEST"
+      - "EVID-REVIEW9-S4PAT03-CI"
+evidence_refs:
+  -
+    evidence_id: "EVID-SER-README"
+    kind: "owner"
+    ref: "Serenity-Alipay/README.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SER-HANDOFF"
+    kind: "owner"
+    ref: "Serenity-Alipay/HANDOFF.md"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-SER-MODEL-REGISTRY"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SER-FORMULA-REGISTRY"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SER-PARAMETER-REGISTRY"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SER-MODEL-EXTRACTION"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/model_extraction.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SER-ROADMAP-DRAFT"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/roadmap_draft.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SER-LEGACY-LEDGER"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-SER-LEGACY-EVENTS"
+    kind: "external"
+    ref: "Serenity-Alipay/docs/governance/development_events.jsonl"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-REVIEW9-S4PAT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+    fact_level: "VERIFIED"
+  -
+    evidence_id: "EVID-REVIEW9-S4PAT02-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json"
+    fact_level: "VERIFIED"
+  -
+    evidence_id: "EVID-REVIEW9-S4PAT03-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+    fact_level: "VERIFIED"
+  -
+    evidence_id: "EVID-REVIEW9-S4PAT03-CI"
+    kind: "ci"
+    ref: "github-actions://LinzeColin/CodexProject/actions/runs/28028512167"
+    fact_level: "VERIFIED"
+  -
+    evidence_id: "EVID-REVIEW9-S4PB-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+    fact_level: "PROPOSED"
+legacy_refs:
+  -
+    legacy_path: "Serenity-Alipay/docs/governance/model_registry.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Serenity-Alipay/docs/governance/formula_registry.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Serenity-Alipay/docs/governance/parameter_registry.csv"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Serenity-Alipay/docs/governance/development_events.jsonl"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Serenity-Alipay/功能清单"
+    replacement_status: "replaced"
+  -
+    legacy_path: "Serenity-Alipay/开发记录"
+    replacement_status: "replaced"
+  -
+    legacy_path: "Serenity-Alipay/模型参数文件"
+    replacement_status: "replaced"
