@@ -235,7 +235,7 @@
   ],
   "ci_attestation_subject": "Project Governance and EEI validation workflows for d009516c; current governance repair precommit manifest",
   "ci_run_reference": "Project Governance run 27950933950 job 82707373153; EEI validation run 27950933933 job 82707372790",
-  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:53c3fb4be81d7248b46d60b772a930a6f29d321dba8642c9439c6d67d3fbb0c8",
+  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:79af4ae507763b710ba2ea5998356fd71d3e361630018fd422b9a3fd967cf0a6",
   "evidence_refs": [
     "EEI/docs/governance/development_events.jsonl",
     "EEI/docs/governance/delivery_tasks.yaml",
