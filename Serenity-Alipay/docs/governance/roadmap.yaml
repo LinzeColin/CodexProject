@@ -1,11 +1,11 @@
 schema_version: "codexproject.roadmap.v1"
 project_id: "Serenity-Alipay"
 total_estimated_hours: 32
-completed_estimated_hours: 24
+completed_estimated_hours: 28
 current_stage_id: "S4"
-current_phase_id: "S4PB"
-current_task_id: "S4PBT03"
-next_gate_id: "S4PB-GATE"
+current_phase_id: "S4PC"
+current_task_id: "S4PCT01"
+next_gate_id: "S4PC-GATE"
 stages:
   -
     stage_id: "S4"
@@ -150,7 +150,7 @@ stages:
         phase_id: "S4PB"
         name: "Migration and generation"
         objective: "Create Lean v2 canonical facts, generate Chinese human entry files, and verify render drift."
-        status: "in_progress"
+        status: "completed"
         estimated_hours: 14
         estimated_pct: 43.75
         stop_conditions:
@@ -233,7 +233,7 @@ stages:
             task_id: "S4PBT03"
             name: "Run focused tests, validate, and drift check"
             objective: "Verify canonical facts, generated files, changed-only sync, and render drift before S4PC."
-            status: "in_progress"
+            status: "completed"
             estimated_hours: 4
             estimated_pct: 2.04
             dependencies:
@@ -249,17 +249,21 @@ stages:
             test_commands:
               - "See task run manifest and Project Governance CI."
             test_results:
-              - "PASS evidence required before task is considered complete."
+              - "PASS: PR #98 Project Governance and main Project Governance CI succeeded."
             evidence_refs:
               - "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+              - "PR-98"
+              - "ci_run:28029697002"
+              - "main_ci_run:28029791587"
             risks:
               - "PR/main CI still required before S4PB is fully complete."
             rollback: "Remove S4PB canonical/render changes and tests."
+            completed_commit: "00f3a8a59fcbeb37bcb41959da10549d844da0c2"
       -
         phase_id: "S4PC"
         name: "Owner readability and cost acceptance"
         objective: "Confirm owner readability, token-cost behavior, and rollback path."
-        status: "planned"
+        status: "in_progress"
         estimated_hours: 4
         estimated_pct: 12.5
         stop_conditions:
@@ -281,7 +285,7 @@ stages:
             task_id: "S4PCT01"
             name: "Run two-minute Owner ROA review"
             objective: "Check whether owner can understand the key model facts and next decision quickly."
-            status: "planned"
+            status: "in_progress"
             estimated_hours: 2
             estimated_pct: 1.02
             dependencies:
@@ -297,9 +301,9 @@ stages:
             test_commands:
               - "See task run manifest and Project Governance CI."
             test_results:
-              - "PASS evidence required before task is considered complete."
+              - "PENDING: owner_acceptance_status remains PENDING_OWNER_CONFIRMATION."
             evidence_refs:
-              - "owner_review"
+              - "Serenity-Alipay/docs/governance/owner_roa_review.yaml"
             risks:
               - "Owner acceptance may require edits to human files."
             rollback: "Revert owner-review updates."
@@ -307,7 +311,7 @@ stages:
             task_id: "S4PCT02"
             name: "Verify duration, token proxy, and rollback"
             objective: "Validate cost/runtime proxy and executable rollback before S4 gate."
-            status: "planned"
+            status: "in_progress"
             estimated_hours: 2
             estimated_pct: 1.02
             dependencies:
@@ -324,10 +328,10 @@ stages:
             test_commands:
               - "See task run manifest and Project Governance CI."
             test_results:
-              - "PASS evidence required before task is considered complete."
+              - "PASS_LOCAL: duration/token proxy and rollback check recorded; owner gate still pending."
             evidence_refs:
-              - "performance_report"
-              - "rollback_test"
+              - "Serenity-Alipay/docs/governance/performance_report.yaml"
+              - "Serenity-Alipay/docs/governance/rollback_test.yaml"
             risks:
               - "Remote CI and rollback proof must be concrete."
             rollback: "Revert S4PC evidence updates."
