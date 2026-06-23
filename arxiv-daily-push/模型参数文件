@@ -6,13 +6,13 @@
 - product_version: `0.23.0`
 - current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
 - current_phase: `S1P5`
-- current_task: `S1P5T04`
+- current_task: `S1P5T03-R`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- active_model_count: `45`
-- active_formula_count: `47`
-- active_parameter_count: `334`
-- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
-- evidence_status: `VERIFIED`
+- active_model_count: `46`
+- active_formula_count: `48`
+- active_parameter_count: `342`
+- next_unique_task: `WAIT_FOR_OWNER_DECISION_BEFORE_PRODUCTION_SCHEDULE_ENABLEMENT`
+- evidence_status: `LOCAL_AND_CLOUD_BACKFILL_VERIFIED`
 
 ## 证据
 
@@ -21,7 +21,7 @@
 | `EVID-MODEL-001` | governance | `docs/governance/model_registry.yaml` | active models | EXTRACTED |
 | `EVID-FORMULA-001` | governance | `docs/governance/formula_registry.yaml` | active formulas | EXTRACTED |
 | `EVID-PARAM-001` | governance | `docs/governance/parameter_registry.csv` | active parameters | EXTRACTED |
-| `EVID-ACC-001` | run_manifest | `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` | `MOD-ADP-045`; `FORM-ADP-047`; `PARAM-ADP-349..351` | EXTRACTED |
+| `EVID-ACC-001` | run_manifest | `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json` | `MOD-ADP-046`; `FORM-ADP-048`; `PARAM-ADP-352..359` | EXTRACTED |
 
 ## 核心模型
 
@@ -51,6 +51,20 @@
 - evidence_refs: `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`
 - fallback_behavior: If candidate count, SMTP refs, artifact status, or side-effect policy fails, output `BLOCKED` and do not claim acceptance.
 
+### `MOD-ADP-046` real arXiv 30 as-of replay
+
+- status: active
+- purpose: 用真实 arXiv Atom submittedDate date-window 补跑 30 个历史 as-of date，生成 daily input、B1 teaching report、中文 email preview、queue ledger 和 CONTENT_LEDGER rows。
+- inputs: generated_at, start_date, end_date, count=30, lookback_days=7, max_results=10, recipient, artifact_dir, fetcher.
+- outputs: replay report, `daily_inputs.jsonl`, `reports.md`, `email_previews.txt`, `queue_ledgers.jsonl`, `run_records.jsonl`, `CONTENT_LEDGER.csv`.
+- assumptions: no SMTP send, no Release upload, no video generation, no scheduler enablement, no secret values.
+- formula_refs: `FORM-ADP-048`
+- parameter_refs: `PARAM-ADP-352`..`PARAM-ADP-359`
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py`
+- test_refs: `arxiv-daily-push/tests/test_stage1_real_replay.py`
+- evidence_refs: `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json`
+- fallback_behavior: If any date fails, candidate selection is missing, future leakage appears, duplicate lead appears, queue continuity breaks, P0/P1 unsupported claims appear, or production side effects are true, output `BLOCKED`.
+
 ## 关键公式
 
 ### `FORM-ADP-047` Stage 1 accelerated acceptance gate
@@ -64,6 +78,17 @@
 - test_refs: `arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py`
 - evidence_refs: `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`
 
+### `FORM-ADP-048` real arXiv 30 as-of replay gate
+
+- model_id: `MOD-ADP-046`
+- status: active
+- expression_or_pseudocode: `pass = success_count == 30 && unique_as_of_date_count == 30 && real_arxiv_source_id_count == 30 && future_leakage_count == 0 && duplicate_lead_count == 0 && queue_continuity_break_count == 0 && unsupported_p0_p1_count == 0 && daily/report/email/queue counts == 30 && content_ledger_selected_row_count == 30 && content_ledger_queued_row_count >= 30 && production side effects == false`
+- output_range: `PASS` or `BLOCKED`
+- missing_value_behavior: Any missing daily artifact, ledger row, source id, queue hash, or side-effect flag blocks strict acceptance.
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py`
+- test_refs: `arxiv-daily-push/tests/test_stage1_real_replay.py`
+- evidence_refs: `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json`
+
 ## 关键参数
 
 | 参数 ID | 符号 | 名称 | 当前值 | 默认/先验 | 单位 | 范围 | 来源 | 事实等级 |
@@ -72,12 +97,20 @@
 | `PARAM-ADP-350` | `STAGE1_ACCELERATED_ACCEPTANCE_ID` | acceptance id | `ADP-ACC-S1P5T04-ACCELERATED-REAL-ARXIV` | same | acceptance_id | fixed | `stage1_accelerated_acceptance.py` | EXTRACTED |
 | `PARAM-ADP-351` | `expected_samples` | required real candidate samples | `30` | `30` | count | `>=30` | CLI/workflow acceptance args | EXTRACTED |
 | `PARAM-ADP-SCHED-DEFAULT` | `ADP_ARXIV_MAX_RESULTS_PER_CATEGORY` | scheduled/trial fallback per primary archive bucket | `3` | `3` | records | `>=1` | `.github/workflows/arxiv-daily-push-scheduled.yml`; `.github/workflows/arxiv-daily-push-trial-start.yml` | EXTRACTED |
+| `PARAM-ADP-352` | `STAGE1_REAL_REPLAY_MODEL_ID` | real replay model id | `adp-stage1-real-arxiv-30-asof-replay-v1` | same | model_id | fixed | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-354` | `STAGE1_REAL_REPLAY_ACCEPTANCE_ID` | strict replay acceptance id | `ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY` | same | acceptance_id | fixed | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-355` | `STAGE1_REAL_REPLAY_REQUIRED_COUNT` | required historical as-of dates | `30` | `30` | dates | `30` | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-356` | `STAGE1_REAL_REPLAY_DEFAULT_LOOKBACK_DAYS` | submittedDate lookback | `7` | `7` | days | `1..30` | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-357` | `STAGE1_REAL_REPLAY_DEFAULT_MAX_RESULTS` | max results per date-window request | `10` | `10` | records | `1..50` | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-358` | `STAGE1_REAL_REPLAY_ARTIFACT_FILE_COUNT` | aggregate artifact file count | `7` | `7` | files | `7` | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-359` | `STAGE1_REAL_REPLAY_QUERY_POLICY` | all-arXiv date-window query policy | `submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359]` | same | arXiv query | fixed | `stage1_real_replay.py` | EXTRACTED |
 
 ## 限制与未知
 
 | 项目 | 类型 | 当前状态 | 解决任务 | 事实等级 |
 |---|---|---|---|---|
-| GitHub repo production variables/secrets | validation | 本轮未读取或启用；scheduled send 仍 fail-closed | production variable verification task | EXTRACTED |
+| S1P5T03-R 云端 artifact | validation | PR #94 run `28027759062` artifact `7821452823` 通过；strict accepted restored | `ARXIV_PRODUCTION_ACCEPTED` | MACHINE_VERIFIED |
+| GitHub repo production variables/secrets | validation | 本轮未读取或启用；scheduled send 仍 fail-closed | production variable verification task after S1P5T03-R | EXTRACTED |
 | 邮件前台模板 | product_quality | 用户不满意，已从 Stage 1 acceptance blocker 中分离 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` | EXTRACTED |
 | Stage 2 多来源模型 | model_scope | planned，未进入 arXiv Stage 1 验收 | `S2P1` | EXTRACTED |
 
@@ -85,5 +118,5 @@
 
 | 验证 ID | 范围 | 方法 | 结果 | 测试引用 | 证据引用 | 事实等级 |
 |---|---|---|---|---|---|---|
-| `VAL-S1P5T04-001` | Stage 1 acceptance | PR #82 GitHub Actions + artifact inspection | PASS | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |
-| `VAL-SCHED-DEFAULT-001` | scheduled/trial workflow fallback | workflow text regression tests | pending current PR CI | `test_production_scheduler.py`; `test_trial_start_workflow.py` | this branch | EXTRACTED |
+| `VAL-S1P5T03R-001` | strict real historical replay | local live replay control run plus GitHub/cloud artifact | LOCAL PASS; CLOUD PASS | `test_stage1_real_replay.py` | `/tmp/adp-real-replay-20260623/report.json`; PR #94 run `28027759062` artifact `7821452823` | EXTRACTED |
+| `VAL-S1P5T04-001` | one-time live cloud chain | PR #82 GitHub Actions + artifact inspection | PASS but insufficient for strict 30-day backfill | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |

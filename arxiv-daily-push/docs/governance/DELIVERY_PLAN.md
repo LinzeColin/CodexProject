@@ -19,8 +19,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 62
-- acceptance_count: 58
+- task_count: 63
+- acceptance_count: 59
 
 ## Delivery Tasks
 
@@ -161,7 +161,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - status: `completed`
 - objective: record controlled GitHub/cloud-runner B1/arXiv Stage 1 acceptance evidence without enabling scheduled production.
 - acceptance_ids: `ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS`
-- evidence: `governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md`, `github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015`, `governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json`, `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996`, `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`
-- current_result: `ARXIV_PRODUCTION_ACCEPTED`; PR #82 artifact `7818287996` reports 49 real arXiv candidates, 30 selected samples, 20/20 primary archive buckets, two controlled SMTP refs, no blockers, no video/Release requirement, and `production_schedule_enabled=false`.
+- evidence: `governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md`, `github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015`, `governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json`, `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996`, `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`, `github-actions://LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823`, `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json`
+- current_result: `ARXIV_PRODUCTION_ACCEPTED`; PR #94 run `28027759062` artifact `7821452823` reports strict 30 real historical as-of dates, 299 persistent CONTENT_LEDGER rows, and no production side effects. PR #82 artifact `7818287996` remains one-time live cloud-chain evidence.
 - target_version: `0.23.0`
 - completed_version: `0.23.0`

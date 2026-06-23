@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 45
-- formula_count: 47
-- parameter_count: 351
+- model_count: 46
+- formula_count: 48
+- parameter_count: 359
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -27,6 +27,14 @@ Fact levels follow `docs/governance/STANDARD.md`.
   20/20 primary archive buckets, and no production side effects. Production
   scheduling remains disabled until GitHub repository variables/secrets are
   explicitly enabled and verified.
+
+- `S1P5T03-R` reconciled the stricter owner standard after the manual delivery
+  test by running 30 real historical arXiv as-of dates on GitHub/cloud runner.
+  PR #94 run `28027759062` artifact `7821452823` reports 30/30 success,
+  30 unique dates, 30 real arXiv source IDs, no future leakage, no duplicate
+  lead, no queue-continuity breaks, no P0/P1, and 299 persistent
+  `CONTENT_LEDGER.csv` rows. This restores strict Stage 1
+  `ARXIV_PRODUCTION_ACCEPTED` while production scheduling remains disabled.
 
 - `S1P5T04` / `0.23.0` adds `MOD-ADP-045`, an accelerated real-arXiv
   acceptance evidence builder. It can only pass from a GitHub/cloud live
@@ -556,4 +564,4 @@ Uncovered planned scenarios:
 
 - Stage 1 production readiness now requires all-arXiv source selection, candidate queue persistence, Chinese teaching email, HTML/plain text delivery, Gmail SMTP evidence, and GitHub Actions text artifacts.
 - Video generation, MP4 links, and GitHub Release upload are not Stage 1 production-readiness gates. Release delivery remains a legacy/optional transport module and must not be used to claim S1-12 completion.
-- `ARXIV_PRODUCTION_ACCEPTED` is evidenced by PR #82 artifact `7818287996`; production schedule enablement remains controlled by GitHub repository variables/secrets and fail-closed workflow gates.
+- `ARXIV_PRODUCTION_ACCEPTED` is now evidenced by strict S1P5T03-R PR #94 run `28027759062` artifact `7821452823`; PR #82 artifact `7818287996` remains one-time live cloud-chain evidence. Production schedule enablement remains controlled by GitHub repository variables/secrets and fail-closed workflow gates.

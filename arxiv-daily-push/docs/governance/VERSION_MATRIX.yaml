@@ -48,6 +48,7 @@ model_versions:
   MOD-ADP-043: "adp-stage1-post-migration-bootstrap-v1"
   MOD-ADP-044: "adp-stage1-historical-b1-previews-v1"
   MOD-ADP-045: "adp-stage1-accelerated-acceptance-v1"
+  MOD-ADP-046: "adp-stage1-real-arxiv-30-asof-replay-v1"
 parameter_profile_versions:
   adp-foundation-parameters: "adp-foundation-parameters-v1"
   adp-contract-parameters: "adp-contract-parameters-v1"
@@ -94,11 +95,12 @@ parameter_profile_versions:
   adp-stage1-bootstrap-parameters: "adp-stage1-bootstrap-parameters-v1"
   adp-stage1-historical-b1-previews-parameters: "adp-stage1-historical-b1-previews-parameters-v1"
   adp-stage1-accelerated-acceptance-parameters: "adp-stage1-accelerated-acceptance-parameters-v1"
+  adp-stage1-real-arxiv-replay-parameters: "adp-stage1-real-arxiv-replay-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260623-S1P5T04-ARXIV-PRODUCTION-ACCEPTED"
+current_iteration: "ITER-20260623-S1P5T03-R-REAL-ARXIV-30-ASOF-REPLAY"
 current_phase: "S1-A"
 current_gate: "ARXIV_PRODUCTION_ACCEPTED"
-current_v6_task_id: "S1P5T04"
+current_v6_task_id: "S1P5T03-R"
 email_subject_contract: "YYYYMMDD -- Project Name -- arXiv Group -- Theme"
 email_frontstage_numeric_score_visible: false
 version_file_value: "0.23.0"

@@ -1,0 +1,290 @@
+{
+  "acceptance_ids": [
+    "ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY"
+  ],
+  "accepted_for_production": true,
+  "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "change_type": "adp_s1p5t03r_real_arxiv_30_day_backfill_and_ledger_reconcile",
+  "changed_files_actual": [
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py",
+    "arxiv-daily-push/tests/test_stage1_real_replay.py",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py",
+    "arxiv-daily-push/tests/test_stage1_real_replay.py",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "ci_attestation_subject": "ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623",
+  "ci_run_reference": "github-actions://LinzeColin/CodexProject/actions/runs/28027759062",
+  "cloud_artifact": {
+    "artifact_id": "7821452823",
+    "artifact_name": "adp-s1p5t03-real-arxiv-30-day-backfill",
+    "artifact_url": "https://github.com/LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823",
+    "digest": "sha256:c18a100d76ed2a78f7372ed927d3c2b2801e8e993402d8b326670fa317f03a66",
+    "head_sha": "5eb8815246b600825e75e3bca652df72e90a5209",
+    "run_id": "28027759062",
+    "size_bytes": 146082
+  },
+  "content_ledger": {
+    "path": "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
+    "placeholder_row_present": false,
+    "queued_row_count": 269,
+    "row_count": 299,
+    "selected_row_count": 30,
+    "source": "local control run reconciled with GitHub/cloud artifact 7821452823 before strict acceptance was restored"
+  },
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:88e80b8c42ed69507a99af02f58823bbf133a7270a98e182d05f95798d281432",
+  "evidence_refs": [
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py",
+    "arxiv-daily-push/tests/test_stage1_real_replay.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md",
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/28027759062",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28027759062",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-048"
+  ],
+  "generated_at": "2026-06-23T22:15:00+10:00",
+  "implementation_base_sha": "5eb8815246b600825e75e3bca652df72e90a5209",
+  "iteration_id": "ITER-20260623-S1P5T03-R-REAL-ARXIV-30-ASOF-REPLAY",
+  "local_control_run": {
+    "artifact_dir": "/tmp/adp-real-replay-20260623",
+    "artifact_files": [
+      {
+        "name": "adp-real-historical-replay-manifest.json",
+        "sha256": "dafb5ca871461ef7af1d547a40e42fb9bdb4fddeed6f106ccefa7d4ee0018835",
+        "size_bytes": 519596
+      },
+      {
+        "name": "CONTENT_LEDGER.csv",
+        "sha256": "2893ff8d56a3fa3158c8873ead298c46cdd14709f9779d77e5b02575ece0fa84",
+        "size_bytes": 196143
+      },
+      {
+        "name": "daily_inputs.jsonl",
+        "sha256": "41cf9f2ca9421ae27d71adea61d7f6e32f4dd2d8bd0a7d59774551be4d2e7b49",
+        "size_bytes": 246641
+      },
+      {
+        "name": "reports.md",
+        "sha256": "98d6831521e9df59875203b5a69dcf2b1b9c6e09db9a6723a27cda8c955311c9",
+        "size_bytes": 95463
+      },
+      {
+        "name": "email_previews.txt",
+        "sha256": "7c4f218e0b04006b2fcedb9bea022a24632bd06f697e76e8d81147b62ab0510e",
+        "size_bytes": 43953
+      },
+      {
+        "name": "queue_ledgers.jsonl",
+        "sha256": "6e51b5ed5cdaf27314a51961f00e9b41600f323e47d3a48773e1f03a8ec26aa0",
+        "size_bytes": 34943
+      },
+      {
+        "name": "run_records.jsonl",
+        "sha256": "f907b9ae8da4bac99127f14d15ddff17f76b23268948015dff42897b87fccd03",
+        "size_bytes": 416677
+      }
+    ],
+    "first_selected": {
+      "date": "2026-05-24",
+      "primary_category": "math.PR",
+      "source_id": "arxiv:2605.25295"
+    },
+    "last_selected": {
+      "date": "2026-06-22",
+      "primary_category": "cs.CL",
+      "source_id": "arxiv:2606.22272"
+    },
+    "report_path": "/tmp/adp-real-replay-20260623/report.json",
+    "status": "pass",
+    "summary": {
+      "content_ledger_queued_row_count": 269,
+      "content_ledger_row_count": 299,
+      "content_ledger_selected_row_count": 30,
+      "daily_input_count": 30,
+      "duplicate_lead_count": 0,
+      "email_preview_count": 30,
+      "future_leakage_count": 0,
+      "queue_continuity_break_count": 0,
+      "queue_ledger_count": 30,
+      "real_arxiv_source_id_count": 30,
+      "report_count": 30,
+      "required_replay_count": 30,
+      "success_count": 30,
+      "unique_as_of_date_count": 30,
+      "unique_selected_source_count": 30,
+      "unsupported_p0_p1_count": 0
+    }
+  },
+  "model_ids_changed": [
+    "MOD-ADP-046"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-352",
+    "PARAM-ADP-353",
+    "PARAM-ADP-354",
+    "PARAM-ADP-355",
+    "PARAM-ADP-356",
+    "PARAM-ADP-357",
+    "PARAM-ADP-358",
+    "PARAM-ADP-359"
+  ],
+  "production_acceptance_claimed": true,
+  "production_schedule_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "quality_gate_result": {
+    "content_ledger_queued_row_count": 269,
+    "content_ledger_row_count": 299,
+    "content_ledger_selected_row_count": 30,
+    "duplicate_lead_count": 0,
+    "future_leakage_count": 0,
+    "queue_continuity_break_count": 0,
+    "real_arxiv_source_id_count": 30,
+    "required_replay_count": 30,
+    "status": "pass",
+    "success_count": 30,
+    "unique_as_of_date_count": 30,
+    "unsupported_p0_p1_count": 0
+  },
+  "real_release_uploaded": false,
+  "real_smtp_sent": false,
+  "remaining_blockers": [],
+  "required_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "risks": [
+    "Production scheduler remains disabled and must not be enabled without a separate owner-approved production flag task.",
+    "This acceptance covers Stage 1 arXiv B1 only; Stage 2 and other source boards remain out of scope.",
+    "Email frontstage quality work remains deferred and must not be mixed into this acceptance gate."
+  ],
+  "run_id": "ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623",
+  "schema_version": 2,
+  "source_policy": {
+    "bulk_harvest_enabled": false,
+    "max_results_per_call": 10,
+    "pdf_download_enabled": false,
+    "query_policy": "submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359]",
+    "source_type": "arxiv"
+  },
+  "status": "pass",
+  "summary": "Strict S1P5T03-R real arXiv 30 historical as-of replay passed on GitHub/cloud runner and restored ARXIV_PRODUCTION_ACCEPTED while keeping production scheduling, SMTP, Release upload, Stage 2, and video disabled.",
+  "task_id": "S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_real_replay_tests5 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_real_replay.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_real_replay_live2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push real-historical-arxiv-replay --generated-at 2026-06-23T21:45:00+10:00 --start-date 2026-05-24 --end-date 2026-06-22 --count 30 --lookback-days 7 --max-results 10 --artifact-dir /tmp/adp-real-replay-20260623 --write --fetcher curl --polite-delay-seconds 3 --json"
+  ],
+  "test_results": [
+    {
+      "command": "PR #94 arXiv Daily Push real 30-day backfill",
+      "exit_code": 0,
+      "summary": "GitHub/cloud runner run 28027759062 completed success and uploaded artifact 7821452823."
+    },
+    {
+      "command": "cloud real replay quality gates",
+      "exit_code": 0,
+      "summary": "30/30 pass; 30 unique as-of dates; 30 real arXiv source IDs; future leakage 0; duplicate lead 0; queue continuity breaks 0; unsupported P0/P1 0; CONTENT_LEDGER rows 299 with 30 selected and 269 queued."
+    },
+    {
+      "command": "production side-effect gates",
+      "exit_code": 0,
+      "summary": "ADP_PRODUCTION_ENABLED=false; ADP_SCHEDULED_RUN_ENABLED=false; ADP_ALLOW_SMTP_SEND=false; ADP_ALLOW_RELEASE_UPLOAD=false; no SMTP, Release, scheduler, Stage 2, or video side effect."
+    }
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "version_after": "0.23.0",
+  "version_before": "0.23.0",
+  "video_generated": false
+}

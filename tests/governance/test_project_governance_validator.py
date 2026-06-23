@@ -2569,7 +2569,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         task_by_id = {task["task_id"]: task for task in tasks}
         self.assertEqual(task_by_id["ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035"]["status"], "completed")
         self.assertEqual(task_by_id["S1-02-BASELINE-LOCK-TRACEABILITY-001"]["status"], "completed")
-        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]["status"], "ready")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]["status"], "planned")
         self.assertEqual(task_by_id["S1-03-OWNER-CONTROLS-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "completed")
@@ -2579,9 +2579,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-09-MIGRATION_PACKAGE-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]["status"], "completed")
         self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "completed")
-        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
-        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "planned")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "planned")
 
     def test_arxiv_project_root_human_entry_files_include_v6_roadmap(self) -> None:
         project_dir = ROOT / "arxiv-daily-push"
@@ -2604,26 +2605,34 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-078")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-078")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-079")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-079")
         self.assertEqual(info["product_version"], "0.23.0")
-        self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertEqual(
+            info["current_gate"],
+            "ARXIV_PRODUCTION_ACCEPTED",
+        )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json",
+            "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertTrue(info["latest_manifest"]["production_acceptance_claimed"])
+        self.assertEqual(info["latest_manifest"]["cloud_artifact"]["run_id"], "28027759062")
+        self.assertEqual(info["latest_manifest"]["cloud_artifact"]["artifact_id"], "7821452823")
+        self.assertFalse(info["latest_manifest"]["production_schedule_enabled"])
+        self.assertFalse(info["latest_manifest"]["real_smtp_sent"])
+        self.assertFalse(info["latest_manifest"]["real_release_uploaded"])
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
-        self.assertIn("S1P5T04", rendered)
-        self.assertIn("Stage 1 B1/arXiv", rendered)
+        self.assertIn("ADP-PHASE12-EMAIL-HUMAN-FORMAT-036", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
         self.assertNotIn("是否继续执行 S1-10", rendered)
         self.assertNotIn("是否继续执行 S1-11", rendered)
+        self.assertNotIn("STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_arxiv_s1_next_task_priority_does_not_reorder_other_projects(self) -> None:

@@ -1,0 +1,146 @@
+name: arXiv Daily Push real 30-day backfill
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/arxiv-daily-push-real-backfill.yml"
+      - "arxiv-daily-push/**"
+      - "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json"
+  workflow_dispatch:
+    inputs:
+      generated_at:
+        description: "Optional ISO timestamp. Empty uses current UTC."
+        required: false
+        type: string
+      start_date:
+        description: "First historical as-of date, inclusive."
+        required: true
+        default: "2026-05-24"
+        type: string
+      end_date:
+        description: "Last historical as-of date, inclusive."
+        required: true
+        default: "2026-06-22"
+        type: string
+      count:
+        description: "Required historical as-of date count."
+        required: true
+        default: "30"
+        type: string
+      lookback_days:
+        description: "submittedDate lookback window per as-of date."
+        required: true
+        default: "7"
+        type: string
+      max_results:
+        description: "Maximum arXiv Atom results per date-window fetch."
+        required: true
+        default: "10"
+        type: string
+      polite_delay_seconds:
+        description: "Delay between arXiv API requests."
+        required: true
+        default: "3"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arxiv-daily-push-real-backfill-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  real-arxiv-30-day-backfill:
+    name: real-arxiv-30-day-backfill
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ADP_PRODUCTION_ENABLED: "false"
+      ADP_SCHEDULED_RUN_ENABLED: "false"
+      ADP_ALLOW_SMTP_SEND: "false"
+      ADP_ALLOW_RELEASE_UPLOAD: "false"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Resolve backfill parameters
+        id: params
+        shell: bash
+        run: |
+          set -euo pipefail
+          generated_at="${{ inputs.generated_at }}"
+          if [ -z "$generated_at" ]; then generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          printf 'generated_at=%s\n' "$generated_at" >> "$GITHUB_OUTPUT"
+          printf 'start_date=%s\n' "${{ inputs.start_date || '2026-05-24' }}" >> "$GITHUB_OUTPUT"
+          printf 'end_date=%s\n' "${{ inputs.end_date || '2026-06-22' }}" >> "$GITHUB_OUTPUT"
+          printf 'count=%s\n' "${{ inputs.count || '30' }}" >> "$GITHUB_OUTPUT"
+          printf 'lookback_days=%s\n' "${{ inputs.lookback_days || '7' }}" >> "$GITHUB_OUTPUT"
+          printf 'max_results=%s\n' "${{ inputs.max_results || '10' }}" >> "$GITHUB_OUTPUT"
+          printf 'polite_delay_seconds=%s\n' "${{ inputs.polite_delay_seconds || '3' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Run real historical arXiv replay
+        id: replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          artifact_dir="$RUNNER_TEMP/adp-s1p5t03-real-backfill"
+          report="$artifact_dir/adp-real-historical-replay-report.json"
+          mkdir -p "$artifact_dir"
+          PYTHONDONTWRITEBYTECODE=1 \
+          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_real_backfill" \
+          PYTHONPATH=arxiv-daily-push/src \
+            python3 -m arxiv_daily_push real-historical-arxiv-replay \
+              --generated-at "${{ steps.params.outputs.generated_at }}" \
+              --start-date "${{ steps.params.outputs.start_date }}" \
+              --end-date "${{ steps.params.outputs.end_date }}" \
+              --count "${{ steps.params.outputs.count }}" \
+              --lookback-days "${{ steps.params.outputs.lookback_days }}" \
+              --max-results "${{ steps.params.outputs.max_results }}" \
+              --artifact-dir "$artifact_dir" \
+              --write \
+              --fetcher curl \
+              --polite-delay-seconds "${{ steps.params.outputs.polite_delay_seconds }}" \
+              --json \
+            > "$report"
+          python3 -m json.tool "$report" >/dev/null
+          python3 - <<'PY' "$report"
+          import json
+          import sys
+
+          report = json.load(open(sys.argv[1], encoding="utf-8"))
+          keys = [
+              "status",
+              "success_count",
+              "required_replay_count",
+              "unique_as_of_date_count",
+              "real_arxiv_source_id_count",
+              "future_leakage_count",
+              "duplicate_lead_count",
+              "queue_continuity_break_count",
+              "unsupported_p0_p1_count",
+              "content_ledger_row_count",
+              "content_ledger_selected_row_count",
+              "content_ledger_queued_row_count",
+          ]
+          for key in keys:
+              print(f"{key}={report.get(key)}")
+          if report.get("status") != "pass":
+              print("blocking_reasons=", report.get("blocking_reasons"))
+              raise SystemExit(2)
+          PY
+          printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
+          printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"
+
+      - name: Upload real 30-day backfill artifacts
+        if: always() && steps.replay.outputs.artifact_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: adp-s1p5t03-real-arxiv-30-day-backfill
+          path: ${{ steps.replay.outputs.artifact_dir }}
+          if-no-files-found: error
