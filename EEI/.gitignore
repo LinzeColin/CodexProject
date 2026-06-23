@@ -1,6 +1,7 @@
 # Task execution artifacts
 artifacts/*.txt
 artifacts/**/*.log
+artifacts/tests/a209/*.pid
 
 # Environment and secrets
 .env

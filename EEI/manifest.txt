@@ -374,6 +374,7 @@ scripts/validate_v5_production_readiness_sync.py
 scripts/validate_visual_coverage.py
 scripts/validate_worker_deployment.py
 scripts/wait_for_database.py
+scripts/watch_operator_soak.py
 specs/api_contract.yaml
 specs/calibration_report_schema.json
 specs/domain_schema.sql

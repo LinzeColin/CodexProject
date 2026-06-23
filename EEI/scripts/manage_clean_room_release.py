@@ -84,6 +84,7 @@ REQUIRED_SUPPORTING = {
     "scripts/validate_prototype_parity.py",
     "scripts/validate_brand_clearance.py",
     "scripts/supervise_operator_soak.py",
+    "scripts/watch_operator_soak.py",
 }
 
 REQUIRED_CONFIG = {"config/brand_policy.yaml"}

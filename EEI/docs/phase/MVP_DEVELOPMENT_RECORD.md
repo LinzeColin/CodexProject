@@ -5122,3 +5122,52 @@ Status: LOCAL VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
 
 - The background 24h soak remains partial runtime evidence until complete.
 - A209 monitor/supervisor/package evidence must not be used as release-ready A209 closure.
+
+## 2026-06-23 - T1307/A209 operator soak watchdog detached background recovery
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/watch_operator_soak.py` as an A209 watchdog layer over the existing progress monitor and supervisor.
+- The watchdog runs one CI-safe dry-run cycle by default and is exposed through `make watch-operator-soak`.
+- Real background recovery requires `--detach --execute --auto-resume`; it observes an existing live PID without double-starting and resumes only paused, successful checkpoints.
+- Live PID staleness is detected with `stale_after_seconds=900` and reported as operator intervention required; the watchdog does not kill or replace a live process.
+- Bound the watchdog into lint, `make verify`, v5 production readiness synchronization and clean-room release packaging.
+- Started a detached watchdog for the current 24h run: watchdog PID `62233`, operator soak PID `12478`, `cycles=300`, `interval_seconds=300`.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: watchdog evidence proves background watch/recovery control only.
+- Partial 24h checkpoints remain local runtime evidence and must not be committed or treated as release-ready until all 288 windows pass and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- The watchdog uses existing soak duration/window parameters and adds no new governed model parameter; operational defaults are `interval_seconds=300` and `stale_after_seconds=900`.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache .venv/bin/python -m py_compile scripts/watch_operator_soak.py scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py scripts/manage_clean_room_release.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/watch_operator_soak.py scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py scripts/manage_clean_room_release.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 16 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/watch_operator_soak.py --cycles 1 --write-output /private/tmp/eei-a209-operator-soak-watchdog.json`: PASS; observed `OBSERVING_RUNNING_SOAK`, PID `12478`, `38/288` windows and `release_gate_closed_by_watchdog=false`.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/watch_operator_soak.py --detach --execute --auto-resume --cycles 300 --interval-seconds 300 --write-output /private/tmp/eei-a209-operator-soak-watchdog-detached.json`: PASS; launched detached watchdog PID `62233`.
+- `/bin/ps -p 12478 -o pid=,ppid=,stat=,etime=,command=`: PASS; operator soak process running.
+- `/bin/ps -p 62233 -o pid=,ppid=,stat=,etime=,command=`: PASS; watchdog process running with PPID `1`.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes `watch-operator-soak`, clean-room/release validation, scale/soak smoke, secret scan, ruff, web typecheck and unit tests `81 passed`.
+- Post-verify A209 supervisor check: PASS; observed `RUNNING_PARTIAL`, PID `12478`, `40/288` windows, latest window generated at `2026-06-23T13:59:27Z`, detached watchdog PID `62233` still running, and `release_gate_closed_by_supervisor=false`.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+- If the watchdog reports a stale live PID, operator intervention is required; the watchdog intentionally avoids killing live soak processes.
+
+### Rollback
+
+- Stop only watchdog PID `62233` if watchdog monitoring must be disabled.
+- Revert `scripts/watch_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py`, `scripts/manage_clean_room_release.py` and this governance record.
+- Keep valid A209 partial checkpoints; do not remove or commit them as release-ready evidence until final validation passes.

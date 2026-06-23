@@ -7,6 +7,7 @@ from pathlib import Path
 from scripts.monitor_operator_soak import build_progress_payload
 from scripts.supervise_operator_soak import build_supervisor_payload
 from scripts.validate_operator_soak_evidence import SoakRequirement, build_validation_payload
+from scripts.watch_operator_soak import build_watchdog_cycle_payload, summarize_cycles
 
 PARAMETERS = {
     "soak.short_duration_hours": 4.0,
@@ -289,3 +290,89 @@ def test_operator_soak_supervisor_failed_window_blocks_resume(tmp_path: Path) ->
     )
     assert payload["status"] == "operator_intervention_required"
     assert payload["supervisor"]["launch_status"] == "NOT_REQUESTED"
+
+
+def test_operator_soak_watchdog_observes_running_process_without_launch(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    pid_file = tmp_path / "operator_24h.pid"
+    write_checkpoint(checkpoint, index=1)
+    pid_file.write_text(f"{os.getpid()}\n", encoding="utf-8")
+
+    payload = build_watchdog_cycle_payload(
+        cycle_index=1,
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=pid_file,
+        soak_log_path=tmp_path / "operator_24h.log",
+    )
+
+    assert payload["status"] == "OBSERVING_RUNNING_SOAK"
+    assert payload["release_gate_closed_by_watchdog"] is False
+    assert payload["supervisor"]["supervisor"]["launch_status"] == "NOT_REQUESTED"
+
+
+def test_operator_soak_watchdog_dry_run_reports_resume_available(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+
+    payload = build_watchdog_cycle_payload(
+        cycle_index=1,
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        soak_log_path=tmp_path / "operator_24h.log",
+        auto_resume=True,
+        dry_run=True,
+    )
+
+    assert payload["status"] == "RESUME_AVAILABLE_DRY_RUN"
+    assert payload["operator_intervention_required"] is False
+    assert payload["supervisor"]["supervisor"]["launch_status"] == "DRY_RUN"
+    assert payload["a209_task_status_required"] == "IN_PROGRESS"
+
+
+def test_operator_soak_watchdog_blocks_failed_window_resume(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1, status="FAIL")
+
+    payload = build_watchdog_cycle_payload(
+        cycle_index=1,
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        soak_log_path=tmp_path / "operator_24h.log",
+        auto_resume=True,
+        dry_run=True,
+    )
+
+    assert payload["status"] == "OPERATOR_INTERVENTION_REQUIRED"
+    assert payload["operator_intervention_required"] is True
+    assert payload["supervisor"]["supervisor"]["launch_status"] == "NOT_REQUESTED"
+
+
+def test_operator_soak_watchdog_summary_keeps_a209_open(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+    cycle = build_watchdog_cycle_payload(
+        cycle_index=1,
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        soak_log_path=tmp_path / "operator_24h.log",
+        auto_resume=True,
+        dry_run=True,
+    )
+
+    summary = summarize_cycles(
+        [cycle],
+        auto_resume=True,
+        start_if_missing=False,
+        dry_run=True,
+        interval_seconds=300,
+    )
+
+    assert summary["schema_version"] == "eei-a209-operator-soak-watchdog-v1"
+    assert summary["release_gate_closed_by_watchdog"] is False
+    assert summary["watchdog"]["cycles_completed"] == 1
+    assert summary["status"] == "RESUME_AVAILABLE_DRY_RUN"
+    assert "This watchdog does not close A209." in summary["non_claims"]

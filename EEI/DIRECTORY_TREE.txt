@@ -414,7 +414,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_v5_production_readiness_sync.py
 │   ├── validate_visual_coverage.py
 │   ├── validate_worker_deployment.py
-│   └── wait_for_database.py
+│   ├── wait_for_database.py
+│   └── watch_operator_soak.py
 ├── specs
 │   ├── api_contract.yaml
 │   ├── calibration_report_schema.json

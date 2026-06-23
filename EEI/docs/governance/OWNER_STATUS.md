@@ -56,7 +56,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint `32/288` PASS at `2026-06-23T13:19:02Z`; monitor/supervisor and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint `40/288` PASS at `2026-06-23T13:59:27Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
 
