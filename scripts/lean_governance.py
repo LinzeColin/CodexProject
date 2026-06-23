@@ -367,6 +367,64 @@ def render_project_files(project_root: Path, *, write: bool = False) -> dict[str
     }
 
 
+def collect_reference_issues(project_facts: dict[str, Any]) -> list[dict[str, str]]:
+    evidence_ids = {
+        str(item.get("evidence_id"))
+        for item in governance.as_list(project_facts.get("evidence_refs"))
+        if isinstance(item, dict) and item.get("evidence_id")
+    }
+    issues: list[dict[str, str]] = []
+    for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+        for item in [value for value in governance.as_list(project_facts.get(section)) if isinstance(value, dict)]:
+            subject = (
+                item.get("feature_id")
+                or item.get("model_id")
+                or item.get("formula_id")
+                or item.get("parameter_id")
+                or item.get("strategy_id")
+                or item.get("validation_id")
+                or section
+            )
+            for evidence_id in [str(value) for value in governance.as_list(item.get("evidence_refs"))]:
+                if evidence_id not in evidence_ids:
+                    issues.append({"subject": str(subject), "kind": "missing_evidence_ref", "ref": evidence_id})
+            for field in ("code_refs", "config_refs", "test_refs"):
+                for ref in [str(value) for value in governance.as_list(item.get(field))]:
+                    if not ref.strip():
+                        issues.append({"subject": str(subject), "kind": f"empty_{field}", "ref": ref})
+    return issues
+
+
+def check_render_project_files(project_root: Path) -> dict[str, Any]:
+    project_facts, roadmap, events = load_project_facts(project_root)
+    rendered = {
+        "功能清单": render_feature_list(project_facts, roadmap),
+        "开发记录": render_development_record(project_facts, roadmap, events),
+        "模型参数文件": render_model_parameters(project_facts, roadmap),
+    }
+    drift: list[dict[str, Any]] = []
+    for rel_path, expected in rendered.items():
+        path = project_root / rel_path
+        actual = path.read_text(encoding="utf-8") if path.exists() else ""
+        if actual != expected:
+            drift.append(
+                {
+                    "path": rel_path,
+                    "exists": path.exists(),
+                    "expected_sha256": sha256_text(expected),
+                    "actual_sha256": sha256_text(actual) if path.exists() else "",
+                }
+            )
+    reference_issues = collect_reference_issues(project_facts)
+    return {
+        "write": False,
+        "drift": drift,
+        "drift_count": len(drift),
+        "reference_issues": reference_issues,
+        "reference_issue_count": len(reference_issues),
+    }
+
+
 def render_registered_project(project_selector: str, *, write: bool, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
     config = governance.load_yaml(projects_file)
     if not isinstance(config, dict):
@@ -377,6 +435,22 @@ def render_registered_project(project_selector: str, *, write: bool, root: Path 
     return {
         "schema_version": 1,
         "command": "render",
+        "project_id": str(project.get("project_id") or ""),
+        "path": project_path,
+        **result,
+    }
+
+
+def check_render_registered_project(project_selector: str, *, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
+    config = governance.load_yaml(projects_file)
+    if not isinstance(config, dict):
+        raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
+    project = registered_project(config, project_selector)
+    project_path = str(project.get("path") or "").replace("\\", "/").rstrip("/")
+    result = check_render_project_files(root / project_path)
+    return {
+        "schema_version": 1,
+        "command": "check-render",
         "project_id": str(project.get("project_id") or ""),
         "path": project_path,
         **result,
@@ -453,6 +527,8 @@ def main(argv: list[str] | None = None) -> int:
     render = subparsers.add_parser("render", help="Render one project's human entry files from Lean canonical facts.")
     render.add_argument("--project", required=True, help="Registered project_id or project path.")
     render.add_argument("--write", action="store_true", help="Write rendered files to the selected project root.")
+    check_render = subparsers.add_parser("check-render", help="Compare rendered human files in memory without writing.")
+    check_render.add_argument("--project", required=True, help="Registered project_id or project path.")
     validate = subparsers.add_parser("validate", help="Run governance structure and semantic validation.")
     validate_scope = validate.add_mutually_exclusive_group()
     validate_scope.add_argument("--all", action="store_true", help="Validate root governance and all registered projects.")
@@ -476,6 +552,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "render":
         summary = render_registered_project(args.project, write=args.write, root=ROOT, projects_file=PROJECTS_FILE)
+        print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+        return 0
+    if args.command == "check-render":
+        summary = check_render_registered_project(args.project, root=ROOT, projects_file=PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "validate":
