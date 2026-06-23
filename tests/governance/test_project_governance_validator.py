@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import hashlib
 import json
 import os
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -90,6 +93,18 @@ def load_information_quality_module():
     return module
 
 
+def load_lean_governance_module():
+    scripts_dir = str(ROOT / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    spec = importlib.util.spec_from_file_location("lean_governance", ROOT / "scripts" / "lean_governance.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def run_validator(*args: str) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env.setdefault("PYTHONPYCACHEPREFIX", "/tmp/codex_governance_test_pycache")
@@ -130,11 +145,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "scripts/validate_semantic_extractors.py",
             "scripts/validate_ci_attestation.py",
             "scripts/governance_setup_doctor.py",
+            "scripts/lean_governance.py",
             "governance/schemas/project.schema.json",
             "governance/schemas/roadmap.schema.json",
             "governance/schemas/events.schema.json",
             "docs/governance/templates/功能清单.template.md",
+            "docs/governance/templates/开发记录.template.md",
             "docs/governance/templates/模型参数文件.template.md",
+            "docs/governance/templates/Roadmap.template.md",
             "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
@@ -287,6 +305,650 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         for call in check_output.call_args_list:
             self.assertEqual(call.kwargs.get("encoding"), "utf-8")
             self.assertTrue(call.kwargs.get("text"))
+
+    def test_review9_s2_dev_record_and_roadmap_templates_are_owner_readable(self) -> None:
+        dev_text = (ROOT / "docs" / "governance" / "templates" / "开发记录.template.md").read_text(
+            encoding="utf-8"
+        )
+        roadmap_text = (ROOT / "docs" / "governance" / "templates" / "Roadmap.template.md").read_text(
+            encoding="utf-8"
+        )
+        for required in {
+            "project_id",
+            "product_version",
+            "current_stage",
+            "current_phase",
+            "current_task",
+            "blockers",
+            "next_gate",
+            "next_unique_task",
+            "evidence_status",
+        }:
+            self.assertIn(required, dev_text[:700])
+            self.assertIn(required, roadmap_text[:700])
+        dev_order = ["## 摘要", "## Owner 决策", "## 进度总览", "## Roadmap", "## 近期事件", "## 风险与阻塞"]
+        roadmap_order = ["## 摘要", "## 计算规则", "## Stages", "## Phases", "## Tasks", "## Stop Gates", "## Acceptance And Evidence"]
+        self.assertEqual(
+            [dev_text.index(item) for item in dev_order],
+            sorted(dev_text.index(item) for item in dev_order),
+        )
+        self.assertEqual(
+            [roadmap_text.index(item) for item in roadmap_order],
+            sorted(roadmap_text.index(item) for item in roadmap_order),
+        )
+        for text in (dev_text, roadmap_text):
+            self.assertIn("Stage -> Phase -> Task", text)
+            self.assertIn("stop_gate", text)
+            self.assertIn("evidence_refs", text)
+            self.assertNotIn("兼容索引", text)
+            self.assertNotIn("详见 docs/governance", text)
+            self.assertNotIn("link page", text.lower())
+
+    def test_review9_s3_baseline_all_is_read_only_compact_json(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project_path = tmp_path / "ProjectA"
+            governance_path = tmp_path / "governance"
+            project_governance_path = project_path / "docs" / "governance"
+            governance_path.mkdir(parents=True)
+            project_governance_path.mkdir(parents=True)
+            (tmp_path / "AGENTS.md").write_text("root contract\n", encoding="utf-8")
+            (project_path / "功能清单").write_text("features\n", encoding="utf-8")
+            (project_path / "开发记录").write_text("roadmap\n", encoding="utf-8")
+            (project_path / "模型参数文件").write_text("models\n", encoding="utf-8")
+            (project_path / "VERSION").write_text("0.1.0\n", encoding="utf-8")
+            (project_path / "CHANGELOG.md").write_text("change\n", encoding="utf-8")
+            (project_governance_path / "project.yaml").write_text("project_id: ProjectA\n", encoding="utf-8")
+            projects_yaml = governance_path / "projects.yaml"
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  ci_mode: required",
+                        "  required_files:",
+                        "    - AGENTS.md",
+                        "project_governance_files:",
+                        "  - docs/governance/MODEL_SPEC.md",
+                        "projects:",
+                        "  - project_id: ProjectA",
+                        "    path: ProjectA",
+                        "    ci_mode: advisory",
+                        "    migration:",
+                        "      version: legacy-v1-pending-lean-v2",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            before = sorted(path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*"))
+            stream = io.StringIO()
+            with patch.object(cli, "ROOT", tmp_path), patch.object(cli, "PROJECTS_FILE", projects_yaml):
+                with contextlib.redirect_stdout(stream):
+                    self.assertEqual(cli.main(["baseline", "--all"]), 0)
+            after = sorted(path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*"))
+        self.assertEqual(before, after)
+        summary = json.loads(stream.getvalue())
+        self.assertEqual(summary["command"], "baseline")
+        self.assertEqual(summary["scope"], "all")
+        self.assertEqual(summary["totals"]["projects"], 1)
+        self.assertEqual(summary["totals"]["human_entry_missing"], 0)
+        self.assertEqual(summary["totals"]["canonical_missing"], 2)
+        self.assertEqual(summary["projects"][0]["project_id"], "ProjectA")
+
+    def test_review9_s3_validate_cli_reuses_existing_rules_and_exit_codes(self) -> None:
+        cli = load_lean_governance_module()
+        with patch.object(cli.governance, "main", return_value=7) as validator_main:
+            self.assertEqual(
+                cli.main(["validate", "--all", "--semantic", "--enforce-sync", "--base-ref", "origin/main"]),
+                7,
+            )
+        validator_main.assert_called_once_with(["--all", "--base-ref", "origin/main", "--enforce-sync", "--semantic"])
+
+    def test_review9_s3_validate_cli_defaults_to_changed_only(self) -> None:
+        cli = load_lean_governance_module()
+        with patch.object(cli.governance, "main", return_value=0) as validator_main:
+            self.assertEqual(cli.main(["validate"]), 0)
+        validator_main.assert_called_once_with(["--changed-only"])
+
+    def test_review9_s3_changed_scope_root_change_selects_all_projects(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            projects_yaml = tmp_path / "governance" / "projects.yaml"
+            projects_yaml.parent.mkdir(parents=True)
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  required_files:",
+                        "    - scripts/lean_governance.py",
+                        "projects:",
+                        "  - project_id: A",
+                        "    path: A",
+                        "    ci_mode: advisory",
+                        "  - project_id: B",
+                        "    path: B",
+                        "    ci_mode: advisory",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(cli.governance, "git_changed_files", return_value=["scripts/lean_governance.py"]):
+                scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
+        self.assertTrue(scope["root_governance_changed"])
+        self.assertTrue(scope["all_projects_required"])
+        self.assertEqual(scope["selected_project_count"], 2)
+        self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
+
+    def test_review9_s3_changed_scope_project_change_selects_only_matching_project(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            projects_yaml = tmp_path / "governance" / "projects.yaml"
+            projects_yaml.parent.mkdir(parents=True)
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  required_files:",
+                        "    - AGENTS.md",
+                        "projects:",
+                        "  - project_id: A",
+                        "    path: A",
+                        "    ci_mode: advisory",
+                        "  - project_id: B",
+                        "    path: nested/B",
+                        "    ci_mode: advisory",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(cli.governance, "git_changed_files", return_value=["nested/B/app.py"]):
+                scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
+        self.assertFalse(scope["root_governance_changed"])
+        self.assertFalse(scope["all_projects_required"])
+        self.assertEqual(scope["selected_project_count"], 1)
+        self.assertEqual(scope["selected_projects"][0]["project_id"], "B")
+
+    def test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project_root = tmp_path / "ProjectA"
+            governance_root = project_root / "docs" / "governance"
+            governance_root.mkdir(parents=True)
+            (tmp_path / "governance").mkdir()
+            (tmp_path / "governance" / "projects.yaml").write_text(
+                "\n".join(
+                    [
+                        "projects:",
+                        "  - project_id: ProjectA",
+                        "    path: ProjectA",
+                        "    ci_mode: advisory",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "project.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.project.v1",
+                        "project_id: ProjectA",
+                        "project_name: Project A",
+                        "summary: Test project",
+                        "version: 0.1.0",
+                        "fact_level: VERIFIED",
+                        "features:",
+                        "  - feature_id: FEAT-A",
+                        "    name: Feature A",
+                        "    description: Owner value",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    evidence_refs: [EVID-A]",
+                        "models:",
+                        "  - model_id: MOD-A",
+                        "    name: Model A",
+                        "    purpose: Score",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    formula_ids: [FORM-A]",
+                        "    parameter_ids: [PARAM-A]",
+                        "    evidence_refs: [EVID-A]",
+                        "formulas:",
+                        "  - formula_id: FORM-A",
+                        "    model_id: MOD-A",
+                        "    description: Score formula",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    expression: x * w",
+                        "    variables: []",
+                        "    evidence_refs: [EVID-A]",
+                        "parameters:",
+                        "  - parameter_id: PARAM-A",
+                        "    symbol: w",
+                        "    name: Weight",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    value: 2",
+                        "    source: owner",
+                        "    evidence_refs: [EVID-A]",
+                        "evidence_refs:",
+                        "  - evidence_id: EVID-A",
+                        "    kind: owner",
+                        "    ref: owner-note",
+                        "    fact_level: VERIFIED",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "roadmap.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.roadmap.v1",
+                        "project_id: ProjectA",
+                        "total_estimated_hours: 999",
+                        "current_stage_id: S1",
+                        "current_phase_id: S1PA",
+                        "current_task_id: S1PAT02",
+                        "next_gate_id: S1-GATE",
+                        "stages:",
+                        "  - stage_id: S1",
+                        "    name: Stage One",
+                        "    person_goal: Ship",
+                        "    status: in_progress",
+                        "    estimated_hours: 999",
+                        "    estimated_pct: 99",
+                        "    stop_conditions: [stop]",
+                        "    stop_gate:",
+                        "      gate_id: S1-GATE",
+                        "      pass_criteria: [pass]",
+                        "      evidence: [EVID-A]",
+                        "      failure_action: blocked",
+                        "    phases:",
+                        "      - phase_id: S1PA",
+                        "        name: Phase A",
+                        "        objective: Do work",
+                        "        status: in_progress",
+                        "        estimated_hours: 999",
+                        "        estimated_pct: 99",
+                        "        stop_conditions: [stop]",
+                        "        stop_gate:",
+                        "          gate_id: S1PA-GATE",
+                        "          pass_criteria: [pass]",
+                        "          evidence: [EVID-A]",
+                        "          failure_action: remain_in_phase",
+                        "        tasks:",
+                        "          - task_id: S1PAT01",
+                        "            name: Done",
+                        "            objective: Finish first",
+                        "            status: completed",
+                        "            estimated_hours: 1",
+                        "            estimated_pct: 99",
+                        "            dependencies: [none]",
+                        "            acceptance_ids: [ACC-A]",
+                        "            acceptance: []",
+                        "            test_commands: [test]",
+                        "            test_results: [pass]",
+                        "            evidence_refs: [EVID-A]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                        "          - task_id: S1PAT02",
+                        "            name: Next",
+                        "            objective: Finish next",
+                        "            status: planned",
+                        "            estimated_hours: 3",
+                        "            estimated_pct: 99",
+                        "            dependencies: [S1PAT01]",
+                        "            acceptance_ids: [ACC-B]",
+                        "            acceptance: []",
+                        "            test_commands: [test]",
+                        "            test_results: [pending]",
+                        "            evidence_refs: [EVID-A]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "events.jsonl").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "codexproject.event.v1",
+                        "event_id": "EVT-A",
+                        "project_id": "ProjectA",
+                        "occurred_at": "2026-06-23T00:00:00Z",
+                        "event_type": "implementation",
+                        "summary": "Implemented",
+                        "fact_level": "VERIFIED",
+                        "task_id": "S1PAT01",
+                        "acceptance_ids": ["ACC-A"],
+                        "changed_files": ["ProjectA/app.py"],
+                        "evidence_refs": [{"evidence_id": "EVID-A", "kind": "owner", "ref": "owner-note", "fact_level": "VERIFIED"}],
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            dry = cli.render_registered_project("ProjectA", write=False, root=tmp_path, projects_file=tmp_path / "governance" / "projects.yaml")
+            self.assertFalse(dry["write"])
+            for path in ("功能清单", "开发记录", "模型参数文件"):
+                self.assertFalse((project_root / path).exists(), path)
+            written = cli.render_registered_project("ProjectA", write=True, root=tmp_path, projects_file=tmp_path / "governance" / "projects.yaml")
+            self.assertTrue(written["write"])
+            dev_record = (project_root / "开发记录").read_text(encoding="utf-8")
+        self.assertIn("progress: `25.00%`", dev_record)
+        self.assertIn("| S1PAT02 | Next | planned | 3.00 | 75.00%", dev_record)
+
+    def test_review9_s3_check_render_is_read_only_and_reports_drift_and_refs(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project_root = tmp_path / "ProjectA"
+            governance_root = project_root / "docs" / "governance"
+            governance_root.mkdir(parents=True)
+            (governance_root / "project.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.project.v1",
+                        "project_id: ProjectA",
+                        "project_name: Project A",
+                        "summary: Test project",
+                        "version: 0.1.0",
+                        "fact_level: VERIFIED",
+                        "features:",
+                        "  - feature_id: FEAT-A",
+                        "    name: Feature A",
+                        "    description: Owner value",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    evidence_refs: [EVID-MISSING]",
+                        "models: []",
+                        "formulas: []",
+                        "parameters: []",
+                        "strategies: []",
+                        "validations: []",
+                        "evidence_refs: []",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "roadmap.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.roadmap.v1",
+                        "project_id: ProjectA",
+                        "total_estimated_hours: 1",
+                        "current_stage_id: S1",
+                        "current_phase_id: S1PA",
+                        "current_task_id: S1PAT01",
+                        "next_gate_id: S1-GATE",
+                        "stages:",
+                        "  - stage_id: S1",
+                        "    name: Stage One",
+                        "    person_goal: Ship",
+                        "    status: in_progress",
+                        "    estimated_hours: 1",
+                        "    estimated_pct: 100",
+                        "    stop_conditions: [stop]",
+                        "    stop_gate:",
+                        "      gate_id: S1-GATE",
+                        "      pass_criteria: [pass]",
+                        "      evidence: [EVID-MISSING]",
+                        "      failure_action: blocked",
+                        "    phases:",
+                        "      - phase_id: S1PA",
+                        "        name: Phase A",
+                        "        objective: Do work",
+                        "        status: in_progress",
+                        "        estimated_hours: 1",
+                        "        estimated_pct: 100",
+                        "        stop_conditions: [stop]",
+                        "        stop_gate:",
+                        "          gate_id: S1PA-GATE",
+                        "          pass_criteria: [pass]",
+                        "          evidence: [EVID-MISSING]",
+                        "          failure_action: remain_in_phase",
+                        "        tasks:",
+                        "          - task_id: S1PAT01",
+                        "            name: Task",
+                        "            objective: Finish",
+                        "            status: planned",
+                        "            estimated_hours: 1",
+                        "            estimated_pct: 100",
+                        "            dependencies: [none]",
+                        "            acceptance_ids: [ACC-A]",
+                        "            acceptance: []",
+                        "            test_commands: [test]",
+                        "            test_results: [pending]",
+                        "            evidence_refs: [EVID-MISSING]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            cli.render_project_files(project_root, write=True)
+            before = (project_root / "开发记录").read_text(encoding="utf-8")
+            clean = cli.check_render_project_files(project_root)
+            (project_root / "开发记录").write_text(before + "\nmanual drift\n", encoding="utf-8")
+            drifted = cli.check_render_project_files(project_root)
+            after = (project_root / "开发记录").read_text(encoding="utf-8")
+        self.assertEqual(clean["drift_count"], 0)
+        self.assertEqual(clean["reference_issue_count"], 1)
+        self.assertEqual(drifted["drift_count"], 1)
+        self.assertEqual(after, before + "\nmanual drift\n")
+
+    def test_review9_s3_ci_changed_only_orchestrates_read_only_gates(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "selected_projects": [
+                {
+                    "project_id": "ProjectA",
+                    "path": "ProjectA",
+                    "ci_mode": "required",
+                }
+            ]
+        }
+        check_render = {
+            "write": False,
+            "drift": [],
+            "drift_count": 0,
+            "reference_issues": [],
+            "reference_issue_count": 0,
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline) as build_baseline,
+            patch.object(cli, "build_changed_scope", return_value=scope) as build_changed_scope,
+            patch.object(cli, "has_check_render_inputs", return_value=True),
+            patch.object(cli, "check_render_project_files", return_value=check_render) as check_render_project,
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+            patch.object(cli.governance, "main", return_value=0) as validator_main,
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        build_baseline.assert_called_once_with(Path("root"), Path("projects.yaml"))
+        build_changed_scope.assert_called_once_with("BASE", Path("root"), Path("projects.yaml"))
+        validator_main.assert_called_once_with(["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"])
+        check_render_project.assert_called_once_with(Path("root") / "ProjectA")
+        self.assertFalse(summary["write"])
+        self.assertTrue(summary["zero_diff"]["clean"])
+        self.assertEqual(summary["check_render"]["checked_count"], 1)
+
+    def test_review9_s3_ci_changed_only_skips_unmigrated_check_render(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 2,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "selected_projects": [
+                {
+                    "project_id": "LegacyProject",
+                    "path": "LegacyProject",
+                    "ci_mode": "advisory",
+                }
+            ]
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "has_check_render_inputs", return_value=False),
+            patch.object(cli, "check_render_project_files") as check_render_project,
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+            patch.object(cli.governance, "main", return_value=0),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        check_render_project.assert_not_called()
+        self.assertEqual(summary["check_render"]["checked_count"], 0)
+        self.assertEqual(summary["check_render"]["skipped_count"], 1)
+        self.assertEqual(summary["check_render"]["skipped"][0]["reason"], "missing_lean_canonical_facts")
+
+    def test_review9_s4pat01_serenity_evidence_index_bounds_read_scope(self) -> None:
+        validator = load_validator_module()
+        path = ROOT / "Serenity-Alipay" / "docs" / "governance" / "evidence_index.yaml"
+        data = validator.load_yaml(path)
+        self.assertEqual(data["schema_version"], "codexproject.evidence_index.v1")
+        self.assertEqual(data["project_id"], "Serenity-Alipay")
+        self.assertEqual(data["task_id"], "S4PAT01")
+        self.assertEqual(data["acceptance_id"], "ACC-S4PAT01")
+
+        read_scope = data["read_scope"]
+        self.assertEqual(read_scope["mode"], "bounded_pilot_read")
+        for category in {
+            "README_and_handoff",
+            "existing_governance",
+            "model_implementation",
+            "runtime_config",
+            "focused_tests",
+            "limited_related_git_history",
+        }:
+            self.assertIn(category, read_scope["allowed_categories"])
+        for forbidden in {
+            "business_behavior_changes",
+            "broad_git_history_mining",
+            "generated_output_archives",
+        }:
+            self.assertIn(forbidden, read_scope["excluded_categories"])
+
+        refs: set[str] = set()
+        evidence_ids: set[str] = set()
+        for item in data["evidence_refs"]:
+            evidence_ids.add(item["evidence_id"])
+            refs.update(item.get("refs", []))
+        for required_id in {
+            "EVID-SER-README-HANDOFF",
+            "EVID-SER-EXISTING-GOVERNANCE",
+            "EVID-SER-SCORING-CODE",
+            "EVID-SER-RANKING-CODE",
+            "EVID-SER-METRICS-CODE",
+            "EVID-SER-COMPARISON-DISCIPLINE-CODE",
+            "EVID-SER-SCHEDULER-CODE",
+            "EVID-SER-LIMITED-HISTORY",
+        }:
+            self.assertIn(required_id, evidence_ids)
+        for required_ref in {
+            "Serenity-Alipay/README.md",
+            "Serenity-Alipay/HANDOFF.md",
+            "Serenity-Alipay/docs/governance/MODEL_SPEC.md",
+            "Serenity-Alipay/docs/governance/model_registry.yaml",
+            "Serenity-Alipay/docs/governance/formula_registry.yaml",
+            "Serenity-Alipay/docs/governance/parameter_registry.csv",
+            "Serenity-Alipay/app/core/scoring.py",
+            "Serenity-Alipay/app/core/pipeline.py",
+            "Serenity-Alipay/app/core/metrics.py",
+            "Serenity-Alipay/app/core/comparison.py",
+            "Serenity-Alipay/app/core/discipline.py",
+            "Serenity-Alipay/app/scheduler.py",
+            "Serenity-Alipay/app/core/scheduler_runner.py",
+            "Serenity-Alipay/app/core/automation_tick.py",
+            "Serenity-Alipay/app/config.py",
+            "Serenity-Alipay/tests/test_pipeline_serenity_priority.py",
+        }:
+            self.assertIn(required_ref, refs)
+        for ref in refs:
+            self.assertTrue((ROOT / ref).exists(), ref)
+
+        self.assertEqual(
+            set(data["model_fact_targets"]["active_model_ids"]),
+            {"MOD-001", "MOD-002", "MOD-003", "MOD-004", "MOD-005"},
+        )
+        self.assertEqual(data["model_fact_targets"]["extraction_task_id"], "S4PAT02")
+        watchlist = data["contradiction_watchlist"]
+        self.assertEqual(watchlist[0]["issue_id"], "S4PAT01-WATCH-FORM-008-CAP")
+        self.assertEqual(watchlist[0]["followup_task_id"], "S4PAT02")
+        self.assertIn("0.30", watchlist[0]["summary"])
+        self.assertIn("no_technology_stack_as_model_parameter", data["fact_policy"]["forbidden_claims"])
+        self.assertIn("no_invented_iteration_or_hours", data["fact_policy"]["forbidden_claims"])
+        self.assertFalse(data["acceptance"]["stop_conditions_checked"]["code_doc_contradiction_unmarked"])
+
+    def test_review9_s4pat01_manifest_records_bounded_pilot_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S4PAT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PAT01"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("bounded_evidence_index", manifest["change_classification"])
+        self.assertIn("no_business_behavior_change", manifest["change_classification"])
+        self.assertTrue(str(manifest["content_tree_hash"]).startswith("sha256-changed-files-excluding-this-manifest:"))
+        changed = set(manifest["changed_files_actual"])
+        self.assertIn("Serenity-Alipay/docs/governance/evidence_index.yaml", changed)
+        self.assertIn("tests/governance/test_project_governance_validator.py", changed)
+        self.assertIn(
+            "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json",
+            changed,
+        )
+        self.assertIn("Serenity-Alipay/docs/governance/formula_registry.yaml", manifest["evidence_refs"])
+        self.assertIn("Serenity-Alipay/app/core/pipeline.py", manifest["evidence_refs"])
+        self.assertIn("S4PAT02 still must extract formulas", " ".join(manifest["unresolved_risks"]))
+
+    def test_review9_s4pat01_evidence_index_is_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "Serenity-Alipay",
+            "path": "Serenity-Alipay",
+            "model_behavior_globs": ["app/**/*.py", "tests/**/*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            ["Serenity-Alipay/docs/governance/evidence_index.yaml"],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change"})
+        self.assertEqual(changes[0].updated_governance_files, {"docs/governance/evidence_index.yaml"})
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
@@ -788,12 +1450,40 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "generate_governance_dashboard.py",
             "validate_information_quality.py",
             "governance_setup_doctor.py",
+            "subprocess",
+            "git_root",
+            "changed_files",
+            "status --porcelain",
             "write_receipt",
             "atomic_write_json",
             "decision\": \"block",
             "--all --semantic --drift-report",
         }:
             self.assertNotIn(forbidden, text)
+
+    def test_review9_s3_stop_hook_is_pure_advisory_under_one_second(self) -> None:
+        text = STOP_HOOK.read_text(encoding="utf-8")
+        for forbidden in {"subprocess", "git_root", "changed_files", "status --porcelain", "Path("}:
+            self.assertNotIn(forbidden, text)
+        started = time.perf_counter()
+        result = subprocess.run(
+            [sys.executable, str(STOP_HOOK)],
+            input=json.dumps({"cwd": str(ROOT), "stop_hook_active": True}),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        elapsed = time.perf_counter() - started
+        self.assertLess(elapsed, 1.0)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertTrue(payload.get("continue"))
+        hint = payload.get("governance_hint", {})
+        self.assertEqual(hint.get("mode"), "advisory")
+        self.assertIn("scripts/lean_governance.py ci --changed-only", " ".join(hint.get("suggested_commands", [])))
+        self.assertNotIn("changed_files", hint)
+        self.assertNotIn("governance_changed_files", hint)
 
     def test_review9_pr_governance_keeps_full_computation_out_of_pr_path(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
@@ -803,6 +1493,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotIn("scripts/validate_project_governance.py --changed-only", workflow)
         self.assertIn("scripts/lean_governance.py validate --all --semantic --drift-report", workflow)
         self.assertIn("scripts/lean_governance.py validate --project", workflow)
+        self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
+        self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
@@ -819,6 +1512,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "docs/governance/roadmap.yaml",
             "docs/governance/events.jsonl",
             "Low-Token Contract",
+            "中文优先",
+            "默认全局中文",
+            "agent-facing responses",
         }:
             self.assertIn(required, text)
         for mode in {"READ_ONLY", "REVIEW", "PLAN", "CI", "Hook", "IMPLEMENT"}:

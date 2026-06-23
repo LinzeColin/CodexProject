@@ -92,6 +92,7 @@ PROJECT_GOVERNANCE_FILES = {
     "ASSURANCE_STATUS.yaml",
     "STATUS.md",
     "OWNER_STATUS.md",
+    "evidence_index.yaml",
 }
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
