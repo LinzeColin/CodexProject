@@ -1,0 +1,2257 @@
+schema_version: "codexproject.project.v1"
+project_id: "Alpha"
+project_name: "Alpha"
+summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；不声明实盘就绪。"
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "model_owner + risk_owner"
+current_status: "blocked_for_live_readiness"
+limitations:
+  -
+    statement: "Alpha 当前只有 fixture 数据、单步 OOS 和本地 paper loop 证据；生产市场数据、broker paper API、多年样本外、成本/滑点校准仍未证实。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-ALPHA-ASSURANCE-STATUS"
+      - "EVID-ALPHA-HANDOFF"
+    unknown_task_ids:
+      - "TASK-ALPHA-B-001"
+  -
+    statement: "13 个 branch-rule 参数在语义抽取中仍标为 HUMAN_REVIEW_REQUIRED，不能把 semantic in_progress 误写成全量 machine_verified。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-SEMANTIC-MANIFEST"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-ALPHA-001"
+  -
+    statement: "实盘 broker 提交保持 fail-closed；live_trading.enabled committed active value 为 false。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+    unknown_task_ids: []
+features:
+  -
+    feature_id: "FEAT-ALPHA-001"
+    name: "动量策略锦标赛与 fixture 基准"
+    description: "基于 fixture 价格生成动量候选、风险排序、winner 和等权买入持有基准。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+      - "MOD-009"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:28"
+      - "Alpha/backend/app/services/backtest.py:14"
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-ALPHA-002"
+    name: "交易前风控与 owner-review 门禁"
+    description: "按 kill switch、idempotency、side、quantity、price、notional 和 max notional 拒绝不安全订单意图。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-003"
+    parameter_ids:
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:40"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-ALPHA-003"
+    name: "实盘策略 fail-closed"
+    description: "默认禁用实盘；即使 policy 允许，已提交 live broker adapter 仍返回 rejected。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-004"
+    parameter_ids:
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:38"
+      - "Alpha/backend/app/services/live_broker.py:19"
+    test_refs:
+      - "Alpha/tests/test_policy.py:5"
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-ALPHA-004"
+    name: "paper trading loop 与 paper broker"
+    description: "生成 paper intent、risk check、ticket queue、paper fill、portfolio snapshot 和 audit payload。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:42"
+      - "Alpha/backend/app/services/paper_broker.py:43"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+      - "Alpha/tests/test_paper_broker_persistence.py:4"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-ALPHA-005"
+    name: "审批队列新鲜度与 dashboard actionability"
+    description: "用 expires_at 和当前 UTC 时间区分 fresh、expired、blocked 或 unknown ticket actionability。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-007"
+    parameter_ids:
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+    code_refs:
+      - "Alpha/backend/app/services/approval_queue.py:34"
+      - "Alpha/backend/app/services/approval_queue.py:59"
+    test_refs:
+      - "Alpha/tests/test_approval_queue.py:17"
+      - "Alpha/tests/test_dashboard_state.py:45"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-ALPHA-006"
+    name: "Strategy DSL 安全边界"
+    description: "验证策略 payload 的 lookback、持仓数量、单资产权重，并拒绝杠杆、做空和期权类 MVP 禁止项。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-008"
+    parameter_ids:
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:22"
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Momentum strategy tournament ranking"
+    purpose: "Rank fixture momentum candidates by risk decision and deterministic score."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+    input_refs:
+      - "\"price fixture rows with date"
+      - "symbol"
+      - "close\""
+      - "lookback tuple"
+    output_refs:
+      - "ranked candidates"
+      - "winner"
+      - "validation summary"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:28"
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-002"
+    name: "Research risk score"
+    purpose: "Map backtest metrics to promote_to_paper, hold_research, or reject."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+    input_refs:
+      - "max_drawdown"
+      - "trade_count"
+      - "turnover"
+    output_refs:
+      - "risk_score"
+      - "warnings"
+      - "decision"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:22"
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-003"
+    name: "Pre-trade owner-review gate"
+    purpose: "Reject unsafe order intents before owner approval queue entry."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+    input_refs:
+      - "OrderIntent dict"
+      - "GovernorPolicy"
+      - "kill_switch_active"
+    output_refs:
+      - "allowed"
+      - "status"
+      - "reason"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:40"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-004"
+    name: "Live order policy and fail-closed broker"
+    purpose: "Prevent unattended real-money order submission in committed defaults."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+    input_refs:
+      - "LiveOrderIntent"
+      - "GovernorPolicy"
+      - "environment flag"
+      - "audit/broker health booleans"
+    output_refs:
+      - "PolicyDecision"
+      - "broker adapter rejection"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:38"
+      - "Alpha/backend/app/services/live_broker.py:19"
+    test_refs:
+      - "Alpha/tests/test_policy.py:5"
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-005"
+    name: "Paper trading loop"
+    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets, fill paper orders, and emit audit payloads."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+    input_refs:
+      - "GovernorPolicy"
+      - "price fixture"
+      - "approval queue"
+      - "paper broker state"
+    output_refs:
+      - "run result"
+      - "OrderIntent"
+      - "risk check"
+      - "approval queue result"
+      - "paper portfolio"
+      - "audit events"
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:42"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+      - "Alpha/tests/test_dashboard_state.py:8"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-006"
+    name: "Paper broker accounting"
+    purpose: "Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+    input_refs:
+      - "PaperOrder"
+      - "mark prices"
+      - "previous paper state"
+    output_refs:
+      - "filled or rejected result"
+      - "portfolio snapshot"
+    code_refs:
+      - "Alpha/backend/app/services/paper_broker.py:43"
+      - "Alpha/backend/app/services/paper_broker.py:83"
+    test_refs:
+      - "Alpha/tests/test_paper_broker_persistence.py:4"
+      - "Alpha/tests/test_paper_trading_loop.py:49"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-007"
+    name: "Approval queue freshness"
+    purpose: "Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+    input_refs:
+      - "ticket status"
+      - "expires_at"
+      - "current UTC time"
+    output_refs:
+      - "freshness"
+      - "actionability"
+      - "queue summary counts"
+    code_refs:
+      - "Alpha/backend/app/services/approval_queue.py:34"
+      - "Alpha/backend/app/services/approval_queue.py:59"
+    test_refs:
+      - "Alpha/tests/test_approval_queue.py:17"
+      - "Alpha/tests/test_dashboard_state.py:45"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-008"
+    name: "Strategy DSL safety validation"
+    purpose: "Validate strategy payload boundaries and reject prohibited MVP trading categories."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids:
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+    input_refs:
+      - "strategy payload"
+    output_refs:
+      - "StrategyDSL object or validation error"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:22"
+      - "Alpha/backend/app/schemas/strategy_dsl.py:40"
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+      - "Alpha/tests/test_strategy_dsl.py:22"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+  -
+    model_id: "MOD-009"
+    name: "Equal-weight buy-and-hold fixture benchmark"
+    purpose: "Compute deterministic fixture benchmark return, drawdown, volatility, turnover, trade count, and ending equity."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-002"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+    input_refs:
+      - "price fixture"
+      - "initial capital"
+      - "cost bps"
+      - "slippage bps"
+    output_refs:
+      - "benchmark metrics"
+    code_refs:
+      - "Alpha/backend/app/services/backtest.py:14"
+    test_refs:
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-MODEL-SPEC"
+assumptions:
+  -
+    assumption_id: "ASM-001"
+    statement: "Alpha operates as research, backtest, paper trading, order-intent review, and dashboard tooling; committed defaults do not enable unattended real-money order submission."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-002"
+    statement: "The current strategy and paper-trading evidence uses fixture price data from Alpha/data/sample_prices.csv."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-003"
+    statement: "Live broker submission remains fail-closed; policy-allowed candidates still return rejected in the committed adapter."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-004"
+    statement: "Production market data, broker paper integration, live execution policy, multi-year validation, slippage model, and cost-model calibration are not evidenced in this repository snapshot."
+    status: "open"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-ALPHA-B-001"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-001 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "For each symbol and lookback in (5,10,20): total_return=end/start-1; drawdown=min(close/running_max-1); oos_return and hit_rate come from positive momentum one-step-forward windows; score=total_return+0.5*oos_return+0.01*hit_rate-abs(drawdown); rank desc by (decision=='promote_to_paper', score)."
+    variables:
+      -
+        name: "close"
+        data_type: "float"
+        unit: "fixture price"
+        input_domain: ">0"
+      -
+        name: "lookback"
+        data_type: "integer"
+        unit: "trading rows"
+        input_domain: "5,10,20"
+      -
+        name: "score"
+        data_type: "float"
+        unit: "dimensionless"
+        input_domain: "unbounded"
+    constraints:
+      - "Skip symbol/lookback when close row count <= lookback."
+      - "Ranking uses risk_score decision before score."
+    missing_policy: "Missing or insufficient rows are skipped by len(closes) <= lookback."
+    output_range: "candidate_count >= 0; score unbounded float rounded to 6 decimals."
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:28"
+      - "Alpha/backend/app/services/strategy_iteration.py:82"
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    implementation_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py::run_strategy_tournament"
+      - "Alpha/backend/app/services/strategy_iteration.py::_simple_drawdown"
+      - "Alpha/backend/app/services/strategy_iteration.py::_walk_forward_momentum"
+      - "Alpha/backend/app/services/risk.py::risk_score"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-002 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "risk_score=max(100 - 30*I(abs(max_drawdown)>0.10) - 20*I(trade_count<10) - 20*I(turnover>3), 0); decision='promote_to_paper' if score>=70 else 'hold_research'; if score<50 decision='reject'."
+    variables:
+      -
+        name: "max_drawdown"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "any numeric; absolute value compared to 0.10"
+      -
+        name: "trade_count"
+        data_type: "integer"
+        unit: "trades"
+        input_domain: ">=0"
+      -
+        name: "turnover"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: ">=0"
+    constraints:
+      - "Missing metrics default to 0 in dict lookups."
+      - "Score floor is 0."
+    missing_policy: "metrics.get defaults missing max_drawdown, trade_count, and turnover to 0."
+    output_range: "risk_score >= 0; decision in promote_to_paper, hold_research, reject."
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:22"
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    implementation_refs:
+      - "Alpha/backend/app/services/risk.py::risk_score"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-003 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Reject in order: kill_switch_active; missing idempotency_key; side not buy/sell; quantity<=0 or price<=0 or notional<=0; max_notional<=0; notional>max_notional. Otherwise allowed=True and status=approved_for_owner_review."
+    variables:
+      -
+        name: "notional"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">0"
+      -
+        name: "quantity"
+        data_type: "float"
+        unit: "shares/contracts"
+        input_domain: ">0"
+      -
+        name: "side"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "buy or sell"
+    constraints:
+      - "max_notional must be configured >0."
+      - "idempotency key is required."
+    missing_policy: "Missing numeric values coerce through intent.get defaults to 0 and reject."
+    output_range: "allowed boolean; status rejected or approved_for_owner_review."
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:40"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    implementation_refs:
+      - "Alpha/backend/app/services/risk.py::pre_trade_risk_check"
+      - "Alpha/backend/app/services/policy.py::GovernorPolicy"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-004 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "If live_trading.enabled is false reject; else require LIVE_TRADING_ENABLED=true when configured, kill switch clear, audit sink OK, broker health OK, idempotency key present, and notional<=max_order_value_aud. FailClosedLiveBroker returns rejected even if policy allows."
+    variables:
+      -
+        name: "live_trading.enabled"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true or false"
+      -
+        name: "notional_aud"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">0"
+      -
+        name: "broker_health_ok"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true or false"
+    constraints:
+      - "Committed default live_trading.enabled is false."
+      - "Adapter never places real broker orders."
+    missing_policy: "Missing policy file raises FileNotFoundError; missing idempotency rejects when required."
+    output_range: "PolicyDecision allowed boolean; broker result status rejected."
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:38"
+      - "Alpha/backend/app/services/live_broker.py:19"
+    test_refs:
+      - "Alpha/tests/test_policy.py:5"
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    implementation_refs:
+      - "Alpha/backend/app/services/policy.py::GovernorPolicy.live_order_decision"
+      - "Alpha/backend/app/services/live_broker.py::FailClosedLiveBroker.submit_order_intent"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-005 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket; if risk.allowed submit PaperOrder; return run result and audit payload."
+    variables:
+      -
+        name: "refresh_interval_seconds"
+        data_type: "integer"
+        unit: "seconds"
+        input_domain: ">0"
+      -
+        name: "quantity"
+        data_type: "float"
+        unit: "shares/contracts"
+        input_domain: "1 in current generator"
+      -
+        name: "estimated_price"
+        data_type: "float"
+        unit: "fixture price"
+        input_domain: ">0"
+    constraints:
+      - "Generated intent selects tradable winner whose latest close <= max_notional when available."
+      - "Paper order only submits when risk.allowed is true."
+    missing_policy: "If no tradable tournament winner exists, fallback uses the highest-priced eligible fixture candidate or latest sorted price."
+    output_range: "status completed; paper_order filled or skipped/rejected."
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:42"
+      - "Alpha/backend/app/services/paper_trading_loop.py:104"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    implementation_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop.run_once"
+      - "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop._generate_order_intent"
+      - "Alpha/backend/app/services/paper_trading_loop.py::build_default_loop"
+      - "Alpha/backend/app/services/paper_trading_loop.py::_select_tradable_winner"
+      - "Alpha/backend/app/services/paper_trading_loop.py::latest_mark_prices"
+      - "Alpha/backend/app/services/order_ticket.py::OrderIntent.create"
+      - "Alpha/backend/app/services/order_ticket.py::BrokerReadyOrderTicket.from_intent"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-006 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Portfolio total_equity=cash+sum(quantity*mark_price)."
+    variables:
+      -
+        name: "cash"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">=0 under normal buy constraints"
+      -
+        name: "quantity"
+        data_type: "float"
+        unit: "shares/contracts"
+        input_domain: ">0"
+      -
+        name: "mark_price"
+        data_type: "float"
+        unit: "fixture price"
+        input_domain: ">=0; missing mark defaults 0"
+    constraints:
+      - "Idempotency keys cannot repeat."
+      - "Buy cannot exceed paper cash."
+      - "Sell cannot exceed paper position."
+    missing_policy: "Missing mark price defaults to 0.0 in portfolio snapshot."
+    output_range: "filled or rejected; total_equity rounded to 2 decimals."
+    code_refs:
+      - "Alpha/backend/app/services/paper_broker.py:43"
+      - "Alpha/backend/app/services/paper_broker.py:83"
+    test_refs:
+      - "Alpha/tests/test_paper_broker_persistence.py:4"
+    implementation_refs:
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker"
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order"
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker.snapshot"
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker.portfolio_snapshot"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-007 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "seconds_until_expiry=int(expires_at-now); freshness='fresh' if seconds_until_expiry>0 else 'expired'; pending tickets map to fresh_pending_owner_approval or expired_owner_approval; blocked tickets map to blocked_by_risk."
+    variables:
+      -
+        name: "expires_at"
+        data_type: "datetime"
+        unit: "UTC timestamp"
+        input_domain: "ISO datetime or missing"
+      -
+        name: "now"
+        data_type: "datetime"
+        unit: "UTC timestamp"
+        input_domain: "ISO datetime"
+      -
+        name: "status"
+        data_type: "string"
+        unit: "enum"
+        input_domain: "pending_owner_approval, blocked_by_risk, other"
+    constraints:
+      - "Naive datetimes are treated as UTC."
+      - "Invalid datetime returns freshness status invalid."
+    missing_policy: "Missing expires_at returns freshness status unknown and seconds_until_expiry None."
+    output_range: "freshness status in unknown, invalid, fresh, expired; actionability string."
+    code_refs:
+      - "Alpha/backend/app/services/approval_queue.py:59"
+    test_refs:
+      - "Alpha/tests/test_approval_queue.py:17"
+    implementation_refs:
+      - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest"
+      - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest_with_freshness"
+      - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.summary"
+      - "Alpha/backend/app/services/approval_queue.py::annotate_ticket_freshness"
+      - "Alpha/backend/app/services/approval_queue.py::_freshness"
+      - "Alpha/backend/app/services/approval_queue.py::_parse_iso_datetime"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-008 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Pydantic validates strategy payload. Universe symbols are stripped/upcased and duplicates reject. MVP rejects no_leverage=false, no_short=false, no_options=false, no_crypto_withdrawal=false."
+    variables:
+      -
+        name: "lookback_days"
+        data_type: "integer"
+        unit: "days"
+        input_domain: "2..756 or None"
+      -
+        name: "max_positions"
+        data_type: "integer"
+        unit: "positions"
+        input_domain: "1..50"
+      -
+        name: "max_weight_per_asset"
+        data_type: "float"
+        unit: "ratio"
+        input_domain: "(0,1]"
+    constraints:
+      - "name min length 3."
+      - "universe min length 1."
+      - "signals min length 1."
+    missing_policy: "Pydantic field defaults apply where defined; required missing fields fail validation."
+    output_range: "StrategyDSL object or validation error."
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:22"
+      - "Alpha/backend/app/schemas/strategy_dsl.py:53"
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+    implementation_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py::Signal"
+      - "Alpha/backend/app/schemas/strategy_dsl.py::PortfolioRules"
+      - "Alpha/backend/app/schemas/strategy_dsl.py::RiskRules"
+      - "Alpha/backend/app/schemas/strategy_dsl.py::RiskRules.enforce_mvp_safety"
+      - "Alpha/backend/app/schemas/strategy_dsl.py::StrategyDSL"
+      - "Alpha/backend/app/schemas/strategy_dsl.py::StrategyDSL.validate_universe"
+      - "Alpha/backend/app/schemas/strategy_dsl.py::validate_strategy"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    description: "从 Alpha formula_registry.yaml 抽取的 MOD-009 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Load fixture prices; pivot close by date/symbol; daily returns=pct_change; equal-weight portfolio return=mean(symbol returns); one_time_cost=(cost_bps+slippage_bps)/10000; equity=initial_capital*(1-one_time_cost)*cumprod(1+portfolio_returns)."
+    variables:
+      -
+        name: "initial_capital"
+        data_type: "float"
+        unit: "AUD"
+        input_domain: ">0"
+      -
+        name: "cost_bps"
+        data_type: "float"
+        unit: "basis points"
+        input_domain: ">=0"
+      -
+        name: "slippage_bps"
+        data_type: "float"
+        unit: "basis points"
+        input_domain: ">=0"
+    constraints:
+      - "Rows with missing pivot values are dropped."
+      - "Benchmark is equal-weight fixture only."
+    missing_policy: "dropna removes dates with missing symbol close after pivot."
+    output_range: "metric dict with rounded total_return, max_drawdown, volatility, turnover, trade_count, ending_equity."
+    code_refs:
+      - "Alpha/backend/app/services/backtest.py:14"
+    test_refs:
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    implementation_refs:
+      - "Alpha/backend/app/services/backtest.py::load_price_fixture"
+      - "Alpha/backend/app/services/backtest.py::run_buy_and_hold_fixture"
+      - "Alpha/backend/app/services/risk.py::max_drawdown"
+      - "Alpha/backend/app/services/risk.py::annualized_volatility"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "lookbacks"
+    name: "strategy tournament lookbacks"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "5|10|20"
+    unit: "trading rows"
+    source: "EXTRACTED from function default"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:28"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "w_oos"
+    name: "oos return coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.5"
+    unit: "dimensionless"
+    source: "EXTRACTED from momentum_score expression"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:43"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "w_hit"
+    name: "hit rate coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.01"
+    unit: "dimensionless"
+    source: "EXTRACTED from momentum_score expression"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:43"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:13"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "w_drawdown"
+    name: "drawdown penalty coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.0"
+    unit: "dimensionless"
+    source: "EXTRACTED from expression -abs(drawdown)"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:43"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "min_rows_gt_lookback"
+    name: "min rows greater than lookback"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from skip branch"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:34"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "rank_decision_priority"
+    name: "promote decision rank priority"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "promote_to_paper first"
+    unit: "enum"
+    source: "EXTRACTED from sorted key"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:59"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:10"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "default_turnover"
+    name: "turnover supplied to risk score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.0"
+    unit: "ratio"
+    source: "EXTRACTED from metrics dict"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:40"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "signal_positive_rule"
+    name: "walk-forward positive momentum rule"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "close_t > close_t_minus_lookback"
+    unit: "comparison"
+    source: "EXTRACTED from _walk_forward_momentum"
+    code_refs:
+      - "Alpha/backend/app/services/strategy_iteration.py:88"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:11"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "risk_score_start"
+    name: "start risk score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "100"
+    unit: "points"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:24"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "max_drawdown_threshold"
+    name: "drawdown threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.10"
+    unit: "ratio"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:25"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "max_drawdown_penalty"
+    name: "drawdown penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "points"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:26"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "min_trade_count_threshold"
+    name: "low trade count threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10"
+    unit: "trades"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:28"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "low_trade_count_penalty"
+    name: "low trade count penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "points"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:29"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "turnover_threshold"
+    name: "high turnover threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "ratio"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:31"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "high_turnover_penalty"
+    name: "high turnover penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "points"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:32"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "promote_score_threshold"
+    name: "paper promotion threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "70"
+    unit: "points"
+    source: "EXTRACTED from risk_score"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:34"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_iteration.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "max_order_value_aud"
+    name: "max order value"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "100"
+    unit: "AUD"
+    source: "EXTRACTED from policy config"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:43"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:33"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:45"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "allowed_sides"
+    name: "allowed order sides"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "buy|sell"
+    unit: "enum"
+    source: "EXTRACTED from pre_trade_risk_check"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:54"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "require_positive_quantity"
+    name: "quantity positive gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from pre_trade_risk_check"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:56"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "require_positive_price"
+    name: "price positive gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from pre_trade_risk_check"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:56"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "require_positive_notional"
+    name: "notional positive gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from pre_trade_risk_check"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:56"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "require_idempotency_key"
+    name: "pre trade idempotency gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from pre_trade_risk_check"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:52"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:23"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "live_trading.enabled"
+    name: "live trading enabled"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "false"
+    unit: "flag"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:41"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:5"
+    test_refs:
+      - "Alpha/tests/test_policy.py:5"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "require_environment_flag"
+    name: "require live env flag"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:44"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:6"
+    test_refs:
+      - "Alpha/tests/test_policy.py:5"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "environment_flag_name"
+    name: "live env flag name"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "LIVE_TRADING_ENABLED"
+    unit: "env var"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:43"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:7"
+    test_refs:
+      - "Alpha/tests/test_policy.py:5"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "require_audit_sink"
+    name: "require audit sink"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:48"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:10"
+    test_refs:
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "require_broker_health_check"
+    name: "require broker health"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:50"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:11"
+    test_refs:
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "live_require_idempotency_key"
+    name: "live idempotency gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:52"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:12"
+    test_refs:
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "require_kill_switch_clear"
+    name: "kill switch clear gate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from committed config"
+    code_refs:
+      - "Alpha/backend/app/services/policy.py:46"
+    config_refs:
+      - "Alpha/configs/trading_governor_policy.yaml:13"
+    test_refs:
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "fail_closed_live_broker"
+    name: "live broker never submits"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from adapter"
+    code_refs:
+      - "Alpha/backend/app/services/live_broker.py:27"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_live_broker_fail_closed.py:6"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "DEFAULT_REFRESH_INTERVAL_SECONDS"
+    name: "paper loop refresh interval"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "300"
+    unit: "seconds"
+    source: "EXTRACTED from service and config"
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:19"
+    config_refs:
+      - "Alpha/configs/agent_loop.yaml:3"
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:30"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "order_ticket_ttl_seconds"
+    name: "order ticket TTL"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "300"
+    unit: "seconds"
+    source: "EXTRACTED from config and OrderIntent"
+    code_refs:
+      - "Alpha/backend/app/services/order_ticket.py:38"
+    config_refs:
+      - "Alpha/configs/agent_loop.yaml:5"
+    test_refs:
+      - "Alpha/tests/test_approval_queue.py:17"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "generated_quantity"
+    name: "generated paper intent quantity"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1"
+    unit: "shares/contracts"
+    source: "EXTRACTED from generator"
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:121"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "generated_side"
+    name: "generated paper intent side"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "buy"
+    unit: "enum"
+    source: "EXTRACTED from generator"
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:120"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "order_type"
+    name: "broker payload order type"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "market"
+    unit: "enum"
+    source: "EXTRACTED from dataclass factory"
+    code_refs:
+      - "Alpha/backend/app/services/order_ticket.py:39"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "time_in_force"
+    name: "broker payload time in force"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "day"
+    unit: "enum"
+    source: "EXTRACTED from dataclass factory"
+    code_refs:
+      - "Alpha/backend/app/services/order_ticket.py:40"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:8"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "paper_price_path"
+    name: "paper loop fixture path"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "data/sample_prices.csv"
+    unit: "path"
+    source: "EXTRACTED from build_default_loop"
+    code_refs:
+      - "Alpha/backend/app/services/paper_trading_loop.py:138"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_trading_loop.py:12"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "initial_cash"
+    name: "initial paper cash"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10000"
+    unit: "AUD"
+    source: "EXTRACTED from dataclass and load"
+    code_refs:
+      - "Alpha/backend/app/services/paper_broker.py:20"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_broker_persistence.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "duplicate_idempotency_reject"
+    name: "duplicate idempotency rejection"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "rule"
+    source: "EXTRACTED from submit_order"
+    code_refs:
+      - "Alpha/backend/app/services/paper_broker.py:44"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_broker_persistence.py:4"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "round_cash_digits"
+    name: "cash rounding digits"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "decimal places"
+    source: "EXTRACTED from snapshot"
+    code_refs:
+      - "Alpha/backend/app/services/paper_broker.py:76"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_paper_broker_persistence.py:12"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "round_mark_price_digits"
+    name: "mark price rounding digits"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "4"
+    unit: "decimal places"
+    source: "EXTRACTED from portfolio snapshot"
+    code_refs:
+      - "Alpha/backend/app/services/paper_broker.py:95"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_dashboard_state.py:8"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "latest_limit"
+    name: "approval queue latest limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "tickets"
+    source: "EXTRACTED from method default"
+    code_refs:
+      - "Alpha/backend/app/services/approval_queue.py:28"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_approval_queue.py:17"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "fresh_seconds_rule"
+    name: "freshness positive seconds rule"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "seconds_until_expiry > 0"
+    unit: "comparison"
+    source: "EXTRACTED from _freshness"
+    code_refs:
+      - "Alpha/backend/app/services/approval_queue.py:82"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_approval_queue.py:17"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "missing_expires_policy"
+    name: "missing expiry handling"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "unknown"
+    unit: "status"
+    source: "EXTRACTED from _freshness"
+    code_refs:
+      - "Alpha/backend/app/services/approval_queue.py:75"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_dashboard_state.py:45"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-ALPHA-B-001"
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "lookback_days_min"
+    name: "DSL lookback min"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "days"
+    source: "EXTRACTED from schema"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:24"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "lookback_days_max"
+    name: "DSL lookback max"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "756"
+    unit: "days"
+    source: "EXTRACTED from schema"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:24"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "max_positions_default"
+    name: "DSL max positions default"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "positions"
+    source: "EXTRACTED from schema"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:28"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "max_weight_per_asset_default"
+    name: "DSL max weight per asset"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.5"
+    unit: "ratio"
+    source: "EXTRACTED from schema"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:29"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:16"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "no_leverage"
+    name: "DSL no leverage requirement"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from model validator"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:35"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:22"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "no_short"
+    name: "DSL no short requirement"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from model validator"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:36"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:29"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "no_options"
+    name: "DSL no options requirement"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "true"
+    unit: "flag"
+    source: "EXTRACTED from model validator"
+    code_refs:
+      - "Alpha/backend/app/schemas/strategy_dsl.py:37"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_strategy_dsl.py:36"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "initial_capital"
+    name: "fixture benchmark initial capital"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10000"
+    unit: "AUD"
+    source: "EXTRACTED from function signature"
+    code_refs:
+      - "Alpha/backend/app/services/backtest.py:14"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "cost_bps"
+    name: "fixture benchmark cost bps"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "basis points"
+    source: "EXTRACTED from function signature"
+    code_refs:
+      - "Alpha/backend/app/services/backtest.py:14"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "slippage_bps"
+    name: "fixture benchmark slippage bps"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "5"
+    unit: "basis points"
+    source: "EXTRACTED from function signature"
+    code_refs:
+      - "Alpha/backend/app/services/backtest.py:14"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "periods_per_year"
+    name: "annualized volatility periods per year"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "252"
+    unit: "periods"
+    source: "EXTRACTED from function signature"
+    code_refs:
+      - "Alpha/backend/app/services/risk.py:16"
+    config_refs: []
+    test_refs:
+      - "Alpha/tests/test_backtest_fixture.py:4"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+strategies:
+  -
+    strategy_id: "STRAT-ALPHA-001"
+    name: "fixture-first research, not production signal"
+    description: "动量排序、风险评分和买入持有基准当前只用于 fixture 研究和 paper 验证，不用于实盘建议。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+      - "MOD-009"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-ASSURANCE-STATUS"
+  -
+    strategy_id: "STRAT-ALPHA-002"
+    name: "real-money path fails closed"
+    description: "实盘配置默认 false、policy 缺失即拒绝，broker adapter 不提交真实订单。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-003"
+      - "MOD-004"
+      - "MOD-007"
+    parameter_ids:
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+  -
+    strategy_id: "STRAT-ALPHA-003"
+    name: "deterministic paper loop over local state"
+    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-FORMULA-REGISTRY"
+  -
+    strategy_id: "STRAT-ALPHA-004"
+    name: "DSL constraints keep MVP scope narrow"
+    description: "策略 DSL 通过字段范围和禁止项限制 MVP 策略空间，降低误触复杂交易类别的风险。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-008"
+    parameter_ids:
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+    evidence_refs:
+      - "EVID-ALPHA-MODEL-REGISTRY"
+      - "EVID-ALPHA-PARAMETER-REGISTRY"
+validations:
+  -
+    validation_id: "VAL-ALPHA-LEGACY-GOVERNANCE"
+    scope: "Alpha legacy governance completeness"
+    method: "Alpha existing governance validator and semantic extractor records before Review9 S5PAT01."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-DEVELOPMENT-LEDGER"
+      - "EVID-ALPHA-SEMANTIC-MANIFEST"
+  -
+    validation_id: "VAL-ALPHA-S5PAT01"
+    scope: "Review9 S5PAT01 Lean v2 canonical and Chinese human entry render"
+    method: "Local changed-only Lean governance validation, Alpha render drift check, focused governance tests, information-quality check, json.tool, and git diff --check before PR."
+    status: "active"
+    fact_level: "PROPOSED"
+    evidence_refs:
+      - "EVID-REVIEW9-S5PAT01-MANIFEST"
+assurance_summary:
+  structural_completeness: "VERIFIED"
+  implementation_congruence: "PARTIAL"
+  parameter_source_quality: "PARTIAL"
+  methodological_rationale: "UNVERIFIED"
+  empirical_validation: "UNVERIFIED"
+  operational_validation: "FAILED"
+  delivery_readiness: "FAILED"
+  next_task_id: "TASK-ALPHA-B-001"
+evidence_refs:
+  -
+    evidence_id: "EVID-ALPHA-README"
+    kind: "owner"
+    ref: "Alpha/README.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-HANDOFF"
+    kind: "owner"
+    ref: "Alpha/HANDOFF.md"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-ALPHA-MODEL-SPEC"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/MODEL_SPEC.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-MODEL-REGISTRY"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-FORMULA-REGISTRY"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-PARAMETER-REGISTRY"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-DELIVERY-TASKS"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-DEVELOPMENT-LEDGER"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/DEVELOPMENT_LEDGER.md"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-ALPHA-DEVELOPMENT-EVENTS"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/development_events.jsonl"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-ALPHA-ASSURANCE-STATUS"
+    kind: "assurance"
+    ref: "Alpha/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-VERSION-MATRIX"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/VERSION_MATRIX.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-TRACEABILITY-MATRIX"
+    kind: "legacy_governance"
+    ref: "Alpha/docs/governance/TRACEABILITY_MATRIX.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-SEMANTIC-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PAT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"
+legacy_refs:
+  -
+    legacy_path: "Alpha/docs/governance/model_registry.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/docs/governance/formula_registry.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/docs/governance/parameter_registry.csv"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/docs/governance/DELIVERY_PLAN.md"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/docs/governance/delivery_tasks.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/docs/governance/DEVELOPMENT_LEDGER.md"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/docs/governance/development_events.jsonl"
+    replacement_status: "mapped"
+  -
+    legacy_path: "Alpha/功能清单"
+    replacement_status: "replaced"
+  -
+    legacy_path: "Alpha/开发记录"
+    replacement_status: "replaced"
+  -
+    legacy_path: "Alpha/模型参数文件"
+    replacement_status: "replaced"

@@ -1,0 +1,165 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624",
+  "project_id": "Alpha",
+  "task_id": "S5PAT01",
+  "acceptance_ids": [
+    "ACC-S5PAT01"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5PAT01",
+  "generated_at": "2026-06-23T21:15:10+00:00",
+  "implementation_base_sha": "2252b17287e41f4a7a1c0d69310b66450df828f4",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:02a9af254e53aad6246a59eb66dc801512a7ed402f320262ba68328bcc5cb19d",
+  "changed_files_declared": [
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/roadmap.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+  ],
+  "changed_files_actual": [
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/roadmap.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+  ],
+  "required_governance_files": [
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/roadmap.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+  ],
+  "updated_governance_files": [
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/roadmap.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "review9_stage5_single_project_migration",
+    "alpha_only_scope",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S5PAT01 migrates existing Alpha governance facts into Lean v2 canonical governance and rendered human views.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_project_yaml_contains_canonical_model_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_manifest_records_alpha_only_scope -q",
+    "python -B scripts/lean_governance.py check-render --project Alpha",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_project_yaml_contains_canonical_model_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_alpha_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pat01_manifest_records_alpha_only_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 tests in 0.054s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project Alpha",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0; projects changed: Alpha."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duration_seconds=1.163; validation errors=0 warnings=0; check_render drift_count=0 reference_issue_count=0 for Alpha and Serenity; zero_diff.clean=false only because working tree contains this task diff."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 174 tests in 9.717s; OK. The missing-base lines are expected fixture output from tests."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "Alpha/docs/governance/MODEL_SPEC.md",
+    "Alpha/docs/governance/model_registry.yaml",
+    "Alpha/docs/governance/formula_registry.yaml",
+    "Alpha/docs/governance/parameter_registry.csv",
+    "Alpha/docs/governance/DELIVERY_PLAN.md",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/ASSURANCE_STATUS.yaml",
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/roadmap.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PAT01 Alpha canonical facts and rendered Chinese human entries",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Create Alpha Lean v2 canonical project, roadmap, and event facts, render the three Chinese human entry files, and validate the S5PAT01 single-project scope without changing Alpha runtime behavior.",
+  "rollback": "Delete Alpha/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; restore the three Alpha human entry files; remove S5PAT01 focused tests and this manifest.",
+  "unresolved_risks": [
+    "S5PA-GATE remains in_progress until EVA_OS, OpMe_System, and whkmSalary are migrated one by one.",
+    "S5-GATE remains open until all 10 registered projects pass structure, accuracy, and human-readable acceptance.",
+    "Alpha live execution policy, production market data, broker paper API, multi-year validation, cost/slippage calibration, and 13 branch-rule parameters remain unresolved."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
