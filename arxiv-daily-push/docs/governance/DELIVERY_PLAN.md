@@ -19,7 +19,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 63
+- task_count: 64
 - acceptance_count: 59
 
 ## Delivery Tasks
@@ -85,6 +85,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-09-MIGRATION_PACKAGE-001 | S1-A | completed | ADP-ACC-S1-09-MIGRATION-PACKAGE | focused migration/runtime/CLI tests 17 OK; low-resource migration package export and verify controls pass without production side effects | `src/arxiv_daily_push/stage1_migration.py`; `tests/test_stage1_migration.py`; `docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md` |
 | S1-10-POST_MIGRATION_BOOTSTRAP-001 | S1-A | completed | ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP | focused 16 OK; full 220 OK; semantic 45/322 OK; project/all/changed-only governance 0 errors | `governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json`; `docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses teaching-first Chinese sections, compact arXiv subject, action guidance, concise evidence, candidate queue summary, and hides ROI scoring, Release, video, delivery-policy, and backend wording from the owner-facing email; PR CI still required before any real controlled email | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
+| ADP-S1P5T04-SYDNEY-SERVICE-DATE-039 | S1-A | ready | ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS | test9 proved cloud manual SMTP send but exposed UTC-sliced service date; four workflows now compute Australia/Sydney service date for daily artifacts and email subjects; PR CI and post-merge test10 still required | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`; `.github/workflows/arxiv-daily-push-scheduled.yml` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |

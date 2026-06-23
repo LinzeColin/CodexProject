@@ -30,5 +30,12 @@ class ManualDeliveryWorkflowTests(unittest.TestCase):
         self.assertIn("adp-manual-delivery-scheduled-execution", workflow)
         self.assertNotIn("gh release", workflow)
 
+    def test_manual_delivery_uses_sydney_service_date(self) -> None:
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn('ZoneInfo("Australia/Sydney")', workflow)
+        self.assertIn("astimezone", workflow)
+        self.assertIn("service_date", workflow)
+        self.assertNotIn("${value:0:10}", workflow)
+
 if __name__ == "__main__":
     unittest.main()

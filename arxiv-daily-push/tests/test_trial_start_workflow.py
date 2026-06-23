@@ -36,6 +36,10 @@ class TrialStartWorkflowTests(unittest.TestCase):
         self.assertNotIn("render-lightweight-mp4", workflow)
         self.assertNotIn("ffmpeg", workflow)
         self.assertNotIn("--release-ref", workflow)
+        self.assertIn('ZoneInfo("Australia/Sydney")', workflow)
+        self.assertIn("astimezone", workflow)
+        self.assertIn("service_date", workflow)
+        self.assertNotIn("${value:0:10}", workflow)
 
     def test_cli_plan_trial_start_workflow_outputs_ready_json(self) -> None:
         buffer = io.StringIO()

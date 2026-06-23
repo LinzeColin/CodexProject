@@ -2874,8 +2874,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-080")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-080")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-081")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-081")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -2894,7 +2894,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
-        self.assertIn("ADP-PHASE12-EMAIL-HUMAN-FORMAT-036", rendered)
+        self.assertIn("ADP-S1P5T04-SYDNEY-SERVICE-DATE-039", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
@@ -2907,7 +2907,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036",
+            "arxiv-daily-push": "ADP-S1P5T04-SYDNEY-SERVICE-DATE-039",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",

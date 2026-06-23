@@ -408,6 +408,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "Strict Stage 1 remains reopened and ARXIV_PRODUCTION_ACCEPTED must not be restored.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "ADP-S1P5T04-SYDNEY-SERVICE-DATE-039":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-SERVICE-DATE-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V6_CONTRACT",
+                "question": "是否在悉尼服务日期修复 PR 合并后执行一次受控 Gmail SMTP test10，以验证邮件主题日期与云端 workflow 均正确。",
+                "recommendation": "A: open PR and wait for CI; keep production disabled",
+                "option_a": "将悉尼服务日期修复走 PR/CI，CI 绿并合并后再由 owner 单独确认是否发 test10。",
+                "option_b": "继续沿用 workflow_dispatch 手动填 generated_at；不推荐，会制造人工负担。",
+                "option_c": "跳过日期纠偏直接启用 production；禁止，因为会继续发错服务日期。",
+                "effort": "P1; workflow correction, PR CI, then one controlled manual email if approved",
+                "resource": "GitHub Actions ubuntu-latest, existing Gmail SMTP secret names, no local background process",
+                "benefit": "确保每日邮件和 daily artifacts 按 Australia/Sydney 人类服务日期生成，而不是 UTC 截日。",
+                "risks": "PR CI failure, accidental duplicate test email, premature production schedule enablement",
+                "evidence": "workflow tests, GitHub PR CI, post-merge controlled test10 scheduled-execution artifact",
+                "priority": "P1",
+                "no_decision": "Stage 1 arXiv acceptance remains recorded, but controlled email cannot be accepted as daily-service evidence.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
