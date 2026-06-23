@@ -42,3 +42,11 @@
 - Commit-bound events: `1`
 - Legacy unbound events: `54`
 - Unresolved fact IDs: `3`
+
+## S1P5T04 Evidence Update
+
+- Controlled GitHub/cloud-runner SMTP sends: `2`
+- Sent artifact refs: `7811543123`, `7816791617`
+- Distinct natural days observed: `1 / 2`
+- Stage 1 acceptance: `NOT_CLAIMED`
+- Production scheduled run: `DISABLED`
