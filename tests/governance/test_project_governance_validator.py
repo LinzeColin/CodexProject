@@ -799,10 +799,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("github.event_name == 'pull_request'", workflow)
         self.assertIn("github.event.pull_request.base.sha", workflow)
-        self.assertIn("--changed-only --enforce-sync --semantic", workflow)
-        self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
-        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
-        self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+        self.assertIn("scripts/lean_governance.py ci --changed-only", workflow)
+        self.assertNotIn("scripts/validate_project_governance.py --changed-only", workflow)
+        self.assertIn("scripts/lean_governance.py validate --all --semantic --drift-report", workflow)
+        self.assertIn("scripts/lean_governance.py validate --project", workflow)
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
