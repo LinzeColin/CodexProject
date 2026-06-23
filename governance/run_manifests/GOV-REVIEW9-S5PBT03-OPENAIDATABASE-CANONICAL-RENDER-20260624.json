@@ -1,0 +1,168 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624",
+  "project_id": "OpenAIDatabase",
+  "task_id": "S5PBT03",
+  "acceptance_ids": [
+    "ACC-S5PBT03"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5PBT03",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "44f39a4e873a432431b7a9f5e47597b403be81bf",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:e334d32eeaa6642e38a340af2671a2083bc187c877b42b85b7ca782cc87755e6",
+  "changed_files_declared": [
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "review9_stage5_single_project_migration",
+    "openaidatabase_only_scope",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S5PBT03 migrates existing OpenAIDatabase governance facts into Lean v2 canonical governance and rendered human views; it does not change memory extraction, redaction, retrieval, Memory Atlas scoring, Codex sync, source registry, writeback proposal, personalization export, frontend, config, data, tests, scripts, publication, or runtime behavior.",
+  "formula_delta": "NOT_CHANGED: 11 active formulas are documented from existing OpenAIDatabase governance registries; 10 are MACHINE_VERIFIED and FORM-010 remains HUMAN_REVIEW_REQUIRED.",
+  "parameter_delta": "NOT_CHANGED: 92 active parameters remain from existing registry; 28 are MACHINE_VERIFIED and 64 remain HUMAN_REVIEW_REQUIRED.",
+  "version_delta": "No product, runtime, data, model, threshold, deployment, frontend, personalization, writeback, publication, or release behavior change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_project_yaml_preserves_memory_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_manifest_records_openaidatabase_only_scope -q",
+    "python -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_project_yaml_preserves_memory_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_openaidatabase_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt03_manifest_records_openaidatabase_only_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 focused S5PBT03 OpenAIDatabase tests locally; OK in 0.061s."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "OpenAIDatabase drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed files are OpenAIDatabase-only plus root governance manifest/tests; projects changed: OpenAIDatabase; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree local run passed after commit: validation exit_code=0, check_render drift/reference issues=0, zero_diff.clean=true, changed_count=0."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 212 tests in 14.930s; OK. Missing-base lines are expected fixture output from tests."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/docs/governance/model_registry.yaml",
+    "OpenAIDatabase/docs/governance/formula_registry.yaml",
+    "OpenAIDatabase/docs/governance/parameter_registry.csv",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PBT03 OpenAIDatabase canonical facts and rendered Chinese human entries",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Review9 S5PBT03 migrates OpenAIDatabase to Lean Governance v2 canonical project/roadmap/events and owner-readable Chinese files, preserving FAILED delivery readiness, partial semantic extraction, privacy owner gate, blocked TASK-OAI-B-001 and FORM-010/64-parameter human-review truth. Product runtime behavior is unchanged.",
+  "rollback": "Delete OpenAIDatabase/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; revert OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml, the three OpenAIDatabase human entry files, S5PBT03 focused tests, and this manifest.",
+  "unresolved_risks": [
+    "S5PB-GATE remains in_progress until OpenAIDatabase, PFI_BIG_DATA_SIMULATOR and arxiv-daily-push are migrated and verified on main.",
+    "S5-GATE remains open until all 10 registered projects pass structure, accuracy, and human-readable acceptance.",
+    "OpenAIDatabase delivery readiness remains FAILED; TASK-OAI-B-001, privacy/product owner gold-set validation, adversarial secret leakage testing, retrieval metrics, human write approval logs, FORM-010, and 64 active parameters remain unresolved."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
