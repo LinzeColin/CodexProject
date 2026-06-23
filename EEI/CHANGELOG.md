@@ -19,6 +19,7 @@
 - Added a T1301/A202 candidate-source-anchor coverage contract for signed release decision bundles; passage-level reviews must cover `GV-SNAPSHOT-001..004` from `golden_vertical_fact_candidates.json`, while A202 remains blocked on real source/license/owner/legal evidence.
 - Closed `GOV-SEMANTIC-EEI-001` machine semantic coverage for active parameters and formulas: motion parameters now extract from `config/ui/motion-tokens.json`, FORM-012 has machine implementation refs, and production release gates remain open.
 - Added a T1301/A202 operator-review candidate queue: the packet now binds `GV-FACT-001..002` to required official-source anchors `GV-SNAPSHOT-001..004` for human/legal review, while publication, legal clearance and release readiness remain fail-closed.
+- Added a T1307/A209 operator-soak progress monitor: the detached 24h soak now has a read-only status contract for PID, successful windows, remaining windows, resume command and `release_gate_closed_by_monitor=false`; A209 remains open until full 24h evidence validates.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

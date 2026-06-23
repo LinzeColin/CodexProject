@@ -5008,3 +5008,47 @@ Status: LOCAL FOCUSED VALIDATED; A202/A209/A210/A026/A027 STILL IN PROGRESS
 
 - Revert `scripts/validate_a202_operator_review_packet.py`, `tests/unit/test_official_source_live_capture.py`, the regenerated A202/A210 and T1303 preflight artifacts, and the governance records for this iteration.
 - Regenerate development, clean-room and release artifacts, then rerun the A202 validation subset and root governance validation.
+
+## 2026-06-23 - T1307/A209 operator soak monitor and recovery contract
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/monitor_operator_soak.py` as a read-only status contract for the detached 24h operator soak.
+- The monitor reads the 24h output JSON, checkpoint JSONL, PID file and log file, then reports process status, target windows, successful windows, failed windows, remaining windows, completion percent, latest successful window and a `--resume` command.
+- The monitor explicitly reports `release_gate_closed_by_monitor=false` and keeps `a209_task_status_required=IN_PROGRESS`.
+- Added `make monitor-operator-soak` so operators and CI-style checks can inspect progress without mutating the run.
+- Extended A209 unit coverage for missing, resumable partial, failed-window and complete-summary-pending states.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: this monitor proves progress visibility and recovery behavior only.
+- The running 24h checkpoint and output artifacts are not committed by this slice; they must be committed only after all 288 windows complete and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- The monitor reads existing soak parameters: `soak.long_duration_hours=24` and `soak.operator_window_seconds=300`.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python -m py_compile scripts/monitor_operator_soak.py scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/monitor_operator_soak.py scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 8 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python scripts/monitor_operator_soak.py --write-output /private/tmp/eei-a209-operator-soak-progress.json --quiet`: PASS; observed `RUNNING_PARTIAL`, PID `12478`, 14/288 windows and `release_gate_closed_by_monitor=false`.
+- Live checkpoint inspection after monitor run observed 15/288 PASS windows, latest window `index=15`, `worker_jobs_completed=12`, `worker_jobs_total=12`, `worker_event_loop_lag_p95_ms=12.5951`.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+- If the detached process exits or a window fails, the checkpoint must be resumed or rerun and validated before any A209 closure review.
+
+### Rollback
+
+- Revert `scripts/monitor_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance record.
+- Keep A209 `IN_PROGRESS`; do not remove valid partial checkpoint evidence unless it is corrupted or explicitly superseded.

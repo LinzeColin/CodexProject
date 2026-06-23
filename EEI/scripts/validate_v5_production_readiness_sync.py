@@ -195,6 +195,7 @@ PARTIAL_EVIDENCE = {
         "scripts/run_soak_smoke.mjs",
         "scripts/run_operator_soak.mjs",
         "scripts/validate_operator_soak_evidence.py",
+        "scripts/monitor_operator_soak.py",
         "artifacts/tests/a209/t1307_soak_smoke.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",

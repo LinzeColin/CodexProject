@@ -1738,7 +1738,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-012")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-013")
         self.assertEqual(
             matrix["current_gate"],
             "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS",
@@ -1807,6 +1807,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(semantic_event["binding_status"], "pre_commit_pending")
         self.assertIn("PARAM-052", semantic_event["parameter_ids_changed"])
         self.assertIn("semantic extractor PASS semantic_parameters_checked=68", "; ".join(semantic_event["test_results"]))
+        monitor_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-013")
+        self.assertEqual(monitor_event["task_id"], "TASK-T1307")
+        self.assertEqual(monitor_event["binding_status"], "pre_commit_pending")
+        self.assertIn("A209 monitor unit tests PASS 8/8", monitor_event["test_results"])
+        self.assertIn("release_gate_closed_by_monitor=false", "; ".join(monitor_event["decisions"]))
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
         self.assertIn("implementation_congruence: `VERIFIED`", owner_text)

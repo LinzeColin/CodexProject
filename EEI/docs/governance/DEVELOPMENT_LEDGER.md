@@ -12,9 +12,9 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Confirmed iteration count: 36
+- Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T1301 A202 operator review candidate queue binding`
+- Current task: `TASK-T1307 A209 operator soak monitor and recovery contract`
 - Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
 
 ## Phase Matrix
@@ -824,6 +824,31 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the operator-review packet validator/test/artifact changes plus dependent A202/A210 and T1303 preflight artifacts and governance records, regenerate clean-room/release artifacts, and rerun the documented A202 validation subset.
 - Next step: regenerate clean-room/release artifacts and run focused plus root governance validation, then commit/push and bind CI.
 
+### `ITER-20260623-013`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `d0e785dabd77ccd3d7926a6bce8118733ee02d99`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Acceptance IDs: `ACC-A209`
+- Goal: add a read-only monitor for the detached A209 24h operator soak so progress, resume state, process status and non-closure rules are auditable while the run continues in the background.
+- Assumptions: 24h operator evidence is still incomplete until `t1307_operator_soak_24h.json` and its checkpoint JSONL cover 288 successful 300-second windows and pass the existing A209 evidence validator.
+- Files read: A209 soak runner, A209 evidence validator, A209 unit tests, T1307 delivery task registry, V5 readiness sync mapping and the live 24h checkpoint JSONL.
+- Files changed: `EEI/scripts/monitor_operator_soak.py`, `EEI/tests/unit/test_operator_soak_evidence.py`, `EEI/Makefile`, `EEI/scripts/validate_v5_production_readiness_sync.py`, this ledger, delivery task registry, version matrix, MVP development record, changelog, development event log, root governance test and run manifest.
+- Model changes: no scoring formula, graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- Parameter changes: no active parameter value changed; the monitor reads existing `soak.long_duration_hours=24` and `soak.operator_window_seconds=300`.
+- Commands run: focused py_compile, focused ruff, A209 unit tests, live A209 monitor run, V5 production readiness sync, and current checkpoint inspection.
+- Test results: py_compile PASS; focused ruff PASS; A209 monitor/evidence unit tests PASS 8/8; V5 production readiness sync PASS; live monitor reports `RUNNING_PARTIAL` with PID `12478` and the live checkpoint reached at least 15/288 PASS windows.
+- Successes: A209 24h soak now has a deterministic monitor output with `release_gate_closed_by_monitor=false`, target/remaining windows, latest successful window, process status and a `--resume` command.
+- Failures: 24h operator soak is still incomplete; the monitor is progress evidence only and not release-ready evidence.
+- Decisions: keep A209 `IN_PROGRESS`; do not commit running 24h checkpoint/output artifacts until the full 24h run completes and the release-gate validator passes.
+- Remaining risks: the detached local run can still fail later; checkpoint and summary artifacts must be revalidated after completion and then committed with release evidence.
+- Rollback: revert the monitor script, Makefile target, unit tests and governance records; keep or remove local running checkpoint artifacts separately because they are not part of this commit.
+- Next step: run changed-only governance and focused EEI validation, commit/push the monitor contract, then continue MVP work while the detached 24h soak keeps running.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -868,6 +893,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-010`: local T1301/A202 candidate-source-anchor coverage for signed release decision bundles; A202/A209/A210 remain open.
 - `EVENT-20260623-011`: local GOV-SEMANTIC-EEI-001 closure for active parameter/formula machine extraction; production release gates remain open.
 - `EVENT-20260623-012`: local T1301/A202 operator review candidate queue binding; A202/A209/A210 remain open.
+- `EVENT-20260623-013`: local T1307/A209 operator soak monitor and recovery contract; A209 remains open until 24h evidence validates.
 
 ## Unknown Historical Periods
 

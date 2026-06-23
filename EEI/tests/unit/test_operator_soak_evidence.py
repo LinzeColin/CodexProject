@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from scripts.monitor_operator_soak import build_progress_payload
 from scripts.validate_operator_soak_evidence import SoakRequirement, build_validation_payload
 
 PARAMETERS = {
@@ -131,3 +132,94 @@ def test_complete_operator_soak_evidence_is_ready_for_release_review(tmp_path: P
     assert payload["status"] == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
     assert {result["status"] for result in payload["results"]} == {"PASS"}
     assert payload["a209_task_status_required"] == "IN_PROGRESS"
+
+
+def write_checkpoint(path: Path, *, index: int, status: str = "PASS") -> None:
+    window = {
+        "index": index,
+        "status": status,
+        "child_status": "PARTIAL",
+        "requested_duration_seconds": 300,
+        "measured_duration_seconds": 300,
+        "elapsed_wall_seconds": 301,
+        "browser_heap_growth_bytes": 1000,
+        "browser_dom_node_growth": 0,
+        "worker_jobs_completed": 12,
+        "worker_jobs_total": 12,
+        "worker_event_loop_lag_p95_ms": 2.0,
+    }
+    path.write_text(json.dumps({"window": window}) + "\n", encoding="utf-8")
+
+
+def test_operator_soak_progress_monitor_reports_missing_gate_open(tmp_path: Path) -> None:
+    payload = build_progress_payload(
+        output_path=tmp_path / "missing.json",
+        checkpoint_path=tmp_path / "missing.checkpoints.jsonl",
+        pid_path=tmp_path / "missing.pid",
+        log_path=tmp_path / "missing.log",
+        parameters=PARAMETERS,
+    )
+    assert payload["status"] == "MISSING_OR_NOT_STARTED"
+    assert payload["release_gate_closed_by_monitor"] is False
+    assert payload["progress"]["completion_percent"] == 0.0
+    assert payload["a209_task_status_required"] == "IN_PROGRESS"
+
+
+def test_operator_soak_progress_monitor_reports_paused_resume_command(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+    payload = build_progress_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        parameters=PARAMETERS,
+    )
+    assert payload["status"] == "PAUSED_RESUMABLE"
+    assert payload["progress"]["windows_completed"] == 1
+    assert payload["progress"]["windows_remaining"] == 287
+    assert "--resume" in payload["resume_command"]
+
+
+def test_operator_soak_progress_monitor_fails_on_failed_window(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1, status="FAIL")
+    payload = build_progress_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        parameters=PARAMETERS,
+    )
+    assert payload["status"] == "FAILED_WINDOW"
+    assert payload["progress"]["windows_failed"] == 1
+
+
+def test_operator_soak_progress_monitor_reports_summary_pending(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    checkpoint.write_text(
+        "\n".join(
+            json.dumps(
+                {
+                    "window": {
+                        "index": index,
+                        "status": "PASS",
+                        "measured_duration_seconds": 300,
+                    }
+                }
+            )
+            for index in range(1, 289)
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    payload = build_progress_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        parameters=PARAMETERS,
+    )
+    assert payload["status"] == "COMPLETE_SUMMARY_PENDING"
+    assert payload["progress"]["windows_completed"] == 288
+    assert payload["progress"]["completion_percent"] == 100.0
