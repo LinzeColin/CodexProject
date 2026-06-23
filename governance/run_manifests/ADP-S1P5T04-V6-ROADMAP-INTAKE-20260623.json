@@ -1,0 +1,149 @@
+{
+  "acceptance_ids": [
+    "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/README.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md",
+    "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md",
+    "governance/run_manifests/ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/README.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md",
+    "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md",
+    "governance/run_manifests/ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "ci_attestation_subject": "Project Governance PR #73",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION_FOR_PR_73",
+  "content_tree_hash": "sha256:3753c2ebd902c1ba523fd8d4296ccffa03149e47a22756afaf6206f89bdf02ff",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md",
+    "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689/artifacts/7811543123",
+    "https://github.com/LinzeColin/CodexProject/pull/73"
+  ],
+  "generated_at": "2026-06-23T14:55:00+10:00",
+  "implementation_base_sha": "66d11bc2ad98b17fd3e5b9889941f69bdbaf5b90",
+  "iteration_id": "ITER-20260623-S1P5T04-ROADMAP-V6",
+  "manifest_id": "ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623",
+  "production_acceptance_claimed": false,
+  "production_schedule_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "real_release_uploaded": false,
+  "real_smtp_sent": true,
+  "remaining_blockers": [
+    "second controlled live-day evidence",
+    "ARXIV_PRODUCTION_ACCEPTED final acceptance gate",
+    "production scheduler owner approval"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "governance/run_manifests/ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "run_id": "ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623",
+  "schema_version": 2,
+  "status": "in_progress",
+  "summary": "Imported the V6 roadmap into ADP pursuing-goal governance, locked current progress to S1P5T04, and recorded first controlled GitHub/cloud-runner Gmail SMTP evidence without enabling production scheduling.",
+  "task_id": "S1P5T04",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_v6_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_v6_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_v6_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "validate_semantic_extractors.py arxiv-daily-push",
+      "exit_code": 0,
+      "summary": "46 formulas and 331 parameters checked"
+    },
+    {
+      "command": "validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "summary": "0 errors 0 warnings"
+    },
+    {
+      "command": "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+      "exit_code": 0,
+      "summary": "192 tests OK"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "summary": "PASS"
+    },
+    {
+      "command": "Project Governance workflow PR base fix",
+      "exit_code": 0,
+      "summary": "pull_request uses github.event.pull_request.base.sha instead of force-pushed old head"
+    }
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "governance/run_manifests/ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623.json",
+    "scripts/governance_setup_doctor.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "video_generated": false
+}

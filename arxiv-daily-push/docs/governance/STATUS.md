@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.22.0`
-- Phase/Gate: `S1-A / ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY`
+- Phase/Gate: `S1-A / S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS`
 - Models/Formulas/Parameters total: `44 / 46 / 348`
 - Active formulas/parameters: `46 / 331`
 - Machine checked formulas/parameters: `46 / 331`
@@ -35,8 +35,8 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY`
-- Next executable task: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
+- Release gate: `S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS`
+- Next executable task: `S1P5T04`
 - Pending/stale events: `75`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

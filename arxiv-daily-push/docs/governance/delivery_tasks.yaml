@@ -989,8 +989,8 @@ tasks:
     unknown_task_ids: []
   - task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
     phase: "S1-A"
-    objective: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
-    scope: "Target-runner live arXiv input, B1 report/email generation, controlled Gmail SMTP send evidence, no-secret delivery refs, and two natural-day evidence ledger updates."
+    objective: "Continue `S1P5T04`: collect controlled GitHub/cloud-runner B1/arXiv email delivery evidence before ARXIV_PRODUCTION_ACCEPTED can be claimed."
+    scope: "GitHub/cloud-runner live arXiv input, B1 report/email generation, controlled Gmail SMTP send evidence, no-secret delivery refs, V6 task-numbering continuity, and Stage 1 acceptance evidence ledger updates."
     non_scope: "No production scheduler enablement, no broad non-arXiv board expansion, no video generation, no GitHub Release upload requirement, and no final production acceptance claim until the dedicated acceptance gate passes."
     status: "in_progress"
     dependencies: ["S1-11-HISTORICAL_B1_PREVIEWS-001"]
@@ -998,8 +998,8 @@ tasks:
     acceptance_ids: ["ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "ruby -e require-yaml workflow parse for four S1-12 workflows", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_semantic_after python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_gov python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main"]
     test_results: ["PREFLIGHT_ONLY: GitHub Actions PR #67 live all-arXiv dry-run passed on run 27987189886/job 82831357067 with 20/20 archives verified, max_results_per_category 1, artifact digest sha256:2011bf655a2d8237b5c20f3111c70d6242a4b6582b5e90069d1f63d43a4da81a, and SMTP/Release/scheduler disabled.", "NOT_COMPLETE: two real natural-day controlled B1 Gmail SMTP delivery evidence is still missing."]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md", "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md", "governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json", "github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015"]
-    risk: "PR CI, controlled manual Gmail SMTP evidence, and later live-day evidence must be collected on GitHub/cloud runner; the system must not silently turn into a production schedule or local Mac background service."
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md", "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md", "governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json", "github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015", "github-actions://LinzeColin/CodexProject/actions/runs/28002478689"]
+    risk: "Second controlled live-day evidence and final Stage 1 acceptance remain missing; production schedule must stay disabled and the system must not silently turn into a local Mac background service."
     rollback: "Revert S1-12 live-day evidence files and governance records."
     target_version: "0.22.0"
     completed_version: ""

@@ -7,10 +7,13 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
 - Work one phase, one task ID, and one acceptance target at a time.
 - Use `docs/pursuing_goal/BASELINE_LOCK.md`,
   `docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md`,
-  and `docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt`
-  as the current long-term goal baseline. V4 and
+  `docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt`,
+  and `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`
+  as the current long-term goal baseline and task-numbering roadmap. V4 and
   `docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md` are legacy baselines,
   not the current execution contract.
+- Every implementation closeout must state the current V6 Task ID. Current task:
+  `S1P5T04` controlled live B1 email evidence and Stage 1 acceptance.
 - Stage 1 starts with arXiv as the only production-acceptance source; Stage 2
   may promote additional sources and boards only after the arXiv gates pass.
 - Do not use OpenAI Platform API keys or paid API fallbacks.

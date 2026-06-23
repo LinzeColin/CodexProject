@@ -3,7 +3,7 @@
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily teaching
 pipeline. The current active target is V5 Stage 1: finish the B1/arXiv
 single-source vertical slice until it can truthfully reach
-`ARXIV_PRODUCTION_ACCEPTED`.
+`ARXIV_PRODUCTION_ACCEPTED`. Current V6 task pointer: `S1P5T04`.
 
 The user-facing product must be an explanatory Chinese learning email, not a
 shallow news digest. Stage 1 delivery is text-first: high-density Chinese
@@ -54,10 +54,13 @@ later owner decision explicitly restores them.
 Completed but not final production acceptance:
 
 - 30 independent historical B1 report/email previews.
+- One controlled manual Gmail SMTP test on GitHub/cloud runner:
+  `github-actions://LinzeColin/CodexProject/actions/runs/28002478689`,
+  with `notification_status=sent` to `linzezhang35@gmail.com`.
 
 Not accepted yet:
 
-- two real natural days of B1 email delivery evidence;
+- complete two-day controlled B1 email delivery evidence;
 - target-runner live network/SMTP readiness evidence when owner enables those checks;
 - `ARXIV_PRODUCTION_ACCEPTED`.
 
@@ -69,13 +72,18 @@ The current long-running baseline is locked at:
 docs/pursuing_goal/BASELINE_LOCK.md
 docs/pursuing_goal/START_HERE_MASTER_TASK_PACK_TWO_STAGE_TEXT_DELIVERY_V5.md
 docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt
+docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md
 ```
 
 V4 and Phase 1-12 files remain historical context only. For the current goal,
 Stage 1 covers only board one, B1/arXiv. Stage 2 may later promote the other
 boards and sources.
 
-Current V5 Stage 1 task sequence:
+V6 task-numbering rule: every completion report must state the current Task ID.
+The current Task is `S1P5T04` - controlled live B1 email evidence and Stage 1
+acceptance. Stage 1 is not production accepted until the evidence gate closes.
+
+Current V5-to-V6 Stage 1 task continuity:
 
 - `S1-01-READONLY-AUDIT-001`: read-only package and repository audit.
 - `S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION-001`: V5 baseline lock and

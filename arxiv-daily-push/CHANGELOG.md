@@ -5,6 +5,7 @@
 - Converted S1-12 production enablement to Stage 1 text-only delivery: all-arXiv scan, candidate queue, ROI-ranked lead selection, Chinese teaching email, and GitHub Actions text artifacts.
 - Removed video/MP4 and GitHub Release upload as production-readiness requirements for Stage 1; Gmail SMTP remains the only controlled frontstage side effect.
 - Kept production scheduler and `ARXIV_PRODUCTION_ACCEPTED` disabled pending PR CI, manual controlled SMTP test evidence, and later acceptance gates.
+- Imported the V6 task-numbering roadmap under `docs/pursuing_goal/`, locked current progress to `S1P5T04`, and recorded GitHub/cloud-runner manual Gmail SMTP run `28002478689` as the first controlled send evidence.
 
 ## 0.21.0 - 2026-06-23
 
