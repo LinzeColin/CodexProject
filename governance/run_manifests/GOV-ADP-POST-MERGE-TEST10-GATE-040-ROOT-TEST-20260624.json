@@ -1,0 +1,94 @@
+{
+  "run_id": "GOV-ADP-POST-MERGE-TEST10-GATE-040-ROOT-TEST-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-S1P5T04-POST-MERGE-TEST10-040",
+  "iteration_id": "ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-GATE-040",
+  "event_id": "EVENT-20260624-ADP-082",
+  "created_at": "2026-06-24T07:35:00+10:00",
+  "status": "owner_trigger_required",
+  "scope": [
+    "Sync Stage 1 governance after PR #102 merged the Australia/Sydney service-date workflow fix.",
+    "Record that manual test10 has not yet been triggered from main.",
+    "Record that recent scheduled workflow events skipped the scheduled production job."
+  ],
+  "non_scope": [
+    "No workflow behavior change.",
+    "No SMTP send.",
+    "No production schedule enablement.",
+    "No Release upload.",
+    "No Stage 2 work.",
+    "No video requirement."
+  ],
+  "evidence": {
+    "merged_pr": "https://github.com/LinzeColin/CodexProject/pull/102",
+    "merge_commit": "ef64ba2777b318cc0c2bafbf03e1f85b1caf4eaa",
+    "current_origin_main": "255442601540040b9d20f1493f4afd44a28f5b3a",
+    "pr_ci_runs": [
+      {
+        "run_id": 28057755238,
+        "workflow": "Project Governance",
+        "conclusion": "success"
+      },
+      {
+        "run_id": 28057755234,
+        "workflow": "arXiv Daily Push Stage 1 bootstrap",
+        "conclusion": "success"
+      },
+      {
+        "run_id": 28057755254,
+        "workflow": "arXiv Daily Push live all-arXiv cloud dry-run",
+        "conclusion": "success",
+        "artifact_id": 7833731790,
+        "artifact_digest": "sha256:0b9ba90a43154b82dc695db3bb980b9cef173bfaadda045304028c15e98fba81"
+      },
+      {
+        "run_id": 28057755244,
+        "workflow": "arXiv Daily Push real 30-day backfill",
+        "conclusion": "success",
+        "artifact_id": 7833745927,
+        "artifact_digest": "sha256:b4c1cd89a74aa8f6a6f679288ecefd693ab9ca383323592265786d7254ae8dc2"
+      }
+    ],
+    "manual_delivery_latest": {
+      "latest_run_number": 9,
+      "latest_run_id": 28056192503,
+      "latest_conclusion": "success",
+      "test10_present": false
+    },
+    "scheduled_fail_closed_evidence": [
+      {
+        "run_id": 28057072176,
+        "scheduled_job_conclusion": "skipped"
+      },
+      {
+        "run_id": 28056782115,
+        "scheduled_job_conclusion": "skipped"
+      },
+      {
+        "run_id": 28056430312,
+        "scheduled_job_conclusion": "skipped"
+      }
+    ],
+    "origin_main_workflow_contract": {
+      "manual_delivery_uses_sydney_zoneinfo": true,
+      "scheduled_uses_sydney_zoneinfo": true,
+      "manual_delivery_default_branch_guard": true
+    }
+  },
+  "next_required_owner_action": {
+    "workflow": "arXiv Daily Push manual B1 text SMTP test",
+    "branch": "main",
+    "confirm_manual_delivery_test": "SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM",
+    "generated_at": "",
+    "max_results_per_category": "1"
+  },
+  "acceptance_after_test10": [
+    "manual run number 10 exists and completed success",
+    "scheduled-execution artifact reports notification_status sent",
+    "recipient is linzezhang35@gmail.com",
+    "email subject date equals Australia/Sydney service date",
+    "candidate queue summary is present",
+    "production scheduled job remains skipped or disabled",
+    "no Release/video requirement is introduced"
+  ]
+}
