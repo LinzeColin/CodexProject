@@ -12,10 +12,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Confirmed iteration count: 33
+- Confirmed iteration count: 34
 - Reconstructed development event count: 3
-- Current task: `TASK-T905/A119-A120 migration rollback and clean-start release rehearsal`
-- Blockers: T905/A119-A120 now has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for this new commit is still pending; T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 now has a production gold-label intake gate but still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 now has a production gold-label intake gate but still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%; both A026/A027 require complete production_gold_evidence metadata and remain blocked by repository fixtures; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1301/A202 candidate-source-anchor release bundle coverage`
+- Blockers: T1301/A202 now has a local machine contract requiring signed passage reviews to cover `GV-SNAPSHOT-001..004` candidate source anchors before release-decision bundle validation can pass, but A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending; T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 now has a production gold-label intake gate but still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 now has a production gold-label intake gate but still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%; both A026/A027 require complete production_gold_evidence metadata and remain blocked by repository fixtures; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -760,6 +760,21 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the T905 validator, integration-test, README, artifacts and A119/A120/T905 governance rows, regenerate development/clean-room/release artifacts and rerun validation.
 - Next step: run local validation, regenerate release artifacts, commit/push and bind GitHub Actions EEI validation evidence.
 
+### `ITER-20260623-010`
+
+- Date: 2026-06-23
+- Task IDs: `TASK-T1301`
+- Acceptance IDs: `ACC-A202`
+- Change type: A202 candidate-source-anchor coverage for signed release decision bundles.
+- Scope: extended `scripts/validate_release_decision_bundle.py` so signed passage-level relationship reviews must cover every candidate's primary and supporting source anchors from `data/golden_vertical_fact_candidates.json`; updated the template/signed fixture to use `GV-SNAPSHOT-001..004` rather than live-capture-only `NVDA-ANCHOR-*` identifiers; regenerated the A202 contract artifact with explicit `candidate_source_anchor_requirements`.
+- Decisions: keep operator live capture anchors separate from publication-level candidate source anchors; keep A202/A209/A210 and release-manager activation open because this is a machine-verifiable contract, not real source-license/legal/owner clearance.
+- Files changed: `scripts/validate_release_decision_bundle.py`, release-decision template/signed fixtures, `tests/unit/test_release_decision_bundle.py`, `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`, T1301/A202 governance records, root information-quality stale pending rationale recognition and this ledger.
+- Test results: release-decision unit tests PASS 6/6; py_compile PASS; focused ruff PASS; release-decision bundle generate/validate PASS; template validation PASS with `release_ready=false`; signed fixture validation PASS with `GV-SNAPSHOT-001..004` coverage and `release_ready=false`; information-quality PASS; root governance tests PASS 130/130.
+- Parameters and formulas: no scoring formula, graph traversal, extraction model, model weight or active threshold changed; the release-decision-bundle contract now requires candidate-source-anchor coverage as an evidence binding rule.
+- Remaining risks: real source-license review, passage-level human approval, production owner sign-off, legal/brand clearance, A026/A027 production gold labels, A209 24h soak and release-manager activation remain incomplete.
+- Rollback: revert the release-decision validator, fixture, unit-test, generated artifact and governance-record changes, regenerate development/clean-room/release artifacts and rerun validation.
+- Next step: run full local verification, regenerate release artifacts, commit/push and bind GitHub Actions EEI validation evidence.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -801,6 +816,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-007`: remote CI binding for the T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
 - `EVENT-20260623-008`: local T904/A026-A027 production gold-label intake contract; A026/A027 remain open until real operator-supplied labels and evidence are supplied.
 - `EVENT-20260623-009`: local T905/A119-A120 migration rollback and clean-start release rehearsal; remote PostgreSQL CI binding remains pending.
+- `EVENT-20260623-010`: local T1301/A202 candidate-source-anchor coverage for signed release decision bundles; A202/A209/A210 remain open.
 
 ## Unknown Historical Periods
 

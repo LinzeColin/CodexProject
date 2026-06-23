@@ -4869,3 +4869,49 @@ Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI BINDING PENDING
 
 - Revert the T905 validator, integration-test, README, artifacts and A119/A120/T905 governance rows.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-23 - T1301/A202 candidate-source-anchor release bundle coverage
+
+Status: LOCAL VALIDATED; A202 STILL IN PROGRESS
+
+### Scope
+
+- Extended `scripts/validate_release_decision_bundle.py` so the signed release decision bundle loads `data/golden_vertical_fact_candidates.json`.
+- Added fail-closed validation that every passage-level relationship review covers the candidate's required primary and supporting source anchors.
+- Updated the A202/A210 template and signed contract-test fixture to use publication-level `GV-SNAPSHOT-001..004` anchors.
+- Regenerated `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json` with `candidate_source_anchor_requirements` and `candidate_source_anchor_coverage`.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`: this proves a machine contract for evidence-chain coverage, not real source-license review, passage approval, production owner approval, legal clearance, brand clearance or relationship publication.
+- A209 24h soak remains a background release gate and does not block this bounded A202 contract improvement.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold or active parameter value changed.
+- The release-decision-bundle evidence contract now requires candidate source-anchor coverage before signed publication evidence can validate.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-anchor-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py -p no:cacheprovider`: PASS, 6 passed.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-anchor-pycache .venv/bin/python -m py_compile scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py generate`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --template-only`: PASS with `release_ready=false`.
+- `.venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS with `GV-SNAPSHOT-001..004` coverage and `release_ready=false`.
+- `python3 scripts/validate_information_quality.py --all --fast --fail-on-error`: PASS after recognizing explicit stale pending PR/CI/manual-rerun rationale.
+- `python3 -m pytest -q tests/governance/test_project_governance_validator.py -p no:cacheprovider`: PASS, 130 passed and 4 subtests passed.
+
+### Remaining gaps
+
+- Real source-license review, passage-level human approval, production owner sign-off, legal/brand clearance and relationship publication are still absent.
+- Production gold labels and A209 24h soak evidence remain external gates.
+- The signed fixture is a contract test only and is not real clearance.
+
+### Rollback
+
+- Revert `scripts/validate_release_decision_bundle.py`, release-decision fixtures, `tests/unit/test_release_decision_bundle.py`, the A202 contract artifact and governance records.
+- Regenerate development, clean-room and release artifacts, then rerun validation.

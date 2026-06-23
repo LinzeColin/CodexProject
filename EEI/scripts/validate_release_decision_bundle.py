@@ -29,6 +29,7 @@ DEFAULT_SIGNED_CONTRACT_TEST = (
     / "tests/fixtures/release_decision_bundle/"
     "a202_a210_signed_decision_bundle_contract_test.json"
 )
+DEFAULT_FACT_CANDIDATES = ROOT / "data/golden_vertical_fact_candidates.json"
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
 
 REQUIRED_TASK_IDS = ["T1301", "T1309"]
@@ -110,6 +111,123 @@ def require_text(payload: dict[str, Any], key: str) -> str:
     return value.strip()
 
 
+def candidate_source_anchor_requirements(
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+) -> dict[str, list[str]]:
+    payload = read_json(fact_candidates_path)
+    snapshots = payload.get("source_snapshots")
+    if not isinstance(snapshots, list) or not snapshots:
+        raise ValueError("fact candidates must contain source_snapshots")
+    source_anchor_ids = {
+        require_text(snapshot, "anchor_id")
+        for snapshot in snapshots
+        if isinstance(snapshot, dict)
+    }
+    candidates = payload.get("relationship_candidates")
+    if not isinstance(candidates, list) or not candidates:
+        raise ValueError("fact candidates must contain relationship_candidates")
+    requirements: dict[str, list[str]] = {}
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            raise ValueError("relationship_candidates entries must be objects")
+        candidate_key = require_text(candidate, "candidate_key")
+        if candidate_key in requirements:
+            raise ValueError(f"duplicate relationship candidate: {candidate_key}")
+        primary_anchor_id = require_text(candidate, "source_anchor_id")
+        supporting_anchor_ids = candidate.get("supporting_source_anchor_ids")
+        if not isinstance(supporting_anchor_ids, list):
+            raise ValueError(f"{candidate_key} supporting_source_anchor_ids must be a list")
+        required_anchor_ids = [primary_anchor_id]
+        for anchor_id in supporting_anchor_ids:
+            if not isinstance(anchor_id, str) or not anchor_id.strip():
+                raise ValueError(f"{candidate_key} supporting_source_anchor_ids must be text")
+            required_anchor_ids.append(anchor_id.strip())
+        unknown_anchors = sorted(set(required_anchor_ids) - source_anchor_ids)
+        if unknown_anchors:
+            raise ValueError(
+                f"{candidate_key} references unknown source anchors: "
+                + ", ".join(unknown_anchors)
+            )
+        requirements[candidate_key] = list(dict.fromkeys(required_anchor_ids))
+    return requirements
+
+
+def validate_candidate_source_anchor_coverage(
+    bundle: dict[str, Any],
+    *,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+    require_passage_anchor_coverage: bool,
+) -> dict[str, Any]:
+    requirements = candidate_source_anchor_requirements(fact_candidates_path)
+    reviewed_source_anchors = {
+        str(entry.get("anchor_id"))
+        for entry in bundle["source_license_reviews"]
+        if isinstance(entry, dict)
+    }
+    required_source_anchors = {
+        anchor_id
+        for required_anchor_ids in requirements.values()
+        for anchor_id in required_anchor_ids
+    }
+    missing_source_reviews = sorted(required_source_anchors - reviewed_source_anchors)
+    if missing_source_reviews:
+        raise ValueError(
+            "source_license_reviews missing candidate source anchors: "
+            + ", ".join(missing_source_reviews)
+        )
+
+    passage_reviews = {
+        str(entry.get("candidate_key")): entry
+        for entry in bundle["passage_level_relationship_reviews"]
+        if isinstance(entry, dict)
+    }
+    unknown_candidates = sorted(set(passage_reviews) - set(requirements))
+    missing_candidates = sorted(set(requirements) - set(passage_reviews))
+    if unknown_candidates:
+        raise ValueError(
+            "passage reviews reference unknown relationship candidates: "
+            + ", ".join(unknown_candidates)
+        )
+    if missing_candidates:
+        raise ValueError(
+            "passage reviews missing relationship candidates: "
+            + ", ".join(missing_candidates)
+        )
+
+    coverage: dict[str, Any] = {}
+    for candidate_key, required_anchor_ids in sorted(requirements.items()):
+        review = passage_reviews[candidate_key]
+        supporting_anchor_ids = [
+            str(anchor_id).strip()
+            for anchor_id in review.get("supporting_anchor_ids", [])
+            if isinstance(anchor_id, str) and str(anchor_id).strip()
+        ]
+        missing_passage_anchors = sorted(set(required_anchor_ids) - set(supporting_anchor_ids))
+        if require_passage_anchor_coverage and missing_passage_anchors:
+            raise ValueError(
+                f"{candidate_key} passage review missing candidate source anchors: "
+                + ", ".join(missing_passage_anchors)
+            )
+        unlicensed_supporting_anchors = sorted(
+            set(supporting_anchor_ids) - reviewed_source_anchors
+        )
+        if require_passage_anchor_coverage and unlicensed_supporting_anchors:
+            raise ValueError(
+                f"{candidate_key} references anchors without source-license review: "
+                + ", ".join(unlicensed_supporting_anchors)
+            )
+        coverage[candidate_key] = {
+            "required_anchor_ids": required_anchor_ids,
+            "supporting_anchor_ids": supporting_anchor_ids,
+            "missing_passage_anchor_ids": missing_passage_anchors,
+        }
+    return {
+        "fact_candidates": relative(fact_candidates_path),
+        "required_source_anchor_ids": sorted(required_source_anchors),
+        "candidate_source_anchor_coverage": coverage,
+    }
+
+
 def validate_common_bundle_shape(bundle: dict[str, Any]) -> None:
     if bundle.get("schema_version") != SCHEMA_VERSION:
         raise ValueError(f"schema_version must be {SCHEMA_VERSION}")
@@ -140,7 +258,11 @@ def validate_common_bundle_shape(bundle: dict[str, Any]) -> None:
             raise ValueError(f"{section} must be present")
 
 
-def validate_template_bundle(bundle: dict[str, Any]) -> None:
+def validate_template_bundle(
+    bundle: dict[str, Any],
+    *,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+) -> None:
     validate_common_bundle_shape(bundle)
     if bundle.get("bundle_status") != "TEMPLATE_ONLY":
         raise ValueError("template bundle_status must be TEMPLATE_ONLY")
@@ -156,9 +278,18 @@ def validate_template_bundle(bundle: dict[str, Any]) -> None:
         raise ValueError("template legal clearance must remain PENDING_REVIEW")
     if bundle["brand_clearance_or_risk_waiver"].get("decision") != "PENDING_REVIEW":
         raise ValueError("template brand decision must remain PENDING_REVIEW")
+    validate_candidate_source_anchor_coverage(
+        bundle,
+        fact_candidates_path=fact_candidates_path,
+        require_passage_anchor_coverage=False,
+    )
 
 
-def validate_signed_decision_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
+def validate_signed_decision_bundle(
+    bundle: dict[str, Any],
+    *,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+) -> dict[str, Any]:
     validate_common_bundle_shape(bundle)
     if bundle.get("bundle_status") == "TEMPLATE_ONLY":
         raise ValueError("template-only bundle is not signed release evidence")
@@ -210,12 +341,18 @@ def validate_signed_decision_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
     attestation = bundle["attestation"]
     for field in ("signed_by", "signed_at", "signature"):
         require_text(attestation, field)
+    candidate_anchor_summary = validate_candidate_source_anchor_coverage(
+        bundle,
+        fact_candidates_path=fact_candidates_path,
+        require_passage_anchor_coverage=True,
+    )
     return {
         "source_license_reviews": len(bundle["source_license_reviews"]),
         "passage_reviews": len(bundle["passage_level_relationship_reviews"]),
         "owner_signoffs": len(bundle["production_owner_signoffs"]),
         "legal_clearance_status": legal["clearance_status"],
         "brand_decision": brand["decision"],
+        **candidate_anchor_summary,
     }
 
 
@@ -233,16 +370,21 @@ def build_contract(
     a210_preflight_path: Path = DEFAULT_A210_PREFLIGHT,
     template_path: Path = DEFAULT_TEMPLATE,
     signed_contract_test_path: Path = DEFAULT_SIGNED_CONTRACT_TEST,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     a202_packet = read_json(a202_packet_path)
     a210_preflight = read_json(a210_preflight_path)
     template = read_json(template_path)
-    validate_template_bundle(template)
+    validate_template_bundle(template, fact_candidates_path=fact_candidates_path)
     signed_contract_test = read_json(signed_contract_test_path)
-    signed_contract_test_summary = validate_signed_decision_bundle(signed_contract_test)
+    signed_contract_test_summary = validate_signed_decision_bundle(
+        signed_contract_test,
+        fact_candidates_path=fact_candidates_path,
+    )
     a202_gates = gate_statuses(a202_packet)
     a210_current = a210_preflight.get("current_clearance_status") or {}
+    candidate_anchor_requirements = candidate_source_anchor_requirements(fact_candidates_path)
     return {
         "schema_version": CONTRACT_SCHEMA_VERSION,
         "artifact_id": "t1301-a202-a210-release-decision-bundle-contract",
@@ -265,8 +407,11 @@ def build_contract(
             "decision_bundle_template_sha256": sha256_file(template_path),
             "signed_contract_test_bundle": relative(signed_contract_test_path),
             "signed_contract_test_bundle_sha256": sha256_file(signed_contract_test_path),
+            "golden_vertical_fact_candidates": relative(fact_candidates_path),
+            "golden_vertical_fact_candidates_sha256": sha256_file(fact_candidates_path),
         },
         "signed_contract_test_summary": signed_contract_test_summary,
+        "candidate_source_anchor_requirements": candidate_anchor_requirements,
         "required_sections": REQUIRED_SECTIONS,
         "a202_gate_statuses": a202_gates,
         "a210_current_clearance_status": a210_current,
@@ -285,6 +430,7 @@ def build_contract(
             "contract_test_signatures_are_not_clearance": True,
             "signed_contract_test_counts_as_clearance": False,
             "production_owner_publication_requires_signed_bundle": True,
+            "publication_passage_reviews_must_cover_candidate_source_anchors": True,
             "production_owner_publication_writes_operation_log": True,
             "default_publication_state": "fail_closed",
         },
@@ -304,12 +450,14 @@ def validate_contract(
     a210_preflight_path: Path = DEFAULT_A210_PREFLIGHT,
     template_path: Path = DEFAULT_TEMPLATE,
     signed_contract_test_path: Path = DEFAULT_SIGNED_CONTRACT_TEST,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
 ) -> None:
     expected = build_contract(
         a202_packet_path=a202_packet_path,
         a210_preflight_path=a210_preflight_path,
         template_path=template_path,
         signed_contract_test_path=signed_contract_test_path,
+        fact_candidates_path=fact_candidates_path,
         generated_at=contract.get("generated_at"),
     )
     for key in (
@@ -324,6 +472,7 @@ def validate_contract(
         "public_brand_launch_allowed",
         "source_files",
         "signed_contract_test_summary",
+        "candidate_source_anchor_requirements",
         "a202_gate_statuses",
         "a210_current_clearance_status",
     ):
@@ -343,6 +492,7 @@ def generate(args: argparse.Namespace) -> None:
         a210_preflight_path=args.a210_preflight,
         template_path=args.template,
         signed_contract_test_path=args.signed_contract_test,
+        fact_candidates_path=args.fact_candidates,
     )
     validate_contract(
         contract,
@@ -350,6 +500,7 @@ def generate(args: argparse.Namespace) -> None:
         a210_preflight_path=args.a210_preflight,
         template_path=args.template,
         signed_contract_test_path=args.signed_contract_test,
+        fact_candidates_path=args.fact_candidates,
     )
     write_json(args.output, contract)
     print(json.dumps({"generated": True, "artifact": relative(args.output)}, indent=2))
@@ -362,17 +513,22 @@ def validate(args: argparse.Namespace) -> None:
         a210_preflight_path=args.a210_preflight,
         template_path=args.template,
         signed_contract_test_path=args.signed_contract_test,
+        fact_candidates_path=args.fact_candidates,
     )
     print(json.dumps({"valid": True, "artifact": relative(args.output)}, indent=2))
 
 
 def validate_bundle(args: argparse.Namespace) -> None:
     bundle = read_json(args.bundle)
+    fact_candidates_path = getattr(args, "fact_candidates", DEFAULT_FACT_CANDIDATES)
     if args.template_only:
-        validate_template_bundle(bundle)
+        validate_template_bundle(bundle, fact_candidates_path=fact_candidates_path)
         result = {"valid": True, "bundle": relative(args.bundle), "release_ready": False}
     else:
-        summary = validate_signed_decision_bundle(bundle)
+        summary = validate_signed_decision_bundle(
+            bundle,
+            fact_candidates_path=fact_candidates_path,
+        )
         result = {
             "valid": True,
             "bundle": relative(args.bundle),
@@ -400,9 +556,11 @@ def main() -> int:
             type=Path,
             default=DEFAULT_SIGNED_CONTRACT_TEST,
         )
+        child.add_argument("--fact-candidates", type=Path, default=DEFAULT_FACT_CANDIDATES)
         child.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     bundle = sub.add_parser("validate-bundle")
     bundle.add_argument("--bundle", type=Path, default=DEFAULT_TEMPLATE)
+    bundle.add_argument("--fact-candidates", type=Path, default=DEFAULT_FACT_CANDIDATES)
     bundle.add_argument("--template-only", action="store_true")
     args = parser.parse_args()
     if args.command == "generate":

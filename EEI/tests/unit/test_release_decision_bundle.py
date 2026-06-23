@@ -29,6 +29,20 @@ def test_release_decision_bundle_contract_is_fail_closed() -> None:
     assert contract["a210_current_clearance_status"]["formal_legal_clearance"] == "NOT_COMPLETE"
     assert contract["signed_contract_test_summary"]["passage_reviews"] == 2
     assert (
+        contract["source_files"]["golden_vertical_fact_candidates"]
+        == "data/golden_vertical_fact_candidates.json"
+    )
+    assert contract["candidate_source_anchor_requirements"] == {
+        "GV-FACT-001": ["GV-SNAPSHOT-001", "GV-SNAPSHOT-003"],
+        "GV-FACT-002": ["GV-SNAPSHOT-002", "GV-SNAPSHOT-004"],
+    }
+    assert (
+        contract["validation_policy"][
+            "publication_passage_reviews_must_cover_candidate_source_anchors"
+        ]
+        is True
+    )
+    assert (
         contract["source_files"]["signed_contract_test_bundle"]
         == "tests/fixtures/release_decision_bundle/"
         "a202_a210_signed_decision_bundle_contract_test.json"
@@ -64,11 +78,24 @@ def test_signed_decision_bundle_requires_every_signature() -> None:
             "reviewed_at": "2026-06-22T00:00:00Z",
             "source_license_status": "approved_for_public_release",
             "allowed_use_scope": "EEI relationship review and evidence snippets",
-            "evidence_uri": "internal://source-license/NVDA-ANCHOR-002",
+            "evidence_uri": f"internal://source-license/{signed['source_license_reviews'][0]['anchor_id']}",
         }
     )
 
     with pytest.raises(ValueError, match="missing signed decision field: signature"):
+        bundle.validate_signed_decision_bundle(signed)
+
+
+def test_signed_decision_bundle_requires_candidate_source_anchor_coverage() -> None:
+    signed = copy.deepcopy(bundle.read_json(SIGNED_FIXTURE))
+    signed["passage_level_relationship_reviews"][0]["supporting_anchor_ids"] = [
+        "GV-SNAPSHOT-001"
+    ]
+
+    with pytest.raises(
+        ValueError,
+        match="GV-FACT-001 passage review missing candidate source anchors: GV-SNAPSHOT-003",
+    ):
         bundle.validate_signed_decision_bundle(signed)
 
 
@@ -78,6 +105,7 @@ def test_signed_decision_bundle_is_complete_but_not_release_ready(
     signed = copy.deepcopy(bundle.read_json(bundle.DEFAULT_TEMPLATE))
     signed["bundle_status"] = "SIGNED_DECISION_BUNDLE"
     signed["release_gate_closure_allowed"] = True
+    requirements = bundle.candidate_source_anchor_requirements()
     for entry in signed["source_license_reviews"]:
         entry.update(
             {
@@ -92,7 +120,7 @@ def test_signed_decision_bundle_is_complete_but_not_release_ready(
     for entry in signed["passage_level_relationship_reviews"]:
         entry.update(
             {
-                "supporting_anchor_ids": ["NVDA-ANCHOR-002", "NVDA-ANCHOR-003"],
+                "supporting_anchor_ids": requirements[entry["candidate_key"]],
                 "supporting_passage_locator": f"internal://passage/{entry['candidate_key']}",
                 "counter_evidence_reviewed": True,
                 "decision": "approved_for_publication",
@@ -155,11 +183,16 @@ def test_signed_decision_fixture_validates_but_still_requires_external_gates(
     signed = bundle.read_json(SIGNED_FIXTURE)
 
     summary = bundle.validate_signed_decision_bundle(signed)
-    assert summary["source_license_reviews"] == 3
+    assert summary["source_license_reviews"] == 4
     assert summary["passage_reviews"] == 2
     assert summary["owner_signoffs"] == 2
     assert summary["legal_clearance_status"] == "RISK_WAIVER_ACCEPTED"
     assert summary["brand_decision"] == "RISK_WAIVER_ACCEPTED"
+    assert summary["candidate_source_anchor_coverage"]["GV-FACT-001"] == {
+        "required_anchor_ids": ["GV-SNAPSHOT-001", "GV-SNAPSHOT-003"],
+        "supporting_anchor_ids": ["GV-SNAPSHOT-001", "GV-SNAPSHOT-003"],
+        "missing_passage_anchor_ids": [],
+    }
 
     bundle.validate_bundle(Namespace(bundle=SIGNED_FIXTURE, template_only=False))
 
