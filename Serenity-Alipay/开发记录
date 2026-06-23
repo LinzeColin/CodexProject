@@ -1,21 +1,86 @@
-# Serenity-Alipay 开发记录
+# 开发记录
 
-本文件保留为历史兼容入口，不再作为独立可编辑事实源。
+## 摘要
 
-Canonical governance sources:
+- project_id: `Serenity-Alipay`
+- product_version: `0.1.0`
+- current_stage: `S4`
+- current_phase: `S4PB`
+- current_task: `S4PBT03`
+- total_hours: `32.00`
+- completed_hours: `24.00`
+- progress: `75.00%`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S4PB-GATE`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-- `docs/governance/DEVELOPMENT_LEDGER.md`
-- `docs/governance/development_events.jsonl`
-- `docs/governance/DELIVERY_PLAN.md`
-- `docs/governance/delivery_tasks.yaml`
-- `docs/governance/VERSION_MATRIX.yaml`
+## Roadmap
 
-仍然有效的历史说明：
+Stage -> Phase -> Task
 
-- Serenity-Alipay 是本地优先、可审计的投资研究自动化。
-- 它用于场外基金候选筛选、评分、排序、纪律标签、报告和通知草稿。
-- 它不下单，不承诺未来跑赢上证综指或 S&P 500。
-- 历史数据 append-only，不重写过去 snapshot、report、notification 或 raw data。
-- blocker 不能被描述为成功；moomoo/OpenD failure 不能静默当作健康数据。
+### S4 Serenity-Alipay pilot migration and truth validation
 
-后续有意义的开发运行必须 append `docs/governance/development_events.jsonl`，不能覆盖历史。
+- person_goal: `Only migrate Serenity-Alipay and prove real scoring model facts, Roadmap facts, human readability, and low-cost sync without fake history.`
+- status: `in_progress`
+- derived_hours: `32.00`
+- derived_percent: `100.00%`
+- stop_conditions: `Pilot introduces business behavior change, Evidence-free model facts appear, Human files remain compatibility indexes after S4PB`
+- stop_gate: `S4-GATE`
+
+#### S4PA Directed fact extraction
+
+- objective: `Extract bounded Serenity facts and reconstruct roadmap truth without invented history.`
+- status: `completed`
+- derived_hours: `14.00`
+- derived_percent: `43.75%`
+- stop_conditions: `Code/document contradiction is unmarked, Technology stack is written as a model parameter, Iteration or hour claims are invented`
+- stop_gate: `S4PA-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S4PAT01 | Bound read scope and create evidence index | completed | 4.00 | 12.50% | S3-GATE | ACC-S4PAT01 |
+| S4PAT02 | Extract models, formulas, parameters, and strategies | completed | 6.00 | 18.75% | S4PAT01 | ACC-S4PAT02 |
+| S4PAT03 | Reconstruct Roadmap and events honestly | completed | 4.00 | 12.50% | S4PAT01 | ACC-S4PAT03 |
+
+#### S4PB Migration and generation
+
+- objective: `Create Lean v2 canonical facts, generate Chinese human entry files, and verify render drift.`
+- status: `in_progress`
+- derived_hours: `14.00`
+- derived_percent: `43.75%`
+- stop_conditions: `Focused tests fail, Generated files and canonical facts disagree`
+- stop_gate: `S4PB-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S4PBT01 | Create project.yaml, roadmap.yaml, events.jsonl | completed | 6.00 | 18.75% | S4PAT02, S4PAT03 | ACC-S4PBT01 |
+| S4PBT02 | Generate three Chinese human entry files | completed | 4.00 | 12.50% | S4PBT01 | ACC-S4PBT02 |
+| S4PBT03 | Run focused tests, validate, and drift check | in_progress | 4.00 | 12.50% | S4PBT02 | ACC-S4PBT03 |
+
+#### S4PC Owner readability and cost acceptance
+
+- objective: `Confirm owner readability, token-cost behavior, and rollback path.`
+- status: `planned`
+- derived_hours: `4.00`
+- derived_percent: `12.50%`
+- stop_conditions: `Owner cannot understand key model or next decision, Governance cost exceeds budget without approved exception`
+- stop_gate: `S4PC-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S4PCT01 | Run two-minute Owner ROA review | planned | 2.00 | 6.25% | S4PBT03 | ACC-S4PCT01 |
+| S4PCT02 | Verify duration, token proxy, and rollback | planned | 2.00 | 6.25% | S4PCT01 | ACC-S4PCT02 |
+
+
+## 近期事件
+
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-12T00:00:00+10:00 | evidence_update | MVP scoring, dry-run automation, lifecycle, and local-first safety behavior reconstructed from HANDOFF and current tests. | S4PAT03 | RECONSTRUCTED |
+| 2026-06-14T00:00:00+10:00 | evidence_update | Delivery package, app entry, history integrity, and production-readiness evidence reconstructed from HANDOFF. | S4PAT03 | RECONSTRUCTED |
+| 2026-06-21T00:43:11+10:00 | evidence_update | Legacy governance baseline event exists but remains stale_unbound and is not promoted to commit-bound truth. | S4PBT01 | UNKNOWN |
+| 2026-06-23T00:00:00+10:00 | implementation | Bounded Serenity-Alipay evidence index created without changing business behavior. | S4PAT01 | VERIFIED |
+| 2026-06-23T00:00:00+10:00 | implementation | Extracted five active models, twelve formulas, forty-nine parameters, and five strategies with FORM-008 caveat preserved. | S4PAT02 | VERIFIED |
+| 2026-06-23T23:08:04+10:00 | implementation | Reconstructed Review9 Stage 4 roadmap and event truth levels with PR #97 and main CI run 28028512167. | S4PAT03 | VERIFIED |
+| 2026-06-24T00:35:00+10:00 | migration | Proposed Lean v2 canonical project, roadmap, events, and generated Chinese human entry files for S4PB validation. | S4PBT03 | PROPOSED |

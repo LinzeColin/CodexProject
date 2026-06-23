@@ -1161,6 +1161,165 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("Serenity-Alipay/docs/governance/roadmap_draft.yaml", manifest["evidence_refs"])
         self.assertIn("S4PBT01 still must create canonical", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s4pb_serenity_project_yaml_contains_canonical_model_facts(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "Serenity-Alipay")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(len(project["models"]), 5)
+        self.assertEqual(len(project["formulas"]), 12)
+        self.assertEqual(len(project["parameters"]), 49)
+        self.assertEqual(len(project["strategies"]), 5)
+        self.assertEqual(len(project["assumptions"]), 6)
+
+        model_ids = {item["model_id"] for item in project["models"]}
+        formula_ids = {item["formula_id"] for item in project["formulas"]}
+        parameter_ids = {item["parameter_id"] for item in project["parameters"]}
+        self.assertEqual(model_ids, {"MOD-001", "MOD-002", "MOD-003", "MOD-004", "MOD-005"})
+        self.assertEqual({f"FORM-{index:03d}" for index in range(1, 13)}, formula_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 50)}, parameter_ids)
+
+        formula_008 = next(item for item in project["formulas"] if item["formula_id"] == "FORM-008")
+        self.assertIn("Normalize capped weights again", formula_008["expression"])
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("one-to-four candidate scenarios can exceed 0.30", limitations)
+        parameter_blob = " ".join(
+            f"{item['parameter_id']} {item['symbol']} {item['name']} {item['source']}" for item in project["parameters"]
+        )
+        for forbidden in {"Python", "SQLite", "macOS Mail"}:
+            self.assertNotIn(forbidden, parameter_blob)
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S4PAT03-CI", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+    def test_review9_s4pb_serenity_roadmap_tracks_canonical_render_phase(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "Serenity-Alipay")
+        self.assertEqual(roadmap["current_stage_id"], "S4")
+        self.assertEqual(roadmap["current_phase_id"], "S4PB")
+        self.assertEqual(roadmap["current_task_id"], "S4PBT03")
+        self.assertEqual(roadmap["next_gate_id"], "S4PB-GATE")
+
+        tasks = {
+            task["task_id"]: task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        }
+        self.assertEqual(tasks["S4PAT03"]["status"], "completed")
+        self.assertEqual(tasks["S4PAT03"]["completed_commit"], "e0a6782efee3c2945abaa261eb0b28fce7bff2df")
+        self.assertEqual(tasks["S4PBT01"]["status"], "completed")
+        self.assertEqual(tasks["S4PBT02"]["status"], "completed")
+        self.assertEqual(tasks["S4PBT03"]["status"], "in_progress")
+        self.assertIn("governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json", tasks["S4PBT03"]["evidence_refs"])
+
+    def test_review9_s4pb_serenity_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "Serenity-Alipay" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 7)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-SER-LEGACY-20260621-001"]["fact_level"], "UNKNOWN")
+        self.assertIn("stale_unbound", by_id["EVT-SER-LEGACY-20260621-001"]["summary"])
+        self.assertEqual(by_id["EVT-SER-REVIEW9-S4PB-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertIn("must remain PROPOSED", by_id["EVT-SER-REVIEW9-S4PB-LOCAL"]["notes"])
+        self.assertEqual(by_id["EVT-SER-REVIEW9-S4PAT03"]["fact_level"], "VERIFIED")
+
+    def test_review9_s4pb_serenity_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        result = cli.check_render_project_files(ROOT / "Serenity-Alipay")
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (ROOT / "Serenity-Alipay" / "功能清单").read_text(encoding="utf-8")
+        dev_text = (ROOT / "Serenity-Alipay" / "开发记录").read_text(encoding="utf-8")
+        model_text = (ROOT / "Serenity-Alipay" / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S4PBT03", dev_text)
+        self.assertIn("FORM-008", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s4pb_git_status_porcelain_decodes_chinese_paths_as_utf8(self) -> None:
+        cli = load_lean_governance_module()
+        completed = SimpleNamespace(stdout=" M Serenity-Alipay/功能清单\n", stderr="", returncode=0)
+        with patch.object(cli.subprocess, "run", return_value=completed) as run:
+            lines = cli.git_status_porcelain(ROOT)
+        self.assertEqual(lines, [" M Serenity-Alipay/功能清单"])
+        kwargs = run.call_args.kwargs
+        self.assertEqual(kwargs["encoding"], "utf-8")
+        self.assertEqual(kwargs["errors"], "replace")
+
+    def test_review9_s4pb_canonical_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "Serenity-Alipay",
+            "path": "Serenity-Alipay",
+            "model_behavior_globs": ["app/**/*.py", "tests/**/*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "Serenity-Alipay/docs/governance/project.yaml",
+                "Serenity-Alipay/docs/governance/roadmap.yaml",
+                "Serenity-Alipay/docs/governance/events.jsonl",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {"docs/governance/project.yaml", "docs/governance/roadmap.yaml", "docs/governance/events.jsonl"},
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s4pb_manifest_records_canonical_render_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S4PB")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PBT01", "ACC-S4PBT02", "ACC-S4PBT03"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("canonical_project_facts", manifest["change_classification"])
+        self.assertIn("human_entry_render", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "Serenity-Alipay/docs/governance/project.yaml",
+            "Serenity-Alipay/docs/governance/roadmap.yaml",
+            "Serenity-Alipay/docs/governance/events.jsonl",
+            "Serenity-Alipay/功能清单",
+            "Serenity-Alipay/开发记录",
+            "Serenity-Alipay/模型参数文件",
+            "scripts/lean_governance.py",
+            "scripts/validate_governance_sync.py",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertIn("S4PC still must record owner readability", " ".join(manifest["unresolved_risks"]))
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")

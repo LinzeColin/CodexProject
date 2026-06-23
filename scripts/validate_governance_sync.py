@@ -92,9 +92,12 @@ PROJECT_GOVERNANCE_FILES = {
     "ASSURANCE_STATUS.yaml",
     "STATUS.md",
     "OWNER_STATUS.md",
+    "events.jsonl",
     "evidence_index.yaml",
     "model_extraction.yaml",
+    "project.yaml",
     "roadmap_draft.yaml",
+    "roadmap.yaml",
 }
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
