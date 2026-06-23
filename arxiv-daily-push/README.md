@@ -16,6 +16,11 @@ Production is not accepted and scheduled production must stay disabled until
 the V5 gates pass. Current local work is still low-resource and must not rely on
 the user's Mac as a background production runner.
 
+Baseline clarification: 30-day-grade Stage 1/2 evidence means 30 independent
+unique-date artifacts and replay/coverage checks generated from real data where
+available. It must not be interpreted as waiting 30 wall-clock days when the
+same evidence can be produced and verified faster.
+
 ## Current Scope
 
 Implemented foundations now:

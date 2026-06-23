@@ -17,7 +17,7 @@ PASSING_RUN_STATUSES = {"succeeded", "degraded"}
 
 
 def evaluate_trial_evidence(evidence: Mapping[str, Any], *, generated_at: str) -> dict[str, Any]:
-    """Evaluate 30-day production trial evidence without performing side effects."""
+    """Evaluate 30 unique-date operational evidence coverage without side effects."""
 
     trial_id = str(evidence.get("trial_id") or "trial:unknown")
     period = evidence.get("period") if isinstance(evidence.get("period"), Mapping) else {}
@@ -41,7 +41,7 @@ def evaluate_trial_evidence(evidence: Mapping[str, Any], *, generated_at: str) -
         thirty_day_reasons.append("trial_ref is required")
 
     gates = [
-        _gate("thirty_day_trial_passed", "30-day trial with daily uniqueness, traceability, weekly/monthly replay, and recovery drill evidence", thirty_day_passed, trial_ref, thirty_day_reasons),
+        _gate("thirty_day_trial_passed", "30 unique-date operational coverage with traceability, weekly/monthly replay, and recovery drill evidence", thirty_day_passed, trial_ref, thirty_day_reasons),
         _gate("scheduler_operational", "05:00 scheduler, 04:45 health check, and manual rerun evidence", scheduler["passed"], scheduler["evidence_ref"], scheduler["blocking_reasons"]),
         _gate("text_artifacts_verified", "Stage 1 text delivery artifact evidence", text_artifacts["passed"], text_artifacts["evidence_ref"], text_artifacts["blocking_reasons"]),
         _gate("real_smtp_verified", "real SMTP delivery evidence to the configured recipient", email["passed"], email["evidence_ref"], email["blocking_reasons"]),
