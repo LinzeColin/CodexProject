@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260623-ADP-074"
+as_of_event_id: "EVENT-20260623-ADP-076"
 source_snapshot_hash: "sha256:48e00502a65973d52a3101ddcbe9e1cd547cf94a490cb22211bcac6ab2255b69"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -54,7 +54,7 @@ dimensions:
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
   delivery_evidence:
-    status: "FAILED"
+    status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
@@ -69,7 +69,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY"
+  release_gate: "S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
@@ -77,7 +77,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
   status: "in_progress"
-  reason: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
+  reason: "Two controlled GitHub/cloud-runner B1/arXiv SMTP sends are present; collect the second distinct natural-day evidence before ARXIV_PRODUCTION_ACCEPTED can be claimed."
   acceptance_ids:
     - "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
   owner: "content_owner + engineering_owner + operations_owner"
