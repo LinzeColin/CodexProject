@@ -1,18 +1,40 @@
-# OpenAIDatabase 功能清单
+# 功能清单
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再作为功能、模型、任务或验收的可编辑事实源。
+- project_id: `OpenAIDatabase`
+- product_version: `0.2.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT03`
+- progress: `100.00%`
+- capability_count: `5`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical 文件：
+## 功能概览
 
-- 功能与模型边界：`docs/governance/MODEL_SPEC.md`
-- 模型注册表：`docs/governance/model_registry.yaml`
-- 公式注册表：`docs/governance/formula_registry.yaml`
-- 参数台账：`docs/governance/parameter_registry.csv`
-- 交付任务：`docs/governance/DELIVERY_PLAN.md`
-- 任务机器源：`docs/governance/delivery_tasks.yaml`
-- 追踪矩阵：`docs/governance/TRACEABILITY_MATRIX.csv`
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-OAIDB-001 | 记忆候选分类、脱敏与主动记忆 | active | 从脱敏 source chunks 生成 pending/active memory，并提供只读 SQLite search/fetch；这不证明可安全持久写入。 | EXTRACTED |
+| FEAT-OAIDB-002 | Memory Atlas 权重、ROI 与活动评分 | blocked | 计算 memory node weight、leverage、staleness 和 contribution activity；启发式权重/阈值仍缺校准证据。 | EXTRACTED |
+| FEAT-OAIDB-003 | Codex 本地行为同步与数据源注册 | active | 同步本地 Codex 行为摘要并注册 public snapshot/source registry，避免 planned source 被当作真实活动。 | EXTRACTED |
+| FEAT-OAIDB-004 | Writeback proposal 版本链 | active | 创建本地 draft memory change proposals、revision、rollback 与 agent/human apply gate；FORM-010 仍需人工复核。 | EXTRACTED |
+| FEAT-OAIDB-005 | Personalization export 与资源路由 | active | 生成 ChatGPT/Codex personalization exports、资源路由、evaluation harness 和 run logs；仍受隐私 owner gate 约束。 | EXTRACTED |
 
-历史摘要仍可从 Git 历史读取；新增功能、验收、模型或参数事实必须写入
-`docs/governance/` 下的 canonical 文件。
+## 证据
+
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-OAIDB-MODEL-REGISTRY | file | OpenAIDatabase/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-OAIDB-FORMULA-REGISTRY | file | OpenAIDatabase/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-OAIDB-PARAMETER-REGISTRY | file | OpenAIDatabase/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-OAIDB-TRACEABILITY-MATRIX | file | OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
+| EVID-OAIDB-ASSURANCE-STATUS | file | OpenAIDatabase/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-OAIDB-DELIVERY-TASKS | file | OpenAIDatabase/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-OAIDB-DEVELOPMENT-EVENTS | file | OpenAIDatabase/docs/governance/development_events.jsonl | RECONSTRUCTED |
+| EVID-OAIDB-OWNER-STATUS | file | OpenAIDatabase/docs/governance/OWNER_STATUS.md | EXTRACTED |
+| EVID-SEMANTIC-OAIDB-MANIFEST | manifest | governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json | EXTRACTED |
+| EVID-REVIEW9-S5PBT03-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json | PROPOSED |
