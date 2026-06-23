@@ -1,0 +1,190 @@
+{
+  "run_id": "ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-S1P5T04-POST-MERGE-TEST10-040",
+  "iteration_id": "ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-040",
+  "event_id": "EVENT-20260624-ADP-083",
+  "created_at": "2026-06-24T07:52:00+10:00",
+  "status": "completed",
+  "scope": [
+    "Verify the owner-triggered post-merge manual Gmail SMTP test10 from main.",
+    "Bind the Australia/Sydney service-date correction to a real GitHub/cloud runner email send.",
+    "Record that production schedule, Release upload, Stage 2, and video remain out of scope."
+  ],
+  "non_scope": [
+    "No production schedule enablement.",
+    "No additional SMTP send beyond owner-triggered test10.",
+    "No Release upload.",
+    "No Stage 2 work.",
+    "No video requirement.",
+    "No email template redesign."
+  ],
+  "github_action": {
+    "workflow": "arXiv Daily Push manual B1 text SMTP test",
+    "run_id": 28059194999,
+    "run_number": 10,
+    "run_url": "https://github.com/LinzeColin/CodexProject/actions/runs/28059194999",
+    "head_branch": "main",
+    "head_sha": "2f715f37ee21df59cc1cf092d712bd9399157469",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-06-23T21:44:44Z",
+    "updated_at": "2026-06-23T21:46:18Z",
+    "jobs": [
+      {
+        "name": "guard",
+        "job_id": 83069063852,
+        "conclusion": "success"
+      },
+      {
+        "name": "manual-delivery-test",
+        "job_id": 83069079559,
+        "conclusion": "success"
+      }
+    ],
+    "runner_evidence": {
+      "hosted_compute_agent": true,
+      "operating_system": "Ubuntu 24.04.4 LTS",
+      "runner_image": "ubuntu-24.04",
+      "runner_regions_seen": [
+        "eastus",
+        "westcentralus"
+      ],
+      "not_user_mac_background": true
+    }
+  },
+  "artifacts": [
+    {
+      "artifact_id": 7834307458,
+      "name": "adp-manual-delivery-scheduled-execution",
+      "digest": "sha256:96eedfa0b84a5a4d0cb03c331ff047682b2132440b0d30b4a8c72ef5e6dda334",
+      "size_in_bytes": 2154,
+      "status": "verified"
+    },
+    {
+      "artifact_id": 7834306281,
+      "name": "adp-phase12-delivery-artifacts",
+      "digest": "sha256:b48f3644a4385ffe28b3507f6fc7b93531c6800a90070fc771a6b9927ad8d06d",
+      "size_in_bytes": 55219,
+      "status": "verified"
+    },
+    {
+      "artifact_id": 7834305857,
+      "name": "adp-manual-delivery-daily-input-build-report",
+      "digest": "sha256:21155d424c0c08911eb9323287b417c89f933fb06ec4e5a82d01d8430dd77902",
+      "size_in_bytes": 51618,
+      "status": "verified"
+    },
+    {
+      "artifact_id": 7834283976,
+      "name": "adp-manual-delivery-preflight",
+      "digest": "sha256:28b9af2f3bee6eadd10ad7ea208a75b2355e162a6d41546316a5858b4c7e47a4",
+      "size_in_bytes": 919,
+      "status": "verified"
+    }
+  ],
+  "scheduled_execution_evidence": {
+    "status": "succeeded",
+    "exit_code": 0,
+    "mode": "daily-run",
+    "generated_at": "2026-06-23T21:45:06Z",
+    "service_date": "2026-06-24",
+    "preflight_status": "pass",
+    "production_evidence_ready": true,
+    "scheduled_run_enabled_for_manual_driver": true,
+    "daily_run_report": {
+      "status": "succeeded",
+      "date": "2026-06-24",
+      "source_id": "arxiv:2606.23676",
+      "publication_id": "pub:daily:2026-06-24:arxiv:2606.23676",
+      "unsupported_claims_published": false,
+      "failure_generated_misleading_content": false,
+      "p0_claims_traceable": true
+    },
+    "notification_report": {
+      "status": "sent",
+      "dry_run": false,
+      "real_smtp_send_enabled": true,
+      "recipient": "linzezhang35@gmail.com",
+      "expected_recipient": "linzezhang35@gmail.com",
+      "subject": "20260624 -- arXiv Computer Science -- Computer Science -- Open Problem: Is AdamW Effective Under Heavy-Tailed Noise?",
+      "body_logged": false,
+      "body_sha256": "84c8c26e5a7a1d7546576745315d43d5f5cab9ae16193628b19665f2301f1cb2",
+      "html_alternative_present": true,
+      "html_body_sha256": "638f640889fd8e7263974da96573e686fd9037b113f8e0a6283ac312a26c22f8",
+      "secret_values_logged": false
+    },
+    "delivery_package": {
+      "email_contains_chinese_lesson": true,
+      "email_contains_candidate_queue_summary": true,
+      "email_contains_html": true,
+      "release_required": false,
+      "video_required": false,
+      "video_generation_required": false,
+      "video_attachment_allowed": false
+    },
+    "release_report": {
+      "status": "dry_run",
+      "release_upload_enabled": false,
+      "release_upload_requested": false,
+      "tag": "adp-daily-20260624"
+    },
+    "side_effect_policy": {
+      "smtp_send_requested": true,
+      "release_upload_requested": false,
+      "video_attachment_allowed": false,
+      "email_body_logged": false,
+      "secret_values_logged": false,
+      "codex_auth_read": false
+    }
+  },
+  "daily_input_evidence": {
+    "status": "pass",
+    "daily_input_ready": true,
+    "date": "2026-06-24",
+    "scan_status": "pass",
+    "archive_count": 20,
+    "blocked_archive_count": 0,
+    "candidate_count": 16
+  },
+  "production_schedule_evidence": {
+    "production_schedule_enabled": false,
+    "production_schedule_changed_by_this_run": false,
+    "latest_scheduled_runs_checked": [
+      {
+        "run_id": 28057072176,
+        "event": "schedule",
+        "conclusion": "success",
+        "scheduled_job_conclusion": "skipped"
+      },
+      {
+        "run_id": 28056782115,
+        "event": "schedule",
+        "conclusion": "success",
+        "scheduled_job_conclusion": "skipped"
+      },
+      {
+        "run_id": 28056430312,
+        "event": "schedule",
+        "conclusion": "success",
+        "scheduled_job_conclusion": "skipped"
+      }
+    ]
+  },
+  "acceptance": {
+    "manual_run_number_10_success": true,
+    "main_branch_after_sydney_fix": true,
+    "sydney_service_date_subject": true,
+    "smtp_sent_to_owner": true,
+    "chinese_lesson_present": true,
+    "candidate_queue_summary_present": true,
+    "email_body_not_logged": true,
+    "secret_values_not_logged": true,
+    "production_schedule_still_disabled": true,
+    "release_upload_still_disabled": true,
+    "video_requirement_not_reintroduced": true,
+    "stage1_gate": "ARXIV_PRODUCTION_ACCEPTED",
+    "current_v6_task_id": "S1P5T04",
+    "next_task": "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
+  }
+}

@@ -19,7 +19,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 65
+- task_count: 66
 - acceptance_count: 59
 
 ## Delivery Tasks
@@ -86,7 +86,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-10-POST_MIGRATION_BOOTSTRAP-001 | S1-A | completed | ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP | focused 16 OK; full 220 OK; semantic 45/322 OK; project/all/changed-only governance 0 errors | `governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json`; `docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses teaching-first Chinese sections, compact arXiv subject, action guidance, concise evidence, candidate queue summary, and hides ROI scoring, Release, video, delivery-policy, and backend wording from the owner-facing email | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
 | ADP-S1P5T04-SYDNEY-SERVICE-DATE-039 | S1-A | completed | ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS | test9 proved cloud manual SMTP send but exposed UTC-sliced service date; PR #102 merged four workflow fixes that compute Australia/Sydney service date for daily artifacts and email subjects | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml`; `.github/workflows/arxiv-daily-push-scheduled.yml` |
-| ADP-S1P5T04-POST-MERGE-TEST10-040 | S1-A | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | owner-triggered post-merge controlled test10 must run from main to prove Sydney-date subject, Chinese teaching email, scheduled-execution artifact, SMTP sent state, and production schedule still disabled/skipped | `.github/workflows/arxiv-daily-push-manual-delivery-test.yml` |
+| ADP-S1P5T04-POST-MERGE-TEST10-040 | S1-A | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 28059194999 / test10 completed success from main, proved Sydney-date subject, Gmail SMTP sent state, Chinese lesson flag, candidate queue summary flag, and no production schedule enablement | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
+| ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041 | S1-A | blocked | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | Stage 1 remains accepted after test10; daily production schedule enablement is blocked until a separate owner-approved GitHub variables/secrets verification run | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
