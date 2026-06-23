@@ -2,6 +2,14 @@
 
 ## 0.23.0 - 2026-06-23
 
+- Recorded PR #82 GitHub/cloud artifact `7818287996` as
+  `ARXIV_PRODUCTION_ACCEPTED` for Stage 1 arXiv.
+- Added project-root `功能清单`, `开发记录`, and `模型参数文件` human entry files,
+  with the V6 roadmap rendered directly in `开发记录`.
+- Hardened scheduled/trial workflows so all-arXiv fallback collection uses
+  `ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3`, matching accepted evidence volume.
+- Kept production scheduling disabled and fail-closed until GitHub repo
+  variables/secrets are explicitly verified or enabled.
 - Added `adp build-stage1-accelerated-acceptance` for S1P5T04 accelerated real-arXiv acceptance evidence.
 - Updated the live all-arXiv cloud dry-run workflow to collect up to 3 items per primary archive and build a 30-sample accelerated acceptance artifact on GitHub runner.
 - Kept production scheduling disabled, sent no new email, and preserved Stage 1 text-only/no-video/no-Release requirements.

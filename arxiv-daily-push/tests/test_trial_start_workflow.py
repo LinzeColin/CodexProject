@@ -28,6 +28,8 @@ class TrialStartWorkflowTests(unittest.TestCase):
         self.assertIn("contents: read", workflow)
         self.assertLess(workflow.index("preflight-production"), workflow.index("Build all-arXiv trial input"))
         self.assertLess(workflow.index("adp-text-delivery-policy.json"), workflow.index("Run SMTP delivery probe"))
+        self.assertIn("ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3", workflow)
+        self.assertNotIn("ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-1", workflow)
         self.assertIn("plan-trial-start", workflow)
         self.assertNotIn("ADP_ALLOW_RELEASE", workflow)
         self.assertNotIn("ADP_RELEASE", workflow)

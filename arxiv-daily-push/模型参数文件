@@ -1,0 +1,89 @@
+# 模型参数文件
+
+## 摘要
+
+- project_id: `arxiv-daily-push`
+- product_version: `0.23.0`
+- current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
+- current_phase: `S1P5`
+- current_task: `S1P5T04`
+- current_gate: `ARXIV_PRODUCTION_ACCEPTED`
+- active_model_count: `45`
+- active_formula_count: `47`
+- active_parameter_count: `334`
+- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
+- evidence_status: `VERIFIED`
+
+## 证据
+
+| 证据 ID | 类型 | 引用 | 支持的模型/公式/参数 | 事实等级 |
+|---|---|---|---|---|
+| `EVID-MODEL-001` | governance | `docs/governance/model_registry.yaml` | active models | EXTRACTED |
+| `EVID-FORMULA-001` | governance | `docs/governance/formula_registry.yaml` | active formulas | EXTRACTED |
+| `EVID-PARAM-001` | governance | `docs/governance/parameter_registry.csv` | active parameters | EXTRACTED |
+| `EVID-ACC-001` | run_manifest | `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` | `MOD-ADP-045`; `FORM-ADP-047`; `PARAM-ADP-349..351` | EXTRACTED |
+
+## 核心模型
+
+### `MOD-ADP-033` live all-arXiv dry-run
+
+- status: active
+- purpose: 在 GitHub/cloud runner 上验证全 arXiv 主档案桶扫描，不依赖本机 Mac 后台。
+- inputs: arXiv primary archive buckets, max_results_per_category, generated_at, polite delay.
+- outputs: dry-run report, sample daily input, scan plan, candidate count, archive coverage.
+- key_parameters: `ADP_ARXIV_MAX_RESULTS_PER_CATEGORY=3` fallback for scheduled/trial-start workflows.
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/global_scan.py`; `.github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml`
+- test_refs: `arxiv-daily-push/tests/test_global_scan.py`; `arxiv-daily-push/tests/test_cloud_dry_run_workflow.py`
+- evidence_refs: `github-actions://LinzeColin/CodexProject/actions/runs/28019921500/artifacts/7818287996`
+- fallback_behavior: Fail closed on blocked archive, insufficient candidate count, or side-effect mismatch.
+
+### `MOD-ADP-045` accelerated Stage 1 acceptance
+
+- status: active
+- purpose: 从通过的 GitHub/cloud live all-arXiv dry-run、至少 30 个真实候选和受控 Gmail SMTP refs 生成 Stage 1 acceptance 证据。
+- inputs: live dry-run JSON, controlled SMTP manifest, expected_samples=30.
+- outputs: acceptance report with `ARXIV_PRODUCTION_ACCEPTED` only when all gates pass.
+- assumptions: no new real email send, no video generation, no GitHub Release requirement, production schedule disabled.
+- formula_refs: `FORM-ADP-047`
+- parameter_refs: `PARAM-ADP-349`, `PARAM-ADP-350`, `PARAM-ADP-351`
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py`
+- test_refs: `arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py`
+- evidence_refs: `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`
+- fallback_behavior: If candidate count, SMTP refs, artifact status, or side-effect policy fails, output `BLOCKED` and do not claim acceptance.
+
+## 关键公式
+
+### `FORM-ADP-047` Stage 1 accelerated acceptance gate
+
+- model_id: `MOD-ADP-045`
+- status: active
+- expression_or_pseudocode: `accepted = live_dry_run_ready && real_candidate_count >= 30 && selected_sample_count >= 30 && controlled_smtp_delivery_count >= 2 && production_schedule_enabled == false && release_upload_required == false && video_required == false && blocking_reasons == []`
+- output_range: `ARXIV_PRODUCTION_ACCEPTED` or `BLOCKED`
+- missing_value_behavior: Any missing required evidence field blocks acceptance.
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py`
+- test_refs: `arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py`
+- evidence_refs: `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`
+
+## 关键参数
+
+| 参数 ID | 符号 | 名称 | 当前值 | 默认/先验 | 单位 | 范围 | 来源 | 事实等级 |
+|---|---|---|---|---|---|---|---|---|
+| `PARAM-ADP-349` | `STAGE1_ACCELERATED_ACCEPTANCE_MODEL_ID` | accelerated acceptance model id | `adp-stage1-accelerated-acceptance-v1` | same | model_id | fixed | `stage1_accelerated_acceptance.py` | EXTRACTED |
+| `PARAM-ADP-350` | `STAGE1_ACCELERATED_ACCEPTANCE_ID` | acceptance id | `ADP-ACC-S1P5T04-ACCELERATED-REAL-ARXIV` | same | acceptance_id | fixed | `stage1_accelerated_acceptance.py` | EXTRACTED |
+| `PARAM-ADP-351` | `expected_samples` | required real candidate samples | `30` | `30` | count | `>=30` | CLI/workflow acceptance args | EXTRACTED |
+| `PARAM-ADP-SCHED-DEFAULT` | `ADP_ARXIV_MAX_RESULTS_PER_CATEGORY` | scheduled/trial fallback per primary archive bucket | `3` | `3` | records | `>=1` | `.github/workflows/arxiv-daily-push-scheduled.yml`; `.github/workflows/arxiv-daily-push-trial-start.yml` | EXTRACTED |
+
+## 限制与未知
+
+| 项目 | 类型 | 当前状态 | 解决任务 | 事实等级 |
+|---|---|---|---|---|
+| GitHub repo production variables/secrets | validation | 本轮未读取或启用；scheduled send 仍 fail-closed | production variable verification task | EXTRACTED |
+| 邮件前台模板 | product_quality | 用户不满意，已从 Stage 1 acceptance blocker 中分离 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` | EXTRACTED |
+| Stage 2 多来源模型 | model_scope | planned，未进入 arXiv Stage 1 验收 | `S2P1` | EXTRACTED |
+
+## 验证
+
+| 验证 ID | 范围 | 方法 | 结果 | 测试引用 | 证据引用 | 事实等级 |
+|---|---|---|---|---|---|---|
+| `VAL-S1P5T04-001` | Stage 1 acceptance | PR #82 GitHub Actions + artifact inspection | PASS | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |
+| `VAL-SCHED-DEFAULT-001` | scheduled/trial workflow fallback | workflow text regression tests | pending current PR CI | `test_production_scheduler.py`; `test_trial_start_workflow.py` | this branch | EXTRACTED |

@@ -95,9 +95,9 @@ parameter_profile_versions:
   adp-stage1-historical-b1-previews-parameters: "adp-stage1-historical-b1-previews-parameters-v1"
   adp-stage1-accelerated-acceptance-parameters: "adp-stage1-accelerated-acceptance-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260623-S1P5T04-ACCELERATED-ACCEPTANCE"
+current_iteration: "ITER-20260623-S1P5T04-ARXIV-PRODUCTION-ACCEPTED"
 current_phase: "S1-A"
-current_gate: "S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY"
+current_gate: "ARXIV_PRODUCTION_ACCEPTED"
 current_v6_task_id: "S1P5T04"
 email_subject_contract: "YYYYMMDD -- Project Name -- arXiv Group -- Theme"
 email_frontstage_numeric_score_visible: false
