@@ -5214,6 +5214,54 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG R
 - Acceptance IDs: `A209`
 - Scope: add `scripts/record_operator_soak_heartbeat.py`, repository-local heartbeat artifact, Makefile targets, unit validation, v5 readiness sync and clean-room package inclusion.
 - Current heartbeat artifact: `artifacts/tests/a209/t1307_operator_soak_background_progress.json`
-- Current heartbeat state: operator PID `12478` RUNNING; watchdog PID `62233` RUNNING; `58/288` successful windows; `0` failed; `230` remaining; `20.14%` complete.
+- Current heartbeat state: operator PID `12478` RUNNING; watchdog PID `62233` RUNNING; `65/288` successful windows; `0` failed; `223` remaining; `22.57%` complete.
 - Non-closure: `release_gate_closed_by_background_heartbeat=false`; A209 remains `IN_PROGRESS` until the 24h summary JSON exists and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
 - Validation: py_compile PASS; focused ruff PASS; `tests/unit/test_operator_soak_evidence.py` PASS `18/18`; heartbeat generate/validate PASS; v5 production readiness sync PASS.
+
+## 2026-06-24 - T1303/A204-A205 Release-Manager Ready-State Validator
+
+Status: LOCAL FOCUSED VALIDATED; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Updated `scripts/validate_release_manager_activation.py` so it validates the evidence-derived release-manager preflight state instead of hard-coding repository preflight validation to `activation_ready=false`.
+- Preserved the committed repository default: `artifacts/tests/a205/t1303_release_manager_activation_preflight.json` still validates as `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
+- Added unit coverage proving an all-real-gates fixture can validate `RELEASE_MANAGER_ACTIVATION_READY` only when A202 signed clearance, A026/A027 production gold labels, A209 24h soak and A210 brand clearance artifacts are all ready.
+- Refreshed A209 repository heartbeat evidence to `65/288` successful windows, `0` failed, operator PID `12478` RUNNING and watchdog PID `62233` RUNNING.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- T1307 -> A209 heartbeat evidence only.
+- A204/A205 remain `IN_PROGRESS`: this validator unblocks future final activation validation but does not activate release-manager state.
+- A209 remains `IN_PROGRESS`: heartbeat evidence is background progress, not 24h release-ready evidence.
+- A202, A026, A027 and A210 remain external release gates.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime scoring parameter changed.
+- Release-manager validation now uses existing gate artifacts as the source of truth for READY/BLOCKED state.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache .venv/bin/python -m py_compile scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_release_manager_activation.py -p no:cacheprovider`: PASS, 2 passed.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS, default artifact still blocked.
+- `python3 scripts/record_operator_soak_heartbeat.py generate --quiet`: PASS, observed `65/288` windows.
+- `python3 scripts/record_operator_soak_heartbeat.py validate --quiet`: PASS, `release_gate_closed_by_background_heartbeat=false`.
+- `python3 scripts/validate_operator_soak_evidence.py validate`: PASS, `PARTIAL_OPERATOR_EVIDENCE`; `operator_24h` still missing final summary JSON.
+- `python3 scripts/validate_gold_quality_evaluation.py validate`: PASS, A026/A027 remain `IN_PROGRESS`.
+
+### Remaining gaps
+
+- A209 must still reach all 288 successful windows and pass `scripts/validate_operator_soak_evidence.py validate --require-release-ready`.
+- A026/A027 still require production human-labeled gold cases.
+- A202 still requires real signed source-license review, passage-level approval, owner sign-off and legal release clearance.
+- A210 formal brand legal/market clearance or signed risk waiver remains missing.
+
+### Rollback
+
+- Revert `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, refreshed A209 heartbeat artifact and the governance/documentation updates from this section.
+- Regenerate release-manager and A209 heartbeat artifacts, then rerun focused release-manager and A209 validators.

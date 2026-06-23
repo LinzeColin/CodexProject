@@ -3494,7 +3494,7 @@ tasks:
     legacy_task_id: "T1303"
     phase: "C"
     objective: "Implement model config versioning, transactional activation and atomic global refresh"
-    scope: "T1303/A204-A205 covers active_analysis_contexts, transactional_outbox, active profile uniqueness, transactional activation API, dedicated rollback endpoint, online draft profile creation, score recompute and data snapshot refresh enqueue/execution, refresh-token stale-client semantics, inactive supply-chain-v3 candidate profile and frontend Model Center controls bound to real API paths. This slice adds a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence before final activation, plus a fail-closed operator CLI that upgrades scripts/apply_model_config.py from preview-only to explicit PostgreSQL-backed draft creation, transactional activation and score recompute enqueue."
+    scope: "T1303/A204-A205 covers active_analysis_contexts, transactional_outbox, active profile uniqueness, transactional activation API, dedicated rollback endpoint, online draft profile creation, score recompute and data snapshot refresh enqueue/execution, refresh-token stale-client semantics, inactive supply-chain-v3 candidate profile and frontend Model Center controls bound to real API paths. This slice adds a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence before final activation, a validator path that accepts evidence-derived READY preflight only when all external gates are real, plus a fail-closed operator CLI that upgrades scripts/apply_model_config.py from preview-only to explicit PostgreSQL-backed draft creation, transactional activation and score recompute enqueue."
     non_scope: "Does not close A204/A205 until release-manager activation preflight is ready with real external gates, production gold labels, A209 24h soak and source/legal/brand clearance; does not replace legal/source/brand clearance, production relationship approval or public launch approval."
     status: "in_progress"
     dependencies:
@@ -3548,6 +3548,7 @@ tasks:
       - "supervised score_recompute/data_snapshot_refresh PostgreSQL integration assertions remote CI PASS: GitHub Actions run 27986420494 job 82828868875"
       - "release-manager activation preflight local validation PASS: artifact validates with RELEASE_MANAGER_ACTIVATION_BLOCKED and unit tests PASS 7/7"
       - "model config apply CLI local validation PASS: apply_model_config dry-run artifact generated with A204/A205 hash binding and release_gate_closed_by_apply_model_config=false; tests/unit/test_model_config_apply.py and tests/unit/test_release_manager_activation.py PASS 5/5"
+      - "release-manager ready-state validator local focused validation PASS: py_compile PASS, ruff PASS, tests/unit/test_release_manager_activation.py PASS 2/2, default artifact validate PASS and remains RELEASE_MANAGER_ACTIVATION_BLOCKED"
     evidence_refs:
       - "EEI/apps/worker/app/main.py"
       - "EEI/scripts/apply_model_config.py"

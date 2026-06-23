@@ -344,10 +344,26 @@ def validate_preflight(
     ):
         if payload.get(key) != expected.get(key):
             raise ValueError(f"release-manager preflight field drift: {key}")
-    if payload.get("activation_ready") is not False:
-        raise ValueError("repository preflight must remain blocked until external gates are real")
-    if not payload.get("missing_gates"):
-        raise ValueError("blocked preflight must list missing gates")
+    activation_ready = payload.get("activation_ready") is True
+    missing_gates = payload.get("missing_gates") or []
+    if activation_ready:
+        if payload.get("status") != "RELEASE_MANAGER_ACTIVATION_READY":
+            raise ValueError("ready preflight must report RELEASE_MANAGER_ACTIVATION_READY")
+        if missing_gates:
+            raise ValueError("ready preflight cannot list missing gates")
+        if payload.get("release_manager_activation_allowed") is not True:
+            raise ValueError("ready preflight must allow release-manager activation")
+        if payload.get("relationship_publication_allowed") is not True:
+            raise ValueError("ready preflight must allow relationship publication")
+        if payload.get("public_brand_launch_allowed") is not True:
+            raise ValueError("ready preflight must allow public brand launch")
+    else:
+        if payload.get("status") != "RELEASE_MANAGER_ACTIVATION_BLOCKED":
+            raise ValueError("blocked preflight must report RELEASE_MANAGER_ACTIVATION_BLOCKED")
+        if not missing_gates:
+            raise ValueError("blocked preflight must list missing gates")
+        if payload.get("release_manager_activation_allowed") is not False:
+            raise ValueError("blocked preflight must not allow release-manager activation")
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:

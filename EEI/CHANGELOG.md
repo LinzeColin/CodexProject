@@ -24,8 +24,9 @@
 - Bound the A209 supervisor into clean-room release packaging and governance evidence so `scripts/supervise_operator_soak.py` is included in release artifacts while A209 remains open.
 - Added a T1307/A209 operator-soak watchdog: it can run detached in the background, checks every 300 seconds, resumes only paused successful checkpoints when explicitly launched with `--execute --auto-resume`, reports stale live PIDs without killing them, and keeps `release_gate_closed_by_watchdog=false`.
 - Upgraded `scripts/apply_model_config.py` from dry-run-only preview to a fail-closed T1303/A204-A205 operator CLI: `--dry-run` remains hash-bound and non-writing, while explicit `--execute` requires PostgreSQL and delegates draft creation, transactional activation and score recompute enqueue to the existing repository transaction layer.
-- Added a T1307/A209 background heartbeat artifact: `scripts/record_operator_soak_heartbeat.py` records the live operator/watchdog PIDs, current 24h window progress and non-closure semantics into `artifacts/tests/a209/t1307_operator_soak_background_progress.json`; current heartbeat shows `61/288` windows PASS and keeps A209 `IN_PROGRESS`.
+- Added a T1307/A209 background heartbeat artifact: `scripts/record_operator_soak_heartbeat.py` records the live operator/watchdog PIDs, current 24h window progress and non-closure semantics into `artifacts/tests/a209/t1307_operator_soak_background_progress.json`; current heartbeat shows `65/288` windows PASS and keeps A209 `IN_PROGRESS`.
 - Synchronized A209 heartbeat governance for CI: registered operational parameters `PARAM-069` through `PARAM-071`, refreshed clean-room release evidence to `package_paths=418`, and kept `release_gate_closed_by_background_heartbeat=false`.
+- Updated the T1303/A204-A205 release-manager activation validator so it accepts evidence-derived READY preflight states only when A202, A026/A027, A209 and A210 gate artifacts are all release-ready; the committed repository preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

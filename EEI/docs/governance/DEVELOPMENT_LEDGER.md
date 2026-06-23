@@ -987,6 +987,8 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260623-016`: local T1307/A209 operator-soak supervisor clean-room package binding; A209 remains open until 24h evidence validates.
 - `EVENT-20260624-003`: local T1307/A209 background heartbeat evidence records operator/watchdog live PIDs and 58/288 successful windows; A209 remains open until 24h evidence validates.
 - `EVENT-20260624-004`: local T1307/A209 background heartbeat governance CI repair registers PARAM-069 through PARAM-071, refreshes the heartbeat to 61/288 successful windows and regenerates clean-room release evidence; A209 remains open until 24h evidence validates.
+- `EVENT-20260624-005`: local T1303/A204-A205 release-manager ready-state validator and A209 heartbeat refresh; repository preflight remains blocked, future READY validation requires real A202/A026/A027/A209/A210 evidence, and A209 heartbeat now reports 65/288 successful windows.
+- `EVENT-20260624-006`: local governance sync for EVENT-20260624-005; updated parameter and traceability registries plus regenerated clean-room/release evidence while keeping A204/A205/A209 open.
 
 ## Unknown Historical Periods
 

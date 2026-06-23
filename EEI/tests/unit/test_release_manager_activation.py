@@ -104,3 +104,12 @@ def test_release_manager_preflight_can_be_ready_only_with_all_real_gates(
     assert payload["status"] == "RELEASE_MANAGER_ACTIVATION_READY"
     assert payload["activation_ready"] is True
     assert payload["missing_gates"] == []
+    preflight.validate_preflight(
+        payload,
+        release_decision_contract_path=tmp_path / "decision.json",
+        signed_decision_bundle_path=tmp_path / "signed.json",
+        operator_soak_evidence_path=tmp_path / "soak.json",
+        entity_gold_evaluation_path=tmp_path / "entity-gold.json",
+        relationship_gold_evaluation_path=tmp_path / "relationship-gold.json",
+        brand_preflight_path=tmp_path / "brand.json",
+    )
