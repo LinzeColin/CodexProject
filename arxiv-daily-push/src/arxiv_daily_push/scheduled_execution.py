@@ -148,16 +148,19 @@ def validate_scheduled_execution_report(report: Mapping[str, Any]) -> list[str]:
         if not isinstance(refs, Mapping):
             errors.append("production evidence ready requires evidence_refs")
         else:
-            for key in ("daily_run_ref", "release_ref", "email_ref", "resource_gate_ref"):
+            for key in ("daily_run_ref", "text_artifact_ref", "email_ref", "resource_gate_ref"):
                 if not str(refs.get(key) or "").strip():
                     errors.append(f"production evidence ready requires {key}")
         delivery = report.get("delivery_package")
         if not isinstance(delivery, Mapping):
             errors.append("production evidence ready requires delivery_package")
         else:
-            for key in ("video_link_ready", "email_contains_chinese_lesson", "email_contains_video_link", "email_contains_candidate_queue_summary"):
+            for key in ("email_contains_chinese_lesson", "email_contains_candidate_queue_summary", "email_contains_html"):
                 if delivery.get(key) is not True:
                     errors.append(f"production evidence ready requires delivery_package.{key}")
+            for key in ("video_required", "video_generation_required", "release_required", "email_contains_video_link"):
+                if delivery.get(key) is not False:
+                    errors.append(f"production evidence ready requires delivery_package.{key} false")
     if report.get("status") == "blocked" and not report.get("blocking_reasons"):
         errors.append("blocked scheduled execution requires blocking_reasons")
     notification = report.get("notification_report")
@@ -248,7 +251,7 @@ def _run_daily(
     assets = list(release_asset_paths or [])
     artifact_paths = payload.get("artifact_paths")
     if isinstance(artifact_paths, Mapping):
-        for key in ("daily_input", "candidate_queue", "video_artifact", "email_brief"):
+        for key in ("daily_input", "candidate_queue", "delivery_policy", "email_brief"):
             value = artifact_paths.get(key)
             if value:
                 assets.append(value)
@@ -275,18 +278,11 @@ def _run_daily(
     notification_report = deliver_notification(
         delivery_package["notification"],
         generated_at=generated_at,
-        allow_send=_env_true(env, SMTP_SEND_ENV_KEY) and bool(delivery_package["video_link_ready"]),
+        allow_send=_env_true(env, SMTP_SEND_ENV_KEY) and _stage1_text_delivery_ready(delivery_package),
         env=env,
         smtp_factory=smtp_factory,
     )
-    production_ready = (
-        release_report.get("status") == "created"
-        and notification_report.get("status") == "sent"
-        and delivery_package.get("video_link_ready") is True
-        and delivery_package.get("email_contains_chinese_lesson") is True
-        and delivery_package.get("email_contains_video_link") is True
-        and delivery_package.get("email_contains_candidate_queue_summary") is True
-    )
+    production_ready = notification_report.get("status") == "sent" and _stage1_text_delivery_ready(delivery_package)
 
     report = dict(base)
     report["status"] = "succeeded" if production_ready else "degraded"
@@ -314,6 +310,7 @@ def _run_daily(
     report["production_evidence_ready"] = production_ready
     report["evidence_refs"] = {
         "daily_run_ref": f"run-record://{daily['run_record']['run_id']}",
+        "text_artifact_ref": _text_artifact_ref(payload, daily),
         "release_ref": str(release_report.get("release_ref") or ""),
         "email_ref": str(notification_report.get("delivery_ref") or ""),
         "resource_gate_ref": base["evidence_refs"]["resource_gate_ref"],
@@ -433,6 +430,7 @@ def _base_report(
         },
         "evidence_refs": {
             "daily_run_ref": "",
+            "text_artifact_ref": "",
             "release_ref": "",
             "email_ref": "",
             "resource_gate_ref": str(
@@ -477,17 +475,42 @@ def _daily_production_blockers(
     delivery_package: Mapping[str, Any],
 ) -> list[str]:
     reasons = []
-    if release_report.get("status") != "created":
-        reasons.append("daily pipeline completed but GitHub Release evidence is not created")
-    if delivery_package.get("video_link_ready") is not True:
-        reasons.append("daily email requires a GitHub Release video artifact link before real SMTP send")
+    if delivery_package.get("video_required") is not False or delivery_package.get("video_generation_required") is not False:
+        reasons.append("Stage 1 text delivery must not require video generation")
+    if delivery_package.get("release_required") is not False:
+        reasons.append("Stage 1 text delivery must not require GitHub Release upload")
+    if delivery_package.get("email_contains_video_link") is not False:
+        reasons.append("Stage 1 frontstage email must not require a video link")
     if delivery_package.get("email_contains_chinese_lesson") is not True:
         reasons.append("daily email requires Chinese lesson content")
     if delivery_package.get("email_contains_candidate_queue_summary") is not True:
         reasons.append("daily email requires candidate queue summary")
+    if delivery_package.get("email_contains_html") is not True:
+        reasons.append("daily email requires HTML body")
     if notification_report.get("status") != "sent":
         reasons.append("daily pipeline completed but real SMTP evidence is not sent")
     return reasons or ["daily pipeline completed but production delivery evidence is incomplete"]
+
+
+def _stage1_text_delivery_ready(delivery_package: Mapping[str, Any]) -> bool:
+    return (
+        delivery_package.get("email_contains_chinese_lesson") is True
+        and delivery_package.get("email_contains_candidate_queue_summary") is True
+        and delivery_package.get("email_contains_html") is True
+        and delivery_package.get("video_required") is False
+        and delivery_package.get("video_generation_required") is False
+        and delivery_package.get("release_required") is False
+        and delivery_package.get("email_contains_video_link") is False
+    )
+
+
+def _text_artifact_ref(payload: Mapping[str, Any], daily_report: Mapping[str, Any]) -> str:
+    artifact_paths = payload.get("artifact_paths") if isinstance(payload.get("artifact_paths"), Mapping) else {}
+    policy_path = str(artifact_paths.get("delivery_policy") or "")
+    if policy_path:
+        return f"text-artifact://{Path(policy_path).name}"
+    run_record = daily_report.get("run_record") if isinstance(daily_report.get("run_record"), Mapping) else {}
+    return f"text-artifact://{run_record.get('run_id', 'unknown')}"
 
 
 def _blocked(base: Mapping[str, Any], reasons: Sequence[str]) -> dict[str, Any]:

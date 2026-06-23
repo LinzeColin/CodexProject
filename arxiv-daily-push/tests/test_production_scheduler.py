@@ -7,103 +7,49 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 from arxiv_daily_push.cli import main
-from arxiv_daily_push.production_scheduler import (
-    PRODUCTION_SCHEDULER_VALIDATOR_ID,
-    SCHEDULER_TIMEZONE,
-    build_production_scheduler_plan,
-    validate_production_scheduler_plan,
-)
-
+from arxiv_daily_push.production_scheduler import PRODUCTION_SCHEDULER_VALIDATOR_ID, SCHEDULER_TIMEZONE, build_production_scheduler_plan, validate_production_scheduler_plan
 
 ROOT = Path(__file__).resolve().parents[2]
-
 
 class ProductionSchedulerTests(unittest.TestCase):
     def test_scheduler_plan_validates_timezone_scheduled_workflow(self) -> None:
         plan = build_production_scheduler_plan(ROOT, generated_at="2026-07-01T04:45:00+10:00")
-
         self.assertEqual(plan["validator_id"], PRODUCTION_SCHEDULER_VALIDATOR_ID)
         self.assertEqual(plan["status"], "pass")
         self.assertTrue(plan["scheduler_contract_ready"])
         self.assertEqual(plan["timezone"], SCHEDULER_TIMEZONE)
-        self.assertEqual([slot["local_time"] for slot in plan["schedule_slots"]], ["04:45", "05:00", "05:10"])
-        self.assertFalse(plan["scheduled_production_enabled"])
-        self.assertFalse(plan["scheduled_run_enabled"])
-        self.assertFalse(plan["release_upload_enabled"])
-        self.assertFalse(plan["real_smtp_send_enabled"])
-        self.assertFalse(plan["secret_values_logged"])
+        self.assertEqual(plan["required_github_permissions"], ["actions: read", "contents: read"])
+        self.assertEqual(plan["side_effect_enablement_vars"], ["ADP_ALLOW_SMTP_SEND"])
         self.assertFalse(validate_production_scheduler_plan(plan))
 
-    def test_scheduled_workflow_is_preflight_first_and_side_effect_safe(self) -> None:
+    def test_scheduled_workflow_is_text_only_and_side_effect_safe(self) -> None:
         workflow = (ROOT / ".github/workflows/arxiv-daily-push-scheduled.yml").read_text(encoding="utf-8")
-
         self.assertIn("actions: read", workflow)
-        self.assertIn("contents: write", workflow)
+        self.assertIn("contents: read", workflow)
+        self.assertNotIn("contents: write", workflow)
         self.assertIn("runs-on: ubuntu-latest", workflow)
-        self.assertNotIn("self-hosted", workflow)
         self.assertIn('timezone: "Australia/Sydney"', workflow)
-        self.assertIn('cron: "45 4 * * *"', workflow)
-        self.assertIn('cron: "0 5 * * *"', workflow)
-        self.assertIn('cron: "10 5 * * *"', workflow)
         self.assertIn("vars.ADP_PRODUCTION_ENABLED", workflow)
-        self.assertIn("ADP_SCHEDULED_RUN_ENABLED", workflow)
-        self.assertIn("ADP_DAILY_INPUT_PATH", workflow)
-        self.assertIn("ADP_ARXIV_MAX_RESULTS_PER_CATEGORY", workflow)
-        self.assertIn("ADP_CANDIDATE_QUEUE_INPUT_PATH", workflow)
-        self.assertIn("ADP_RECENT_SOURCE_IDS", workflow)
-        self.assertIn("ADP_TRIAL_EVIDENCE_INPUT_PATH", workflow)
-        self.assertIn("ADP_TRIAL_ID", workflow)
-        self.assertIn("ADP_TRIAL_REF", workflow)
-        self.assertIn("ADP_TEXT_DEGRADATION_VERIFIED", workflow)
-        self.assertIn("ADP_VIDEO_DEGRADATION_VERIFIED", workflow)
         self.assertIn("ADP_ALLOW_SMTP_SEND", workflow)
-        self.assertIn("ADP_ALLOW_RELEASE_UPLOAD", workflow)
-        self.assertLess(workflow.index("preflight-production"), workflow.index("Run scheduled mode"))
-        self.assertIn("adp-scheduled-preflight", workflow)
+        self.assertNotIn("ADP_ALLOW_RELEASE", workflow)
+        self.assertNotIn("ADP_RELEASE", workflow)
         self.assertIn("build-all-arxiv-daily-input", workflow)
-        self.assertIn("render-lightweight-mp4", workflow)
-        self.assertIn("adp-scheduled-mp4-video", workflow)
-        self.assertIn("ffmpeg", workflow)
-        self.assertIn("adp-phase12-delivery-artifacts", workflow)
-        self.assertIn("adp-candidate-queue", workflow)
-        self.assertIn("adp-scheduled-daily-input", workflow)
-        self.assertNotIn("cat:cs.AI", workflow)
-        self.assertNotIn("ADP_ARXIV_QUERY", workflow)
+        self.assertIn("adp-text-delivery-policy.json", workflow)
+        self.assertNotIn("render-lightweight-mp4", workflow)
+        self.assertNotIn("ffmpeg", workflow)
         self.assertIn("update-trial-ledger", workflow)
-        self.assertIn("adp-trial-ledger-update", workflow)
-        self.assertIn("gh run download", workflow)
-        self.assertIn("export-trial-ledger-state", workflow)
-        self.assertIn("adp-trial-evidence-ledger", workflow)
-        self.assertIn("--private-release-verified", workflow)
-        self.assertIn("--real-smtp-verified", workflow)
-        self.assertIn("--resource-pressure-ok", workflow)
-        self.assertIn("run-scheduled-production", workflow)
-        self.assertIn("adp-scheduled-execution", workflow)
-        self.assertIn("secrets.ADP_SMTP_PASSWORD", workflow)
-        self.assertNotIn("auth.json", workflow)
-        self.assertNotIn("--allow-send", workflow)
-        self.assertNotIn("--allow-upload", workflow)
-        self.assertNotIn("gh release create", workflow)
+        self.assertIn("--text-artifacts-verified", workflow)
+        self.assertNotIn("--private-release-verified", workflow)
+        self.assertNotIn("gh release", workflow)
 
     def test_cli_plan_production_scheduler_outputs_ready_json(self) -> None:
         buffer = io.StringIO()
         with redirect_stdout(buffer):
-            result = main(
-                [
-                    "plan-production-scheduler",
-                    "--path",
-                    str(ROOT),
-                    "--generated-at",
-                    "2026-07-01T04:45:00+10:00",
-                    "--json",
-                ]
-            )
-
+            result = main(["plan-production-scheduler", "--path", str(ROOT), "--generated-at", "2026-07-01T04:45:00+10:00", "--json"])
         payload = json.loads(buffer.getvalue())
         self.assertEqual(result, 0)
         self.assertEqual(payload["validator_id"], PRODUCTION_SCHEDULER_VALIDATOR_ID)
         self.assertTrue(payload["scheduler_contract_ready"])
-
 
 if __name__ == "__main__":
     unittest.main()

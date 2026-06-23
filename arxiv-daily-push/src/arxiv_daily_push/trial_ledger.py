@@ -24,6 +24,8 @@ def update_trial_evidence_ledger(
     expected_days: int = TRIAL_DAYS_REQUIRED,
     text_degradation_path_verified: bool = False,
     video_degradation_path_verified: bool = False,
+    text_artifacts_verified: bool = False,
+    text_artifact_ref: str = "",
     scheduler_enabled: bool = False,
     manual_rerun_verified: bool = False,
     scheduler_ref: str = "",
@@ -41,6 +43,12 @@ def update_trial_evidence_ledger(
 ) -> dict[str, Any]:
     """Append one production-ready scheduled daily run to a trial evidence package."""
 
+    scheduled_refs = scheduled_execution_report.get("evidence_refs") if isinstance(scheduled_execution_report.get("evidence_refs"), Mapping) else {}
+    scheduled_text_ref = str(scheduled_refs.get("text_artifact_ref") or "")
+    if scheduled_execution_report.get("production_evidence_ready") is True and scheduled_text_ref:
+        text_artifacts_verified = True
+        text_artifact_ref = text_artifact_ref or scheduled_text_ref
+
     base_evidence = _base_trial_evidence(
         existing_evidence,
         trial_id=trial_id,
@@ -49,6 +57,8 @@ def update_trial_evidence_ledger(
         scheduler_enabled=scheduler_enabled,
         manual_rerun_verified=manual_rerun_verified,
         scheduler_ref=scheduler_ref,
+        text_artifacts_verified=text_artifacts_verified,
+        text_artifact_ref=text_artifact_ref,
         private_release_verified=private_release_verified,
         release_ref=release_ref,
         real_smtp_verified=real_smtp_verified,
@@ -64,7 +74,6 @@ def update_trial_evidence_ledger(
     daily_entry, reasons = _daily_entry_from_scheduled_report(
         scheduled_execution_report,
         text_degradation_path_verified=text_degradation_path_verified,
-        video_degradation_path_verified=video_degradation_path_verified,
     )
     if not reasons and daily_entry:
         reasons.extend(_duplicate_reasons(base_evidence.get("daily_runs"), daily_entry))
@@ -120,7 +129,6 @@ def _daily_entry_from_scheduled_report(
     report: Mapping[str, Any],
     *,
     text_degradation_path_verified: bool,
-    video_degradation_path_verified: bool,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     reasons = validate_scheduled_execution_report(report)
     if reasons:
@@ -140,7 +148,7 @@ def _daily_entry_from_scheduled_report(
     for key in ("date", "run_id", "source_id", "publication_id"):
         if not str(daily.get(key) or "").strip():
             reasons.append(f"daily_run_report.{key} is required")
-    for key in ("daily_run_ref", "release_ref", "email_ref", "resource_gate_ref"):
+    for key in ("daily_run_ref", "text_artifact_ref", "email_ref", "resource_gate_ref"):
         if not str(refs.get(key) or "").strip():
             reasons.append(f"evidence_refs.{key} is required")
     if daily.get("p0_claims_traceable") is not True:
@@ -161,12 +169,12 @@ def _daily_entry_from_scheduled_report(
             "scheduled_local_time": str(daily.get("scheduled_local_time") or TARGET_LOCAL_TIME),
             "p0_claims_traceable": True,
             "text_degradation_path_verified": bool(text_degradation_path_verified),
-            "video_degradation_path_verified": bool(video_degradation_path_verified),
             "duplicate_publication": False,
             "unsupported_claims_published": False,
             "failure_generated_misleading_content": False,
             "run_record_ref": str(refs["daily_run_ref"]),
-            "release_ref": str(refs["release_ref"]),
+            "text_artifact_ref": str(refs["text_artifact_ref"]),
+            "release_ref": str(refs.get("release_ref") or ""),
             "email_ref": str(refs["email_ref"]),
             "resource_gate_ref": str(refs["resource_gate_ref"]),
             "scheduled_execution_ref": str(report.get("execution_id") or ""),
@@ -184,6 +192,8 @@ def _base_trial_evidence(
     scheduler_enabled: bool,
     manual_rerun_verified: bool,
     scheduler_ref: str,
+    text_artifacts_verified: bool,
+    text_artifact_ref: str,
     private_release_verified: bool,
     release_ref: str,
     real_smtp_verified: bool,
@@ -216,6 +226,10 @@ def _base_trial_evidence(
             "manual_rerun_verified": bool(manual_rerun_verified),
             "ref": scheduler_ref,
         },
+    )
+    evidence["text_artifacts"] = _merge_section(
+        evidence.get("text_artifacts"),
+        {"b1_text_artifacts_verified": bool(text_artifacts_verified), "ref": text_artifact_ref},
     )
     evidence["release"] = _merge_section(
         evidence.get("release"),

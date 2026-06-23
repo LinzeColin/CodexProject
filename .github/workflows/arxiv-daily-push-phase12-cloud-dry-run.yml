@@ -1,4 +1,4 @@
-name: arXiv Daily Push Phase 12 cloud dry-run
+name: arXiv Daily Push live all-arXiv cloud dry-run
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: arxiv-daily-push-phase12-cloud-dry-run-${{ github.ref }}
+  group: arxiv-daily-push-live-all-arxiv-cloud-dry-run-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -37,111 +37,32 @@ jobs:
       ADP_PRODUCTION_ENABLED: "false"
       ADP_SCHEDULED_RUN_ENABLED: "false"
       ADP_ALLOW_SMTP_SEND: "false"
-      ADP_ALLOW_RELEASE_UPLOAD: "false"
     steps:
       - uses: actions/checkout@v4
-      - name: Install cloud MP4 runtime
-        shell: bash
-        run: |
-          if ! command -v ffmpeg >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y ffmpeg
-          fi
-          ffmpeg -version | head -n 1
       - name: Resolve dry-run parameters
         id: params
         shell: bash
         run: |
           generated_at="${{ inputs.generated_at }}"
-          if [ -z "$generated_at" ]; then
-            generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          fi
-          max_results="${{ inputs.max_results_per_category }}"
-          if [ -z "$max_results" ]; then
-            max_results="1"
-          fi
-          polite_delay="${{ inputs.polite_delay_seconds }}"
-          if [ -z "$polite_delay" ]; then
-            polite_delay="3"
-          fi
-          daily_date="$(python3 - "$generated_at" <<'PY'
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-          import sys
-
-          value = sys.argv[1].replace("Z", "+00:00")
-          print(datetime.fromisoformat(value).astimezone(ZoneInfo("Australia/Sydney")).date())
-          PY
-          )"
+          if [ -z "$generated_at" ]; then generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
           printf 'generated_at=%s\n' "$generated_at" >> "$GITHUB_OUTPUT"
-          printf 'daily_date=%s\n' "$daily_date" >> "$GITHUB_OUTPUT"
-          printf 'max_results=%s\n' "$max_results" >> "$GITHUB_OUTPUT"
-          printf 'polite_delay=%s\n' "$polite_delay" >> "$GITHUB_OUTPUT"
+          printf 'date=%s\n' "${generated_at:0:10}" >> "$GITHUB_OUTPUT"
+          printf 'max_results=%s\n' "${{ inputs.max_results_per_category || '1' }}" >> "$GITHUB_OUTPUT"
+          printf 'polite_delay=%s\n' "${{ inputs.polite_delay_seconds || '3' }}" >> "$GITHUB_OUTPUT"
       - name: Run live all-arXiv dry-run
-        id: live
+        id: dry_run
         shell: bash
         run: |
-          set +e
           artifact_dir="$RUNNER_TEMP/adp-phase12-cloud-dry-run"
-          report="$artifact_dir/adp-live-all-arxiv-dry-run.stdout.json"
+          report="$artifact_dir/adp-live-all-arxiv-dry-run.json"
           mkdir -p "$artifact_dir"
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_live_all_arxiv" \
-          PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push run-live-all-arxiv-dry-run \
-              --generated-at "${{ steps.params.outputs.generated_at }}" \
-              --date "${{ steps.params.outputs.daily_date }}" \
-              --max-results-per-category "${{ steps.params.outputs.max_results }}" \
-              --polite-delay-seconds "${{ steps.params.outputs.polite_delay }}" \
-              --artifact-dir "$artifact_dir" \
-              --json > "$report"
-          code=$?
-          cat "$report"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_live_all_arxiv" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push run-live-all-arxiv-dry-run --date "${{ steps.params.outputs.date }}" --generated-at "${{ steps.params.outputs.generated_at }}" --max-results-per-category "${{ steps.params.outputs.max_results }}" --polite-delay-seconds "${{ steps.params.outputs.polite_delay }}" --artifact-dir "$artifact_dir" --json > "$report"
           printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
-          printf 'report_path=%s\n' "$report" >> "$GITHUB_OUTPUT"
-          printf 'sample_daily_input=%s\n' "$artifact_dir/adp-live-daily-input.json" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Render live sample MP4
-        id: mp4
-        shell: bash
-        run: |
-          set +e
-          video="$RUNNER_TEMP/adp-phase12-cloud-dry-run/adp-live-daily-video.mp4"
-          report="$RUNNER_TEMP/adp-phase12-cloud-dry-run/adp-live-daily-video-report.json"
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_live_mp4" \
-          PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push render-lightweight-mp4 \
-              --daily-input "${{ steps.live.outputs.sample_daily_input }}" \
-              --output "$video" \
-              --generated-at "${{ steps.params.outputs.generated_at }}" \
-              --duration-seconds 12 \
-              --json > "$report"
-          code=$?
-          cat "$report"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
-          printf 'video_path=%s\n' "$video" >> "$GITHUB_OUTPUT"
-          printf 'report_path=%s\n' "$report" >> "$GITHUB_OUTPUT"
-          printf 'transcript_path=%s\n' "$RUNNER_TEMP/adp-phase12-cloud-dry-run/adp-live-daily-video.txt" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload Phase 12 cloud dry-run artifacts
-        if: always()
+          printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"
+      - name: Upload live all-arXiv dry-run evidence
+        if: always() && steps.dry_run.outputs.artifact_dir != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-phase12-cloud-dry-run
-          path: ${{ steps.live.outputs.artifact_dir }}
+          path: ${{ steps.dry_run.outputs.artifact_dir }}
           if-no-files-found: error
-          retention-days: 14
-      - name: Stop if live all-arXiv dry-run failed
-        if: steps.live.outputs.exit_code != '0'
-        shell: bash
-        run: |
-          echo "live all-arXiv dry-run failed; inspect adp-phase12-cloud-dry-run"
-          exit "${{ steps.live.outputs.exit_code }}"
-      - name: Stop if MP4 render failed
-        if: steps.mp4.outputs.exit_code != '0'
-        shell: bash
-        run: |
-          echo "MP4 render failed; inspect adp-phase12-cloud-dry-run"
-          exit "${{ steps.mp4.outputs.exit_code }}"

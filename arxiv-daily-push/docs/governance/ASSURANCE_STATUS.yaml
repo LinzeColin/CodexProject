@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260622-ADP-067"
-source_snapshot_hash: "sha256:72291da42386b84bd823f84ec3742b0dc3961975450c490f6962ae54bab104c2"
+as_of_event_id: "EVENT-20260623-ADP-074"
+source_snapshot_hash: "sha256:2be43aa5f1b1a7f63e4273157d372afe0af58449970ed0716438df6c1076d713"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T21:00:00+10:00"
+snapshot_event_time: "2026-06-23T09:55:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 292
-    total_active_parameters: 292
-    checked_active_formulas: 41
-    total_active_formulas: 41
+    checked_active_parameters: 331
+    total_active_parameters: 331
+    checked_active_formulas: 46
+    total_active_formulas: 46
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 292
-    total_active_parameters: 292
+    checked_active_parameters: 331
+    total_active_parameters: 331
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,54 +64,54 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 0
     legacy_unbound_events: 54
-    precommit_pending_events: 14
+    precommit_pending_events: 21
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ADP-S1-06-SCORING-QUEUE-LEDGER-READY"
+  release_gate: "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY"
   blocker_ids:
     - "ADP-PHASE8-VIDEO-001"
     - "FACT-arxiv-daily-push-EMPIRICAL-EVIDENCE"
     - "FACT-arxiv-daily-push-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "S1-07-B1_REPORT_EMAIL_TEXT-001"
-  status: "planned"
-  reason: "Produce the B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and audit artifacts required by V5 Stage 1."
+  task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
+  status: "in_progress"
+  reason: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
   acceptance_ids:
-    - "ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT"
-  owner: "content_owner + product_owner"
-  human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q` and attach the listed evidence refs."
+    - "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+  owner: "content_owner + engineering_owner + operations_owner"
+  human_owner_role: "content_owner + engineering_owner + operations_owner"
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q` and attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-V5-S1-001"
+  decision_id: "DEC-arxiv-daily-push-V5-S1-006"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续执行 S1-07，生成 B1/arXiv 的高信息密度中文讲解教学邮件，而不是启动生产 trial。"
-  question: "是否继续执行 S1-07，生成 B1/arXiv 的高信息密度中文讲解教学邮件，而不是启动生产 trial。"
-  human_owner_role: "content_owner + product_owner"
+  decision_question: "是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。"
+  question: "是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。"
+  human_owner_role: "content_owner + engineering_owner + operations_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT"
-  current_recommendation: "A: implement S1-07 B1/arXiv text teaching email before any production enablement"
-  option_a: "继续 S1-07，完成 B1/arXiv 中文讲解报告、邮件文本/HTML 和审计工件。"
-  option_b: "暂停在 S1-06，等待人工重审文本讲解标准。"
-  option_c: "恢复旧 Phase 12 media path；不推荐，且会偏离 V5 Stage 1。"
+  current_recommendation: "A: run S1-12 controlled live B1 email days before production acceptance"
+  option_a: "继续 S1-12，按目标 runner、实时 arXiv 输入、B1 讲解邮件、Gmail SMTP 发送证据和无 secret 泄露记录两天。"
+  option_b: "暂停在 S1-11，只保留 30 份历史预览，不进入真实邮件证据。"
+  option_c: "跳过两天证据直接启用生产定时；不推荐，因为缺少 live-day delivery evidence。"
   options:
-    - "继续 S1-07，完成 B1/arXiv 中文讲解报告、邮件文本/HTML 和审计工件。"
-    - "暂停在 S1-06，等待人工重审文本讲解标准。"
-    - "恢复旧 Phase 12 media path；不推荐，且会偏离 V5 Stage 1。"
-  estimated_effort: "P1; content and product implementation"
-  estimated_cost_or_resource: "local tests only; no real SMTP, no Release upload, no video generation"
-  expected_benefit: "把 arXiv 输出从日报摘要提升为可长期运行的讲解教学邮件。"
-  principal_risks: "shallow digest quality, unsupported claims, old media path leakage, premature production enablement"
-  evidence_required: "B1 report artifact, email preview, claim evidence, focused tests, governance records"
+    - "继续 S1-12，按目标 runner、实时 arXiv 输入、B1 讲解邮件、Gmail SMTP 发送证据和无 secret 泄露记录两天。"
+    - "暂停在 S1-11，只保留 30 份历史预览，不进入真实邮件证据。"
+    - "跳过两天证据直接启用生产定时；不推荐，因为缺少 live-day delivery evidence。"
+  estimated_effort: "P1; controlled target-runner live delivery evidence"
+  estimated_cost_or_resource: "GitHub/cloud runner, Gmail SMTP secret names, live arXiv metadata access, durable evidence refs"
+  expected_benefit: "证明 Stage 1 B1/arXiv 每日邮件在真实运行边界能稳定送达，而不是只在离线历史预览中通过。"
+  principal_risks: "SMTP secret readiness, live arXiv availability, target runner drift, accidental scheduler enablement, local Mac fallback"
+  evidence_required: "two natural-day B1 email delivery refs, target-runner refs, B1 report/email artifacts, no-secret delivery audits, no production scheduler"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "arxiv-daily-push remains at S1-06 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
-  unblock_task_id: "S1-07-B1_REPORT_EMAIL_TEXT-001"
+  consequence_of_no_decision: "arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED."
+  unblock_task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
   acceptance_ids:
-    - "ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT"
+    - "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-22T21:00:00+10:00"
+  last_reviewed_at: "2026-06-23T09:55:00+10:00"

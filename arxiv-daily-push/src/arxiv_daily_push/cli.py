@@ -61,7 +61,26 @@ from .source_registry import (
     validate_source_registry_report,
 )
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
+from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
+from .stage1_bootstrap import build_stage1_bootstrap_report, validate_stage1_bootstrap_report
+from .stage1_historical_previews import (
+    build_historical_b1_previews,
+    build_historical_b1_previews_report,
+    load_historical_daily_inputs,
+    validate_historical_b1_previews,
+)
+from .stage1_migration import build_migration_package, validate_stage1_migration_report, verify_migration_package
 from .stage1_queue import build_stage1_queue_report, validate_stage1_queue_report
+from .stage1_runtime import (
+    STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS,
+    build_runtime_audit,
+    build_scheduler_plan,
+    create_runtime_backup,
+    restore_runtime_backup,
+    run_tick,
+    run_watchdog,
+    validate_stage1_runtime_report,
+)
 from .storage import (
     inspect_database,
     migrate_database,
@@ -138,6 +157,110 @@ def build_parser() -> argparse.ArgumentParser:
     stage1_queue.add_argument("--generated-at", required=True, help="Queue report timestamp.")
     stage1_queue.add_argument("--run-id", default="stage1-queue-fixture", help="Run ID written to content ledger rows.")
     stage1_queue.add_argument("--json", action="store_true", help="Print JSON queue report.")
+
+    b1_report = subparsers.add_parser(
+        "build-b1-report-email",
+        help="Build the V5 Stage 1 B1/arXiv Chinese report and email preview artifacts.",
+    )
+    b1_report.add_argument("--daily-input", required=True, help="Daily input builder report or daily_input JSON.")
+    b1_report.add_argument("--generated-at", required=True, help="Report/email artifact timestamp.")
+    b1_report.add_argument("--recipient", default="linzezhang35@gmail.com", help="Dry-run email recipient.")
+    b1_report.add_argument("--artifact-dir", help="Directory for Markdown, HTML, and JSON artifacts.")
+    b1_report.add_argument("--write", action="store_true", help="Write report/email/audit artifacts to --artifact-dir.")
+    b1_report.add_argument("--json", action="store_true", help="Print JSON report/email package.")
+
+    historical_previews = subparsers.add_parser(
+        "historical-b1-previews",
+        help="Build the S1-11 30-sample historical B1/arXiv report and email preview evidence package.",
+    )
+    historical_previews.add_argument("--input", help="Optional JSON array, JSONL, or object with daily_inputs.")
+    historical_previews.add_argument("--generated-at", required=True, help="Preview report timestamp.")
+    historical_previews.add_argument("--start-date", default="2026-05-01", help="First historical local date.")
+    historical_previews.add_argument("--count", type=int, default=30, help="Number of historical previews to build.")
+    historical_previews.add_argument("--recipient", default="linzezhang35@gmail.com", help="Dry-run email recipient.")
+    historical_previews.add_argument("--artifact-dir", help="Directory for preview artifacts and manifest.")
+    historical_previews.add_argument("--write", action="store_true", help="Write preview artifacts to --artifact-dir.")
+    historical_previews.add_argument("--json", action="store_true", help="Print JSON S1-11 preview report.")
+
+    runtime_audit = subparsers.add_parser("runtime-audit", help="Audit Stage 1 local runtime readiness without side effects.")
+    runtime_audit.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+    runtime_audit.add_argument("--db", help="Optional Stage 1 SQLite database path to inspect.")
+    runtime_audit.add_argument("--generated-at", required=True, help="Audit timestamp.")
+    runtime_audit.add_argument("--json", action="store_true", help="Print JSON runtime audit report.")
+
+    tick = subparsers.add_parser("tick", help="Run the Stage 1 local tick control and write heartbeat/checkpoint state.")
+    tick.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+    tick.add_argument("--generated-at", required=True, help="Tick timestamp.")
+    tick.add_argument("--no-write", action="store_true", help="Dry-run the tick without writing heartbeat/checkpoint files.")
+    tick.add_argument("--json", action="store_true", help="Print JSON tick report.")
+
+    watchdog = subparsers.add_parser("watchdog", help="Check Stage 1 local heartbeat and lock freshness.")
+    watchdog.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+    watchdog.add_argument("--generated-at", required=True, help="Watchdog timestamp.")
+    watchdog.add_argument("--json", action="store_true", help="Print JSON watchdog report.")
+
+    backup = subparsers.add_parser("backup", help="Create a small Stage 1 SQLite/config backup with a SHA256 manifest.")
+    backup.add_argument("--db", required=True, help="Stage 1 SQLite database path.")
+    backup.add_argument("--backup-dir", required=True, help="Directory that receives the backup folder.")
+    backup.add_argument("--generated-at", required=True, help="Backup timestamp.")
+    backup.add_argument("--include-path", action="append", default=[], help="Small supporting file to include. May be repeated.")
+    backup.add_argument("--json", action="store_true", help="Print JSON backup report.")
+
+    restore = subparsers.add_parser("restore", help="Restore a Stage 1 SQLite backup to an explicit target path.")
+    restore.add_argument("--manifest", required=True, help="backup_manifest.json path.")
+    restore.add_argument("--target-db", required=True, help="Explicit restore target database path.")
+    restore.add_argument("--generated-at", required=True, help="Restore timestamp.")
+    restore.add_argument("--confirm-restore", action="store_true", help="Required confirmation for restore writes.")
+    restore.add_argument("--allow-overwrite", action="store_true", help="Allow replacing an existing target database.")
+    restore.add_argument("--json", action="store_true", help="Print JSON restore report.")
+
+    scheduler = subparsers.add_parser("scheduler", help="Build Stage 1 OS-native scheduler dry-run templates.")
+    scheduler_subparsers = scheduler.add_subparsers(dest="scheduler_command", required=True)
+    for scheduler_action in ("install", "uninstall"):
+        scheduler_parser = scheduler_subparsers.add_parser(scheduler_action, help=f"Build scheduler {scheduler_action} dry-run templates.")
+        scheduler_parser.add_argument("--platform", choices=STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS, required=True)
+        scheduler_parser.add_argument("--project-root", default=".", help="Repository root used in generated templates.")
+        scheduler_parser.add_argument("--state-dir", required=True, help="Explicit local runtime state directory.")
+        scheduler_parser.add_argument("--generated-at", required=True, help="Template generation timestamp.")
+        scheduler_parser.add_argument("--artifact-dir", help="Directory for template files when --write is used.")
+        scheduler_parser.add_argument("--write", action="store_true", help="Write template files only; never install them.")
+        scheduler_parser.add_argument("--json", action="store_true", help="Print JSON scheduler report.")
+
+    migration = subparsers.add_parser("migration", help="Build or verify the Stage 1 low-resource migration package.")
+    migration_subparsers = migration.add_subparsers(dest="migration_command", required=True)
+    migration_export = migration_subparsers.add_parser("export", help="Export the Stage 1 migration package.")
+    migration_export.add_argument("--project-root", default=".", help="Repository root used for source-file inventory.")
+    migration_export.add_argument("--db", required=True, help="Migrated Stage 1 SQLite database path.")
+    migration_export.add_argument("--output-dir", required=True, help="Directory that receives the migration package.")
+    migration_export.add_argument("--generated-at", required=True, help="Migration package timestamp.")
+    migration_export.add_argument("--include-path", action="append", default=[], help="Small supporting file to include in the backup. May be repeated.")
+    migration_export.add_argument("--required-path", action="append", default=[], help="Required source path relative to project root. May be repeated.")
+    migration_export.add_argument("--no-write", action="store_true", help="Validate the export without writing package files.")
+    migration_export.add_argument("--json", action="store_true", help="Print JSON migration export report.")
+    migration_verify = migration_subparsers.add_parser("verify", help="Verify a Stage 1 migration package manifest.")
+    migration_verify.add_argument("--manifest", required=True, help="migration_manifest.json path.")
+    migration_verify.add_argument("--generated-at", required=True, help="Verification timestamp.")
+    migration_verify.add_argument("--json", action="store_true", help="Print JSON migration verification report.")
+
+    post_migration_bootstrap = subparsers.add_parser(
+        "post-migration-bootstrap",
+        help="Verify the Stage 1 target machine or GitHub-hosted cloud runner bootstrap boundary.",
+    )
+    post_migration_bootstrap.add_argument("--project-root", default=".", help="Repository root to validate as a Git checkout.")
+    post_migration_bootstrap.add_argument("--migration-manifest", required=True, help="S1-09 migration_manifest.json to verify before bootstrap.")
+    post_migration_bootstrap.add_argument("--state-dir", required=True, help="Explicit runtime state directory for low-resource smoke.")
+    post_migration_bootstrap.add_argument("--db", required=True, help="SQLite database path to create or inspect.")
+    post_migration_bootstrap.add_argument("--generated-at", required=True, help="Bootstrap report timestamp.")
+    post_migration_bootstrap.add_argument(
+        "--target-environment",
+        choices=("github_actions_cloud_runner", "new_machine"),
+        default="github_actions_cloud_runner",
+    )
+    post_migration_bootstrap.add_argument("--workflow-path", help="Optional GitHub Actions workflow path to verify.")
+    post_migration_bootstrap.add_argument("--require-github-actions", action="store_true", help="Require GitHub-hosted cloud runner evidence.")
+    post_migration_bootstrap.add_argument("--require-network-probe", action="store_true", help="Run one lightweight HTTPS arXiv API probe.")
+    post_migration_bootstrap.add_argument("--require-secret-presence", action="store_true", help="Require SMTP secret env names to be present without printing values.")
+    post_migration_bootstrap.add_argument("--json", action="store_true", help="Print JSON bootstrap report.")
 
     doctor = subparsers.add_parser("doctor", help="Run local Phase 1 readiness checks.")
     doctor.add_argument("--json", action="store_true", help="Print JSON report.")
@@ -306,6 +429,8 @@ def build_parser() -> argparse.ArgumentParser:
     trial_ledger.add_argument("--expected-days", type=int, default=30)
     trial_ledger.add_argument("--text-degradation-verified", action="store_true")
     trial_ledger.add_argument("--video-degradation-verified", action="store_true")
+    trial_ledger.add_argument("--text-artifacts-verified", action="store_true")
+    trial_ledger.add_argument("--text-artifact-ref", default="")
     trial_ledger.add_argument("--scheduler-enabled", action="store_true")
     trial_ledger.add_argument("--manual-rerun-verified", action="store_true")
     trial_ledger.add_argument("--scheduler-ref", default="")
@@ -341,6 +466,8 @@ def build_parser() -> argparse.ArgumentParser:
     trial_ops.add_argument("--scheduler-enabled", action="store_true")
     trial_ops.add_argument("--manual-rerun-verified", action="store_true")
     trial_ops.add_argument("--scheduler-ref", default="")
+    trial_ops.add_argument("--text-artifacts-verified", action="store_true")
+    trial_ops.add_argument("--text-artifact-ref", default="")
     trial_ops.add_argument("--private-release-verified", action="store_true")
     trial_ops.add_argument("--release-ref", default="")
     trial_ops.add_argument("--real-smtp-verified", action="store_true")
@@ -402,7 +529,7 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start.add_argument("--scheduler-plan", required=True, help="Passing production scheduler plan JSON.")
     trial_start.add_argument("--source-batch", required=True, help="Passing live SourceBatch or Phase 12 all-arXiv daily input JSON.")
     trial_start.add_argument("--smtp-delivery", required=True, help="Real sent SMTP delivery report JSON.")
-    trial_start.add_argument("--release-delivery", required=True, help="Real created Release delivery report JSON.")
+    trial_start.add_argument("--release-delivery", help="Legacy optional Release delivery report JSON.")
     trial_start.add_argument("--generated-at", required=True, help="Trial start readiness timestamp.")
     trial_start.add_argument("--default-branch-ref", default="", help="Durable default-branch commit/workflow ref.")
     trial_start.add_argument("--runner-ref", default="", help="Durable GitHub-hosted runner ref.")
@@ -437,7 +564,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print a no-secret JSON input template for plan-production-refs.",
     )
     production_refs_template.add_argument("--runner-label", default="ubuntu-latest", help="GitHub-hosted runner label placeholder.")
-    production_refs_template.add_argument("--release-target", default="", help="Optional ADP_RELEASE_TARGET placeholder.")
 
     production_refs_discovery = subparsers.add_parser(
         "discover-production-refs",
@@ -470,7 +596,6 @@ def build_parser() -> argparse.ArgumentParser:
     production_launch.add_argument("--default-branch-ref", default="", help="Durable merged default-branch commit ref.")
     production_launch.add_argument("--runner-ref", default="", help="Durable GitHub-hosted runner readiness ref.")
     production_launch.add_argument("--smtp-secret-ref", default="", help="Durable GitHub SMTP secrets readiness ref without secret values.")
-    production_launch.add_argument("--release-target-ref", default="", help="Durable GitHub Release target readiness ref.")
     production_launch.add_argument("--workflow-vars-ref", default="", help="Durable GitHub variables readiness ref.")
     production_launch.add_argument("--trial-start-workflow-ref", default="", help="Durable default-branch trial start workflow ref.")
     production_launch.add_argument("--production-refs-report", default="", help="Optional passing plan-production-refs report used to fill external refs.")
@@ -620,6 +745,218 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             print(f"- active_count: {report.get('active_count')}")
             print(f"- evicted_count: {report.get('evicted_count')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "build-b1-report-email":
+        payload = load_json_mapping(args.daily_input)
+        report = build_b1_report_email_package(
+            payload,
+            generated_at=args.generated_at,
+            recipient=args.recipient,
+            artifact_dir=args.artifact_dir,
+            write=args.write,
+        )
+        errors = validate_b1_report_email_package(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report["status"] == "pass":
+                print(f"- report_id: {report['report_id']}")
+                print(f"- email_subject: {report['email_subject']}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "historical-b1-previews":
+        if args.input:
+            report = build_historical_b1_previews_report(
+                load_historical_daily_inputs(args.input),
+                generated_at=args.generated_at,
+                recipient=args.recipient,
+                artifact_dir=args.artifact_dir,
+                write=args.write,
+                required_count=args.count,
+            )
+        else:
+            report = build_historical_b1_previews(
+                generated_at=args.generated_at,
+                start_date=args.start_date,
+                preview_count=args.count,
+                recipient=args.recipient,
+                artifact_dir=args.artifact_dir,
+                write=args.write,
+            )
+        errors = validate_historical_b1_previews(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- preview_count: {report.get('preview_count')}")
+            print(f"- unique_source_id_count: {report.get('unique_source_id_count')}")
+            manifest_path = (
+                (report.get("artifact_summary") or {}).get("manifest_path")
+                if isinstance(report.get("artifact_summary"), dict)
+                else ""
+            )
+            if manifest_path:
+                print(f"- manifest_path: {manifest_path}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "runtime-audit":
+        report = build_runtime_audit(
+            state_dir=args.state_dir,
+            db_path=args.db,
+            generated_at=args.generated_at,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "tick":
+        report = run_tick(state_dir=args.state_dir, generated_at=args.generated_at, write=not args.no_write)
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- heartbeat_path: {report.get('heartbeat_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "watchdog":
+        report = run_watchdog(state_dir=args.state_dir, generated_at=args.generated_at)
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "backup":
+        report = create_runtime_backup(
+            db_path=args.db,
+            backup_dir=args.backup_dir,
+            generated_at=args.generated_at,
+            include_paths=args.include_path,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report["status"] == "pass":
+                print(f"- backup_manifest_path: {report.get('backup_manifest_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "restore":
+        report = restore_runtime_backup(
+            manifest_path=args.manifest,
+            target_db_path=args.target_db,
+            generated_at=args.generated_at,
+            confirm_restore=args.confirm_restore,
+            allow_overwrite=args.allow_overwrite,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "scheduler":
+        action = f"scheduler_{args.scheduler_command}"
+        report = build_scheduler_plan(
+            action=action,
+            platform=args.platform,
+            project_root=args.project_root,
+            state_dir=args.state_dir,
+            generated_at=args.generated_at,
+            artifact_dir=args.artifact_dir,
+            write=args.write,
+        )
+        errors = validate_stage1_runtime_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print("- dry_run_only: true")
+            for path in report.get("written_paths", []):
+                print(f"- template: {path}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "migration":
+        if args.migration_command == "export":
+            report = build_migration_package(
+                project_root=args.project_root,
+                output_dir=args.output_dir,
+                db_path=args.db,
+                generated_at=args.generated_at,
+                include_paths=args.include_path,
+                required_paths=args.required_path or None,
+                write=not args.no_write,
+            )
+        else:
+            report = verify_migration_package(manifest_path=args.manifest, generated_at=args.generated_at)
+        errors = validate_stage1_migration_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report.get("package_manifest_path"):
+                print(f"- package_manifest_path: {report.get('package_manifest_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "post-migration-bootstrap":
+        report = build_stage1_bootstrap_report(
+            project_root=args.project_root,
+            migration_manifest=args.migration_manifest,
+            state_dir=args.state_dir,
+            db_path=args.db,
+            generated_at=args.generated_at,
+            target_environment=args.target_environment,
+            workflow_path=args.workflow_path,
+            require_github_actions=args.require_github_actions,
+            require_network_probe=args.require_network_probe,
+            require_secret_presence=args.require_secret_presence,
+        )
+        errors = validate_stage1_bootstrap_report(report)
+        if errors:
+            report = {**report, "status": "blocked", "bootstrap_ready": False, "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- target_environment: {report.get('target_environment')}")
+            print(f"- cloud_runner_verified: {str(report.get('cloud_runner_verified')).lower()}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2
@@ -1073,6 +1410,8 @@ def main(argv: list[str] | None = None) -> int:
             expected_days=args.expected_days,
             text_degradation_path_verified=args.text_degradation_verified,
             video_degradation_path_verified=args.video_degradation_verified,
+            text_artifacts_verified=args.text_artifacts_verified,
+            text_artifact_ref=args.text_artifact_ref,
             scheduler_enabled=args.scheduler_enabled,
             manual_rerun_verified=args.manual_rerun_verified,
             scheduler_ref=args.scheduler_ref,
@@ -1139,6 +1478,8 @@ def main(argv: list[str] | None = None) -> int:
             scheduler_enabled=args.scheduler_enabled,
             manual_rerun_verified=args.manual_rerun_verified,
             scheduler_ref=args.scheduler_ref,
+            text_artifacts_verified=args.text_artifacts_verified,
+            text_artifact_ref=args.text_artifact_ref,
             private_release_verified=args.private_release_verified,
             release_ref=args.release_ref,
             real_smtp_verified=args.real_smtp_verified,
@@ -1282,7 +1623,7 @@ def main(argv: list[str] | None = None) -> int:
             scheduler_plan=load_json_mapping(args.scheduler_plan),
             source_batch=load_json_mapping(args.source_batch),
             smtp_delivery_report=load_json_mapping(args.smtp_delivery),
-            release_delivery_report=load_json_mapping(args.release_delivery),
+            release_delivery_report=load_json_mapping(args.release_delivery) if args.release_delivery else None,
             default_branch_ref=args.default_branch_ref,
             runner_ref=args.runner_ref,
             preflight_ref=args.preflight_ref,
@@ -1354,7 +1695,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "print-production-refs-template":
         template = build_production_refs_input_template(
             runner_label=args.runner_label,
-            release_target=args.release_target,
         )
         print(json.dumps(template, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
@@ -1430,7 +1770,6 @@ def main(argv: list[str] | None = None) -> int:
         launch_refs = {
             "runner_ref": args.runner_ref,
             "smtp_secret_ref": args.smtp_secret_ref,
-            "release_target_ref": args.release_target_ref,
             "workflow_vars_ref": args.workflow_vars_ref,
         }
         if args.production_refs_report:
@@ -1458,7 +1797,6 @@ def main(argv: list[str] | None = None) -> int:
             default_branch_ref=args.default_branch_ref,
             runner_ref=launch_refs["runner_ref"],
             smtp_secret_ref=launch_refs["smtp_secret_ref"],
-            release_target_ref=launch_refs["release_target_ref"],
             workflow_vars_ref=launch_refs["workflow_vars_ref"],
             trial_start_workflow_ref=args.trial_start_workflow_ref,
             confirm_launch=args.confirm_launch,

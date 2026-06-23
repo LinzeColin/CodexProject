@@ -907,50 +907,101 @@ tasks:
     objective: "Produce the B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and audit artifacts required by V5 Stage 1."
     scope: "B1 report generation, claim evidence, Chinese email subject/body, Markdown/HTML/JSON audit artifacts, focused tests, and governance records."
     non_scope: "No video generation, no MP4/TTS requirement, no Release upload, no real SMTP send, and no unsupported factual claims."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-06-SCORING-QUEUE-LEDGER-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
-    test_results: ["not_run_yet"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_results: ["focused B1 report/email and CLI tests: 9 tests OK", "arxiv-daily-push unit tests: 203 tests OK", "semantic extractor: 42 active formulas and 298 active parameters checked with no errors"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/phase_records/PHASE_S1_07_B1_REPORT_EMAIL_TEXT.md", "governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json"]
     risk: "The report must be teaching/explanation quality rather than a shallow daily digest, and must fail closed on unsupported claims."
     rollback: "Revert S1-07 report/email text files and governance updates."
     target_version: "0.17.0"
-    completed_version: ""
+    completed_version: "0.17.0"
     unknown_task_ids: []
   - task_id: "S1-08-LOCAL_RUNTIME_RECOVERY-001"
     phase: "S1-A"
     objective: "Add local runtime controls for tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall helpers."
     scope: "CLI commands, runtime audit, backup/restore tests, scheduler controls, runbook, and governance records."
     non_scope: "No production scheduler enablement before acceptance gates pass."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-07-B1_REPORT_EMAIL_TEXT-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused runtime recovery and CLI tests: 13 tests OK", "arxiv-daily-push unit tests: 210 tests OK", "semantic extractor: 43 active formulas and 308 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 129 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "S1-08 run manifest JSON parse: OK", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files found under arxiv-daily-push or tests/governance", "parameter_registry.csv: 326 rows width 36; TRACEABILITY_MATRIX.csv: 111 rows width 12"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/phase_records/PHASE_S1_08_LOCAL_RUNTIME_RECOVERY.md", "governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json"]
     risk: "Recovery controls must be idempotent and not leak secrets or retain oversized artifacts."
     rollback: "Revert S1-08 CLI/runtime/recovery files and governance records."
-    target_version: "0.12.4"
-    completed_version: ""
+    target_version: "0.18.0"
+    completed_version: "0.18.0"
     unknown_task_ids: []
   - task_id: "S1-09-MIGRATION_PACKAGE-001"
     phase: "S1-A"
     objective: "Produce the low-resource integration evidence and new-machine migration checklist."
     scope: "Migration pack, checklist, low-resource smoke evidence, and governance records."
     non_scope: "No final production acceptance, no 30-day replay, and no source/board Stage 2 promotion."
-    status: "planned"
+    status: "completed"
     dependencies: ["S1-08-LOCAL_RUNTIME_RECOVERY-001"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
     acceptance_ids: ["ADP-ACC-S1-09-MIGRATION-PACKAGE"]
-    test_commands: ["PENDING"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_migration.py arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_project PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s109_changed PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused migration/runtime/CLI tests: 17 tests OK", "arxiv-daily-push unit tests: 214 tests OK", "semantic extractor: 44 active formulas and 314 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 129 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "S1-09 run manifest JSON parse: OK", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files found under arxiv-daily-push or tests/governance", "parameter_registry.csv: 332 rows width 36; TRACEABILITY_MATRIX.csv: 115 rows width 12"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/phase_records/PHASE_S1_09_MIGRATION_PACKAGE.md", "governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json"]
     risk: "Migration readiness must not be confused with production acceptance."
     rollback: "Revert S1-09 migration package files and governance updates."
-    target_version: "0.12.4"
+    target_version: "0.19.0"
+    completed_version: "0.19.0"
+    unknown_task_ids: []
+  - task_id: "S1-10-POST_MIGRATION_BOOTSTRAP-001"
+    phase: "S1-A"
+    objective: "Verify the post-migration machine or cloud runner bootstrap before heavy historical previews and live-day evidence."
+    scope: "New-machine/cloud runtime prerequisites, explicit runner boundary, SSL/network readiness, low-resource smoke rerun from the migration package, and no-secret readiness evidence."
+    non_scope: "No production scheduler enablement, no real SMTP send, no Release upload, no video generation, no 30-day replay, and no final production acceptance claim."
+    status: "completed"
+    dependencies: ["S1-09-MIGRATION_PACKAGE-001"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml", "arxiv-daily-push/tests/test_stage1_bootstrap.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_focus3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_bootstrap.py arxiv-daily-push/tests/test_stage1_migration.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_version PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push version", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_semantic3 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_allgov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --all", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_root PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s110_iq PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_information_quality.py --project arxiv-daily-push --fast --fail-on-error", "git diff --check"]
+    test_results: ["focused S1-10 bootstrap/migration/CLI tests: 16 tests OK", "version CLI: 0.20.0", "arxiv-daily-push unit tests: 220 tests OK", "semantic extractor: 45 active formulas and 322 active parameters checked with no errors", "project governance: arxiv-daily-push errors 0 warnings 0", "all-project governance validation: errors 0 warnings 0", "changed-only semantic governance sync: errors 0 warnings 0; projects changed arxiv-daily-push only", "root governance unit tests: 130 tests OK; missing-base line is an expected negative fixture with exit code 0", "information quality validation: PASS errors 0 warnings 0", "JSON/JSONL and CSV parse checks: PASS", "git diff --check: PASS", "cache hygiene: no __pycache__ or .pyc files under arxiv-daily-push or tests/governance"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/tests/test_stage1_bootstrap.py", ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json"]
+    risk: "Bootstrap must prove the target runtime boundary and must not silently fall back to this Mac as a background production runner."
+    rollback: "Revert S1-10 bootstrap files and governance updates."
+    target_version: "0.20.0"
+    completed_version: "0.20.0"
+    unknown_task_ids: []
+  - task_id: "S1-11-HISTORICAL_B1_PREVIEWS-001"
+    phase: "S1-A"
+    objective: "Generate 30 independent historical B1/arXiv report and email preview packages from supported inputs without production side effects."
+    scope: "Historical fixture or replay-input selection, B1 report/email artifact generation, content ledger references, evidence manifests, and governance records for 30 independent previews."
+    non_scope: "No real SMTP send, no Release upload, no scheduler enablement, no video generation, no broad non-arXiv source expansion, and no final production acceptance claim."
+    status: "completed"
+    dependencies: ["S1-10-POST_MIGRATION_BOOTSTRAP-001"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_focus_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_historical_previews.py arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_queue.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_version_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push version", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_semantic_final PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_cli_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push historical-b1-previews --generated-at 2026-06-23T07:30:00+10:00 --artifact-dir /tmp/codex_adp_s111_preview_artifacts --write --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s111_project_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused S1-11 historical/B1/queue/CLI tests: 21 tests OK", "version CLI: 0.21.0", "arxiv-daily-push unit tests: 225 tests OK", "semantic extractor: 46 active formulas and 331 active parameters checked with no errors", "historical-b1-previews CLI: pass with 30 previews, 30 unique dates, 30 unique source IDs, 30 unique content hashes, 30 unique email IDs, 150 artifact files, manifest exists, future leakage count 0, and SMTP/Release/video/network/scheduler side effects false"]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md", "governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json"]
+    risk: "Historical previews must be independent evidence packages and must not be confused with live delivery or final production acceptance."
+    rollback: "Revert S1-11 historical preview files and governance updates."
+    target_version: "0.21.0"
+    completed_version: "0.21.0"
+    unknown_task_ids: []
+  - task_id: "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"
+    phase: "S1-A"
+    objective: "Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed."
+    scope: "Target-runner live arXiv input, B1 report/email generation, controlled Gmail SMTP send evidence, no-secret delivery refs, and two natural-day evidence ledger updates."
+    non_scope: "No production scheduler enablement, no broad non-arXiv board expansion, no video generation, no GitHub Release upload requirement, and no final production acceptance claim until the dedicated acceptance gate passes."
+    status: "in_progress"
+    dependencies: ["S1-11-HISTORICAL_B1_PREVIEWS-001"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", ".github/workflows/arxiv-daily-push-manual-delivery-test.yml", ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    acceptance_ids: ["ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "ruby -e require-yaml workflow parse for four S1-12 workflows", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_semantic_after python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s112_gov python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main"]
+    test_results: ["PREFLIGHT_ONLY: GitHub Actions PR #67 live all-arXiv dry-run passed on run 27987189886/job 82831357067 with 20/20 archives verified, max_results_per_category 1, artifact digest sha256:2011bf655a2d8237b5c20f3111c70d6242a4b6582b5e90069d1f63d43a4da81a, and SMTP/Release/scheduler disabled.", "NOT_COMPLETE: two real natural-day controlled B1 Gmail SMTP delivery evidence is still missing."]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md", "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md", "governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json", "github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015"]
+    risk: "PR CI, controlled manual Gmail SMTP evidence, and later live-day evidence must be collected on GitHub/cloud runner; the system must not silently turn into a production schedule or local Mac background service."
+    rollback: "Revert S1-12 live-day evidence files and governance records."
+    target_version: "0.22.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"

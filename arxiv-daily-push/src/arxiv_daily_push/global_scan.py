@@ -22,6 +22,7 @@ ALL_ARXIV_SCAN_MODEL_ID = "adp-all-arxiv-scan-v1"
 CANDIDATE_QUEUE_MODEL_ID = "adp-candidate-queue-v1"
 ROI_RANKING_MODEL_ID = "adp-roi-ranking-v1"
 MAIL_VIDEO_LINK_MODEL_ID = "adp-mail-video-link-v1"
+MAIL_TEXT_DELIVERY_MODEL_ID = "adp-mail-text-delivery-v1"
 LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID = "adp-live-all-arxiv-dry-run-v1"
 LIVE_ARXIV_TRANSIENT_RETRY_COUNT = 2
 LIVE_ARXIV_TRANSIENT_RETRY_DELAY_SECONDS = 20.0
@@ -419,10 +420,16 @@ def validate_all_arxiv_daily_input_report(report: Mapping[str, Any]) -> list[str
     errors.extend(validate_all_arxiv_scan_plan(report.get("scan_plan") if isinstance(report.get("scan_plan"), Mapping) else {}))
     requirements = report.get("delivery_requirements")
     if isinstance(requirements, Mapping):
-        if requirements.get("email_video_link_required") is not True:
-            errors.append("Phase 12 email must require a video link")
+        if requirements.get("email_chinese_lesson_required") is not True:
+            errors.append("Stage 1 email must require Chinese lesson text")
+        if requirements.get("candidate_queue_summary_required") is not True:
+            errors.append("Stage 1 email must require candidate queue summary")
+        if requirements.get("email_video_link_required") is not False:
+            errors.append("Stage 1 email must not require a video link")
+        if requirements.get("video_generation_required") is not False:
+            errors.append("Stage 1 must not require video generation")
         if requirements.get("video_attachment_allowed") is not False:
-            errors.append("Phase 12 must forbid video email attachments")
+            errors.append("Stage 1 must forbid video email attachments")
     elif report.get("status") == "pass":
         errors.append("passing all-arxiv daily report requires delivery_requirements")
     if report.get("status") == "blocked":
@@ -583,19 +590,34 @@ def write_phase12_artifacts(report: Mapping[str, Any], artifact_dir: str | Path)
     directory.mkdir(parents=True, exist_ok=True)
     daily_input_path = directory / "adp-daily-input.json"
     queue_path = directory / "adp-candidate-queue.json"
-    video_path = directory / "adp-video-artifact.json"
+    delivery_policy_path = directory / "adp-text-delivery-policy.json"
     email_path = directory / "adp-email-brief.json"
     daily_input_path.write_text(json.dumps(report["daily_input"], ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     queue_path.write_text(json.dumps(report["candidate_queue"], ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    video_manifest = build_video_artifact_manifest(report["daily_input"], generated_at=str(report["generated_at"]))
-    video_path.write_text(json.dumps(video_manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    delivery_policy = {
+        "policy_id": f"text-delivery:{stable_content_hash({'date': report['date'], 'generated_at': report['generated_at']})[:16]}",
+        "model_id": MAIL_TEXT_DELIVERY_MODEL_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": report["generated_at"],
+        "recipient": DEFAULT_RECIPIENT,
+        "delivery_channel": "email",
+        "must_include_chinese_lesson": True,
+        "must_include_candidate_queue_summary": True,
+        "video_required": False,
+        "video_generation_required": False,
+        "email_video_link_required": False,
+        "release_required": False,
+        "video_attachment_allowed": False,
+        "artifact_storage": "github_actions_artifacts",
+    }
+    delivery_policy_path.write_text(json.dumps(delivery_policy, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     email_brief = {
-        "model_id": MAIL_VIDEO_LINK_MODEL_ID,
+        "model_id": MAIL_TEXT_DELIVERY_MODEL_ID,
         "recipient": DEFAULT_RECIPIENT,
         "date": report["date"],
         "selected_title": report["daily_input"]["source_item"]["title"],
         "must_include_chinese_lesson": True,
-        "must_include_video_link": True,
+        "must_include_video_link": False,
         "video_attachment_allowed": False,
         "candidate_queue_summary": report["daily_input"]["queue_summary"],
     }
@@ -603,7 +625,7 @@ def write_phase12_artifacts(report: Mapping[str, Any], artifact_dir: str | Path)
     return {
         "daily_input": str(daily_input_path),
         "candidate_queue": str(queue_path),
-        "video_artifact": str(video_path),
+        "delivery_policy": str(delivery_policy_path),
         "email_brief": str(email_path),
     }
 
@@ -638,15 +660,18 @@ def build_daily_delivery_package(
     queue_summary = daily_input.get("queue_summary") if isinstance(daily_input.get("queue_summary"), Mapping) else {}
     notification = _daily_email(lesson, daily_input, links, queue_summary, generated_at=generated_at)
     return {
-        "model_id": MAIL_VIDEO_LINK_MODEL_ID,
+        "model_id": MAIL_TEXT_DELIVERY_MODEL_ID,
         "project_id": "arxiv-daily-push",
         "generated_at": generated_at,
         "recipient": DEFAULT_RECIPIENT,
         "release_url": links["release_url"],
         "video_url": links["video_url"],
-        "video_link_ready": bool(links["video_url"]),
+        "video_link_ready": False,
+        "video_required": False,
+        "video_generation_required": False,
+        "release_required": False,
         "email_contains_chinese_lesson": _lesson_has_chinese_text(lesson),
-        "email_contains_video_link": bool(links["video_url"]),
+        "email_contains_video_link": False,
         "email_contains_candidate_queue_summary": bool(queue_summary),
         "email_contains_release_landing_link": False,
         "email_contains_html": bool(notification.html_body),
@@ -951,7 +976,6 @@ def _daily_email(
     queue_items = _email_queue_items(top_queue, selected_category=category)
     queued_count = int(queue_summary.get("queued_item_count") or len(queue_items))
     source_url = str(source_item.get("canonical_url") or "")
-    video_url = str(links.get("video_url") or "")
     feedback_links = _feedback_links(str(source_item.get("source_id") or "unknown"))
     body = _daily_email_text(
         title=title,
@@ -959,7 +983,6 @@ def _daily_email(
         group_label=group_label,
         category=category,
         source_url=source_url,
-        video_url=video_url,
         frontstage=frontstage,
         queued_count=queued_count,
         queue_items=queue_items,
@@ -971,7 +994,6 @@ def _daily_email(
         group_label=group_label,
         category=category,
         source_url=source_url,
-        video_url=video_url,
         frontstage=frontstage,
         queued_count=queued_count,
         queue_items=queue_items,
@@ -1005,7 +1027,6 @@ def _frontstage_from_lesson(lesson: Mapping[str, Any], *, title: str) -> dict[st
         "key_questions": _text_list(frontstage.get("key_questions"), ["它是否提供可复验增量？", "摘要主张是否有正文证据支撑？", "失败条件是什么？"]),
         "evidence_gaps": _text_list(frontstage.get("evidence_gaps"), ["当前只基于 arXiv 摘要和分类元数据，不能当作同行评审或实证验证。"]),
         "default_action": _clean_text(str(frontstage.get("default_action") or "只做一个最小验证：列出输入、输出、失败条件和复现实验，再决定是否深读全文。")),
-        "video_card": _video_card(frontstage.get("video_card"), title=title),
     }
 
 
@@ -1016,7 +1037,6 @@ def _daily_email_text(
     group_label: str,
     category: str,
     source_url: str,
-    video_url: str,
     frontstage: Mapping[str, Any],
     queued_count: int,
     queue_items: Sequence[Mapping[str, str]],
@@ -1033,7 +1053,7 @@ def _daily_email_text(
     feedback_options = " / ".join(str(item["label"]) for item in feedback_links)
     return "\n".join(
         [
-            "【今日判断】",
+            "【今天学什么】",
             f"建议：{frontstage['decision']} | 证据：{frontstage['evidence_level']} | 时间：{frontstage['estimated_reading_time']}",
             str(frontstage["one_line_takeaway"]),
             "",
@@ -1057,11 +1077,6 @@ def _daily_email_text(
             "【默认动作】",
             str(frontstage["default_action"]),
             "",
-            "【视频入口】",
-            f"- 时长：{frontstage['video_card']['duration']}；内容：{frontstage['video_card']['content']}",
-            f"- 学习目标：{frontstage['video_card']['learning_goal']}",
-            f"- 观看/下载：{video_url or '待云端 MP4 生成后发送'}",
-            "",
             "【候选队列摘要】",
             f"- 后台保留：{queued_count} 篇；本邮件只显示前台合格候选。",
             *candidates,
@@ -1079,7 +1094,6 @@ def _daily_email_html(
     group_label: str,
     category: str,
     source_url: str,
-    video_url: str,
     frontstage: Mapping[str, Any],
     queued_count: int,
     queue_items: Sequence[Mapping[str, str]],
@@ -1106,7 +1120,6 @@ def _daily_email_html(
         for item in feedback_links
     )
     source_button = _html_button("查看原文", source_url, primary=True) if source_url else ""
-    video_button = _html_button("观看图解视频", video_url, primary=False) if video_url else "<span class=\"muted\">视频链接待云端 MP4 生成后发送</span>"
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -1131,7 +1144,7 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 .kv{{border:1px solid #e1e7ef;border-radius:10px;padding:11px;margin:8px 0}}.kv b{{display:block;font-size:13px}}.kv span{{display:block;font-size:13px;color:#4d5870;margin-top:3px}}
 .callout{{border-left:4px solid #df9b16;background:#fff8e8;padding:12px 14px;border-radius:0 9px 9px 0}}
 .btn{{display:inline-block;text-decoration:none;padding:11px 14px;border-radius:9px;font-size:13px;font-weight:750;margin:0 8px 8px 0;background:#172033;color:#fff!important}}
-.btn.alt{{background:#edf1f7;color:#25344f!important}}.media{{border:1px solid #dce3ee;border-radius:12px;background:#f8fafc;padding:14px;margin:8px 0}}.play{{font-size:19px;font-weight:800;margin-right:8px}}
+.btn.alt{{background:#edf1f7;color:#25344f!important}}
 .candidates li span{{display:block;color:#657187;font-size:12px}}.feedback{{background:#f7f9fc;border-top:1px solid #e4e9f1;padding:18px 24px}}.fb{{display:inline-block;text-decoration:none;border:1px solid #d5dce8;background:#fff;color:#26344f!important;padding:9px 11px;border-radius:8px;font-size:12px;font-weight:700;margin:5px 5px 0 0}}
 .muted{{color:#6b7589;font-size:13px}}
 @media(max-width:560px){{.wrap{{padding:0}}.card{{border-radius:0;border-left:0;border-right:0}}.head,.body,.feedback{{padding-left:17px;padding-right:17px}}h1{{font-size:21px}}.score{{float:none;display:block;margin-top:4px}}}}
@@ -1148,7 +1161,6 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 <h2>真正值得追问的 3 个问题</h2><ul>{questions}</ul>
 <div class="callout"><b>先别相信的地方</b><ul>{gaps}</ul></div>
 <h2>默认动作</h2><p>{escape(str(frontstage["default_action"]))}</p>
-<h2>视频入口</h2><div class="media"><span class="play">▶</span><b>{escape(str(frontstage["video_card"]["duration"]))} 图解</b><p>{escape(str(frontstage["video_card"]["content"]))}<br>{escape(str(frontstage["video_card"]["learning_goal"]))}</p>{video_button}</div>
 <div>{source_button}</div>
 <h2>候选队列摘要</h2><p class="muted">后台保留 {int(queued_count)} 篇；本邮件只显示前台合格候选。</p><ul class="candidates">{candidate_html}</ul>
 </div>
@@ -1258,11 +1270,13 @@ def _delivery_requirements() -> dict[str, Any]:
         "notification_channel": "email",
         "recipient": DEFAULT_RECIPIENT,
         "email_chinese_lesson_required": True,
-        "email_video_link_required": True,
+        "email_video_link_required": False,
         "candidate_queue_summary_required": True,
+        "video_generation_required": False,
         "video_attachment_allowed": False,
-        "artifact_storage": "github_release",
-        "production_enablement_blocked_until_phase12_verified": True,
+        "release_upload_required": False,
+        "artifact_storage": "github_actions_artifacts",
+        "production_enablement_blocked_until_stage1_live_email_verified": True,
     }
 
 

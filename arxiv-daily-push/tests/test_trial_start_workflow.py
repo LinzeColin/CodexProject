@@ -7,102 +7,42 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 from arxiv_daily_push.cli import main
-from arxiv_daily_push.trial_start_workflow import (
-    REQUIRED_START_WORKFLOW_ARTIFACTS,
-    TRIAL_START_WORKFLOW_VALIDATOR_ID,
-    build_trial_start_workflow_plan,
-    validate_trial_start_workflow_plan,
-)
-
+from arxiv_daily_push.trial_start_workflow import TRIAL_START_WORKFLOW_VALIDATOR_ID, build_trial_start_workflow_plan, validate_trial_start_workflow_plan
 
 ROOT = Path(__file__).resolve().parents[2]
 
-
 class TrialStartWorkflowTests(unittest.TestCase):
-    def test_trial_start_workflow_plan_validates_manual_artifact_workflow(self) -> None:
-        plan = build_trial_start_workflow_plan(ROOT, generated_at="2026-07-01T05:10:00+10:00")
-
+    def test_trial_start_workflow_plan_is_text_only(self) -> None:
+        plan = build_trial_start_workflow_plan(ROOT, generated_at="2026-07-01T04:00:00+10:00")
         self.assertEqual(plan["validator_id"], TRIAL_START_WORKFLOW_VALIDATOR_ID)
         self.assertEqual(plan["status"], "pass")
         self.assertTrue(plan["trial_start_workflow_ready"])
-        self.assertTrue(plan["manual_only"])
-        self.assertFalse(plan["default_side_effects_enabled"])
-        self.assertTrue(plan["requires_explicit_smtp_var"])
-        self.assertTrue(plan["requires_explicit_release_var"])
-        self.assertEqual(set(plan["required_artifacts"]), set(REQUIRED_START_WORKFLOW_ARTIFACTS))
+        self.assertFalse(plan["requires_explicit_release_var"])
+        self.assertEqual(plan["required_github_permissions"], ["actions: read", "contents: read"])
         self.assertFalse(validate_trial_start_workflow_plan(plan))
 
-    def test_trial_start_workflow_is_preflight_first_and_ref_complete(self) -> None:
+    def test_workflow_collects_text_artifact_before_smtp(self) -> None:
         workflow = (ROOT / ".github/workflows/arxiv-daily-push-trial-start.yml").read_text(encoding="utf-8")
-
         self.assertIn("workflow_dispatch", workflow)
-        self.assertNotIn("schedule:", workflow)
-        self.assertIn("confirm_trial_start", workflow)
         self.assertIn("runs-on: ubuntu-latest", workflow)
-        self.assertNotIn("self-hosted", workflow)
+        self.assertIn("contents: read", workflow)
         self.assertLess(workflow.index("preflight-production"), workflow.index("Build all-arXiv trial input"))
-        self.assertLess(workflow.index("Stop if preflight blocked"), workflow.index("Run SMTP delivery probe"))
-        self.assertLess(workflow.index("plan-production-refs"), workflow.index("Build all-arXiv trial input"))
-        self.assertLess(workflow.index("Stop if production refs blocked"), workflow.index("Run SMTP delivery probe"))
-        self.assertLess(workflow.index("plan-production-launch"), workflow.index("Build all-arXiv trial input"))
-        self.assertLess(workflow.index("--production-refs-report"), workflow.index("Build all-arXiv trial input"))
-        self.assertLess(workflow.index("Stop if launch readiness blocked"), workflow.index("Run SMTP delivery probe"))
-        self.assertLess(workflow.index("build-all-arxiv-daily-input"), workflow.index("Run Release delivery probe"))
-        self.assertLess(workflow.index("render-lightweight-mp4"), workflow.index("Run Release delivery probe"))
-        self.assertIn("adp-trial-start-mp4-video", workflow)
-        self.assertIn("ADP_ARXIV_MAX_RESULTS_PER_CATEGORY", workflow)
-        self.assertIn("ADP_CANDIDATE_QUEUE_INPUT_PATH", workflow)
-        self.assertIn("adp-trial-start-all-arxiv-daily-input", workflow)
-        self.assertIn("adp-trial-start-phase12-artifacts", workflow)
-        self.assertIn("adp-trial-start-candidate-queue", workflow)
-        self.assertNotIn("cat:cs.AI", workflow)
-        self.assertNotIn("ADP_ARXIV_QUERY", workflow)
-        self.assertIn("adp-trial-start-production-refs", workflow)
-        self.assertIn("adp-trial-start-launch-readiness", workflow)
-        self.assertIn("production_refs_exit_code", workflow)
-        self.assertIn("launch_exit_code", workflow)
-        self.assertIn("vars.ADP_ALLOW_SMTP_SEND", workflow)
-        self.assertIn("vars.ADP_ALLOW_RELEASE_UPLOAD", workflow)
-        self.assertIn("--allow-send", workflow)
-        self.assertIn("--allow-upload", workflow)
-        self.assertIn("contents: write", workflow)
-        self.assertIn("secrets.ADP_SMTP_PASSWORD", workflow)
-        self.assertIn("vars.ADP_RELEASE_TARGET", workflow)
-        self.assertNotIn("auth.json", workflow)
-        for artifact in REQUIRED_START_WORKFLOW_ARTIFACTS:
-            self.assertIn(artifact, workflow)
-        for ref_arg in (
-            "--default-branch-ref",
-            "--runner-ref",
-            "--preflight-ref",
-            "--source-ingest-ref",
-            "--smtp-ref",
-            "--release-ref",
-            "--scheduler-ref",
-            "--trial-state-ref",
-            "--trial-start-ref",
-        ):
-            self.assertIn(ref_arg, workflow)
+        self.assertLess(workflow.index("adp-text-delivery-policy.json"), workflow.index("Run SMTP delivery probe"))
+        self.assertIn("plan-trial-start", workflow)
+        self.assertNotIn("ADP_ALLOW_RELEASE", workflow)
+        self.assertNotIn("ADP_RELEASE", workflow)
+        self.assertNotIn("render-lightweight-mp4", workflow)
+        self.assertNotIn("ffmpeg", workflow)
+        self.assertNotIn("--release-ref", workflow)
 
     def test_cli_plan_trial_start_workflow_outputs_ready_json(self) -> None:
         buffer = io.StringIO()
         with redirect_stdout(buffer):
-            result = main(
-                [
-                    "plan-trial-start-workflow",
-                    "--path",
-                    str(ROOT),
-                    "--generated-at",
-                    "2026-07-01T05:10:00+10:00",
-                    "--json",
-                ]
-            )
-
+            result = main(["plan-trial-start-workflow", "--path", str(ROOT), "--generated-at", "2026-07-01T04:00:00+10:00", "--json"])
         payload = json.loads(buffer.getvalue())
         self.assertEqual(result, 0)
         self.assertEqual(payload["validator_id"], TRIAL_START_WORKFLOW_VALIDATOR_ID)
         self.assertTrue(payload["trial_start_workflow_ready"])
-
 
 if __name__ == "__main__":
     unittest.main()

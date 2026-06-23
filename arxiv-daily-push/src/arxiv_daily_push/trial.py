@@ -27,7 +27,7 @@ def evaluate_trial_evidence(evidence: Mapping[str, Any], *, generated_at: str) -
     weekly_monthly = _evaluate_weekly_monthly(evidence.get("weekly_monthly"))
     recovery = _evaluate_recovery(evidence.get("recovery"))
     scheduler = _evaluate_scheduler(evidence.get("scheduler"), daily_passed=daily["passed"])
-    release = _evaluate_release(evidence.get("release"), daily_runs=daily["valid_runs"])
+    text_artifacts = _evaluate_text_artifacts(evidence.get("text_artifacts"), daily_runs=daily["valid_runs"])
     email = _evaluate_email(evidence.get("email"), daily_runs=daily["valid_runs"])
     resource = _evaluate_resource(evidence.get("resource_pressure"), daily_runs=daily["valid_runs"])
 
@@ -43,7 +43,7 @@ def evaluate_trial_evidence(evidence: Mapping[str, Any], *, generated_at: str) -
     gates = [
         _gate("thirty_day_trial_passed", "30-day trial with daily uniqueness, traceability, weekly/monthly replay, and recovery drill evidence", thirty_day_passed, trial_ref, thirty_day_reasons),
         _gate("scheduler_operational", "05:00 scheduler, 04:45 health check, and manual rerun evidence", scheduler["passed"], scheduler["evidence_ref"], scheduler["blocking_reasons"]),
-        _gate("release_upload_verified", "private Release or equivalent publishing evidence", release["passed"], release["evidence_ref"], release["blocking_reasons"]),
+        _gate("text_artifacts_verified", "Stage 1 text delivery artifact evidence", text_artifacts["passed"], text_artifacts["evidence_ref"], text_artifacts["blocking_reasons"]),
         _gate("real_smtp_verified", "real SMTP delivery evidence to the configured recipient", email["passed"], email["evidence_ref"], email["blocking_reasons"]),
         _gate("resource_pressure_ok", "disk, memory, cache, Git artifact, and secret hygiene evidence", resource["passed"], resource["evidence_ref"], resource["blocking_reasons"]),
     ]
@@ -137,14 +137,13 @@ def _evaluate_daily_runs(value: Any, *, expected_days: int) -> dict[str, Any]:
         for key in (
             "p0_claims_traceable",
             "text_degradation_path_verified",
-            "video_degradation_path_verified",
         ):
             if run.get(key) is not True:
                 reasons.append(f"{prefix}.{key} must be true")
         for key in ("duplicate_publication", "unsupported_claims_published", "failure_generated_misleading_content"):
             if run.get(key) is not False:
                 reasons.append(f"{prefix}.{key} must be false")
-        for key in ("run_record_ref", "release_ref", "email_ref", "resource_gate_ref"):
+        for key in ("run_record_ref", "text_artifact_ref", "email_ref", "resource_gate_ref"):
             if not _ref(run.get(key)):
                 reasons.append(f"{prefix}.{key} is required")
 
@@ -201,16 +200,16 @@ def _evaluate_scheduler(value: Any, *, daily_passed: bool) -> dict[str, Any]:
     return _check(not reasons, *reasons, evidence_ref=ref)
 
 
-def _evaluate_release(value: Any, *, daily_runs: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+def _evaluate_text_artifacts(value: Any, *, daily_runs: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     data = value if isinstance(value, Mapping) else {}
     reasons = []
-    if data.get("private_release_verified") is not True:
-        reasons.append("release.private_release_verified must be true")
-    if any(not _ref(run.get("release_ref")) for run in daily_runs):
-        reasons.append("every daily run must include release_ref")
+    if data.get("b1_text_artifacts_verified") is not True:
+        reasons.append("text_artifacts.b1_text_artifacts_verified must be true")
+    if any(not _ref(run.get("text_artifact_ref")) for run in daily_runs):
+        reasons.append("every daily run must include text_artifact_ref")
     ref = _ref(data.get("ref"))
     if not ref:
-        reasons.append("release.ref is required")
+        reasons.append("text_artifacts.ref is required")
     return _check(not reasons, *reasons, evidence_ref=ref)
 
 

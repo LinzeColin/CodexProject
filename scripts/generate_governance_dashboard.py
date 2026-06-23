@@ -279,6 +279,117 @@ REVIEW8_DECISION_POLICY = {
 }
 
 
+def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str, Any]:
+    policy = dict(REVIEW8_DECISION_POLICY.get(project_id, {}))
+    task_id = str(next_task.get("task_id") or "")
+    if project_id == "arxiv-daily-push" and task_id == "S1-08-LOCAL_RUNTIME_RECOVERY-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-002",
+                "review_id": "REVIEW8",
+                "owner_role": "engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-08，补齐本地 tick、watchdog、backup、restore、runtime audit 和 scheduler install/uninstall 恢复控制。",
+                "recommendation": "A: implement S1-08 local runtime recovery controls before migration packaging",
+                "option_a": "继续 S1-08，完成本地运行、恢复、备份和调度控制的低资源代码与证据。",
+                "option_b": "暂停在 S1-07，只保留 B1 报告/邮件预览，不进入本地运行恢复门禁。",
+                "option_c": "跳过 S1-08 直接迁移；不推荐，因为会缺少恢复和调度证据。",
+                "effort": "P1; local runtime and operations implementation",
+                "resource": "local tests only; no production schedule install, no real SMTP, no large replay",
+                "benefit": "让 arXiv Stage 1 从文本预览能力推进到可恢复、可审计、可迁移的本地运行骨架。",
+                "risks": "scheduler side effects, stale heartbeat, unsafe restore, secret leakage, oversized artifacts",
+                "evidence": "tick/watchdog reports, backup/restore fixtures, scheduler dry-run evidence, focused tests, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-07 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
+    if project_id == "arxiv-daily-push" and task_id == "S1-09-MIGRATION_PACKAGE-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-003",
+                "review_id": "REVIEW8",
+                "owner_role": "engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-09，产出新机器迁移包、低资源运行证据和长期运行交接清单。",
+                "recommendation": "A: implement S1-09 migration package before historical previews and live-day evidence",
+                "option_a": "继续 S1-09，完成新机器迁移清单、低资源 smoke 证据、恢复路径和运行交接材料。",
+                "option_b": "暂停在 S1-08，只保留本地运行恢复控制，不进入迁移准备。",
+                "option_c": "跳过迁移包直接跑历史预览；不推荐，因为长期稳定运行和换机恢复证据不足。",
+                "effort": "P1; migration and operations documentation",
+                "resource": "local fixture tests and migration checklist only; no production schedule install, no real SMTP, no large replay",
+                "benefit": "把 arXiv Stage 1 从可恢复本地骨架推进到可迁移、可交接、可长期运行的低资源操作包。",
+                "risks": "migration checklist gaps, hidden local-state dependency, resource pressure, premature production enablement",
+                "evidence": "migration package, low-resource smoke evidence, restore checklist, focused tests, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-08 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
+    if project_id == "arxiv-daily-push" and task_id == "S1-10-POST_MIGRATION_BOOTSTRAP-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-004",
+                "review_id": "REVIEW8",
+                "owner_role": "engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-10，在迁移后目标环境验证 runtime 边界，再进入历史预览和 live-day 证据。",
+                "recommendation": "A: run post-migration bootstrap before historical previews and live-day evidence",
+                "option_a": "继续 S1-10，验证新机器或云 runner 的 Python、Git、SSL、SQLite、runtime smoke、secret-name 和 no-production-side-effect 边界。",
+                "option_b": "暂停在 S1-09，只保留迁移包，不执行目标环境 bootstrap。",
+                "option_c": "跳过 bootstrap 直接做历史预览；不推荐，因为运行环境可能仍是本机或缺少可恢复证据。",
+                "effort": "P1; target runtime bootstrap and evidence collection",
+                "resource": "target runner smoke tests only; no production schedule install, no real SMTP, no Release upload, no large replay",
+                "benefit": "确认 arXiv Stage 1 后续长期运行不依赖当前 Mac 后台，并为重验证与生产验收建立目标环境证据。",
+                "risks": "wrong runner boundary, SSL/network failure, hidden local-state dependency, secret leakage, premature production enablement",
+                "evidence": "bootstrap report, migration verify report, runtime audit/tick/watchdog smoke, no-secret readiness refs, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-09 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
+    if project_id == "arxiv-daily-push" and task_id == "S1-11-HISTORICAL_B1_PREVIEWS-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-005",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-11，生成 30 份独立历史 B1/arXiv 报告和邮件预览证据。",
+                "recommendation": "A: run S1-11 historical B1 previews before live-day email evidence",
+                "option_a": "继续 S1-11，产出 30 份独立历史 B1 报告/邮件预览、Claim evidence 和内容台账证据。",
+                "option_b": "暂停在 S1-10，只保留迁移后 bootstrap，不进入历史预览证据。",
+                "option_c": "跳过历史预览直接做 live-day delivery；不推荐，因为内容质量和独立样本证据不足。",
+                "effort": "P1; historical preview evidence generation",
+                "resource": "local fixture/replay artifacts only; no production schedule install, no real SMTP, no Release upload, no video generation",
+                "benefit": "在 live-day 发送前证明 B1/arXiv 文本报告和邮件预览能跨 30 个独立历史样本稳定生成。",
+                "risks": "fixture overfitting, duplicate historical samples, unsupported claims, stale content ledger, premature production acceptance",
+                "evidence": "30 B1 report/email preview artifacts, Claim evidence audit, content ledger rows, focused tests, governance records",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-10 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
+    if project_id == "arxiv-daily-push" and task_id == "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-V5-S1-006",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_V5_CONTRACT",
+                "question": "是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。",
+                "recommendation": "A: run S1-12 controlled live B1 email days before production acceptance",
+                "option_a": "继续 S1-12，按目标 runner、实时 arXiv 输入、B1 讲解邮件、Gmail SMTP 发送证据和无 secret 泄露记录两天。",
+                "option_b": "暂停在 S1-11，只保留 30 份历史预览，不进入真实邮件证据。",
+                "option_c": "跳过两天证据直接启用生产定时；不推荐，因为缺少 live-day delivery evidence。",
+                "effort": "P1; controlled target-runner live delivery evidence",
+                "resource": "GitHub/cloud runner, Gmail SMTP secret names, live arXiv metadata access, durable evidence refs",
+                "benefit": "证明 Stage 1 B1/arXiv 每日邮件在真实运行边界能稳定送达，而不是只在离线历史预览中通过。",
+                "risks": "SMTP secret readiness, live arXiv availability, target runner drift, accidental scheduler enablement, local Mac fallback",
+                "evidence": "two natural-day B1 email delivery refs, target-runner refs, B1 report/email artifacts, no-secret delivery audits, no production scheduler",
+                "priority": "P1",
+                "no_decision": "arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.",
+            }
+        )
+    return policy
+
+
 def git_output(args: list[str]) -> str:
     result = subprocess.run(
         ["git", "-c", "core.quotePath=false", *args],
@@ -734,7 +845,13 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
     methodological_status = "UNVERIFIED" if policy.get("empirical") in {"unknown", "partial"} else "VERIFIED"
     next_task = select_next_task(project_id, tasks, counts, impl_status, str(matrix.get("current_phase") or ""))
-    decision_policy = REVIEW8_DECISION_POLICY.get(project_id, {})
+    decision_policy = decision_policy_for(project_id, next_task)
+    if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE":
+        next_task = {
+            **next_task,
+            "owner": str(decision_policy.get("owner_role")),
+            "human_owner_role": str(decision_policy.get("owner_role")),
+        }
     assurance = {
         "project_id": project_id,
         "as_of_event_id": str(events[-1].get("event_id") or events[-1].get("iteration_id") or "NONE") if events else "NONE",

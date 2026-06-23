@@ -1,20 +1,20 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.16.0`
+Active product version: `0.21.0`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.16.0
+- Product version: 0.21.0
 - Current phase: S1-A
-- Current gate: ADP-S1-06-SCORING-QUEUE-LEDGER-READY
-- Confirmed iteration count: 59
+- Current gate: ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL
+- Confirmed iteration count: 64
 - Reconstructed event count: 0
-- Current task: S1-07-B1_REPORT_EMAIL_TEXT-001
-- Blockers: S1-07 B1 report/email text interface, S1-08 local runtime recovery, S1-09 migration package, real production trial start, replay/recovery/resource evidence, 30 unique daily production entries, two live production days, and explicitly disabled production variables still block final production acceptance.
+- Current task: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+- Blockers: two controlled live B1 email days, real Gmail SMTP delivery evidence, replay/recovery/resource evidence, real production trial start, and explicitly disabled production variables still block final production acceptance.
 
 ## Phase Matrix
 
@@ -25,10 +25,85 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, Release video-link email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, and migration package pass within low-resource limits | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-A | Review8 V5 Stage 1 Window A | in_progress | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, and two controlled live B1 email days pass within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md` |
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260622-S1-008`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_migration.py`, focused migration tests, runtime smoke primitives, semantic extractor, and governance registry updates.
+- Version before: 0.18.0
+- Version after: 0.19.0
+- Base commit: b754ef7552e41b9e9d34d06afe625bb9b3e5711b
+- Result commit: PENDING
+- Task IDs: S1-09-MIGRATION_PACKAGE-001
+- Goal: Add the Review8 Stage 1 migration package export and verification controls for a low-resource package, source-file hash inventory, SQLite/runtime smoke, backup manifest, restore drill, and secret-name-only checklist.
+- Assumptions: S1-09 is a deterministic migration-readiness interface only; it does not enable production scheduling, send Gmail SMTP, upload GitHub Releases, generate video, run a 30-day replay, start background work, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files read: S1-08 runtime controls, storage/database inspector, CLI, V5 baseline lock and task pack, previous S1 governance records, semantic extractor, and focused tests.
+- Files changed: `stage1_migration.py`, migration CLI dispatch, focused migration tests, migration runbook, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, phase record, ledger/event records, generator S1 next-task policy, root governance test expectations, and run manifest.
+- Model changes: Added MOD-ADP-042 `adp-stage1-migration-package-v1`.
+- Formula changes: Added FORM-ADP-044 and refreshed FORM-ADP-024/FORM-ADP-042/FORM-ADP-043 fingerprints because `cli.py::main` gained migration subcommands.
+- Parameter changes: Added PARAM-ADP-326 through PARAM-ADP-331 for migration schema, acceptance ID, package byte cap, required secret-name count, required source-path count, and package file count.
+- Commands run: focused migration/runtime/CLI tests; version CLI; full arxiv-daily-push unit tests; semantic extractor; project governance; all-project governance; changed-only semantic governance; root governance tests; information quality validation; JSON manifest parse; diff/cache/CSV checks.
+- Test results: focused migration/runtime/CLI tests 17 OK; version CLI returned 0.19.0; arxiv-daily-push unit tests 214 OK; semantic extractor checked 44 active formulas and 314 active parameters with no errors; project governance 0 errors 0 warnings; all-project governance 0 errors 0 warnings; changed-only semantic governance 0 errors 0 warnings; root governance tests 129 OK; information quality PASS errors 0 warnings 0.
+- Successes: The migration surface writes only the explicit output directory, inventories source files by SHA256, inspects the Stage 1 SQLite database, runs low-resource runtime smoke, produces a backup manifest and restore checklist, verifies package hashes, scans outputs for obvious secret values, and blocks enabled production flags.
+- Failures: No new machine or cloud runner bootstrap was executed in S1-09 by design; no real Gmail email, GitHub Release, video, 30 historical previews, or live production days were executed.
+- Decisions: Bump product version to 0.19.0 because S1-09 adds a backward-compatible migration export/verify CLI and transfer contract while preserving disabled production side effects.
+- Remaining risks: 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Rollback: Remove `stage1_migration.py`, migration CLI dispatch/tests/runbook, restore version 0.18.0, and revert S1-09 governance records and run manifest.
+- Next step: S1-11-HISTORICAL_B1_PREVIEWS-001.
+
+### `ITER-20260622-S1-007`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_runtime.py`, focused runtime recovery tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.17.0
+- Version after: 0.18.0
+- Base commit: 5f4995964164cd70c9222bbba974bfa0892853a0
+- Result commit: PENDING
+- Task IDs: S1-08-LOCAL_RUNTIME_RECOVERY-001
+- Goal: Add the Review8 Stage 1 local runtime recovery controls for explicit tick heartbeat/checkpoint state, watchdog stale-state blocking, SQLite backup/restore with SHA256 manifest and explicit confirmation, runtime production-flag audit, and scheduler install/uninstall dry-run templates.
+- Assumptions: S1-08 is a deterministic local recovery interface only; it does not install a real scheduler, enable production scheduling, send Gmail SMTP, upload GitHub Releases, generate video, run a 30-day replay, start background work, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files read: `arxiv-daily-push/AGENTS.md`, V5 baseline lock and task pack, storage/database inspector, CLI, previous S1 governance records, semantic extractor, and focused tests.
+- Files changed: `stage1_runtime.py`, runtime CLI dispatch, focused runtime tests, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, phase record, ledger/event records, generator S1 next-task policy, root governance test expectations, and run manifest.
+- Model changes: Added MOD-ADP-041 `adp-stage1-local-runtime-recovery-v1`.
+- Formula changes: Added FORM-ADP-043 and refreshed FORM-ADP-024/FORM-ADP-042 fingerprints because `cli.py::main` gained runtime recovery subcommands.
+- Parameter changes: Added PARAM-ADP-316 through PARAM-ADP-325 for runtime schema, acceptance ID, action count, backup byte cap, stale heartbeat threshold, disabled production flag count, OS task count, scheduler platform list, heartbeat filename, and lock filename.
+- Commands run: focused runtime recovery plus CLI tests; full arxiv-daily-push unit tests; semantic extractor.
+- Test results: focused runtime recovery and CLI tests 13 OK; arxiv-daily-push unit tests 210 OK; semantic extractor checked 43 active formulas and 308 active parameters with no errors.
+- Successes: The runtime surface writes only explicit state/artifact paths, blocks stale heartbeat and stale locks, refuses restore without explicit confirmation, verifies backup hashes, blocks enabled production side-effect flags, and keeps scheduler install/uninstall as template-only dry-runs.
+- Failures: No real scheduler was installed by design; no real Gmail email, GitHub Release, video, 30 historical previews, or live production days were executed in S1-08.
+- Decisions: Bump product version to 0.18.0 because S1-08 adds a backward-compatible local runtime recovery CLI and contract while preserving disabled production side effects.
+- Remaining risks: S1-09 migration package, 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Rollback: Remove `stage1_runtime.py`, runtime recovery CLI dispatch/tests, restore version 0.17.0, and revert S1-08 governance records and run manifest.
+- Next step: S1-09-MIGRATION_PACKAGE-001.
+
+### `ITER-20260622-S1-006`
+
+- Date: 2026-06-22
+- Fact level: EXTRACTED from `stage1_b1_report.py`, focused B1 report/email tests, full ADP unit tests, semantic extractor, and governance registry updates.
+- Version before: 0.16.0
+- Version after: 0.17.0
+- Base commit: bbcdc21caab1c4377810d66bb95359ed3ef18611
+- Result commit: PENDING
+- Task IDs: S1-07-B1_REPORT_EMAIL_TEXT-001
+- Goal: Add the Review8 Stage 1 B1/arXiv Chinese teaching report and email preview package with supported claim evidence, candidate queue summary, owner subject contract, artifact/audit output, and no production side effects.
+- Assumptions: S1-07 is a deterministic local text delivery interface only; it does not send Gmail SMTP, upload GitHub Releases, generate video, enable production scheduling, run 30 historical previews, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files read: `arxiv-daily-push/AGENTS.md`, V5 baseline lock and task pack, daily input builder, Claim Ledger gate, lesson renderer, Stage 1 queue, CLI, focused tests, semantic extractor, and existing governance registries.
+- Files changed: `stage1_b1_report.py`, B1 report/email CLI dispatch, focused B1 report tests, version files, changelog, model/formula/parameter registries, model spec, version matrix, traceability, delivery tasks, phase record, ledger/event records, and run manifest.
+- Model changes: Added MOD-ADP-040 `adp-stage1-b1-report-email-v1`.
+- Formula changes: Added FORM-ADP-042 and refreshed FORM-ADP-024 because `cli.py::main` gained the `build-b1-report-email` subcommand.
+- Parameter changes: Added PARAM-ADP-310 through PARAM-ADP-315 for B1 report schema, board ID/name, subject contract, critical claim coverage gate, and prohibited email marker count.
+- Commands run: focused B1 report/email plus CLI tests; full arxiv-daily-push unit tests; semantic extractor.
+- Test results: focused B1 report/email and CLI tests 9 OK; arxiv-daily-push unit tests 203 OK; semantic extractor checked 42 active formulas and 298 active parameters with no errors.
+- Successes: The package validates arXiv daily input and supported claims, blocks unsupported P0 claims, renders Chinese teaching report/email previews, keeps claim IDs in report/audit rather than the user email foreground, includes candidate queue summary, removes frontend percentage/ROI/video clutter, writes artifacts only when explicitly requested, and keeps SMTP/Release/video/network side effects false.
+- Failures: No real Gmail email or GitHub Release was sent in S1-07 by design; production acceptance remains blocked.
+- Decisions: Bump product version to 0.17.0 because S1-07 adds a backward-compatible Stage 1 B1 report/email text CLI and contract while preserving disabled production side effects.
+- Remaining risks: S1-08 runtime recovery, S1-09 migration package, 30 historical previews, two live production days, and production trial evidence remain incomplete before `ARXIV_PRODUCTION_ACCEPTED`.
+- Rollback: Remove `stage1_b1_report.py`, `build-b1-report-email` CLI dispatch/tests, restore version 0.16.0, and revert S1-07 governance records and run manifest.
+- Next step: S1-08-LOCAL_RUNTIME_RECOVERY-001.
 
 ### `ITER-20260622-S1-005`
 
@@ -1410,3 +1485,100 @@ The append-only machine record is `development_events.jsonl`.
 ## Unknown Historical Periods
 
 None for this new project baseline.
+
+
+### `ITER-20260623-S1-009`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from S1-10 implementation, migration-bound bootstrap tests, and governance registries.
+- Version before: 0.19.0
+- Version after: 0.20.0
+- Base commit: 014d0a5fbc6111e99c4fba33f3e363d0643e10ad
+- Result commit: PENDING
+- Task IDs: S1-10-POST_MIGRATION_BOOTSTRAP-001
+- Goal: Verify the post-migration target machine or GitHub-hosted runner bootstrap boundary before historical previews and live-day evidence.
+- Assumptions: S1-10 readiness requires a verified S1-09 migration manifest and explicit runtime smoke evidence, but it must not claim production delivery or enable side effects.
+- Files changed: stage1 bootstrap module, CLI, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, event, run manifest, and generated status views.
+- Model changes: Added MOD-ADP-043 `adp-stage1-post-migration-bootstrap-v1`.
+- Formula changes: Added FORM-ADP-045 for migration-bound target-runner bootstrap readiness.
+- Parameter changes: Added PARAM-ADP-332 through PARAM-ADP-339 for bootstrap schema, acceptance ID, target environment count, secret-name count, GitHub env count, Python minimum, network timeout, and probe URL.
+- Commands run: focused bootstrap/migration/CLI tests; version CLI; full arxiv-daily-push unit tests; semantic extractor; project/all/changed-only governance validators; root governance tests; information quality validator; JSON/CSV parse checks; git diff check; cache hygiene check.
+- Test results: focused bootstrap/migration/CLI tests 16 OK; version CLI returned 0.20.0; arxiv-daily-push unit tests 220 OK; semantic extractor checked 45 active formulas and 322 active parameters with no errors; project/all/changed-only governance validators 0 errors 0 warnings; root governance tests 130 OK; information quality PASS errors 0 warnings 0; JSON/CSV/diff/cache hygiene PASS.
+- Successes: Tampered migration package blocks bootstrap; cloud-runner proof requires GitHub-hosted workflow/environment evidence; production side effects remain disabled.
+- Failures: No 30 historical previews, live SMTP delivery days, Release upload, scheduler enablement, or production acceptance evidence exists.
+- Decisions: Proceed next to S1-11 historical B1 previews only after final governance validation and CI binding.
+- Remaining risks: Local SSL CA count can be zero on this Mac, so real live network readiness must be proven by explicit probe on the target runner when required.
+- Rollback: Revert version 0.20.0 S1-10 bootstrap code/tests and governance records, then restore version 0.19.0.
+- Next step: S1-11-HISTORICAL_B1_PREVIEWS-001
+
+### `ITER-20260623-S1-010`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from `stage1_historical_previews.py`, focused S1-11 tests, CLI preview generation, semantic extractor, and governance registry updates.
+- Version before: 0.20.0
+- Version after: 0.21.0
+- Base commit: f12a408b5ace76d38487793d04329cc1e009af7a
+- Result commit: PENDING
+- Task IDs: S1-11-HISTORICAL_B1_PREVIEWS-001
+- Goal: Generate 30 independent historical B1/arXiv report and email preview packages before live-day delivery while preserving no-production-side-effect boundaries.
+- Assumptions: S1-11 evidence is historical preview evidence only; it must not claim live delivery, send Gmail SMTP, upload GitHub Releases, generate video, enable production scheduling, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files changed: stage1 historical preview module, CLI dispatch, focused tests, version/changelog files, model/formula/parameter/traceability registries, delivery task, phase record, development event, run manifest, generated status views, and root governance test expectations.
+- Model changes: Added MOD-ADP-044 `adp-stage1-historical-b1-previews-v1`.
+- Formula changes: Added FORM-ADP-046 and refreshed formulas whose implementation fingerprint includes `cli.py::main`.
+- Parameter changes: Added PARAM-ADP-340 through PARAM-ADP-348 for preview schema, acceptance ID, required preview count, minimum unique date/source counts, artifact kind count, source type, supported input format count, and disabled side-effect key count.
+- Commands run: focused S1-11 historical/B1/queue/CLI tests; version CLI; full arxiv-daily-push unit tests; semantic extractor; historical-b1-previews CLI artifact smoke.
+- Test results: focused S1-11 historical/B1/queue/CLI tests 21 OK; version CLI returned 0.21.0; arxiv-daily-push unit tests 225 OK; semantic extractor checked 46 active formulas and 331 active parameters with no errors; historical-b1-previews CLI passed with 30 previews, 30 unique dates, 30 unique source IDs, 30 unique content hashes, 30 unique email IDs, 150 artifact files, manifest exists, future leakage count 0, and SMTP/Release/video/network/scheduler side effects false.
+- Successes: Deterministic offline historical previews are available; 30-preview generation validates unique dates, source IDs, content hashes, email IDs, claim evidence, content ledger rows, optional five-file artifacts per preview, future-leakage blocking, and disabled side effects.
+- Failures: No controlled live B1 email days, real production trial start, replay/recovery/resource evidence, or final production acceptance evidence exists.
+- Decisions: Bump product version to 0.21.0 because S1-11 adds a backward-compatible historical preview evidence CLI and validation model while preserving disabled production side effects.
+- Remaining risks: Historical fixtures can still overfit; S1-12 must prove live target-runner arXiv/network/SMTP evidence before owner-facing production claims.
+- Rollback: Remove `stage1_historical_previews.py`, historical preview CLI dispatch/tests, restore version 0.20.0, and revert S1-11 governance records and run manifest.
+- Next step: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+
+### `ITER-20260623-S1-011`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from GitHub Actions PR #67 workflow run `27987189886`, job `82831357067`, artifact `7806168015`, and artifact JSON inspection.
+- Version before: 0.21.0
+- Version after: 0.21.0
+- Base commit: 4ef8e2f614a4ebfcbd6a81907049d63ad503b3c1
+- Result commit: PENDING
+- Task IDs: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+- Goal: Record target-runner live arXiv preflight evidence for S1-12 without claiming controlled Gmail SMTP delivery or production acceptance.
+- Assumptions: PR #67 Phase 12 cloud dry-run is target-runner live arXiv evidence only; it does not prove B1 live email delivery, two natural-day delivery, real Gmail SMTP sending, scheduler enablement, Release upload, or `ARXIV_PRODUCTION_ACCEPTED`.
+- Files changed: S1-12 delivery task, delivery plan, version matrix current gate, phase preflight record, development ledger/event, run manifest, generated status views, and root governance test expectations.
+- Model changes: No model implementation changed; existing MOD-ADP-033 live all-arXiv dry-run evidence is referenced.
+- Formula changes: No formula implementation changed.
+- Parameter changes: No parameter value changed.
+- Commands run: GitHub Actions artifact inspection; project/all/changed-only governance validators; root governance tests; information quality validator; JSON/CSV parse checks; git diff check; cache hygiene check.
+- Test results: GitHub Actions PR #67 live all-ArXiv dry-run passed with 20/20 archives verified, max_results_per_category 1, artifact digest `sha256:2011bf655a2d8237b5c20f3111c70d6242a4b6582b5e90069d1f63d43a4da81a`, and SMTP/Release/scheduler disabled. Final local validator results are recorded in the run manifest.
+- Successes: S1-12 now has target-runner live arXiv preflight evidence and a durable artifact reference instead of a pure `NOT_RUN` task state.
+- Failures: Two real natural-day controlled B1 Gmail SMTP delivery evidence is still absent; this iteration remains `in_progress`.
+- Decisions: Keep product version at 0.21.0 because this iteration records governance evidence only and does not change product behavior, model formulas, or active parameters.
+- Remaining risks: The live arXiv preflight used all 20 primary archives while the S1 Window A low-resource guidance still requires careful operator control; real SMTP credentials and two-day delivery evidence remain the blocking gate.
+- Rollback: Revert the S1-12 preflight phase record, run manifest, delivery task status change, ledger/event entry, generated status views, and test expectation update.
+- Next step: Execute controlled B1 Gmail SMTP delivery evidence for day 1 of 2 on the target runner, with production scheduler still disabled.
+
+### `ITER-20260623-S1-012`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from Stage 1 text-only production enablement code, workflows, tests, semantic registry sync, and YAML workflow parsing.
+- Version before: 0.21.0
+- Version after: 0.22.0
+- Base commit: 2ff5adc7d10a971fd5bf4303a9d8936313bd070a
+- Result commit: PENDING
+- Task IDs: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+- Goal: Prepare S1-12 for controlled B1/arXiv live email delivery by converting production enablement to all-arXiv text artifacts plus Gmail SMTP, with no video or GitHub Release production gate.
+- Assumptions: This iteration is PR/preflight preparation only; it must not send a real email, enable production scheduling, upload a Release, generate video, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files changed: all-arXiv delivery package, scheduled execution, preflight/scheduler/refs/launch/trial gates, four GitHub Actions workflows, schema/tests, version/changelog, semantic registries, and governance records.
+- Model changes: Refined existing Stage 1/Phase 12 models for text-only production enablement while preserving public validator IDs.
+- Formula changes: Refreshed FORM-ADP-013, 014, 015, 020, 021, 023, 024, 025, 029, 030, 031, 032, 034, 035, 036, 039, and CLI-linked S1 formulas 042-046.
+- Parameter changes: Updated active text-only values for Release/video/preflight/ref/workflow parameters including PARAM-ADP-053, 065, 066, 101, 110, 117, 131, 140, 142, 145, 147, 148, 152, 156, 157, 160, 161, 162, 183, 184, 186, and 277.
+- Commands run: py_compile, focused S1-12 tests, full arxiv-daily-push unit tests, YAML parse for four workflows, semantic extractor. Final governance validation pending after record generation.
+- Test results: arxiv-daily-push unit tests 190 OK; focused S1-12 tests 38 OK; semantic extractor 46 formulas and 331 parameters OK; four workflow YAML files parse OK.
+- Successes: Stage 1 frontstage email is Chinese text-first, candidate-queue aware, and no longer requires video/Release links; workflows target GitHub-hosted ubuntu-latest and keep contents read-only.
+- Failures: PR CI, controlled manual Gmail SMTP test, two natural-day evidence, production scheduler enablement, and final acceptance evidence are not complete.
+- Decisions: Do not enable production scheduled runs; open PR and wait for CI before any manual SMTP test.
+- Remaining risks: GitHub Actions expression syntax and Gmail SMTP provider behavior still require cloud-run verification; schedule must remain disabled until explicit owner acceptance.
+- Rollback: Revert version 0.22.0 S1-12 text-only production enablement code, workflows, schema/tests, and governance updates, restoring 0.21.0 with production disabled.
+- Next step: Open PR, wait for PR CI green, then run one controlled manual Gmail SMTP test on GitHub/cloud runner.

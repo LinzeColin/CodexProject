@@ -1524,6 +1524,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 issues, _ = semantic.validate_project_semantics(project, "P")
         self.assertTrue(any("implementation_fingerprint" in issue.message for issue in issues), issues)
 
+    def test_fallback_yaml_loader_preserves_quoted_symbol_refs(self) -> None:
+        structural = load_validator_module()
+        parsed = structural.fallback_yaml_load(
+            "\n".join(
+                [
+                    "implementation_refs:",
+                    '  - "P/impl.py::rule"',
+                    '  - "csv_row:P/formulas.csv::formula_id=F-X"',
+                    "",
+                ]
+            )
+        )
+        self.assertEqual(
+            parsed["implementation_refs"],
+            ["P/impl.py::rule", "csv_row:P/formulas.csv::formula_id=F-X"],
+        )
+
     def test_review5_dashboard_generation_is_deterministic(self) -> None:
         result = run_validator("--all")
         self.assertEqual(result.returncode, 0, result.stdout)
@@ -1601,6 +1618,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-06-SCORING-QUEUE-LEDGER-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-07-B1_REPORT_EMAIL_TEXT-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-08-LOCAL_RUNTIME_RECOVERY-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-09-MIGRATION_PACKAGE-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "in_progress")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "ready")
 
@@ -1609,26 +1632,31 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260622-ADP-067")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260622-ADP-067")
-        self.assertEqual(info["product_version"], "0.16.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-06-SCORING-QUEUE-LEDGER-READY")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-074")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-074")
+        self.assertEqual(info["product_version"], "0.22.0")
+        self.assertEqual(info["current_gate"], "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json",
+            "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.16.0", rendered)
-        self.assertIn("ADP-S1-06-SCORING-QUEUE-LEDGER-READY", rendered)
-        self.assertIn("production trial not started", rendered)
-        self.assertIn("30-day acceptance absent", rendered)
+        self.assertIn("0.22.0", rendered)
+        self.assertIn("ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY", rendered)
+        self.assertIn("S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001", rendered)
+        self.assertIn("Stage 1 B1/arXiv", rendered)
+        self.assertNotIn("是否继续执行 S1-07", rendered)
+        self.assertNotIn("是否继续执行 S1-08", rendered)
+        self.assertNotIn("是否继续执行 S1-09", rendered)
+        self.assertNotIn("是否继续执行 S1-10", rendered)
+        self.assertNotIn("是否继续执行 S1-11", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_arxiv_s1_next_task_priority_does_not_reorder_other_projects(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S1-07-B1_REPORT_EMAIL_TEXT-001",
+            "arxiv-daily-push": "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
@@ -1760,11 +1788,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.16.0` |", dashboard_text)
-        self.assertIn("S1-07-B1_REPORT_EMAIL_TEXT-001", dashboard_text)
+        self.assertIn("| `arxiv-daily-push` | `0.21.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 14", adp_backlog)
+        self.assertIn("precommit_pending_events: 20", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
@@ -2031,8 +2058,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         scheduled_workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-scheduled.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("contents: write", trial_start_workflow)
-        self.assertIn("contents: write", scheduled_workflow)
+        self.assertIn("contents: read", trial_start_workflow)
+        self.assertIn("contents: read", scheduled_workflow)
+        self.assertNotIn("contents: write", trial_start_workflow)
+        self.assertNotIn("contents: write", scheduled_workflow)
         self.assertTrue(any("Production launch remains blocked" in risk for risk in manifest["risks"]))
         self.assertNotIn("draft and unmerged", " ".join(manifest["risks"]))
 

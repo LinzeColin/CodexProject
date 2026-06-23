@@ -9,7 +9,6 @@ from .config import DEFAULT_RECIPIENT
 from .global_scan import ALL_ARXIV_SCAN_MODEL_ID, validate_all_arxiv_daily_input_report
 from .production_preflight import validate_production_preflight
 from .production_scheduler import validate_production_scheduler_plan
-from .release_delivery import validate_release_delivery_report
 from .smtp_delivery import validate_smtp_delivery_report
 from .source_ingest import validate_source_batch
 from .trial_bootstrap import validate_trial_bootstrap_plan
@@ -22,7 +21,6 @@ REQUIRED_START_REF_KEYS = (
     "preflight_ref",
     "source_ingest_ref",
     "smtp_ref",
-    "release_ref",
     "scheduler_ref",
     "trial_state_ref",
     "trial_start_ref",
@@ -37,13 +35,12 @@ def build_trial_start_gate(
     scheduler_plan: Mapping[str, Any],
     source_batch: Mapping[str, Any],
     smtp_delivery_report: Mapping[str, Any],
-    release_delivery_report: Mapping[str, Any],
+    release_delivery_report: Mapping[str, Any] | None = None,
     default_branch_ref: str = "",
     runner_ref: str = "",
     preflight_ref: str = "",
     source_ingest_ref: str = "",
     smtp_ref: str = "",
-    release_ref: str = "",
     scheduler_ref: str = "",
     trial_state_ref: str = "",
     trial_start_ref: str = "",
@@ -57,7 +54,6 @@ def build_trial_start_gate(
         "preflight_ref": _ref(preflight_ref),
         "source_ingest_ref": _ref(source_ingest_ref),
         "smtp_ref": _ref(smtp_ref),
-        "release_ref": _ref(release_ref),
         "scheduler_ref": _ref(scheduler_ref),
         "trial_state_ref": _ref(trial_state_ref),
         "trial_start_ref": _ref(trial_start_ref),
@@ -69,7 +65,6 @@ def build_trial_start_gate(
         _durable_ref_gate("preflight_ref", evidence_refs["preflight_ref"]),
         _durable_ref_gate("source_ingest_ref", evidence_refs["source_ingest_ref"]),
         _durable_ref_gate("smtp_ref", evidence_refs["smtp_ref"]),
-        _durable_ref_gate("release_ref", evidence_refs["release_ref"]),
         _durable_ref_gate("scheduler_ref", evidence_refs["scheduler_ref"]),
         _durable_ref_gate("trial_state_ref", evidence_refs["trial_state_ref"]),
         _durable_ref_gate("trial_start_ref", evidence_refs["trial_start_ref"]),
@@ -78,7 +73,6 @@ def build_trial_start_gate(
         _scheduler_gate(scheduler_plan),
         _source_ingest_gate(source_batch),
         _smtp_gate(smtp_delivery_report, evidence_refs["smtp_ref"]),
-        _release_gate(release_delivery_report, evidence_refs["release_ref"]),
     ]
     blocking_reasons = [
         reason
@@ -207,8 +201,14 @@ def _all_arxiv_source_gate(report: Mapping[str, Any]) -> dict[str, Any]:
     if not queue_summary:
         reasons.append("all-arXiv daily input must include candidate queue summary")
     requirements = report.get("delivery_requirements") if isinstance(report.get("delivery_requirements"), Mapping) else {}
-    if requirements.get("email_video_link_required") is not True:
-        reasons.append("all-arXiv trial start requires email video link delivery policy")
+    if requirements.get("email_chinese_lesson_required") is not True:
+        reasons.append("all-arXiv trial start requires Chinese lesson delivery policy")
+    if requirements.get("candidate_queue_summary_required") is not True:
+        reasons.append("all-arXiv trial start requires candidate queue summary delivery policy")
+    if requirements.get("email_video_link_required") is not False:
+        reasons.append("all-arXiv trial start must not require email video link delivery policy")
+    if requirements.get("video_generation_required") is not False:
+        reasons.append("all-arXiv trial start must not require video generation")
     if requirements.get("video_attachment_allowed") is not False:
         reasons.append("all-arXiv trial start must forbid video email attachments")
     return _gate("all_arxiv_source_input_passed", not reasons, reasons)
@@ -223,17 +223,6 @@ def _smtp_gate(report: Mapping[str, Any], expected_ref: str) -> dict[str, Any]:
     if _ref(report.get("delivery_ref")) != expected_ref:
         reasons.append("smtp_ref must match the SMTP delivery report delivery_ref")
     return _gate("real_smtp_delivery_verified", not reasons, reasons)
-
-
-def _release_gate(report: Mapping[str, Any], expected_ref: str) -> dict[str, Any]:
-    reasons = [f"release delivery invalid: {error}" for error in validate_release_delivery_report(report)]
-    if report.get("status") != "created":
-        reasons.append("Release delivery probe must be a real created report")
-    if report.get("release_upload_enabled") is not True:
-        reasons.append("Release delivery probe must have release_upload_enabled true")
-    if _ref(report.get("release_ref")) != expected_ref:
-        reasons.append("release_ref must match the Release delivery report release_ref")
-    return _gate("private_release_verified", not reasons, reasons)
 
 
 def _durable_ref_gate(key: str, value: str) -> dict[str, Any]:

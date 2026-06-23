@@ -10,7 +10,7 @@ from .scheduled_execution import SCHEDULED_EXECUTION_MODEL_ID, validate_schedule
 
 TRIAL_RECOVERY_MODEL_ID = "adp-trial-recovery-v1"
 FAILURE_STATUSES = {"blocked", "failed", "degraded"}
-REQUIRED_RECOVERY_REFS = ("daily_run_ref", "release_ref", "email_ref", "resource_gate_ref")
+REQUIRED_RECOVERY_REFS = ("daily_run_ref", "text_artifact_ref", "email_ref", "resource_gate_ref")
 
 
 def build_trial_recovery_evidence(
