@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:48e00502a65973d52a3101ddcbe9e1cd547cf94a490cb22211bcac6ab2255b69`
-- snapshot_event_time: `2026-06-23T09:55:00+10:00`
+- source_snapshot_hash: `sha256:6738cc8607c36f421f3f9c5d01fdb2bdbe793abb57a27700646a4ba7def71d09`
+- snapshot_event_time: `2026-06-23T20:10:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.22.0`
-- Phase/Gate: `S1-A / S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS`
-- Models/Formulas/Parameters total: `44 / 46 / 348`
-- Active formulas/parameters: `46 / 331`
-- Machine checked formulas/parameters: `46 / 331`
+- Product version: `0.23.0`
+- Phase/Gate: `S1-A / S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY`
+- Models/Formulas/Parameters total: `45 / 47 / 351`
+- Active formulas/parameters: `47 / 334`
+- Machine checked formulas/parameters: `47 / 334`
 
 ## Assurance
 
@@ -35,18 +35,10 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS`
-- Next executable task: `S1P5T04`
-- Pending/stale events: `75`
+- Release gate: `S1P5T04-ACCELERATED-REAL-ARXIV-ACCEPTANCE-PR-READY`
+- Next executable task: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
+- Pending/stale events: `78`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `54`
 - Unresolved fact IDs: `3`
-
-## S1P5T04 Evidence Update
-
-- Controlled GitHub/cloud-runner SMTP sends: `2`
-- Sent artifact refs: `7811543123`, `7816791617`
-- Distinct natural days observed: `1 / 2`
-- Stage 1 acceptance: `NOT_CLAIMED`
-- Production scheduled run: `DISABLED`
