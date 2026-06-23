@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-083"
-source_snapshot_hash: "sha256:009708329b335e423040b86c28f4510954390e9ce4a96d77a759d62f62dd42f8"
+as_of_event_id: "EVENT-20260624-ADP-084"
+source_snapshot_hash: "sha256:8cf539b66c16360081b9d843cabdb657395409b4fc609f9d92b801ed65ae1ecc"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T07:52:00+10:00"
+snapshot_event_time: "2026-06-24T09:20:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -61,7 +61,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 29
+    precommit_pending_events: 30
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -69,46 +69,46 @@ delivery_readiness:
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
   blocker_ids: []
 next_executable_task:
-  task_id: "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
-  status: "blocked"
-  reason: "Hold Stage 1 after accepted post-merge test10 and wait for an explicit owner decision before any production schedule enablement."
+  task_id: "S2P1T01"
+  status: "ready"
+  reason: "Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep."
   acceptance_ids:
-    - "ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"
-  owner: "content_owner + product_owner"
-  human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Enabling ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, or ADP_ALLOW_RELEASE_UPLOAD without a separate owner decision would violate the Stage 1 fail-closed delivery boundary."
+    - "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
+  owner: "content_owner + engineering_owner"
+  human_owner_role: "content_owner + engineering_owner"
+  unblock_condition: "Define concrete acceptance test commands before marking this task complete, then attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
       reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-PRODUCTION-SCHEDULE-001"
+  decision_id: "DEC-arxiv-daily-push-S2P1T01-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否在 test10 已通过后单独启用每日生产定时。"
-  question: "是否在 test10 已通过后单独启用每日生产定时。"
-  human_owner_role: "content_owner + product_owner"
-  human_assignment_status: "OWNER_DECISION_REQUIRED"
-  current_recommendation: "A: keep production schedule disabled until a separate owner-approved enablement run"
-  option_a: "保持 production schedule disabled，先确认你确实要每天自动发送。"
-  option_b: "进入邮件模板质量优化，不改变 production flags。"
-  option_c: "启用生产定时；只允许在你明确批准并核对 GitHub variables/secrets 后执行。"
+  decision_question: "是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。"
+  question: "是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。"
+  human_owner_role: "content_owner + engineering_owner"
+  human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
+  current_recommendation: "A: start S2P1T01 after S1 local runner migration prep"
+  option_a: "开始 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。"
+  option_b: "先只做 Stage 1 本地 smoke，不进入新来源；风险更低但 Stage 2 不推进。"
+  option_c: "越过 source gate 直接把新来源放进正式邮件；禁止。"
   options:
-    - "保持 production schedule disabled，先确认你确实要每天自动发送。"
-    - "进入邮件模板质量优化，不改变 production flags。"
-    - "启用生产定时；只允许在你明确批准并核对 GitHub variables/secrets 后执行。"
-  estimated_effort: "P1; explicit owner decision plus GitHub variable/secret verification"
-  estimated_cost_or_resource: "GitHub Actions ubuntu-latest and Gmail SMTP; no local Mac background process"
-  expected_benefit: "把 Stage 1 已验收和真正每日自动发送分开，避免未授权生产邮件。"
-  principal_risks: "误启用 ADP_PRODUCTION_ENABLED 或 ADP_SCHEDULED_RUN_ENABLED 会造成每日真实发送；错误 SMTP/Release flags 会破坏 fail-closed 边界。"
-  evidence_required: "owner approval, repository variable state, scheduled workflow run evidence, SMTP sent artifact, no secret/body logging"
+    - "开始 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。"
+    - "先只做 Stage 1 本地 smoke，不进入新来源；风险更低但 Stage 2 不推进。"
+    - "越过 source gate 直接把新来源放进正式邮件；禁止。"
+  estimated_effort: "P1/P2; source adapter, fixtures, 30-day replay plan, 48h shadow contract, arXiv no-regression tests"
+  estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
+  expected_benefit: "在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到生命科学与医学预印本。"
+  principal_risks: "源身份混淆、重复 canonical paper、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
+  evidence_required: "source adapter tests, source registry gate, fixture parse, replay/shadow reports, arXiv no-regression evidence"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "Stage 1 remains accepted, but production schedule stays disabled and no daily automatic send occurs."
-  unblock_task_id: "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
+  consequence_of_no_decision: "Stage 1 local production prep remains complete, but Stage 2 does not begin."
+  unblock_task_id: "S2P1T01"
   acceptance_ids:
-    - "ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"
+    - "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T07:52:00+10:00"
+  last_reviewed_at: "2026-06-24T09:20:00+10:00"

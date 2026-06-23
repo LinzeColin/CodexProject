@@ -50,10 +50,11 @@ goal unless a later owner decision explicitly restores it.
 - Stage 2: source/board promotion and final full-system acceptance.
 - Stage 1 target state: `ARXIV_PRODUCTION_ACCEPTED`.
 - Final target state after Stage 2: `PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
-- Current V6 task: `S1P5T04` - controlled live B1 email evidence and Stage 1 acceptance.
-- Current state: `ARXIV_PRODUCTION_ACCEPTED` from PR #82 cloud artifact
-  `7818287996`; scheduled production send remains fail-closed until GitHub
-  repository variables/secrets are explicitly verified or enabled.
+- Current V6 task: `S2P1T01` - bioRxiv and medRxiv source promotion.
+- Current state: `ARXIV_PRODUCTION_ACCEPTED` for Stage 1 arXiv, plus
+  `ADP-S1P5T05` local production and 2026-06-30 migration prep completed.
+  GitHub cloud scheduled production remains disabled and is not the final
+  production runner.
 
 ## V6 Roadmap Rule
 
@@ -65,9 +66,10 @@ reports, independent emails, Markdown/HTML/JSON audit artifacts, and zero
 required video/TTS/media work.
 
 Where the V6 calendar/new-machine wording conflicts with later owner-approved
-GitHub/cloud-runner execution, the later owner instruction controls the runner
-choice for Stage 1 evidence collection. Production scheduling remains a
-separate fail-closed enablement step after Stage 1 acceptance.
+runner choices, the later owner instruction controls. As of `ADP-S1P5T05`,
+the production runner strategy is local Mac + Codex/local runner: current Mac
+until 2026-06-30, then migrated to the new Mac. GitHub remains code, PR/CI,
+evidence, status, and backup only.
 
 ## V5 Delivery Boundary
 
@@ -91,3 +93,10 @@ PR #82, and GitHub Actions run `28019921500`. The acceptance artifact reports
 49 real arXiv candidates, 30 selected samples, 20/20 primary archive buckets,
 two controlled SMTP refs, no blockers, no Release/video requirement, and
 `production_schedule_enabled=false`.
+
+Local operation prep is evidenced by
+`governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json`.
+It adds local daily-run CLI, local preflight, queue/report/email preview and
+local content ledger persistence, launchd package draft, and migration runbook.
+It does not install launchd, send production SMTP, enable GitHub cloud schedule,
+upload Release artifacts, generate video, or complete Stage 2.

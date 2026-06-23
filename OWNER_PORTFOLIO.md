@@ -37,26 +37,26 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 
 - project_total: `10`
 - bucket_total: `10`
-- failed: `6`
+- failed: `5`
 - partial: `0`
 - unverified: `4`
-- verified: `0`
+- verified: `1`
 - not_applicable: `0`
 
 | Bucket | Count | Projects |
 |---|---:|---|
-| `FAILED` | `6` | Alpha, EEI, EVA_OS, OpenAIDatabase, whkmSalary, arxiv-daily-push |
+| `FAILED` | `5` | Alpha, EEI, EVA_OS, OpenAIDatabase, whkmSalary |
 | `PARTIAL` | `0` | none |
 | `UNVERIFIED` | `4` | FIFA, OpMe_System, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay |
-| `VERIFIED` | `0` | none |
+| `VERIFIED` | `1` | arxiv-daily-push |
 | `NOT_APPLICABLE` | `0` | none |
 
 ## 9. 技术元数据
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:8d5aca6984e447ee5427c2cd62ebcb45b771c963d3ae6665496b7e4f91ec0756`
-- snapshot_event_time: `2026-06-23T09:55:00+10:00`
+- source_snapshot_hash: `sha256:c7ced35444971c12ee3972e938dd0d98cf627e4afca460cc7bd97703ab91764e`
+- snapshot_event_time: `2026-06-24T09:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - branch_protection: `UNVERIFIED` unless authenticated setup doctor evidence is attached
@@ -170,16 +170,16 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - evidence_required: policy refs, jurisdiction/effective-date matrix, reconciliation results, approval memo
 - no_decision_consequence: whkmSalary remains FAILED and must not be used for production payroll.
 
-### `DEC-arxiv-daily-push-V5-S1-006`
+### `DEC-arxiv-daily-push-S2P1T01-001`
 
-- human_owner_role: `content_owner + engineering_owner + operations_owner`
-- recommendation: A: run S1-12 controlled live B1 email days before production acceptance
-- estimated_effort: P1; controlled target-runner live delivery evidence
-- estimated_cost_or_resource: GitHub/cloud runner, Gmail SMTP secret names, live arXiv metadata access, durable evidence refs
-- expected_benefit: 证明 Stage 1 B1/arXiv 每日邮件在真实运行边界能稳定送达，而不是只在离线历史预览中通过。
-- principal_risks: SMTP secret readiness, live arXiv availability, target runner drift, accidental scheduler enablement, local Mac fallback
-- evidence_required: two natural-day B1 email delivery refs, target-runner refs, B1 report/email artifacts, no-secret delivery audits, no production scheduler
-- no_decision_consequence: arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
+- human_owner_role: `content_owner + engineering_owner`
+- recommendation: A: start S2P1T01 after S1 local runner migration prep
+- estimated_effort: P1/P2; source adapter, fixtures, 30-day replay plan, 48h shadow contract, arXiv no-regression tests
+- estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
+- expected_benefit: 在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到生命科学与医学预印本。
+- principal_risks: 源身份混淆、重复 canonical paper、许可/全文越权、shadow 数据影响正式 arXiv 邮件
+- evidence_required: source adapter tests, source registry gate, fixture parse, replay/shadow reports, arXiv no-regression evidence
+- no_decision_consequence: Stage 1 local production prep remains complete, but Stage 2 does not begin.
 
 
 ## 12. Executable Tasks
@@ -193,7 +193,7 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 - `PFI_BIG_DATA_SIMULATOR`: `TASK-PFI-B-001` - Resolve calibration evidence for strategy catalog rule constants and indicator thresholds.
 - `Serenity-Alipay`: `NONE` - No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
 - `whkmSalary`: `TASK-WHKM-B-001` - Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence.
-- `arxiv-daily-push`: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001` - Collect controlled live B1/arXiv email delivery evidence across two real natural days before ARXIV_PRODUCTION_ACCEPTED can be claimed.
+- `arxiv-daily-push`: `S2P1T01` - Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep.
 
 ## 13. Next Unique Governance Task
 
@@ -212,4 +212,4 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 | `PFI_BIG_DATA_SIMULATOR` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入多市场、OOS、成本和多重检验控制，验证 PFI 策略族不是数据挖掘赢家。 |
 | `Serenity-Alipay` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否投入历史基金快照、基准、OOS、消融和敏感性，验证评分权重、等级阈值、硬门禁和 Top5 衰减是否有稳定区分力。 |
 | `whkmSalary` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否由工资、法务/政策和产品责任人提供权威政策、法域、生效日期、税务和舍入证据，验证 whkmSalary 可用于真实算薪。 |
-| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续执行 S1-12，在目标 runner 上收集两个真实自然日的受控 B1/arXiv 邮件发送证据。 |
+| `arxiv-daily-push` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `PARTIAL` | `VERIFIED` | 是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。 |

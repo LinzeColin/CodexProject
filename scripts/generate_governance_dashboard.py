@@ -471,6 +471,48 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "Stage 1 remains accepted, but production schedule stays disabled and no daily automatic send occurs.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-LOCAL-RUNNER-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner + operations_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_LOCAL_RUNNER_BOUNDARY",
+                "question": "是否按本机 Mac + Codex/local runner 作为 Stage 1 生产运行策略，并准备 2026-06-30 新电脑迁移。",
+                "recommendation": "A: keep GitHub cloud schedule disabled and finish local runner migration prep",
+                "option_a": "使用本机 Codex/local runner，每日状态写入本地 state dir，GitHub 只做代码、PR/CI、证据、状态和备份。",
+                "option_b": "暂停自动运行，仅保留手动 smoke test；安全但不会自动补每日邮件。",
+                "option_c": "重新启用 GitHub cloud scheduled production；当前不采用，除非 owner 另开明确任务。",
+                "effort": "P1; local CLI, launchd package draft, state persistence, migration runbook, smoke evidence",
+                "resource": "current Mac until 2026-06-30, then new Mac; Gmail SMTP only through local environment or Keychain-backed setup",
+                "benefit": "把用户确认的低复杂度部署策略落到可复制、可验证、可迁移的本地运行路径。",
+                "risks": "本地环境变量缺失、launchd 误安装、旧电脑和新电脑 state 不一致、GitHub cloud schedule 被误当生产 runner",
+                "evidence": "local-runner tests, local preflight report, queue/ledger/email preview state files, launchd package draft, migration runbook",
+                "priority": "P1",
+                "no_decision": "Stage 1 remains accepted, but daily local production is not ready for owner-controlled smoke and migration.",
+            }
+        )
+    if project_id == "arxiv-daily-push" and task_id == "S2P1T01":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-S2P1T01-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + engineering_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。",
+                "recommendation": "A: start S2P1T01 after S1 local runner migration prep",
+                "option_a": "开始 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。",
+                "option_b": "先只做 Stage 1 本地 smoke，不进入新来源；风险更低但 Stage 2 不推进。",
+                "option_c": "越过 source gate 直接把新来源放进正式邮件；禁止。",
+                "effort": "P1/P2; source adapter, fixtures, 30-day replay plan, 48h shadow contract, arXiv no-regression tests",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到生命科学与医学预印本。",
+                "risks": "源身份混淆、重复 canonical paper、许可/全文越权、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "source adapter tests, source registry gate, fixture parse, replay/shadow reports, arXiv no-regression evidence",
+                "priority": "P1",
+                "no_decision": "Stage 1 local production prep remains complete, but Stage 2 does not begin.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
@@ -814,7 +856,7 @@ def select_next_task(
     else:
         command = structural.as_list(task.get("test_commands"))[0] if task.get("test_commands") else "listed acceptance command"
         if str(command).strip().upper() == "PENDING":
-            unblock = "Define concrete acceptance test commands before marking the task ready, then attach the listed evidence refs."
+            unblock = "Define concrete acceptance test commands before marking this task complete, then attach the listed evidence refs."
         else:
             unblock = f"Run `{command}` and attach the listed evidence refs."
     return {
@@ -1488,15 +1530,22 @@ def render_owner_status(item: dict[str, Any]) -> str:
     changed_summary = "Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。"
     if assurance["delivery_readiness"]["status"] == "VERIFIED" and item["project_id"] == "arxiv-daily-push":
         current_conclusion = (
-            f"{item['project_id']} 当前治理结论：`S1P5T04` / Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`；"
-            "实现一致性、实证、运行和交付证据均为 `VERIFIED`。"
-            "生产定时是否真正发送仍由 GitHub Variables/Secrets 与 fail-closed workflow gate 控制。"
+            f"{item['project_id']} 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，"
+            "`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；"
+            "GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。"
         )
         if next_task["task_id"] == "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041":
             changed_summary = (
                 "test10 已从 `main` 在 GitHub-hosted Ubuntu runner 上完成：run `28059194999` / run_number `10` "
                 "证明邮件主题使用 Sydney 服务日期 `20260624`，Gmail SMTP 已发送到 `linzezhang35@gmail.com`。"
                 "本次没有启用 production schedule、没有上传 Release、没有引入视频要求。"
+            )
+        elif next_task["task_id"] == "S2P1T01":
+            changed_summary = (
+                "`ADP-S1P5T05` 已把生产策略切到本机 Mac + Codex/local runner："
+                "新增 local daily CLI、local preflight、queue/ledger/report/email preview 本地持久化、"
+                "launchd package 草案和 2026-06-30 迁移 runbook。"
+                "没有启用 GitHub cloud schedule、没有真实 SMTP 生产发送、没有 Release 上传、没有视频要求。"
             )
     else:
         current_conclusion = (
