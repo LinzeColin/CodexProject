@@ -37,6 +37,20 @@
       "release_gate_closed_by_validator": false,
       "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
+    "operator_soak_background_heartbeat": {
+      "completion_percent": 31.94,
+      "counts_as_release_ready": false,
+      "latest_successful_window_index": 92,
+      "operator_process_status": "RUNNING",
+      "progress_status": "RUNNING_PARTIAL",
+      "release_gate_closed_by_background_heartbeat": false,
+      "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
+      "target_windows": 288,
+      "watchdog_process_status": "RUNNING",
+      "windows_completed": 92,
+      "windows_failed": 0,
+      "windows_remaining": 196
+    },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
       "focus_acceptance_id": "A027",
@@ -57,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-23T18:08:48Z",
+  "generated_at": "2026-06-23T18:21:32Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -89,13 +103,14 @@
     },
     {
       "gate_id": "A209_24h_operator_soak",
-      "reason": "24h operator soak evidence is missing or not release-ready"
+      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 92/288 windows, 0 failed, RUNNING_PARTIAL"
     }
   ],
   "non_claims": [
     "This preflight does not certify legal, source-license, brand or market clearance.",
     "This preflight does not convert repository fixtures into production approval.",
     "This preflight does not replace A209 24h operator soak evidence.",
+    "This preflight treats A209 background heartbeat as progress context only.",
     "This preflight does not activate a release manager while missing_gates is non-empty."
   ],
   "public_brand_launch_allowed": false,
@@ -119,6 +134,8 @@
     "entity_gold_evaluation_sha256": "8ed692ff72c439c07debf1e8bb6c95e6dfc5e4167a6b2a9f640acb5b22fb5efc",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "9c6fc82383439164913b09ce05d4b558cfd51ccf7cfd1dfed053542251d80afa",
+    "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "operator_soak_heartbeat_sha256": "cf66801a89cde49816bd0cc7009cc314db3256052080e22fdcda8c24222a84a1",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "9d99ea2420567924a3659ad307aa11e97f0e93b93fc1a7ecd49726c56cdb55ba",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
@@ -139,6 +156,7 @@
   ],
   "validation_policy": {
     "a209_24h_must_be_release_ready": true,
+    "a209_background_heartbeat_counts_as_release_ready": false,
     "production_gold_set_required": true,
     "release_manager_must_fail_closed_until_all_gates_ready": true,
     "repository_fixtures_count_as_clearance": false

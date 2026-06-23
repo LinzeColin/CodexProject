@@ -30,6 +30,7 @@
 - Added a T1307/A209 background heartbeat artifact: `scripts/record_operator_soak_heartbeat.py` records the live operator/watchdog PIDs, current 24h window progress and non-closure semantics into `artifacts/tests/a209/t1307_operator_soak_background_progress.json`; current heartbeat shows `88/288` windows PASS and keeps A209 `IN_PROGRESS`.
 - Synchronized A209 heartbeat governance for CI: registered operational parameters `PARAM-069` through `PARAM-071`, refreshed clean-room release evidence to `package_paths=418`, and kept `release_gate_closed_by_background_heartbeat=false`.
 - Updated the T1303/A204-A205 release-manager activation validator so it accepts evidence-derived READY preflight states only when A202, A026/A027, A209 and A210 gate artifacts are all release-ready; the committed repository preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
+- Bound A209 background heartbeat into the T1303/A204-A205 release-manager preflight as source-hashed non-closure context; current heartbeat shows `92/288` windows PASS, `0` failed and `counts_as_release_ready=false`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

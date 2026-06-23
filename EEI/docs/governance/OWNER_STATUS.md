@@ -56,7 +56,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `88/288` PASS at `2026-06-23T18:05:13Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `92/288` PASS at `2026-06-23T18:21:13Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` is now available as the A202 source/license/owner/legal release-decision fill-in contract, `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract, and `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` is now available as the A210 brand-clearance / risk-waiver fill-in contract.
 
@@ -87,8 +87,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `13`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `28`
-- pending_or_stale_events: `43`
+- precommit_pending_events: `30`
+- pending_or_stale_events: `45`
 
 ## 15. UNKNOWN
 

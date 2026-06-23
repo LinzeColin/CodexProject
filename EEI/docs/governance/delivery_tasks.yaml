@@ -3506,7 +3506,7 @@ tasks:
     legacy_task_id: "T1303"
     phase: "C"
     objective: "Implement model config versioning, transactional activation and atomic global refresh"
-    scope: "T1303/A204-A205 covers active_analysis_contexts, transactional_outbox, active profile uniqueness, transactional activation API, dedicated rollback endpoint, online draft profile creation, score recompute and data snapshot refresh enqueue/execution, refresh-token stale-client semantics, inactive supply-chain-v3 candidate profile and frontend Model Center controls bound to real API paths. This slice adds a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence before final activation, a validator path that accepts evidence-derived READY preflight only when all external gates are real, plus a fail-closed operator CLI that upgrades scripts/apply_model_config.py from preview-only to explicit PostgreSQL-backed draft creation, transactional activation and score recompute enqueue."
+    scope: "T1303/A204-A205 covers active_analysis_contexts, transactional_outbox, active profile uniqueness, transactional activation API, dedicated rollback endpoint, online draft profile creation, score recompute and data snapshot refresh enqueue/execution, refresh-token stale-client semantics, inactive supply-chain-v3 candidate profile and frontend Model Center controls bound to real API paths. This slice adds a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence before final activation, a validator path that accepts evidence-derived READY preflight only when all external gates are real, plus a fail-closed operator CLI that upgrades scripts/apply_model_config.py from preview-only to explicit PostgreSQL-backed draft creation, transactional activation and score recompute enqueue. This slice also binds A209 background heartbeat progress into the release-manager preflight as non-closure context with counts_as_release_ready=false."
     non_scope: "Does not close A204/A205 until release-manager activation preflight is ready with real external gates, production gold labels, A209 24h soak and source/legal/brand clearance; does not replace legal/source/brand clearance, production relationship approval or public launch approval."
     status: "in_progress"
     dependencies:
@@ -3561,6 +3561,7 @@ tasks:
       - "release-manager activation preflight local validation PASS: artifact validates with RELEASE_MANAGER_ACTIVATION_BLOCKED and unit tests PASS 7/7"
       - "model config apply CLI local validation PASS: apply_model_config dry-run artifact generated with A204/A205 hash binding and release_gate_closed_by_apply_model_config=false; tests/unit/test_model_config_apply.py and tests/unit/test_release_manager_activation.py PASS 5/5"
       - "release-manager ready-state validator local focused validation PASS: py_compile PASS, ruff PASS, tests/unit/test_release_manager_activation.py PASS 2/2, default artifact validate PASS and remains RELEASE_MANAGER_ACTIVATION_BLOCKED"
+      - "release-manager A209 heartbeat context local validation PASS: preflight source-hashes artifacts/tests/a209/t1307_operator_soak_background_progress.json, reports 92/288 A209 windows with 0 failed, and keeps activation_ready=false plus counts_as_release_ready=false"
     evidence_refs:
       - "EEI/apps/worker/app/main.py"
       - "EEI/scripts/apply_model_config.py"
@@ -3570,6 +3571,7 @@ tasks:
       - "EEI/artifacts/tests/a204/t1303_transactional_model_activation_contract.json"
       - "EEI/artifacts/tests/a205/t1303_atomic_refresh_context_contract.json"
       - "EEI/artifacts/tests/a205/t1303_release_manager_activation_preflight.json"
+      - "EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json"
       - "EEI/scripts/validate_release_manager_activation.py"
       - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
       - "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md"
@@ -3670,7 +3672,7 @@ tasks:
       - "local 24h operator soak monitor PASS; reports RUNNING_PARTIAL with live PID 12478, 15/288 successful windows at inspection time, release_gate_closed_by_monitor=false, and --resume command present"
       - "local 24h operator soak supervisor PASS; dry-run observed live PID 12478 without launching a second process, reported 25/288 successful windows, release_gate_closed_by_supervisor=false and double-start prevention active"
       - "local 24h operator soak watchdog PASS; dry-run observed live PID 12478 without launching a second process, post-verify supervisor check reported 40/288 successful windows, release_gate_closed_by_watchdog=false; detached watchdog PID 62233 started with --execute --auto-resume, cycles=300 and interval_seconds=300"
-      - "local A209 background heartbeat PASS; artifact reports operator PID 12478 RUNNING, watchdog PID 62233 RUNNING, 61/288 successful windows, 0 failed windows, completion 21.18%, and release_gate_closed_by_background_heartbeat=false"
+      - "local A209 background heartbeat PASS; artifact reports operator PID 12478 RUNNING, watchdog PID 62233 RUNNING, 92/288 successful windows, 0 failed windows, completion 31.94%, and release_gate_closed_by_background_heartbeat=false"
       - "local A209 heartbeat validation PASS; tests/unit/test_operator_soak_evidence.py PASS 18/18; focused ruff PASS; v5 readiness sync PASS"
       - "local A209 heartbeat governance CI repair PASS; PARAM-069 through PARAM-071 registered and semantic count synchronized to 71 active parameters"
       - "local clean-room package binding PASS; supervisor, watchdog and heartbeat scripts included in package boundary with package_paths=418 and release manifest_paths=425"

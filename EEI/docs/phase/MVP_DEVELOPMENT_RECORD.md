@@ -5391,3 +5391,36 @@ Status: LOCAL FOCUSED VALIDATED; A202/A209/A210/A026/A027 STILL IN PROGRESS
 
 - Revert `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, `artifacts/tests/a202/t1301_a202_release_decision_intake_template.json`, `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`, `Makefile` and this governance/documentation update.
 - Regenerate development, clean-room and release artifacts, then rerun focused A202 release-decision validation.
+
+## 2026-06-24 - T1303/A204-A205 release-manager A209 heartbeat context
+
+Status: LOCAL FOCUSED VALIDATED; A204/A205/A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `operator_soak_background_heartbeat` to `scripts/validate_release_manager_activation.py`.
+- Source-hashed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` into `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`.
+- Refreshed the A209 heartbeat to `92/288` successful windows, `0` failed, `31.94%` completion.
+- Kept `counts_as_release_ready=false`, `activation_ready=false` and `release_manager_activation_allowed=false`.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- T1307 -> A209 as referenced background context only.
+- A209 remains `IN_PROGRESS` until all `288/288` 24h windows and final release-ready validation pass.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache .venv/bin/python -m pytest -q tests/unit/test_release_manager_activation.py -p no:cacheprovider`: PASS, 2 passed.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/ruff check scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/record_operator_soak_heartbeat.py validate --quiet`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS.
+
+### Remaining gaps
+
+- A209 24h run is still partial: `92/288` windows at the time of this record.
+- A202 source/legal/owner decisions, A210 clearance and A026/A027 production gold labels remain external release blockers.
+
+### Rollback
+
+- Revert `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, the heartbeat refresh and generated release artifacts; keep live A209 checkpoints/logs.

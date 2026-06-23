@@ -37,7 +37,7 @@
 - Readiness: `FAILED`
 - Release gate: `TASK-T1301-A202-RELEASE-DECISION-INTAKE-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `43`
+- Pending/stale events: `45`
 - Tree-bound events: `0`
 - Commit-bound events: `13`
 - Legacy unbound events: `17`
@@ -46,7 +46,7 @@
 ## A209 Background Soak Update
 
 - T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
-- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `88/288` windows PASS, `0` failed, `200` remaining, `30.56%` complete, generated at `2026-06-23T18:05:13Z`.
+- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `92/288` windows PASS, `0` failed, `196` remaining, `31.94%` complete, generated at `2026-06-23T18:21:13Z`.
 - Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, dry-runs recovery by default, and is included in clean-room release packaging. Watchdog contract `EEI/scripts/watch_operator_soak.py` reports `release_gate_closed_by_watchdog=false`, resumes only paused successful checkpoints when launched with `--execute --auto-resume`, and reports stale live PIDs without killing them. Heartbeat contract `EEI/scripts/record_operator_soak_heartbeat.py` reports `release_gate_closed_by_background_heartbeat=false` and keeps A209 `IN_PROGRESS`. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
 
 ## T1303 Model Config Apply Update
@@ -54,6 +54,7 @@
 - `scripts/apply_model_config.py` is now a fail-closed A204/A205 operator entrypoint: `--dry-run` emits hash-bound preview evidence without writes; `--execute` requires PostgreSQL and delegates draft creation, transactional activation and score recompute enqueue to `DomainRepository`.
 - `artifacts/model_config_import_preview.json` records `release_gate_closed_by_apply_model_config=false`; A204/A205 remain `IN_PROGRESS` until final release-manager activation has real A202, A026/A027, A209 and A210 gate evidence.
 - `scripts/validate_release_manager_activation.py` now validates both blocked and ready preflight states from evidence. The committed repository preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; a READY preflight can validate only when A202 signed clearance, A026/A027 production gold labels, A209 24h soak and A210 brand clearance artifacts all report release-ready evidence.
+- The release-manager preflight now also binds `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` as source-hashed background progress context. This exposes `92/288` A209 windows and `counts_as_release_ready=false` to the activation gate without replacing final 24h validator evidence.
 
 ## T904 Gold-Label Intake Template Update
 

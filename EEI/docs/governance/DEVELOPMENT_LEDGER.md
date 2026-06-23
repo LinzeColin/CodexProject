@@ -1036,6 +1036,29 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Rollback: revert the A202 intake validator/test/template, regenerated A202/A210 contract artifact and governance updates; regenerate release artifacts afterward.
 - Next step: regenerate development, clean-room and release artifacts, rerun full validation, root changed-only semantic governance, A209 live supervisor/checkpoint check, then commit, push and bind CI.
 
+## 2026-06-24 - EVENT-20260624-015 - T1303/A204-A205 release-manager A209 heartbeat context
+
+- Goal: bind A209 background 24h soak progress into the release-manager activation preflight without treating partial heartbeat evidence as release-ready.
+- Assumptions: A209 heartbeat progress is runtime evidence only; it does not replace final 24h summary JSON, checkpoint validation, source/legal/brand clearance, production gold labels or release-manager activation.
+- Files changed: `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, `artifacts/tests/a209/t1307_operator_soak_background_progress.json`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, governance/status docs and regenerated release artifacts.
+- Tests run so far: focused `pytest` for `tests/unit/test_release_manager_activation.py`, focused `ruff`, A209 heartbeat generate/validate, release-manager preflight generate/validate and release artifact regeneration.
+- Test results so far: release-manager unit tests PASS `2/2`; focused ruff PASS; heartbeat validation PASS with operator PID `12478`, watchdog PID `62233`, `92/288` windows PASS, `0` failed and `release_gate_closed_by_background_heartbeat=false`; preflight validation PASS with `activation_ready=false`, A209 heartbeat source hash and `counts_as_release_ready=false`.
+- Decisions: keep A209 `IN_PROGRESS`; expose heartbeat progress in `gate_statuses.operator_soak_background_heartbeat`; keep final A209 closure bound to `validate_operator_soak_evidence.py --require-release-ready`.
+- Remaining risks: A209 can still fail before 288 windows complete; A202/A210/A026/A027 remain external release blockers; heartbeat context can be misread if non-closure fields are ignored.
+- Rollback: revert the release-manager heartbeat-context code/test/artifact/docs changes, regenerate release artifacts and keep live A209 checkpoint/log files intact.
+- Next step: run full local verification, root changed-only semantic governance, commit, push and bind CI while the A209 background soak continues.
+
+## 2026-06-24 - EVENT-20260624-016 - T1303/A209 governance sync after heartbeat context
+
+- Goal: repair root changed-only governance sync after the release-manager A209 heartbeat context change touched parameter and traceability surfaces.
+- Assumptions: this is governance synchronization only; no model formula, active parameter value, graph behavior, publication behavior or release-ready status changes.
+- Files changed: `docs/governance/parameter_registry.csv`, `docs/governance/TRACEABILITY_MATRIX.csv`, `docs/governance/ASSURANCE_STATUS.yaml`, status/version docs, development events and regenerated release artifacts.
+- Tests run so far: root changed-only governance first reported missing `TRACEABILITY_MATRIX.csv` / `parameter_registry.csv` and missing `ASSURANCE_STATUS.yaml` in latest event coverage; after sync, release artifact regeneration, `make verify`, `git diff --check` and root changed-only semantic governance all passed.
+- Decisions: update `PARAM-071` rationale and traceability to state that release-manager consumes A209 heartbeat as `counts_as_release_ready=false` context; keep A209 `IN_PROGRESS`.
+- Remaining risks: remote CI binding still needs to run after commit/push; A209 remains partial until 288/288 windows and release-ready validation.
+- Rollback: revert the governance-sync row edits and regenerated release artifacts; keep the A209 live checkpoint/log files intact.
+- Next step: commit, push, bind GitHub CI and keep A209 background soak running.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.

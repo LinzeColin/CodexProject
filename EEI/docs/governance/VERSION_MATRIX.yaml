@@ -26,7 +26,7 @@ parameter_profile_versions:
   release-decision-intake: "1"
   release-decision-bundle: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260624-014"
+current_iteration: "ITER-20260624-016"
 current_phase: "C"
 current_gate: "TASK-T1301-A202-RELEASE-DECISION-INTAKE-IN-PROGRESS"
 version_file_value: "0.1.0"
