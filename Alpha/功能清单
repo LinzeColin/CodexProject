@@ -1,24 +1,45 @@
-# Alpha 功能清单
+# 功能清单
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再维护当前功能、模型、公式、参数或任务的机器事实。
+- project_id: `Alpha`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PA`
+- current_task: `S5PAT01`
+- progress: `100.00%`
+- capability_count: `6`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PA-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical files:
+## 功能概览
 
-- `docs/governance/MODEL_SPEC.md`
-- `docs/governance/model_registry.yaml`
-- `docs/governance/formula_registry.yaml`
-- `docs/governance/parameter_registry.csv`
-- `docs/governance/DELIVERY_PLAN.md`
-- `docs/governance/delivery_tasks.yaml`
-- `docs/governance/TRACEABILITY_MATRIX.csv`
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-ALPHA-001 | 动量策略锦标赛与 fixture 基准 | active | 基于 fixture 价格生成动量候选、风险排序、winner 和等权买入持有基准。 | EXTRACTED |
+| FEAT-ALPHA-002 | 交易前风控与 owner-review 门禁 | active | 按 kill switch、idempotency、side、quantity、price、notional 和 max notional 拒绝不安全订单意图。 | EXTRACTED |
+| FEAT-ALPHA-003 | 实盘策略 fail-closed | active | 默认禁用实盘；即使 policy 允许，已提交 live broker adapter 仍返回 rejected。 | EXTRACTED |
+| FEAT-ALPHA-004 | paper trading loop 与 paper broker | active | 生成 paper intent、risk check、ticket queue、paper fill、portfolio snapshot 和 audit payload。 | EXTRACTED |
+| FEAT-ALPHA-005 | 审批队列新鲜度与 dashboard actionability | active | 用 expires_at 和当前 UTC 时间区分 fresh、expired、blocked 或 unknown ticket actionability。 | EXTRACTED |
+| FEAT-ALPHA-006 | Strategy DSL 安全边界 | active | 验证策略 payload 的 lookback、持仓数量、单资产权重，并拒绝杠杆、做空和期权类 MVP 禁止项。 | EXTRACTED |
 
-仍然有效的历史摘要：
+## 证据
 
-- Alpha 是本地优先个人量化工作台，覆盖研究、回测、paper trading、策略比较、订单审批、broker-ready ticket 和 dashboard。
-- 真实交易默认禁用。
-- 外部 API 不得触发真实下单。
-- live 候选必须进入 owner review，并且 committed live broker adapter fail-closed。
-
-当前可审计功能清单以 `docs/governance/DELIVERY_PLAN.md` 和 `docs/governance/TRACEABILITY_MATRIX.csv` 为准。
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-ALPHA-README | owner | Alpha/README.md | EXTRACTED |
+| EVID-ALPHA-HANDOFF | owner | Alpha/HANDOFF.md | RECONSTRUCTED |
+| EVID-ALPHA-MODEL-SPEC | legacy_governance | Alpha/docs/governance/MODEL_SPEC.md | EXTRACTED |
+| EVID-ALPHA-MODEL-REGISTRY | legacy_governance | Alpha/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-ALPHA-FORMULA-REGISTRY | legacy_governance | Alpha/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-ALPHA-PARAMETER-REGISTRY | legacy_governance | Alpha/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-ALPHA-DELIVERY-TASKS | legacy_governance | Alpha/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-ALPHA-DEVELOPMENT-LEDGER | legacy_governance | Alpha/docs/governance/DEVELOPMENT_LEDGER.md | RECONSTRUCTED |
+| EVID-ALPHA-DEVELOPMENT-EVENTS | legacy_governance | Alpha/docs/governance/development_events.jsonl | RECONSTRUCTED |
+| EVID-ALPHA-ASSURANCE-STATUS | assurance | Alpha/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-ALPHA-VERSION-MATRIX | legacy_governance | Alpha/docs/governance/VERSION_MATRIX.yaml | EXTRACTED |
+| EVID-ALPHA-TRACEABILITY-MATRIX | legacy_governance | Alpha/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
+| EVID-ALPHA-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json | EXTRACTED |
+| EVID-REVIEW9-S5PAT01-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json | PROPOSED |
