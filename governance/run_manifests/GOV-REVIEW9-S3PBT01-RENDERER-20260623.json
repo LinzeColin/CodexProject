@@ -1,0 +1,111 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S3PBT01-RENDERER-20260623",
+  "project_id": "root-governance",
+  "task_id": "S3PBT01",
+  "acceptance_ids": [
+    "ACC-S3PBT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S3PBT01",
+  "generated_at": "2026-06-23T21:35:00+10:00",
+  "implementation_base_sha": "d072c40c95876f9ce39bad02b6405430a477b9af",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:4d287ac7f11ec61a21e0dd892535be2915127aabf997f07cf68d9263d8a7ee95",
+  "changed_files_declared": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json"
+  ],
+  "changed_files_actual": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json"
+  ],
+  "required_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json"
+  ],
+  "updated_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "deterministic_human_file_renderer"
+  ],
+  "model_delta": "NOT_APPLICABLE: governance renderer only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/validate_project_governance.py --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Renderer test passed: dry-run did not write files, explicit write created the three human files, and Roadmap percentages were computed from task hours."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 139 tests; OK. Expected missing-base negative fixture output appeared inside the passing suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope governance sync validation passed with errors 0 warnings 0; project scope none."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Information quality status PASS with errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full governance validation checked root and all registered projects with errors 0 warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PBT01-RENDERER-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S3PBT01 deterministic human-file renderer",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Add `lean_governance.py render --project` with dry-run by default and explicit `--write` for generating 功能清单, 开发记录, and 模型参数文件 from Lean canonical project, roadmap, and event facts.",
+  "rollback": "Revert the render subcommand, renderer functions, S3PBT01 tests, and this run manifest.",
+  "unresolved_risks": [
+    "S3PBT02 still needs check-render drift and evidence-ref checks.",
+    "Workflow still calls legacy validators directly until S3PC.",
+    "Project-by-project migration remains locked until S4/S5."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
