@@ -1,28 +1,69 @@
-# CodexProject Governance Rules
+# CodexProject Agent Contract
 
-This repository is a multi-project source hub. Keep this file concise; detailed
-rules live in `docs/governance/STANDARD.md`.
+This repository is a multi-project source hub. This root contract applies to
+the repository and every registered project. Nested `AGENTS.md` files may add
+project-specific rules, but they may not weaken this file. Keep detailed field
+rules in `docs/governance/STANDARD.md`.
 
 ## Permanent Rules
 
-- Every project must be registered in `governance/projects.yaml`.
-- Every project must maintain model, development, delivery, version, and traceability files.
-- Required project artifacts are `VERSION`, `CHANGELOG.md`, and all files under the standard `docs/governance/` contract listed in `docs/governance/STANDARD.md`.
-- One Codex run should handle one project, one task ID, and one acceptance target by default.
-- Use the `T0`-`T3` risk-tier routing in `docs/governance/STANDARD.md`. Default to `T0`/`T1` unless a concrete model, formula, parameter, schema, safety, release, legal, privacy, money, or production risk requires `T2`/`T3`.
-- Non-trivial `T2`/`T3` software development, refactoring, model changes, releases, or multi-file fixes must explicitly invoke `$codex-dex`.
-- Before implementation, report the files to read, files to modify, test commands, risks, and rollback path.
-- Default to a bounded PLAN / READ-ONLY pass before implementation unless the user explicitly provides a narrow implementation contract.
-- When code, configuration, rules, formulas, thresholds, or model behavior changes at `T2`/`T3`, update model and parameter documentation in the same run.
-- Meaningful `T2`/`T3` development runs append one development event. Do not overwrite history. `T0`/`T1` runs may use a concise change note or PR body instead of a governance event.
-- Completed `T2`/`T3` tasks must update delivery task status, Acceptance, and evidence. `T0`/`T1` changes do not need generated-view or attestation updates.
-- Do not infer iteration count from Git commit count.
-- Do not invent formulas, parameters, historical versions, or test results.
-- `UNKNOWN` must link to a concrete unresolved task. Do not use vague `TBD` placeholders.
-- Hotfix or rollback work requires a concrete incident ID, affected version, target rollback version, and evidence. Do not invent incidents.
-- Done means the affected tests pass and the changed-scope governance validator passes when the change touches governed files. Full portfolio, generated-view drift, and attestation proof belong to scheduled/manual/release gates.
+- Every active project must be registered in `governance/projects.yaml`.
+- Every active project must expose these exact project-root human entry files:
+  `功能清单`, `开发记录`, and `模型参数文件`.
+- These three Chinese files may not be replaced by English aliases, one-line
+  redirects, compatibility indexes, or pages that only link to
+  `docs/governance/`.
+- `开发记录` must directly contain the project's full Roadmap: Stage -> Phase ->
+  Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated hours,
+  derived percentages, Stop Conditions, Stop Gates, required evidence, and
+  failure actions.
+- Canonical facts should converge to the Lean v2 minimal source set:
+  `docs/governance/project.yaml`, `docs/governance/roadmap.yaml`,
+  `docs/governance/events.jsonl`, `VERSION`, and `CHANGELOG.md`.
+- Derived views, dashboards, status pages, ledgers, manifests, and owner
+  summaries preserve governance truth but must not become duplicate editable
+  fact sources.
+- One Codex run handles one project, one Roadmap task ID, and one Acceptance ID
+  by default.
+- Use the `T0`-`T3` risk-tier routing in `docs/governance/STANDARD.md`. Default
+  to `T0`/`T1` unless a concrete model, formula, parameter, schema, safety,
+  release, legal, privacy, money, or production risk requires `T2`/`T3`.
+- Non-trivial `T2`/`T3` software development, refactoring, model changes,
+  releases, or multi-file fixes must explicitly invoke `$codex-dex`.
+- Before implementation, report files to read, files to modify, test commands,
+  risks, rollback, stop conditions, and the single Acceptance target.
+- Default to a bounded PLAN / READ-ONLY pass before implementation unless the
+  user explicitly provides a narrow implementation contract.
 - Do not scan directories unrelated to the current project and task.
-- Detailed schemas, templates, and execution rules live in `docs/governance/STANDARD.md`; do not duplicate the full standard in nested AGENTS files.
+- Do not infer iteration count from Git commit count.
+- Do not invent formulas, parameters, historical versions, test results, owner
+  decisions, or evidence.
+- `UNKNOWN` must link to a concrete unresolved Roadmap task. Do not use vague
+  `TBD` placeholders.
+- Hotfix or rollback work requires a concrete incident ID, affected version,
+  target rollback version, and evidence. Do not invent incidents.
+
+## Run Modes
+
+- `READ_ONLY`, `REVIEW`, `PLAN`, `CI`, and Hook execution must not modify
+  repository files, append events, update versions, run write-mode generators,
+  or create repair loops.
+- `IMPLEMENT` may update only the selected project or root-governance files
+  required by the selected task.
+- Normal development must not perform repository-wide physical rewriting.
+- Full semantic sweeps, generated-view drift checks, and attestation proof
+  belong to scheduled, manual, release, or root-governance gates.
+- Done means the focused tests pass and changed-scope Project Governance passes
+  when governed files change.
+
+## Low-Token Contract
+
+- Read the smallest evidence set that can prove the current task.
+- Prefer compact deterministic CLI output over loading parallel governance
+  views into context.
+- Exclude dependencies, caches, generated outputs, artifacts, backups, binaries,
+  and large data unless the selected task explicitly requires them.
+- Do not perform opportunistic refactors.
 
 ## Model Definition
 

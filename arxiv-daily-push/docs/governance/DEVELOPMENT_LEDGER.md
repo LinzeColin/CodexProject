@@ -1582,3 +1582,51 @@ None for this new project baseline.
 - Remaining risks: GitHub Actions expression syntax and Gmail SMTP provider behavior still require cloud-run verification; schedule must remain disabled until explicit owner acceptance.
 - Rollback: Revert version 0.22.0 S1-12 text-only production enablement code, workflows, schema/tests, and governance updates, restoring 0.21.0 with production disabled.
 - Next step: Open PR, wait for PR CI green, then run one controlled manual Gmail SMTP test on GitHub/cloud runner.
+
+### `ITER-20260623-S1P5T04-ROADMAP-V6`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from `/Users/linzezhang/Downloads/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`, GitHub Actions run `28002478689`, and scheduled-execution artifact `7811543123`.
+- Version before: 0.22.0
+- Version after: 0.22.0
+- Base commit: 66d11bc2ad98b17fd3e5b9889941f69bdbaf5b90
+- Result commit: PENDING
+- Task IDs: `S1P5T04`
+- Goal: Import V6 as the active task-numbering roadmap and record the first controlled GitHub/cloud-runner Gmail SMTP evidence without enabling production scheduling.
+- Assumptions: V6 controls task numbering and zero-media scope. Later owner instruction controls the Stage 1 runner choice as GitHub/cloud runner; production scheduling remains disabled until Stage 1 acceptance passes.
+- Files changed: V6 roadmap source file, pursuing-goal baseline lock, README, AGENTS, required governance registries, traceability/version/task records, S1P5T04 run manifest, PR changed-scope base-ref workflow repair, and this ledger.
+- Model changes: No model implementation changed.
+- Formula changes: No formula expression changed; current machine fingerprints/evidence hashes were refreshed for FORM-ADP-013, FORM-ADP-014, FORM-ADP-024, FORM-ADP-034, and FORM-ADP-042 through FORM-ADP-046 after the CI semantic gate identified drift.
+- Parameter changes: No active parameter value changed; PARAM-ADP-183 metadata was reverified for the manual-delivery evidence boundary.
+- Commands run: source roadmap SHA-256 and line-count check; GitHub Actions workflow/job/artifact inspection; scheduled execution artifact inspection without printing email body or secrets; semantic extractor; changed-only governance sync; root governance tests; ADP unit tests.
+- Test results: Manual workflow `28002478689` completed `success`; job `manual-delivery-test` completed `success`; scheduled execution artifact reports `status=succeeded`, `mode=daily-run`, `notification_status=sent`, `real_smtp_send_enabled=true`, recipient `linzezhang35@gmail.com`, Chinese lesson true, candidate queue summary true, video link false; semantic extractor checked 46 formulas and 331 parameters; changed-only governance sync reports 0 errors 0 warnings.
+- Successes: V6 roadmap is now the current task-numbering roadmap under `docs/pursuing_goal/`; future closeouts must report the current V6 Task ID; first controlled Gmail SMTP evidence is present on GitHub/cloud runner.
+- Failures: First PR #73 CI attempt failed because the pull_request changed-scope gate used the force-pushed old head SHA as `GOVERNANCE_BASE_REF`; fixed by switching pull_request diff base to `github.event.pull_request.base.sha`. Email template quality is owner-rejected for now but explicitly deferred; complete two-day controlled evidence and `ARXIV_PRODUCTION_ACCEPTED` remain incomplete.
+- Decisions: Continue from `S1P5T04` and prioritize Stage 1 acceptance evidence before template redesign or Stage 2 expansion.
+- Remaining risks: Need second controlled live-day evidence, final Stage 1 acceptance report, and production-schedule enablement gate; must not accidentally enable production scheduler early.
+- Rollback: Remove the V6 roadmap file, revert baseline/README/AGENTS/ledger edits, and continue with the previous V5 task labels.
+- Next step: Close the remaining `S1P5T04` evidence gap and only then evaluate `ARXIV_PRODUCTION_ACCEPTED`.
+
+### `ITER-20260623-S1P5T04-CONTROLLED-SMTP-EVIDENCE`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from GitHub Actions run `28002478689`, rerun job `82921274100`, and scheduled-execution artifacts `7811543123` and `7816791617`.
+- Version before: 0.22.0
+- Version after: 0.22.0
+- Base commit: 055ad784b379a282aea8530f2b22b29f0b62f300
+- Result commit: PENDING
+- Task IDs: `S1P5T04`
+- Goal: Record the second controlled GitHub/cloud-runner Gmail SMTP send evidence without enabling production scheduling or claiming Stage 1 acceptance.
+- Assumptions: Two controlled sends prove repeatable Gmail SMTP delivery on GitHub/cloud runner, but they do not prove two distinct natural days because both scheduled-execution reports use daily date `2026-06-23`.
+- Files changed: S1P5T04 evidence manifest, delivery task evidence refs, owner/status/assurance views, traceability row, model governance note, development event, and root governance test expectation.
+- Model changes: No runtime model behavior changed.
+- Formula changes: No formula implementation changed.
+- Parameter changes: No active parameter value changed.
+- Commands run: GitHub Actions rerun job `82921274100`; artifact inspection for `7811543123` and `7816791617` without printing email body or secrets.
+- Test results: Both scheduled-execution artifacts report `production_evidence_ready=true`, `notification_status=sent`, recipient `linzezhang35@gmail.com`, Chinese lesson true, candidate queue summary true, and video link false.
+- Successes: Controlled SMTP evidence count is now `2`; production schedule remains disabled; runner is GitHub/cloud, not local Mac.
+- Failures: Both sends share daily date `2026-06-23`; second distinct natural-day evidence and `ARXIV_PRODUCTION_ACCEPTED` remain incomplete.
+- Decisions: Keep `S1P5T04` in progress and do not enable production scheduling.
+- Remaining risks: Natural-day cadence proof, final acceptance report, and owner production-schedule approval remain open.
+- Rollback: Remove the S1P5T04 second SMTP evidence manifest and governance status updates.
+- Next step: Collect or explicitly owner-approve the remaining distinct natural-day evidence gate before evaluating `ARXIV_PRODUCTION_ACCEPTED`.

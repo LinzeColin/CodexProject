@@ -94,7 +94,7 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             "github.event_name == 'pull_request'" in text
             and "--changed-only --enforce-sync --semantic" in text
         ),
-        "pull_request_changed_only_uses_pr_base_sha": (
+        "pull_request_changed_only_uses_base_sha": (
             "github.event_name == 'pull_request'" in text
             and "github.event.pull_request.base.sha" in text
             and changed_scope_base_ref in text

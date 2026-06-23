@@ -6,6 +6,11 @@ governance_notes:
     evidence_level: "EXTRACTED"
     summary: "Review8 V4 baseline lock and version metadata alignment only; no active model behavior changed."
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "governance/run_manifests/ADP-S1-02-BASELINE-LOCK-TRACEABILITY-20260622.json"]
+  - note_id: "GOV-NOTE-S1P5T04-V6-ROADMAP-INTAKE"
+    task_id: "S1P5T04"
+    evidence_level: "EXTRACTED"
+    summary: "V6 now controls progress/task numbering while V5 text-delivery remains the Stage 1 product boundary; one controlled GitHub/cloud-runner Gmail SMTP send is recorded, and production scheduling remains disabled."
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md", "github-actions://LinzeColin/CodexProject/actions/runs/28002478689"]
 assumptions:
   - assumption_id: "ASM-ADP-001"
     statement: "Phase 1 is limited to repository foundation, CLI doctor/version, dry-run notification rendering, schemas, config examples, and governance records."

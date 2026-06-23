@@ -771,7 +771,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         checks = report["checks"]
         for check_name in {
             "pull_request_changed_only_enforce_sync_semantic",
-            "pull_request_changed_only_uses_pr_base_sha",
+            "pull_request_changed_only_uses_base_sha",
             "main_push_changed_only_uses_event_before",
             "pull_request_skips_information_quality",
             "full_governance_runs_only_on_schedule_or_manual_all",
@@ -809,6 +809,56 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
         self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+
+    def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
+        text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        for required in {
+            "功能清单",
+            "开发记录",
+            "模型参数文件",
+            "compatibility indexes",
+            "Stage -> Phase ->",
+            "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$",
+            "Stop Conditions",
+            "Stop Gates",
+            "docs/governance/project.yaml",
+            "docs/governance/roadmap.yaml",
+            "docs/governance/events.jsonl",
+            "Low-Token Contract",
+        }:
+            self.assertIn(required, text)
+        for mode in {"READ_ONLY", "REVIEW", "PLAN", "CI", "Hook", "IMPLEMENT"}:
+            self.assertIn(mode, text)
+        self.assertIn("must not modify", text)
+        self.assertIn("Full semantic sweeps", text)
+
+    def test_review9_s2_standard_is_lean_v2_contract(self) -> None:
+        text = (ROOT / "docs" / "governance" / "STANDARD.md").read_text(encoding="utf-8")
+        for required in {
+            "Lean Project Governance Standard v2.0",
+            "功能清单",
+            "开发记录",
+            "模型参数文件",
+            "docs/governance/project.yaml",
+            "docs/governance/roadmap.yaml",
+            "docs/governance/events.jsonl",
+            "Stage -> Phase -> Task",
+            "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$",
+            "Run Modes And Writes",
+            "Risk-Tier Routing",
+            "Changed-Scope CI And Hook",
+            "Sync And Manifests",
+            "Machine Field Contracts",
+            "Semantic Accuracy",
+            "Token Budget And Scope",
+        }:
+            self.assertIn(required, text)
+        for forbidden in {
+            "Review-5 Diff Synchronization Contract",
+            "Review-9 Cost and Entry Gate Contract",
+            "Human-Readable Generated Status",
+        }:
+            self.assertNotIn(forbidden, text)
 
     def test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-stage1-bootstrap.yml").read_text(
@@ -1637,18 +1687,18 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-074")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-074")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-076")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-076")
         self.assertEqual(info["product_version"], "0.22.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY")
+        self.assertEqual(info["current_gate"], "S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS")
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json",
+            "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.22.0", rendered)
-        self.assertIn("ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY", rendered)
-        self.assertIn("S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001", rendered)
+        self.assertIn("S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS", rendered)
+        self.assertIn("S1P5T04", rendered)
         self.assertIn("Stage 1 B1/arXiv", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
