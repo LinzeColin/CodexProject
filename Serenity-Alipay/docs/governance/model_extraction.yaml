@@ -1,0 +1,135 @@
+schema_version: codexproject.model_extraction.v1
+project_id: Serenity-Alipay
+stage_id: S4
+phase_id: S4PA
+task_id: S4PAT02
+acceptance_id: ACC-S4PAT02
+source_evidence_index: Serenity-Alipay/docs/governance/evidence_index.yaml
+source_evidence_index_task_id: S4PAT01
+purpose: "Extract real model, formula, parameter, and strategy facts for the Serenity-Alipay Lean v2 pilot without changing business behavior."
+coverage:
+  active_model_count: 5
+  active_formula_count: 12
+  active_parameter_count: 49
+  strategy_count: 5
+  all_active_models_have_formula_or_exact_pseudocode: true
+  all_parameters_source_bound: true
+parameter_source_contract:
+  registry_ref: Serenity-Alipay/docs/governance/parameter_registry.csv
+  required_binding_fields: [parameter_id, model_id, formula_id, symbol, active_value, code_ref, config_ref, test_ref, source_selector, extracted_value, evidence_hash]
+  source_status: "PARAM-001 through PARAM-049 are active extracted parameters in parameter_registry.csv with code/config/test/source selector bindings; this file groups them by model and does not rewrite values."
+non_facts:
+  - "Python, SQLite, macOS Mail, and other implementation technologies are not model parameters."
+  - "No iteration count, hours, or history claims are invented in S4PAT02."
+model_extractions:
+  - model_id: MOD-001
+    name: "Candidate scoring and action rule engine"
+    fact_level: EXTRACTED
+    formula_ids: [FORM-003, FORM-004, FORM-005, FORM-006]
+    parameter_ids: [PARAM-005, PARAM-006, PARAM-007, PARAM-008, PARAM-009, PARAM-010, PARAM-011, PARAM-012, PARAM-013, PARAM-014, PARAM-015, PARAM-016, PARAM-017, PARAM-018, PARAM-019, PARAM-020, PARAM-021, PARAM-022, PARAM-023, PARAM-024, PARAM-025]
+    exact_pseudocode:
+      - "Build missing_fields from absent returns, max_drawdown, fund rule fields, subscription/redemption fields, fees, cutoff, lag, and schedules."
+      - "Compute total_score as data_score + timeliness_score + source_score + return_score + risk_score + executable_score, where scoring constants and thresholds come from FORM-003 and PARAM-005 through PARAM-018."
+      - "Map score to grade using inclusive thresholds 85 Action-Ready, 70 Watch, 55 Manual Review, else Block."
+      - "Apply gates in code order: conservative/excluded, max_drawdown block, recovery block/manual review, stale days, source conflict, official-source cap, fallback cap, executable cap, zero-return reduce, Action-Ready increase, Watch maintain."
+      - "Return ScoreResult with rounded component scores, evidence_coverage, grade, action_label, trigger_reason, manual_review_required, and sorted missing_fields."
+    strategies: [STRAT-SER-001, STRAT-SER-003]
+    code_refs: [Serenity-Alipay/app/core/scoring.py:73, Serenity-Alipay/app/core/scoring.py:105, Serenity-Alipay/app/core/scoring.py:148]
+    config_refs: [Serenity-Alipay/app/config.py:33, Serenity-Alipay/app/config.py:34, Serenity-Alipay/app/config.py:38]
+    test_refs: [Serenity-Alipay/tests/test_scoring.py:70, Serenity-Alipay/tests/test_risk_gate_regression.py:8]
+    source_refs: [Serenity-Alipay/docs/governance/model_registry.yaml, Serenity-Alipay/docs/governance/formula_registry.yaml, Serenity-Alipay/docs/governance/parameter_registry.csv]
+  - model_id: MOD-002
+    name: "Recommendation ranking and Top5 allocation"
+    fact_level: EXTRACTED
+    formula_ids: [FORM-007, FORM-008, FORM-009]
+    parameter_ids: [PARAM-026, PARAM-027, PARAM-028, PARAM-029, PARAM-030, PARAM-031, PARAM-032, PARAM-033]
+    exact_pseudocode:
+      - "Filter out rows where score.grade is Block."
+      - "Sort eligible rows by manual_review_required flag, candidate_index default 1000000, descending total_score, then asset_code; return first five rows."
+      - "For each ranked item i, compute serenity_base 0.82**i, confidence clamp(total_score/100,0,1), multiplier 0.85 + 0.15*confidence, and raw_weight serenity_base*multiplier."
+      - "Normalize raw weights, cap each normalized weight at 0.30, then normalize capped weights again to sum to 1 when cap_total is positive."
+      - "Compute deviation as target_weight - current_weight and map to Maintain, Increase, Pause New, Reduce, Manual Review, or score hard-block action using threshold 0.01."
+    strategies: [STRAT-SER-002, STRAT-SER-003, STRAT-SER-004]
+    code_refs: [Serenity-Alipay/app/core/pipeline.py:191, Serenity-Alipay/app/core/pipeline.py:204, Serenity-Alipay/app/core/pipeline.py:220]
+    config_refs: [Serenity-Alipay/app/config.py:35]
+    test_refs: [Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62, Serenity-Alipay/tests/test_pipeline_serenity_priority.py:85, Serenity-Alipay/tests/test_discipline.py:5]
+    source_refs: [Serenity-Alipay/docs/governance/model_registry.yaml, Serenity-Alipay/docs/governance/formula_registry.yaml, Serenity-Alipay/docs/governance/parameter_registry.csv]
+  - model_id: MOD-003
+    name: "Metrics and time-window calculation"
+    fact_level: EXTRACTED
+    formula_ids: [FORM-001, FORM-002]
+    parameter_ids: [PARAM-001, PARAM-002, PARAM-003, PARAM-004]
+    exact_pseudocode:
+      - "For each return window, choose the inclusive start close by calendar-day target or the len(points)-11 ten-trading-day index; return close_last/close_start - 1 when start exists and is nonzero."
+      - "Iterate price points to track peak, trough, max_drawdown, recovery_time_days, recovered flag, and recent seven-point drawdown."
+      - "Return AssetMetrics containing 1m, 3m, 10d returns, max_drawdown, recovery_time_days, recovered, and drawdown_7d."
+    strategies: [STRAT-SER-001]
+    code_refs: [Serenity-Alipay/app/core/metrics.py:39, Serenity-Alipay/app/core/metrics.py:52, Serenity-Alipay/app/core/metrics.py:90]
+    config_refs: [NOT_APPLICABLE]
+    test_refs: [Serenity-Alipay/tests/test_metrics.py:14, Serenity-Alipay/tests/test_metrics.py:22, Serenity-Alipay/tests/test_scoring.py:70]
+    source_refs: [Serenity-Alipay/docs/governance/model_registry.yaml, Serenity-Alipay/docs/governance/formula_registry.yaml, Serenity-Alipay/docs/governance/parameter_registry.csv]
+  - model_id: MOD-004
+    name: "Comparison and discipline gate engine"
+    fact_level: EXTRACTED
+    formula_ids: [FORM-010, FORM-011]
+    parameter_ids: [PARAM-034, PARAM-035, PARAM-036, PARAM-037, PARAM-038, PARAM-039, PARAM-040, PARAM-041, PARAM-042]
+    exact_pseudocode:
+      - "For same-day, previous-day, previous-week, and previous-month comparisons, select the latest eligible success/pass base run and compare current Top5 against base Top5."
+      - "Compute change_rate as size(new_assets union removed_assets)/max(len(current_top5),1), then raise alert events using thresholds from PARAM-034 through PARAM-038."
+      - "Emit deviation discipline events when abs(deviation) > 0.01 and overexpansion events when current_weight - target_weight > 0.01 for more than two consecutive recent R-slot runs."
+    strategies: [STRAT-SER-001, STRAT-SER-004]
+    code_refs: [Serenity-Alipay/app/core/comparison.py:128, Serenity-Alipay/app/core/comparison.py:201, Serenity-Alipay/app/core/discipline.py:15, Serenity-Alipay/app/core/discipline.py:32]
+    config_refs: [Serenity-Alipay/app/config.py:35, Serenity-Alipay/app/config.py:36]
+    test_refs: [Serenity-Alipay/tests/test_comparison.py:44, Serenity-Alipay/tests/test_comparison.py:58, Serenity-Alipay/tests/test_discipline.py:5]
+    source_refs: [Serenity-Alipay/docs/governance/model_registry.yaml, Serenity-Alipay/docs/governance/formula_registry.yaml, Serenity-Alipay/docs/governance/parameter_registry.csv]
+  - model_id: MOD-005
+    name: "Automation time-slot and dry-run safety gate"
+    fact_level: EXTRACTED
+    formula_ids: [FORM-012]
+    parameter_ids: [PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049]
+    exact_pseudocode:
+      - "Use Asia/Shanghai business days by default; weekend days do not create due slots."
+      - "A slot is due only when absolute current-time delta from the configured R1 through R10 slot time is within tolerance_minutes, default 3."
+      - "scheduler_tick skips duplicate slot/date unless allow_duplicate is true."
+      - "automation_tick keeps dry-run and draft behavior when preflight blocks or safety defaults remain enabled."
+    strategies: [STRAT-SER-001, STRAT-SER-005]
+    code_refs: [Serenity-Alipay/app/scheduler.py:8, Serenity-Alipay/app/scheduler.py:76, Serenity-Alipay/app/core/scheduler_runner.py:28, Serenity-Alipay/app/core/automation_tick.py:26]
+    config_refs: [Serenity-Alipay/app/config.py:25, Serenity-Alipay/app/config.py:29, Serenity-Alipay/app/config.py:31]
+    test_refs: [Serenity-Alipay/tests/test_timezones.py:6, Serenity-Alipay/tests/test_scheduler.py:12, Serenity-Alipay/tests/test_automation_tick.py:8]
+    source_refs: [Serenity-Alipay/docs/governance/model_registry.yaml, Serenity-Alipay/docs/governance/formula_registry.yaml, Serenity-Alipay/docs/governance/parameter_registry.csv]
+strategies:
+  - strategy_id: STRAT-SER-001
+    name: "Fail closed to research/manual/draft behavior"
+    fact_level: EXTRACTED
+    source_refs: [Serenity-Alipay/docs/governance/model_registry.yaml, Serenity-Alipay/app/core/scoring.py:148, Serenity-Alipay/app/core/automation_tick.py:26]
+  - strategy_id: STRAT-SER-002
+    name: "Manual Serenity priority precedes score tie-breaks"
+    fact_level: EXTRACTED
+    source_refs: [Serenity-Alipay/app/core/pipeline.py:182, Serenity-Alipay/app/core/pipeline.py:191, Serenity-Alipay/tests/test_pipeline_serenity_priority.py:62]
+  - strategy_id: STRAT-SER-003
+    name: "Score only applies bounded confidence"
+    fact_level: EXTRACTED
+    source_refs: [Serenity-Alipay/app/core/pipeline.py:186, Serenity-Alipay/app/core/scoring.py:105, Serenity-Alipay/docs/governance/formula_registry.yaml]
+  - strategy_id: STRAT-SER-004
+    name: "Deviation thresholds convert model output into discipline labels"
+    fact_level: EXTRACTED
+    source_refs: [Serenity-Alipay/app/core/pipeline.py:220, Serenity-Alipay/app/core/discipline.py:15, Serenity-Alipay/app/config.py:35]
+  - strategy_id: STRAT-SER-005
+    name: "Automation defaults to dry-run and mail draft unless explicitly enabled"
+    fact_level: EXTRACTED
+    source_refs: [Serenity-Alipay/app/config.py:29, Serenity-Alipay/app/config.py:31, Serenity-Alipay/app/core/automation_tick.py:26]
+caveats:
+  - issue_id: S4PAT01-WATCH-FORM-008-CAP
+    formula_id: FORM-008
+    preserved_from: Serenity-Alipay/docs/governance/evidence_index.yaml
+    post_renormalization_cap_holds: false
+    missing_target_weight_test_candidate_counts: [1, 2, 3, 4]
+    statement: "The 0.30 cap is applied before final renormalization; existing registry evidence says one-to-four-candidate scenarios can exceed 0.30 after final renormalization, so S4PAT02 does not claim a universal post-renormalization cap."
+acceptance:
+  status: READY_FOR_REVIEW
+  acceptance_id: ACC-S4PAT02
+  all_active_models_have_formula_or_exact_pseudocode: true
+  parameters_have_source_and_code_references: true
+  code_doc_contradictions_marked: true
+  no_tech_stack_as_model_parameter: true
+  no_invented_iteration_or_hours: true
