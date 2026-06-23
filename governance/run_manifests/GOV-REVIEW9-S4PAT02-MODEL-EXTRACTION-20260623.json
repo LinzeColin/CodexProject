@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623",
+  "project_id": "Serenity-Alipay",
+  "task_id": "S4PAT02",
+  "acceptance_ids": [
+    "ACC-S4PAT02"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S4PAT02",
+  "generated_at": "2026-06-23T23:55:00+10:00",
+  "implementation_base_sha": "f1a0b2b2e26fad6691c9b8d8d3da3d235de5c373",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:e552407a97f73fbb2ef52b528c3e6925ca0ebf03d1affc15d6736fbcf446c33a",
+  "changed_files_declared": [
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json"
+  ],
+  "changed_files_actual": [
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json"
+  ],
+  "required_governance_files": [
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json"
+  ],
+  "updated_governance_files": [
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "root_governance_change",
+    "review9_stage4_pilot_migration",
+    "model_extraction",
+    "model_extraction_classifier",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S4PAT02 extracts existing Serenity model facts only.",
+  "formula_delta": "NOT_CHANGED: 12 active formula IDs are grouped by model and FORM-008 caveat is preserved.",
+  "parameter_delta": "NOT_CHANGED: 49 active parameter IDs are grouped by model without changing values.",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_serenity_model_extraction_matches_registry tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_serenity_model_extraction_preserves_formula_008_caveat tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_model_extraction_is_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_manifest_records_model_extraction_scope -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_serenity_model_extraction_matches_registry tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_serenity_model_extraction_preserves_formula_008_caveat tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_model_extraction_is_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat02_manifest_records_model_extraction_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 4 S4PAT02 focused tests; registry alignment, FORM-008 caveat, governance-only classification, and manifest scope passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 150 governance tests locally; OK. Expected fixture output includes the missing-base negative test."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only validation passed with model_extraction.yaml classified as project governance only."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only CI orchestration passed on a clean committed worktree in 1.06s; validation exit_code=0 and zero_diff clean=true."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Information quality returned PASS with 0 findings."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full registered-scope governance validation passed for all 10 projects."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted LF-to-CRLF working-copy warnings only."
+    }
+  ],
+  "evidence_refs": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "Serenity-Alipay/docs/governance/model_registry.yaml",
+    "Serenity-Alipay/docs/governance/formula_registry.yaml",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/app/core/scoring.py",
+    "Serenity-Alipay/app/core/pipeline.py",
+    "Serenity-Alipay/app/core/metrics.py",
+    "Serenity-Alipay/app/core/comparison.py",
+    "Serenity-Alipay/app/core/discipline.py",
+    "Serenity-Alipay/app/scheduler.py",
+    "Serenity-Alipay/app/core/scheduler_runner.py",
+    "Serenity-Alipay/app/core/automation_tick.py",
+    "Serenity-Alipay/app/config.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S4PAT02 Serenity-Alipay model extraction",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Extract existing Serenity-Alipay model, formula, parameter, and strategy facts into a bounded S4PAT02 artifact while preserving FORM-008 caveat and avoiding business behavior changes.",
+  "rollback": "Delete Serenity-Alipay/docs/governance/model_extraction.yaml, remove model_extraction.yaml from the governance-only classifier, remove S4PAT02 tests, and delete this run manifest.",
+  "unresolved_risks": [
+    "S4PAT03 still must reconstruct Roadmap and development events honestly.",
+    "S4PB still must convert extracted facts into Lean canonical files and owner-readable Chinese outputs.",
+    "Stage 4 final gate still needs owner readability acceptance, reusable migration mode, and post-merge CI evidence."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
