@@ -24,9 +24,9 @@ parameter_profile_versions:
   operator-review-packet: "1"
   release-decision-bundle: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260623-005"
+current_iteration: "ITER-20260623-006"
 current_phase: "C"
-current_gate: "TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS"
+current_gate: "TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
+- release_gate: `TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `9`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `22`
-- pending_or_stale_events: `38`
+- precommit_pending_events: `23`
+- pending_or_stale_events: `39`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0026fe0d4d249be6cc600bb95c58c920ae37a706cf44aa8f94958c817331b796`
-- snapshot_event_time: `2026-06-22T23:04:31Z`
+- source_snapshot_hash: `sha256:4992886d72f9ff373408773e29fef75640aac080fb964dbb85b3b608ab163f08`
+- snapshot_event_time: `2026-06-23T00:10:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
+- phase/gate: `C / TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

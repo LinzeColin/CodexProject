@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
-- Confirmed iteration count: 29
+- Current gate: `TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
+- Confirmed iteration count: 30
 - Reconstructed development event count: 3
-- Current task: `TASK-T1301/A202 source-withdrawal and counter-evidence fail-closed publication rehearsal`
-- Blockers: current T1301/A202 source-withdrawal rehearsal is locally validated by focused py_compile, focused ruff and `make verify`, but remote PostgreSQL CI is still pending for the new state-mutation publication assertions and A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A203 remains open until production-approved relationship edges and downstream release gates have current evidence; A204/A205 worker wake is remote-CI bound, but A204/A205 remain open until release-manager plus long-duration refresh evidence are current; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T1303/A204-A205 release-manager activation preflight`
+- Blockers: T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, but the preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -602,8 +602,8 @@ Do not infer iteration count from Git commit count.
 - Fact level: EXTRACTED
 - Version before: `0.1.0`
 - Version after: `0.1.0`
-- Base commit: `PENDING`
-- Result commit: `PENDING`
+- Base commit: `cb8e096fd54508080d73a6e83c015c15cfd9bd9a`
+- Result commit: `6563e59533b1e0852fbafc73cac31c0f03f0e375`
 - Task IDs: `TASK-T1303`
 - Goal: add supervised worker wake evidence for T1303/A204-A205 model refresh paths without waiting for A209 24h soak windows.
 - Assumptions: worker supervisor metadata and local static validation prove the contract shape only; remote PostgreSQL CI must execute the new integration assertions before this slice is CI-bound.
@@ -673,13 +673,34 @@ Do not infer iteration count from Git commit count.
 - Goal: add a fail-closed source-withdrawal and counter-evidence rehearsal to the A202 reviewed relationship publication path without waiting for A209 24h soak windows.
 - Assumptions: database-level `disputed` source/evidence state must override stale review decisions; counter-evidence can only be tolerated when the active decision context explicitly records counter-evidence review.
 - Files changed: `scripts/publish_reviewed_relationship_facts.py`, `tests/integration/test_database_migrations.py`, A202 governance records, development status records and release artifacts.
-- Commands run: targeted py_compile and focused ruff for the publication script and PostgreSQL integration test.
-- Test results: py_compile PASS; focused ruff PASS; remote PostgreSQL integration pending.
+- Commands run: targeted py_compile and focused ruff for the publication script and PostgreSQL integration test; local `make verify`; Project Governance run `27991823179`; EEI validation run `27991823195`.
+- Test results: py_compile PASS; focused ruff PASS; local `make verify` PASS; Project Governance run `27991823179` PASS; EEI validation run `27991823195` job `82845668499` PASS, including Step 10 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
 - Successes: publication now refuses linked disputed raw source snapshots, disputed evidence-chain rows and unreviewed evidence-chain counter-evidence before writing relationships, fact_versions or operation_logs.
 - Failures: no real source-license review, legal/brand clearance, production owner approval, production gold labels, release-manager activation or 24h soak was added.
 - Decisions: keep A202/A209/A210 `IN_PROGRESS`; keep A209 24h soak as a background long-running gate while bounded MVP delivery continues.
-- Remaining risks: remote CI could fail the new PostgreSQL state-mutation rehearsal; future operators must not read this rehearsal as real source withdrawal proof from live operators.
+- Remaining risks: future operators must not read this repository rehearsal as real source withdrawal proof from live operators or as source/legal/owner approval.
 - Rollback: revert the publication gate/test/governance updates, regenerate artifacts and rerun validation.
+- Next step: continue bounded MVP delivery while A209 24h soak remains a background long-running evidence gate.
+
+### `ITER-20260623-006`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `6563e59533b1e0852fbafc73cac31c0f03f0e375`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1303`, `TASK-T1301`, `TASK-T1307`, `TASK-T1309`, `TASK-T904`
+- Goal: add a fail-closed release-manager activation preflight for A204/A205 without waiting for A209 24h soak or pretending external clearance is complete.
+- Assumptions: a release-manager preflight must aggregate source/legal/owner, gold-quality, brand and soak gates; repository fixtures and signed contract-test bundles are schema evidence only.
+- Files changed: `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, Makefile, A204/A205 acceptance traceability, V5 sync records, delivery task records and this ledger.
+- Commands run: release-manager artifact generation; py_compile; focused ruff; release-manager artifact validation; release-manager/release-decision unit tests.
+- Test results: py_compile PASS; focused ruff PASS; release-manager artifact validate PASS; `tests/unit/test_release_manager_activation.py tests/unit/test_release_decision_bundle.py` PASS 7/7.
+- Successes: release-manager activation now has a machine-readable preflight that reports `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 real source/legal/owner evidence, A026/A027 production gold labels, A209 24h soak and A210 brand clearance are ready.
+- Failures: no real source-license review, legal/brand clearance, production owner approval, production gold labels, release-manager activation or 24h soak was added.
+- Decisions: keep A204/A205/A209/A210/A026/A027 `IN_PROGRESS`; keep A209 24h soak as a background long-running gate while bounded MVP delivery continues.
+- Remaining risks: future operators could falsely treat the blocked preflight as release-manager activation unless `activation_ready=false` and `missing_gates` are enforced.
+- Rollback: revert the release-manager preflight script, unit test, artifact and governance/status updates; regenerate artifacts and rerun validation.
 - Next step: run broader local validation, regenerate release artifacts, commit/push and verify GitHub CI.
 
 ## Reconstructed Development Events
@@ -718,7 +739,8 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-002`: local T1303/A204-A205 supervised model refresh worker wake evidence; A209 24h soak remains a background gate.
 - `EVENT-20260623-003`: remote CI binding for T1303/A204-A205 supervised worker wake; A204/A205/A209 remain open.
 - `EVENT-20260623-004`: local T1301/A202 publication operation-log audit; A202/A209/A210 remain open.
-- `EVENT-20260623-005`: local T1301/A202 source-withdrawal and counter-evidence fail-closed publication rehearsal; A202/A209/A210 remain open.
+- `EVENT-20260623-005`: remote-CI-bound T1301/A202 source-withdrawal and counter-evidence fail-closed publication rehearsal; A202/A209/A210 remain open.
+- `EVENT-20260623-006`: local T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
 
 ## Unknown Historical Periods
 

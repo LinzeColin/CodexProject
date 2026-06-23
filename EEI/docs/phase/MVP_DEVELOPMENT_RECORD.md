@@ -4694,3 +4694,63 @@ Status: LOCAL STATIC VALIDATED; REMOTE POSTGRESQL CI PENDING; A202/A209/A210 STI
 
 - Revert `scripts/publish_reviewed_relationship_facts.py`, `tests/integration/test_database_migrations.py` and the governance/artifact updates from this slice.
 - Regenerate development, clean-room and release artifacts, then rerun local validation and GitHub CI.
+
+## 2026-06-23 - T1301/A202 source-withdrawal CI binding
+
+Status: REMOTE CI VALIDATED FOR THIS SLICE; A202/A209/A210 STILL IN PROGRESS
+
+### Scope
+
+- Bound commit `6563e59533b1e0852fbafc73cac31c0f03f0e375` remote CI proof into the A202 source-withdrawal and counter-evidence fail-closed publication rehearsal.
+- Project Governance run `27991823179` completed successfully.
+- EEI validation run `27991823195` job `82845668499` completed successfully, including Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
+
+### Acceptance mapping
+
+- T1301 -> A202 evidence is stronger: the source-withdrawal and counter-evidence PostgreSQL state-mutation assertions are no longer local-only.
+- A202 remains `IN_PROGRESS`: CI validation of the repository rehearsal is not real operator withdrawal evidence, source-license review, passage-level approval, production owner approval, formal legal/brand clearance, production gold labels, release-manager activation or A209 24h soak.
+
+### Rollback
+
+- Revert this CI-binding governance update and restore the previous remote-pending source-withdrawal evidence records if the cited GitHub Actions runs are invalidated.
+
+## 2026-06-23 - T1303/A204-A205 release-manager activation preflight
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_release_manager_activation.py`.
+- Added `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`.
+- Added `tests/unit/test_release_manager_activation.py`.
+- The preflight aggregates A202 signed-decision evidence, A026/A027 gold-quality evidence, A209 operator soak evidence and A210 brand-clearance evidence before final release-manager activation.
+- Current repository state intentionally reports `RELEASE_MANAGER_ACTIVATION_BLOCKED`, `activation_ready=false`, `relationship_publication_allowed=false` and `public_brand_launch_allowed=false`.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205 for release-manager activation preflight governance around transactional model activation and global refresh release.
+- T1301/T1307/T1309/T904 remain linked because A202 real source/legal/owner evidence, A209 24h soak, A210 formal clearance and A026/A027 production gold labels are required before activation can be ready.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold or active parameter value changed.
+- This is a MOD-012 operational release-control contract only.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache .venv/bin/python -m py_compile scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_manager_activation.py tests/unit/test_release_decision_bundle.py -q -p no:cacheprovider`: PASS, 7 passed.
+
+### Remaining gaps
+
+- A204/A205 remain `IN_PROGRESS` until release-manager activation preflight is ready with real signed source/license/owner/legal/brand evidence, A026/A027 production gold labels and A209 24h soak evidence.
+- The committed signed decision fixture is schema evidence only and does not count as real clearance.
+- A209 24h soak remains a background independent gate.
+
+### Rollback
+
+- Remove `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py` and `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`.
+- Revert A204/A205 traceability, V5 sync, delivery task and generated release/governance artifacts, then rerun validation.
