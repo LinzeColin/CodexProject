@@ -23,6 +23,7 @@ root_governance:
     - "governance/projects.yaml"
     - "governance/schemas/project.schema.json"
     - "governance/schemas/roadmap.schema.json"
+    - "governance/schemas/events.schema.json"
     - "governance/schemas/model_registry.schema.json"
     - "governance/schemas/formula_registry.schema.json"
     - "governance/schemas/delivery_tasks.schema.json"

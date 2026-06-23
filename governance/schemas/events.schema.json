@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linzecolin.local/codexproject/governance/events.schema.json",
+  "title": "CodexProject Lean v2 event",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "project_id",
+    "occurred_at",
+    "event_type",
+    "summary",
+    "fact_level",
+    "task_id",
+    "acceptance_ids",
+    "changed_files",
+    "evidence_refs"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "codexproject.event.v1"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^EVT-[A-Za-z0-9_.-]+$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "decision",
+        "implementation",
+        "validation",
+        "migration",
+        "release",
+        "incident",
+        "owner_acceptance",
+        "evidence_update",
+        "rollback"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fact_level": {
+      "$ref": "#/$defs/fact_level"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$"
+    },
+    "acceptance_ids": {
+      "$ref": "#/$defs/non_empty_string_array"
+    },
+    "changed_files": {
+      "$ref": "#/$defs/non_empty_string_array"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_ref"
+      },
+      "minItems": 1
+    },
+    "actor_role": {
+      "type": "string"
+    },
+    "decision_refs": {
+      "$ref": "#/$defs/non_empty_string_array"
+    },
+    "blocked_by": {
+      "$ref": "#/$defs/non_empty_string_array"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "fact_level": {
+      "type": "string",
+      "enum": ["VERIFIED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"]
+    },
+    "non_empty_string_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": ["evidence_id", "kind", "ref", "fact_level"],
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "pattern": "^EVID-[A-Za-z0-9_.-]+$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["code", "config", "test", "run_manifest", "ci", "owner", "external", "unknown"]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fact_level": {
+          "$ref": "#/$defs/fact_level"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
