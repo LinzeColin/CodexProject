@@ -5,13 +5,13 @@
 - project_id: `Serenity-Alipay`
 - product_version: `0.1.0`
 - current_stage: `S4`
-- current_phase: `S4PB`
-- current_task: `S4PBT03`
+- current_phase: `S4PC`
+- current_task: `S4PCT01`
 - total_hours: `32.00`
-- completed_hours: `24.00`
-- progress: `75.00%`
+- completed_hours: `28.00`
+- progress: `87.50%`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S4PB-GATE`
+- next_gate: `S4PC-GATE`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -46,7 +46,7 @@ Stage -> Phase -> Task
 #### S4PB Migration and generation
 
 - objective: `Create Lean v2 canonical facts, generate Chinese human entry files, and verify render drift.`
-- status: `in_progress`
+- status: `completed`
 - derived_hours: `14.00`
 - derived_percent: `43.75%`
 - stop_conditions: `Focused tests fail, Generated files and canonical facts disagree`
@@ -56,12 +56,12 @@ Stage -> Phase -> Task
 |---|---|---|---:|---:|---|---|
 | S4PBT01 | Create project.yaml, roadmap.yaml, events.jsonl | completed | 6.00 | 18.75% | S4PAT02, S4PAT03 | ACC-S4PBT01 |
 | S4PBT02 | Generate three Chinese human entry files | completed | 4.00 | 12.50% | S4PBT01 | ACC-S4PBT02 |
-| S4PBT03 | Run focused tests, validate, and drift check | in_progress | 4.00 | 12.50% | S4PBT02 | ACC-S4PBT03 |
+| S4PBT03 | Run focused tests, validate, and drift check | completed | 4.00 | 12.50% | S4PBT02 | ACC-S4PBT03 |
 
 #### S4PC Owner readability and cost acceptance
 
 - objective: `Confirm owner readability, token-cost behavior, and rollback path.`
-- status: `planned`
+- status: `in_progress`
 - derived_hours: `4.00`
 - derived_percent: `12.50%`
 - stop_conditions: `Owner cannot understand key model or next decision, Governance cost exceeds budget without approved exception`
@@ -69,8 +69,8 @@ Stage -> Phase -> Task
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S4PCT01 | Run two-minute Owner ROA review | planned | 2.00 | 6.25% | S4PBT03 | ACC-S4PCT01 |
-| S4PCT02 | Verify duration, token proxy, and rollback | planned | 2.00 | 6.25% | S4PCT01 | ACC-S4PCT02 |
+| S4PCT01 | Run two-minute Owner ROA review | in_progress | 2.00 | 6.25% | S4PBT03 | ACC-S4PCT01 |
+| S4PCT02 | Verify duration, token proxy, and rollback | in_progress | 2.00 | 6.25% | S4PCT01 | ACC-S4PCT02 |
 
 
 ## 近期事件
@@ -84,3 +84,5 @@ Stage -> Phase -> Task
 | 2026-06-23T00:00:00+10:00 | implementation | Extracted five active models, twelve formulas, forty-nine parameters, and five strategies with FORM-008 caveat preserved. | S4PAT02 | VERIFIED |
 | 2026-06-23T23:08:04+10:00 | implementation | Reconstructed Review9 Stage 4 roadmap and event truth levels with PR #97 and main CI run 28028512167. | S4PAT03 | VERIFIED |
 | 2026-06-24T00:35:00+10:00 | migration | Proposed Lean v2 canonical project, roadmap, events, and generated Chinese human entry files for S4PB validation. | S4PBT03 | PROPOSED |
+| 2026-06-23T23:32:00+10:00 | validation | S4PB canonical facts and Chinese human entry render package passed PR #98 CI and main push CI. | S4PBT03 | VERIFIED |
+| 2026-06-24T00:55:00+10:00 | owner_acceptance | Prepared S4PC owner ROA review, performance proxy, and rollback evidence; owner acceptance remains pending external confirmation. | S4PCT01 | PROPOSED |

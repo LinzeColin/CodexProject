@@ -1389,7 +1389,7 @@ parameters:
     fact_level: "EXTRACTED"
     value: 20
     unit: "runs"
-    source: "EXTRACTED from comparison code; text_regex:Serenity-Alipay/app/core/comparison.py::LIMIT\\s+(20)"
+    source: "EXTRACTED from comparison code; text_regex:Serenity-Alipay/app/core/comparison.py::LIMIT\\\\s+(20)"
     evidence_refs:
       - "EVID-SER-PARAMETER-REGISTRY"
       - "EVID-SER-MODEL-EXTRACTION"
@@ -1770,6 +1770,15 @@ validations:
     evidence_refs:
       - "EVID-REVIEW9-S4PAT03-MANIFEST"
       - "EVID-REVIEW9-S4PAT03-CI"
+  -
+    validation_id: "VAL-SER-S4PB"
+    scope: "Lean v2 canonical facts and rendered Chinese human entry files"
+    method: "PR #98, Project Governance run 28029697002, and main Project Governance run 28029791587"
+    status: "active"
+    fact_level: "VERIFIED"
+    evidence_refs:
+      - "EVID-REVIEW9-S4PB-MANIFEST"
+      - "EVID-REVIEW9-S4PB-CI"
 evidence_refs:
   -
     evidence_id: "EVID-SER-README"
@@ -1840,7 +1849,14 @@ evidence_refs:
     evidence_id: "EVID-REVIEW9-S4PB-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
-    fact_level: "PROPOSED"
+    fact_level: "VERIFIED"
+    notes: "S4PB PR #98 and main CI passed."
+  -
+    evidence_id: "EVID-REVIEW9-S4PB-CI"
+    kind: "ci"
+    ref: "github-actions://LinzeColin/CodexProject/actions/runs/28029791587"
+    fact_level: "VERIFIED"
+    notes: "Main push CI after PR #98 merge."
 legacy_refs:
   -
     legacy_path: "Serenity-Alipay/docs/governance/model_registry.yaml"

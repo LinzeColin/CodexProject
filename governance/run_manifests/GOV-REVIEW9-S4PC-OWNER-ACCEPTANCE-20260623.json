@@ -1,0 +1,184 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623",
+  "project_id": "Serenity-Alipay",
+  "task_id": "S4PC",
+  "acceptance_ids": [
+    "ACC-S4PCT01",
+    "ACC-S4PCT02"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S4PC",
+  "generated_at": "2026-06-24T01:05:00+10:00",
+  "implementation_base_sha": "00f3a8a59fcbeb37bcb41959da10549d844da0c2",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:e9fe5e79c1e81a175a5e1eedc3491eee3b904afbd961f50b9d1722f95a86b1b2",
+  "changed_files_declared": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/owner_roa_review.yaml",
+    "Serenity-Alipay/docs/governance/performance_report.yaml",
+    "Serenity-Alipay/docs/governance/rollback_test.yaml",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+  ],
+  "changed_files_actual": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/owner_roa_review.yaml",
+    "Serenity-Alipay/docs/governance/performance_report.yaml",
+    "Serenity-Alipay/docs/governance/rollback_test.yaml",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+  ],
+  "required_governance_files": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/owner_roa_review.yaml",
+    "Serenity-Alipay/docs/governance/performance_report.yaml",
+    "Serenity-Alipay/docs/governance/rollback_test.yaml",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+  ],
+  "updated_governance_files": [
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/owner_roa_review.yaml",
+    "Serenity-Alipay/docs/governance/performance_report.yaml",
+    "Serenity-Alipay/docs/governance/rollback_test.yaml",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "root_governance_change",
+    "review9_stage4_pilot_migration",
+    "owner_roa_review",
+    "performance_token_proxy",
+    "rollback_test",
+    "owner_acceptance_pending",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S4PC records owner-readability gate evidence only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_records_pending_owner_acceptance_truthfully tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_roadmap_and_project_bind_s4pb_ci tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_performance_and_rollback_evidence_are_local_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_events_mark_owner_acceptance_as_proposed tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_manifest_records_pending_owner_gate -q",
+    "python -B scripts/lean_governance.py check-render --project Serenity-Alipay",
+    "git show --format= --binary 00f3a8a59fcbeb37bcb41959da10549d844da0c2 | git apply --reverse --check",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_records_pending_owner_acceptance_truthfully tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_roadmap_and_project_bind_s4pb_ci tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_performance_and_rollback_evidence_are_local_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_events_mark_owner_acceptance_as_proposed tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_serenity_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pc_manifest_records_pending_owner_gate -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 7 tests in 0.130s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project Serenity-Alipay",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "git show --format= --binary 00f3a8a59fcbeb37bcb41959da10549d844da0c2 | git apply --reverse --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Reverse-apply rollback check produced no output and made no changes."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0; checked Serenity-Alipay."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 168 tests in 9.291s; OK."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors; Git printed LF/CRLF working-copy warnings only."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duration_seconds=1.076; validation errors=0 warnings=0; check_render drift_count=0 reference_issue_count=0; zero_diff.clean=true changed_count=0."
+    }
+  ],
+  "owner_acceptance_recorded": false,
+  "evidence_refs": [
+    "Serenity-Alipay/docs/governance/owner_roa_review.yaml",
+    "Serenity-Alipay/docs/governance/performance_report.yaml",
+    "Serenity-Alipay/docs/governance/rollback_test.yaml",
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S4PC owner gate preparation without fabricated owner acceptance",
+  "ci_run_reference": "LOCAL_CLEAN_CI_AFTER_COMMIT_BEFORE_PR",
+  "summary": "Prepare S4PC owner ROA review, duration/token proxy, and rollback evidence while preserving the truth that owner acceptance is still pending external confirmation.",
+  "rollback": "Delete owner_roa_review.yaml, performance_report.yaml, rollback_test.yaml, and this manifest; restore project.yaml, roadmap.yaml, events.jsonl, and rendered human files to the S4PB state; remove S4PC classifier additions and tests.",
+  "unresolved_risks": [
+    "PENDING_OWNER_CONFIRMATION: S4-GATE cannot pass until the owner explicitly accepts readability.",
+    "S4-GATE still needs owner acceptance before Stage 5 can begin.",
+    "This manifest intentionally does not claim owner acceptance."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

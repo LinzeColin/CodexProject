@@ -1202,10 +1202,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         roadmap = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "roadmap.yaml")
         self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
         self.assertEqual(roadmap["project_id"], "Serenity-Alipay")
-        self.assertEqual(roadmap["current_stage_id"], "S4")
-        self.assertEqual(roadmap["current_phase_id"], "S4PB")
-        self.assertEqual(roadmap["current_task_id"], "S4PBT03")
-        self.assertEqual(roadmap["next_gate_id"], "S4PB-GATE")
 
         tasks = {
             task["task_id"]: task
@@ -1217,7 +1213,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(tasks["S4PAT03"]["completed_commit"], "e0a6782efee3c2945abaa261eb0b28fce7bff2df")
         self.assertEqual(tasks["S4PBT01"]["status"], "completed")
         self.assertEqual(tasks["S4PBT02"]["status"], "completed")
-        self.assertEqual(tasks["S4PBT03"]["status"], "in_progress")
+        self.assertEqual(tasks["S4PBT03"]["status"], "completed")
+        self.assertEqual(tasks["S4PBT03"]["completed_commit"], "00f3a8a59fcbeb37bcb41959da10549d844da0c2")
         self.assertIn("governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json", tasks["S4PBT03"]["evidence_refs"])
 
     def test_review9_s4pb_serenity_events_preserve_truth_levels(self) -> None:
@@ -1228,7 +1225,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             .splitlines()
             if line.strip()
         ]
-        self.assertEqual(len(events), 7)
+        self.assertGreaterEqual(len(events), 7)
         self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
         self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
         by_id = {event["event_id"]: event for event in events}
@@ -1319,6 +1316,119 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         self.assertIn("S4PC still must record owner readability", " ".join(manifest["unresolved_risks"]))
+
+    def test_review9_s4pc_serenity_records_pending_owner_acceptance_truthfully(self) -> None:
+        validator = load_validator_module()
+        review = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "owner_roa_review.yaml")
+        self.assertEqual(review["schema_version"], "codexproject.owner_roa_review.v1")
+        self.assertEqual(review["task_id"], "S4PCT01")
+        self.assertEqual(review["acceptance_id"], "ACC-S4PCT01")
+        self.assertEqual(review["agent_roa_result"]["status"], "PASS_LOCAL_AGENT_REVIEW")
+        self.assertEqual(review["agent_roa_result"]["owner_acceptance_status"], "PENDING_OWNER_CONFIRMATION")
+        self.assertIsNone(review["agent_roa_result"]["owner_confirmed"])
+        self.assertFalse(review["acceptance"]["owner_acceptance_recorded"])
+        self.assertTrue(review["acceptance"]["false_acceptance_prevented"])
+
+    def test_review9_s4pc_serenity_roadmap_and_project_bind_s4pb_ci(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "project.yaml")
+        roadmap = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "roadmap.yaml")
+        evidence = {item["evidence_id"]: item for item in project["evidence_refs"]}
+        validations = {item["validation_id"]: item for item in project["validations"]}
+        self.assertEqual(evidence["EVID-REVIEW9-S4PB-MANIFEST"]["fact_level"], "VERIFIED")
+        self.assertEqual(evidence["EVID-REVIEW9-S4PB-CI"]["kind"], "ci")
+        self.assertIn("28029791587", evidence["EVID-REVIEW9-S4PB-CI"]["ref"])
+        self.assertEqual(validations["VAL-SER-S4PB"]["fact_level"], "VERIFIED")
+
+        self.assertEqual(roadmap["current_phase_id"], "S4PC")
+        self.assertEqual(roadmap["current_task_id"], "S4PCT01")
+        tasks = {
+            task["task_id"]: task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        }
+        self.assertEqual(tasks["S4PBT03"]["status"], "completed")
+        self.assertEqual(tasks["S4PBT03"]["completed_commit"], "00f3a8a59fcbeb37bcb41959da10549d844da0c2")
+        self.assertEqual(tasks["S4PCT01"]["status"], "in_progress")
+        self.assertEqual(tasks["S4PCT02"]["status"], "in_progress")
+
+    def test_review9_s4pc_serenity_performance_and_rollback_evidence_are_local_only(self) -> None:
+        validator = load_validator_module()
+        performance = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "performance_report.yaml")
+        rollback = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "rollback_test.yaml")
+        self.assertEqual(performance["task_id"], "S4PCT02")
+        self.assertEqual(performance["token_proxy"]["current_root_change_caveat"].count("selected all registered projects"), 1)
+        self.assertFalse(performance["acceptance"]["owner_acceptance_recorded"])
+        self.assertEqual(rollback["rollback_check"]["exit_code"], 0)
+        self.assertEqual(rollback["rollback_check"]["result"], "PASS")
+        self.assertFalse(rollback["rollback_check"]["destructive_action_performed"])
+        self.assertTrue(rollback["acceptance"]["rollback_path_executable"])
+        self.assertFalse(rollback["acceptance"]["owner_acceptance_recorded"])
+
+    def test_review9_s4pc_serenity_events_mark_owner_acceptance_as_proposed(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "Serenity-Alipay" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-SER-REVIEW9-S4PB-CI"]["fact_level"], "VERIFIED")
+        self.assertEqual(by_id["EVT-SER-REVIEW9-S4PC-PREP"]["fact_level"], "PROPOSED")
+        self.assertIn("must not be treated as owner approval", by_id["EVT-SER-REVIEW9-S4PC-PREP"]["notes"])
+
+    def test_review9_s4pc_serenity_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        result = cli.check_render_project_files(ROOT / "Serenity-Alipay")
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+    def test_review9_s4pc_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "Serenity-Alipay",
+            "path": "Serenity-Alipay",
+            "model_behavior_globs": ["app/**/*.py", "tests/**/*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "Serenity-Alipay/docs/governance/owner_roa_review.yaml",
+                "Serenity-Alipay/docs/governance/performance_report.yaml",
+                "Serenity-Alipay/docs/governance/rollback_test.yaml",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/owner_roa_review.yaml",
+                "docs/governance/performance_report.yaml",
+                "docs/governance/rollback_test.yaml",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s4pc_manifest_records_pending_owner_gate(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S4PC-OWNER-ACCEPTANCE-20260623.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S4PC")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PCT01", "ACC-S4PCT02"])
+        self.assertIn("owner_acceptance_pending", manifest["change_classification"])
+        self.assertIn("PENDING_OWNER_CONFIRMATION", " ".join(manifest["unresolved_risks"]))
+        self.assertFalse(manifest["owner_acceptance_recorded"])
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()

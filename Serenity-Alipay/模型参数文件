@@ -5,13 +5,13 @@
 - project_id: `Serenity-Alipay`
 - product_version: `0.1.0`
 - current_stage: `S4`
-- current_phase: `S4PB`
-- current_task: `S4PBT03`
+- current_phase: `S4PC`
+- current_task: `S4PCT01`
 - active_model_count: `5`
 - active_formula_count: `12`
 - active_parameter_count: `49`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S4PB-GATE`
+- next_gate: `S4PC-GATE`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -177,7 +177,7 @@
 | PARAM-035 | NEW_ASSET_ALERT_MIN | New Top5 asset alert minimum | 1 | EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:211:1 | EXTRACTED |
 | PARAM-036 | REPLACEMENT_ALERT_MIN | Replacement alert minimum | 2 | EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:218:1 | EXTRACTED |
 | PARAM-037 | KEY_FIELD_SIGMA_THRESHOLD | Key field sigma alert threshold | 1.0 | EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:225:1 | EXTRACTED |
-| PARAM-038 | SCORE_SIGMA_HISTORY_LIMIT | Score sigma history limit | 20 | EXTRACTED from comparison code; text_regex:Serenity-Alipay/app/core/comparison.py::LIMIT\\s+(20) | EXTRACTED |
+| PARAM-038 | SCORE_SIGMA_HISTORY_LIMIT | Score sigma history limit | 20 | EXTRACTED from comparison code; text_regex:Serenity-Alipay/app/core/comparison.py::LIMIT\\\\s+(20) | EXTRACTED |
 | PARAM-039 | OVEREXPANSION_CONSEC_THRESHOLD | Overexpansion consecutive threshold | 2 | EXTRACTED from discipline default argument; python_ast_default:Serenity-Alipay/app/core/discipline.py::single_position_overexpansion_events.consecutive_threshold | EXTRACTED |
 | PARAM-040 | PREVIOUS_DAY_OFFSET | Previous day comparison offset | 1 | EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:85:2 | EXTRACTED |
 | PARAM-041 | PREVIOUS_WEEK_OFFSET | Previous week comparison offset | 7 | EXTRACTED from comparison code; python_ast_literal:Serenity-Alipay/app/core/comparison.py:86:2 | EXTRACTED |

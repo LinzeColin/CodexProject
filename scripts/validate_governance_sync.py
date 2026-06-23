@@ -95,7 +95,10 @@ PROJECT_GOVERNANCE_FILES = {
     "events.jsonl",
     "evidence_index.yaml",
     "model_extraction.yaml",
+    "owner_roa_review.yaml",
+    "performance_report.yaml",
     "project.yaml",
+    "rollback_test.yaml",
     "roadmap_draft.yaml",
     "roadmap.yaml",
 }

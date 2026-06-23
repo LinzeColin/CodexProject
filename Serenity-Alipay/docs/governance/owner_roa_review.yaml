@@ -1,0 +1,50 @@
+schema_version: "codexproject.owner_roa_review.v1"
+project_id: "Serenity-Alipay"
+stage_id: "S4"
+phase_id: "S4PC"
+task_id: "S4PCT01"
+acceptance_id: "ACC-S4PCT01"
+review_mode: "two_minute_owner_roa"
+review_subject: "Serenity-Alipay Lean v2 human-readable governance views"
+reviewed_files:
+  - "Serenity-Alipay/功能清单"
+  - "Serenity-Alipay/开发记录"
+  - "Serenity-Alipay/模型参数文件"
+agent_roa_result:
+  status: "PASS_LOCAL_AGENT_REVIEW"
+  owner_acceptance_status: "PENDING_OWNER_CONFIRMATION"
+  owner_confirmed: null
+  stop_condition_owner_cannot_understand_key_model_or_next_decision: "NOT_OWNER_TESTED"
+  no_agent_fabricated_owner_acceptance: true
+checklist:
+  - check_id: "ROA-001"
+    question: "Can the owner identify current stage, phase, task, and next gate from the first summary block?"
+    expected_answer_source: "Serenity-Alipay/功能清单"
+    local_result: "PASS"
+    evidence_refs: ["Serenity-Alipay/功能清单"]
+  - check_id: "ROA-002"
+    question: "Can the owner see Stage -> Phase -> Task and the S4PC pending owner acceptance task?"
+    expected_answer_source: "Serenity-Alipay/开发记录"
+    local_result: "PASS"
+    evidence_refs: ["Serenity-Alipay/开发记录"]
+  - check_id: "ROA-003"
+    question: "Can the owner inspect the five active models, twelve formulas, forty-nine parameters, and FORM-008 caveat?"
+    expected_answer_source: "Serenity-Alipay/模型参数文件"
+    local_result: "PASS"
+    evidence_refs: ["Serenity-Alipay/模型参数文件", "Serenity-Alipay/docs/governance/project.yaml"]
+  - check_id: "ROA-004"
+    question: "Can the owner see that legacy stale_unbound history was not promoted to verified truth?"
+    expected_answer_source: "Serenity-Alipay/docs/governance/events.jsonl"
+    local_result: "PASS"
+    evidence_refs: ["Serenity-Alipay/docs/governance/events.jsonl", "Serenity-Alipay/docs/governance/roadmap.yaml"]
+owner_decision_required:
+  prompt: "Owner must explicitly reply ACCEPT or REJECT for S4PC owner readability before S4-GATE can pass."
+  accept_statement: "ACCEPT S4PC owner readability for Serenity-Alipay Review9 Lean v2 migration."
+  reject_statement: "REJECT S4PC owner readability and list required changes."
+acceptance:
+  status: "PENDING_OWNER_CONFIRMATION"
+  acceptance_id: "ACC-S4PCT01"
+  agent_local_roa_passed: true
+  owner_acceptance_recorded: false
+  false_acceptance_prevented: true
+

@@ -1,0 +1,35 @@
+schema_version: "codexproject.rollback_test.v1"
+project_id: "Serenity-Alipay"
+stage_id: "S4"
+phase_id: "S4PC"
+task_id: "S4PCT02"
+acceptance_id: "ACC-S4PCT02"
+rollback_subject: "S4PB canonical/render package"
+rollback_target_commit: "00f3a8a59fcbeb37bcb41959da10549d844da0c2"
+rollback_check:
+  command: "git show --format= --binary 00f3a8a59fcbeb37bcb41959da10549d844da0c2 | git apply --reverse --check"
+  exit_code: 0
+  result: "PASS"
+  destructive_action_performed: false
+  observed: "Reverse patch check succeeded without modifying the working tree."
+rollback_scope:
+  delete_if_reverting:
+    - "Serenity-Alipay/docs/governance/project.yaml"
+    - "Serenity-Alipay/docs/governance/roadmap.yaml"
+    - "Serenity-Alipay/docs/governance/events.jsonl"
+    - "governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"
+  restore_from_parent:
+    - "Serenity-Alipay/功能清单"
+    - "Serenity-Alipay/开发记录"
+    - "Serenity-Alipay/模型参数文件"
+    - "scripts/lean_governance.py"
+    - "scripts/validate_governance_sync.py"
+    - "tests/governance/test_project_governance_validator.py"
+post_rollback_validation:
+  - "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+  - "python -B scripts/lean_governance.py validate --all"
+acceptance:
+  status: "PASS_LOCAL_CHECK"
+  acceptance_id: "ACC-S4PCT02"
+  rollback_path_executable: true
+  owner_acceptance_recorded: false

@@ -1,0 +1,51 @@
+schema_version: "codexproject.performance_report.v1"
+project_id: "Serenity-Alipay"
+stage_id: "S4"
+phase_id: "S4PC"
+task_id: "S4PCT02"
+acceptance_id: "ACC-S4PCT02"
+report_subject: "Review9 Stage 4 duration, token proxy, render drift, and CI cost evidence"
+measurements:
+  - metric_id: "PERF-S4PB-FOCUSED-TESTS"
+    command: "S4PB focused unittest selection"
+    observed: "7 tests in 0.071s; PASS"
+    fact_level: "VERIFIED"
+    evidence_refs: ["governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"]
+  - metric_id: "PERF-S4PB-FULL-GOVERNANCE-TESTS"
+    command: "python -B -m unittest discover -s tests/governance -p test_*.py -q"
+    observed: "161 tests in 9.054s; PASS"
+    fact_level: "VERIFIED"
+    evidence_refs: ["governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"]
+  - metric_id: "PERF-S4PB-CHECK-RENDER"
+    command: "python -B scripts/lean_governance.py check-render --project Serenity-Alipay"
+    observed: "drift_count=0 reference_issue_count=0"
+    fact_level: "VERIFIED"
+    evidence_refs: ["Serenity-Alipay/docs/governance/roadmap.yaml", "Serenity-Alipay/开发记录"]
+  - metric_id: "PERF-S4PB-CLEAN-CI"
+    command: "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+    observed: "duration_seconds=1.313; validation errors=0 warnings=0; zero_diff.clean=true"
+    fact_level: "VERIFIED"
+    evidence_refs: ["governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json"]
+  - metric_id: "PERF-S4PB-PR-CI"
+    command: "GitHub Actions Project Governance"
+    observed: "PR #98 run 28029697002 success; main push run 28029791587 success"
+    fact_level: "VERIFIED"
+    evidence_refs: ["PR-98", "github-actions://LinzeColin/CodexProject/actions/runs/28029697002", "github-actions://LinzeColin/CodexProject/actions/runs/28029791587"]
+token_proxy:
+  ordinary_development_scope: "Serenity-Alipay canonical facts let future work read project.yaml, roadmap.yaml, and events.jsonl instead of rescanning all v1 registries and human entry files."
+  current_root_change_caveat: "S4PB touched root validators/tests, so changed-only CI selected all registered projects once; check-render still checked only Serenity-Alipay and skipped nine unmigrated projects."
+  future_expected_scope: "Project-only Serenity edits should not require all-project render checks once root validators are no longer changed."
+  no_all_project_llm_sweep_required: true
+quality_result:
+  render_drift: "PASS"
+  reference_integrity: "PASS"
+  windows_chinese_path_ci_fix: "PASS"
+  owner_acceptance_status: "PENDING_OWNER_CONFIRMATION"
+acceptance:
+  status: "LOCAL_EVIDENCE_READY"
+  acceptance_id: "ACC-S4PCT02"
+  duration_proxy_recorded: true
+  token_proxy_recorded: true
+  rollback_evidence_ref: "Serenity-Alipay/docs/governance/rollback_test.yaml"
+  owner_acceptance_recorded: false
+
