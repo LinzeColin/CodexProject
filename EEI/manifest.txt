@@ -342,6 +342,7 @@ scripts/manage_development_status_artifacts.py
 scripts/manage_release_artifacts.py
 scripts/manage_risk_control_artifacts.py
 scripts/migrate.py
+scripts/monitor_operator_soak.py
 scripts/preflight.sh
 scripts/publish_reviewed_relationship_facts.py
 scripts/run_browser_scale_benchmarks.mjs
