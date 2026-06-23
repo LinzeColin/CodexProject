@@ -24,7 +24,7 @@
     "watchdog_pid_path": "artifacts/tests/a209/t1307_operator_soak_watchdog.pid",
     "watchdog_process_status": "RUNNING"
   },
-  "generated_at": "2026-06-23T20:38:49Z",
+  "generated_at": "2026-06-23T21:24:52Z",
   "non_closure": [
     "does_not_close_A209_24h_operator_soak",
     "does_not_replace_validate_operator_soak_evidence",
@@ -32,30 +32,30 @@
     "does_not_replace_release_manager_activation"
   ],
   "progress": {
-    "completed_duration_seconds": 35700.0,
-    "completion_percent": 41.32,
+    "completed_duration_seconds": 38400.0,
+    "completion_percent": 44.44,
     "latest_successful_window": {
       "browser_dom_node_growth": 0,
-      "browser_heap_growth_bytes": 184936,
+      "browser_heap_growth_bytes": 167376,
       "child_status": "PARTIAL",
-      "elapsed_wall_seconds": 301.5517,
-      "ended_at": "2026-06-23T20:36:21Z",
-      "index": 119,
+      "elapsed_wall_seconds": 303.5962,
+      "ended_at": "2026-06-23T21:21:40Z",
+      "index": 128,
       "measured_duration_seconds": 300,
-      "output_path": "/private/tmp/eei-operator-soak-12478-119.json",
+      "output_path": "/private/tmp/eei-operator-soak-12478-128.json",
       "requested_duration_seconds": 300,
-      "started_at": "2026-06-23T20:31:20Z",
+      "started_at": "2026-06-23T21:16:36Z",
       "status": "PASS",
-      "worker_event_loop_lag_p95_ms": 2.1713,
+      "worker_event_loop_lag_p95_ms": 3.0829,
       "worker_jobs_completed": 12,
       "worker_jobs_total": 12
     },
     "operator_window_seconds": 300.0,
     "target_seconds": 86400.0,
     "target_windows": 288,
-    "windows_completed": 119,
+    "windows_completed": 128,
     "windows_failed": 0,
-    "windows_remaining": 169
+    "windows_remaining": 160
   },
   "progress_status": "RUNNING_PARTIAL",
   "release_gate_closed_by_background_heartbeat": false,

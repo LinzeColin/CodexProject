@@ -56,7 +56,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `119/288` PASS at `2026-06-23T20:38:49Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `128/288` PASS at `2026-06-23T21:24:52Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` is now available as the A202 source/license/owner/legal release-decision fill-in contract, `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract, and `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` is now available as the A210 brand-clearance / risk-waiver fill-in contract.
 
@@ -78,14 +78,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - latest_T1303_operator_cli: `scripts/apply_model_config.py` now supports dry-run preview plus explicit PostgreSQL `--execute`; `scripts/validate_release_manager_activation.py` now validates evidence-derived READY preflight only when all external gates are real; `artifacts/model_config_import_preview.json` remains non-closure evidence for A204/A205.
 - latest_T1303_mvp_release_gate: `scripts/validate_mvp_release_gate.py` now aggregates A202/A203/A204-A205/A209/A210/A026/A027 into `MVP_RELEASE_BLOCKED` until every required external gate is real and current.
 - latest_T1301_A202_signed_intake_preflight: `scripts/validate_a202_signed_intake_preflight.py` now reports `A202_SIGNED_INTAKE_MISSING` with five missing signed input groups and keeps `release_ready=false`.
-- latest_A209_finalization: `scripts/finalize_operator_soak_evidence.py` now reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `119/288` windows and blocks downstream release-gate refresh until 288/288 release-ready evidence exists.
+- latest_A209_finalization: `scripts/finalize_operator_soak_evidence.py` now reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `128/288` windows and blocks downstream release-gate refresh until 288/288 release-ready evidence exists.
 - latest_T1303_external_release_evidence_bundle: `scripts/validate_external_release_evidence_bundle.py` now consolidates A202/A210/A026/A027/A209 external gate evidence into `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED` and blocks release-manager refresh until all external inputs are real and ready.
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
 - release_gate: `TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
-- latest_clean_room_sync: fresh checkout should validate `package_paths=434`, `manifest_paths=441`, `checksum_paths=440` after the external release-evidence bundle files became staged.
+- latest_clean_room_sync: fresh checkout should validate `package_paths=437`, `manifest_paths=444`, `checksum_paths=443` after the latest A209 heartbeat refresh artifacts became staged.
 
 ## 14. Evidence Freshness
 
@@ -108,7 +108,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-23T20:34:26Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
+- phase/gate: `C / TASK-T1307-A209-BACKGROUND-HEARTBEAT-REFRESH-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

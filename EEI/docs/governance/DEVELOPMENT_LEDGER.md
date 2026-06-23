@@ -1185,3 +1185,4 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 | `python scripts/validate_governance.py` | PASS | exit 0; tasks/acceptance/risks/trace/gates 130/211/53/234/10 |
 | `python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json` | PASS | exit 0; weight_sum 1.0 and calibration_days 14 |
 | `python scripts/validate_task_pack.py` | BLOCKED | exit 1; local dependency `pypdf` missing and dependency installation is outside this run |
+- `EVENT-20260624-024`: local T1307/A209 background heartbeat refresh; live detached operator soak advanced to `128/288` PASS windows with `0` failed and remains `IN_PROGRESS`.

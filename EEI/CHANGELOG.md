@@ -38,6 +38,8 @@
 - Added a T1303/A204-A205 MVP release-gate preflight that aggregates A202, A203, A204/A205, A209, A210 and A026/A027 into one fail-closed artifact; it reports `MVP_RELEASE_BLOCKED`, keeps every missing production gate visible, and refreshes staged clean-room/release evidence to `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
 - Added a T1307/A209 operator-soak finalization preflight: it refreshes/validates the heartbeat and evidence-validation state, reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `119/288` windows PASS, blocks downstream release-gate refresh until 288/288 release-ready evidence exists, and keeps `release_gate_closed_by_finalizer=false`; refreshed clean-room/release evidence now reports `package_paths=434`, `manifest_paths=441` and `checksum_paths=440`.
 - Added a T1303 external release-evidence bundle preflight: it consolidates A202, A210, A026, A027 and A209 gate artifacts into one fail-closed operator checklist, reports `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`, and keeps release-manager/MVP refresh disallowed until every external input is real and ready.
+- Refreshed the live T1307/A209 background heartbeat and dependent preflight artifacts to `128/288` windows PASS, `0` failed, `160` remaining and `44.44%` complete while keeping `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`, `release_gate_closed_by_finalizer=false` and all release gates blocked until 288/288 release-ready evidence exists.
+- Added `PARAM-082` and traceability coverage for the invariant A209 heartbeat policy `counts_as_release_ready=false`, so partial heartbeat evidence cannot be misread as release closure.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
