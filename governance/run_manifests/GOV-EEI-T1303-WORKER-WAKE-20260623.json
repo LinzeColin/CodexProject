@@ -8,6 +8,7 @@
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
+    "Alpha/docs/governance/development_events.jsonl",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/DIRECTORY_TREE.txt",
@@ -68,6 +69,13 @@
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
     "EEI/tests/unit/test_release_manager_activation.py",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623.json",
@@ -76,9 +84,11 @@
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "scripts/generate_governance_dashboard.py",
-    "tests/governance/test_project_governance_validator.py"
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/development_events.jsonl"
   ],
   "changed_files_declared": [
+    "Alpha/docs/governance/development_events.jsonl",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/DIRECTORY_TREE.txt",
@@ -139,6 +149,13 @@
     "EEI/tests/unit/test_gold_quality_evaluation.py",
     "EEI/tests/unit/test_release_decision_bundle.py",
     "EEI/tests/unit/test_release_manager_activation.py",
+    "EVA_OS/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
     "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
     "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
     "governance/run_manifests/GOV-EEI-T1301-A202-OPERATION-LOG-AUDIT-20260623.json",
@@ -147,11 +164,12 @@
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "scripts/generate_governance_dashboard.py",
-    "tests/governance/test_project_governance_validator.py"
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/docs/governance/development_events.jsonl"
   ],
   "ci_attestation_subject": "T1303/A204-A205 supervised worker wake precommit tree; CI attestation will be recorded after push",
   "ci_run_reference": "not-yet-run-precommit-tree-bound",
-  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:b0071cc2cfca6103b1597316335a98cd980c6297252262db818330f85232f382",
+  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:0cf53e5a4095480a38ac22c70093d53743c6f71dc4d06c2a0e0927d90dd05c60",
   "evidence_refs": [
     "EEI/apps/worker/app/main.py",
     "EEI/tests/integration/test_database_migrations.py",

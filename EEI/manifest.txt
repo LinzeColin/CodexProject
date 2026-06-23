@@ -113,6 +113,7 @@ artifacts/tests/a202/t1301_operator_source_capture_contract.json
 artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
+artifacts/tests/a205/t1303_release_manager_activation_preflight.json
 artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
 artifacts/tests/a206/t1304_worker_deployment_binding_contract.json
 artifacts/tests/a207/t1305_frontend_saved_view_api_adapter_contract.json
@@ -361,6 +362,7 @@ scripts/validate_model_config.py
 scripts/validate_operator_soak_evidence.py
 scripts/validate_prototype_parity.py
 scripts/validate_release_decision_bundle.py
+scripts/validate_release_manager_activation.py
 scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
 scripts/validate_v5_production_readiness_sync.py
@@ -398,6 +400,7 @@ tests/unit/test_gold_quality_evaluation.py
 tests/unit/test_official_source_live_capture.py
 tests/unit/test_operator_soak_evidence.py
 tests/unit/test_release_decision_bundle.py
+tests/unit/test_release_manager_activation.py
 tests/unit/test_scale_benchmarks.py
 tests/unit/test_scoring.py
 uv.lock
