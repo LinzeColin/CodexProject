@@ -394,6 +394,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_soak_smoke.mjs
 │   ├── secret_scan.py
 │   ├── smoke_test_prototype.py
+│   ├── supervise_operator_soak.py
 │   ├── validate_a202_operator_review_packet.py
 │   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py

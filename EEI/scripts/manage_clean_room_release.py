@@ -83,6 +83,7 @@ REQUIRED_SUPPORTING = {
     "scripts/validate_github_governance.py",
     "scripts/validate_prototype_parity.py",
     "scripts/validate_brand_clearance.py",
+    "scripts/supervise_operator_soak.py",
 }
 
 REQUIRED_CONFIG = {"config/brand_policy.yaml"}

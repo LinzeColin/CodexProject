@@ -353,6 +353,7 @@ scripts/run_scale_benchmarks.py
 scripts/run_soak_smoke.mjs
 scripts/secret_scan.py
 scripts/smoke_test_prototype.py
+scripts/supervise_operator_soak.py
 scripts/validate_a202_operator_review_packet.py
 scripts/validate_brand_clearance.py
 scripts/validate_catalog_integrity.py
