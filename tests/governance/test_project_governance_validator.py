@@ -1277,6 +1277,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "docs/governance/roadmap.yaml",
             "docs/governance/events.jsonl",
             "Low-Token Contract",
+            "中文优先",
+            "默认全局中文",
+            "agent-facing responses",
         }:
             self.assertIn(required, text)
         for mode in {"READ_ONLY", "REVIEW", "PLAN", "CI", "Hook", "IMPLEMENT"}:
