@@ -35,6 +35,7 @@
 - Refreshed the A209 background heartbeat during release-gate work to `110/288` windows PASS, `0` failed, `178` remaining and `release_gate_closed_by_background_heartbeat=false`; A209 remains an active background 24h soak gate.
 - Refreshed clean-room and release artifacts after the A203 preflight files became tracked, so fresh checkouts now validate `package_paths=425` and `manifest_paths=432`.
 - Added a T1303/A204-A205 MVP release-gate preflight that aggregates A202, A203, A204/A205, A209, A210 and A026/A027 into one fail-closed artifact; it reports `MVP_RELEASE_BLOCKED`, keeps every missing production gate visible, and refreshes staged clean-room/release evidence to `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
+- Added a T1307/A209 operator-soak finalization preflight: it refreshes/validates the heartbeat and evidence-validation state, reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `113/288` windows PASS, blocks downstream release-gate refresh until 288/288 release-ready evidence exists, and keeps `release_gate_closed_by_finalizer=false`; refreshed clean-room/release evidence now reports `package_paths=431`, `manifest_paths=438` and `checksum_paths=437`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

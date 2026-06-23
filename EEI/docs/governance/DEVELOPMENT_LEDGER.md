@@ -1166,6 +1166,8 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260624-017`: local T1302/A203 production API release preflight; A203 API surface is locally ready but release remains blocked by A202/A204-A205/A209 gates.
 - `EVENT-20260624-018`: local governance and release-artifact sync for the A203 preflight; active machine-checked parameters now total 77.
 - `EVENT-20260624-019`: clean-room fresh-checkout artifact refresh after A203 preflight files became tracked; expected package paths now total 425.
+- `EVENT-20260624-020`: local T1303/A204-A205 MVP release-gate preflight; all external release gates remain explicit blockers and A209 stays open.
+- `EVENT-20260624-021`: local T1307/A209 operator-soak finalization preflight; 24h soak continues in detached background at 113/288 windows and downstream release-gate refresh is blocked until 288/288 release-ready evidence validates.
 
 ## Unknown Historical Periods
 

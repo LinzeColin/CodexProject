@@ -1,0 +1,86 @@
+{
+  "a209_evidence_ready_for_release_manager": false,
+  "a209_task_status_required": "IN_PROGRESS",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "artifact_id": "t1307-a209-operator-soak-finalization-preflight",
+  "downstream_refresh_commands": [
+    "make generate-production-api-release-preflight",
+    "make generate-release-manager-activation-artifact",
+    "make generate-mvp-release-gate-preflight",
+    "make generate-clean-room-release generate-release-artifacts",
+    "make verify"
+  ],
+  "downstream_release_gate_refresh_allowed": false,
+  "generated_at": "2026-06-23T20:09:12Z",
+  "non_claims": [
+    "This finalizer does not close A209 by itself.",
+    "This finalizer does not replace validate_operator_soak_evidence.py.",
+    "This finalizer does not publish production graph or score artifacts.",
+    "This finalizer does not replace A202, A210, A026 or A027 evidence."
+  ],
+  "operator_next_actions": [
+    "Keep the detached 24h soak and watchdog running.",
+    "Refresh heartbeat again after more windows complete."
+  ],
+  "release_gate_closed_by_finalizer": false,
+  "rollback": [
+    "Regenerate heartbeat and evidence-validation artifacts from source logs.",
+    "Do not delete the live 24h checkpoint or log during rollback.",
+    "If status requires operator intervention, inspect failed windows before resume."
+  ],
+  "schema_version": "eei-a209-operator-soak-finalization-preflight-v1",
+  "source_files": {
+    "evidence_validation": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "evidence_validation_sha256": "6c9fedc4c5629b129c5c3c010555f4033042a40ca8705fea2c9b7ad901b0605f",
+    "heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "heartbeat_sha256": "86597d31f30f1a38f82eaa861d2b8166f6e59e6ae48aa99472fb5f0feeaf4c9d"
+  },
+  "source_statuses": {
+    "evidence_validation": {
+      "a209_task_status_required": "IN_PROGRESS",
+      "release_gate_closed_by_validator": false,
+      "results": {
+        "operator_24h": {
+          "checkpoint_windows": null,
+          "completed_duration_seconds": null,
+          "errors": [],
+          "missing": [
+            "output_json"
+          ],
+          "status": "MISSING",
+          "windows_completed": null
+        },
+        "operator_4h": {
+          "checkpoint_windows": 48,
+          "completed_duration_seconds": 14400,
+          "errors": [],
+          "missing": [],
+          "status": "PASS",
+          "windows_completed": 48
+        }
+      },
+      "status": "PARTIAL_OPERATOR_EVIDENCE"
+    },
+    "heartbeat": {
+      "completion_percent": 39.24,
+      "operator_pid": 12478,
+      "operator_process_status": "RUNNING",
+      "progress_status": "RUNNING_PARTIAL",
+      "release_gate_closed_by_background_heartbeat": false,
+      "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
+      "target_windows": 288,
+      "watchdog_pid": 62233,
+      "watchdog_process_status": "RUNNING",
+      "windows_completed": 113,
+      "windows_failed": 0,
+      "windows_remaining": 175
+    },
+    "heartbeat_validation_errors": []
+  },
+  "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "task_id": "T1307"
+}

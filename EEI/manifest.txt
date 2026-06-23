@@ -133,6 +133,7 @@ artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_4h.json
 artifacts/tests/a209/t1307_operator_soak_background_progress.json
 artifacts/tests/a209/t1307_operator_soak_evidence_validation.json
+artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
 artifacts/tests/a209/t1307_soak_smoke.json
@@ -336,6 +337,7 @@ scripts/compile_model_runtime_defaults.py
 scripts/db_tools.py
 scripts/env_doctor.py
 scripts/fetch_official_source_full_text.py
+scripts/finalize_operator_soak_evidence.py
 scripts/generate_governance_pdf.py
 scripts/job_scheduler.py
 scripts/load_curated_ingestion_anchors.py
@@ -417,6 +419,7 @@ tests/unit/test_model_config_apply.py
 tests/unit/test_mvp_release_gate.py
 tests/unit/test_official_source_live_capture.py
 tests/unit/test_operator_soak_evidence.py
+tests/unit/test_operator_soak_finalization.py
 tests/unit/test_production_api_release_preflight.py
 tests/unit/test_release_decision_bundle.py
 tests/unit/test_release_manager_activation.py

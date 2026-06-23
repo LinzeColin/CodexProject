@@ -5522,7 +5522,7 @@ Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BAC
 - `pytest -q tests/unit/test_mvp_release_gate.py`: PASS, 2 passed.
 - `scripts/validate_mvp_release_gate.py generate`: PASS; generated artifact status `MVP_RELEASE_BLOCKED` with seven explicit missing gates.
 - Semantic extractor: PASS with `semantic_parameters_checked=78` and `semantic_formulas_checked=11`.
-- Generated development/risk/clean-room/release artifacts after staging new files: PASS with `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
+- Generated development/risk/clean-room/release artifacts after staging MVP release-gate files: PASS with `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
 
 ### Remaining gaps
 
@@ -5536,3 +5536,40 @@ Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BAC
 
 - Revert `scripts/validate_mvp_release_gate.py`, `tests/unit/test_mvp_release_gate.py`, `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance/documentation update.
 - Preserve live A209 checkpoint, log and watchdog artifacts so the background soak can continue independently.
+
+
+## 2026-06-24 - T1307/A209 operator soak finalization preflight
+
+### Scope
+
+- Added `scripts/finalize_operator_soak_evidence.py` and `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json` as the operator handoff between background soak progress and downstream release-gate regeneration.
+- Added `tests/unit/test_operator_soak_finalization.py` to prove three states: partial running blocks downstream refresh, 288/288 release-ready evidence allows downstream regeneration, and failed evidence requires operator intervention.
+- Wired `make generate-operator-soak-finalization-preflight`, `make validate-operator-soak-finalization-preflight`, `make verify` and v5 readiness sync to include the finalization artifact.
+
+### Current A209 evidence
+
+- Detached screen/operator/watchdog are still the active 24h path; this run did not stop, restart or close them.
+- Repository heartbeat refreshed to `113/288` successful windows, `0` failed, `175` remaining, `39.24%` complete, operator PID `12478` RUNNING and watchdog PID `62233` RUNNING.
+- Finalization artifact status is `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; `downstream_release_gate_refresh_allowed=false`; `release_gate_closed_by_finalizer=false`.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- The finalizer does not satisfy A209 completion. It bounds the remaining operator procedure: keep soak running, refresh heartbeat, validate evidence, and regenerate A203/release-manager/MVP release-gate artifacts only after 288/288 release-ready evidence exists.
+
+### Validation
+
+- `python3 -m py_compile scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py`: PASS.
+- focused `ruff check scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py`: PASS.
+- `pytest -q tests/unit/test_operator_soak_finalization.py`: PASS, 3 passed.
+- `scripts/finalize_operator_soak_evidence.py generate --refresh-upstream`: PASS; generated `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `113/288`.
+- Development/risk/clean-room/release artifact generation after staging finalizer files: PASS; clean-room `package_paths=431`, release `manifest_paths=438`, `checksum_paths=437`.
+
+### Remaining gaps
+
+- Full A209 closure still requires the 24h summary/checkpoint evidence to validate at `288/288` windows with zero failures.
+- A202, A210, A026/A027 and A204/A205 remain external release blockers for MVP v0.1.
+
+### Rollback
+
+- Revert the finalizer script, unit tests, Makefile target, v5 sync registration, finalization artifact and governance rows. Preserve `artifacts/tests/a209/t1307_operator_soak_24h.*` and `/private/tmp/eei-operator-soak-*` so the background soak can continue independently.

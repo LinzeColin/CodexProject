@@ -52,8 +52,7 @@
       "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
       "errors": [],
       "missing": [
-        "output_json",
-        "checkpoint_jsonl"
+        "output_json"
       ]
     }
   ],

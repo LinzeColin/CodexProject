@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 78
+- parameter_count: 79
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -36,6 +36,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-24 T1301/A202 release-decision intake adds governance evidence parameter `PARAM-076` for the A202 intake schema version covering source-license, passage-level, owner and legal review fields; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1302/A203 production API release preflight adds governance evidence parameter `PARAM-077` for the A203 preflight schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1303/A204-A205 MVP release-gate preflight adds governance evidence parameter `PARAM-078` for the final fail-closed release aggregator schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1307/A209 operator-soak finalization preflight adds governance evidence parameter `PARAM-079` for the finalizer schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 
 ## A. Model Overview
 

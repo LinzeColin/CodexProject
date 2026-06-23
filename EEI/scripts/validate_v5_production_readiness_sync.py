@@ -205,11 +205,13 @@ PARTIAL_EVIDENCE = {
         "scripts/supervise_operator_soak.py",
         "scripts/watch_operator_soak.py",
         "scripts/record_operator_soak_heartbeat.py",
+        "scripts/finalize_operator_soak_evidence.py",
         "artifacts/tests/a209/t1307_soak_smoke.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",
         "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
         "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+        "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
     },
     "T1309": {
         "config/brand_policy.yaml",
