@@ -971,12 +971,25 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Assumptions: registry edits are traceability updates only; no formula value, scoring weight, threshold value or runtime scoring behavior changed.
 - Files changed: README/changelog, T904 template artifact, A209 heartbeat artifact, model/formula/parameter registries, status/owner/v5/development records, release artifacts, T904 validator and tests.
 - Tests run: focused T904 validation, A209 supervisor check, v5 readiness sync, `make generate-development-status-artifacts generate-risk-control-artifacts generate-clean-room-release generate-release-artifacts`, `make verify`, `git diff --check`, and root changed-only governance.
-- Test results: T904 template validation PASS; v5 readiness sync PASS; local `make verify` PASS with clean-room `package_paths=418`, release `manifest_paths=425`, scale 10k/100k/1m, soak smoke, ruff, web typecheck and unit tests `88 passed`; root governance PASS with errors 0 and warnings 0; `git diff --check` PASS; A209 supervisor observed PID `12478` RUNNING, `74/288` windows PASS and `0` failed.
+- Test results: T904 template validation PASS; v5 readiness sync PASS; local `make verify` PASS with clean-room `package_paths=419`, release `manifest_paths=426`, scale 10k/100k/1m, soak smoke, ruff, web typecheck and unit tests `88 passed`; root governance PASS with errors 0 and warnings 0; `git diff --check` PASS; A209 supervisor observed PID `12478` RUNNING, `74/288` windows PASS and `0` failed.
 - Successes: MOD-012/FORM-012/PARAM-064 now explicitly reference the production gold-label intake template and its non-closure boundary.
 - Failures: no real production gold labels, A202 legal/source/owner clearance, A210 clearance, release-manager activation or A209 24h final summary was added.
 - Decisions: keep A026/A027/A209/A202/A210 and release-manager activation open; use the latest repository heartbeat only as progress evidence.
 - Remaining risks: A209 can still fail before 288 windows; A026/A027 still require real labels and A202/A210 still require external clearance evidence.
 - Next step: commit, push, bind CI, and continue A209 background soak monitoring until the 24h release-ready summary validates.
+
+## EVENT-20260624-010 - T904 Clean-Room Tracked-File Count Repair
+
+- Goal: repair the clean-room and release artifacts after the first T904 push showed that the new intake-template JSON became tracked only at commit time and changed package counts in fresh CI clones.
+- Assumptions: this is a package-evidence repair only; it does not close A026/A027, A202, A209, A210 or release-manager activation.
+- Files changed: `CHECKSUMS.sha256`, `DIRECTORY_TREE.txt`, `manifest.txt`, `artifacts/release_evidence_t1211.json`, `artifacts/tests/a200/t1215_clean_room_release.json`, `artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip`, `docs/governance/VERSION_MATRIX.yaml`, this ledger and `development_events.jsonl`.
+- Tests run: clean-clone CI failure reproduction, release artifact regeneration, `make verify`, `git diff --check`, A209 supervisor check and root changed-only governance.
+- Test results: clean clone reproduced the first-push CI failure as stale clean-room category counts; regenerated clean-room evidence PASS with `package_paths=419` and JSON category `78`; release artifacts PASS with `manifest_paths=426` and `checksum_paths=425`; local `make verify` PASS with unit tests `88 passed`; A209 supervisor observed PID `12478` RUNNING, `76/288` windows PASS and `0` failed. The current package hash is recorded only in `artifacts/tests/a200/t1215_clean_room_release.json` to avoid self-referential drift.
+- Successes: fresh tracked-file state is now reflected in the clean-room zip, clean-room evidence, checksum file, release evidence, directory tree and manifest.
+- Failures: first pushed EEI validation run `28042563062` failed before this repair; A209 24h final summary still does not exist.
+- Decisions: keep the T904 template tracked and included in clean-room evidence; record this as append-only `EVENT-20260624-010` instead of modifying prior JSONL rows.
+- Remaining risks: package evidence can become stale if generated before new artifacts are tracked; A209 can still fail before 288 windows.
+- Next step: amend/push the repair, bind CI, and continue A209 background soak until release-ready validation passes.
 
 ## Reconstructed Development Events
 
