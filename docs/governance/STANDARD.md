@@ -52,6 +52,13 @@ Structure:
 Stage -> Phase -> Task
 ```
 
+`governance/schemas/roadmap.schema.json` defines the Lean v2 Roadmap facts.
+It constrains Stage, Phase, and Task IDs, task status, estimates, dependencies,
+Acceptance IDs, test commands, evidence refs, risks, rollback, Stop Conditions,
+and Stop Gates. The schema stores estimate and percentage fields; deterministic
+recalculation and drift checks belong to the CLI/validator instead of manual
+editing.
+
 IDs:
 
 - Stage: `S1`, `S2`, ...

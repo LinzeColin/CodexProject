@@ -131,6 +131,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "scripts/validate_ci_attestation.py",
             "scripts/governance_setup_doctor.py",
             "governance/schemas/project.schema.json",
+            "governance/schemas/roadmap.schema.json",
             "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
@@ -166,6 +167,33 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(definition, schema["$defs"])
         self.assertIn("UNKNOWN", schema["$defs"]["fact_level"]["enum"])
         self.assertIn("VERIFIED", schema["$defs"]["fact_level"]["enum"])
+
+    def test_review9_s2_roadmap_schema_declares_stage_phase_task_contract(self) -> None:
+        schema = json.loads((ROOT / "governance" / "schemas" / "roadmap.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+        self.assertEqual(schema["properties"]["schema_version"]["const"], "codexproject.roadmap.v1")
+        self.assertFalse(schema["additionalProperties"])
+        for required in {
+            "total_estimated_hours",
+            "current_stage_id",
+            "current_phase_id",
+            "current_task_id",
+            "stages",
+        }:
+            self.assertIn(required, schema["required"])
+        self.assertEqual(schema["properties"]["current_stage_id"]["pattern"], "^S[1-9][0-9]*$")
+        self.assertEqual(schema["properties"]["current_phase_id"]["pattern"], "^S[1-9][0-9]*P[A-Z]$")
+        self.assertEqual(schema["properties"]["current_task_id"]["pattern"], "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$")
+        for definition in {"stage", "phase", "task", "stop_gate", "acceptance"}:
+            self.assertIn(definition, schema["$defs"])
+        for definition in ("stage", "phase", "task"):
+            required_fields = set(schema["$defs"][definition]["required"])
+            self.assertIn("estimated_hours", required_fields)
+            self.assertIn("estimated_pct", required_fields)
+        self.assertIn("stop_conditions", schema["$defs"]["stage"]["required"])
+        self.assertIn("stop_gate", schema["$defs"]["phase"]["required"])
+        self.assertIn("acceptance_ids", schema["$defs"]["task"]["required"])
+        self.assertIn("rollback", schema["$defs"]["task"]["required"])
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
