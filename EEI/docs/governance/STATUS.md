@@ -42,3 +42,9 @@
 - Commit-bound events: `13`
 - Legacy unbound events: `17`
 - Unresolved fact IDs: `3`
+
+## A209 Background Soak Update
+
+- T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
+- Latest local checkpoint before this governance repair: PID `12478`, `19/288` windows PASS, generated at `2026-06-23T12:13:09Z`.
+- Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
