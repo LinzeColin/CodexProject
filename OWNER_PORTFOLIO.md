@@ -55,7 +55,7 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:8d5aca6984e447ee5427c2cd62ebcb45b771c963d3ae6665496b7e4f91ec0756`
+- source_snapshot_hash: `sha256:3c44872adef809db3a51728571032eff9c8ed8fead5182c9c79c5386454fe3c5`
 - snapshot_event_time: `2026-06-23T09:55:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
@@ -204,7 +204,7 @@ Review8-A 后，本仓库的 Owner 视图必须把结构完整、实现一致、
 | Project | Structural | Impl | Param Source | Methodology | Empirical | Operational | Delivery | Freshness | Readiness | Owner action |
 |---|---|---|---|---|---|---|---|---|---|---|
 | `Alpha` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否投入资源用真实历史行情、交易成本和样本外窗口验证 Alpha 动量筛选、风险评分和交易前门禁是否优于简单基线，同时保持零实盘执行。 |
-| `EEI` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续投入 24 小时 operator soak 和人工黄金集，验证 EEI 实体解析、关系抽取、证据覆盖与撤回能力。 |
+| `EEI` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `PARTIAL` | `PARTIAL` | `FAILED` | `PARTIAL` | `FAILED` | 是否继续投入 24 小时 operator soak 和人工黄金集，验证 EEI 实体解析、关系抽取、证据覆盖与撤回能力。 |
 | `EVA_OS` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `FAILED` | `PARTIAL` | `FAILED` | 是否投入参数来源、样本外、成本和报告 claim-to-evidence 验证，证明 EVA_OS 研究结论可复现且不夸大。 |
 | `FIFA` | `VERIFIED` | `PARTIAL` | `PARTIAL` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否补齐授权赛前赔率快照、概率校准和报告事实复核，且继续保证 stake/executable amount 为 0。 |
 | `OpMe_System` | `VERIFIED` | `VERIFIED` | `VERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `FAILED` | `UNVERIFIED` | `PARTIAL` | `UNVERIFIED` | 是否由工程/安全/运营责任人投入专家裁决案例，验证 OpMe 诊断、严重度、LLM 路由和危险漏报失效安全。 |

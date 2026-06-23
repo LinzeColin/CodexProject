@@ -3696,16 +3696,16 @@ tasks:
     objective: "Bind EEI active parameter_catalog and model/formula registries to machine extractors without changing runtime behavior."
     scope: ["EEI semantic extractor metadata", "root validator evidence", "generated status pages"]
     non_scope: ["business behavior changes", "scoring formula changes", "parameter active value changes"]
-    status: "planned"
+    status: "completed"
     dependencies: ["TASK-T1215"]
     required_files: ["EEI/docs/governance/parameter_registry.csv", "EEI/docs/governance/formula_registry.yaml", "EEI/data/parameter_catalog.csv", "governance/projects.yaml"]
     acceptance_ids: ["ACC-SEMANTIC-EEI-001"]
     test_commands: ["python3 scripts/validate_project_governance.py --project EEI --semantic", "python3 scripts/validate_semantic_extractors.py EEI"]
-    test_results: ["PARTIAL_PASS - python3 scripts/validate_semantic_extractors.py EEI checks 54 active parameters and 10 active formulas; 7 UNKNOWN motion parameters and FORM-012 remain deferred to this task"]
-    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json", "EEI/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
-    risk: "EEI has partial machine semantic extraction but is not machine_verified until all active UNKNOWN parameters and FORM-012 have extractor evidence or explicit human-review closure."
+    test_results: ["PASS - python3 scripts/validate_semantic_extractors.py EEI checks 68 active parameters and 11 active formulas; motion runtime tokens and FORM-012 are machine-bound without business behavior changes"]
+    evidence_refs: ["governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-002.json", "EEI/docs/governance/OWNER_STATUS.md", "governance/projects.yaml"]
+    risk: "Machine semantic coverage proves active parameter/formula source binding only; it does not close A026/A027 production gold labels, A202 source/legal/owner approval, A209 24h soak, A210 brand clearance, release-manager activation, or production readiness."
     rollback: "Remove EEI semantic selector columns and formula semantic fields, reset governance/projects.yaml semantic_coverage to planned, and rerun governance validators."
     target_version: "0.1.0"
-    completed_version: ""
+    completed_version: "0.1.0"
     fact_level: "EXTRACTED"
     unknown_task_ids: []

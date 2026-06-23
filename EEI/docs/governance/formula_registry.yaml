@@ -704,10 +704,13 @@ formulas:
     output_range: "parameter_specific"
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/scripts/validate_model_config.py:validate_thresholds"
+      - "EEI/scripts/validate_model_config.py:validate_motion_tokens"
       - "EEI/scripts/validate_a202_operator_review_packet.py"
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/scripts/validate_gold_quality_evaluation.py"
       - "EEI/config/thresholds/default-v2.json"
+      - "EEI/config/ui/motion-tokens.json"
       - "EEI/config/model_runtime_defaults.yaml"
     test_refs:
       - "EEI/scripts/validate_model_config.py:49-71"
@@ -719,16 +722,26 @@ formulas:
     evidence_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json:1"
+      - "EEI/config/ui/motion-tokens.json:1"
       - "EEI/config/model_runtime_defaults.yaml:1"
       - "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
       - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
       - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
-    unknown_task_ids:
-      - "TASK-T1206"
-    semantic_status: "HUMAN_REVIEW_REQUIRED"
-    implementation_refs: []
-    implementation_fingerprint: "NOT_APPLICABLE (GOV-SEMANTIC-EEI-001: threshold-control rule spans generated runtime/config surfaces and remains under human semantic review)"
-    last_verified_commit: ""
-    verified_at: ""
-    evidence_hash: "UNKNOWN (GOV-SEMANTIC-EEI-001: machine fingerprint pending for threshold-control rule)"
-    semantic_review_task_ids: ["GOV-SEMANTIC-EEI-001"]
+    unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "EEI/scripts/validate_model_config.py::validate_thresholds"
+      - "EEI/scripts/validate_model_config.py::validate_motion_tokens"
+      - "EEI/scripts/validate_gold_quality_evaluation.py::blockers"
+      - "json_path:EEI/config/thresholds/default-v2.json::evidence"
+      - "json_path:EEI/config/thresholds/default-v2.json::graph"
+      - "json_path:EEI/config/thresholds/default-v2.json::alerts"
+      - "json_path:EEI/config/thresholds/default-v2.json::refresh"
+      - "json_path:EEI/config/thresholds/default-v2.json::visual"
+      - "json_path:EEI/config/thresholds/default-v2.json::calibration"
+      - "json_path:EEI/config/ui/motion-tokens.json::durations_ms"
+    implementation_fingerprint: "sha256:66ca0f1b835401c39c7d5261de557bfd99115c5d886a773a34e7925d1c4af8ef"
+    last_verified_commit: "df6f59f76014825d9aa028a38013d10ec23fc228"
+    verified_at: "2026-06-23T04:05:00Z"
+    evidence_hash: "sha256:675ac626b642a1dedc7245dc91f92f9c0b58536a4b84b190b477d6c7811498ed"
+    semantic_review_task_ids: []

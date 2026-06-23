@@ -97,7 +97,7 @@ EVA_OS remains FAILED for operational and delivery readiness.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0ac16c5fc4a654f43cb048cd5403b0fc0b589cf9bdd04a48c62768719fd86b7d`
+- source_snapshot_hash: `sha256:5d32c7a8493865a2e3d74906a2ca41c2812241c2913887c30f320b66aee86099`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`

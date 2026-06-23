@@ -4915,3 +4915,48 @@ Status: LOCAL VALIDATED; A202 STILL IN PROGRESS
 
 - Revert `scripts/validate_release_decision_bundle.py`, release-decision fixtures, `tests/unit/test_release_decision_bundle.py`, the A202 contract artifact and governance records.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-23 - GOV-SEMANTIC-EEI-001 active parameter/formula machine binding closure
+
+Status: LOCAL VALIDATED; RELEASE GATES STILL OPEN
+
+### Scope
+
+- Added motion token validation to `scripts/validate_model_config.py`.
+- Bound `PARAM-052` through `PARAM-058` to `config/ui/motion-tokens.json::durations_ms`.
+- Bound FORM-012 deterministic configuration lookup to machine implementation refs and evidence hash.
+- Marked `GOV-SEMANTIC-EEI-001` as done and `governance/projects.yaml` semantic coverage as `machine_verified`.
+
+### Acceptance mapping
+
+- `GOV-SEMANTIC-EEI-001` -> `ACC-SEMANTIC-EEI-001`.
+- This closes active parameter/formula machine-source coverage only.
+- It does not close A026/A027 production gold labels, A202 source/legal/owner approval, A209 24h soak, A210 formal brand clearance, or release-manager activation.
+
+### Parameters and formulas
+
+- No runtime numeric value changed.
+- Motion active values now extract from `config/ui/motion-tokens.json`: instant 80ms, local 160ms, panel 220ms, data update 280ms, lens change 320ms, reroot 380ms, full relayout max 480ms.
+- FORM-012 remains a deterministic configuration lookup contract, not a scoring formula.
+
+### Validation
+
+- `python3 scripts/validate_semantic_extractors.py EEI`: PASS, `semantic_parameters_checked=68`, `semantic_formulas_checked=11`.
+- `python3 scripts/validate_project_governance.py --project EEI --semantic`: PASS, errors 0, warnings 0.
+- `.venv/bin/python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json`: PASS.
+- `.venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json`: PASS.
+- parameter registry CSV width check: PASS, 68 rows, width 34.
+- `git diff --check`: PASS.
+
+### Remaining gaps
+
+- A026/A027 still require production human-labeled gold cases.
+- A202 still requires real source-license review, passage-level approval, owner sign-off, legal clearance, and relationship publication clearance.
+- A209 24h soak remains a background independent gate.
+- A210 formal brand legal/market clearance or signed risk waiver remains missing.
+- Release-manager activation remains blocked by the external gates above.
+
+### Rollback
+
+- Revert the model-config validator, parameter/formula registry, governance project status, task status, and event/ledger records.
+- Regenerate governance, clean-room, and release artifacts, then rerun semantic validation.

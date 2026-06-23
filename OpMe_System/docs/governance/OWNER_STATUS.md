@@ -97,7 +97,7 @@ OpMe_System remains UNVERIFIED and must not be treated as production safety tool
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:c8aa1214df10812313d0534bf02cf6f760edc80ad431d353ef2174def99d2efc`
+- source_snapshot_hash: `sha256:cce438a46bdfff3ca1e0b855a9049e1bbc6e8e44420406b5cf136deb4b4ca69c`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `1.0.0`

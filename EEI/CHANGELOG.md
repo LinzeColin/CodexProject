@@ -17,6 +17,7 @@
 - Added a T1303/A204-A205 release-manager activation preflight; it aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence and fails closed while any external release gate is missing.
 - Added a T905/A119-A120 release rehearsal: every PostgreSQL migration suffix now has a CI-bound rollback/re-upgrade integration test, and README clean-start commands are machine-checked against Makefile and EEI validation workflow bindings.
 - Added a T1301/A202 candidate-source-anchor coverage contract for signed release decision bundles; passage-level reviews must cover `GV-SNAPSHOT-001..004` from `golden_vertical_fact_candidates.json`, while A202 remains blocked on real source/license/owner/legal evidence.
+- Closed `GOV-SEMANTIC-EEI-001` machine semantic coverage for active parameters and formulas: motion parameters now extract from `config/ui/motion-tokens.json`, FORM-012 has machine implementation refs, and production release gates remain open.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

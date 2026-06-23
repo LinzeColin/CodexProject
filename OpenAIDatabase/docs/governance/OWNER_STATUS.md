@@ -97,7 +97,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:7ded278950b6c173d70973ec00eb0c80286b8ff28900e1ed583c31a93b4491f3`
+- source_snapshot_hash: `sha256:ed4ea7b43c58c9ad04554072f948d468ae3a3bd59268416a2032dd66d964fb78`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.2.0`

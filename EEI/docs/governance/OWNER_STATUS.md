@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-EEI 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；这不是生产上线声明。
+EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
@@ -39,8 +39,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (61/68 active parameters, 10/11 active formulas)
-- parameter_source_quality: `PARTIAL`
+- implementation_congruence: `VERIFIED` (68/68 active parameters, 11/11 active formulas)
+- parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
 - operational_validation: `PARTIAL`
@@ -86,19 +86,19 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `13`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `23`
-- pending_or_stale_events: `42`
+- precommit_pending_events: `24`
+- pending_or_stale_events: `43`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `7`
+- unresolved_fact_ids: `3`
 
 ## 16. 技术元数据
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:9aee5cbcd4c8e00d992e2210712b969939ecceef5b6d4b33f1f4992274dd155b`
-- snapshot_event_time: `2026-06-23T03:10:00Z`
+- source_snapshot_hash: `sha256:075a0e30f6373607cd845134cdf957ae8af897ff4465d7813b9ab7a45d5b65a1`
+- snapshot_event_time: `2026-06-23T04:05:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `C / TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`

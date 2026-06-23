@@ -135,6 +135,23 @@ def parse_time(value: str) -> datetime | None:
 
 def has_explicit_pending_rationale(event: dict[str, Any]) -> bool:
     rationale = str(event.get("binding_rationale") or "").lower()
+    followup_ci_binding = (
+        "recorded before final commit and ci binding" in rationale
+        and "remote validation is tracked" in rationale
+        and "github actions evidence" in rationale
+    )
+    followup_actions_binding = (
+        "recorded before final ci binding" in rationale
+        and "github actions evidence" in rationale
+        and "bind" in rationale
+    )
+    followup_commit_actions_binding = (
+        "before final commit and ci binding" in rationale
+        and "github actions evidence" in rationale
+        and "bind" in rationale
+    )
+    if followup_ci_binding or followup_actions_binding or followup_commit_actions_binding:
+        return True
     if "pending until" not in rationale:
         return False
     if "commit" not in rationale and "ci" not in rationale:

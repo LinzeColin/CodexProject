@@ -476,16 +476,16 @@ Machine source: `formula_registry.yaml`. Legacy `F-*` IDs are preserved as `lega
 - Model: `MOD-012`
 - Status: `active`
 - Mathematical formula or exact pseudocode: `value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured.`
-- Natural language explanation: Operational deterministic lookup for threshold, motion, visual, refresh, and calibration parameters without a scoring formula.
+- Natural language explanation: Operational deterministic lookup for threshold, motion, visual, refresh, calibration and gold-quality gate parameters without a scoring formula.
 - Variables: configured_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); default_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); min_value (number|string|boolean, parameter_specific, catalog constraint); max_value (number|string|boolean, parameter_specific, catalog constraint)
 - Output range: parameter_specific
 - Normalization: NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation.
-- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days
+- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days; gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass
 - Missing data handling: fallback_to_default_or_UNKNOWN_with_task
 - Boundary conditions: respect per-variable input domain and configured min/max bounds; invalid configuration fails validation.
 - Fallback: use configured default or previous valid snapshot; Unavailable values remain disclosed and task-linked.
-- Implementation position: EEI/data/parameter_catalog.csv:43-61, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py
-- Test position: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py
+- Implementation position: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json, EEI/config/ui/motion-tokens.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_model_config.py:validate_motion_tokens, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py
+- Test position: EEI/scripts/validate_model_config.py, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py
 
 ## D. Parameters
 
@@ -494,13 +494,13 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 ## E. Methodology
 
 - Why current method: existing EEI Task Pack defines deterministic, explainable scoring and threshold controls for research ordering and visual focus.
-- Alternatives considered: UNKNOWN; no comparative model-selection evidence was found in the allowed governance scope. Linked task: TASK-T1206.
+- Alternatives considered: no alternative runtime motion source was adopted; `config/ui/motion-tokens.json` is the machine-verified source for motion duration controls. Broader comparative model-selection evidence remains UNKNOWN and task-linked to production model review.
 - Objective: explainable prioritization and bounded UI/research workflow support, not prediction of returns.
 - Calibration method: extracted governance cadence is every 14 days with `auto_activate=false`; no live empirical calibration evidence is confirmed.
 - Training/backtest/experiment method: UNKNOWN for production scoring; validators and E2E tests prove catalog/config/UI contracts only. Linked task: TASK-T1206.
 - Baseline: `balanced-v2@2`, `default-v2@2`, `model_runtime_defaults` version 14.
 - Data split and out-of-sample: UNKNOWN for model quality evaluation. Linked task: TASK-T1206.
-- Sensitivity analysis: parameter step/range validation exists; empirical sensitivity results are UNKNOWN. Linked task: TASK-T1206.
+- Sensitivity analysis: parameter step/range validation exists, including motion token range and step checks; empirical sensitivity results are UNKNOWN. Linked task: TASK-T1206.
 - Known limitations: production calculation engine and real data benchmarks are not fully evidenced in current governance inputs.
 
 ## F. Strategy Logic
