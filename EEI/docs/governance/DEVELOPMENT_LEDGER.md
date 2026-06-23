@@ -14,8 +14,8 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
 - Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T1307 A209 operator soak supervisor clean-room package binding`
-- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the supervisor now observes the live PID, refuses double-starts, and is bound into clean-room release packaging, but the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+- Current task: `TASK-T1307 A209 background heartbeat evidence`
+- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; current heartbeat records operator PID `12478`, watchdog PID `62233`, `58/288` successful windows and `release_gate_closed_by_background_heartbeat=false`, but the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
 
 ## Phase Matrix
 
@@ -893,6 +893,49 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert `scripts/apply_model_config.py`, `tests/unit/test_model_config_apply.py`, Makefile lint inclusion, the regenerated preview artifact and governance records; rerun focused T1303 validation and release artifact generation.
 - Next step: regenerate clean-room/release artifacts, run full `make verify`, run changed-only root governance with enforce-sync, commit, push and wait for CI.
 
+## 2026-06-24 - T1307/A209 background heartbeat evidence
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/record_operator_soak_heartbeat.py` to generate and validate a repository-local heartbeat artifact for the ongoing 24h operator soak.
+- The heartbeat records operator PID, watchdog PID, completed/remaining window counts, failed window count, latest successful window and explicit non-closure rules.
+- Corrected the local watchdog PID file to the actual detached watchdog PID `62233` after verification showed the previous PID file value pointed to an exited process.
+- Generated `artifacts/tests/a209/t1307_operator_soak_background_progress.json`.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: heartbeat evidence proves background progress tracking only.
+- Current heartbeat: operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `58/288` windows PASS, `0` failed, `230` remaining, `20.14%` complete, generated at `2026-06-23T15:34:39Z`.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- Existing A209 parameters remain: long duration `24h`, operator window `300s`, target windows `288`.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache .venv/bin/python -m py_compile scripts/record_operator_soak_heartbeat.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py scripts/manage_clean_room_release.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/record_operator_soak_heartbeat.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py scripts/manage_clean_room_release.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 18 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/record_operator_soak_heartbeat.py generate`: PASS; artifact generated with `release_gate_closed_by_background_heartbeat=false`.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/record_operator_soak_heartbeat.py validate`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- The heartbeat artifact must not be read as A209 release readiness; it is only a current background-progress checkpoint.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+
+### Rollback
+
+- Revert `scripts/record_operator_soak_heartbeat.py`, the Makefile targets, unit tests, v5/clean-room sync additions, heartbeat artifact and this governance record.
+- Keep the valid live operator soak and checkpoint evidence intact unless operator inspection finds corruption.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -939,6 +982,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-012`: local T1301/A202 operator review candidate queue binding; A202/A209/A210 remain open.
 - `EVENT-20260623-013`: local T1307/A209 operator soak monitor and recovery contract; A209 remains open until 24h evidence validates.
 - `EVENT-20260623-016`: local T1307/A209 operator-soak supervisor clean-room package binding; A209 remains open until 24h evidence validates.
+- `EVENT-20260624-003`: local T1307/A209 background heartbeat evidence records operator/watchdog live PIDs and 58/288 successful windows; A209 remains open until 24h evidence validates.
 
 ## Unknown Historical Periods
 

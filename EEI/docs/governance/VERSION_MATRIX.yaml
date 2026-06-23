@@ -25,7 +25,7 @@ parameter_profile_versions:
   operator-review-packet: "2"
   release-decision-bundle: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260624-002"
+current_iteration: "ITER-20260624-003"
 current_phase: "C"
 current_gate: "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS"
 version_file_value: "0.1.0"

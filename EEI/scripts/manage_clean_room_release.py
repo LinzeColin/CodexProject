@@ -85,6 +85,7 @@ REQUIRED_SUPPORTING = {
     "scripts/validate_brand_clearance.py",
     "scripts/supervise_operator_soak.py",
     "scripts/watch_operator_soak.py",
+    "scripts/record_operator_soak_heartbeat.py",
 }
 
 REQUIRED_CONFIG = {"config/brand_policy.yaml"}

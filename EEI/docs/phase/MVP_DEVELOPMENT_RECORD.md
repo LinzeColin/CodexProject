@@ -5208,3 +5208,12 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG R
 - Stop only watchdog PID `62233` if watchdog monitoring must be disabled.
 - Revert `scripts/watch_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py`, `scripts/manage_clean_room_release.py` and this governance record.
 - Keep valid A209 partial checkpoints; do not remove or commit them as release-ready evidence until final validation passes.
+## 2026-06-24 - T1307/A209 Background Heartbeat Evidence
+
+- Task: `T1307`
+- Acceptance IDs: `A209`
+- Scope: add `scripts/record_operator_soak_heartbeat.py`, repository-local heartbeat artifact, Makefile targets, unit validation, v5 readiness sync and clean-room package inclusion.
+- Current heartbeat artifact: `artifacts/tests/a209/t1307_operator_soak_background_progress.json`
+- Current heartbeat state: operator PID `12478` RUNNING; watchdog PID `62233` RUNNING; `58/288` successful windows; `0` failed; `230` remaining; `20.14%` complete.
+- Non-closure: `release_gate_closed_by_background_heartbeat=false`; A209 remains `IN_PROGRESS` until the 24h summary JSON exists and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+- Validation: py_compile PASS; focused ruff PASS; `tests/unit/test_operator_soak_evidence.py` PASS `18/18`; heartbeat generate/validate PASS; v5 production readiness sync PASS.

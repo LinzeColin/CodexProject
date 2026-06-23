@@ -5,6 +5,10 @@ import os
 from pathlib import Path
 
 from scripts.monitor_operator_soak import build_progress_payload
+from scripts.record_operator_soak_heartbeat import (
+    build_heartbeat_payload,
+    validate_heartbeat_payload,
+)
 from scripts.supervise_operator_soak import build_supervisor_payload
 from scripts.validate_operator_soak_evidence import SoakRequirement, build_validation_payload
 from scripts.watch_operator_soak import build_watchdog_cycle_payload, summarize_cycles
@@ -376,3 +380,49 @@ def test_operator_soak_watchdog_summary_keeps_a209_open(tmp_path: Path) -> None:
     assert summary["watchdog"]["cycles_completed"] == 1
     assert summary["status"] == "RESUME_AVAILABLE_DRY_RUN"
     assert "This watchdog does not close A209." in summary["non_claims"]
+
+
+def test_operator_soak_heartbeat_records_background_watchdog_state(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    pid_file = tmp_path / "operator_24h.pid"
+    watchdog_pid = tmp_path / "operator_24h.watchdog.pid"
+    write_checkpoint(checkpoint, index=1)
+    pid_file.write_text(f"{os.getpid()}\n", encoding="utf-8")
+    watchdog_pid.write_text(f"{os.getpid()}\n", encoding="utf-8")
+
+    payload = build_heartbeat_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=pid_file,
+        log_path=tmp_path / "operator_24h.log",
+        watchdog_pid_path=watchdog_pid,
+        generated_at="2026-06-23T00:00:00Z",
+    )
+
+    assert payload["schema_version"] == "eei-a209-operator-soak-background-heartbeat-v1"
+    assert payload["status"] == "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG"
+    assert payload["progress"]["windows_completed"] == 1
+    assert payload["progress"]["windows_remaining"] == 287
+    assert payload["release_gate_closed_by_background_heartbeat"] is False
+    assert payload["background_resolution_contract"]["operator_process_status"] == "RUNNING"
+    assert payload["background_resolution_contract"]["watchdog_process_status"] == "RUNNING"
+    assert validate_heartbeat_payload(payload) == []
+
+
+def test_operator_soak_heartbeat_validation_fails_if_release_gate_is_closed(
+    tmp_path: Path,
+) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+    payload = build_heartbeat_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=tmp_path / "operator_24h.pid",
+        log_path=tmp_path / "operator_24h.log",
+        generated_at="2026-06-23T00:00:00Z",
+    )
+    payload["release_gate_closed_by_background_heartbeat"] = True
+
+    errors = validate_heartbeat_payload(payload)
+
+    assert "heartbeat must not close A209" in errors
