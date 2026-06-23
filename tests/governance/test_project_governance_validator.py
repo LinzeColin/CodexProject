@@ -645,6 +645,107 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("progress: `25.00%`", dev_record)
         self.assertIn("| S1PAT02 | Next | planned | 3.00 | 75.00%", dev_record)
 
+    def test_review9_s3_check_render_is_read_only_and_reports_drift_and_refs(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project_root = tmp_path / "ProjectA"
+            governance_root = project_root / "docs" / "governance"
+            governance_root.mkdir(parents=True)
+            (governance_root / "project.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.project.v1",
+                        "project_id: ProjectA",
+                        "project_name: Project A",
+                        "summary: Test project",
+                        "version: 0.1.0",
+                        "fact_level: VERIFIED",
+                        "features:",
+                        "  - feature_id: FEAT-A",
+                        "    name: Feature A",
+                        "    description: Owner value",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    evidence_refs: [EVID-MISSING]",
+                        "models: []",
+                        "formulas: []",
+                        "parameters: []",
+                        "strategies: []",
+                        "validations: []",
+                        "evidence_refs: []",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "roadmap.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.roadmap.v1",
+                        "project_id: ProjectA",
+                        "total_estimated_hours: 1",
+                        "current_stage_id: S1",
+                        "current_phase_id: S1PA",
+                        "current_task_id: S1PAT01",
+                        "next_gate_id: S1-GATE",
+                        "stages:",
+                        "  - stage_id: S1",
+                        "    name: Stage One",
+                        "    person_goal: Ship",
+                        "    status: in_progress",
+                        "    estimated_hours: 1",
+                        "    estimated_pct: 100",
+                        "    stop_conditions: [stop]",
+                        "    stop_gate:",
+                        "      gate_id: S1-GATE",
+                        "      pass_criteria: [pass]",
+                        "      evidence: [EVID-MISSING]",
+                        "      failure_action: blocked",
+                        "    phases:",
+                        "      - phase_id: S1PA",
+                        "        name: Phase A",
+                        "        objective: Do work",
+                        "        status: in_progress",
+                        "        estimated_hours: 1",
+                        "        estimated_pct: 100",
+                        "        stop_conditions: [stop]",
+                        "        stop_gate:",
+                        "          gate_id: S1PA-GATE",
+                        "          pass_criteria: [pass]",
+                        "          evidence: [EVID-MISSING]",
+                        "          failure_action: remain_in_phase",
+                        "        tasks:",
+                        "          - task_id: S1PAT01",
+                        "            name: Task",
+                        "            objective: Finish",
+                        "            status: planned",
+                        "            estimated_hours: 1",
+                        "            estimated_pct: 100",
+                        "            dependencies: [none]",
+                        "            acceptance_ids: [ACC-A]",
+                        "            acceptance: []",
+                        "            test_commands: [test]",
+                        "            test_results: [pending]",
+                        "            evidence_refs: [EVID-MISSING]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            cli.render_project_files(project_root, write=True)
+            before = (project_root / "开发记录").read_text(encoding="utf-8")
+            clean = cli.check_render_project_files(project_root)
+            (project_root / "开发记录").write_text(before + "\nmanual drift\n", encoding="utf-8")
+            drifted = cli.check_render_project_files(project_root)
+            after = (project_root / "开发记录").read_text(encoding="utf-8")
+        self.assertEqual(clean["drift_count"], 0)
+        self.assertEqual(clean["reference_issue_count"], 1)
+        self.assertEqual(drifted["drift_count"], 1)
+        self.assertEqual(after, before + "\nmanual drift\n")
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
