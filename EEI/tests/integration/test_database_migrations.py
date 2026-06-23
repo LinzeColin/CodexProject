@@ -102,6 +102,19 @@ def run_script(*args: str) -> None:
     )
 
 
+def run_script_json(*args: str) -> dict[str, object]:
+    completed = subprocess.run(
+        [sys.executable, *args],
+        check=True,
+        cwd=os.getcwd(),
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    payload = json.loads(completed.stdout)
+    assert isinstance(payload, dict)
+    return payload
+
+
 def assert_evidence_bearing_paths(payload: dict[str, object], *, max_length: int) -> None:
     paths = payload["paths"]
     assert isinstance(paths, list)
@@ -123,6 +136,44 @@ def assert_evidence_bearing_paths(payload: dict[str, object], *, max_length: int
                 assert evidence["source_tier"] >= 1
                 assert evidence["support_excerpt"]
                 assert evidence["url"].startswith("fixture://relationship/")
+
+
+def test_t905_each_migration_suffix_rolls_down_and_re_upgrades() -> None:
+    run_script("scripts/migrate.py", "downgrade", "--all")
+    run_script("scripts/migrate.py", "upgrade")
+    baseline = run_script_json("scripts/migrate.py", "status", "--json")
+    migrations = baseline["migrations"]
+    assert isinstance(migrations, list)
+    assert len(migrations) >= 11
+    versions = [migration["version"] for migration in migrations]
+    assert all(migration["applied"] is True for migration in migrations)
+
+    for suffix_steps, target_migration in enumerate(reversed(migrations), start=1):
+        run_script("scripts/migrate.py", "downgrade", "--steps", str(suffix_steps))
+        rolled_back = run_script_json("scripts/migrate.py", "status", "--json")
+        rolled_migrations = rolled_back["migrations"]
+        assert isinstance(rolled_migrations, list)
+        rolled_by_version = {
+            migration["version"]: migration["applied"] for migration in rolled_migrations
+        }
+        pending_versions = {
+            version for version, applied in rolled_by_version.items() if applied is False
+        }
+        expected_pending = set(versions[-suffix_steps:])
+        assert pending_versions == expected_pending
+        assert rolled_by_version[target_migration["version"]] is False
+
+        run_script("scripts/migrate.py", "upgrade")
+        restored = run_script_json("scripts/migrate.py", "status", "--json")
+        restored_migrations = restored["migrations"]
+        assert isinstance(restored_migrations, list)
+        assert all(migration["applied"] is True for migration in restored_migrations)
+
+    run_script("scripts/migrate.py", "downgrade", "--all")
+    final_status = run_script_json("scripts/migrate.py", "status", "--json")
+    final_migrations = final_status["migrations"]
+    assert isinstance(final_migrations, list)
+    assert all(migration["applied"] is False for migration in final_migrations)
 
 
 def test_core_domain_migration_seed_idempotency_and_rollback() -> None:

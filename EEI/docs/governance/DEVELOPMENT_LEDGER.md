@@ -12,10 +12,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Confirmed iteration count: 32
+- Confirmed iteration count: 33
 - Reconstructed development event count: 3
-- Current task: `TASK-T904/A026-A027 production gold-label intake contract`
-- Blockers: T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 now has a production gold-label intake gate but still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 now has a production gold-label intake gate but still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%; both A026/A027 require complete production_gold_evidence metadata and remain blocked by repository fixtures; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T905/A119-A120 migration rollback and clean-start release rehearsal`
+- Blockers: T905/A119-A120 now has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for this new commit is still pending; T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 now has a production gold-label intake gate but still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 now has a production gold-label intake gate but still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%; both A026/A027 require complete production_gold_evidence metadata and remain blocked by repository fixtures; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -745,6 +745,21 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the gold-quality validator/test/artifact/governance updates, regenerate release artifacts and rerun validation.
 - Next step: attach real A026/A027 production labels, continue A210 formal clearance, A202 real source/legal/owner closure or A209 24h soak evidence.
 
+### `ITER-20260623-009`
+
+- Date: 2026-06-23
+- Task IDs: `TASK-T905`
+- Acceptance IDs: `ACC-A119`, `ACC-A120`
+- Change type: T905 migration rollback and clean-start release rehearsal.
+- Scope: added a T905 validator, A119/A120 artifacts, README operator clean-start commands, Makefile verify wiring and a PostgreSQL integration test that rehearses every migration suffix rollback/re-upgrade path.
+- Decisions: close A119/A120/T905 for the migration/runbook and clean-start reproduction contract; keep the overall release gate on T904/A026-A027 and keep A202/A209/A210/release-manager activation blocked.
+- Files changed: `README.md`, `Makefile`, `scripts/validate_t905_release_rehearsal.py`, `tests/integration/test_database_migrations.py`, `artifacts/tests/a119/t905_migration_rollback_rehearsal.json`, `artifacts/tests/a120/t905_clean_start_operator_rehearsal.json`, acceptance/task/traceability governance rows and this ledger.
+- Test results: T905 artifact generation PASS; T905 validator PASS; py_compile/ruff/local integration skip and remote CI binding are pending in this pre-commit ledger entry.
+- Parameters and formulas: no scoring formula, graph traversal, extraction model, model weight, threshold or active parameter value changed.
+- Remaining risks: A119 remote PostgreSQL execution proof must be bound by GitHub Actions Step 10; A202 source/legal/owner, A026/A027 production gold labels, A209 24h soak, A210 formal clearance and release-manager activation remain incomplete.
+- Rollback: revert the T905 validator, integration-test, README, artifacts and A119/A120/T905 governance rows, regenerate development/clean-room/release artifacts and rerun validation.
+- Next step: run local validation, regenerate release artifacts, commit/push and bind GitHub Actions EEI validation evidence.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -785,6 +800,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-006`: local T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
 - `EVENT-20260623-007`: remote CI binding for the T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
 - `EVENT-20260623-008`: local T904/A026-A027 production gold-label intake contract; A026/A027 remain open until real operator-supplied labels and evidence are supplied.
+- `EVENT-20260623-009`: local T905/A119-A120 migration rollback and clean-start release rehearsal; remote PostgreSQL CI binding remains pending.
 
 ## Unknown Historical Periods
 
@@ -797,6 +813,6 @@ Do not infer iteration count from Git commit count.
 |---|---|---|
 | `python scripts/validate_project_governance.py --project EEI` | PASS | exit 0; errors 0, warnings 0 |
 | `python scripts/validate_project_governance.py --all` | PASS | exit 0; errors 0, warnings 96 from other advisory projects only |
-| `python scripts/validate_governance.py` | PASS | exit 0; tasks/acceptance/risks/trace/gates 120/200/53/221/10 |
+| `python scripts/validate_governance.py` | PASS | exit 0; tasks/acceptance/risks/trace/gates 130/211/53/234/10 |
 | `python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json` | PASS | exit 0; weight_sum 1.0 and calibration_days 14 |
 | `python scripts/validate_task_pack.py` | BLOCKED | exit 1; local dependency `pypdf` missing and dependency installation is outside this run |

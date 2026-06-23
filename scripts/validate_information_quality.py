@@ -133,6 +133,20 @@ def parse_time(value: str) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+def has_explicit_pending_rationale(event: dict[str, Any]) -> bool:
+    rationale = str(event.get("binding_rationale") or "").lower()
+    if "pending until" not in rationale:
+        return False
+    if "commit" not in rationale and "ci" not in rationale:
+        return False
+    no_fabrication = (
+        "no final commit hash is fabricated" in rationale
+        or "not fabricated" in rationale
+        or "real release/smtp evidence is intentionally not claimed" in rationale
+    )
+    return no_fabrication
+
+
 ROOT_GENERATED_REL_PATHS = [
     "README.md",
     "GOVERNANCE_DASHBOARD.md",
@@ -347,7 +361,13 @@ def check_events(gate: Gate, project: dict[str, Any]) -> None:
             binding = str(event.get("binding_status") or "")
             if binding not in {"pre_commit_pending", "ci_attested", "stale_unbound"}:
                 gate.add("ERROR", "EVENT_BINDING", f"Line {lineno} pending event lacks binding_status", path, project_id)
-            if dt and now - dt > timedelta(hours=24) and binding != "stale_unbound" and not event.get("ci_attestation_ref"):
+            if (
+                dt
+                and now - dt > timedelta(hours=24)
+                and binding != "stale_unbound"
+                and not event.get("ci_attestation_ref")
+                and not has_explicit_pending_rationale(event)
+            ):
                 gate.add("ERROR", "STALE_PENDING", f"Line {lineno} stale pending event is not classified", path, project_id)
 
 

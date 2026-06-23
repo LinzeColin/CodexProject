@@ -19,7 +19,7 @@ projects:
     tree_bound_events: 0
     commit_bound_events: 13
     legacy_unbound_events: 17
-    precommit_pending_events: 21
+    precommit_pending_events: 22
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "EVA_OS"

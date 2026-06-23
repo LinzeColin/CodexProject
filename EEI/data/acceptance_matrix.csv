@@ -117,8 +117,8 @@ A115,P0,performance,Score preview Top-100 <=1s,Benchmark,NOT STARTED
 A116,P0,accessibility,Critical controls/evidence/table are keyboard reachable and charts are not color-only,Playwright/manual,NOT STARTED
 A117,P0,security,No secrets; URL/evidence HTML sanitized; dependencies have no unresolved critical vulnerability,Scan/audit/tests,NOT STARTED
 A118,P0,resilience,DB/network/parser/scoring/calibration failures are visible and recoverable,Failure injection,NOT STARTED
-A119,P0,rollback,Each migration downgrades and release/disposable data rollback is rehearsed,Migration/runbook,NOT STARTED
-A120,P0,release,New operator runs MVP from README and completes critical demo,Clean-room reproduction,NOT STARTED
+A119,P0,rollback,Each migration downgrades and release/disposable data rollback is rehearsed,Migration/runbook,DONE
+A120,P0,release,New operator runs MVP from README and completes critical demo,Clean-room reproduction,DONE
 A121,P0,release,"Release report records exact versions, tests, benchmark environment, limits and debt",Review,NOT STARTED
 A122,P0,release,make verify passes all P0 checks and no required suite is skipped,CI evidence,NOT STARTED
 A123,P0,release,No unresolved critical/high risk lacks owner and mitigation,Risk review,NOT STARTED

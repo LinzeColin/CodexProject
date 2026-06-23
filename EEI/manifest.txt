@@ -93,6 +93,8 @@ artifacts/tests/a060/t500_human_summary_dossier_api.json
 artifacts/tests/a061/t501_company_workspace_layers.json
 artifacts/tests/a062/t501_structure_type_separation.json
 artifacts/tests/a063/t501_commercial_empire_not_control.json
+artifacts/tests/a119/t905_migration_rollback_rehearsal.json
+artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
 artifacts/tests/a183/t1212_p0_traceability_validator.json
 artifacts/tests/a183/t1213_requirement_function_task_test_traceability.json
@@ -363,6 +365,7 @@ scripts/validate_operator_soak_evidence.py
 scripts/validate_prototype_parity.py
 scripts/validate_release_decision_bundle.py
 scripts/validate_release_manager_activation.py
+scripts/validate_t905_release_rehearsal.py
 scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
 scripts/validate_v5_production_readiness_sync.py
