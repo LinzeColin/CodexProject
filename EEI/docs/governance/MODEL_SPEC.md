@@ -31,6 +31,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-23 T1303/A204-A205 release-manager activation preflight aggregates existing A202/A026/A027/A209/A210 release evidence and fails closed while external gates are missing; no scoring model, graph traversal formula, extraction formula, formula weight or threshold value changed.
 - 2026-06-23 T904/A026-A027 production gold-label intake adds explicit `--allow-production-gold-set` and `production_gold_evidence` metadata requirements for real operator-supplied labels; PARAM-064 through PARAM-068 threshold values remain unchanged and repository fixtures still fail closed.
 - 2026-06-23 T1307/A209 background soak governance adds operational evidence parameters `PARAM-069` through `PARAM-071` for watchdog cadence, stale-PID detection and heartbeat schema binding; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T904/A026-A027 production gold-label intake template adds an operator-fillable template artifact for required production-label metadata and case schemas; PARAM-064 through PARAM-068 values remain unchanged and the template is not release-ready evidence.
 
 ## A. Model Overview
 
@@ -235,7 +236,7 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202/A210 release-decision bundle schema validation/publication binding, and A026/A027 gold-quality gates.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202/A210 release-decision bundle schema validation/publication binding, and A026/A027 gold-quality/intake gates.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
@@ -247,7 +248,7 @@ The counts above are generated from the canonical machine registries in this dir
 - Formula IDs: FORM-012
 - Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063, PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068
 - Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py
-- Evidence references: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json, EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json, EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json
+- Evidence references: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json, EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json, EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json, EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json
 - Failure modes: missing runtime motion config; threshold out of schema range; auto activation enabled
 
 ## B. Assumptions
@@ -481,7 +482,7 @@ Machine source: `formula_registry.yaml`. Legacy `F-*` IDs are preserved as `lega
 - Variables: configured_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); default_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); min_value (number|string|boolean, parameter_specific, catalog constraint); max_value (number|string|boolean, parameter_specific, catalog constraint)
 - Output range: parameter_specific
 - Normalization: NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation.
-- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days; gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass
+- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days; gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass; gold-label intake templates must remain non-closure evidence
 - Missing data handling: fallback_to_default_or_UNKNOWN_with_task
 - Boundary conditions: respect per-variable input domain and configured min/max bounds; invalid configuration fails validation.
 - Fallback: use configured default or previous valid snapshot; Unavailable values remain disclosed and task-linked.

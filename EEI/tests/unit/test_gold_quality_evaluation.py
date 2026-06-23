@@ -172,3 +172,31 @@ def test_missing_counter_evidence_review_is_rejected() -> None:
 
     with pytest.raises(ValueError, match="counter_evidence_reviewed must be true"):
         gold.validate_label_payload(labels)
+
+
+def test_production_gold_label_intake_template_is_fail_closed() -> None:
+    template = gold.build_intake_template(generated_at="2026-06-24T00:00:00Z")
+
+    assert template["status"] == "TEMPLATE_ONLY"
+    assert template["release_gate_closure_allowed"] is False
+    assert template["production_claim_allowed"] is False
+    assert template["relationship_publication_allowed"] is False
+    assert template["thresholds"]["A026"]["minimum_cases"] == 50
+    assert template["thresholds"]["A027"]["minimum_cases"] == 100
+    assert (
+        template["production_gold_evidence_schema"]["required_text_fields"]
+        == list(gold.PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS)
+    )
+    assert (
+        template["production_gold_evidence_schema"]["required_list_fields"]
+        == list(gold.PRODUCTION_GOLD_REQUIRED_LIST_FIELDS)
+    )
+    gold.validate_intake_template(template)
+
+
+def test_production_gold_label_intake_template_validator_catches_drift() -> None:
+    template = gold.build_intake_template(generated_at="2026-06-24T00:00:00Z")
+    template["thresholds"]["A027"]["minimum_cases"] = 99
+
+    with pytest.raises(ValueError, match="thresholds drift"):
+        gold.validate_intake_template(template)

@@ -56,13 +56,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `65/288` PASS at `2026-06-23T16:07:44Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `72/288` PASS at `2026-06-23T16:42:24Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
-3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
+3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: gold-set labels, precision/recall, source coverage, soak manifest, A209 monitor/supervisor snapshot, clean-room package inclusion evidence, full 24h checkpoint validation
+- evidence_required: gold-set labels filled from the T904 intake template, precision/recall, source coverage, soak manifest, A209 monitor/supervisor snapshot, clean-room package inclusion evidence, full 24h checkpoint validation
 - principal_risks: source license limits, stale relationships, false relation assertions
 - generated_from_refs: `EEI/docs/governance/ASSURANCE_STATUS.yaml, EEI/docs/governance/delivery_tasks.yaml`
 

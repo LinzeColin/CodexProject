@@ -18,6 +18,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 SCHEMA_VERSION = "eei-gold-quality-evaluation-contract-v1"
+INTAKE_TEMPLATE_SCHEMA_VERSION = "eei-gold-quality-intake-template-v1"
 LABEL_SCHEMA_VERSION = "eei-gold-quality-labels-v1"
 DEFAULT_LABELS = ROOT / "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
 DEFAULT_A026_OUTPUT = (
@@ -25,6 +26,9 @@ DEFAULT_A026_OUTPUT = (
 )
 DEFAULT_A027_OUTPUT = (
     ROOT / "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
+)
+DEFAULT_INTAKE_TEMPLATE_OUTPUT = (
+    ROOT / "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json"
 )
 
 ENTITY_MIN_CASES = 50
@@ -130,6 +134,119 @@ def production_intake_policy() -> dict[str, Any]:
             "does_not_close": ["A202", "A209", "A210", "release_manager_activation"],
             "relationship_publication_allowed": False,
         },
+    }
+
+
+def production_gold_evidence_template() -> dict[str, Any]:
+    return {
+        **{field: "<required>" for field in PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS},
+        "source_document_refs": ["<required-source-document-ref>"],
+        "labeler_qualification_refs": ["<required-labeler-qualification-ref>"],
+        "excludes_repository_fixtures": True,
+        "operator_supplied_labels": True,
+        "synthetic_or_fixture_labels": False,
+    }
+
+
+def entity_resolution_case_template() -> dict[str, Any]:
+    return {
+        "case_id": "ENT-PROD-000",
+        "labeler": "<required-labeler>",
+        "labeled_at": "<required-utc-timestamp>",
+        "expected_entity_id": "<required-or-empty-string-for-true-negative>",
+        "predicted_entity_id": "<required-or-empty-string-for-no-prediction>",
+        "evidence_refs": ["<required-evidence-ref>"],
+        "source_coverage": {
+            "required_source_ids": ["<required-source-id>"],
+            "observed_source_ids": ["<observed-source-id>"],
+            "counter_evidence_reviewed": True,
+        },
+    }
+
+
+def relationship_case_template() -> dict[str, Any]:
+    return {
+        "case_id": "REL-PROD-000",
+        "labeler": "<required-labeler>",
+        "labeled_at": "<required-utc-timestamp>",
+        "expected_relation_present": True,
+        "predicted_relation_present": True,
+        "expected_relationship_key": "<subject|predicate|object>",
+        "predicted_relationship_key": "<subject|predicate|object-or-empty-string>",
+        "evidence_refs": ["<required-evidence-ref>"],
+        "source_coverage": {
+            "required_source_ids": ["<required-source-id>"],
+            "observed_source_ids": ["<observed-source-id>"],
+            "counter_evidence_reviewed": True,
+        },
+    }
+
+
+def build_intake_template(*, generated_at: str | None = None) -> dict[str, Any]:
+    return {
+        "schema_version": INTAKE_TEMPLATE_SCHEMA_VERSION,
+        "artifact_id": "t904-a026-a027-production-gold-label-intake-template",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "task_id": "T904",
+        "acceptance_ids": ["A026", "A027"],
+        "status": "TEMPLATE_ONLY",
+        "release_gate_closure_allowed": False,
+        "production_claim_allowed": False,
+        "relationship_publication_allowed": False,
+        "scope": "golden-vertical:nvidia",
+        "thresholds": {
+            "A026": {
+                "minimum_cases": ENTITY_MIN_CASES,
+                "minimum_precision": ENTITY_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+            "A027": {
+                "minimum_cases": RELATIONSHIP_MIN_CASES,
+                "minimum_precision": RELATIONSHIP_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+        },
+        "production_gold_evidence_schema": production_intake_policy(),
+        "label_payload_skeleton": {
+            "schema_version": LABEL_SCHEMA_VERSION,
+            "system_name": "EEI",
+            "scope": "golden-vertical:nvidia",
+            "dataset_id": "<operator-production-gold-dataset-id>",
+            "fixture_policy": {
+                "production_gold_set": True,
+                "release_clearance": False,
+                "relationship_publication": False,
+            },
+            "production_gold_evidence": production_gold_evidence_template(),
+            "entity_resolution_cases": {
+                "minimum_required_cases": ENTITY_MIN_CASES,
+                "case_template": entity_resolution_case_template(),
+            },
+            "relationship_cases": {
+                "minimum_required_cases": RELATIONSHIP_MIN_CASES,
+                "case_template": relationship_case_template(),
+            },
+        },
+        "validation_commands": {
+            "generate_contract": (
+                "python scripts/validate_gold_quality_evaluation.py generate "
+                "--labels <operator-production-gold-labels.json> "
+                "--allow-production-gold-set"
+            ),
+            "validate_contract": "python scripts/validate_gold_quality_evaluation.py validate",
+            "release_manager_gate": (
+                "python scripts/validate_release_manager_activation.py validate"
+            ),
+        },
+        "non_claims": [
+            "This template is not a production gold label set.",
+            "This template does not close A026 or A027.",
+            "This template does not close A202, A209, A210 or release-manager activation.",
+            "Filled labels still require validate_gold_quality_evaluation.py with "
+            "--allow-production-gold-set and complete production_gold_evidence.",
+        ],
     }
 
 
@@ -497,6 +614,109 @@ def validate_contract(contract: dict[str, Any], *, focus_acceptance_id: str | No
         raise ValueError(f"artifact focus_acceptance_id must be {focus_acceptance_id}")
 
 
+def validate_intake_template(template: dict[str, Any]) -> None:
+    if template.get("schema_version") != INTAKE_TEMPLATE_SCHEMA_VERSION:
+        raise ValueError(f"schema_version must be {INTAKE_TEMPLATE_SCHEMA_VERSION}")
+    if template.get("system_name") != "EEI":
+        raise ValueError("system_name must be EEI")
+    if template.get("task_id") != "T904":
+        raise ValueError("task_id must be T904")
+    if template.get("status") != "TEMPLATE_ONLY":
+        raise ValueError("intake template status must be TEMPLATE_ONLY")
+    if template.get("release_gate_closure_allowed") is not False:
+        raise ValueError("intake template must not close release gates")
+    if template.get("production_claim_allowed") is not False:
+        raise ValueError("intake template must not allow production claims")
+    if template.get("relationship_publication_allowed") is not False:
+        raise ValueError("intake template must not allow relationship publication")
+    if template.get("acceptance_ids") != ["A026", "A027"]:
+        raise ValueError("intake template acceptance_ids drift")
+
+    thresholds = template.get("thresholds")
+    if not isinstance(thresholds, dict):
+        raise ValueError("intake template thresholds missing")
+    expected_thresholds = {
+        "A026": {
+            "minimum_cases": ENTITY_MIN_CASES,
+            "minimum_precision": ENTITY_MIN_PRECISION,
+            "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+        },
+        "A027": {
+            "minimum_cases": RELATIONSHIP_MIN_CASES,
+            "minimum_precision": RELATIONSHIP_MIN_PRECISION,
+            "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+        },
+    }
+    if thresholds != expected_thresholds:
+        raise ValueError("intake template thresholds drift")
+
+    evidence_schema = template.get("production_gold_evidence_schema")
+    if evidence_schema != production_intake_policy():
+        raise ValueError("production_gold_evidence_schema drift")
+    skeleton = template.get("label_payload_skeleton")
+    if not isinstance(skeleton, dict):
+        raise ValueError("label_payload_skeleton missing")
+    if skeleton.get("schema_version") != LABEL_SCHEMA_VERSION:
+        raise ValueError("label_payload_skeleton schema version drift")
+    if (skeleton.get("fixture_policy") or {}).get("production_gold_set") is not True:
+        raise ValueError("template skeleton must target production_gold_set=true")
+    if skeleton.get("production_gold_evidence") != production_gold_evidence_template():
+        raise ValueError("production_gold_evidence template drift")
+    entity_cases = skeleton.get("entity_resolution_cases")
+    relationship_cases = skeleton.get("relationship_cases")
+    if not isinstance(entity_cases, dict) or not isinstance(relationship_cases, dict):
+        raise ValueError("case templates missing")
+    if entity_cases.get("minimum_required_cases") != ENTITY_MIN_CASES:
+        raise ValueError("entity case count drift")
+    if relationship_cases.get("minimum_required_cases") != RELATIONSHIP_MIN_CASES:
+        raise ValueError("relationship case count drift")
+    if entity_cases.get("case_template") != entity_resolution_case_template():
+        raise ValueError("entity case template drift")
+    if relationship_cases.get("case_template") != relationship_case_template():
+        raise ValueError("relationship case template drift")
+
+
+def generate_template(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    template = build_intake_template()
+    validate_intake_template(template)
+    write_json(output, template)
+    print(
+        json.dumps(
+            {
+                "generated": True,
+                "status": template["status"],
+                "release_gate_closure_allowed": template["release_gate_closure_allowed"],
+                "output": relative(output),
+                "a026_minimum_cases": ENTITY_MIN_CASES,
+                "a027_minimum_cases": RELATIONSHIP_MIN_CASES,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def validate_template(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    template = read_json(output)
+    validate_intake_template(template)
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "status": template["status"],
+                "release_gate_closure_allowed": template["release_gate_closure_allowed"],
+                "output": relative(output),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def generate(args: argparse.Namespace) -> int:
     labels = Path(args.labels)
     contract = build_contract(
@@ -559,10 +779,22 @@ def main() -> int:
         ),
     )
     generate_parser.set_defaults(func=generate)
+    generate_template_parser = subparsers.add_parser("generate-template")
+    generate_template_parser.add_argument(
+        "--output",
+        default=str(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
+    )
+    generate_template_parser.set_defaults(func=generate_template)
     validate_parser = subparsers.add_parser("validate")
     validate_parser.add_argument("--a026-output", default=str(DEFAULT_A026_OUTPUT))
     validate_parser.add_argument("--a027-output", default=str(DEFAULT_A027_OUTPUT))
     validate_parser.set_defaults(func=validate)
+    validate_template_parser = subparsers.add_parser("validate-template")
+    validate_template_parser.add_argument(
+        "--output",
+        default=str(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
+    )
+    validate_template_parser.set_defaults(func=validate_template)
     args = parser.parse_args()
     return int(args.func(args))
 

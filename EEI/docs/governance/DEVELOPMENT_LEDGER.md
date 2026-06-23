@@ -939,6 +939,45 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Revert `scripts/record_operator_soak_heartbeat.py`, the Makefile targets, unit tests, v5/clean-room sync additions, heartbeat artifact and this governance record.
 - Keep the valid live operator soak and checkpoint evidence intact unless operator inspection finds corruption.
 
+## EVENT-20260624-007 - T904/A026-A027 Production Gold-Label Intake Template
+
+- Goal: add an operator-fillable production gold-label intake template for A026/A027 so real labels can be supplied without guessing the required metadata or case schemas.
+- Assumptions: the template is an intake artifact only; no real production labels, source-license review, passage-level approval, legal/brand clearance or release-manager activation evidence is present in this slice.
+- Files changed: `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, `artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json`, T904 governance rows, traceability, status/readme/v5 sync and development records.
+- Tests run: `validate_gold_quality_evaluation.py generate-template`, `validate_gold_quality_evaluation.py validate-template`, focused ruff, focused A026/A027 unit tests and existing gold-quality artifact validation.
+- Test results: template generation PASS with `TEMPLATE_ONLY`; template validation PASS; focused ruff PASS; gold-quality unit tests PASS 9/9; existing A026/A027 artifact validation PASS with both `IN_PROGRESS`.
+- Successes: the A026/A027 blocker now has a concrete fill-in contract covering required production evidence fields, source refs, labeler qualifications, entity cases, relationship cases and validation commands.
+- Failures: no production gold labels were added; A026/A027 remain `IN_PROGRESS`.
+- Decisions: keep A026/A027, A202, A209, A210 and release-manager activation open; keep existing quality thresholds unchanged.
+- Remaining risks: the template can still be misread as evidence if `TEMPLATE_ONLY` and `release_gate_closure_allowed=false` are ignored; real labels still need human/operator evidence and signatures.
+- Next step: fill and validate real A026/A027 production labels, continue A202 source/legal/owner closure, A210 formal clearance or A209 24h soak evidence.
+
+## EVENT-20260624-008 - A209 Background Heartbeat Refresh During T904 Work
+
+- Goal: prove the A209 24h operator soak is still being solved in the background while bounded MVP work continues.
+- Assumptions: heartbeat evidence is progress evidence only; it does not close A209 and does not replace the final 24h summary JSON.
+- Files changed: `artifacts/tests/a209/t1307_operator_soak_background_progress.json`, `CHANGELOG.md`, `docs/governance/OWNER_STATUS.md`, `docs/governance/STATUS.md`, `docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md`, `docs/governance/VERSION_MATRIX.yaml`, this ledger and `development_events.jsonl`.
+- Tests run: `scripts/record_operator_soak_heartbeat.py generate --quiet`, `scripts/supervise_operator_soak.py --no-write`, JSONL parse and A209 validators in the broader verification batch.
+- Test results: heartbeat refresh observed operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `72/288` windows PASS, `0` failed, `216` remaining, `25.00%` complete and `release_gate_closed_by_background_heartbeat=false`; supervisor observed `RUNNING_PARTIAL`.
+- Successes: A209 is not abandoned; it remains live in the detached background path with checkpoint evidence advancing.
+- Failures: A209 is still not release-ready until all 288 windows pass and the final validator reports release-ready evidence.
+- Decisions: keep A209 `IN_PROGRESS`; do not stop, restart or replace the live PID while it is progressing.
+- Remaining risks: the running soak can still fail before completion; heartbeat evidence can be misread as release readiness if non-closure fields are ignored.
+- Next step: continue monitoring until 288/288 and run `scripts/validate_operator_soak_evidence.py validate --require-release-ready` after the summary JSON exists.
+
+## EVENT-20260624-009 - T904/A209 Governance Registry And Release Artifact Sync
+
+- Goal: satisfy changed-only governance requirements after adding the T904 intake template and refreshing A209 heartbeat evidence.
+- Assumptions: registry edits are traceability updates only; no formula value, scoring weight, threshold value or runtime scoring behavior changed.
+- Files changed: README/changelog, T904 template artifact, A209 heartbeat artifact, model/formula/parameter registries, status/owner/v5/development records, release artifacts, T904 validator and tests.
+- Tests run: focused T904 validation, A209 supervisor check, v5 readiness sync, `make generate-development-status-artifacts generate-risk-control-artifacts generate-clean-room-release generate-release-artifacts`, `make verify`, `git diff --check`, and root changed-only governance.
+- Test results: T904 template validation PASS; v5 readiness sync PASS; local `make verify` PASS with clean-room `package_paths=418`, release `manifest_paths=425`, scale 10k/100k/1m, soak smoke, ruff, web typecheck and unit tests `88 passed`; root governance PASS with errors 0 and warnings 0; `git diff --check` PASS; A209 supervisor observed PID `12478` RUNNING, `74/288` windows PASS and `0` failed.
+- Successes: MOD-012/FORM-012/PARAM-064 now explicitly reference the production gold-label intake template and its non-closure boundary.
+- Failures: no real production gold labels, A202 legal/source/owner clearance, A210 clearance, release-manager activation or A209 24h final summary was added.
+- Decisions: keep A026/A027/A209/A202/A210 and release-manager activation open; use the latest repository heartbeat only as progress evidence.
+- Remaining risks: A209 can still fail before 288 windows; A026/A027 still require real labels and A202/A210 still require external clearance evidence.
+- Next step: commit, push, bind CI, and continue A209 background soak monitoring until the 24h release-ready summary validates.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -989,6 +1028,9 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260624-004`: local T1307/A209 background heartbeat governance CI repair registers PARAM-069 through PARAM-071, refreshes the heartbeat to 61/288 successful windows and regenerates clean-room release evidence; A209 remains open until 24h evidence validates.
 - `EVENT-20260624-005`: local T1303/A204-A205 release-manager ready-state validator and A209 heartbeat refresh; repository preflight remains blocked, future READY validation requires real A202/A026/A027/A209/A210 evidence, and A209 heartbeat now reports 65/288 successful windows.
 - `EVENT-20260624-006`: local governance sync for EVENT-20260624-005; updated parameter and traceability registries plus regenerated clean-room/release evidence while keeping A204/A205/A209 open.
+- `EVENT-20260624-007`: local T904/A026-A027 production gold-label intake template; A026/A027 remain open until real operator-supplied labels pass validation.
+- `EVENT-20260624-008`: local A209 background heartbeat refresh during T904 work; heartbeat reports `72/288` successful windows and keeps A209 open.
+- `EVENT-20260624-009`: local governance registry and release-artifact sync for the T904 template plus A209 heartbeat refresh.
 
 ## Unknown Historical Periods
 
