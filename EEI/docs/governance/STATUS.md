@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0026fe0d4d249be6cc600bb95c58c920ae37a706cf44aa8f94958c817331b796`
-- snapshot_event_time: `2026-06-22T23:04:31Z`
+- source_snapshot_hash: `sha256:4992886d72f9ff373408773e29fef75640aac080fb964dbb85b3b608ab163f08`
+- snapshot_event_time: `2026-06-23T00:10:00Z`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
+- Phase/Gate: `C / TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
 - Models/Formulas/Parameters total: `12 / 12 / 68`
 - Active formulas/parameters: `11 / 68`
 - Machine checked formulas/parameters: `10 / 61`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1301-A202-SOURCE-WITHDRAWAL-FAIL-CLOSED-IN-PROGRESS`
+- Release gate: `TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `38`
+- Pending/stale events: `39`
 - Tree-bound events: `0`
 - Commit-bound events: `9`
 - Legacy unbound events: `17`

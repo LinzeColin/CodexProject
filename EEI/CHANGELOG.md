@@ -14,6 +14,7 @@
 - Added a T1301/A202 plus T1309/A210 signed release decision bundle contract; it enumerates the exact source-license, passage-level, owner, legal and brand signed inputs still required, while keeping `release_ready=false` until A209 24h soak and release-manager activation are separately satisfied.
 - Added a T904/A026-A027 gold-quality evaluation contract; it reports precision, recall and source coverage, but keeps A026/A027 `IN_PROGRESS` until production human-labeled gold sets meet the 50/95% entity and 100/90% relationship gates.
 - Added a T1301/A202 source-withdrawal and counter-evidence fail-closed publication rehearsal; disputed raw source snapshots, disputed evidence-chain rows and unreviewed evidence-chain counter-evidence now block reviewed relationship publication before relationship, fact-version or operation-log writes.
+- Added a T1303/A204-A205 release-manager activation preflight; it aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence and fails closed while any external release gate is missing.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
