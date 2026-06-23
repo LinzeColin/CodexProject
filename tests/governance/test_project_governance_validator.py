@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import hashlib
 import json
 import os
@@ -90,6 +92,18 @@ def load_information_quality_module():
     return module
 
 
+def load_lean_governance_module():
+    scripts_dir = str(ROOT / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    spec = importlib.util.spec_from_file_location("lean_governance", ROOT / "scripts" / "lean_governance.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def run_validator(*args: str) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env.setdefault("PYTHONPYCACHEPREFIX", "/tmp/codex_governance_test_pycache")
@@ -130,6 +144,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "scripts/validate_semantic_extractors.py",
             "scripts/validate_ci_attestation.py",
             "scripts/governance_setup_doctor.py",
+            "scripts/lean_governance.py",
             "governance/schemas/project.schema.json",
             "governance/schemas/roadmap.schema.json",
             "governance/schemas/events.schema.json",
@@ -327,6 +342,58 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertNotIn("兼容索引", text)
             self.assertNotIn("详见 docs/governance", text)
             self.assertNotIn("link page", text.lower())
+
+    def test_review9_s3_baseline_all_is_read_only_compact_json(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project_path = tmp_path / "ProjectA"
+            governance_path = tmp_path / "governance"
+            project_governance_path = project_path / "docs" / "governance"
+            governance_path.mkdir(parents=True)
+            project_governance_path.mkdir(parents=True)
+            (tmp_path / "AGENTS.md").write_text("root contract\n", encoding="utf-8")
+            (project_path / "功能清单").write_text("features\n", encoding="utf-8")
+            (project_path / "开发记录").write_text("roadmap\n", encoding="utf-8")
+            (project_path / "模型参数文件").write_text("models\n", encoding="utf-8")
+            (project_path / "VERSION").write_text("0.1.0\n", encoding="utf-8")
+            (project_path / "CHANGELOG.md").write_text("change\n", encoding="utf-8")
+            (project_governance_path / "project.yaml").write_text("project_id: ProjectA\n", encoding="utf-8")
+            projects_yaml = governance_path / "projects.yaml"
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  ci_mode: required",
+                        "  required_files:",
+                        "    - AGENTS.md",
+                        "project_governance_files:",
+                        "  - docs/governance/MODEL_SPEC.md",
+                        "projects:",
+                        "  - project_id: ProjectA",
+                        "    path: ProjectA",
+                        "    ci_mode: advisory",
+                        "    migration:",
+                        "      version: legacy-v1-pending-lean-v2",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            before = sorted(path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*"))
+            stream = io.StringIO()
+            with patch.object(cli, "ROOT", tmp_path), patch.object(cli, "PROJECTS_FILE", projects_yaml):
+                with contextlib.redirect_stdout(stream):
+                    self.assertEqual(cli.main(["baseline", "--all"]), 0)
+            after = sorted(path.relative_to(tmp_path).as_posix() for path in tmp_path.rglob("*"))
+        self.assertEqual(before, after)
+        summary = json.loads(stream.getvalue())
+        self.assertEqual(summary["command"], "baseline")
+        self.assertEqual(summary["scope"], "all")
+        self.assertEqual(summary["totals"]["projects"], 1)
+        self.assertEqual(summary["totals"]["human_entry_missing"], 0)
+        self.assertEqual(summary["totals"]["canonical_missing"], 2)
+        self.assertEqual(summary["projects"][0]["project_id"], "ProjectA")
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
