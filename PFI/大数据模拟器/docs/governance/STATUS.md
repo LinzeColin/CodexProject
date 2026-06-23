@@ -4,7 +4,7 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:6ac4dae3d14a6305e0e0c2b758f8e8a6cbbc59ce19524f54023f4b1f2c96c77a`
+- source_snapshot_hash: `sha256:fd24bf9f219db8c72deda2fece6e6f0244793d018f41cda88688bfd3cf8bfbe5`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
