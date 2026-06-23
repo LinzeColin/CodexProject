@@ -117,6 +117,16 @@ link page.
 hours, progress, blockers, next Gate, and next unique task. It renders the full
 Roadmap and recent meaningful events.
 
+`docs/governance/templates/开发记录.template.md` is the template for that human
+view. It starts with summary fields, then owner decisions, progress overview,
+the full Roadmap, recent meaningful events, and risks or blockers. It must not
+degrade into a link page.
+
+`docs/governance/templates/Roadmap.template.md` is the owner-readable Roadmap
+template. It directly renders Stage, Phase, Task, Stop Gate, Acceptance, and
+Evidence sections, while derived calculations remain deterministic validator
+work rather than manual governance computation.
+
 `模型参数文件` records active models, assumptions, inputs, outputs, formulas or
 pseudocode, variables, units, domains, missing-value behavior, fallback behavior,
 parameters, defaults, priors, active values, ranges, weights, sources,
