@@ -1,0 +1,29 @@
+{
+  "evidence": {
+    "focused_tests": "focused S1-12 tests 38 OK",
+    "semantic_extractor": "46 active formulas and 331 active parameters OK",
+    "unit_tests": "arxiv-daily-push unit tests 190 OK",
+    "workflow_yaml_parse": "4 S1-12 workflows OK"
+  },
+  "generated_at": "2026-06-23T09:55:00+10:00",
+  "iteration_id": "ITER-20260623-S1-012",
+  "manifest_id": "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623",
+  "production_acceptance_claimed": false,
+  "production_schedule_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "real_release_uploaded": false,
+  "real_smtp_sent": false,
+  "remaining_blockers": [
+    "PR CI green",
+    "controlled manual Gmail SMTP test",
+    "two natural-day live evidence",
+    "production scheduler owner approval",
+    "ARXIV_PRODUCTION_ACCEPTED final acceptance gate"
+  ],
+  "status": "in_progress",
+  "summary": "Prepared Stage 1 text-only production enablement without enabling production.",
+  "task_id": "S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001",
+  "version_after": "0.22.0",
+  "version_before": "0.21.0",
+  "video_generated": false
+}

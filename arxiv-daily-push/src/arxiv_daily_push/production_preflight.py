@@ -14,13 +14,12 @@ from .doctor import disk_status
 
 
 PRODUCTION_PREFLIGHT_VALIDATOR_ID = "adp-production-preflight-v1"
-PRODUCTION_REQUIRED_COMMANDS = ("python3", "git", "gh", "ffmpeg")
+PRODUCTION_REQUIRED_COMMANDS = ("python3", "git", "gh")
 PRODUCTION_SECRET_ENV_KEYS = (
     "ADP_SMTP_HOST",
     "ADP_SMTP_PORT",
     "ADP_SMTP_USERNAME",
     "ADP_SMTP_PASSWORD",
-    "ADP_RELEASE_TARGET",
 )
 MIN_PRODUCTION_FREE_DISK_GIB = 8.0
 MIN_PRODUCTION_MEMORY_GIB = 8.0
@@ -172,7 +171,7 @@ def _disk_gate(root: Path, *, disk_free_gib: float | None = None) -> dict[str, A
             "path": str(root),
             "free_gib": round(free_gib, 2),
             "production_min_free_gib": MIN_PRODUCTION_FREE_DISK_GIB,
-            "lightweight_mp4_ready": free_gib >= MIN_PRODUCTION_FREE_DISK_GIB,
+            "stage1_text_delivery_ready": free_gib >= MIN_PRODUCTION_FREE_DISK_GIB,
         }
     else:
         free_gib = float(disk_free_gib)
@@ -180,7 +179,7 @@ def _disk_gate(root: Path, *, disk_free_gib: float | None = None) -> dict[str, A
             "path": str(root),
             "free_gib": round(free_gib, 2),
             "production_min_free_gib": MIN_PRODUCTION_FREE_DISK_GIB,
-            "lightweight_mp4_ready": free_gib >= MIN_PRODUCTION_FREE_DISK_GIB,
+            "stage1_text_delivery_ready": free_gib >= MIN_PRODUCTION_FREE_DISK_GIB,
         }
     passed = free_gib >= MIN_PRODUCTION_FREE_DISK_GIB
     return _gate(

@@ -429,6 +429,8 @@ def build_parser() -> argparse.ArgumentParser:
     trial_ledger.add_argument("--expected-days", type=int, default=30)
     trial_ledger.add_argument("--text-degradation-verified", action="store_true")
     trial_ledger.add_argument("--video-degradation-verified", action="store_true")
+    trial_ledger.add_argument("--text-artifacts-verified", action="store_true")
+    trial_ledger.add_argument("--text-artifact-ref", default="")
     trial_ledger.add_argument("--scheduler-enabled", action="store_true")
     trial_ledger.add_argument("--manual-rerun-verified", action="store_true")
     trial_ledger.add_argument("--scheduler-ref", default="")
@@ -464,6 +466,8 @@ def build_parser() -> argparse.ArgumentParser:
     trial_ops.add_argument("--scheduler-enabled", action="store_true")
     trial_ops.add_argument("--manual-rerun-verified", action="store_true")
     trial_ops.add_argument("--scheduler-ref", default="")
+    trial_ops.add_argument("--text-artifacts-verified", action="store_true")
+    trial_ops.add_argument("--text-artifact-ref", default="")
     trial_ops.add_argument("--private-release-verified", action="store_true")
     trial_ops.add_argument("--release-ref", default="")
     trial_ops.add_argument("--real-smtp-verified", action="store_true")
@@ -525,7 +529,7 @@ def build_parser() -> argparse.ArgumentParser:
     trial_start.add_argument("--scheduler-plan", required=True, help="Passing production scheduler plan JSON.")
     trial_start.add_argument("--source-batch", required=True, help="Passing live SourceBatch or Phase 12 all-arXiv daily input JSON.")
     trial_start.add_argument("--smtp-delivery", required=True, help="Real sent SMTP delivery report JSON.")
-    trial_start.add_argument("--release-delivery", required=True, help="Real created Release delivery report JSON.")
+    trial_start.add_argument("--release-delivery", help="Legacy optional Release delivery report JSON.")
     trial_start.add_argument("--generated-at", required=True, help="Trial start readiness timestamp.")
     trial_start.add_argument("--default-branch-ref", default="", help="Durable default-branch commit/workflow ref.")
     trial_start.add_argument("--runner-ref", default="", help="Durable GitHub-hosted runner ref.")
@@ -560,7 +564,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print a no-secret JSON input template for plan-production-refs.",
     )
     production_refs_template.add_argument("--runner-label", default="ubuntu-latest", help="GitHub-hosted runner label placeholder.")
-    production_refs_template.add_argument("--release-target", default="", help="Optional ADP_RELEASE_TARGET placeholder.")
 
     production_refs_discovery = subparsers.add_parser(
         "discover-production-refs",
@@ -593,7 +596,6 @@ def build_parser() -> argparse.ArgumentParser:
     production_launch.add_argument("--default-branch-ref", default="", help="Durable merged default-branch commit ref.")
     production_launch.add_argument("--runner-ref", default="", help="Durable GitHub-hosted runner readiness ref.")
     production_launch.add_argument("--smtp-secret-ref", default="", help="Durable GitHub SMTP secrets readiness ref without secret values.")
-    production_launch.add_argument("--release-target-ref", default="", help="Durable GitHub Release target readiness ref.")
     production_launch.add_argument("--workflow-vars-ref", default="", help="Durable GitHub variables readiness ref.")
     production_launch.add_argument("--trial-start-workflow-ref", default="", help="Durable default-branch trial start workflow ref.")
     production_launch.add_argument("--production-refs-report", default="", help="Optional passing plan-production-refs report used to fill external refs.")
@@ -1408,6 +1410,8 @@ def main(argv: list[str] | None = None) -> int:
             expected_days=args.expected_days,
             text_degradation_path_verified=args.text_degradation_verified,
             video_degradation_path_verified=args.video_degradation_verified,
+            text_artifacts_verified=args.text_artifacts_verified,
+            text_artifact_ref=args.text_artifact_ref,
             scheduler_enabled=args.scheduler_enabled,
             manual_rerun_verified=args.manual_rerun_verified,
             scheduler_ref=args.scheduler_ref,
@@ -1474,6 +1478,8 @@ def main(argv: list[str] | None = None) -> int:
             scheduler_enabled=args.scheduler_enabled,
             manual_rerun_verified=args.manual_rerun_verified,
             scheduler_ref=args.scheduler_ref,
+            text_artifacts_verified=args.text_artifacts_verified,
+            text_artifact_ref=args.text_artifact_ref,
             private_release_verified=args.private_release_verified,
             release_ref=args.release_ref,
             real_smtp_verified=args.real_smtp_verified,
@@ -1617,7 +1623,7 @@ def main(argv: list[str] | None = None) -> int:
             scheduler_plan=load_json_mapping(args.scheduler_plan),
             source_batch=load_json_mapping(args.source_batch),
             smtp_delivery_report=load_json_mapping(args.smtp_delivery),
-            release_delivery_report=load_json_mapping(args.release_delivery),
+            release_delivery_report=load_json_mapping(args.release_delivery) if args.release_delivery else None,
             default_branch_ref=args.default_branch_ref,
             runner_ref=args.runner_ref,
             preflight_ref=args.preflight_ref,
@@ -1689,7 +1695,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "print-production-refs-template":
         template = build_production_refs_input_template(
             runner_label=args.runner_label,
-            release_target=args.release_target,
         )
         print(json.dumps(template, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
@@ -1765,7 +1770,6 @@ def main(argv: list[str] | None = None) -> int:
         launch_refs = {
             "runner_ref": args.runner_ref,
             "smtp_secret_ref": args.smtp_secret_ref,
-            "release_target_ref": args.release_target_ref,
             "workflow_vars_ref": args.workflow_vars_ref,
         }
         if args.production_refs_report:
@@ -1793,7 +1797,6 @@ def main(argv: list[str] | None = None) -> int:
             default_branch_ref=args.default_branch_ref,
             runner_ref=launch_refs["runner_ref"],
             smtp_secret_ref=launch_refs["smtp_secret_ref"],
-            release_target_ref=launch_refs["release_target_ref"],
             workflow_vars_ref=launch_refs["workflow_vars_ref"],
             trial_start_workflow_ref=args.trial_start_workflow_ref,
             confirm_launch=args.confirm_launch,
