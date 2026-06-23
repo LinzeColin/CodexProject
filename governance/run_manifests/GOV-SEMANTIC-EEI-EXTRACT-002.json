@@ -4,6 +4,7 @@
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
@@ -30,10 +31,12 @@
     "governance/binding_backlog.yaml",
     "governance/projects.yaml",
     "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-002.json",
+    "scripts/governance_setup_doctor.py",
     "scripts/validate_information_quality.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
@@ -60,12 +63,13 @@
     "governance/binding_backlog.yaml",
     "governance/projects.yaml",
     "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-002.json",
+    "scripts/governance_setup_doctor.py",
     "scripts/validate_information_quality.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows",
   "ci_run_reference": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3acfa462aaf6534868ad86afbea32a6e9037c57b08242c96d5ba1378272e2503",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:99daf8f07497d189314820aa2bde175ba937584afa94c1da37e2aab50c925786",
   "evidence_refs": [
     "EEI/config/ui/motion-tokens.json",
     "EEI/scripts/validate_model_config.py",
@@ -130,7 +134,7 @@
     "project EEI semantic validator PASS errors 0 warnings 0",
     "balanced-v2 model config PASS",
     "supply-chain-v3 model config PASS",
-    "root governance focused tests PASS 132 passed and 4 subtests",
+    "root governance focused tests PASS 134 passed and 4 subtests",
     "changed-only semantic governance PASS errors 0 warnings 0",
     "clean-room release validate PASS package_paths 412 package_sha256 7c6ef1f4b4b59b422ae446feac66c00eb71222c7308667355e835d62e4180c32",
     "release artifacts validate PASS manifest_paths 419 checksum_paths 418 remote_status PENDING",
@@ -144,5 +148,5 @@
     "EEI/docs/governance/formula_registry.yaml",
     "EEI/docs/governance/parameter_registry.csv"
   ],
-  "content_tree_file_count_excluding_this_manifest": 27
+  "content_tree_file_count_excluding_this_manifest": 29
 }

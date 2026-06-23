@@ -83,6 +83,10 @@ def hook_status() -> dict[str, Any]:
 
 def workflow_entry_gate_status() -> dict[str, Any]:
     text = WORKFLOW.read_text(encoding="utf-8") if WORKFLOW.exists() else ""
+    changed_scope_base_ref = (
+        "GOVERNANCE_BASE_REF: ${{ github.event_name == 'pull_request' && "
+        "github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}"
+    )
 
     checks = {
         "workflow_exists": WORKFLOW.is_file(),
@@ -90,9 +94,15 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             "github.event_name == 'pull_request'" in text
             and "--changed-only --enforce-sync --semantic" in text
         ),
+        "pull_request_changed_only_uses_pr_base_sha": (
+            "github.event_name == 'pull_request'" in text
+            and "github.event.pull_request.base.sha" in text
+            and changed_scope_base_ref in text
+            and "--changed-only --enforce-sync --semantic" in text
+        ),
         "main_push_changed_only_uses_event_before": (
             "github.event_name == 'push'" in text
-            and "GOVERNANCE_BASE_REF: ${{ github.event.before || inputs.base_ref || '' }}" in text
+            and changed_scope_base_ref in text
             and "--changed-only --enforce-sync --semantic" in text
         ),
         "pull_request_skips_information_quality": (

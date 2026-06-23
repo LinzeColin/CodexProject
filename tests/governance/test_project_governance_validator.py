@@ -771,6 +771,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         checks = report["checks"]
         for check_name in {
             "pull_request_changed_only_enforce_sync_semantic",
+            "pull_request_changed_only_uses_pr_base_sha",
             "main_push_changed_only_uses_event_before",
             "pull_request_skips_information_quality",
             "full_governance_runs_only_on_schedule_or_manual_all",
@@ -802,6 +803,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_pr_governance_keeps_full_computation_out_of_pr_path(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("github.event_name == 'pull_request'", workflow)
+        self.assertIn("github.event.pull_request.base.sha", workflow)
+        self.assertIn("github.event.before || inputs.base_ref", workflow)
         self.assertIn("--changed-only --enforce-sync --semantic", workflow)
         self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
