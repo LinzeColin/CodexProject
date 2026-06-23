@@ -1049,6 +1049,118 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("Serenity-Alipay/docs/governance/model_extraction.yaml", manifest["evidence_refs"])
         self.assertIn("S4PAT03 still must reconstruct Roadmap", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s4pat03_serenity_roadmap_draft_separates_event_truth_levels(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "roadmap_draft.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap_draft.v1")
+        self.assertEqual(roadmap["project_id"], "Serenity-Alipay")
+        self.assertEqual(roadmap["task_id"], "S4PAT03")
+        self.assertEqual(roadmap["acceptance_id"], "ACC-S4PAT03")
+        self.assertFalse(roadmap["estimate_policy"]["historical_hours_inferred"])
+        self.assertFalse(roadmap["estimate_policy"]["git_commit_count_used_as_iteration_count"])
+
+        confirmed = {event["event_id"]: event for event in roadmap["confirmed_events"]}
+        reconstructed = {event["event_id"]: event for event in roadmap["reconstructed_events"]}
+        unknowns = {item["unknown_id"]: item for item in roadmap["unknowns"]}
+        self.assertIn("ITER-20260621-001", confirmed)
+        self.assertIn("ITER-20260621-002", confirmed)
+        self.assertEqual(confirmed["ITER-20260621-001"]["binding_status"], "stale_unbound")
+        self.assertEqual(confirmed["ITER-20260621-002"]["binding_status"], "stale_unbound")
+        self.assertEqual(confirmed["REVIEW9-S4PAT01"]["binding_status"], "commit_and_ci_bound")
+        self.assertEqual(confirmed["REVIEW9-S4PAT02"]["binding_status"], "commit_and_ci_bound")
+        self.assertIn("EVENT-RECON-20260612-001", reconstructed)
+        self.assertIn("EVENT-RECON-20260614-001", reconstructed)
+        self.assertIn("UNKNOWN-SER-HISTORY-001", unknowns)
+        self.assertEqual(unknowns["UNKNOWN-SER-HISTORY-001"]["fact_level"], "UNKNOWN")
+        self.assertEqual(unknowns["UNKNOWN-SER-HISTORY-001"]["followup_task_id"], "S4PBT01")
+        self.assertTrue(roadmap["acceptance"]["confirmed_and_reconstructed_separated"])
+        self.assertTrue(roadmap["acceptance"]["legacy_pending_not_promoted"])
+
+    def test_review9_s4pat03_serenity_roadmap_draft_has_valid_stage_phase_task_gates(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "roadmap_draft.yaml")
+        draft = roadmap["roadmap_draft"]
+        self.assertEqual(draft["stage_id"], "S4")
+        self.assertEqual(draft["stop_gate"]["gate_id"], "S4-GATE")
+        phase_ids = [phase["phase_id"] for phase in draft["phases"]]
+        self.assertEqual(phase_ids, ["S4PA", "S4PB", "S4PC"])
+        expected_tasks = {
+            "S4PAT01",
+            "S4PAT02",
+            "S4PAT03",
+            "S4PBT01",
+            "S4PBT02",
+            "S4PBT03",
+            "S4PCT01",
+            "S4PCT02",
+        }
+        observed_tasks: set[str] = set()
+        for phase in draft["phases"]:
+            self.assertRegex(phase["phase_id"], r"^S4P[A-Z]$")
+            self.assertTrue(phase["stop_gate"]["gate_id"].startswith(phase["phase_id"]))
+            for task in phase["tasks"]:
+                observed_tasks.add(task["task_id"])
+                self.assertRegex(task["task_id"], r"^S4P[A-Z]T[0-9]{2}$")
+                self.assertIn("estimated_hours", task)
+                self.assertIn("estimated_pct", task)
+                self.assertTrue(task["acceptance_ids"])
+        self.assertEqual(observed_tasks, expected_tasks)
+        completed = {
+            task["task_id"]: task
+            for phase in draft["phases"]
+            for task in phase["tasks"]
+            if task["status"] == "completed"
+        }
+        self.assertEqual(set(completed), {"S4PAT01", "S4PAT02"})
+        self.assertIn("PR-95", completed["S4PAT01"]["evidence_refs"])
+        self.assertIn("ci_run:28027304921", completed["S4PAT01"]["evidence_refs"])
+        self.assertIn("PR-96", completed["S4PAT02"]["evidence_refs"])
+        self.assertIn("ci_run:28027843674", completed["S4PAT02"]["evidence_refs"])
+
+    def test_review9_s4pat03_roadmap_draft_is_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "Serenity-Alipay",
+            "path": "Serenity-Alipay",
+            "model_behavior_globs": ["app/**/*.py", "tests/**/*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            ["Serenity-Alipay/docs/governance/roadmap_draft.yaml"],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change"})
+        self.assertEqual(changes[0].updated_governance_files, {"docs/governance/roadmap_draft.yaml"})
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s4pat03_manifest_records_roadmap_reconstruction_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S4PAT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PAT03"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("roadmap_draft", manifest["change_classification"])
+        self.assertIn("no_invented_history", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        self.assertIn("Serenity-Alipay/docs/governance/roadmap_draft.yaml", changed)
+        self.assertIn("scripts/validate_governance_sync.py", changed)
+        self.assertIn("tests/governance/test_project_governance_validator.py", changed)
+        self.assertIn(
+            "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json",
+            changed,
+        )
+        self.assertIn("Serenity-Alipay/docs/governance/roadmap_draft.yaml", manifest["evidence_refs"])
+        self.assertIn("S4PBT01 still must create canonical", " ".join(manifest["unresolved_risks"]))
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")

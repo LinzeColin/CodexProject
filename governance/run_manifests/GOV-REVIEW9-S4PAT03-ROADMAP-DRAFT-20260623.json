@@ -1,0 +1,134 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623",
+  "project_id": "Serenity-Alipay",
+  "task_id": "S4PAT03",
+  "acceptance_ids": [
+    "ACC-S4PAT03"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S4PAT03",
+  "generated_at": "2026-06-24T00:20:00+10:00",
+  "implementation_base_sha": "5fc77fe002bd2822ccf960eb34beb637fca15b01",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1372ed882efc00ecbe4ccf43bf22f212a77feedbbfa39536466e3dd9446e8784",
+  "changed_files_declared": [
+    "Serenity-Alipay/docs/governance/roadmap_draft.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+  ],
+  "changed_files_actual": [
+    "Serenity-Alipay/docs/governance/roadmap_draft.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+  ],
+  "required_governance_files": [
+    "Serenity-Alipay/docs/governance/roadmap_draft.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+  ],
+  "updated_governance_files": [
+    "Serenity-Alipay/docs/governance/roadmap_draft.yaml",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "root_governance_change",
+    "review9_stage4_pilot_migration",
+    "roadmap_draft",
+    "roadmap_draft_classifier",
+    "no_invented_history",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S4PAT03 reconstructs roadmap and event truth levels only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_serenity_roadmap_draft_separates_event_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_serenity_roadmap_draft_has_valid_stage_phase_task_gates tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_roadmap_draft_is_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_manifest_records_roadmap_reconstruction_scope -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_serenity_roadmap_draft_separates_event_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_serenity_roadmap_draft_has_valid_stage_phase_task_gates tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_roadmap_draft_is_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s4pat03_manifest_records_roadmap_reconstruction_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 4 tests in 0.051s; OK."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 154 tests in 9.384s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0; checked Serenity-Alipay."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duration_seconds=1.016; validation errors=0 warnings=0; zero_diff.clean=true changed_count=0."
+    }
+  ],
+  "evidence_refs": [
+    "Serenity-Alipay/docs/governance/evidence_index.yaml",
+    "Serenity-Alipay/docs/governance/model_extraction.yaml",
+    "Serenity-Alipay/docs/governance/roadmap_draft.yaml",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/DELIVERY_PLAN.md",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT02-MODEL-EXTRACTION-20260623.json",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S4PAT03-ROADMAP-DRAFT-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S4PAT03 Serenity-Alipay roadmap reconstruction",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_AND_CLEAN_CI_BEFORE_PR",
+  "summary": "Draft the Serenity-Alipay Review9 Stage 4 roadmap and event truth levels while keeping confirmed, reconstructed, and unknown history separate.",
+  "rollback": "Delete Serenity-Alipay/docs/governance/roadmap_draft.yaml, remove roadmap_draft.yaml from the governance-only classifier, remove S4PAT03 tests, and delete this run manifest.",
+  "unresolved_risks": [
+    "S4PBT01 still must create canonical project.yaml, roadmap.yaml, and events.jsonl from this draft.",
+    "S4PBT02 still must replace compatibility-index human files with complete Chinese owner-readable files.",
+    "Stage 4 final gate still needs owner readability acceptance, reusable migration mode, and post-merge CI evidence."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
