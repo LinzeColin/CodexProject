@@ -1372,10 +1372,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"]
-    implementation_fingerprint: "sha256:88bded9dcd446a3257b68358b190a9dd4945129ae5c8b4bfd10b8a2c83dfe798"
-    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
-    verified_at: "2026-06-23T09:50:00+10:00"
-    evidence_hash: "sha256:d67d39db6c065cd25d35fe01f76043e65ce478cd8c87853e3bd50ad4aa84fbd0"
+    implementation_fingerprint: "sha256:435315cb6da3f78c19ef1ebe23b717d91eec264dee2f2102f4dc6333a73be883"
+    last_verified_commit: "3922760a3153a98e42ec48fa19f7353010e83efb"
+    verified_at: "2026-06-23T23:00:00+10:00"
+    evidence_hash: "sha256:3d17a2e0002f9671b24bf05b4422611f9e5b56d42db7afc5134d08ff640f78ba"
   - formula_id: "FORM-ADP-040"
     model_id: "MOD-ADP-038"
     assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]

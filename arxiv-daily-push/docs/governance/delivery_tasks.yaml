@@ -1023,19 +1023,19 @@ tasks:
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"
     phase: "E"
-    objective: "Refine the daily email front-end into a human-scannable Chinese layout with compact subject, 12-second video link, actionable time guidance, concise evidence, and candidate queue summary while keeping ROI scoring in backend artifacts."
+    objective: "Refine the daily email front-end into a teaching-first Chinese layout with compact subject, actionable guidance, concise evidence, and candidate queue summary while keeping ROI scoring, Release, video, delivery policy, and backend wording out of the owner-facing email."
     scope: "Daily delivery email subject and body rendering, arXiv category labels, theme truncation, focused email/scheduled-execution tests, and governance records."
-    non_scope: "No production schedule enablement, no new SMTP send, no direct Release upload, no ranking algorithm change, no candidate queue policy change, no secret logging, and no video email attachment."
-    status: "planned"
+    non_scope: "No production schedule enablement, no new SMTP send, no direct Release upload, no ranking algorithm change, no candidate queue policy change, no secret logging, no Stage 2 work, no video requirement, and no video email attachment."
+    status: "ready"
     dependencies: ["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
-    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_notifications.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_fmt_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", "git diff --check"]
-    test_results: ["focused email and scheduled execution tests: 20 tests OK", "arxiv-daily-push unit tests: 177 tests OK", "governance validation pending final run", "git diff check pending final run"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_notifications.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused email, scheduled execution, and notification tests: 23 tests OK", "full arxiv-daily-push unit tests: 200 tests OK", "semantic extractor: 48 formulas and 342 parameters checked", "changed-only governance validation with semantic checks: errors 0 warnings 0", "root governance tests: 154 tests OK", "git diff check: PASS", "cache check: no __pycache__ or .pyc files found under arxiv-daily-push, tests, or scripts"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
-    risk: "The updated format still needs PR CI, merge, and a controlled manual email test before replacing the previously verified manual email format on main."
-    rollback: "Revert version 0.12.5 email format code, tests, and governance records, then restore version 0.12.4."
-    target_version: "0.12.5"
+    risk: "The updated format still needs PR CI, merge, and a separate owner-approved controlled email test before any real send."
+    rollback: "Revert the ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 email renderer, tests, and governance records."
+    target_version: "0.23.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"

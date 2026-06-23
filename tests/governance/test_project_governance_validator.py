@@ -2838,7 +2838,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         task_by_id = {task["task_id"]: task for task in tasks}
         self.assertEqual(task_by_id["ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035"]["status"], "completed")
         self.assertEqual(task_by_id["S1-02-BASELINE-LOCK-TRACEABILITY-001"]["status"], "completed")
-        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]["status"], "planned")
+        self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]["status"], "ready")
         self.assertEqual(task_by_id["S1-03-OWNER-CONTROLS-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-04-SQLITE-DATA-MODEL-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-05-ARXIV-CONNECTOR-CONTRACT-001"]["status"], "completed")
@@ -2874,8 +2874,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-079")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-079")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-080")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-080")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -2883,15 +2883,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
+            "governance/run_manifests/GOV-SEMANTIC-ADP-PLANNED-001.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
-        self.assertTrue(info["latest_manifest"]["production_acceptance_claimed"])
-        self.assertEqual(info["latest_manifest"]["cloud_artifact"]["run_id"], "28027759062")
-        self.assertEqual(info["latest_manifest"]["cloud_artifact"]["artifact_id"], "7821452823")
-        self.assertFalse(info["latest_manifest"]["production_schedule_enabled"])
-        self.assertFalse(info["latest_manifest"]["real_smtp_sent"])
-        self.assertFalse(info["latest_manifest"]["real_release_uploaded"])
+        self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertFalse(info["latest_manifest"].get("production_acceptance_claimed", False))
+        self.assertFalse(info["latest_event"]["production_schedule_enabled"])
+        self.assertFalse(info["latest_event"]["real_smtp_sent"])
+        self.assertFalse(info["latest_event"]["real_release_uploaded"])
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
