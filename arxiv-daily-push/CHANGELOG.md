@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.22.0 - 2026-06-23
+
+- Converted S1-12 production enablement to Stage 1 text-only delivery: all-arXiv scan, candidate queue, ROI-ranked lead selection, Chinese teaching email, and GitHub Actions text artifacts.
+- Removed video/MP4 and GitHub Release upload as production-readiness requirements for Stage 1; Gmail SMTP remains the only controlled frontstage side effect.
+- Kept production scheduler and `ARXIV_PRODUCTION_ACCEPTED` disabled pending PR CI, manual controlled SMTP test evidence, and later acceptance gates.
+
+## 0.21.0 - 2026-06-23
+
+- Added S1-11 historical B1/arXiv preview evidence generation via `adp historical-b1-previews`.
+- Added deterministic 30-sample B1 report/email preview generation with unique source IDs, content hashes, email IDs, claim evidence audits, and content ledger rows.
+- Kept live network fetch, production scheduler, real SMTP send, GitHub Release upload, video generation, and `ARXIV_PRODUCTION_ACCEPTED` disabled.
+
+## 0.20.0 - 2026-06-23
+
+- Added S1-10 post-migration bootstrap verification for the target machine or GitHub-hosted cloud runner.
+- Added `adp post-migration-bootstrap` to verify Python, Git checkout, SSL context, SQLite/FTS5, runtime smoke, GitHub Actions runner env, workflow runner contract, and secret-name-only readiness.
+- Added a GitHub-hosted Stage 1 bootstrap workflow that runs on `ubuntu-latest`, uploads JSON evidence, and keeps production schedule, SMTP send, Release upload, video, and large replay disabled.
+
+## 0.19.0 - 2026-06-22
+
+- Added S1-09 low-resource migration package export and verification via `adp migration export|verify`.
+- Added package manifest hash verification, new-machine bootstrap checklist, secret-name checklist, restore drill, and low-resource smoke artifact generation.
+- Kept production scheduling, real SMTP, Release upload, video generation, 30-day replay, and Stage 2 promotion disabled.
+
+## 0.18.0 - 2026-06-22
+
+- Added S1-08 local runtime recovery controls for `adp tick`, `adp watchdog`, `adp backup`, `adp restore`, `adp runtime-audit`, and `adp scheduler install|uninstall`.
+- Added heartbeat/checkpoint state, stale-heartbeat watchdog checks, SHA256 SQLite backup/restore manifests, and scheduler dry-run template generation.
+- Kept production scheduling, real SMTP, Release upload, video generation, and long-running local background execution disabled.
+
+## 0.17.0 - 2026-06-22
+
+- Added S1-07 B1/arXiv Chinese teaching report and email preview artifact generation.
+- Added `adp build-b1-report-email` for text-first Markdown, HTML, plain-text email, HTML email, and audit JSON output.
+- Added fail-closed validation for 100% critical-claim evidence coverage, Chinese-first email content, no real SMTP, no Release upload, and no video requirement.
+
 ## 0.16.0 - 2026-06-22
 
 - Promoted the V5 two-stage text-delivery baseline for Stage 1 B1/arXiv and marked conflicting V4/media requirements as inactive for the current acceptance path.

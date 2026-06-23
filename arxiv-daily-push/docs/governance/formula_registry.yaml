@@ -289,7 +289,7 @@ formulas:
     constraints: "Phase 8 cannot render video, write media paths, or download external assets."
     missing_policy: "Invalid narration input or media path output creates VideoPlanError rather than media output."
     output_range: "valid Storyboard dry-run JSON or VideoPlanError"
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md"]
     semantic_status: "MACHINE_VERIFIED"
@@ -361,7 +361,7 @@ formulas:
     model_id: "MOD-ADP-011"
     assumption_ids: ["ASM-ADP-013", "ASM-ADP-014", "ASM-ADP-015"]
     status: "active"
-    expression: "A Phase 11 acceptance package is valid when the Phase 10 handoff is valid; production acceptance is pass only if evidence comes from the adp-trial-evidence-v1 report, 30-day trial, scheduler, Release, SMTP, and resource requirements all pass, and each passed requirement has a non-empty evidence_ref. If any production requirement, evidence_ref, or validator marker is missing, accepted_for_production must be false and blocking_reasons must be non-empty."
+    expression: "A Phase 11 acceptance package is valid when the Phase 10 handoff is valid; production acceptance is pass only if evidence comes from the adp-trial-evidence-v1 report and the 30-day trial, scheduler, Stage 1 text artifact, SMTP, and resource requirements all pass, and each passed requirement has a non-empty evidence_ref. If any production requirement, evidence_ref, or validator marker is missing, accepted_for_production must be false and blocking_reasons must be non-empty."
     variables:
       - name: "handoff_valid"
         data_type: "bool"
@@ -370,7 +370,7 @@ formulas:
       - name: "production_requirements"
         data_type: "list[object]"
         unit: "requirement records"
-        input_domain: "30-day trial, scheduler, Release, SMTP, and resource evidence gates"
+        input_domain: "30-day trial, scheduler, Stage 1 text artifact, SMTP, and resource evidence gates"
       - name: "accepted_for_production"
         data_type: "bool"
         unit: "flag"
@@ -391,16 +391,16 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py::build_acceptance_package", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py::validate_acceptance_package", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py::_requirement_passed"]
-    implementation_fingerprint: "sha256:09b3f5365ea3fe9c2faf1dcbd19d9bf6828a472d9c09d9320adf738eff4ec9b4"
-    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
-    verified_at: "2026-06-22T14:15:00+10:00"
-    evidence_hash: "sha256:b9e54d9887cd19883ed5c45743a4db73d8c8e897a8890ce9aef2fdda6eb3c2f5"
+    implementation_fingerprint: "sha256:8a0b76b2a462a6e2d789ad8f6e3b831a1dae71568c5e49164c67527893366557"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:684cf6f91c615d7ff1673dbedcb673737f77b676c4e639a71ae515f7cdcff14a"
 
   - formula_id: "FORM-ADP-014"
     model_id: "MOD-ADP-012"
     assumption_ids: ["ASM-ADP-015", "ASM-ADP-002"]
     status: "active"
-    expression: "A trial evidence report passes only when at least 30 unique daily dates exist, source_id and publication_id values are unique, every daily run is succeeded or degraded, every P0 claim is traceable, no duplicate or unsupported publication is recorded, no misleading failure output is published, every daily run has RunRecord, Release, SMTP, and resource refs, the scheduler records 05:00 target and 04:45 health check with manual rerun evidence, weekly and monthly replay evidence exists, recovery drill evidence exists, real SMTP targets linzezhang35@gmail.com, and resource pressure evidence covers disk, memory, cache, Git artifacts, and secrets."
+    expression: "A trial evidence report passes only when at least 30 unique daily dates exist, source_id and publication_id values are unique, every daily run is succeeded or degraded, every P0 claim is traceable, no duplicate or unsupported publication is recorded, no misleading failure output is published, every daily run has RunRecord, Stage 1 text artifact, SMTP, and resource refs, the scheduler records 05:00 target and 04:45 health check with manual rerun evidence, weekly and monthly replay evidence exists, recovery drill evidence exists, real SMTP targets linzezhang35@gmail.com, and resource pressure evidence covers disk, memory, cache, Git artifacts, and secrets."
     variables:
       - name: "daily_runs"
         data_type: "list[object]"
@@ -426,25 +426,25 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial.py::evaluate_trial_evidence", "arxiv-daily-push/src/arxiv_daily_push/trial.py::validate_trial_evidence_report", "arxiv-daily-push/src/arxiv_daily_push/trial.py::_evaluate_daily_runs"]
-    implementation_fingerprint: "sha256:5f4d7941e4322684ad7ca47c96a2f7f6ee541eb7cee070eeaeae8f8cb241fad9"
-    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
-    verified_at: "2026-06-22T14:15:00+10:00"
-    evidence_hash: "sha256:5018a0f851d4fee8404ecd6e66f644091b45c45b896a4f95b7f461071cd53984"
+    implementation_fingerprint: "sha256:60edd6095bd1a159091936752df9a353514b5544003fe29cb29b225f04cc069c"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:3ccbd987db9afac0f0c977baa1f852de568c6d7670954a865d8e58519160ea00"
 
   - formula_id: "FORM-ADP-015"
     model_id: "MOD-ADP-013"
     assumption_ids: ["ASM-ADP-016", "ASM-ADP-002"]
     status: "active"
-    expression: "Production preflight passes only when all required runtime commands are available, required secret environment keys are present without logging values, free disk is at least 80 GiB, memory is at least 8 GiB, Git tracked/untracked files contain no forbidden media/model/secret artifacts or oversized files, and local cache/staging/render/media/model/voice/release asset directories are empty."
+    expression: "Production preflight passes only when all required runtime commands are available, required SMTP secret environment keys are present without logging values, free disk is at least 8 GiB, memory is at least 8 GiB, Git tracked/untracked files contain no forbidden media/model/secret artifacts or oversized files, and local cache/staging/render/media/model/voice/release asset directories are empty."
     variables:
       - name: "required_commands"
         data_type: "list[str]"
         unit: "commands"
-        input_domain: "python3, git, node, npm, gh, ffmpeg, docker, codex"
+        input_domain: "python3, git, gh"
       - name: "required_secret_keys"
         data_type: "list[str]"
         unit: "environment variable names"
-        input_domain: "SMTP, Release target, and self-hosted runner label key names"
+        input_domain: "SMTP key names only; Release target and self-hosted runner label are not Stage 1 text-delivery requirements"
       - name: "disk_free_gib"
         data_type: "float"
         unit: "GiB"
@@ -465,10 +465,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::build_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::validate_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_command_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_disk_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_memory_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_git_artifact_gate", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::_cache_gate"]
-    implementation_fingerprint: "sha256:ea431e588dc81daa4edea3653abc8fda2ff1c43ce7911ddfb8dac20bd47bd670"
-    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T12:15:00+10:00"
-    evidence_hash: "sha256:0f483df362f75715f190587f594cd05419604206e71cf76f11ef6d1633b90690"
+    implementation_fingerprint: "sha256:038243c99b1242593ce6fa922e387db34a8e3a5f0d42bdee390a25fa21ab83d2"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:8ef92a8b6e49833e8a070c9aa2407c42b2ebf0f9d363daec6ce5f7a476c42379"
 
   - formula_id: "FORM-ADP-016"
     model_id: "MOD-ADP-014"
@@ -610,7 +610,7 @@ formulas:
     model_id: "MOD-ADP-018"
     assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
     status: "active"
-    expression: "The production scheduler contract passes only when the GitHub workflow declares timezone-aware Australia/Sydney schedules for 04:45 health-check, 05:00 daily-run, and 05:10 watchdog, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets the private self-hosted runner, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, builds and uploads daily source batch and daily input artifacts for daily-run when no override input path is configured, maps secret names without reading Codex auth, declares ADP_RELEASE_TARGET, declares contents: write for controlled draft Release creation, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing artifact upload, missing Release write permission, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan."
+    expression: "The production scheduler contract passes only when the GitHub workflow declares Australia/Sydney health-check, daily-run, and watchdog slots, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets GitHub-hosted ubuntu-latest, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, builds and uploads all-arXiv daily input plus Stage 1 text artifacts for daily-run, maps secret names without reading Codex auth, keeps contents permission read-only, requires no Release target, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing text artifact upload, unexpected Release write permission, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan."
     variables:
       - name: "schedule_slots"
         data_type: "list[dict]"
@@ -628,7 +628,7 @@ formulas:
         data_type: "str"
         unit: "GitHub Actions variable"
         input_domain: "ADP_SCHEDULED_RUN_ENABLED"
-    constraints: "Scheduler gate does not read Codex auth and does not hard-code SMTP send or Release upload flags. Schedule trigger readiness still depends on the workflow being merged to the default branch."
+    constraints: "Scheduler gate does not read Codex auth and does not hard-code SMTP send or Release upload flags. Schedule trigger readiness still depends on the workflow being merged to the default branch and production variables remaining fail-closed until accepted."
     missing_policy: "Missing schedules, missing timezone, missing production gate, missing preflight-first ordering, missing preflight/execution artifact upload, or direct side-effect commands produce a blocked scheduler plan."
     output_range: "Scheduler plan with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
@@ -636,15 +636,15 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_has_schedule", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::_appears_before"]
-    implementation_fingerprint: "sha256:1a9abc44cc56baa865721c296d60d2705f358fa9aca36545fa18f6e18b01e63f"
-    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T12:15:00+10:00"
-    evidence_hash: "sha256:586b8dff2b7a7769fb250d0716b230e0e3a0d9ffaba96b40fb08a32f441ccbf2"
+    implementation_fingerprint: "sha256:20f029dc7a4f1abbdf4b60c9535653ce7d6cbb638f7c86d50439fc2d60c63449"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:9f47b177177d2155bea26dca1ad7432f2f07295671148baf3f09bdaa75ec052f"
   - formula_id: "FORM-ADP-021"
     model_id: "MOD-ADP-019"
     assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
     status: "active"
-    expression: "A scheduled execution report succeeds for health-check when production preflight passes. Daily-run is blocked unless ADP_SCHEDULED_RUN_ENABLED is true and a daily input package is supplied. Daily-run is production_evidence_ready only when the daily pipeline completes, Release delivery returns a release_ref, SMTP delivery returns an email delivery_ref, and the preflight resource gate provides a resource_gate_ref. Dry-run SMTP or dry-run Release output creates degraded evidence with exit_code 2 and cannot feed Phase 11 production acceptance. Watchdog succeeds only when previous daily execution evidence is production_evidence_ready."
+    expression: "A scheduled execution report succeeds for health-check when production preflight passes. Daily-run is blocked unless ADP_SCHEDULED_RUN_ENABLED is true and a daily input package is supplied. Daily-run is production_evidence_ready only when the daily pipeline completes, the Stage 1 text artifact ref exists, SMTP delivery returns an email delivery_ref, and the preflight resource gate provides a resource_gate_ref. Dry-run SMTP or missing text-delivery evidence creates degraded evidence with exit_code 2 and cannot feed Phase 11 production acceptance. Watchdog succeeds only when previous daily execution evidence is production_evidence_ready."
     variables:
       - name: "mode"
         data_type: "str"
@@ -661,8 +661,8 @@ formulas:
       - name: "side_effect_refs"
         data_type: "dict"
         unit: "evidence references"
-        input_domain: "daily_run_ref, release_ref, email_ref, resource_gate_ref"
-    constraints: "The driver never reads Codex auth, never logs secret values, never logs email body text, and never logs gh stdout or stderr. Real side effects require dedicated SMTP and Release delivery gates."
+        input_domain: "daily_run_ref, text_artifact_ref, email_ref, resource_gate_ref"
+    constraints: "The driver never reads Codex auth, never logs secret values, never logs email body text, and never logs gh stdout or stderr. Stage 1 production evidence requires dedicated SMTP delivery plus text artifact evidence; Release upload is not required."
     missing_policy: "Missing preflight pass, daily input, scheduled-run flag, previous watchdog evidence, or real side-effect evidence produces blocked or degraded scheduled execution."
     output_range: "scheduled execution report with status succeeded, blocked, failed, or degraded"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
@@ -670,10 +670,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::validate_scheduled_execution_report", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_daily", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_notification"]
-    implementation_fingerprint: "sha256:aa0a30e5823a7f778e3035b6e97718866e06a10e2b4fee5c13b039544668d293"
-    last_verified_commit: "ecd43e80a29193120d788ef8125d4ebca233dca3"
-    verified_at: "2026-06-22T17:20:00+10:00"
-    evidence_hash: "sha256:96d63eeca389ed91f4aa6cbcd2858a4cb5ede03b7f29c8d2484a9a7cd671248f"
+    implementation_fingerprint: "sha256:a1fef3bc51112509fe3ec98da1f75e026c555c85dee3c9da502ab3043d89bfaf"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:14e566b5f1e674a0c265c84906802f56be7d083ed924f9a3fb7494b1dcf4655b"
   - formula_id: "FORM-ADP-022"
     model_id: "MOD-ADP-020"
     assumption_ids: ["ASM-ADP-023", "ASM-ADP-018", "ASM-ADP-006"]
@@ -713,7 +713,7 @@ formulas:
     model_id: "MOD-ADP-021"
     assumption_ids: ["ASM-ADP-024", "ASM-ADP-022", "ASM-ADP-015"]
     status: "active"
-    expression: "A trial ledger update appends exactly one daily entry only when the scheduled execution report validates as adp-scheduled-execution-v1, mode is daily-run, production_evidence_ready is true, daily_run_report contains date, run_id, source_id, publication_id, P0 traceability true, unsupported/misleading publication flags false, evidence_refs contains daily_run_ref, release_ref, email_ref, and resource_gate_ref, and no existing daily_runs entry duplicates the new date, source_id, or publication_id. The updated evidence is immediately re-evaluated by adp-trial-evidence-v1; the ledger update can pass while production acceptance remains blocked."
+    expression: "A trial ledger update appends exactly one daily entry only when the scheduled execution report validates as adp-scheduled-execution-v1, mode is daily-run, production_evidence_ready is true, daily_run_report contains date, run_id, source_id, publication_id, P0 traceability true, unsupported/misleading publication flags false, evidence_refs contains daily_run_ref, text_artifact_ref, email_ref, and resource_gate_ref, and no existing daily_runs entry duplicates the new date, source_id, or publication_id. The updated evidence is immediately re-evaluated by adp-trial-evidence-v1; the ledger update can pass while production acceptance remains blocked."
     variables:
       - name: "scheduled_execution_report"
         data_type: "object"
@@ -722,7 +722,7 @@ formulas:
       - name: "production_evidence_ready"
         data_type: "bool"
         unit: "flag"
-        input_domain: "true only when daily run, Release, SMTP, and resource refs exist"
+        input_domain: "true only when daily run, Stage 1 text artifact, SMTP, and resource refs exist"
       - name: "daily_entry"
         data_type: "object"
         unit: "trial evidence daily run"
@@ -739,10 +739,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py::update_trial_evidence_ledger", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py::validate_trial_ledger_update_report", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py::_daily_entry_from_scheduled_report"]
-    implementation_fingerprint: "sha256:ff4ad7203a480db52c0c986a4361ae857073636e3e95fe8b4757a4c593633ae7"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:1cc894a6c7c46ba942f8f3b7af1c2dff8dd23dea4f2b89642ea8250f0b3881a5"
+    implementation_fingerprint: "sha256:540c7181b4eb117a12c9e6da34a22f0aae56e87a4fee15e2c0087a73a1c44f7c"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:405368b86e98da921d967e3eda8a79366a4c5bcba3795492bfda09eae1894282"
 
   - formula_id: "FORM-ADP-024"
     model_id: "MOD-ADP-022"
@@ -774,15 +774,15 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:5999e6bfa574f7032f4a40739ab958add862ca19313ff1e4784a070e1958fb8b"
-    last_verified_commit: "89fe618f953b73e168f4f218b8c3edfc0102f6f9"
-    verified_at: "2026-06-22T21:00:00+10:00"
-    evidence_hash: "sha256:b0d53007b57b77380c8f5964b8ae4379a08f7066ccb67569e97576690f079505"
+    implementation_fingerprint: "sha256:991b046899dbe59282cbb95fcddc08c06f351e8a0538ff5e3ca6491a1533c7a5"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:8d898179df814d331f4667a72d11cc9390df22a16fc6c08e4893347c70fa1fd5"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
     status: "active"
-    expression: "A trial ops annotation passes only when at least one operational evidence update is requested and every verified operational flag has a non-empty evidence ref. Weekly/monthly replay refs require at least one replay verification flag, recovery refs require a recovery verification flag, and blocked annotations cannot be exported as replacement trial evidence state. The updated evidence is re-evaluated by adp-trial-evidence-v1; the ops annotation can pass while production acceptance remains blocked."
+    expression: "A trial ops annotation passes only when at least one operational evidence update is requested and every verified operational flag has a non-empty evidence ref. Stage 1 text artifact refs require the text artifact verification flag, weekly/monthly replay refs require at least one replay verification flag, recovery refs require a recovery verification flag, and blocked annotations cannot be exported as replacement trial evidence state. The updated evidence is re-evaluated by adp-trial-evidence-v1; the ops annotation can pass while production acceptance remains blocked."
     variables:
       - name: "existing_trial_evidence"
         data_type: "object"
@@ -807,11 +807,11 @@ formulas:
     test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::annotate_trial_operational_evidence", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::validate_trial_ops_report", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_scheduler", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_release", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_email", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_resource", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_weekly_monthly", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_recovery"]
-    implementation_fingerprint: "sha256:6d1cfd8434583814f4f787e436cbcf6941a68e60ccb381fc2126980ecb54a91a"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:3ec1273c770438f6c099efb77eb0f17cd78992f54aff464d8f36a9293d0460e8"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::annotate_trial_operational_evidence", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::validate_trial_ops_report", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_scheduler", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_text_artifacts", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_release", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_email", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_resource", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_weekly_monthly", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py::_merge_recovery"]
+    implementation_fingerprint: "sha256:03a2839fd8ef09d7fd81fa20a79771816f53be34ab8084326bfce4c86f60bbaa"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:dee0d050a83cc5bfd7474d393c1f973b90e1c503628db7989c0e64d5692a1140"
 
   - formula_id: "FORM-ADP-026"
     model_id: "MOD-ADP-024"
@@ -873,7 +873,7 @@ formulas:
       - name: "recovery_evidence_refs"
         data_type: "object"
         unit: "evidence references"
-        input_domain: "daily_run_ref, release_ref, email_ref, resource_gate_ref"
+        input_domain: "daily_run_ref, text_artifact_ref, email_ref, resource_gate_ref"
       - name: "failure_ref_and_recovery_ref"
         data_type: "str"
         unit: "durable evidence refs"
@@ -934,7 +934,7 @@ formulas:
     model_id: "MOD-ADP-027"
     assumption_ids: ["ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A trial start readiness report passes only when confirm_start is true, all required durable refs contain a scheme separator, production preflight validates and allows production, the bootstrap and scheduler plans validate as ready, the live arXiv source batch passes with at least one unseen item and no PDF or bulk harvest behavior, the SMTP report is real sent evidence whose delivery_ref matches smtp_ref, the Release report is real created evidence whose release_ref matches release_ref, and the gate performs no side effects or production acceptance claim."
+    expression: "A trial start readiness report passes only when confirm_start is true, all required durable refs contain a scheme separator, production preflight validates and allows production, the bootstrap and scheduler plans validate as ready, the all-arXiv Stage 1 source report passes with text artifacts and no PDF or bulk harvest behavior, the SMTP report is real sent evidence whose delivery_ref matches smtp_ref, Release upload is not required, and the gate performs no side effects or production acceptance claim."
     variables:
       - name: "confirm_start"
         data_type: "bool"
@@ -959,29 +959,29 @@ formulas:
       - name: "delivery_reports"
         data_type: "object"
         unit: "JSON reports"
-        input_domain: "adp-smtp-delivery-v1 and adp-release-delivery-v1"
+        input_domain: "adp-smtp-delivery-v1 with Stage 1 text artifact evidence"
       - name: "evidence_refs"
         data_type: "map[str,str]"
         unit: "durable refs"
-        input_domain: "default branch, runner, preflight, source, SMTP, Release, scheduler, trial state, and start gate refs"
+        input_domain: "default branch, runner, preflight, source, SMTP, scheduler, trial state, and start gate refs"
     constraints: "The start gate does not enable schedules, send SMTP, create Releases, mutate trial evidence, generate media, retain cache/model artifacts, or claim production acceptance."
-    missing_policy: "Missing confirmation, missing durable refs, blocked upstream reports, dry-run SMTP or Release probes, mismatched refs, or any validation error produce a blocked trial start report."
+    missing_policy: "Missing confirmation, missing durable refs, blocked upstream reports, dry-run SMTP, missing text artifacts, mismatched refs, or any validation error produce a blocked trial start report."
     output_range: "trial start readiness report with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py::build_trial_start_gate", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::validate_trial_start_report", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::_preflight_gate", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::_smtp_gate", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::_release_gate"]
-    implementation_fingerprint: "sha256:2a9908e2bc6cbee9be432bbbbe283187b3bd6e3e108b5457c5984a3a00f1fb98"
-    last_verified_commit: "cc893e4e11ffe690a8f0d6010053c7a1ab5a09b4"
-    verified_at: "2026-06-22T03:26:34+10:00"
-    evidence_hash: "sha256:307c33411cc52da1dffdb3aa59ebd507c7cee32a1c0999f818e694f3cae5f3e4"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py::build_trial_start_gate", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::validate_trial_start_report", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::_preflight_gate", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::_all_arxiv_source_gate", "arxiv-daily-push/src/arxiv_daily_push/trial_start.py::_smtp_gate"]
+    implementation_fingerprint: "sha256:70bc08ea55fc585d0f0b1570f29d05854290f4d386aa12a895d865fbe704478b"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:77f3246b5ccbdcd4aa5b4b7dd43dd11061283d06be436099c631d9146b984580"
 
   - formula_id: "FORM-ADP-030"
     model_id: "MOD-ADP-028"
     assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before self-hosted runner work, targets a private runner label, runs preflight, production refs discovery, and production launch readiness before live source and delivery probes, runs live source before SMTP or Release probes, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, declares contents: write for controlled draft Release probe creation, and exposes real SMTP or Release probes only through explicit ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD GitHub variables."
+    expression: "A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before GitHub-hosted runner work, targets ubuntu-latest, runs preflight, production refs discovery, and production launch readiness before live source and delivery probes, runs all-arXiv source and Stage 1 text artifact generation before the SMTP probe, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, keeps contents permission read-only, and exposes real SMTP only through explicit ADP_ALLOW_SMTP_SEND GitHub variable."
     variables:
       - name: "workflow_text"
         data_type: "str"
@@ -990,7 +990,7 @@ formulas:
       - name: "required_artifacts"
         data_type: "list[str]"
         unit: "artifact names"
-        input_domain: "trial start preflight, production refs, launch readiness, bootstrap, scheduler, source, SMTP, Release, and gate artifacts"
+        input_domain: "trial start preflight, production refs, launch readiness, bootstrap, scheduler, source, Stage 1 text artifacts, SMTP, and gate artifacts"
       - name: "launch_prechecks"
         data_type: "list[str]"
         unit: "workflow steps"
@@ -998,28 +998,28 @@ formulas:
       - name: "side_effect_gates"
         data_type: "list[str]"
         unit: "GitHub variables"
-        input_domain: "ADP_ALLOW_SMTP_SEND and ADP_ALLOW_RELEASE_UPLOAD"
+        input_domain: "ADP_ALLOW_SMTP_SEND"
       - name: "durable_ref_args"
         data_type: "list[str]"
         unit: "CLI args"
         input_domain: "all plan-trial-start ref arguments"
     constraints: "The validator does not run GitHub Actions, send SMTP, create Releases, fetch arXiv, mutate trial evidence, generate media, or claim production acceptance."
-    missing_policy: "Missing workflow file, missing manual confirmation, missing artifact upload, unsafe secret/auth handling, missing side-effect gates, missing durable refs, or missing runbook documentation produce a blocked workflow plan."
+    missing_policy: "Missing workflow file, missing manual confirmation, missing text artifact upload, unsafe secret/auth handling, missing SMTP side-effect gate, missing durable refs, or missing runbook documentation produce a blocked workflow plan."
     output_range: "trial start workflow plan with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
     test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::validate_trial_start_workflow_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::_appears_before"]
-    implementation_fingerprint: "sha256:fbc02a0ec19305eab7047e60fc7d899592b613743accdd413a47eb86131927cc"
-    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T12:15:00+10:00"
-    evidence_hash: "sha256:f9f41fd515b8576017603c79afc3efed699529692eed5da66a99373d735e07b2"
+    implementation_fingerprint: "sha256:883ec4a7541e08d763902ab3e99aa5277469a7471963ccfc2e4fdc3846eae733"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:f965b06811b3bf02ea3a4ccf56beb903d8ac11de07cfeaab7764c010c25aa595"
   - formula_id: "FORM-ADP-031"
     model_id: "MOD-ADP-029"
     assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A production launch readiness report passes only when confirm_launch is true, current PR metadata is present, the PR is non-draft and merged into main, the observed head_sha equals the expected head SHA, the trial start workflow contract validates as ready, default branch, runner, SMTP secrets, Release target, workflow variable, and trial start workflow refs are durable, and the gate performs no side effects, reads no Codex auth, logs no secret values, and claims no production acceptance."
+    expression: "A production launch readiness report passes only when confirm_launch is true, current PR metadata is present, the PR is non-draft and merged into main, the observed head_sha equals the expected head SHA, the trial start workflow contract validates as ready, default branch, runner, SMTP secrets, workflow variable, and trial start workflow refs are durable, and the gate performs no side effects, reads no Codex auth, logs no secret values, and claims no production acceptance."
     variables:
       - name: "pr_info"
         data_type: "object"
@@ -1036,7 +1036,7 @@ formulas:
       - name: "external_readiness_refs"
         data_type: "map[str,str]"
         unit: "durable refs"
-        input_domain: "default branch, runner, SMTP secrets, Release target, workflow vars, and trial start workflow refs"
+        input_domain: "default branch, runner, SMTP secrets, workflow vars, and trial start workflow refs"
       - name: "confirm_launch"
         data_type: "bool"
         unit: "flag"
@@ -1049,16 +1049,16 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py::build_production_launch_readiness", "arxiv-daily-push/src/arxiv_daily_push/production_launch.py::validate_production_launch_readiness"]
-    implementation_fingerprint: "sha256:3f20e1051040d0872530165308c7b63a5eb750fec95fa1c9f9acca75042f6fe0"
-    last_verified_commit: "b52b88c1c7eadba64cb98fef655edc828f92b751"
-    verified_at: "2026-06-22T14:15:00+10:00"
-    evidence_hash: "sha256:ff304124990e33be62d2e098ed80acc82aebc9386177fcc206d060a9d0e27bbb"
+    implementation_fingerprint: "sha256:56fd8a32ce54ccad5c4de97ec311c81ecc8ba829c4d40e17cf05c05345964734"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:64edb60f6eee83ee797ac38ecde9a734534be4c0fbf97f76fb0b6847f16ec5d4"
 
   - formula_id: "FORM-ADP-032"
     model_id: "MOD-ADP-030"
     assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
     status: "active"
-    expression: "A production refs input template contains only runner, SMTP secrets, Release target, and workflow variable sections with ready=false defaults, required secret and variable names, and no secret values. GitHub metadata discovery may build the same no-secret input from gh api runner labels/status, secret names, variable names, and ADP_RELEASE_TARGET without printing gh stdout/stderr, either on a provisioned runner or through the GitHub-hosted provisioning audit workflow. A production refs report passes only when those readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no trial-start workflow, logs no secret values, and claims no production acceptance. A provisioning audit review passes only when the downloaded production refs report itself passes and durable workflow_run_ref plus artifact_ref are supplied."
+    expression: "A production refs input template contains only runner, SMTP secrets, and workflow variable sections with ready=false defaults, required secret and variable names, and no secret values. GitHub metadata discovery may build the same no-secret input from gh api runner labels/status, secret names, and variable names without printing gh stdout/stderr, either on a provisioned runner or through the GitHub-hosted provisioning audit workflow. A production refs report passes only when those readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no trial-start workflow, logs no secret values, and claims no production acceptance. A provisioning audit review passes only when the downloaded production refs report itself passes and durable workflow_run_ref plus artifact_ref are supplied."
     variables:
       - name: "readiness_input"
         data_type: "object"
@@ -1071,7 +1071,7 @@ formulas:
       - name: "template_sections"
         data_type: "list[str]"
         unit: "section names"
-        input_domain: "runner, smtp_secrets, release_target, and workflow_vars"
+        input_domain: "runner, smtp_secrets, and workflow_vars"
       - name: "required_smtp_secret_names"
         data_type: "list[str]"
         unit: "GitHub secret names"
@@ -1079,11 +1079,11 @@ formulas:
       - name: "required_workflow_var_names"
         data_type: "list[str]"
         unit: "GitHub variable names"
-        input_domain: "ADP_RELEASE_TARGET, ADP_ALLOW_SMTP_SEND, and ADP_ALLOW_RELEASE_UPLOAD"
+        input_domain: "ADP_ALLOW_SMTP_SEND"
       - name: "readiness_refs"
         data_type: "map[str,str]"
         unit: "durable refs"
-        input_domain: "runner, SMTP secrets, Release target, and workflow variables"
+        input_domain: "runner, SMTP secrets, and workflow variables"
       - name: "provisioning_audit_workflow"
         data_type: "str"
         unit: "GitHub Actions workflow path"
@@ -1093,17 +1093,17 @@ formulas:
         unit: "durable refs"
         input_domain: "workflow_run_ref and artifact_ref for adp-production-provisioning-audit"
     constraints: "The production refs and provisioning audit review gates do not inspect GitHub secret values, print gh stdout/stderr, read Codex auth, dispatch workflows, send SMTP, create Releases, mutate trial evidence, generate media, or claim production acceptance."
-    missing_policy: "Missing template sections, missing ready flags, missing required names, missing durable refs, missing gh, failed GitHub metadata access, invalid Release target variable, secret-like input keys or values, missing workflow_run_ref, or missing artifact_ref produce a blocked refs report, redacted blocked discovery error, or blocked audit review."
+    missing_policy: "Missing template sections, missing ready flags, missing required names, missing durable refs, missing gh, failed GitHub metadata access, secret-like input keys or values, missing workflow_run_ref, or missing artifact_ref produce a blocked refs report, redacted blocked discovery error, or blocked audit review."
     output_range: "production refs input template, discovered no-secret refs input, production refs readiness report, provisioning audit artifact, and provisioning audit review with status pass or blocked"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
     test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_template", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_from_github_metadata", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::discover_production_refs_input_with_gh", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_release_target_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_gh_api_json"]
-    implementation_fingerprint: "sha256:f725b45e395c0484a6c53b6a86a981a9350ae0a468f8178ec84fa85255518836"
-    last_verified_commit: "05c69c6522a74901f33350e03046f03a6f47b061"
-    verified_at: "2026-06-22T12:15:00+10:00"
-    evidence_hash: "sha256:0abad9b9d6f767f40a2d97f6912a0561ef34c7332ad2818afa7bc69bc2547bf3"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_production_refs_report", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_template", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_production_refs_input_from_github_metadata", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::discover_production_refs_input_with_gh", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::build_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::validate_provisioning_audit_review", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_runner_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_smtp_secret_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_workflow_vars_gate", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_secret_hygiene_errors", "arxiv-daily-push/src/arxiv_daily_push/production_refs.py::_gh_api_json"]
+    implementation_fingerprint: "sha256:398936f66f80448512ca9a7053acead7d2a8e0b254a58795dade1317b3b6566f"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:b0aa2503e85722cc6f427b664551e769c30c4c20ba3973edbca61df5434ea50b"
 
   - formula_id: "FORM-ADP-033"
     model_id: "MOD-ADP-031"
@@ -1147,7 +1147,7 @@ formulas:
     model_id: "MOD-ADP-032"
     assumption_ids: ["ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
     status: "active"
-    expression: "A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by relevance, learning value, economic conversion rate, ROI, interdisciplinary value, and explainability, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, video artifacts are stored as GitHub Release assets, and real SMTP can count only when the email package contains Chinese lesson content, a Release-hosted video link, and candidate queue summary."
+    expression: "A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by relevance, learning value, economic conversion rate, ROI, interdisciplinary value, and explainability, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, Stage 1 text artifacts are written as GitHub Actions artifacts, and real SMTP can count only when the email package contains Chinese lesson content, HTML/plain text bodies, and candidate queue summary."
     variables:
       - name: "archive_plan"
         data_type: "list[object]"
@@ -1163,25 +1163,25 @@ formulas:
         input_domain: "adp-candidate-queue-v1 items"
       - name: "delivery_package"
         data_type: "object"
-        unit: "email and Release link evidence"
-        input_domain: "adp-mail-video-link-v1"
+        unit: "email and Stage 1 text artifact evidence"
+        input_domain: "adp-mail-text-delivery-v1"
     constraints: "No production workflow may use the legacy cs.AI-only default. Phase 12 does not download PDFs, perform bulk harvest, attach video to email, log secret values, or enable SMTP/Release side effects by default."
-    missing_policy: "Missing required archive coverage, invalid source batch, no selectable new or queued candidate, missing queue summary, missing Release video asset link, missing Chinese lesson content, or dry-run delivery keeps production evidence degraded or blocked."
-    output_range: "all-arXiv daily input report with status pass or blocked; scheduled execution with production_evidence_ready true only after real Release and SMTP evidence plus video link gates pass"
+    missing_policy: "Missing required archive coverage, invalid source batch, no selectable new or queued candidate, missing queue summary, missing Stage 1 text artifact, missing Chinese lesson content, or dry-run SMTP delivery keeps production evidence degraded or blocked."
+    output_range: "all-arXiv daily input report with status pass or blocked; scheduled execution with production_evidence_ready true only after Stage 1 text artifact, real SMTP evidence, Chinese lesson, HTML, and candidate queue gates pass"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
     test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_scan_plan", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_all_arxiv_daily_input", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::select_roi_candidate", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution"]
-    implementation_fingerprint: "sha256:d19f7c1acebe5bde467275d9f551bb24efeaa3f66523ea7ffdf82b21a308bc40"
-    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
-    verified_at: "2026-06-22T19:20:00+10:00"
-    evidence_hash: "sha256:167d66803a189700a31947ad16ebede096614bcb938b131a6d9f0524d9a9d131"
+    implementation_fingerprint: "sha256:7e0e197cf14f636cd3701f0e8d40854a47a656d1d556888d8fefe4fdc796d6ad"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:169669038aed268870ff3cb7f117de6334cabe5ef8c5ecd0ce5d50a33d150c79"
   - formula_id: "FORM-ADP-035"
     model_id: "MOD-ADP-033"
     assumption_ids: ["ASM-ADP-035", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
     status: "active"
-    expression: "Phase 12 cloud enablement passes only when GitHub-hosted workflows avoid self-hosted runner targeting, live dry-run verifies all 20 arXiv primary archive buckets with at least one SourceItem each after bounded transient 429/timeout retries, a sample daily input is available, real MP4 rendering produces a non-empty .mp4 artifact through ffmpeg, and production schedule/SMTP/Release side effects remain disabled unless explicit manual gates are later enabled."
+    expression: "Phase 12 cloud enablement passes only when GitHub-hosted workflows avoid self-hosted runner targeting, live dry-run verifies all 20 arXiv primary archive buckets with at least one SourceItem each after bounded transient 429/timeout retries, a sample daily input and Stage 1 text artifacts are available, and production schedule/SMTP/Release side effects remain disabled unless explicit manual gates are later enabled."
     variables:
       - name: "workflow_runner"
         data_type: "string"
@@ -1191,31 +1191,31 @@ formulas:
         data_type: "int"
         unit: "archive buckets"
         input_domain: "0..20"
-      - name: "mp4_rendered"
+      - name: "text_artifacts_ready"
         data_type: "bool"
         unit: "flag"
         input_domain: "true or false"
       - name: "side_effect_flags"
         data_type: "object"
         unit: "GitHub variables"
-        input_domain: "ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, ADP_ALLOW_RELEASE_UPLOAD"
-    constraints: "JSON video manifests do not satisfy the email video-link gate; only a Release-hosted .mp4 asset can produce video_url. Cloud dry-run workflows must use contents: read, must not send SMTP or upload Releases, and may retry only transient arXiv 429/timeout blocks."
-    missing_policy: "Missing archive coverage after bounded retry, missing sample daily input, missing ffmpeg, missing or empty MP4, self-hosted runner references, or enabled side effects keep the cloud enablement gate blocked."
-    output_range: "live dry-run report status pass or blocked; MP4 render report status rendered or blocked; workflow contract status pass or blocked"
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
-    test_refs: ["arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
+        input_domain: "ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND"
+    constraints: "Cloud dry-run workflows must use contents: read, must not send SMTP or upload Releases, must not render video, and may retry only transient arXiv 429/timeout blocks."
+    missing_policy: "Missing archive coverage after bounded retry, missing sample daily input, missing Stage 1 text artifacts, self-hosted runner references, video rendering, or enabled side effects keep the cloud enablement gate blocked."
+    output_range: "live dry-run report status pass or blocked; Stage 1 text artifact checks pass or blocked; workflow contract status pass or blocked"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
+    test_refs: ["arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_live_all_arxiv_dry_run", "arxiv-daily-push/src/arxiv_daily_push/video.py::render_lightweight_mp4", "arxiv-daily-push/src/arxiv_daily_push/video.py::validate_mp4_render_report", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::build_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan"]
-    implementation_fingerprint: "sha256:912bd20f9a2fc4d5f1bee7954699df80496a5a7de4ee97d1d199ee68c94ab31f"
-    last_verified_commit: "0da8463ad03c94c73c784213199bde8fee110a8d"
-    verified_at: "2026-06-22T14:05:00+10:00"
-    evidence_hash: "sha256:039df003d6e9c3089a5225f8d0e70cb41c58fb9bec5f8fde71217f024bbccdc5"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_live_all_arxiv_dry_run", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py::build_production_preflight", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py::build_trial_start_workflow_plan"]
+    implementation_fingerprint: "sha256:dd5edbd8edd1a8b78474ce97a6aafa433961dd23b53daf689cf0b1396172966c"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:df56e305c2bec28ee9503d254f731a2c268a53902e2fa98e900338b9f18dbfeb"
   - formula_id: "FORM-ADP-036"
     model_id: "MOD-ADP-034"
     assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
     status: "active"
-    expression: "Manual delivery testing may perform real side effects only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input, render MP4, run scheduled daily-run delivery with Release assets, send exactly to the configured recipient, render the V2 decision-first Chinese email frontstage with responsive HTML plus plain-text fallback, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and frontstage numeric score labels, expose video only as an optional Release-hosted .mp4 link, and avoid enabling scheduled production."
+    expression: "Manual delivery testing may perform real SMTP only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input and Stage 1 text artifacts, run scheduled daily-run delivery without Release/video requirements, send exactly to the configured recipient, render the decision-first Chinese email frontstage with responsive HTML plus plain-text fallback, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and frontstage numeric score labels, and avoid enabling scheduled production."
     variables:
       - name: "confirm_manual_delivery_test"
         data_type: "string"
@@ -1228,27 +1228,27 @@ formulas:
       - name: "delivery_side_effects"
         data_type: "object"
         unit: "workflow env"
-        input_domain: "ADP_ALLOW_SMTP_SEND=true, ADP_ALLOW_RELEASE_UPLOAD=true, ADP_RELEASE_DRAFT=false"
+        input_domain: "ADP_ALLOW_SMTP_SEND=true"
       - name: "delivery_order"
         data_type: "list"
         unit: "workflow steps"
-        input_domain: "preflight, all-arXiv input, MP4, Release-backed scheduled execution"
+        input_domain: "preflight, all-arXiv input, Stage 1 text artifacts, SMTP-backed scheduled execution"
       - name: "email_frontend_format"
         data_type: "object"
         unit: "email subject and body"
-        input_domain: "YYYYMMDD -- Project Name -- arXiv Group -- Theme subject; Chinese sections; optional video file link; no Release landing page as reading entry point; candidate queue summary; no visible ROI score, numeric x/5 score, or delivery policy line"
-    constraints: "The manual test workflow has no schedule trigger, does not read repository production enablement variables, does not attach video to email, does not expose ROI scoring in the email front-end or MP4 transcript, keeps Release as backend evidence/download storage, and stops before side effects when preflight, all-arXiv input, or MP4 rendering fails."
-    missing_policy: "Missing confirmation, non-default branch dispatch, missing SMTP password secret, missing Release permission, failed source fetch, failed MP4 render, or failed scheduled execution blocks the manual test before claiming success."
-    output_range: "manual workflow run status success only when Release-backed scheduled execution returns production_evidence_ready true; otherwise blocked or failed with artifacts"
+        input_domain: "YYYYMMDD -- Project Name -- arXiv Group -- Theme subject; Chinese sections; no video link requirement; candidate queue summary; no visible ROI score, numeric x/5 score, Release clutter, or delivery policy line"
+    constraints: "The manual test workflow has no schedule trigger, does not read repository production enablement variables, does not attach video to email, does not expose ROI scoring in the email front-end, does not require Release storage, and stops before side effects when preflight, all-arXiv input, Stage 1 text artifacts, or SMTP delivery fail."
+    missing_policy: "Missing confirmation, non-default branch dispatch, missing SMTP password secret, failed source fetch, missing text artifacts, or failed scheduled execution blocks the manual test before claiming success."
+    output_range: "manual workflow run status success only when SMTP-backed Stage 1 text scheduled execution returns production_evidence_ready true; otherwise blocked or failed with artifacts"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
-    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py"]
+    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/src/arxiv_daily_push/video.py::_video_transcript", "arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
-    implementation_fingerprint: "sha256:12d2bd8459043065bdecdfce4ac0501ae4bf5d7a49fb6ed105ee03f7334bef69"
-    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
-    verified_at: "2026-06-22T19:55:00+10:00"
-    evidence_hash: "sha256:2d5977972ef079a4d5249c04de4aba0a925a84d822bd57f0662c2f116df023e5"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
+    implementation_fingerprint: "sha256:90f79921a7db2ddd03c4ce99344226059610072a9018703cd986ef25ec18939d"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:b57901479e1ce59fdc06533375c7f478caa7c6182261f888843a4f4d57ae534a"
   - formula_id: "FORM-ADP-037"
     model_id: "MOD-ADP-035"
     assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
@@ -1337,12 +1337,12 @@ formulas:
     model_id: "MOD-ADP-037"
     assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
     status: "active"
-    expression: "The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen surfaces read/skim/skip, evidence level, estimated reading time, and one-line conclusion without numeric x/5 foreground scoring; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video is represented as a Release-hosted .mp4 link card without attachment; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content."
+    expression: "The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen surfaces read/skim/skip, evidence level, estimated reading time, and one-line conclusion without numeric x/5 foreground scoring; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content."
     variables:
       - name: "lesson_frontstage"
         data_type: "object"
         unit: "email content contract"
-        input_domain: "decision, backend attention_score, evidence_level, reading time, takeaway, chain, mappings, questions, gaps, default action, video card"
+        input_domain: "decision, backend attention_score, evidence_level, reading time, takeaway, chain, mappings, questions, gaps, default action"
       - name: "plain_text_body"
         data_type: "string"
         unit: "Chinese characters"
@@ -1360,17 +1360,17 @@ formulas:
         unit: "SMTP delivery report"
         input_domain: "body_sha256, html_body_sha256, html_alternative_present, body_logged=false"
     constraints: "This formula does not change all-arXiv scanning, candidate queue persistence, ROI ranking, SMTP enablement flags, Release upload flags, production schedule variables, or secret handling. It changes only the human-frontstage render path and regression tests."
-    missing_policy: "Missing frontstage payload, missing HTML alternative, non-contract subject, plain text over the length cap, visible Claim Ledger/ROI/delivery policy text, visible x/5 foreground score, video attachment, missing .mp4 link, polluted q-fin candidate summary, or logged email body blocks V2 email acceptance."
+    missing_policy: "Missing frontstage payload, missing HTML alternative, non-contract subject, plain text over the length cap, visible Claim Ledger/ROI/delivery policy text, visible x/5 foreground score, video attachment, Release/video clutter, polluted q-fin candidate summary, or logged email body blocks V2 email acceptance."
     output_range: "email decision UI V2 ready or blocked; production remains disabled until a later controlled manual workflow and owner approval"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
-    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py"]
+    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message", "arxiv-daily-push/src/arxiv_daily_push/video.py::_video_transcript"]
-    implementation_fingerprint: "sha256:ad5d03c1cdbe5f84ca7af023ccc022c7367c72f050ca3e5e9c620a5dccaad1a8"
-    last_verified_commit: "f6d6131a6f87274fbfa29edc587b1b5523f1c85c"
-    verified_at: "2026-06-22T19:55:00+10:00"
-    evidence_hash: "sha256:105580893b0931d9788077179dc4a15666987959e7ae4ef1fd6bc6cb75742026"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"]
+    implementation_fingerprint: "sha256:88bded9dcd446a3257b68358b190a9dd4945129ae5c8b4bfd10b8a2c83dfe798"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:d67d39db6c065cd25d35fe01f76043e65ce478cd8c87853e3bd50ad4aa84fbd0"
   - formula_id: "FORM-ADP-040"
     model_id: "MOD-ADP-038"
     assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]
@@ -1455,3 +1455,197 @@ formulas:
     last_verified_commit: "89fe618f953b73e168f4f218b8c3edfc0102f6f9"
     verified_at: "2026-06-22T21:00:00+10:00"
     evidence_hash: "sha256:4d9f7512a9ac4633035139fa49a1ee366638cf2a585b8954411b24cb6b7e38e9"
+  - formula_id: "FORM-ADP-042"
+    model_id: "MOD-ADP-040"
+    assumption_ids: ["ASM-ADP-041", "ASM-ADP-002", "ASM-ADP-040"]
+    status: "active"
+    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is Chinese-first and follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, candidate queue summary is present, ROI/backend policy/Claim Ledger/video markers are absent from the email foreground, artifact writes are explicit dry-run files only, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
+    variables:
+      - name: "daily_input"
+        data_type: "object"
+        unit: "B1 arXiv input"
+        input_domain: "daily input builder pass report or embedded daily_input object"
+      - name: "critical_claim_coverage_percent"
+        data_type: "float"
+        unit: "percent"
+        input_domain: "100.0 required for P0/P1 supported claims"
+      - name: "email_subject"
+        data_type: "string"
+        unit: "subject"
+        input_domain: "YYYYMMDD -- arXiv Daily Push -- arXiv category -- Theme"
+      - name: "candidate_queue_summary"
+        data_type: "string"
+        unit: "email section"
+        input_domain: "queue_report summary, daily candidate count summary, or explicit no-snapshot fallback"
+      - name: "artifact_files"
+        data_type: "object"
+        unit: "file refs"
+        input_domain: "Markdown, HTML, plain text, HTML email, and audit JSON only when --write is explicit"
+    constraints: "The builder is text-first for Stage 1 and does not generate media, attach video, enable production schedule, send SMTP, upload GitHub Releases, perform live network fetch, or log secrets."
+    missing_policy: "Missing daily input, invalid SourceItem, unsupported P0/P1 claims, missing candidate queue summary, non-contract subject, non-Chinese email, visible backend markers, or any side-effect flag set true returns blocked status."
+    output_range: "B1 report/email package with status pass or blocked, report Markdown/HTML, email plain/HTML, claim audit, content ledger update, and optional artifact file refs"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::build_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::validate_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_evidence_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_report_markdown", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_plain", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_html", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_candidate_queue_summary", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_write_artifacts", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:25ab184e4da54ed8ad939ce1dbb4bed72a50445916bac6001efed07ec220d808"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:61d005ddea3d089b3aebcea22de0c95c5e7504b46722a91f846734317275c3ea"
+  - formula_id: "FORM-ADP-043"
+    model_id: "MOD-ADP-041"
+    assumption_ids: ["ASM-ADP-042", "ASM-ADP-038", "ASM-ADP-041"]
+    status: "active"
+    expression: "A Stage 1 local runtime recovery report passes only when tick writes explicit heartbeat/checkpoint state, watchdog rejects stale heartbeat or stale locks, backup copies a passing SQLite/WAL/FTS5 database and small supporting files into a SHA256 manifest below the backup byte cap, restore requires explicit confirmation and verifies the restored database, runtime audit blocks enabled production flags, and scheduler install/uninstall outputs dry-run templates only without applying OS scheduler changes."
+    variables:
+      - name: "state_dir"
+        data_type: "path"
+        unit: "explicit local state directory"
+        input_domain: "operator supplied path only"
+      - name: "db_path"
+        data_type: "path"
+        unit: "SQLite database"
+        input_domain: "migrated S1-04 database"
+      - name: "backup_manifest"
+        data_type: "object"
+        unit: "SHA256 manifest"
+        input_domain: "database and small supporting files under byte cap"
+      - name: "scheduler_platform"
+        data_type: "enum"
+        unit: "OS"
+        input_domain: "macos, linux, windows"
+    constraints: "S1-08 may write only explicit local state, backup, restore, or template paths; it must not install a scheduler, enable production flags, send SMTP, upload Releases, generate video, read secrets, or start long-running local background work."
+    missing_policy: "Missing heartbeat, stale heartbeat, existing unsafe restore target, invalid backup hash, missing confirmation, enabled production flag, or scheduler apply attempt returns blocked status."
+    output_range: "runtime report with status pass or blocked for runtime_audit, tick, watchdog, backup, restore, scheduler_install, or scheduler_uninstall"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_runtime_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::run_tick", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::create_runtime_backup", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::restore_runtime_backup", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::validate_stage1_runtime_report", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:48f2fe3949cb83a1a69d3ae1efca53ae599e2e49a959e45a3e5a26e44e41aede"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:c5fa308fc1bac84c05a08f49803947b64543c51bd5fda9735510993a632291bf"
+  - formula_id: "FORM-ADP-044"
+    model_id: "MOD-ADP-042"
+    assumption_ids: ["ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
+    status: "active"
+    expression: "A Stage 1 migration package passes only when required Stage 1 source and governance files exist with SHA256 inventory, the SQLite storage inspection passes, runtime audit/tick/watchdog pass with explicit state paths, a small backup manifest is created under the package byte cap, package files verify by hash, only secret names are listed, no possible secret values are detected, and all production side effects including scheduler enablement, real SMTP, Release upload, video generation, and large replay remain false."
+    variables:
+      - name: "project_root"
+        data_type: "path"
+        unit: "repository root"
+        input_domain: "operator supplied checkout path"
+      - name: "db_path"
+        data_type: "path"
+        unit: "SQLite database"
+        input_domain: "Stage 1 migrated database"
+      - name: "output_dir"
+        data_type: "path"
+        unit: "migration package directory"
+        input_domain: "explicit output directory only"
+      - name: "required_inventory"
+        data_type: "object"
+        unit: "file inventory"
+        input_domain: "required Stage 1 code, tests, config, and baseline files"
+      - name: "package_files"
+        data_type: "object"
+        unit: "hash manifest"
+        input_domain: "low-resource migration documents and smoke evidence"
+    constraints: "S1-09 may write only the explicit migration output directory and backup manifest; it must not enable production scheduling, send SMTP, upload Releases, generate video, run 30-day replay, persist secret values, or claim ARXIV_PRODUCTION_ACCEPTED."
+    missing_policy: "Missing required files, failing SQLite inspection, failing runtime smoke, package-size excess, enabled production flag, package hash mismatch, or possible secret value returns blocked status."
+    output_range: "migration export or verify report with status pass or blocked, package manifest path, package file hashes, low-resource smoke report, restore instructions, and blocking_reasons"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::build_migration_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::verify_migration_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::validate_stage1_migration_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::_package_documents", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::_scan_output_secrets", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:37137e20cafaf2cc41b9091c7bdbc42e3ae760be6a4cc0257280e2849c36adde"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:cb054a03b64d5c8c3fe15d51dc202c1c266f980d027c40f2d6808115cf3add1b"
+  - formula_id: "FORM-ADP-045"
+    model_id: "MOD-ADP-043"
+    assumption_ids: ["ASM-ADP-044", "ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
+    status: "active"
+    expression: "A Stage 1 post-migration bootstrap passes only when the S1-09 migration manifest verifies by hash, target_environment is an allowed explicit value, production side-effect flags are false, Python is at least 3.11, the checkout is a Git worktree, SSL default context can be created, SQLite/WAL/FTS5 storage inspection passes, optional GitHub-hosted runner evidence matches a non-self-hosted workflow and GitHub Actions environment, optional arXiv HTTPS probe passes when explicitly required, required SMTP secret names are reported without values, and runtime audit/tick/watchdog smoke reports pass."
+    variables:
+      - name: "migration_manifest"
+        data_type: "path"
+        unit: "S1-09 manifest"
+        input_domain: "existing migration_manifest.json generated by S1-09"
+      - name: "target_environment"
+        data_type: "enum"
+        unit: "runner boundary"
+        input_domain: "github_actions_cloud_runner or new_machine"
+      - name: "workflow_path"
+        data_type: "path"
+        unit: "GitHub Actions workflow"
+        input_domain: "optional workflow file; required for cloud-runner proof"
+      - name: "runtime_reports"
+        data_type: "list"
+        unit: "runtime smoke reports"
+        input_domain: "runtime_audit, tick, and watchdog reports"
+      - name: "secret_name_report"
+        data_type: "list"
+        unit: "secret names"
+        input_domain: "secret-name presence booleans only; values never recorded"
+    constraints: "S1-10 may create only explicit local temp/runtime state and SQLite smoke files; it must not enable a scheduler, send SMTP, upload Releases, generate video, execute 30-day replay, claim production acceptance, or record secret values."
+    missing_policy: "Missing or invalid migration manifest, unsupported target environment, enabled production flag, failed Python/Git/SSL/SQLite/runtime check, self-hosted workflow, missing required GitHub Actions evidence when requested, failed explicit network probe, or missing required secret names when requested returns blocked status."
+    output_range: "bootstrap report with status pass or blocked, bootstrap_ready boolean, migration verification report, runtime reports, and blocking_reasons"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_bootstrap.py", "arxiv-daily-push/tests/test_stage1_migration.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "arxiv-daily-push/tests/test_stage1_bootstrap.py"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::build_stage1_bootstrap_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::validate_stage1_bootstrap_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_python_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_git_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_ssl_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_sqlite_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_workflow_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_github_env_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_network_probe", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_secret_name_report", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:27f03e28a3dc73220055d5334d33f0fbe436b242ed9b6373ecc5d040efdd7a7d"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:4f0680c9e206245068c55f631fa7026015ee358fb5e3d883527f89c84b367bd6"
+  - formula_id: "FORM-ADP-046"
+    model_id: "MOD-ADP-044"
+    assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
+    status: "active"
+    expression: "S1-11 passes only when exactly 30 B1/arXiv historical preview packages are generated through the B1 report/email builder from supported JSON array, JSONL, object-wrapper, or deterministic synthetic inputs; every package passes validation; dates, source IDs, content hashes, and email IDs are unique; future information leakage count is zero; critical claim evidence coverage is 100 percent; content ledger rows match the preview count; optional artifact writes produce five files per preview plus a manifest; and production side effects including SMTP send, Release upload, scheduler enablement, network fetch, secret logging, and video generation remain false."
+    variables:
+      - name: "generated_at"
+        data_type: "timestamp"
+        unit: "ISO-8601"
+        input_domain: "operator supplied audit timestamp"
+      - name: "start_date"
+        data_type: "date"
+        unit: "YYYY-MM-DD"
+        input_domain: "first synthetic historical preview local date when historical_inputs are omitted"
+      - name: "historical_inputs"
+        data_type: "list"
+        unit: "daily input packages"
+        input_domain: "JSON array, JSONL, object wrapper, or deterministic synthetic payloads with arXiv source metadata"
+      - name: "preview_count"
+        data_type: "int"
+        unit: "previews"
+        input_domain: "integer count; S1-11 acceptance requires exactly 30"
+      - name: "future_leakage_count"
+        data_type: "int"
+        unit: "timestamp violations"
+        input_domain: "arXiv published/updated dates after the preview as-of date"
+      - name: "artifact_dir"
+        data_type: "path"
+        unit: "directory"
+        input_domain: "explicit output directory only when write is true"
+      - name: "preview_records"
+        data_type: "list"
+        unit: "B1 preview packages"
+        input_domain: "deterministic offline arXiv historical fixtures"
+    constraints: "S1-11 may write only the explicit artifact directory when requested; it must not fetch live network data, download PDFs, send SMTP, upload Releases, generate video, enable scheduler state, persist secret values, or claim ARXIV_PRODUCTION_ACCEPTED."
+    missing_policy: "Invalid start_date, unreadable or malformed input, missing artifact_dir when write is true, non-30 preview count, duplicate dates/source/content/email identifiers, future arXiv published/updated timestamps relative to preview date, failed B1 package validation, incomplete critical claim coverage, missing content ledger rows, or any side-effect flag returns blocked status."
+    output_range: "historical B1 preview report with status pass or blocked, previews/preview_records, content_ledger_updates/content_ledger_rows, quality_gates, artifact_manifest, artifact_summary, side_effect_policy, and blocking_reasons"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    test_refs: ["arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    evidence_refs: ["governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md", "arxiv-daily-push/tests/test_stage1_historical_previews.py"]
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::load_historical_daily_inputs", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::build_historical_b1_previews_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::build_historical_b1_previews", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::validate_historical_b1_previews_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::_future_leakage_refs", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::_historical_payload", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::_write_manifest", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:4aabebcbc43f45e1fd5b517dd98844445b1e6afa673e615b843c027dfd594eff"
+    last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
+    verified_at: "2026-06-23T09:50:00+10:00"
+    evidence_hash: "sha256:9e56b69709271307e5346a6a77f341b44077d6eed17ba9041cdd491e42a7b3ff"

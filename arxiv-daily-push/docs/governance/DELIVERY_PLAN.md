@@ -12,15 +12,15 @@ Governance spec version: `1.0.0`
 | C | Legacy Phase 5-6 evidence gate and text lesson | Claim Ledger and lesson verification pass |
 | D | Legacy Phase 7-10 TTS, video, local daily pipeline, and GitHub automation | media, resource, runner, and release gates pass |
 | E | Legacy Phase 11-12 weekly/monthly, all-arXiv queue delivery, manual delivery tests, and production handoff | operational acceptance remains blocked until final trial evidence passes |
-| S1-A | V5 Stage 1 Window A | B1/arXiv text-first baseline, owner controls, local data model, queue/ledger, B1 teaching email, runtime recovery, and migration package |
+| S1-A | V5 Stage 1 Window A | B1/arXiv text-first baseline, owner controls, local data model, queue/ledger, B1 teaching email, runtime recovery, migration package, and post-migration bootstrap |
 | S2 | V5 Stage 2 | additional source/board promotion only after Stage 1 arXiv production acceptance |
 
 ## Task Summary
 
 machine_summary:
 
-- task_count: 59
-- acceptance_count: 54
+- task_count: 62
+- acceptance_count: 57
 
 ## Delivery Tasks
 
@@ -80,9 +80,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S1-04-SQLITE-DATA-MODEL-001 | S1-A | completed | ADP-ACC-S1-04-SQLITE-DATA-MODEL | SQLite/WAL/FTS5 schema migration, inspection, SourceItem persistence, FTS search, rollback, semantic extraction, and focused storage/CLI tests pass without production side effects | `src/arxiv_daily_push/storage.py`; `tests/test_storage.py`; `governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json` |
 | S1-05-ARXIV-CONNECTOR-CONTRACT-001 | S1-A | completed | ADP-ACC-S1-05-ARXIV-CONNECTOR-CONTRACT | Stage 1 source registry, arXiv connector contract, owner-controls-backed source list, fixture validation, canary cap enforcement, CLI/schema/tests, and governance traceability pass without production side effects | `src/arxiv_daily_push/source_registry.py`; `tests/test_source_registry.py`; `governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json` |
 | S1-06-SCORING-QUEUE-LEDGER-001 | S1-A | completed | ADP-ACC-S1-06-SCORING-QUEUE-LEDGER | Stage 1 scoring, 10,000 active queue cap, 365-day boundary, reason codes, source cap fixture, stable tie ordering, and canonical CONTENT_LEDGER rows pass focused tests without production side effects | `src/arxiv_daily_push/stage1_queue.py`; `tests/test_stage1_queue.py`; `governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json` |
-| S1-07-B1_REPORT_EMAIL_TEXT-001 | S1-A | planned | ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT | B1/arXiv explanatory teaching report, Claim evidence, Chinese email text/HTML preview, and Markdown/HTML/JSON audit artifacts without video requirement | `docs/pursuing_goal/BASELINE_LOCK.md` |
-| S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | planned | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/watchdog, backup/restore, runtime audit, and scheduler controls | `docs/pursuing_goal/BASELINE_LOCK.md` |
-| S1-09-MIGRATION_PACKAGE-001 | S1-A | planned | ADP-ACC-S1-09-MIGRATION-PACKAGE | Low-resource integration evidence and new-machine migration checklist | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-07-B1_REPORT_EMAIL_TEXT-001 | S1-A | completed | ADP-ACC-S1-07-B1-REPORT-EMAIL-TEXT | B1/arXiv Chinese teaching report, supported claim evidence, plain/HTML email preview, candidate queue summary, and audit artifacts pass without video/SMTP/Release side effects | `src/arxiv_daily_push/stage1_b1_report.py`; `tests/test_stage1_b1_report.py`; `governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json` |
+| S1-08-LOCAL_RUNTIME_RECOVERY-001 | S1-A | completed | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | Tick/checkpoint, watchdog stale-state blocking, SQLite SHA256 backup/restore, runtime production-flag audit, and scheduler dry-run templates pass focused tests without production side effects | `src/arxiv_daily_push/stage1_runtime.py`; `tests/test_stage1_runtime.py`; `governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json` |
+| S1-09-MIGRATION_PACKAGE-001 | S1-A | completed | ADP-ACC-S1-09-MIGRATION-PACKAGE | focused migration/runtime/CLI tests 17 OK; low-resource migration package export and verify controls pass without production side effects | `src/arxiv_daily_push/stage1_migration.py`; `tests/test_stage1_migration.py`; `docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md` |
+| S1-10-POST_MIGRATION_BOOTSTRAP-001 | S1-A | completed | ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP | focused 16 OK; full 220 OK; semantic 45/322 OK; project/all/changed-only governance 0 errors | `governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json`; `docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md` |
 | ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | daily email front-end now uses human-scannable Chinese sections, compact arXiv subject, 12-second video link, action guidance, concise evidence, and hides ROI scoring in backend artifacts | `docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | ready | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
@@ -138,3 +139,28 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Changed-only sync | validator output | pass |
 | Diff hygiene | `git diff --check` | pass |
 | Secrets/media guard | file review and `.gitignore` | pass |
+
+
+### `S1-10-POST_MIGRATION_BOOTSTRAP-001`
+
+- status: `completed`
+- acceptance_ids: `ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP`
+- evidence: `governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md`
+- completed_version: `0.20.0`
+
+### `S1-11-HISTORICAL_B1_PREVIEWS-001`
+
+- status: `completed`
+- objective: generated 30 independent historical B1/arXiv report and email preview packages without production side effects.
+- acceptance_ids: `ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS`
+- evidence: `governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`
+- completed_version: `0.21.0`
+
+### `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
+
+- status: `in_progress`
+- objective: collect controlled live B1/arXiv email delivery evidence across two real natural days on the target runner before production acceptance.
+- acceptance_ids: `ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS`
+- evidence: `governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json`, `arxiv-daily-push/docs/phase_records/PHASE_S1_12_TEXT_ONLY_PRODUCTION_ENABLEMENT.md`, `github-actions://LinzeColin/CodexProject/actions/runs/27987189886/artifacts/7806168015`, `governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json`
+- current_result: `TEXT_ONLY_PR_READY`; Stage 1 implementation now requires all-arXiv text artifacts plus Gmail SMTP evidence and explicitly removes video/Release as production gates; manual SMTP test and two natural-day evidence are still missing.
+- target_version: `0.22.0`

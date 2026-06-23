@@ -17,7 +17,7 @@ class AcceptanceError(ValueError):
 PRODUCTION_REQUIREMENTS = (
     ("thirty_day_trial_passed", "30-day live trial evidence"),
     ("scheduler_operational", "05:00 scheduler and manual rerun evidence"),
-    ("release_upload_verified", "private Release or equivalent publishing evidence"),
+    ("text_artifacts_verified", "Stage 1 text artifact evidence"),
     ("real_smtp_verified", "real SMTP notification evidence"),
     ("resource_pressure_ok", "disk, cache, memory, and secret hygiene evidence"),
 )
@@ -67,7 +67,8 @@ def build_acceptance_package(
         "no_claims": {
             "does_not_claim_30_day_trial": not accepted_for_production,
             "does_not_claim_real_smtp_sent": not accepted_for_production,
-            "does_not_claim_release_uploaded": not accepted_for_production,
+            "does_not_claim_text_artifacts_verified": not accepted_for_production,
+            "does_not_claim_release_uploaded": True,
             "does_not_claim_scheduler_enabled": not accepted_for_production,
         },
         "local_pressure_policy": {
@@ -79,7 +80,7 @@ def build_acceptance_package(
         "next_actions": [
             "provision private self-hosted runner and scheduler evidence",
             "configure external SMTP secret and verify real notification delivery",
-            "verify private Release or equivalent publishing channel",
+            "verify Stage 1 text artifacts in GitHub Actions artifacts",
             "run and archive 30-day operational trial evidence",
             "rerun acceptance with operational_evidence refs before claiming production pass",
         ],

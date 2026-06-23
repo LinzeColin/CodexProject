@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 39
-- formula_count: 41
-- parameter_count: 309
+- model_count: 44
+- formula_count: 46
+- parameter_count: 348
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -62,6 +62,11 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-037 | Phase 12 email decision UI V2 | deterministic human-frontstage email renderer | Render a Chinese decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package, with `YYYYMMDD -- Project Name -- arXiv Group -- Theme` subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground | active | adp-email-decision-ui-v2 | `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/smtp_delivery.py`, `src/arxiv_daily_push/video.py` |
 | MOD-ADP-038 | Review8 Stage 1 source registry and arXiv connector contract | deterministic source registry and connector contract validator | Bind the source registry to owner controls, prove only SRC-ARXIV/arxiv.atom.v1 is active, and cap canaries at 10 metadata records without production side effects | active | adp-source-registry-contract-v1 | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-039 | Review8 Stage 1 scoring, queue, and content ledger contract | deterministic weighted scoring, queue ranking, and ledger renderer | Score explicit Stage 1 research signals, rank up to 10000 active items, enforce the 365-day window, record reason codes, and emit canonical CONTENT_LEDGER rows without production side effects | active | adp-stage1-scoring-queue-ledger-v1 | `src/arxiv_daily_push/stage1_queue.py`, `src/arxiv_daily_push/owner_controls.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-040 | Review8 Stage 1 B1/arXiv report and email text package | deterministic Chinese teaching report and email renderer | Render B1/arXiv teaching report/email previews with supported claim evidence, candidate queue summary, human-frontstage wording, and no production side effects | active | adp-stage1-b1-report-email-v1 | `src/arxiv_daily_push/stage1_b1_report.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-041 | Review8 Stage 1 local runtime recovery controls | deterministic local runtime and recovery gate | Provide low-resource tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls with explicit state/artifact paths and no production side effects | active | adp-stage1-local-runtime-recovery-v1 | `src/arxiv_daily_push/stage1_runtime.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-042 | Review8 Stage 1 migration package and transfer checklist | deterministic migration package and verification gate | Export and verify a low-resource Stage 1 migration package with file hashes, SQLite/runtime smoke evidence, restore instructions, and secret-name-only checklist without production side effects | active | adp-stage1-migration-package-v1 | `src/arxiv_daily_push/stage1_migration.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-043 | Review8 Stage 1 post-migration bootstrap gate | deterministic target-runner bootstrap validator | Verify Python, Git checkout, SSL, SQLite/FTS5, runtime smoke, GitHub-hosted workflow runner boundary, GitHub Actions env names, and secret-name-only readiness without production side effects | active | adp-stage1-post-migration-bootstrap-v1 | `src/arxiv_daily_push/stage1_bootstrap.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml` |
+| MOD-ADP-044 | Review8 Stage 1 historical B1 preview batch | deterministic offline/input-backed B1 report and email preview evidence generator | Generate 30 independent historical B1/arXiv report/email preview packages from supported inputs or deterministic fixtures before live-day delivery while preserving no-production-side-effect and no-future-leakage gates | active | adp-stage1-historical-b1-previews-v1 | `src/arxiv_daily_push/stage1_historical_previews.py`, `src/arxiv_daily_push/stage1_b1_report.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -107,6 +112,10 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-038 | Review8 Stage 1 Window A storage must remain local SQLite/WAL/FTS5 with deterministic migration and rollback, and must not perform bulk imports, PDF retention, production scheduler enablement, SMTP send, Release upload, or source expansion. | `src/arxiv_daily_push/storage.py`, `tests/test_storage.py`, `tests/test_cli.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 SQLite data model | active |
 | ASM-ADP-039 | Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims. | `src/arxiv_daily_push/source_registry.py`, `src/arxiv_daily_push/source_ingest.py`, `config/owner_controls.yaml`, `tests/test_source_registry.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 connector contract | active |
 | ASM-ADP-040 | Review8 Stage 1 scoring and queue behavior must use owner_controls.yaml as the active parameter source, keep at most 10000 active items, treat 365 days as an inclusive event-age boundary, retain deterministic reason codes for every non-active item, and emit canonical content ledger columns without claiming production replay output. | `src/arxiv_daily_push/stage1_queue.py`, `config/owner_controls.yaml`, `tests/test_stage1_queue.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 scoring and ledger | active |
+| ASM-ADP-041 | Review8 Stage 1 B1/arXiv text delivery must produce Chinese teaching report/email previews with supported claim evidence, candidate queue summary, human-frontstage wording, and no video, Release upload, real SMTP send, production scheduler enablement, or visible backend ROI/policy clutter. | `src/arxiv_daily_push/stage1_b1_report.py`, `tests/test_stage1_b1_report.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 B1 report/email text | active |
+| ASM-ADP-042 | Review8 Stage 1 local runtime recovery must provide explicit heartbeat/checkpoint, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls while keeping production scheduling, real SMTP, Release upload, video generation, and long-running local background work disabled. | `src/arxiv_daily_push/stage1_runtime.py`, `tests/test_stage1_runtime.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 local runtime recovery | active |
+| ASM-ADP-043 | Review8 Stage 1 migration packaging must produce a low-resource, hash-verifiable package and new-machine checklist while keeping production scheduling, real SMTP, Release upload, video generation, 30-day replay, and secret-value persistence disabled. | `src/arxiv_daily_push/stage1_migration.py`, `tests/test_stage1_migration.py`, `docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 migration package | active |
+| ASM-ADP-044 | Review8 Stage 1 post-migration bootstrap must prove an explicit target machine or GitHub-hosted cloud runner boundary before heavy historical previews or live-day evidence, and must not silently fall back to the user's Mac background runtime. | `src/arxiv_daily_push/stage1_bootstrap.py`, `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml`, `tests/test_stage1_bootstrap.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 post-migration bootstrap | active |
 
 ## C. Functions and Formulas
 
@@ -153,6 +162,11 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-039 validates the V2 decision-first email frontstage: owner subject contract, Chinese plain text, responsive HTML, frontstage lesson payload, q-fin candidate filtering, optional MP4 link card, feedback actions, no foreground numeric score labels, and hidden backend ROI/Claim Ledger foreground details.
 - FORM-ADP-040 validates the Stage 1 source registry and connector contract: single owner-controls fact source, only SRC-ARXIV active, arxiv.atom.v1 adapter, canary max 10, no PDF/bulk/paid/secret/production side effects, and offline fixture SourceItem validation.
 - FORM-ADP-041 validates Stage 1 weighted research scoring, queue priority scoring, 10000 active-item cap, 365-day inclusive boundary, lifecycle reason codes, source-share cap behavior, stable tie ordering, and canonical content ledger rows.
+- FORM-ADP-042 validates Stage 1 B1/arXiv report/email text delivery: supported daily input claims, 100% critical claim evidence coverage in audit fields, Chinese report/email previews, owner subject contract, candidate queue summary, hidden backend ROI/policy clutter, and no SMTP/Release/video/network side effects.
+- FORM-ADP-043 validates Stage 1 local runtime recovery: explicit heartbeat/checkpoint tick, watchdog stale-state rejection, SHA256 SQLite backup/restore with explicit confirmation, production flag audit, and scheduler dry-run templates without applying OS scheduler changes.
+- FORM-ADP-044 validates Stage 1 migration package export and verify: required source hash inventory, SQLite/runtime low-resource smoke, backup manifest, package file hash verification, secret-name-only checklist, and disabled production side effects.
+- FORM-ADP-045 validates Stage 1 post-migration bootstrap: target runner support, GitHub-hosted workflow boundary, Python/Git/SSL/SQLite checks, runtime smoke, secret-name-only readiness, optional arXiv HTTPS probe, and disabled production side effects.
+- FORM-ADP-046 validates S1-11 historical B1 previews: exactly 30 independent B1/arXiv report/email preview packages, supported JSON/JSONL/object or deterministic fixture input, unique dates/source/content/email identifiers, zero future-information leakage, 100% critical claim coverage, content ledger rows, optional five-file artifacts per preview, and disabled SMTP/Release/video/network/scheduler side effects.
 
 ## D. Parameters
 
@@ -197,6 +211,11 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 12 email decision UI V2 parameters: PARAM-ADP-276 through PARAM-ADP-279.
 - Active Review8 Stage 1 source registry contract parameters: PARAM-ADP-280 through PARAM-ADP-286.
 - Active Review8 Stage 1 scoring queue ledger parameters: PARAM-ADP-287 through PARAM-ADP-309.
+- Active Review8 Stage 1 B1 report/email text parameters: PARAM-ADP-310 through PARAM-ADP-315.
+- Active Review8 Stage 1 local runtime recovery parameters: PARAM-ADP-316 through PARAM-ADP-325.
+- Active Review8 Stage 1 migration package parameters: PARAM-ADP-326 through PARAM-ADP-331.
+- Active Review8 Stage 1 post-migration bootstrap parameters: PARAM-ADP-332 through PARAM-ADP-339.
+- Active Review8 Stage 1 historical B1 preview parameters: PARAM-ADP-340 through PARAM-ADP-348.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
@@ -457,8 +476,8 @@ Releases, install a scheduler, or claim production acceptance.
 - Scheduled workflow without `run-scheduled-production` or `adp-scheduled-execution` artifact upload -> scheduler validation blocked.
 - Scheduled daily execution without `ADP_SCHEDULED_RUN_ENABLED=true` -> scheduled execution blocked.
 - Scheduled daily execution without daily input package -> scheduled execution blocked.
-- Scheduled daily execution with dry-run SMTP or dry-run Release -> scheduled execution degraded and not production evidence.
-- Scheduled production evidence ready without daily run, Release, email, and resource refs -> validation error.
+- Scheduled daily execution with dry-run SMTP or missing Stage 1 text artifacts -> scheduled execution degraded and not production evidence.
+- Scheduled production evidence ready without daily run, text artifact, email, and resource refs -> validation error.
 - Daily input builder source batch blocked -> daily input report blocked.
 - Daily input builder missing Atom summary -> daily input report blocked.
 - Daily input builder selected candidate recently used -> daily input report blocked.
@@ -466,9 +485,9 @@ Releases, install a scheduler, or claim production acceptance.
 - All-arXiv scan plan missing a primary archive bucket or collapsing to `cat:cs.AI` -> Phase 12 daily input blocked.
 - All-arXiv daily selection chooses one new high-value candidate first, otherwise consumes a queued high-value candidate, otherwise blocks if no candidate meets the minimum threshold.
 - Phase 12 candidate queue persists high-value unselected candidates as a small JSON artifact and never stores PDFs, media, model weights, or secrets.
-- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, and a GitHub Release-hosted `.mp4` video artifact link.
-- Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
-- Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or real MP4 render evidence -> production enablement blocked.
+- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, HTML/plain text bodies, and a Stage 1 text artifact ref; video/Release links are not required for Stage 1.
+- Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, or secret-like input -> refs report blocked or redacted discovery error.
+- Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or Stage 1 text artifacts -> production enablement blocked.
 - Owner controls with production enabled, paid service allowed, token-like value, wrong owner view list, Window A resource overrun, or weight total drift -> owner validation blocked.
 - Owner impact preview can report S1-06 deterministic fixture queue readiness but cannot claim production replay or ranking impact until real replay data exists.
 - `docs/owner/*` files are regenerated from `config/owner_controls.yaml`; manual edits are drift, not facts.
@@ -507,11 +526,17 @@ Uncovered planned scenarios:
 - Claim extraction from paper text/PDF.
 - TTS/video sample gates.
 - Live 30-day operational trial evidence.
-- GitHub-hosted cloud dry-run workflow run, private Release, and real email transport health.
-- Actual production preflight pass on GitHub-hosted Actions with SMTP, Release, and media dependencies installed.
+- GitHub-hosted cloud dry-run workflow run and real email transport health.
+- Actual production preflight pass on GitHub-hosted Actions with SMTP and Stage 1 text artifact dependencies available.
 - Actual 30-day trial start and scheduled daily run execution on the default branch.
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.
 - Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
-- Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact or private Release ref.
-- Actual recovery drill execution archived under a durable GitHub Actions artifact or private Release ref.
-- Actual 30-day resource telemetry evidence archived under a durable GitHub Actions artifact or private Release ref.
+- Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact ref.
+- Actual recovery drill execution archived under a durable GitHub Actions artifact ref.
+- Actual 30-day resource telemetry evidence archived under a durable GitHub Actions artifact ref.
+
+## S1-12 Text-Only Production Enablement Delta
+
+- Stage 1 production readiness now requires all-arXiv source selection, candidate queue persistence, Chinese teaching email, HTML/plain text delivery, Gmail SMTP evidence, and GitHub Actions text artifacts.
+- Video generation, MP4 links, and GitHub Release upload are not Stage 1 production-readiness gates. Release delivery remains a legacy/optional transport module and must not be used to claim S1-12 completion.
+- Production schedule enablement and `ARXIV_PRODUCTION_ACCEPTED` remain blocked until PR CI, controlled manual SMTP evidence, and later acceptance gates pass.

@@ -45,12 +45,11 @@ def trial_report_payload() -> dict:
                 "scheduled_local_time": "05:00",
                 "p0_claims_traceable": True,
                 "text_degradation_path_verified": True,
-                "video_degradation_path_verified": True,
                 "duplicate_publication": False,
                 "unsupported_claims_published": False,
                 "failure_generated_misleading_content": False,
                 "run_record_ref": f"release://adp/run-record-{current}.json",
-                "release_ref": f"release://adp/publication-{current}.json",
+                "text_artifact_ref": f"artifact://adp/text-artifacts-{current}.json",
                 "email_ref": f"smtp://message/adp-{current}",
                 "resource_gate_ref": f"release://adp/resource-{current}.json",
             }
@@ -65,7 +64,7 @@ def trial_report_payload() -> dict:
             "manual_rerun_verified": True,
             "ref": "release://adp/scheduler-rerun-evidence.json",
         },
-        "release": {"private_release_verified": True, "ref": "release://adp/private-release-evidence.json"},
+        "text_artifacts": {"b1_text_artifacts_verified": True, "ref": "artifact://adp/text-artifacts-evidence.json"},
         "email": {"real_smtp_verified": True, "recipient": "linzezhang35@gmail.com", "ref": "smtp://adp/30-day-delivery-evidence"},
         "resource_pressure": {
             "disk_ok": True,

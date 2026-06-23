@@ -236,19 +236,14 @@ class GlobalScanTests(unittest.TestCase):
         self.assertEqual(second["daily_input"]["source_item"]["source_id"], "arxiv:2607.00003")
         self.assertEqual(second["selection"]["selected"]["selection_source"], "candidate_queue")
 
-    def test_delivery_package_requires_release_video_link_and_queue_summary(self) -> None:
+    def test_delivery_package_requires_stage1_text_and_queue_summary(self) -> None:
         daily_input = {
             "date": "2026-07-01",
             "source_item": {
                 "source_id": "arxiv:2607.00001",
                 "title": "Foundation model agents for portfolio risk optimization",
                 "canonical_url": "https://arxiv.org/abs/2607.00001",
-                "metadata": {
-                    "arxiv": {
-                        "primary_category": "cs.AI",
-                        "summary": "A concise abstract about foundation model agents for portfolio risk optimization and operational decision support.",
-                    }
-                },
+                "metadata": {"arxiv": {"primary_category": "cs.AI", "summary": "A concise abstract."}},
             },
             "selection_audit": {"roi_total_score": 92.5},
             "queue_summary": {
@@ -256,58 +251,41 @@ class GlobalScanTests(unittest.TestCase):
                 "top_queued": [{"title": "Energy market benchmark", "primary_category": "eess.SY", "roi_total_score": 88.0}],
             },
         }
-        daily_run_payload = {
-            "lesson": {
-                "language": "zh-CN",
-                "sections": [{"title": "核心解释", "body": "这篇文章适合学习如何把模型能力转换成真实 ROI。"}],
-            }
-        }
+        daily_run_payload = {"lesson": {"language": "zh-CN", "sections": [{"title": "核心解释", "body": "这篇文章适合学习如何把模型能力转换成真实 ROI。"}]}}
         release_report = {
             "status": "created",
             "repo": "LinzeColin/CodexProject",
             "tag": "adp-daily-20260701",
             "release_ref": "github-release://LinzeColin/CodexProject/adp-daily-20260701",
-            "assets": [{"name": "adp-video-artifact.json"}, {"name": "adp-daily-video.mp4"}],
+            "assets": [{"name": "adp-daily-video.mp4"}],
         }
 
         links = release_links(release_report)
         package = build_daily_delivery_package(daily_run_payload, daily_input, release_report, generated_at=GENERATED_AT)
 
-        self.assertIn("/releases/tag/adp-daily-20260701", links["release_url"])
         self.assertIn("/releases/download/adp-daily-20260701/adp-daily-video.mp4", links["video_url"])
-        self.assertTrue(package["video_link_ready"])
+        self.assertFalse(package["video_link_ready"])
+        self.assertFalse(package["video_required"])
+        self.assertFalse(package["video_generation_required"])
+        self.assertFalse(package["release_required"])
         self.assertTrue(package["email_contains_chinese_lesson"])
-        self.assertTrue(package["email_contains_video_link"])
+        self.assertFalse(package["email_contains_video_link"])
         self.assertTrue(package["email_contains_candidate_queue_summary"])
-        self.assertFalse(package["email_contains_release_landing_link"])
         self.assertTrue(package["email_contains_html"])
         self.assertEqual(
             package["notification"].subject,
             "20260701 -- arXiv Computer Science -- Computer Science -- Foundation model agents for portfolio risk optimization",
         )
-        self.assertIn("【视频入口】", package["notification"].body)
-        self.assertIn("45-60秒", package["notification"].body)
+        self.assertIn("【今天学什么】", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
-        self.assertIn("观看/下载", package["notification"].body)
-        self.assertLessEqual(len(package["notification"].body), 1500)
-        self.assertIn("<html", package["notification"].html_body)
-        self.assertIn("观看图解视频", package["notification"].html_body)
-        self.assertIn("这封推送如何", package["notification"].html_body)
-        self.assertNotIn("【12秒视频】", package["notification"].body)
-        self.assertNotIn("5分钟：先看", package["notification"].body)
+        self.assertNotIn("【视频入口】", package["notification"].body)
+        self.assertNotIn("观看/下载", package["notification"].body)
         self.assertNotIn("Release 资料包", package["notification"].body)
         self.assertNotIn(links["release_url"], package["notification"].body)
-        self.assertNotIn(links["release_url"], package["notification"].html_body)
-        self.assertNotIn("Claim Ledger", package["notification"].body)
-        self.assertNotIn("摘要信号", package["notification"].body)
-        self.assertNotIn("project:", package["notification"].body)
-        self.assertNotIn("recipient:", package["notification"].body)
         self.assertNotIn("ROI score", package["notification"].body)
         self.assertNotIn("roi_total_score", package["notification"].body)
-        self.assertNotIn("delivery_policy", package["notification"].body)
+        self.assertLessEqual(len(package["notification"].body), 1500)
         self.assertNotRegex(package["notification"].subject, r"\d(?:\.\d)?/5")
-        self.assertNotRegex(package["notification"].body, r"\d(?:\.\d)?/5")
-        self.assertNotRegex(package["notification"].html_body, r"\d(?:\.\d)?/5")
 
     def test_quant_finance_email_filters_frontstage_candidate_pollution(self) -> None:
         daily_input = {

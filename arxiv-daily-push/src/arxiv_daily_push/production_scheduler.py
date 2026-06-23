@@ -20,7 +20,6 @@ REQUIRED_SCHEDULES = (
 REQUIRED_SCHEDULER_SECRETS = ("ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD")
 REQUIRED_SCHEDULER_VARS = (
     "ADP_PRODUCTION_ENABLED",
-    "ADP_RELEASE_TARGET",
     "ADP_SCHEDULED_RUN_ENABLED",
     "ADP_DAILY_INPUT_PATH",
     "ADP_ARXIV_MAX_RESULTS_PER_CATEGORY",
@@ -30,9 +29,7 @@ REQUIRED_SCHEDULER_VARS = (
     "ADP_TRIAL_ID",
     "ADP_TRIAL_REF",
     "ADP_TEXT_DEGRADATION_VERIFIED",
-    "ADP_VIDEO_DEGRADATION_VERIFIED",
     "ADP_ALLOW_SMTP_SEND",
-    "ADP_ALLOW_RELEASE_UPLOAD",
 )
 
 
@@ -89,11 +86,14 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "workflow must build and upload all-arXiv Phase 12 daily input, delivery artifacts, and queue evidence when no override path is configured",
         ),
         _check(
-            "real_mp4_render_present",
-            "render-lightweight-mp4" in workflow_text
-            and "adp-scheduled-mp4-video" in workflow_text
-            and ".mp4" in workflow_text,
-            "workflow must render and upload a real MP4 video artifact for daily-run mode",
+            "stage1_text_delivery_present",
+            "build-all-arxiv-daily-input" in workflow_text
+            and "adp-phase12-delivery-artifacts" in workflow_text
+            and "adp-text-delivery-policy.json" in workflow_text
+            and "render-lightweight-mp4" not in workflow_text
+            and "adp-scheduled-mp4-video" not in workflow_text
+            and ".mp4" not in workflow_text,
+            "workflow must build Stage 1 text delivery artifacts without MP4 rendering",
         ),
         _check(
             "candidate_queue_persistence_present",
@@ -128,14 +128,14 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
             "workflow must map required secret names without reading Codex auth",
         ),
         _check(
-            "release_target_declared",
-            "vars.ADP_RELEASE_TARGET" in workflow_text,
-            "workflow must map release target through GitHub variables",
+            "release_upload_not_required",
+            "ADP_RELEASE_TARGET" not in workflow_text and "ADP_ALLOW_RELEASE_UPLOAD" not in workflow_text,
+            "Stage 1 scheduled workflow must not require GitHub Release variables",
         ),
         _check(
-            "release_write_permission_declared",
-            "contents: write" in workflow_text,
-            "workflow must declare contents: write so controlled scheduled Release uploads can create draft Releases",
+            "read_only_contents_permission_declared",
+            "contents: read" in workflow_text and "contents: write" not in workflow_text,
+            "Stage 1 scheduled workflow must keep contents permission read-only",
         ),
         _check(
             "scheduled_side_effects_disabled",
@@ -168,12 +168,12 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         "schedule_slots": list(REQUIRED_SCHEDULES),
         "required_github_secrets": list(REQUIRED_SCHEDULER_SECRETS),
         "required_github_vars": list(REQUIRED_SCHEDULER_VARS),
-        "required_github_permissions": ["actions: read", "contents: write"],
+        "required_github_permissions": ["actions: read", "contents: read"],
         "scheduled_production_enabled": False,
         "scheduled_run_enabled": False,
         "release_upload_enabled": False,
         "real_smtp_send_enabled": False,
-        "side_effect_enablement_vars": ["ADP_ALLOW_SMTP_SEND", "ADP_ALLOW_RELEASE_UPLOAD"],
+        "side_effect_enablement_vars": ["ADP_ALLOW_SMTP_SEND"],
         "secret_values_logged": False,
         "codex_auth_read": False,
         "checks": checks,
@@ -185,10 +185,10 @@ def build_production_scheduler_plan(path: Path | str | None = None, *, generated
         ],
         "next_external_actions": [
             "merge the workflow to the default branch before schedule triggers can run",
-            "configure ADP_PRODUCTION_ENABLED only after all-arXiv Phase 12 scan, queue, ROI ranking, Release link, SMTP, and GitHub-hosted runner prerequisites pass",
+            "configure ADP_PRODUCTION_ENABLED only after all-arXiv Phase 12 scan, queue, ROI ranking, SMTP and GitHub-hosted runner prerequisites pass",
             "configure ADP_SCHEDULED_RUN_ENABLED only after daily all-arXiv execution evidence is implemented and verified",
             "retain adp-trial-evidence-ledger artifacts so 30-day trial evidence can accumulate across runs",
-            "keep Release upload and SMTP sending disabled until their explicit production enablement phase",
+            "keep SMTP sending disabled until its explicit production enablement phase",
         ],
     }
 

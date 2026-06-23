@@ -14,7 +14,6 @@ REQUIRED_LAUNCH_REF_KEYS = (
     "default_branch_ref",
     "runner_ref",
     "smtp_secret_ref",
-    "release_target_ref",
     "workflow_vars_ref",
     "trial_start_workflow_ref",
 )
@@ -29,7 +28,6 @@ def build_production_launch_readiness(
     default_branch_ref: str = "",
     runner_ref: str = "",
     smtp_secret_ref: str = "",
-    release_target_ref: str = "",
     workflow_vars_ref: str = "",
     trial_start_workflow_ref: str = "",
     confirm_launch: bool = False,
@@ -42,7 +40,6 @@ def build_production_launch_readiness(
         "default_branch_ref": _ref(default_branch_ref),
         "runner_ref": _ref(runner_ref),
         "smtp_secret_ref": _ref(smtp_secret_ref),
-        "release_target_ref": _ref(release_target_ref),
         "workflow_vars_ref": _ref(workflow_vars_ref),
         "trial_start_workflow_ref": _ref(trial_start_workflow_ref),
     }
@@ -200,7 +197,6 @@ def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
         "default_branch_ref": "provide the merged default-branch commit ref",
         "runner_ref": "provide a durable GitHub-hosted runner readiness ref",
         "smtp_secret_ref": "provide a durable GitHub SMTP secrets readiness ref without secret values",
-        "release_target_ref": "provide a durable Release target readiness ref",
         "workflow_vars_ref": "provide a durable GitHub variables readiness ref",
         "trial_start_workflow_ref": "provide a durable default-branch trial start workflow ref",
     }
