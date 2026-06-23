@@ -1776,6 +1776,41 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
         self.assertIn("precommit_pending_events: 23", eei_backlog)
 
+    def test_eei_a202_dashboard_sync_manifest_binds_root_views(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-EEI-A202-DASHBOARD-SYNC-20260623.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "root-governance")
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "README.md",
+            "GOVERNANCE_DASHBOARD.md",
+            "OWNER_PORTFOLIO.md",
+            "governance/binding_backlog.yaml",
+            "EEI/docs/governance/ASSURANCE_STATUS.yaml",
+            "EEI/docs/governance/STATUS.md",
+            "EEI/docs/governance/OWNER_STATUS.md",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
+        }:
+            self.assertIn(path, changed)
+        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "source_snapshot_hash: `sha256:8d5aca6984e447ee5427c2cd62ebcb45b771c963d3ae6665496b7e4f91ec0756`",
+            dashboard_text,
+        )
+
     def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
         manifest = json.loads(
             (

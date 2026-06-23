@@ -97,7 +97,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:29287dc7f17e7421607cd61b4482c9806bfa78719475dbf8ed45b2c22e51de62`
+- source_snapshot_hash: `sha256:9aee5cbcd4c8e00d992e2210712b969939ecceef5b6d4b33f1f4992274dd155b`
 - snapshot_event_time: `2026-06-23T03:10:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
