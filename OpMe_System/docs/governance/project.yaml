@@ -1,0 +1,2177 @@
+schema_version: "codexproject.project.v1"
+project_id: "OpMe_System"
+project_name: "OpMe_System"
+summary: "OpMe_System 是工业运维/工程分析辅助系统；真实模型为确定性风险规则和 LLM 路由/离线回退，不把 FastAPI、React、Docker 等技术栈误作模型参数，且当前不声明生产安全交付就绪。"
+version: "1.0.0"
+fact_level: "EXTRACTED"
+owner_role: "engineering_owner + safety_owner + operations_owner"
+current_status: "blocked_for_operational_validation"
+limitations:
+  -
+    statement: "实现一致性为 VERIFIED：7/7 active formulas 和 49/49 active parameters 均有机器验证实现证据；但其中 42 个参数的校准依据仍为 UNKNOWN 并绑定 TASK-OPME-B-001。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OPME-ASSURANCE-STATUS"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+  -
+    statement: "methodological_rationale 和 empirical_validation 仍为 UNVERIFIED；operational_validation 为 FAILED；delivery_readiness 仍为 UNVERIFIED。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OPME-ASSURANCE-STATUS"
+      - "EVID-OPME-DELIVERY-TASKS"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+  -
+    statement: "LLM provider router 是可选回退策略；本迁移不读取 API key、不启用 provider calls、不改变 offline_rules fallback。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+    unknown_task_ids:
+features:
+  -
+    feature_id: "FEAT-OPME-001"
+    name: "动态窑线风险规则建议"
+    description: "基于 centerline、ovality、temperature、runout 等实现常量生成风险分和建议；输出必须保持工程师复核。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py"
+      - "OpMe_System/backend/tests/test_api.py"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-OPME-002"
+    name: "故障诊断风险规则建议"
+    description: "基于 vibration、temperature、speed、noise 和症状计数生成风险分；不声明现场安全自动决策。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-002"
+    parameter_ids:
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:137"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py"
+      - "OpMe_System/backend/tests/test_api.py"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-OPME-003"
+    name: "齿轮修复风险规则建议"
+    description: "基于 wear_depth、crack_length、temperature 等实现常量给出修复材料和复检建议。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-003"
+    parameter_ids:
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:205"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py"
+      - "OpMe_System/backend/tests/test_api.py"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-OPME-004"
+    name: "机加工交付风险规则建议"
+    description: "基于 tolerance、diameter、length、material 风险规则估算交付风险和建议。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-004"
+    parameter_ids:
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:262"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py"
+      - "OpMe_System/backend/tests/test_api.py"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-OPME-005"
+    name: "通用咨询、风险等级映射与 LLM 离线回退"
+    description: "覆盖 generic risk_score、critical/warning/normal 映射、OpenAI-compatible provider routing 和 offline_rules fallback。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+      - "MOD-007"
+    parameter_ids:
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:333"
+      - "OpMe_System/backend/app/services/model_router.py:15"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py"
+      - "OpMe_System/backend/tests/test_api.py"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-PARAMETER-REGISTRY"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Dynamic kiln risk rule"
+    kind: "deterministic_rule_engine"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-001-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-002"
+    name: "Fault diagnosis risk rule"
+    kind: "deterministic_rule_engine"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-002-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-003"
+    name: "Gear repair risk rule"
+    kind: "deterministic_rule_engine"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-003-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-004"
+    name: "Machining delivery risk rule"
+    kind: "deterministic_rule_engine"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-004-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-005"
+    name: "Other consulting default rule"
+    kind: "deterministic_rule_engine"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-005-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids:
+      - "PARAM-039"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-006"
+    name: "Risk level mapping"
+    kind: "deterministic_rule_engine"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-006-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+  -
+    model_id: "MOD-007"
+    name: "LLM provider router and offline fallback"
+    kind: "llm_routing_fallback_strategy"
+    purpose: "Support industrial operations analysis with auditable rule outputs and safe fallback."
+    owner: "OpMe_System"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "mod-007-v0"
+    assumptions:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+    inputs:
+      - "module input_data"
+      - "uploaded_rows where applicable"
+    outputs:
+      - "risk_score"
+      - "risk_level"
+      - "summary"
+      - "suggestions"
+      - "visualizations"
+      - "model_status"
+    code_refs:
+      - "OpMe_System/backend/app/services/model_router.py:15"
+    test_refs:
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-MODEL-SPEC"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "risk_score=min(100,int(centerline/5*35 + ovality/0.04*25 + temperature/520*25 + runout/3*15)); suggestions trigger at centerline>3, ovality>0.02, temperature>400, eccentricity>0.015."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/analysis.py::analyze_dynamic"
+      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
+      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:1f5a245eecd02498be57b7916bc26371a3e9db12b1778aec9efcf981edbd42ae"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:60"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Symptoms derive from description/vibration/temperature/speed/noise; risk_score=min(100,int(vibration/4*35 + temperature/550*35 + symptom_count*10))."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/analysis.py::analyze_fault"
+      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
+      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:93e620abdb8a3b1c9c3121ad0661232150f13f3420cb4b6908cbecec4fdb3b8d"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:137"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "risk_score=min(100,int(wear_depth/3*45 + crack_length/80*35 + temperature/180*20)); material and repair suggestions trigger on wear_depth>1.0, crack_length>0, temperature>120."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/analysis.py::analyze_gear"
+      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
+      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:00eec7f7fa9e8162b98901d7916a0ff4799b7e2984a2ac5d888bd4a9861fc7a9"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:205"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "precision_risk=35 if tolerance<0.05 else 15 if tolerance<0.12 else 5; size_risk=min(35,int((diameter+length)/10000*35)); material_risk=20 for 42CrMo/Inconel/high-temperature alloys else 10; risk_score=min(100,sum)."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/analysis.py::analyze_machining"
+      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
+      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:6d71222d8b493bdaa6f4d27ef4eb37ed8a8ab52770da6bba18220307c0b25e15"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:262"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "risk_score=25 and generic engineering review suggestions for other consulting topics."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/analysis.py::analyze_other"
+      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
+      - "OpMe_System/backend/app/services/analysis.py::REFERENCE_NOTES"
+    implementation_fingerprint: "sha256:2fca115f446d6008c7b69e02d34c6ad0066e08fb2ac6790033fe2790a4a3e2d5"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:333"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "risk_level is critical when score>=75, warning when score>=40, otherwise normal."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/analysis.py::_risk_level"
+    implementation_fingerprint: "sha256:7a091c1e552fe839aabb40e1d6f54bde80dafb992ea10d150fa36ee172d529cf"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:16"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Filter enabled provider configs with api_key, base_url, and model; call providers in priority order using OpenAI-compatible /chat/completions, temperature 0.2 and timeout 20; log success/failure; if no config or all calls fail return offline_rules."
+    constraints:
+      - "Outputs are advisory and require engineer review."
+      - "Calibration source is UNKNOWN and task-linked."
+    missing_policy: "Numeric missing values generally default to 0 or a local default where code uses input_data.get."
+    output_range: "risk_score 0..100; risk_level normal/warning/critical; provider offline_rules or configured model status."
+    open_task_ids:
+      - "TASK-OPME-B-001"
+    implementation_refs:
+      - "OpMe_System/backend/app/services/model_router.py::route_model"
+      - "OpMe_System/backend/app/services/model_router.py::SYSTEM_PROMPT"
+      - "OpMe_System/backend/app/services/db.py::init_db"
+      - "OpMe_System/backend/app/services/db.py::get_model_configs"
+    implementation_fingerprint: "sha256:7569c8b96d17cc4ec822f2efbf1700392ad754cf84ff57d0b17aac6e0bed696c"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    code_refs:
+      - "OpMe_System/backend/app/services/model_router.py:15"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_centerline_scale"
+    name: "dynamic centerline scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "5"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:7"
+    extracted_value: "5"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_centerline_weight"
+    name: "dynamic centerline weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "35"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:4"
+    extracted_value: "35"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_ovality_scale"
+    name: "dynamic ovality scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "ratio"
+    value: "0.04"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:8"
+    extracted_value: "0.04"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_ovality_weight"
+    name: "dynamic ovality weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "25"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:5"
+    extracted_value: "25"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_temperature_scale"
+    name: "dynamic temperature scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "C"
+    value: "520"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:6"
+    extracted_value: "520"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_temperature_weight"
+    name: "dynamic temperature weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "25"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:2"
+    extracted_value: "25"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_runout_scale"
+    name: "dynamic runout scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "3"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:3"
+    extracted_value: "3"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_runout_weight"
+    name: "dynamic runout weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "15"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:74:1"
+    extracted_value: "15"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:74"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_centerline_threshold"
+    name: "dynamic centerline threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "3"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:77:1"
+    extracted_value: "3"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:77"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_ovality_threshold"
+    name: "dynamic ovality threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "ratio"
+    value: "0.02"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:79:1"
+    extracted_value: "0.02"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:79"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_temperature_threshold"
+    name: "dynamic temperature threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "C"
+    value: "400"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:81:1"
+    extracted_value: "400"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:81"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dynamic_eccentricity_threshold"
+    name: "dynamic eccentricity threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "ratio"
+    value: "0.015"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:83:1"
+    extracted_value: "0.015"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:83"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_vibration_threshold"
+    name: "fault vibration threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm/s or input unit"
+    value: "2.0"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:143:5"
+    extracted_value: "2"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:143"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_temperature_threshold"
+    name: "fault temperature threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "C"
+    value: "450"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:144:4"
+    extracted_value: "450"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:144"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_speed_min"
+    name: "fault speed min"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "rpm or input unit"
+    value: "1.0"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:145:4"
+    extracted_value: "1"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:145"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_speed_max"
+    name: "fault speed max"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "rpm or input unit"
+    value: "4.5"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:145:5"
+    extracted_value: "4.5"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:145"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_vibration_scale"
+    name: "fault vibration scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "input unit"
+    value: "4"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:5"
+    extracted_value: "4"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:165"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_vibration_weight"
+    name: "fault vibration weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "35"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:4"
+    extracted_value: "35"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:165"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_temperature_scale"
+    name: "fault temperature scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "C"
+    value: "550"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:6"
+    extracted_value: "550"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:165"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_temperature_weight"
+    name: "fault temperature weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "35"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:3"
+    extracted_value: "35"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:165"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "fault_symptom_weight"
+    name: "fault symptom weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points per symptom"
+    value: "10"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:165:2"
+    extracted_value: "10"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:165"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_wear_scale"
+    name: "gear wear scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "3"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:6"
+    extracted_value: "3"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:209"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_wear_weight"
+    name: "gear wear weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "45"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:3"
+    extracted_value: "45"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:209"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_crack_scale"
+    name: "gear crack scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "80"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:7"
+    extracted_value: "80"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:209"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_crack_weight"
+    name: "gear crack weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "35"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:4"
+    extracted_value: "35"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:209"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_temperature_scale"
+    name: "gear temperature scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "C"
+    value: "180"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:5"
+    extracted_value: "180"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:209"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_temperature_weight"
+    name: "gear temperature weight"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "20"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:209:2"
+    extracted_value: "20"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:209"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_wear_material_threshold"
+    name: "gear wear material threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "1.0"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:212:1"
+    extracted_value: "1"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:212"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "gear_temperature_threshold"
+    name: "gear temperature threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "C"
+    value: "120"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:218:1"
+    extracted_value: "120"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:218"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_tolerance_critical"
+    name: "machining tolerance critical"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "0.05"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:2"
+    extracted_value: "0.05"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:275"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_tolerance_warning"
+    name: "machining tolerance warning"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "0.12"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:5"
+    extracted_value: "0.12"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:275"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_precision_critical_score"
+    name: "machining precision critical score"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "35"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:1"
+    extracted_value: "35"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:275"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_precision_warning_score"
+    name: "machining precision warning score"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "15"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:3"
+    extracted_value: "15"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:275"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_precision_normal_score"
+    name: "machining precision normal score"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "5"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:275:4"
+    extracted_value: "5"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:275"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_size_scale"
+    name: "machining size scale"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "mm"
+    value: "10000"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:276:3"
+    extracted_value: "10000"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:276"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_size_cap"
+    name: "machining size cap"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "35"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:276:1"
+    extracted_value: "35"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:276"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_material_special_score"
+    name: "machining material special score"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "20"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:277:1"
+    extracted_value: "20"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:277"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "machining_material_default_score"
+    name: "machining material default score"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "10"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:277:2"
+    extracted_value: "10"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:277"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "other_default_risk_score"
+    name: "other default risk score"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "25"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:339:1"
+    extracted_value: "25"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:339"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "risk_critical_threshold"
+    name: "risk critical threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "75"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:17:1"
+    extracted_value: "75"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:17"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "risk_warning_threshold"
+    name: "risk warning threshold"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "40"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:19:1"
+    extracted_value: "40"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:19"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "risk_score_cap"
+    name: "risk score cap"
+    category: "formula_constant"
+    data_type: "float"
+    unit: "points"
+    value: "100"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "UNKNOWN (TASK-OPME-B-001: engineering calibration source not evidenced)"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/analysis.py:73:1"
+    extracted_value: "100"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    code_refs:
+      - "OpMe_System/backend/app/services/analysis.py:72"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "router_temperature"
+    name: "router temperature"
+    category: "runtime_parameter"
+    data_type: "float"
+    unit: "LLM temperature"
+    value: "0.2"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/model_router.py:47:2"
+    extracted_value: "0.2"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/model_router.py:47"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "router_timeout_seconds"
+    name: "router timeout seconds"
+    category: "runtime_parameter"
+    data_type: "float"
+    unit: "seconds"
+    value: "20"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/model_router.py:49:1"
+    extracted_value: "20"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/model_router.py:49"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "provider_deepseek_priority"
+    name: "provider deepseek priority"
+    category: "routing_priority"
+    data_type: "float"
+    unit: "priority"
+    value: "10"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:105:4"
+    extracted_value: "10"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/db.py:105"
+    test_refs:
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "provider_qwen_priority"
+    name: "provider qwen priority"
+    category: "routing_priority"
+    data_type: "float"
+    unit: "priority"
+    value: "20"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:106:4"
+    extracted_value: "20"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/db.py:106"
+    test_refs:
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "provider_doubao_priority"
+    name: "provider doubao priority"
+    category: "routing_priority"
+    data_type: "float"
+    unit: "priority"
+    value: "30"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:107:4"
+    extracted_value: "30"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/db.py:107"
+    test_refs:
+      - "OpMe_System/backend/tests/test_api.py:31"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "provider_default_enabled"
+    name: "provider default enabled"
+    category: "routing_flag"
+    data_type: "float"
+    unit: "boolean int"
+    value: "0"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "text_regex:OpMe_System/backend/app/services/db.py::VALUES \\(\\?, \\?, \\?, \\'\\', (0), \\?, \\?\\)"
+    extracted_value: "0"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/db.py:102"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:5"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "offline_fallback_provider"
+    name: "offline fallback provider"
+    category: "fallback"
+    data_type: "string"
+    unit: "provider label"
+    value: "offline_rules"
+    source: "EXTRACTED from code/config default"
+    calibration_method: "NOT_APPLICABLE - code/config rule"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/model_router.py:20:2"
+    extracted_value: "offline_rules"
+    semantic_status: "MACHINE_VERIFIED"
+    last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
+    verified_at: "2026-06-21T13:31:42Z"
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids:
+    code_refs:
+      - "OpMe_System/backend/app/services/model_router.py:20"
+    test_refs:
+      - "OpMe_System/backend/tests/test_analysis.py:20"
+    evidence_refs:
+      - "EVID-OPME-PARAMETER-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+strategies:
+  -
+    strategy_id: "STRAT-OPME-001"
+    name: "advisory_engineer_review_required"
+    description: "工程分析输出只作为建议和报告模板，不能替代工程/安全/运营责任人复核。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OPME-MODEL-REGISTRY"
+      - "EVID-OPME-ASSURANCE-STATUS"
+  -
+    strategy_id: "STRAT-OPME-002"
+    name: "optional_llm_provider_offline_fallback"
+    description: "缺少 provider config、API key 或调用失败时返回 offline_rules；provider 配置值不是本迁移范围。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OPME-FORMULA-REGISTRY"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    strategy_id: "STRAT-OPME-003"
+    name: "expert_validation_before_operational_use"
+    description: "生产/现场使用前需要专家标注、危险漏报专项集、回退演练和报告可执行性复核。"
+    status: "blocked"
+    fact_level: "UNKNOWN"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+    evidence_refs:
+      - "EVID-OPME-OWNER-STATUS"
+      - "EVID-OPME-ASSURANCE-STATUS"
+validations:
+  -
+    validation_id: "VAL-OPME-IMPLEMENTATION-CONGRUENCE"
+    name: "implementation_congruence"
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 49
+    total_active_parameters: 49
+    checked_active_formulas: 7
+    total_active_formulas: 7
+    evidence_refs:
+      - "EVID-OPME-ASSURANCE-STATUS"
+      - "EVID-OPME-SEMANTIC-MANIFEST"
+  -
+    validation_id: "VAL-OPME-METHOD-RATIONALE"
+    name: "methodological_rationale"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OPME-ASSURANCE-STATUS"
+      - "EVID-OPME-MODEL-SPEC"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+  -
+    validation_id: "VAL-OPME-EMPIRICAL-VALIDATION"
+    name: "empirical_validation"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-OPME-ASSURANCE-STATUS"
+      - "EVID-OPME-DELIVERY-TASKS"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+  -
+    validation_id: "VAL-OPME-OPERATIONAL-VALIDATION"
+    name: "operational_validation"
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OPME-ASSURANCE-STATUS"
+      - "EVID-OPME-DEVELOPMENT-EVENTS"
+    unknown_task_ids:
+      - "TASK-OPME-B-001"
+  -
+    validation_id: "VAL-OPME-REVIEW9-S5PAT03"
+    name: "Review9 S5PAT03 single-project Lean v2 migration"
+    status: "planned_until_pr_ci_and_main_merge"
+    fact_level: "PROPOSED"
+    evidence_refs:
+      - "EVID-REVIEW9-S5PAT03-MANIFEST"
+delivery_readiness:
+  status: "UNVERIFIED"
+  release_gate: "GOV-SEMANTIC-OPME-in-progress"
+  blocker_ids:
+    - "FACT-OpMe_System-EMPIRICAL-EVIDENCE"
+    - "FACT-OpMe_System-OPERATIONAL-EVIDENCE"
+    - "TASK-OPME-B-001"
+  next_executable_task: "TASK-OPME-B-001"
+  next_task_status: "blocked"
+  owner_decision_required: true
+  owner_decision_id: "DEC-OpMe_System-REVIEW8-001"
+  evidence_refs:
+    - "EVID-OPME-ASSURANCE-STATUS"
+    - "EVID-OPME-DELIVERY-TASKS"
+    - "EVID-OPME-OWNER-STATUS"
+evidence_refs:
+  -
+    evidence_id: "EVID-OPME-MODEL-REGISTRY"
+    kind: "legacy_registry"
+    ref: "OpMe_System/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-FORMULA-REGISTRY"
+    kind: "legacy_registry"
+    ref: "OpMe_System/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-PARAMETER-REGISTRY"
+    kind: "legacy_registry"
+    ref: "OpMe_System/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-MODEL-SPEC"
+    kind: "legacy_spec"
+    ref: "OpMe_System/docs/governance/MODEL_SPEC.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-DELIVERY-TASKS"
+    kind: "legacy_plan"
+    ref: "OpMe_System/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-ASSURANCE-STATUS"
+    kind: "legacy_status"
+    ref: "OpMe_System/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-OWNER-STATUS"
+    kind: "legacy_status"
+    ref: "OpMe_System/docs/governance/OWNER_STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-STATUS"
+    kind: "legacy_status"
+    ref: "OpMe_System/docs/governance/STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-DEVELOPMENT-EVENTS"
+    kind: "legacy_events"
+    ref: "OpMe_System/docs/governance/development_events.jsonl"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OPME-SEMANTIC-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PAT03-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"

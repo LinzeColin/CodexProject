@@ -1772,6 +1772,176 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S5PA-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
         self.assertIn("EVA_OS delivery readiness remains FAILED", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s5pat03_opme_project_yaml_contains_real_model_facts(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "OpMe_System" / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "OpMe_System")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "blocked_for_operational_validation")
+        self.assertIn("不把 FastAPI、React、Docker 等技术栈误作模型参数", project["summary"])
+        self.assertIn("不声明生产安全交付就绪", project["summary"])
+        self.assertEqual(len(project["features"]), 5)
+        self.assertEqual(len(project["models"]), 7)
+        self.assertEqual(len(project["formulas"]), 7)
+        self.assertEqual(len(project["parameters"]), 49)
+        self.assertEqual(len(project["strategies"]), 3)
+
+        model_ids = {item["model_id"] for item in project["models"]}
+        formula_ids = {item["formula_id"] for item in project["formulas"]}
+        parameter_ids = {item["parameter_id"] for item in project["parameters"]}
+        self.assertEqual({f"MOD-{index:03d}" for index in range(1, 8)}, model_ids)
+        self.assertEqual({f"FORM-{index:03d}" for index in range(1, 8)}, formula_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 50)}, parameter_ids)
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PAT03-MANIFEST", evidence_ids)
+        self.assertIn("EVID-OPME-SEMANTIC-MANIFEST", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        fact_counts = Counter(item["fact_level"] for item in project["parameters"])
+        self.assertEqual(semantic_counts["MACHINE_VERIFIED"], 49)
+        self.assertEqual(fact_counts["UNKNOWN"], 42)
+        self.assertEqual(fact_counts["EXTRACTED"], 7)
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("42 个参数的校准依据仍为 UNKNOWN", limitations)
+        self.assertIn("delivery_readiness 仍为 UNVERIFIED", limitations)
+        self.assertIn("不读取 API key", limitations)
+        self.assertEqual(project["validations"][0]["status"], "VERIFIED")
+        self.assertEqual(project["delivery_readiness"]["status"], "UNVERIFIED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+
+    def test_review9_s5pat03_opme_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "OpMe_System" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "OpMe_System")
+        self.assertEqual(roadmap["current_stage_id"], "S5")
+        self.assertEqual(roadmap["current_phase_id"], "S5PA")
+        self.assertEqual(roadmap["current_task_id"], "S5PAT03")
+        self.assertEqual(roadmap["next_gate_id"], "S5PA-GATE-IN-PROGRESS")
+        self.assertEqual(roadmap["total_estimated_hours"], 5)
+        self.assertEqual(roadmap["completed_estimated_hours"], 5)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S5PAT03"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "completed")
+        self.assertEqual(task["dependencies"], ["S5PAT02"])
+        self.assertEqual(task["acceptance_ids"], ["ACC-S5PAT03"])
+        self.assertIn("OpMe_System/docs/governance/project.yaml", task["evidence_refs"])
+        self.assertIn("一次 PR 同时迁移多个项目", roadmap["stages"][0]["stop_conditions"])
+        self.assertIn("批量脚本产生无证据事实", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+
+    def test_review9_s5pat03_opme_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "OpMe_System" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 4)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-OPME-SEMANTIC-20260621-001"]["fact_level"], "RECONSTRUCTED")
+        self.assertIn("not production readiness", by_id["EVT-OPME-SEMANTIC-20260621-001"]["notes"])
+        self.assertEqual(by_id["EVT-OPME-REVIEW8-OWNER-DECISION-20260622-001"]["fact_level"], "UNKNOWN")
+        self.assertEqual(by_id["EVT-OPME-REVIEW9-S5PAT03-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertIn("Must remain PROPOSED", by_id["EVT-OPME-REVIEW9-S5PAT03-LOCAL"]["notes"])
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pat03_opme_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        result = cli.check_render_project_files(ROOT / "OpMe_System")
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (ROOT / "OpMe_System" / "功能清单").read_text(encoding="utf-8")
+        dev_text = (ROOT / "OpMe_System" / "开发记录").read_text(encoding="utf-8")
+        model_text = (ROOT / "OpMe_System" / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-OPME-005", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PAT03", dev_text)
+        self.assertIn("MOD-007", model_text)
+        self.assertIn("PARAM-049", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pat03_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "OpMe_System",
+            "path": "OpMe_System",
+            "model_behavior_globs": ["backend/**/*.py", "frontend/**/*.jsx", "frontend/**/*.js"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "OpMe_System/docs/governance/project.yaml",
+                "OpMe_System/docs/governance/roadmap.yaml",
+                "OpMe_System/docs/governance/events.jsonl",
+                "OpMe_System/功能清单",
+                "OpMe_System/开发记录",
+                "OpMe_System/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pat03_manifest_records_opme_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "OpMe_System")
+        self.assertEqual(manifest["task_id"], "S5PAT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PAT03"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("opme_system_only_scope", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "OpMe_System/docs/governance/project.yaml",
+            "OpMe_System/docs/governance/roadmap.yaml",
+            "OpMe_System/docs/governance/events.jsonl",
+            "OpMe_System/功能清单",
+            "OpMe_System/开发记录",
+            "OpMe_System/模型参数文件",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EVA_OS/", "whkmSalary/", "EEI/")) for path in changed))
+        self.assertIn("S5PA-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("OpMe_System delivery readiness remains UNVERIFIED", " ".join(manifest["unresolved_risks"]))
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
