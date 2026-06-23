@@ -1,0 +1,155 @@
+{
+  "acceptance_ids": [
+    "ADP-ACC-S1-12-CONTROLLED-B1-LIVE-EMAIL-DAYS"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "changed_files_actual": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_declared": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "ci_attestation_subject": "Project Governance PR pending",
+  "ci_run_reference": "PRECOMMIT_PENDING_CI_ATTESTATION",
+  "content_tree_hash": "PRECOMMIT_PENDING",
+  "controlled_smtp_delivery_count": 2,
+  "controlled_smtp_delivery_refs": [
+    {
+      "artifact_digest": "sha256:b0f24943f9de99b988aff5e031cc0a5e400472346d77855044388b1944db6c9a",
+      "artifact_id": "7811543123",
+      "daily_date": "2026-06-23",
+      "generated_at": "2026-06-23T04:36:06Z",
+      "job_id": "82877527200",
+      "notification_status": "sent",
+      "production_evidence_ready": true,
+      "run_id": "28002478689"
+    },
+    {
+      "artifact_digest": "sha256:3e9a0b5c5d92b5bfd9cb1c99cc8786b75bc12d14dd6d9f83d01097995e46d9e8",
+      "artifact_id": "7816791617",
+      "daily_date": "2026-06-23",
+      "generated_at": "2026-06-23T09:27:05Z",
+      "job_id": "82921274100",
+      "notification_status": "sent",
+      "production_evidence_ready": true,
+      "run_id": "28002478689"
+    }
+  ],
+  "distinct_natural_day_count": 1,
+  "distinct_natural_days": [
+    "2026-06-23"
+  ],
+  "evidence_refs": [
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689",
+    "github-actions://LinzeColin/CodexProject/actions/jobs/82877527200",
+    "github-actions://LinzeColin/CodexProject/actions/jobs/82921274100",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689/artifacts/7811543123",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28002478689/artifacts/7816791617"
+  ],
+  "generated_at": "2026-06-23T19:35:00+10:00",
+  "implementation_base_sha": "055ad784b379a282aea8530f2b22b29f0b62f300",
+  "iteration_id": "ITER-20260623-S1P5T04-CONTROLLED-SMTP-EVIDENCE",
+  "manifest_id": "ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623",
+  "production_acceptance_claimed": false,
+  "production_schedule_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "real_release_uploaded": false,
+  "real_smtp_sent": true,
+  "remaining_blockers": [
+    "second distinct natural-day controlled B1 email evidence",
+    "ARXIV_PRODUCTION_ACCEPTED final acceptance gate",
+    "production scheduler owner approval"
+  ],
+  "required_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_distinct_natural_day_count": 2,
+  "run_id": "ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623",
+  "schema_version": 2,
+  "status": "in_progress",
+  "summary": "Recorded the second controlled GitHub/cloud-runner Gmail SMTP send evidence for S1P5T04. Two controlled sends are now present, but both have daily_date 2026-06-23, so the distinct natural-day gate remains open and ARXIV_PRODUCTION_ACCEPTED is not claimed.",
+  "task_id": "S1P5T04",
+  "test_commands": [
+    "python3 -m json.tool governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+    "python3 JSONL parse for arxiv-daily-push/docs/governance/development_events.jsonl",
+    "ruby YAML.load_file for arxiv-daily-push governance YAML files",
+    "python3 CSV width check for arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t04_root2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_arxiv_owner_status_uses_latest_event_manifest -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t04_project1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t04_adptests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t04_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "git diff --check",
+    "find arxiv-daily-push tests/governance \\( -name __pycache__ -o -name '*.pyc' \\) -print"
+  ],
+  "test_results": [
+    {
+      "command": "GitHub Actions rerun job 82921274100",
+      "exit_code": 0,
+      "summary": "manual-delivery-test completed success and uploaded scheduled execution artifact 7816791617"
+    },
+    {
+      "command": "scheduled execution artifact inspection",
+      "exit_code": 0,
+      "summary": "status succeeded, production_evidence_ready true, notification_status sent, recipient linzezhang35@gmail.com, Chinese lesson true, candidate queue summary true, video link false"
+    },
+    {
+      "command": "manifest/jsonl/yaml/csv parse checks",
+      "exit_code": 0,
+      "summary": "manifest JSON ok, development_events JSONL ok with 77 records, governance YAML ok, TRACEABILITY_MATRIX width 12"
+    },
+    {
+      "command": "validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "summary": "0 errors 0 warnings"
+    },
+    {
+      "command": "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+      "exit_code": 0,
+      "summary": "192 tests OK"
+    }
+  ],
+  "updated_governance_files": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "video_generated": false
+}
