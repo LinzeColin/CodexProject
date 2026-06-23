@@ -11,10 +11,10 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S1-A
 - Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 68
+- Confirmed iteration count: 69
 - Reconstructed event count: 0
-- Current task: `ADP-S1P5T04-POST-MERGE-TEST10-040`; PR #102 merged the Sydney service-date fix and the remaining proof is one owner-triggered controlled manual test10 from `main`.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test9 (`28056192503`) proved cloud manual SMTP delivery but exposed a UTC service-date bug; PR #102 fixed and merged that issue after CI success. GitHub API shows no manual run #10 yet, and the latest scheduled runs only executed the guard while the `scheduled` job was skipped. Production schedule, Release upload, Stage 2, and video remain disabled or out of scope until a separate owner-approved task.
+- Current task: `ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041`; test10 (`28059194999`) completed from `main` after the Sydney service-date fix and is now recorded as Stage 1 post-merge email evidence.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge GitHub/cloud manual SMTP path, Sydney service-date subject `20260624`, recipient `linzezhang35@gmail.com`, Chinese lesson flag, and candidate queue summary flag. Production schedule, Release upload, Stage 2, and video remain disabled or out of scope until a separate owner-approved task.
 
 ## Phase Matrix
 
@@ -1774,3 +1774,27 @@ None for this new project baseline.
 - Remaining risks: Future scheduled production still requires a separate owner-approved flag/secrets task; Stage 2 and email template quality work remain outside this acceptance gate.
 - Rollback: Remove S1P5T03-R code/workflow/tests/governance records and restore the previous strict acceptance state only if the owner explicitly abandons this real-backfill gate.
 - Next step: Stop S1P5T03-R, keep production schedule disabled, and wait for owner instruction before any production scheduler, SMTP, Release upload, Stage 2, video, or template task.
+
+### `ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-040`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from GitHub Actions run `28059194999`, authenticated artifact downloads, and scheduled production run metadata.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 2f715f37ee21df59cc1cf092d712bd9399157469
+- Result commit: PENDING
+- Task IDs: `ADP-S1P5T04-POST-MERGE-TEST10-040`; `S1P5T04`
+- Goal: Record the owner-triggered post-merge manual Gmail SMTP test10 evidence from `main` after the Australia/Sydney service-date fix.
+- Assumptions: test10 is a controlled manual delivery proof; it does not enable scheduled production, Release upload, Stage 2, or video.
+- Files changed: governance status/task/event files, dashboard generator decision policy, root governance tests, and the test10 verified run manifest.
+- Model changes: No ranking, queue, report, email content, SMTP, Release, Stage 2, or video model changed.
+- Formula changes: No formula expression changed.
+- Parameter changes: No active parameter value changed.
+- Commands run: GitHub Actions API run/job/artifact inspection; authenticated artifact downloads for artifacts `7834307458`, `7834306281`, `7834305857`, and `7834283976`; scheduled workflow metadata inspection.
+- Test results: manual run `28059194999` is run number 10 on `main`, head SHA `2f715f37ee21df59cc1cf092d712bd9399157469`, and completed success. GitHub-hosted Ubuntu jobs `guard` and `manual-delivery-test` completed success. scheduled-execution artifact `7834307458` reports `status=succeeded`, `preflight_status=pass`, `production_evidence_ready=true`, `notification_report.status=sent`, `real_smtp_send_enabled=true`, recipient `linzezhang35@gmail.com`, and subject `20260624 -- arXiv Computer Science -- Computer Science -- Open Problem: Is AdamW Effective Under Heavy-Tailed Noise?`. The daily input reports `date=2026-06-24`, `archive_count=20`, `blocked_archive_count=0`, and `candidate_count=16`.
+- Successes: Post-merge Sydney service-date behavior is proven on GitHub/cloud runner and the controlled Gmail SMTP path sent to the configured recipient without logging email body or secret values.
+- Failures: None for test10. Release upload remains disabled/dry-run and no video link is required for current Stage 1 text-first delivery.
+- Decisions: Keep production schedule disabled; the next task is an explicit owner decision gate before any `ADP_PRODUCTION_ENABLED`, `ADP_SCHEDULED_RUN_ENABLED`, `ADP_ALLOW_SMTP_SEND`, or `ADP_ALLOW_RELEASE_UPLOAD` production enablement.
+- Remaining risks: The user may still reject frontstage template quality, but that is not a Stage 1 acceptance blocker. Production schedule must not be enabled without a separate instruction and verification run.
+- Rollback: Revert EVENT-20260624-ADP-083, the test10 verified manifest, task 040 completion, task 041 boundary, and generated status files.
+- Next step: Stop Stage 1 delivery work at `S1P5T04`; wait for owner instruction on whether to enable production schedule or improve the email template.

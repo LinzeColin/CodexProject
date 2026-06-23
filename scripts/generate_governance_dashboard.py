@@ -450,6 +450,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "Stage 1 arXiv acceptance remains recorded, but post-merge test10 proof remains incomplete.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041":
+        policy.update(
+            {
+                "decision_id": "DEC-arxiv-daily-push-PRODUCTION-SCHEDULE-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "OWNER_DECISION_REQUIRED",
+                "question": "是否在 test10 已通过后单独启用每日生产定时。",
+                "recommendation": "A: keep production schedule disabled until a separate owner-approved enablement run",
+                "option_a": "保持 production schedule disabled，先确认你确实要每天自动发送。",
+                "option_b": "进入邮件模板质量优化，不改变 production flags。",
+                "option_c": "启用生产定时；只允许在你明确批准并核对 GitHub variables/secrets 后执行。",
+                "effort": "P1; explicit owner decision plus GitHub variable/secret verification",
+                "resource": "GitHub Actions ubuntu-latest and Gmail SMTP; no local Mac background process",
+                "benefit": "把 Stage 1 已验收和真正每日自动发送分开，避免未授权生产邮件。",
+                "risks": "误启用 ADP_PRODUCTION_ENABLED 或 ADP_SCHEDULED_RUN_ENABLED 会造成每日真实发送；错误 SMTP/Release flags 会破坏 fail-closed 边界。",
+                "evidence": "owner approval, repository variable state, scheduled workflow run evidence, SMTP sent artifact, no secret/body logging",
+                "priority": "P1",
+                "no_decision": "Stage 1 remains accepted, but production schedule stays disabled and no daily automatic send occurs.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
@@ -1464,12 +1485,19 @@ def render_owner_status(item: dict[str, Any]) -> str:
     option_a = decision["option_a"]
     option_b = decision["option_b"]
     option_c = decision["option_c"]
+    changed_summary = "Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。"
     if assurance["delivery_readiness"]["status"] == "VERIFIED" and item["project_id"] == "arxiv-daily-push":
         current_conclusion = (
             f"{item['project_id']} 当前治理结论：`S1P5T04` / Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`；"
             "实现一致性、实证、运行和交付证据均为 `VERIFIED`。"
             "生产定时是否真正发送仍由 GitHub Variables/Secrets 与 fail-closed workflow gate 控制。"
         )
+        if next_task["task_id"] == "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041":
+            changed_summary = (
+                "test10 已从 `main` 在 GitHub-hosted Ubuntu runner 上完成：run `28059194999` / run_number `10` "
+                "证明邮件主题使用 Sydney 服务日期 `20260624`，Gmail SMTP 已发送到 `linzezhang35@gmail.com`。"
+                "本次没有启用 production schedule、没有上传 Release、没有引入视频要求。"
+            )
     else:
         current_conclusion = (
             f"{item['project_id']} 当前治理结论：实现一致性为 `{dims['implementation_congruence']['status']}`，"
@@ -1484,7 +1512,7 @@ def render_owner_status(item: dict[str, Any]) -> str:
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+{changed_summary}
 
 ## 3. 为什么重要
 

@@ -1060,15 +1060,32 @@ tasks:
     objective: "Run one owner-triggered controlled post-merge manual Gmail SMTP test10 from main to verify Stage 1 Sydney service-date email delivery without enabling production scheduling."
     scope: "Owner-triggered workflow_dispatch on main for arXiv Daily Push manual B1 text SMTP test, followed by Codex verification of run id, artifacts, subject date, SMTP sent state, and skipped/disabled production schedule."
     non_scope: "No production schedule enablement, no duplicate uncontrolled email, no Release upload, no ranking or queue algorithm change, no Stage 2, and no video requirement."
-    status: "ready"
+    status: "completed"
     dependencies: ["ADP-S1P5T04-SYDNEY-SERVICE-DATE-039"]
     required_files: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md", "arxiv-daily-push/docs/governance/OWNER_STATUS.md"]
     acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
     test_commands: ["GitHub Actions workflow_dispatch from main with confirm_manual_delivery_test=SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM, generated_at empty, max_results_per_category=1", "Codex verifies manual run number 10, scheduled-execution artifact, notification_status=sent, recipient linzezhang35@gmail.com, Sydney service-date subject, and production scheduled job skipped/disabled"]
-    test_results: ["pending: GitHub API currently lists manual runs 1 through 9 only", "latest scheduled runs 28057072176, 28056782115, and 28056430312 had scheduled job conclusion skipped"]
-    evidence_refs: ["https://github.com/LinzeColin/CodexProject/pull/102", "github-actions://LinzeColin/CodexProject/actions/runs/28057755238", "github-actions://LinzeColin/CodexProject/actions/runs/28057755234", "github-actions://LinzeColin/CodexProject/actions/runs/28057755254", "github-actions://LinzeColin/CodexProject/actions/runs/28057755244", "arxiv-daily-push/docs/governance/development_events.jsonl#EVENT-20260624-ADP-082"]
-    risk: "Owner must trigger exactly one post-merge test10 from main; until that artifact exists, production schedule remains disabled."
-    rollback: "Remove this test10 gate task and revert next_executable_task to ADP-S1P5T04-SYDNEY-SERVICE-DATE-039."
+    test_results: ["manual delivery run 28059194999 is run_number 10 on main at 2f715f37ee21df59cc1cf092d712bd9399157469 and completed success", "GitHub-hosted Ubuntu runner evidence: guard and manual-delivery-test jobs completed success; build command used Sydney service date 2026-06-24", "scheduled-execution artifact 7834307458 digest sha256:96eedfa0b84a5a4d0cb03c331ff047682b2132440b0d30b4a8c72ef5e6dda334 reports status succeeded, preflight pass, production_evidence_ready true, notification_report.status sent, real_smtp_send_enabled true, recipient linzezhang35@gmail.com, and subject 20260624 -- arXiv Computer Science -- Computer Science -- Open Problem: Is AdamW Effective Under Heavy-Tailed Noise?", "daily input artifact 7834305857 digest sha256:21155d424c0c08911eb9323287b417c89f933fb06ec4e5a82d01d8430dd77902 reports status pass, date 2026-06-24, archive_count 20, blocked_archive_count 0, candidate_count 16", "delivery artifact 7834306281 digest sha256:b48f3644a4385ffe28b3507f6fc7b93531c6800a90070fc771a6b9927ad8d06d includes daily input, email brief, text delivery policy, and candidate queue files", "preflight artifact 7834283976 digest sha256:28b9af2f3bee6eadd10ad7ea208a75b2355e162a6d41546316a5858b4c7e47a4 reports status pass for recipient linzezhang35@gmail.com", "side_effect_policy shows smtp_send_requested true, release_upload_requested false, video_attachment_allowed false, email_body_logged false, secret_values_logged false; release_report.status dry_run and release_upload_enabled false", "latest scheduled workflow runs remain fail-closed and did not enable scheduled production."]
+    evidence_refs: ["https://github.com/LinzeColin/CodexProject/actions/runs/28059194999", "github-actions://LinzeColin/CodexProject/actions/runs/28059194999", "github-actions://LinzeColin/CodexProject/actions/runs/28059194999/artifacts/7834307458", "github-actions://LinzeColin/CodexProject/actions/runs/28059194999/artifacts/7834306281", "github-actions://LinzeColin/CodexProject/actions/runs/28059194999/artifacts/7834305857", "github-actions://LinzeColin/CodexProject/actions/runs/28059194999/artifacts/7834283976", "governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json", "arxiv-daily-push/docs/governance/development_events.jsonl#EVENT-20260624-ADP-083"]
+    risk: "test10 is a controlled manual SMTP proof, not automatic production schedule enablement; the next production schedule decision remains blocked until separately approved."
+    rollback: "Revert the test10 completion event, run manifest, generated status files, and return next_executable_task to ADP-S1P5T04-POST-MERGE-TEST10-040."
+    target_version: "0.23.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
+    phase: "S1-A"
+    objective: "Hold Stage 1 after accepted post-merge test10 and wait for an explicit owner decision before any production schedule enablement."
+    scope: "Document the post-test10 production boundary: Stage 1 arXiv delivery is accepted, manual SMTP proof passed, and scheduled daily production remains fail-closed until owner-approved GitHub variables/secrets enablement."
+    non_scope: "No production schedule enablement, no SMTP send, no Release upload, no Stage 2, no template redesign, and no video requirement."
+    status: "blocked"
+    dependencies: ["ADP-S1P5T04-POST-MERGE-TEST10-040"]
+    required_files: ["arxiv-daily-push/docs/governance/OWNER_STATUS.md", "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml", ".github/workflows/arxiv-daily-push-scheduled.yml"]
+    acceptance_ids: ["ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"]
+    test_commands: ["Blocked until owner explicitly approves production schedule enablement and repository variables/secrets are verified fail-closed."]
+    test_results: ["blocked by design: test10 passed, but production schedule has not been enabled and must not be enabled without a separate owner instruction."]
+    evidence_refs: ["github-actions://LinzeColin/CodexProject/actions/runs/28059194999", "governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json"]
+    risk: "Enabling ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, or ADP_ALLOW_RELEASE_UPLOAD without a separate owner decision would violate the Stage 1 fail-closed delivery boundary."
+    rollback: "Keep production schedule disabled; if this decision task is removed, ensure no workflow variables are changed."
     target_version: "0.23.0"
     completed_version: ""
     unknown_task_ids: []
