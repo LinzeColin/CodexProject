@@ -1,14 +1,52 @@
-# EVA_OS 开发记录索引
+# 开发记录
 
-本文件保留为兼容入口。EVA_OS 的 canonical 治理事实源已经迁移到：
+## 摘要
 
-- `docs/governance/MODEL_SPEC.md`
-- `docs/governance/model_registry.yaml`
-- `docs/governance/formula_registry.yaml`
-- `docs/governance/parameter_registry.csv`
-- `docs/governance/DEVELOPMENT_LEDGER.md`
-- `docs/governance/delivery_tasks.yaml`
-- `docs/governance/VERSION_MATRIX.yaml`
-- `docs/governance/TRACEABILITY_MATRIX.csv`
+- project_id: `EVA_OS`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PA`
+- current_task: `S5PAT02`
+- total_hours: `5.00`
+- completed_hours: `5.00`
+- progress: `100.00%`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PA-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-旧文件中的项目简介、当前状态和原则性描述仅作为历史入口；模型、公式、参数、任务、Acceptance、版本和追踪闭环以 `docs/governance/` 为准。
+## Roadmap
+
+Stage -> Phase -> Task
+
+### S5 其余九个项目逐项迁移
+
+- person_goal: `一次只迁移一个项目、一个任务和一个验收目标；先提取真实事实，再生成文件。禁止一次性批量生成空泛模板。`
+- status: `in_progress`
+- derived_hours: `5.00`
+- derived_percent: `100.00%`
+- stop_conditions: `一次 PR 同时迁移多个项目, 为了通过 schema 虚构数据, 业务测试失败`
+- stop_gate: `S5-GATE`
+
+#### S5PA 模型密集项目迁移
+
+- objective: `优先处理模型、策略和参数复杂度高的项目；本任务只迁移 EVA_OS。`
+- status: `in_progress`
+- derived_hours: `5.00`
+- derived_percent: `100.00%`
+- stop_conditions: `上一项目未通过 Gate, 批量脚本产生无证据事实`
+- stop_gate: `S5PA-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S5PAT02 | 迁移 EVA_OS | completed | 5.00 | 100.00% | S5PAT01 | ACC-S5PAT02 |
+
+
+## 近期事件
+
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-20T00:00:00+10:00 | legacy_governance_baseline | EVA_OS governance baseline recorded 16 models, 16 formulas, 189 parameters, delivery tasks, version matrix, and traceability without runtime behavior change. | ITER-20260620-EVA-001 | RECONSTRUCTED |
+| 2026-06-21T00:00:00+10:00 | semantic_extraction | Semantic extractor checked 52 parameters and 16 formulas, while 137 active parameters remained HUMAN_REVIEW_REQUIRED. | GOV-SEMANTIC-EVA-001 | RECONSTRUCTED |
+| 2026-06-22T00:24:25Z | assurance_snapshot | Review6 assurance snapshot separated VERIFIED structural completeness from PARTIAL implementation congruence and FAILED delivery readiness. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | PROPOSED |
+| 2026-06-24T00:00:00+10:00 | lean_v2_migration | Review9 S5PAT02 created EVA_OS Lean v2 project, roadmap, and event canonical files and rendered three Chinese human entry files from canonical facts only. | S5PAT02 | PROPOSED |
