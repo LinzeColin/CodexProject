@@ -2,6 +2,7 @@
   "acceptance_ids": [
     "ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY"
   ],
+  "accepted_for_production": true,
   "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED",
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "change_type": "adp_s1p5t03r_real_arxiv_30_day_backfill_and_ledger_reconcile",
@@ -62,11 +63,15 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "ci_attestation_subject": "ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623",
-  "ci_run_reference": "PENDING_PR_CI_CLOUD_BACKFILL",
+  "ci_run_reference": "github-actions://LinzeColin/CodexProject/actions/runs/28027759062",
   "cloud_artifact": {
-    "artifact_id": "PENDING_PR_CI",
+    "artifact_id": "7821452823",
     "artifact_name": "adp-s1p5t03-real-arxiv-30-day-backfill",
-    "run_id": "PENDING_PR_CI"
+    "artifact_url": "https://github.com/LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823",
+    "digest": "sha256:c18a100d76ed2a78f7372ed927d3c2b2801e8e993402d8b326670fa317f03a66",
+    "head_sha": "5eb8815246b600825e75e3bca652df72e90a5209",
+    "run_id": "28027759062",
+    "size_bytes": 146082
   },
   "content_ledger": {
     "path": "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
@@ -74,7 +79,7 @@
     "queued_row_count": 269,
     "row_count": 299,
     "selected_row_count": 30,
-    "source": "local control run; must be reconciled with cloud artifact before strict acceptance is restored"
+    "source": "local control run reconciled with GitHub/cloud artifact 7821452823 before strict acceptance was restored"
   },
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:88e80b8c42ed69507a99af02f58823bbf133a7270a98e182d05f95798d281432",
   "evidence_refs": [
@@ -82,13 +87,17 @@
     "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py",
     "arxiv-daily-push/tests/test_stage1_real_replay.py",
     "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md",
-    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/28027759062",
+    "https://github.com/LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28027759062",
+    "github-actions://LinzeColin/CodexProject/actions/runs/28027759062/artifacts/7821452823"
   ],
   "formula_ids_changed": [
     "FORM-ADP-048"
   ],
   "generated_at": "2026-06-23T22:15:00+10:00",
-  "implementation_base_sha": "69ec5ca96432ad500204bcf333a3da811143310c",
+  "implementation_base_sha": "5eb8815246b600825e75e3bca652df72e90a5209",
   "iteration_id": "ITER-20260623-S1P5T03-R-REAL-ARXIV-30-ASOF-REPLAY",
   "local_control_run": {
     "artifact_dir": "/tmp/adp-real-replay-20260623",
@@ -173,17 +182,26 @@
     "PARAM-ADP-358",
     "PARAM-ADP-359"
   ],
-  "production_acceptance_claimed": false,
+  "production_acceptance_claimed": true,
   "production_schedule_enabled": false,
   "project_id": "arxiv-daily-push",
+  "quality_gate_result": {
+    "content_ledger_queued_row_count": 269,
+    "content_ledger_row_count": 299,
+    "content_ledger_selected_row_count": 30,
+    "duplicate_lead_count": 0,
+    "future_leakage_count": 0,
+    "queue_continuity_break_count": 0,
+    "real_arxiv_source_id_count": 30,
+    "required_replay_count": 30,
+    "status": "pass",
+    "success_count": 30,
+    "unique_as_of_date_count": 30,
+    "unsupported_p0_p1_count": 0
+  },
   "real_release_uploaded": false,
   "real_smtp_sent": false,
-  "remaining_blockers": [
-    "GitHub Actions/cloud runner must execute the same 30-as-of replay workflow",
-    "PR CI must upload the backfill artifact and pass all gates",
-    "CONTENT_LEDGER must be reconciled against the cloud artifact ledger",
-    "Strict ARXIV_PRODUCTION_ACCEPTED must remain false until that cloud evidence is inspected"
-  ],
+  "remaining_blockers": [],
   "required_governance_files": [
     "arxiv-daily-push/CHANGELOG.md",
     "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
@@ -206,6 +224,11 @@
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py"
   ],
+  "risks": [
+    "Production scheduler remains disabled and must not be enabled without a separate owner-approved production flag task.",
+    "This acceptance covers Stage 1 arXiv B1 only; Stage 2 and other source boards remain out of scope.",
+    "Email frontstage quality work remains deferred and must not be mixed into this acceptance gate."
+  ],
   "run_id": "ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623",
   "schema_version": 2,
   "source_policy": {
@@ -215,8 +238,8 @@
     "query_policy": "submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359]",
     "source_type": "arxiv"
   },
-  "status": "pending_cloud_ci",
-  "summary": "Reopened strict Stage 1 historical evidence and added a real arXiv 30 as-of-date replay plus persistent CONTENT_LEDGER reconciliation path. Local control run passed, but strict ARXIV_PRODUCTION_ACCEPTED is not restored until PR CI produces and validates the GitHub Actions/cloud artifact.",
+  "status": "pass",
+  "summary": "Strict S1P5T03-R real arXiv 30 historical as-of replay passed on GitHub/cloud runner and restored ARXIV_PRODUCTION_ACCEPTED while keeping production scheduling, SMTP, Release upload, Stage 2, and video disabled.",
   "task_id": "S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE",
   "test_commands": [
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_real_replay_tests5 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_real_replay.py -q",
@@ -224,14 +247,19 @@
   ],
   "test_results": [
     {
-      "command": "focused real replay tests",
+      "command": "PR #94 arXiv Daily Push real 30-day backfill",
       "exit_code": 0,
-      "summary": "4 tests OK after adding cloud workflow side-effect regression"
+      "summary": "GitHub/cloud runner run 28027759062 completed success and uploaded artifact 7821452823."
     },
     {
-      "command": "local live real replay control run",
+      "command": "cloud real replay quality gates",
       "exit_code": 0,
-      "summary": "30/30 pass; 30 unique dates; 30 real arXiv selected IDs; no future leakage; no duplicate lead; queue continuity breaks 0; unsupported P0/P1 0; CONTENT_LEDGER rows 299"
+      "summary": "30/30 pass; 30 unique as-of dates; 30 real arXiv source IDs; future leakage 0; duplicate lead 0; queue continuity breaks 0; unsupported P0/P1 0; CONTENT_LEDGER rows 299 with 30 selected and 269 queued."
+    },
+    {
+      "command": "production side-effect gates",
+      "exit_code": 0,
+      "summary": "ADP_PRODUCTION_ENABLED=false; ADP_SCHEDULED_RUN_ENABLED=false; ADP_ALLOW_SMTP_SEND=false; ADP_ALLOW_RELEASE_UPLOAD=false; no SMTP, Release, scheduler, Stage 2, or video side effect."
     }
   ],
   "updated_governance_files": [

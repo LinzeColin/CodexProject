@@ -7,12 +7,12 @@
 - current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
 - current_phase: `S1P5`
 - current_task: `S1P5T03-R`
-- current_gate: `STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI`
+- current_gate: `ARXIV_PRODUCTION_ACCEPTED`
 - active_model_count: `46`
 - active_formula_count: `48`
 - active_parameter_count: `342`
-- next_unique_task: `S1P5T03-R-PR-CI-CLOUD-BACKFILL-ARTIFACT`
-- evidence_status: `LOCAL_CONTROL_VERIFIED_CLOUD_CI_PENDING`
+- next_unique_task: `WAIT_FOR_OWNER_DECISION_BEFORE_PRODUCTION_SCHEDULE_ENABLEMENT`
+- evidence_status: `LOCAL_AND_CLOUD_BACKFILL_VERIFIED`
 
 ## 证据
 
@@ -109,7 +109,7 @@
 
 | 项目 | 类型 | 当前状态 | 解决任务 | 事实等级 |
 |---|---|---|---|---|
-| S1P5T03-R 云端 artifact | validation | PR CI 未完成；strict accepted 不得恢复 | `S1P5T03-R-PR-CI-CLOUD-BACKFILL-ARTIFACT` | EXTRACTED |
+| S1P5T03-R 云端 artifact | validation | PR #94 run `28027759062` artifact `7821452823` 通过；strict accepted restored | `ARXIV_PRODUCTION_ACCEPTED` | MACHINE_VERIFIED |
 | GitHub repo production variables/secrets | validation | 本轮未读取或启用；scheduled send 仍 fail-closed | production variable verification task after S1P5T03-R | EXTRACTED |
 | 邮件前台模板 | product_quality | 用户不满意，已从 Stage 1 acceptance blocker 中分离 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` | EXTRACTED |
 | Stage 2 多来源模型 | model_scope | planned，未进入 arXiv Stage 1 验收 | `S2P1` | EXTRACTED |
@@ -118,5 +118,5 @@
 
 | 验证 ID | 范围 | 方法 | 结果 | 测试引用 | 证据引用 | 事实等级 |
 |---|---|---|---|---|---|---|
-| `VAL-S1P5T03R-001` | strict real historical replay | local live replay control run | LOCAL PASS; CLOUD PENDING | `test_stage1_real_replay.py` | `/tmp/adp-real-replay-20260623/report.json`; pending GitHub artifact | EXTRACTED |
+| `VAL-S1P5T03R-001` | strict real historical replay | local live replay control run plus GitHub/cloud artifact | LOCAL PASS; CLOUD PASS | `test_stage1_real_replay.py` | `/tmp/adp-real-replay-20260623/report.json`; PR #94 run `28027759062` artifact `7821452823` | EXTRACTED |
 | `VAL-S1P5T04-001` | one-time live cloud chain | PR #82 GitHub Actions + artifact inspection | PASS but insufficient for strict 30-day backfill | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |
