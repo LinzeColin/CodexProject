@@ -2117,6 +2117,196 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S5PA-GATE may be evaluated after this PR", " ".join(manifest["unresolved_risks"]))
         self.assertIn("whkmSalary delivery readiness remains FAILED", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s5pbt01_eei_project_yaml_preserves_delivery_truth(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "EEI")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "failed_delivery_readiness")
+        self.assertIn("不把研究评分", project["summary"])
+        self.assertIn("production/publication readiness", project["summary"])
+        self.assertEqual(len(project["features"]), 5)
+        self.assertEqual(len(project["models"]), 11)
+        self.assertEqual(len(project["formulas"]), 11)
+        self.assertEqual(len(project["parameters"]), 68)
+        self.assertEqual(len(project["strategies"]), 3)
+
+        model_ids = {item["model_id"] for item in project["models"]}
+        formula_ids = {item["formula_id"] for item in project["formulas"]}
+        parameter_ids = {item["parameter_id"] for item in project["parameters"]}
+        self.assertEqual({f"MOD-{index:03d}" for index in range(1, 11)} | {"MOD-012"}, model_ids)
+        self.assertNotIn("MOD-011", model_ids)
+        self.assertEqual({f"FORM-{index:03d}" for index in range(1, 11)} | {"FORM-012"}, formula_ids)
+        self.assertNotIn("FORM-011", formula_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 69)}, parameter_ids)
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PBT01-MANIFEST", evidence_ids)
+        self.assertIn("EVID-EEI-SEMANTIC-MANIFEST", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
+        model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
+        parameter_fact_counts = Counter(item["fact_level"] for item in project["parameters"])
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 61)
+        self.assertEqual(parameter_semantic_counts["HUMAN_REVIEW_REQUIRED"], 7)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 10)
+        self.assertEqual(formula_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
+        self.assertEqual(model_semantic_counts["MACHINE_VERIFIED"], 10)
+        self.assertEqual(model_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
+        self.assertEqual(parameter_fact_counts["EXTRACTED"], 61)
+        self.assertEqual(parameter_fact_counts["UNKNOWN"], 7)
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("FORM-012 与 PARAM-052..PARAM-058", limitations)
+        self.assertIn("delivery_readiness 仍为 FAILED", limitations)
+        self.assertIn("A209 24h soak", limitations)
+        self.assertIn("不改 scoring formula", limitations)
+        self.assertEqual(project["delivery_readiness"]["status"], "FAILED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+
+    def test_review9_s5pbt01_eei_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "EEI")
+        self.assertEqual(roadmap["current_stage_id"], "S5")
+        self.assertEqual(roadmap["current_phase_id"], "S5PB")
+        self.assertEqual(roadmap["current_task_id"], "S5PBT01")
+        self.assertEqual(roadmap["next_gate_id"], "S5PB-GATE-IN-PROGRESS")
+        self.assertEqual(roadmap["total_estimated_hours"], 4)
+        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S5PBT01"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "completed")
+        self.assertEqual(task["dependencies"], ["S5PAT04"])
+        self.assertEqual(task["acceptance_ids"], ["ACC-S5PBT01"])
+        self.assertIn("EEI/docs/governance/project.yaml", task["evidence_refs"])
+        self.assertIn("任何项目缺少 owner-readable 三文件", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+        self.assertIn("未知事实被写成 VERIFIED", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+
+    def test_review9_s5pbt01_eei_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "EEI" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 4)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-EEI-SEMANTIC-20260621-001"]["fact_level"], "RECONSTRUCTED")
+        self.assertIn("not model validity", by_id["EVT-EEI-SEMANTIC-20260621-001"]["notes"])
+        self.assertEqual(by_id["EVT-EEI-A202-20260623-010"]["fact_level"], "EXTRACTED")
+        self.assertIn("not real source-license", by_id["EVT-EEI-A202-20260623-010"]["notes"])
+        self.assertEqual(by_id["EVT-EEI-REVIEW8-OWNER-DECISION-20260623-001"]["fact_level"], "UNKNOWN")
+        self.assertEqual(by_id["EVT-EEI-REVIEW9-S5PBT01-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pbt01_eei_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        result = cli.check_render_project_files(ROOT / "EEI")
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (ROOT / "EEI" / "功能清单").read_text(encoding="utf-8")
+        dev_text = (ROOT / "EEI" / "开发记录").read_text(encoding="utf-8")
+        model_text = (ROOT / "EEI" / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-EEI-005", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PBT01", dev_text)
+        self.assertIn("MOD-012", model_text)
+        self.assertIn("PARAM-068", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pbt01_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "EEI",
+            "path": "EEI",
+            "model_behavior_globs": ["apps/**/*", "scripts/**/*", "packages/**/*", "*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "EEI/docs/governance/project.yaml",
+                "EEI/docs/governance/roadmap.yaml",
+                "EEI/docs/governance/events.jsonl",
+                "EEI/功能清单",
+                "EEI/开发记录",
+                "EEI/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pbt01_manifest_records_eei_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "EEI")
+        self.assertEqual(manifest["task_id"], "S5PBT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT01"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("eei_only_scope", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "EEI/CHECKSUMS.sha256",
+            "EEI/DIRECTORY_TREE.txt",
+            "EEI/artifacts/release_evidence_t1211.json",
+            "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+            "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+            "EEI/docs/governance/project.yaml",
+            "EEI/docs/governance/roadmap.yaml",
+            "EEI/docs/governance/events.jsonl",
+            "EEI/manifest.txt",
+            "EEI/scripts/manage_clean_room_release.py",
+            "EEI/scripts/manage_release_artifacts.py",
+            "EEI/tests/unit/test_clean_room_release_paths.py",
+            "EEI/功能清单",
+            "EEI/开发记录",
+            "EEI/模型参数文件",
+            "scripts/validate_governance_sync.py",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EVA_OS/", "OpMe_System/", "whkmSalary/")) for path in changed))
+        self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("EEI delivery readiness remains FAILED", " ".join(manifest["unresolved_risks"]))
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
@@ -2538,6 +2728,59 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         with patch.object(sync, "load_projects", return_value={"projects": []}), patch.object(sync, "git_ref_exists", return_value=False):
             exit_code, _ = sync.validate(changed_only=True, enforce_sync=True, base_ref="missing-base")
         self.assertEqual(exit_code, 1)
+
+    def test_review9_sync_allows_stale_pending_binding_classification_only(self) -> None:
+        sync = load_sync_module()
+        old_event = {
+            "event_id": "EVENT-OLD",
+            "timestamp": "2026-06-22T00:00:00Z",
+            "result": "LOCAL_PENDING_REMOTE_CI",
+            "git_commit": "PENDING",
+            "binding_status": "pre_commit_pending",
+            "summary": "Local validation remains pending remote CI.",
+        }
+        classified_event = {
+            **old_event,
+            "binding_status": "stale_unbound",
+            "stale_classification_reason": "Later governance event superseded this local pending record.",
+        }
+        self.assertTrue(
+            sync.binding_classification_only(
+                json.dumps(old_event) + "\n",
+                json.dumps(classified_event) + "\n",
+            )
+        )
+
+        mutated_event = {**classified_event, "summary": "Changed fact"}
+        self.assertFalse(
+            sync.binding_classification_only(
+                json.dumps(old_event) + "\n",
+                json.dumps(mutated_event) + "\n",
+            )
+        )
+
+    def test_review9_sync_treats_eei_clean_room_tooling_as_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "EEI",
+            "path": "EEI",
+            "model_behavior_globs": ["apps/**/*", "scripts/**/*", "packages/**/*", "*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "EEI/scripts/manage_clean_room_release.py",
+                "EEI/scripts/manage_release_artifacts.py",
+                "EEI/tests/unit/test_clean_room_release_paths.py",
+                "EEI/docs/governance/development_events.jsonl",
+            ],
+        )
+
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change"})
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
 
     def test_review6_stale_pending_manifest_requires_ci_attestation(self) -> None:
         sync = load_sync_module()
@@ -3620,9 +3863,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-010")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-REVIEW9-S5PBT01")
         self.assertEqual(
             matrix["current_gate"],
+            "S5PB-GATE-IN-PROGRESS",
+        )
+        assurance = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "ASSURANCE_STATUS.yaml")
+        self.assertEqual(
+            assurance["delivery_readiness"]["release_gate"],
             "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS",
         )
 
@@ -3644,7 +3892,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         worker_wake_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-002")
         self.assertEqual(worker_wake_event["task_id"], "TASK-T1303")
-        self.assertEqual(worker_wake_event["binding_status"], "pre_commit_pending")
+        self.assertEqual(worker_wake_event["binding_status"], "stale_unbound")
+        self.assertIn("stale_classification_reason", worker_wake_event)
         self.assertIn("TASK-T1307", worker_wake_event["task_ids"])
         self.assertIn("make verify PASS", worker_wake_event["test_results"])
         self.assertIn("TASK-T1302", ci_binding_event["task_ids"])
@@ -3661,7 +3910,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             event for event in events if event.get("event_id") == "EVENT-20260623-005"
         )
         self.assertEqual(source_withdrawal_event["task_id"], "TASK-T1301")
-        self.assertEqual(source_withdrawal_event["binding_status"], "pre_commit_pending")
+        self.assertEqual(source_withdrawal_event["binding_status"], "stale_unbound")
+        self.assertIn("stale_classification_reason", source_withdrawal_event)
         self.assertIn("TASK-T1307", source_withdrawal_event["task_ids"])
         self.assertIn("make verify PASS", "; ".join(source_withdrawal_event["test_results"]))
         release_manager_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-006")

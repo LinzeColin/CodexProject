@@ -1,0 +1,52 @@
+# 开发记录
+
+## 摘要
+
+- project_id: `EEI`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT01`
+- total_hours: `4.00`
+- completed_hours: `4.00`
+- progress: `100.00%`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
+
+## Roadmap
+
+Stage -> Phase -> Task
+
+### S5 项目迁移与三文件重建
+
+- person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
+- status: `in_progress`
+- derived_hours: `4.00`
+- derived_percent: `100.00%`
+- stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
+- stop_gate: `S5-GATE`
+
+#### S5PB 剩余项目治理压缩迁移
+
+- objective: `收敛现有大量治理文档，保留有用事实并恢复三文件。`
+- status: `in_progress`
+- derived_hours: `4.00`
+- derived_percent: `100.00%`
+- stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
+- stop_gate: `S5PB-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S5PBT01 | 迁移 EEI | completed | 4.00 | 100.00% | S5PAT04 | ACC-S5PBT01 |
+
+
+## 近期事件
+
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-21T06:20:00Z | semantic_extraction | Semantic extractor evidence covers 61 active parameters and 10 active formulas; FORM-012 and PARAM-052..PARAM-058 remain under human semantic review. | GOV-SEMANTIC-EEI-001 | RECONSTRUCTED |
+| 2026-06-23T03:10:00Z | release_decision_bundle_contract | Candidate-source-anchor coverage was added to the T1301/A202 signed release decision bundle contract while A202/A209/A210 remain open. | TASK-T1301 | EXTRACTED |
+| 2026-06-23T03:10:00Z | owner_decision_required | Product, data and risk owners must decide whether to continue 24h operator soak and human gold-set validation before stronger publication claims. | TASK-T1301 | UNKNOWN |
+| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT01 proposes EEI Lean v2 canonical files and rendered Chinese human entry files. | S5PBT01 | PROPOSED |

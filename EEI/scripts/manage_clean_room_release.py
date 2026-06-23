@@ -22,6 +22,10 @@ INTERNAL_MANIFEST = "PACKAGE_MANIFEST.json"
 INTERNAL_CHECKSUMS = "PACKAGE_CHECKSUMS.sha256"
 FIXED_ZIP_DATETIME = (2026, 6, 19, 0, 0, 0)
 
+
+def path_id(path: Path) -> str:
+    return path.as_posix()
+
 REQUIRED_MARKDOWN = {
     "README.md",
     "GOVERNANCE_INDEX.md",
@@ -105,8 +109,8 @@ EXCLUDED_FROM_PACKAGE = {
     "manifest.txt",
     "artifacts/release_evidence_t1211.json",
     "artifacts/release_operation_log_t1211.jsonl",
-    str(EVIDENCE),
-    str(PACKAGE),
+    path_id(EVIDENCE),
+    path_id(PACKAGE),
 }
 
 
@@ -116,6 +120,17 @@ def run_git(*args: str) -> str:
         cwd=ROOT,
         check=True,
         text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+    )
+    return completed.stdout
+
+
+def run_git_bytes(*args: str) -> bytes:
+    completed = subprocess.run(
+        ["git", *args],
+        cwd=ROOT,
+        check=True,
         stdout=subprocess.PIPE,
     )
     return completed.stdout
@@ -125,12 +140,20 @@ def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def canonical_file_bytes(path: Path) -> bytes:
+    payload = path.read_bytes()
+    if b"\0" in payload:
+        return payload
+    try:
+        text = payload.decode("utf-8")
+    except UnicodeDecodeError:
+        return payload
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    return normalized.encode("utf-8")
+
+
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return sha256_bytes(canonical_file_bytes(path))
 
 
 def read_text(path: str) -> str:
@@ -159,7 +182,8 @@ def read_json(path: str) -> Any:
 
 
 def tracked_paths() -> set[str]:
-    return set(run_git("ls-files").splitlines())
+    payload = run_git_bytes("-c", "core.quotePath=false", "ls-files", "-z")
+    return {path for path in payload.decode("utf-8").split("\0") if path}
 
 
 def package_paths() -> list[str]:
@@ -221,8 +245,8 @@ def validate_source_files() -> dict[str, Any]:
     if "python scripts/manage_clean_room_release.py validate" not in workflow_text:
         raise AssertionError("governance workflow does not validate clean-room release")
 
-    index = (ROOT / "prototype/index.html").read_bytes()
-    standalone = (ROOT / "prototype/standalone.html").read_bytes()
+    index = canonical_file_bytes(ROOT / "prototype/index.html")
+    standalone = canonical_file_bytes(ROOT / "prototype/standalone.html")
     if index != standalone:
         raise AssertionError("prototype/index.html and prototype/standalone.html differ")
 
@@ -263,7 +287,7 @@ def validate_a200_status() -> None:
         for row in read_csv("data/acceptance_traceability.csv")
         if row["trace_id"] == "TR-FUN-SYS-02-A200"
     ][0]
-    for required in [str(EVIDENCE), str(PACKAGE), "scripts/manage_clean_room_release.py"]:
+    for required in [path_id(EVIDENCE), path_id(PACKAGE), "scripts/manage_clean_room_release.py"]:
         if required not in trace["evidence_path"]:
             raise AssertionError(f"A200 traceability missing evidence path: {required}")
 
@@ -285,7 +309,7 @@ def write_zip(paths: list[str], manifest: dict[str, Any], checksums: dict[str, s
     target.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(target, "w") as archive:
         for path in paths:
-            archive.writestr(zip_info(path), (ROOT / path).read_bytes())
+            archive.writestr(zip_info(path), canonical_file_bytes(ROOT / path))
         archive.writestr(
             zip_info(INTERNAL_MANIFEST),
             json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True).encode("utf-8")
@@ -332,7 +356,7 @@ def build_evidence(
         "acceptance_ids": ["A200"],
         "status": "LOCAL_PASS",
         "package": {
-            "path": str(PACKAGE),
+            "path": path_id(PACKAGE),
             "sha256": sha256_file(package_path),
             "bytes": package_path.stat().st_size,
             "entry_count": len(paths) + 2,
@@ -374,8 +398,8 @@ def generate(_: argparse.Namespace) -> None:
         json.dumps(
             {
                 "generated": True,
-                "package": str(PACKAGE),
-                "evidence": str(EVIDENCE),
+                "package": path_id(PACKAGE),
+                "evidence": path_id(EVIDENCE),
                 "package_paths": len(paths),
                 "package_sha256": evidence["package"]["sha256"],
             },
@@ -447,8 +471,8 @@ def validate(_: argparse.Namespace | None = None) -> None:
         json.dumps(
             {
                 "valid": True,
-                "package": str(PACKAGE),
-                "evidence": str(EVIDENCE),
+                "package": path_id(PACKAGE),
+                "evidence": path_id(EVIDENCE),
                 "package_paths": len(paths),
                 "category_counts": category_counts,
                 "package_sha256": evidence["package"]["sha256"],
