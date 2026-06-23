@@ -20,6 +20,10 @@ class CloudDryRunWorkflowTests(unittest.TestCase):
         self.assertNotIn("render-lightweight-mp4", workflow)
         self.assertNotIn("ffmpeg", workflow)
         self.assertNotIn("gh release", workflow)
+        self.assertIn('ZoneInfo("Australia/Sydney")', workflow)
+        self.assertIn("astimezone", workflow)
+        self.assertIn("service_date", workflow)
+        self.assertNotIn("${generated_at:0:10}", workflow)
 
 if __name__ == "__main__":
     unittest.main()

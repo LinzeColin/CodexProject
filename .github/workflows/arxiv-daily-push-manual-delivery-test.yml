@@ -82,8 +82,23 @@ jobs:
         shell: bash
         run: |
           if [ -n "${{ inputs.generated_at }}" ]; then value="${{ inputs.generated_at }}"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          service_date="$(python3 - "$value" <<'PY'
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          from zoneinfo import ZoneInfo
+          import sys
+
+          raw = sys.argv[1]
+          text = raw[:-1] + "+00:00" if raw.endswith("Z") else raw
+          dt = datetime.fromisoformat(text)
+          if dt.tzinfo is None:
+              dt = dt.replace(tzinfo=timezone.utc)
+          print(dt.astimezone(ZoneInfo("Australia/Sydney")).date().isoformat())
+          PY
+          )"
           printf 'value=%s\n' "$value" >> "$GITHUB_OUTPUT"
-          printf 'date=%s\n' "${value:0:10}" >> "$GITHUB_OUTPUT"
+          printf 'date=%s\n' "$service_date" >> "$GITHUB_OUTPUT"
       - name: Run production preflight for manual test
         id: preflight
         shell: bash

@@ -11,10 +11,10 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S1-A
 - Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 66
+- Confirmed iteration count: 67
 - Reconstructed event count: 0
-- Current task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036` implemented locally; PR CI and any controlled test email remain pending.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Production schedule, SMTP send, Release upload, Stage 2, and video remain disabled or out of scope. Email human-format PR CI, merge, and any real controlled email still require separate completion.
+- Current task: `ADP-S1P5T04-SYDNEY-SERVICE-DATE-039` implemented locally; PR CI, merge, and any controlled test email remain pending.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test9 (`28056192503`) proved cloud manual SMTP delivery but exposed a UTC service-date bug: the generated timestamp `2026-06-23T20:51:43Z` produced service date `2026-06-23` instead of Australia/Sydney date `2026-06-24`. Production schedule, SMTP send, Release upload, Stage 2, and video remain disabled or out of scope until a separate owner-approved task.
 
 ## Phase Matrix
 
@@ -29,6 +29,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S1P5T04-SYDNEY-SERVICE-DATE-039`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from GitHub Actions manual test9 run `28056192503`, scheduled-execution artifact fields, workflow YAML, focused workflow tests, YAML parse checks, and date-conversion sample checks.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: ab2ec5eb15dd1b2c0f7f053b062e1bb61e4d3e4a
+- Result commit: PENDING
+- Task IDs: `ADP-S1P5T04-SYDNEY-SERVICE-DATE-039`; current V6 task remains `S1P5T04`
+- Goal: Correct the Stage 1 cloud workflows so daily input/report/email dates use `Australia/Sydney` service date rather than the first 10 characters of a UTC timestamp.
+- Assumptions: `generated_at` remains the audit timestamp; `date` is the human service date used for daily artifacts and subject lines. This task does not change ranking, queue, email template content, production enablement, SMTP authorization, Release upload, Stage 2, or video behavior.
+- Files changed: manual delivery, scheduled production, trial start, and phase12 cloud dry-run workflows plus focused workflow tests and governance records.
+- Model changes: No ranking, queue, report, or email content model changed.
+- Formula changes: No formula expression changed; workflow date resolution now computes `datetime.fromisoformat(...).astimezone(ZoneInfo("Australia/Sydney")).date()` for service-date output.
+- Parameter changes: No active parameter value changed.
+- Commands run: focused workflow unit tests; full arxiv-daily-push unit test suite; Ruby YAML parse for four workflows; explicit date conversion samples including test9 timestamp; `git diff --check`.
+- Test results: focused workflow tests returned 10 tests OK; full arxiv-daily-push suite returned 201 tests OK; YAML parse passed for the four changed workflows; sample `2026-06-23T20:51:43Z` converts to `2026-06-24` in `Australia/Sydney`; `git diff --check` passed.
+- Successes: The manual delivery and scheduled paths can no longer use `${value:0:10}` or `${generated_at:0:10}` for service-date output; tests assert the Sydney timezone conversion contract.
+- Failures: test9 itself used the pre-fix workflow, so it is delivery evidence only and not final human-date acceptance evidence.
+- Decisions: Keep production schedule disabled; do not send another real email until this PR passes CI and is merged, then require a separate controlled test10 trigger.
+- Remaining risks: PR CI and the next controlled email must prove the fixed workflow on GitHub/cloud runner; repository production variables remain fail-closed.
+- Rollback: Revert the four workflow date-resolution blocks, the focused workflow assertions, and this governance sync.
+- Next step: Open PR, wait for CI, merge if green, then ask owner before triggering test10.
 
 ### `ITER-20260623-ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
 

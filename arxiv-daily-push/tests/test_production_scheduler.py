@@ -43,6 +43,10 @@ class ProductionSchedulerTests(unittest.TestCase):
         self.assertIn("--text-artifacts-verified", workflow)
         self.assertNotIn("--private-release-verified", workflow)
         self.assertNotIn("gh release", workflow)
+        self.assertIn('ZoneInfo("Australia/Sydney")', workflow)
+        self.assertIn("astimezone", workflow)
+        self.assertIn("service_date", workflow)
+        self.assertNotIn("${value:0:10}", workflow)
 
     def test_cli_plan_production_scheduler_outputs_ready_json(self) -> None:
         buffer = io.StringIO()
