@@ -12,9 +12,11 @@ reviewed_files:
   - "Serenity-Alipay/模型参数文件"
 agent_roa_result:
   status: "PASS_LOCAL_AGENT_REVIEW"
-  owner_acceptance_status: "PENDING_OWNER_CONFIRMATION"
-  owner_confirmed: null
-  stop_condition_owner_cannot_understand_key_model_or_next_decision: "NOT_OWNER_TESTED"
+  owner_acceptance_status: "ACCEPTED"
+  owner_confirmed: true
+  owner_acceptance_statement: "ACCEPT S4PC owner readability for Serenity-Alipay Review9 Lean v2 migration."
+  owner_acceptance_ref: "codex-thread://owner-message/2026-06-24-s4pc-readability-acceptance"
+  stop_condition_owner_cannot_understand_key_model_or_next_decision: "PASS_OWNER_ACCEPTED"
   no_agent_fabricated_owner_acceptance: true
 checklist:
   - check_id: "ROA-001"
@@ -38,13 +40,13 @@ checklist:
     local_result: "PASS"
     evidence_refs: ["Serenity-Alipay/docs/governance/events.jsonl", "Serenity-Alipay/docs/governance/roadmap.yaml"]
 owner_decision_required:
-  prompt: "Owner must explicitly reply ACCEPT or REJECT for S4PC owner readability before S4-GATE can pass."
+  prompt: "Owner explicitly replied ACCEPT for S4PC owner readability before S4-GATE."
   accept_statement: "ACCEPT S4PC owner readability for Serenity-Alipay Review9 Lean v2 migration."
   reject_statement: "REJECT S4PC owner readability and list required changes."
 acceptance:
-  status: "PENDING_OWNER_CONFIRMATION"
+  status: "ACCEPTED"
   acceptance_id: "ACC-S4PCT01"
   agent_local_roa_passed: true
-  owner_acceptance_recorded: false
+  owner_acceptance_recorded: true
   false_acceptance_prevented: true
 

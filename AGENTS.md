@@ -13,9 +13,11 @@ rules in `docs/governance/STANDARD.md`.
 - These three Chinese files may not be replaced by English aliases, one-line
   redirects, compatibility indexes, or pages that only link to
   `docs/governance/`.
-- 中文优先，默认全局中文: unless the user or a project-specific contract
-  explicitly requests another language, agent-facing responses and governance
-  summaries should use Chinese by default.
+- 中文优先，默认全局中文: this applies to the whole repository and every
+  registered project. Unless the user or a stricter project-specific contract
+  explicitly requests another language, agent-facing responses, governance
+  summaries, PR descriptions, CI-facing summaries, owner-facing docs, and
+  project human-entry files should use Chinese by default.
 - `开发记录` must directly contain the project's full Roadmap: Stage -> Phase ->
   Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated hours,
   derived percentages, Stop Conditions, Stop Gates, required evidence, and

@@ -1317,16 +1317,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertIn("S4PC still must record owner readability", " ".join(manifest["unresolved_risks"]))
 
-    def test_review9_s4pc_serenity_records_pending_owner_acceptance_truthfully(self) -> None:
+    def test_review9_s4pc_serenity_records_owner_acceptance_truthfully(self) -> None:
         validator = load_validator_module()
         review = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "owner_roa_review.yaml")
         self.assertEqual(review["schema_version"], "codexproject.owner_roa_review.v1")
         self.assertEqual(review["task_id"], "S4PCT01")
         self.assertEqual(review["acceptance_id"], "ACC-S4PCT01")
         self.assertEqual(review["agent_roa_result"]["status"], "PASS_LOCAL_AGENT_REVIEW")
-        self.assertEqual(review["agent_roa_result"]["owner_acceptance_status"], "PENDING_OWNER_CONFIRMATION")
-        self.assertIsNone(review["agent_roa_result"]["owner_confirmed"])
-        self.assertFalse(review["acceptance"]["owner_acceptance_recorded"])
+        self.assertEqual(review["agent_roa_result"]["owner_acceptance_status"], "ACCEPTED")
+        self.assertTrue(review["agent_roa_result"]["owner_confirmed"])
+        self.assertEqual(
+            review["agent_roa_result"]["owner_acceptance_statement"],
+            "ACCEPT S4PC owner readability for Serenity-Alipay Review9 Lean v2 migration.",
+        )
+        self.assertTrue(review["acceptance"]["owner_acceptance_recorded"])
         self.assertTrue(review["acceptance"]["false_acceptance_prevented"])
 
     def test_review9_s4pc_serenity_roadmap_and_project_bind_s4pb_ci(self) -> None:
@@ -1339,9 +1343,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(evidence["EVID-REVIEW9-S4PB-CI"]["kind"], "ci")
         self.assertIn("28029791587", evidence["EVID-REVIEW9-S4PB-CI"]["ref"])
         self.assertEqual(validations["VAL-SER-S4PB"]["fact_level"], "VERIFIED")
+        self.assertEqual(evidence["EVID-REVIEW9-S4PC-OWNER-ACCEPTED"]["fact_level"], "VERIFIED")
+        self.assertEqual(evidence["EVID-REVIEW9-S4PC-OWNER-ACCEPTED"]["kind"], "owner")
+        self.assertIn("28030744188", evidence["EVID-REVIEW9-S4PC-CI"]["ref"])
+        self.assertEqual(validations["VAL-SER-S4PC"]["fact_level"], "VERIFIED")
 
         self.assertEqual(roadmap["current_phase_id"], "S4PC")
-        self.assertEqual(roadmap["current_task_id"], "S4PCT01")
+        self.assertEqual(roadmap["current_task_id"], "S4PCT02")
+        self.assertEqual(roadmap["next_gate_id"], "S4-GATE-PASSED")
+        self.assertEqual(roadmap["completed_estimated_hours"], 32)
         tasks = {
             task["task_id"]: task
             for stage in roadmap["stages"]
@@ -1350,8 +1360,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }
         self.assertEqual(tasks["S4PBT03"]["status"], "completed")
         self.assertEqual(tasks["S4PBT03"]["completed_commit"], "00f3a8a59fcbeb37bcb41959da10549d844da0c2")
-        self.assertEqual(tasks["S4PCT01"]["status"], "in_progress")
-        self.assertEqual(tasks["S4PCT02"]["status"], "in_progress")
+        self.assertEqual(tasks["S4PCT01"]["status"], "completed")
+        self.assertEqual(tasks["S4PCT02"]["status"], "completed")
 
     def test_review9_s4pc_serenity_performance_and_rollback_evidence_are_local_only(self) -> None:
         validator = load_validator_module()
@@ -1359,12 +1369,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         rollback = validator.load_yaml(ROOT / "Serenity-Alipay" / "docs" / "governance" / "rollback_test.yaml")
         self.assertEqual(performance["task_id"], "S4PCT02")
         self.assertEqual(performance["token_proxy"]["current_root_change_caveat"].count("selected all registered projects"), 1)
-        self.assertFalse(performance["acceptance"]["owner_acceptance_recorded"])
+        self.assertEqual(performance["quality_result"]["owner_acceptance_status"], "ACCEPTED")
+        self.assertTrue(performance["acceptance"]["owner_acceptance_recorded"])
         self.assertEqual(rollback["rollback_check"]["exit_code"], 0)
         self.assertEqual(rollback["rollback_check"]["result"], "PASS")
         self.assertFalse(rollback["rollback_check"]["destructive_action_performed"])
         self.assertTrue(rollback["acceptance"]["rollback_path_executable"])
-        self.assertFalse(rollback["acceptance"]["owner_acceptance_recorded"])
+        self.assertTrue(rollback["acceptance"]["owner_acceptance_recorded"])
 
     def test_review9_s4pc_serenity_events_mark_owner_acceptance_as_proposed(self) -> None:
         events = [
@@ -1378,6 +1389,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(by_id["EVT-SER-REVIEW9-S4PB-CI"]["fact_level"], "VERIFIED")
         self.assertEqual(by_id["EVT-SER-REVIEW9-S4PC-PREP"]["fact_level"], "PROPOSED")
         self.assertIn("must not be treated as owner approval", by_id["EVT-SER-REVIEW9-S4PC-PREP"]["notes"])
+        self.assertEqual(by_id["EVT-SER-REVIEW9-S4PC-OWNER-ACCEPTED"]["fact_level"], "VERIFIED")
+        self.assertEqual(by_id["EVT-SER-REVIEW9-S4PC-OWNER-ACCEPTED"]["actor_role"], "owner")
+        self.assertIn(
+            "ACCEPT S4PC owner readability",
+            by_id["EVT-SER-REVIEW9-S4PC-OWNER-ACCEPTED"]["evidence_refs"][0]["description"],
+        )
 
     def test_review9_s4pc_serenity_human_files_render_without_drift(self) -> None:
         cli = load_lean_governance_module()
@@ -1994,7 +2011,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "Low-Token Contract",
             "中文优先",
             "默认全局中文",
+            "whole repository",
+            "registered project",
             "agent-facing responses",
+            "PR descriptions",
+            "CI-facing summaries",
+            "owner-facing docs",
         }:
             self.assertIn(required, text)
         for mode in {"READ_ONLY", "REVIEW", "PLAN", "CI", "Hook", "IMPLEMENT"}:
@@ -2021,6 +2043,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "Machine Field Contracts",
             "Semantic Accuracy",
             "Token Budget And Scope",
+            "中文优先，默认全局中文",
+            "whole repository",
+            "registered project",
+            "PR descriptions",
+            "CI-facing summaries",
+            "owner-facing documents",
         }:
             self.assertIn(required, text)
         for forbidden in {

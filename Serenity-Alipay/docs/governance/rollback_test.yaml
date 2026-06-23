@@ -32,4 +32,4 @@ acceptance:
   status: "PASS_LOCAL_CHECK"
   acceptance_id: "ACC-S4PCT02"
   rollback_path_executable: true
-  owner_acceptance_recorded: false
+  owner_acceptance_recorded: true

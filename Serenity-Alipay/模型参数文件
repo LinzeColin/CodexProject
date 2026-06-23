@@ -6,12 +6,12 @@
 - product_version: `0.1.0`
 - current_stage: `S4`
 - current_phase: `S4PC`
-- current_task: `S4PCT01`
+- current_task: `S4PCT02`
 - active_model_count: `5`
 - active_formula_count: `12`
 - active_parameter_count: `49`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S4PC-GATE`
+- next_gate: `S4-GATE-PASSED`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
