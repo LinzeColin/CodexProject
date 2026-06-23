@@ -84,9 +84,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
-- commit_bound_events: `9`
+- commit_bound_events: `11`
 - legacy_unbound_events: `17`
-- precommit_pending_events: `23`
+- precommit_pending_events: `21`
 - pending_or_stale_events: `39`
 
 ## 15. UNKNOWN
@@ -97,7 +97,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:4992886d72f9ff373408773e29fef75640aac080fb964dbb85b3b608ab163f08`
+- source_snapshot_hash: `sha256:4b66c4873b78d3a050577268bbdfbba69c8e00e8e8b02f9225ea810617ce6dfa`
 - snapshot_event_time: `2026-06-23T00:10:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`

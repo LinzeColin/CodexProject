@@ -82,10 +82,11 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 14. Evidence Freshness
 
+- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
 - tree_bound_events: `0`
-- commit_bound_events: `0`
+- commit_bound_events: `1`
 - legacy_unbound_events: `6`
-- precommit_pending_events: `1`
+- precommit_pending_events: `0`
 - pending_or_stale_events: `7`
 
 ## 15. UNKNOWN
@@ -96,7 +97,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:1ce312629c018297a69895936d9e9f832eeed2ae9c69a001cfc8023589c64a28`
+- source_snapshot_hash: `sha256:7ded278950b6c173d70973ec00eb0c80286b8ff28900e1ed583c31a93b4491f3`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.2.0`

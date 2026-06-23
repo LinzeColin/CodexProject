@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260623-ADP-074"
-source_snapshot_hash: "sha256:2be43aa5f1b1a7f63e4273157d372afe0af58449970ed0716438df6c1076d713"
+source_snapshot_hash: "sha256:48e00502a65973d52a3101ddcbe9e1cd547cf94a490cb22211bcac6ab2255b69"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-23T09:55:00+10:00"
@@ -62,9 +62,9 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 21
+    precommit_pending_events: 20
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:

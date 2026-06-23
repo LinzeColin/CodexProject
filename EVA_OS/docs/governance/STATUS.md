@@ -4,10 +4,10 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:bf06c8bc22aa6788b5efc648028ba1515b1546188c22ee151e26296f108798af`
+- source_snapshot_hash: `sha256:0ac16c5fc4a654f43cb048cd5403b0fc0b589cf9bdd04a48c62768719fd86b7d`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
 
 ## Current State
 
@@ -39,6 +39,6 @@
 - Next executable task: `TASK-EVA-B-001`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
-- Commit-bound events: `0`
+- Commit-bound events: `1`
 - Legacy unbound events: `3`
 - Unresolved fact IDs: `12`

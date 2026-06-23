@@ -3,77 +3,77 @@ generator_version: "4.0.0"
 task_id: "GOV-REVIEW7-BINDING-BACKLOG-001"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-source_snapshot_hash: "sha256:7006d944f058f726a4c78af258bb85db10782cec0e25e6c807152ca37b4c5623"
+source_snapshot_hash: "sha256:8541c7a47215c7cc1cb1bc3a7aa4459b497bc1363604b07875e1fbbbaecccfc5"
 status: "open"
 policy: "Legacy events are not rewritten. Future meaningful runs must be PRECOMMIT_TREE_BOUND before commit and commit-bound by CI attestation after merge."
 projects:
   -
     project_id: "Alpha"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 5
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "EEI"
     tree_bound_events: 0
-    commit_bound_events: 6
+    commit_bound_events: 11
     legacy_unbound_events: 17
-    precommit_pending_events: 13
+    precommit_pending_events: 21
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "EVA_OS"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 3
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "FIFA"
     tree_bound_events: 0
-    commit_bound_events: 4
+    commit_bound_events: 5
     legacy_unbound_events: 3
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "OpMe_System"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 6
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "OpenAIDatabase"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 6
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "PFI_BIG_DATA_SIMULATOR"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 3
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "Serenity-Alipay"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 3
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "whkmSalary"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 4
-    precommit_pending_events: 1
+    precommit_pending_events: 0
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"
   -
     project_id: "arxiv-daily-push"
     tree_bound_events: 0
-    commit_bound_events: 0
+    commit_bound_events: 1
     legacy_unbound_events: 54
     precommit_pending_events: 20
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"

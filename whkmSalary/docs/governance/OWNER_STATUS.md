@@ -82,10 +82,11 @@ whkmSalary remains FAILED and must not be used for production payroll.
 
 ## 14. Evidence Freshness
 
+- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
 - tree_bound_events: `0`
-- commit_bound_events: `0`
+- commit_bound_events: `1`
 - legacy_unbound_events: `4`
-- precommit_pending_events: `1`
+- precommit_pending_events: `0`
 - pending_or_stale_events: `4`
 
 ## 15. UNKNOWN
@@ -96,7 +97,7 @@ whkmSalary remains FAILED and must not be used for production payroll.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:5ec80ab3b83ec9c6796f63f15f2fd519fc3f25e29790035bef6a2c688211f738`
+- source_snapshot_hash: `sha256:b190230ef658988d8c88a0d5f6e1d3d4c388c3d60ee185a96f7dbf2bbcf64359`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.0.0`

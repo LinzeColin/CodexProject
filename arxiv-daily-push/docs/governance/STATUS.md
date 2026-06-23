@@ -4,7 +4,7 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:2be43aa5f1b1a7f63e4273157d372afe0af58449970ed0716438df6c1076d713`
+- source_snapshot_hash: `sha256:48e00502a65973d52a3101ddcbe9e1cd547cf94a490cb22211bcac6ab2255b69`
 - snapshot_event_time: `2026-06-23T09:55:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
@@ -39,6 +39,6 @@
 - Next executable task: `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`
 - Pending/stale events: `75`
 - Tree-bound events: `0`
-- Commit-bound events: `0`
+- Commit-bound events: `1`
 - Legacy unbound events: `54`
 - Unresolved fact IDs: `3`

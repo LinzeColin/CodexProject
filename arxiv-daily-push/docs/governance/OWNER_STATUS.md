@@ -82,10 +82,11 @@ arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 
 ## 14. Evidence Freshness
 
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
-- commit_bound_events: `0`
+- commit_bound_events: `1`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `21`
+- precommit_pending_events: `20`
 - pending_or_stale_events: `75`
 
 ## 15. UNKNOWN
@@ -96,7 +97,7 @@ arxiv-daily-push remains at S1-11 and cannot reach ARXIV_PRODUCTION_ACCEPTED.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:2be43aa5f1b1a7f63e4273157d372afe0af58449970ed0716438df6c1076d713`
+- source_snapshot_hash: `sha256:48e00502a65973d52a3101ddcbe9e1cd547cf94a490cb22211bcac6ab2255b69`
 - snapshot_event_time: `2026-06-23T09:55:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.22.0`
