@@ -97,7 +97,7 @@ Strict Stage 1 remains reopened and ARXIV_PRODUCTION_ACCEPTED must not be restor
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:e7023118f5916c42fc53697f89454e2c1a7006d3abd547e1310d044751f04939`
+- source_snapshot_hash: `sha256:714d0294c2f5ee1cfac75165e35f49c06a6793789c231a2254c715e6f558c3fe`
 - snapshot_event_time: `2026-06-23T22:15:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`

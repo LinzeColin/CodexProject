@@ -76,7 +76,7 @@
     "selected_row_count": 30,
     "source": "local control run; must be reconciled with cloud artifact before strict acceptance is restored"
   },
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2bd8b83bea6d154fb7aad2b4a5d7540671ac14d533c244b11bfac449ad72b984",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:88e80b8c42ed69507a99af02f58823bbf133a7270a98e182d05f95798d281432",
   "evidence_refs": [
     ".github/workflows/arxiv-daily-push-real-backfill.yml",
     "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py",
@@ -88,7 +88,7 @@
     "FORM-ADP-048"
   ],
   "generated_at": "2026-06-23T22:15:00+10:00",
-  "implementation_base_sha": "11386cbe27cbc5be47a3620e88222cd33a3e42eb",
+  "implementation_base_sha": "69ec5ca96432ad500204bcf333a3da811143310c",
   "iteration_id": "ITER-20260623-S1P5T03-R-REAL-ARXIV-30-ASOF-REPLAY",
   "local_control_run": {
     "artifact_dir": "/tmp/adp-real-replay-20260623",
