@@ -110,6 +110,7 @@
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py",
     "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
@@ -221,6 +222,7 @@
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py",
     "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
@@ -230,7 +232,7 @@
   ],
   "ci_attestation_subject": "Project Governance and EEI validation workflows",
   "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:376dce430b923dbe8d78876f333229094e6f04ba4e63dd00c58db3031978ba94",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:53c3fb4be81d7248b46d60b772a930a6f29d321dba8642c9439c6d67d3fbb0c8",
   "evidence_refs": [
     "GOVERNANCE_DASHBOARD.md",
     "OWNER_PORTFOLIO.md",
@@ -378,5 +380,6 @@
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
     "tests/governance/test_project_governance_validator.py"
-  ]
+  ],
+  "content_tree_file_count_excluding_run_manifests": 102
 }

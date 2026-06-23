@@ -33,6 +33,24 @@ RELATIONSHIP_MIN_CASES = 100
 RELATIONSHIP_MIN_PRECISION = 0.90
 SOURCE_COVERAGE_MIN = 1.0
 
+PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS = (
+    "evidence_id",
+    "dataset_owner",
+    "owner_role",
+    "sampling_frame",
+    "labeling_protocol_ref",
+    "label_freeze_sha256",
+    "reviewer",
+    "reviewed_at",
+    "reviewer_signature_hash",
+    "source_license_review_ref",
+    "passage_review_policy_ref",
+)
+PRODUCTION_GOLD_REQUIRED_LIST_FIELDS = (
+    "source_document_refs",
+    "labeler_qualification_refs",
+)
+
 
 @dataclass(frozen=True)
 class QualityStats:
@@ -87,6 +105,51 @@ def required_text(row: dict[str, Any], key: str, *, case_id: str) -> str:
     return value.strip()
 
 
+def required_list(row: dict[str, Any], key: str, *, case_id: str) -> list[str]:
+    value = row.get(key)
+    if not isinstance(value, list) or not value:
+        raise ValueError(f"{case_id} missing required non-empty list field {key}")
+    result = [str(item).strip() for item in value if str(item).strip()]
+    if len(result) != len(value):
+        raise ValueError(f"{case_id} list field {key} must not contain empty values")
+    return result
+
+
+def production_intake_policy() -> dict[str, Any]:
+    return {
+        "allow_flag_required": "--allow-production-gold-set",
+        "required_text_fields": list(PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS),
+        "required_list_fields": list(PRODUCTION_GOLD_REQUIRED_LIST_FIELDS),
+        "required_boolean_fields": {
+            "excludes_repository_fixtures": True,
+            "operator_supplied_labels": True,
+            "synthetic_or_fixture_labels": False,
+        },
+        "release_boundary": {
+            "gold_quality_pass_only_closes": ["A026", "A027"],
+            "does_not_close": ["A202", "A209", "A210", "release_manager_activation"],
+            "relationship_publication_allowed": False,
+        },
+    }
+
+
+def validate_production_gold_evidence(payload: dict[str, Any]) -> dict[str, Any]:
+    evidence = payload.get("production_gold_evidence")
+    if not isinstance(evidence, dict):
+        raise ValueError("production_gold_evidence is required for production_gold_set")
+    for field in PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS:
+        required_text(evidence, field, case_id="production_gold_evidence")
+    for field in PRODUCTION_GOLD_REQUIRED_LIST_FIELDS:
+        required_list(evidence, field, case_id="production_gold_evidence")
+    if evidence.get("excludes_repository_fixtures") is not True:
+        raise ValueError("production_gold_evidence.excludes_repository_fixtures must be true")
+    if evidence.get("operator_supplied_labels") is not True:
+        raise ValueError("production_gold_evidence.operator_supplied_labels must be true")
+    if evidence.get("synthetic_or_fixture_labels") is not False:
+        raise ValueError("production_gold_evidence.synthetic_or_fixture_labels must be false")
+    return evidence
+
+
 def source_coverage(row: dict[str, Any], *, case_id: str) -> float:
     coverage = row.get("source_coverage")
     if not isinstance(coverage, dict):
@@ -104,7 +167,11 @@ def source_coverage(row: dict[str, Any], *, case_id: str) -> float:
     return len(required_set & observed_set) / len(required_set)
 
 
-def validate_label_payload(payload: dict[str, Any]) -> None:
+def validate_label_payload(
+    payload: dict[str, Any],
+    *,
+    allow_production_gold_set: bool = False,
+) -> None:
     if payload.get("schema_version") != LABEL_SCHEMA_VERSION:
         raise ValueError(f"schema_version must be {LABEL_SCHEMA_VERSION}")
     if payload.get("system_name") != "EEI":
@@ -112,9 +179,16 @@ def validate_label_payload(payload: dict[str, Any]) -> None:
     fixture_policy = payload.get("fixture_policy")
     if not isinstance(fixture_policy, dict):
         raise ValueError("fixture_policy must be present")
-    for key in ("production_gold_set", "release_clearance", "relationship_publication"):
+    production_gold_set = fixture_policy.get("production_gold_set") is True
+    if production_gold_set and not allow_production_gold_set:
+        raise ValueError("production_gold_set requires --allow-production-gold-set")
+    for key in ("release_clearance", "relationship_publication"):
         if fixture_policy.get(key) is not False:
-            raise ValueError(f"fixture_policy.{key} must remain false for repository fixtures")
+            raise ValueError(f"fixture_policy.{key} must remain false for gold-quality evidence")
+    if production_gold_set:
+        validate_production_gold_evidence(payload)
+    elif fixture_policy.get("production_gold_set") is not False:
+        raise ValueError("fixture_policy.production_gold_set must be boolean false or true")
     for section in ("entity_resolution_cases", "relationship_cases"):
         entries = payload.get(section)
         if not isinstance(entries, list) or not entries:
@@ -293,9 +367,10 @@ def build_contract(
     labels_path: Path = DEFAULT_LABELS,
     *,
     generated_at: str | None = None,
+    allow_production_gold_set: bool = False,
 ) -> dict[str, Any]:
     labels = read_json(labels_path)
-    validate_label_payload(labels)
+    validate_label_payload(labels, allow_production_gold_set=allow_production_gold_set)
     production_gold_set = bool(labels["fixture_policy"].get("production_gold_set"))
     entity = entity_stats(labels["entity_resolution_cases"])
     relationship = relationship_stats(labels["relationship_cases"])
@@ -337,6 +412,10 @@ def build_contract(
             "gold_labels": relative(labels_path),
         },
         "fixture_policy": labels["fixture_policy"],
+        "production_gold_evidence": (
+            labels.get("production_gold_evidence") if production_gold_set else None
+        ),
+        "production_intake_policy": production_intake_policy(),
         "quality_results": {
             "A026": a026,
             "A027": a027,
@@ -353,6 +432,9 @@ def build_contract(
             "and precision >= 90.00%.",
             "Recall and source coverage must be reported for every run.",
             "Repository fixtures are not production gold-set evidence.",
+            "Production gold labels require --allow-production-gold-set and "
+            "production_gold_evidence with owner, sampling, labeler, source-license, "
+            "passage-review and signature metadata.",
         ],
     }
 
@@ -402,6 +484,10 @@ def validate_contract(contract: dict[str, Any], *, focus_acceptance_id: str | No
             raise ValueError(f"{acceptance_id} fail-closed result must list blockers")
     release_allowed = contract.get("release_gate_closure_allowed") is True
     if release_allowed:
+        if (contract.get("fixture_policy") or {}).get("production_gold_set") is not True:
+            raise ValueError("release closure requires production_gold_set=true")
+        if not isinstance(contract.get("production_gold_evidence"), dict):
+            raise ValueError("release closure requires production_gold_evidence")
         if any(
             contract["quality_results"][acceptance_id]["release_gate_closure_allowed"] is not True
             for acceptance_id in ("A026", "A027")
@@ -413,7 +499,10 @@ def validate_contract(contract: dict[str, Any], *, focus_acceptance_id: str | No
 
 def generate(args: argparse.Namespace) -> int:
     labels = Path(args.labels)
-    contract = build_contract(labels)
+    contract = build_contract(
+        labels,
+        allow_production_gold_set=bool(args.allow_production_gold_set),
+    )
     write_json(Path(args.a026_output), focus_payload(contract, "A026"))
     write_json(Path(args.a027_output), focus_payload(contract, "A027"))
     print(
@@ -461,6 +550,14 @@ def main() -> int:
     generate_parser.add_argument("--labels", default=str(DEFAULT_LABELS))
     generate_parser.add_argument("--a026-output", default=str(DEFAULT_A026_OUTPUT))
     generate_parser.add_argument("--a027-output", default=str(DEFAULT_A027_OUTPUT))
+    generate_parser.add_argument(
+        "--allow-production-gold-set",
+        action="store_true",
+        help=(
+            "Permit operator-supplied production gold labels when the payload "
+            "contains complete production_gold_evidence metadata."
+        ),
+    )
     generate_parser.set_defaults(func=generate)
     validate_parser = subparsers.add_parser("validate")
     validate_parser.add_argument("--a026-output", default=str(DEFAULT_A026_OUTPUT))

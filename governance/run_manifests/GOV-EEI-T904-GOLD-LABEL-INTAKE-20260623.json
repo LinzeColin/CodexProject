@@ -1,11 +1,12 @@
 {
   "acceptance_ids": [
+    "ACC-A026",
+    "ACC-A027",
+    "ACC-A202",
     "ACC-A204",
-    "ACC-A205",
-    "ACC-A209",
-    "ACC-REVIEW7-CI-BINDING"
+    "ACC-A205"
   ],
-  "binding_status": "CI_ATTESTED",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
     "Alpha/docs/governance/ASSURANCE_STATUS.yaml",
     "Alpha/docs/governance/OWNER_STATUS.md",
@@ -230,100 +231,109 @@
     "whkmSalary/docs/governance/STATUS.md",
     "whkmSalary/docs/governance/development_events.jsonl"
   ],
-  "ci_attestation_subject": "df1925aa T1303/A204-A205 supervised worker wake CI evidence",
-  "ci_run_reference": "Project Governance run 27986420238 job 82828868078; EEI validation run 27986420494 job 82828868875",
+  "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows",
+  "ci_run_reference": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
   "content_tree_hash": "sha256-changed-files-excluding-run-manifests:53c3fb4be81d7248b46d60b772a930a6f29d321dba8642c9439c6d67d3fbb0c8",
   "evidence_refs": [
-    "GitHub Actions Project Governance run 27986420238 job 82828868078",
-    "GitHub Actions EEI validation run 27986420494 job 82828868875",
-    "EEI/artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
-    "EEI/artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
-    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
+    "EEI/scripts/validate_gold_quality_evaluation.py",
+    "EEI/tests/unit/test_gold_quality_evaluation.py",
+    "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
+    "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
+    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md"
   ],
-  "finished_at": "2026-06-22T22:10:50Z",
-  "generated_at": "2026-06-22T22:10:50Z",
-  "implementation_base_sha": "df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4",
-  "iteration_id": "ITER-20260623-003",
+  "fact_level": "EXTRACTED",
+  "finished_at": "PENDING_CI",
+  "generated_at": "2026-06-23T01:35:00Z",
+  "implementation_base_sha": "601db0c2c96a0cd2aa5ed9cc3540e4f7ebe9c4b9",
+  "iteration_id": "ITER-20260623-008",
+  "model_delta": "No scoring formula, graph traversal, extraction model, model weight or threshold value change; production gold-label evidence intake contract only.",
   "notes": [
-    "A204/A205 worker wake is remote-CI bound but A204/A205 remain open until release-manager and long-duration refresh evidence are current.",
-    "A209 24h soak remains a background long-running evidence gate and is not closed by this manifest."
+    "This manifest proves production gold-label intake contract only; it does not provide production labels.",
+    "A026/A027 remain IN_PROGRESS until real operator-supplied labels meet thresholds and metadata requirements."
   ],
+  "observed_results": [
+    "LOCAL_A026_A027_PRODUCTION_GOLD_INTAKE_CONTRACT_PASS",
+    "REPOSITORY_FIXTURE_REMAINS_FAIL_CLOSED",
+    "A026_A027_REMAIN_IN_PROGRESS",
+    "PENDING_GITHUB_ACTIONS_AFTER_PUSH"
+  ],
+  "parameter_delta": "No PARAM-064 through PARAM-068 value change.",
   "project_id": "root-governance",
   "required_governance_files": [
-    "scripts/generate_governance_dashboard.py",
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/governance/STATUS.md",
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
-    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
-    "EEI/data/acceptance_traceability.csv",
+    "EEI/docs/governance/MODEL_SPEC.md",
     "EEI/data/development_status_ledger.csv",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json"
+    "EEI/data/acceptance_traceability.csv",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json"
   ],
-  "result_commit": "df1925aa6c8d2e2c5cd6e4f0c760ebc21b168ed4",
-  "rollback": "Revert this CI-binding governance update and run manifest, regenerate release artifacts and rerun validation.",
-  "run_id": "GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623",
+  "result_commit": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
+  "risk_summary": [
+    "Intake contract can be misread as real production labels if production_gold_evidence is ignored.",
+    "External source/license/legal/owner/brand and 24h soak evidence remain missing."
+  ],
+  "rollback": "Revert the gold-quality validator/test/artifact/governance updates, regenerate artifacts and rerun validation.",
+  "run_id": "GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623",
   "schema_version": 2,
-  "task_id": "GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623",
+  "self_reference_policy": "content_tree_hash excludes run manifests because this manifest cannot contain its own final hash before commit; CI attestation must bind the final commit after push.",
+  "task_id": "TASK-T904",
   "test_commands": [
-    "Project Governance run 27986420238 job 82828868078",
-    "EEI validation run 27986420494 job 82828868875",
-    "python3 scripts/generate_governance_dashboard.py --write --project EEI",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py generate",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_clean_room_release.py generate",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_release_artifacts.py generate --remote-status PASS --remote-run-id 27986420494 --remote-job-id 82828868875",
-    "make verify",
-    "python3 scripts/validate_governance_sync.py --changed-only --base-ref origin/main --enforce-sync --semantic",
-    "PYTHONPYCACHEPREFIX=/private/tmp/eei-root-pycache python3 -m pytest tests/governance/test_project_governance_validator.py -q -p no:cacheprovider"
-  ],
-  "test_results": [
     {
-      "command": "Project Governance run 27986420238 job 82828868078",
+      "command": "PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache EEI/.venv/bin/python -m py_compile EEI/scripts/validate_gold_quality_evaluation.py EEI/tests/unit/test_gold_quality_evaluation.py",
       "exit_code": 0,
-      "observed": "steps 4/5/6/11/12/13/14 success",
+      "observed": "gold-quality validator and tests compile",
       "result": "PASS"
     },
     {
-      "command": "EEI validation run 27986420494 job 82828868875",
+      "command": "PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache EEI/.venv/bin/uv run --directory EEI pytest tests/unit/test_gold_quality_evaluation.py -q -p no:cacheprovider",
       "exit_code": 0,
-      "observed": "steps 7/9/10/11/12 success; Step 10 proves G2 PostgreSQL integration for supervised worker wake assertions",
+      "observed": "7 gold-quality unit tests passed",
       "result": "PASS"
+    },
+    {
+      "command": "UV_CACHE_DIR=/private/tmp/eei-uv-cache EEI/.venv/bin/ruff check EEI/scripts/validate_gold_quality_evaluation.py EEI/tests/unit/test_gold_quality_evaluation.py",
+      "exit_code": 0,
+      "observed": "focused ruff passed",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache EEI/.venv/bin/python EEI/scripts/validate_gold_quality_evaluation.py generate",
+      "exit_code": 0,
+      "observed": "default repository fixture generated fail-closed A026/A027 artifacts",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache EEI/.venv/bin/python EEI/scripts/validate_gold_quality_evaluation.py validate",
+      "exit_code": 0,
+      "observed": "A026/A027 artifacts validate and remain IN_PROGRESS",
+      "result": "PASS"
+    },
+    {
+      "command": "GitHub Actions",
+      "exit_code": null,
+      "observed": "Project Governance and EEI validation workflows must bind the follow-up commit after push.",
+      "result": "PENDING"
     }
   ],
+  "test_results": [
+    "py_compile PASS",
+    "gold-quality unit tests PASS 7/7",
+    "focused ruff PASS",
+    "gold-quality artifact generation PASS release_gate_closure_allowed=false",
+    "gold-quality validator PASS A026/A027 IN_PROGRESS",
+    "PENDING_GITHUB_ACTIONS_AFTER_PUSH"
+  ],
   "updated_governance_files": [
-    "EEI/data/acceptance_matrix.csv",
-    "EEI/data/acceptance_traceability.csv",
-    "EEI/data/data_catalog_manifest.csv",
-    "EEI/data/development_status_ledger.csv",
-    "EEI/data/parameter_catalog.csv",
-    "EEI/data/task_backlog.csv",
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/DELIVERY_PLAN.md",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
-    "EEI/docs/governance/MODEL_SPEC.md",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
-    "EEI/docs/governance/TRACEABILITY_MATRIX.csv",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/governance/formula_registry.yaml",
-    "EEI/docs/governance/model_registry.yaml",
-    "EEI/docs/governance/parameter_registry.csv",
+    "EEI/docs/governance/MODEL_SPEC.md",
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
-    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "README.md",
-    "governance/binding_backlog.yaml",
-    "governance/run_manifests/GOV-EEI-CI-EVIDENCE-BINDING-20260623.json",
-    "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
-    "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
-    "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "EEI/data/development_status_ledger.csv",
     "tests/governance/test_project_governance_validator.py"
   ],
   "content_tree_file_count_excluding_run_manifests": 102

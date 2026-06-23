@@ -11,11 +11,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1303-A204-A205-RELEASE-MANAGER-PREFLIGHT-IN-PROGRESS`
-- Confirmed iteration count: 31
+- Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
+- Confirmed iteration count: 32
 - Reconstructed development event count: 3
-- Current task: `TASK-T1303/A204-A205 release-manager activation preflight`
-- Blockers: T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 requires at least 50 production human-labeled entity-resolution gold cases with precision >=95%; A027 requires at least 100 production human-labeled relationship gold cases with precision >=90%; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
+- Current task: `TASK-T904/A026-A027 production gold-label intake contract`
+- Blockers: T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`, but A202 still lacks real source-license review, passage-level relationship review, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication; A204/A205 now have a fail-closed release-manager activation preflight that aggregates A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence, and that blocked preflight is remote-CI bound by Project Governance run `27994465700` and EEI validation run `27994465691` job `82853640406`; the preflight still remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; A026 now has a production gold-label intake gate but still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 now has a production gold-label intake gate but still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%; both A026/A027 require complete production_gold_evidence metadata and remain blocked by repository fixtures; A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated, but it must not block unrelated MVP feature delivery; A210 still needs formal brand legal/market clearance or signed risk waiver; 7 active motion parameters still have UNKNOWN runtime activation evidence, and FORM-012 remains HUMAN_REVIEW_REQUIRED.
 
 ## Phase Matrix
 
@@ -724,6 +724,27 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert this CI-binding governance update, restore the preflight manifest to remote-pending and rerun validation if the cited GitHub Actions evidence is invalidated.
 - Next step: continue A026/A027 production gold labels, A210 formal clearance, A202 real source/legal/owner closure or A209 24h soak evidence.
 
+### `ITER-20260623-008`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `601db0c2c96a0cd2aa5ed9cc3540e4f7ebe9c4b9`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T904`, `TASK-T1301`, `TASK-T1303`, `TASK-T1307`, `TASK-T1309`
+- Goal: add an explicit production gold-label intake gate for A026/A027 so real operator-supplied labels can be validated without allowing repository fixtures to close the gate.
+- Assumptions: production gold labels are external evidence and are not present in the repository in this slice; this slice defines and tests the intake contract only.
+- Files changed: `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, A026/A027 gold-quality artifacts, `docs/governance/VERSION_MATRIX.yaml`, `docs/governance/delivery_tasks.yaml`, this ledger and generated release/governance artifacts.
+- Commands run: focused py_compile; focused gold-quality unit tests; focused ruff; gold-quality artifact generate/validate.
+- Test results: py_compile PASS; gold-quality unit tests PASS 7/7; focused ruff PASS; gold-quality artifact generation PASS with `release_gate_closure_allowed=false`; gold-quality artifact validation PASS with A026/A027 `IN_PROGRESS`.
+- Successes: production gold labels now require explicit `--allow-production-gold-set` plus `production_gold_evidence` metadata covering owner, sampling, labeler qualification, source-license review, passage-review policy, frozen dataset hash and reviewer signature before A026/A027 quality gates can close.
+- Failures: no real production labels, source-license clearance, legal/brand clearance, owner approval, release-manager activation or 24h soak was added.
+- Decisions: keep A026/A027 `IN_PROGRESS`; keep A202/A209/A210 and release-manager activation blocked; do not change any quality threshold values or scoring/model formulas.
+- Remaining risks: operators can still provide poor or non-authoritative labels outside the repository; the validator rejects incomplete metadata but does not independently verify legal authority without external evidence.
+- Rollback: revert the gold-quality validator/test/artifact/governance updates, regenerate release artifacts and rerun validation.
+- Next step: attach real A026/A027 production labels, continue A210 formal clearance, A202 real source/legal/owner closure or A209 24h soak evidence.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
@@ -763,6 +784,7 @@ Do not infer iteration count from Git commit count.
 - `EVENT-20260623-005`: remote-CI-bound T1301/A202 source-withdrawal and counter-evidence fail-closed publication rehearsal; A202/A209/A210 remain open.
 - `EVENT-20260623-006`: local T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
 - `EVENT-20260623-007`: remote CI binding for the T1303/A204-A205 release-manager activation preflight; A204/A205/A209/A210/A026/A027 remain open.
+- `EVENT-20260623-008`: local T904/A026-A027 production gold-label intake contract; A026/A027 remain open until real operator-supplied labels and evidence are supplied.
 
 ## Unknown Historical Periods
 
