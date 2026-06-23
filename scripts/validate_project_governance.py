@@ -114,6 +114,11 @@ TRACEABILITY_REQUIRED_COLUMNS = [
     "evidence_ref",
     "status",
 ]
+PROJECT_REGISTRY_ALLOWED_FIELDS = {"project_id", "path", "ci_mode", "migration"}
+PROJECT_REGISTRY_MIGRATION_VERSIONS = {
+    "legacy-v1-pending-lean-v2",
+    "lean-v2",
+}
 
 
 @dataclass
@@ -857,6 +862,28 @@ def validate_projects_yaml_count_claims(validation: Validation, projects: list[d
                         )
 
 
+def validate_project_registry_entry(validation: Validation, project: dict[str, Any], scope: str) -> None:
+    for field in ("project_id", "path", "ci_mode"):
+        if not value_present(project.get(field)):
+            validation.error(scope, f"governance/projects.yaml project entry missing {field}")
+    extra_fields = sorted(set(project) - PROJECT_REGISTRY_ALLOWED_FIELDS)
+    if extra_fields:
+        validation.error(
+            scope,
+            "governance/projects.yaml project entry carries non-registry fields: " + ", ".join(extra_fields),
+        )
+    migration = project.get("migration")
+    if not isinstance(migration, dict):
+        validation.error(scope, "governance/projects.yaml project entry missing migration.version")
+        return
+    version = str(migration.get("version") or "").strip()
+    if version not in PROJECT_REGISTRY_MIGRATION_VERSIONS:
+        validation.error(scope, f"Invalid migration.version: {version or '<empty>'}")
+    extra_migration_fields = sorted(set(migration) - {"version"})
+    if extra_migration_fields:
+        validation.error(scope, "migration carries non-version fields: " + ", ".join(extra_migration_fields))
+
+
 def validate_readme_project_list(validation: Validation, projects: list[dict[str, Any]]) -> None:
     readme = ROOT / "README.md"
     if not readme.exists():
@@ -947,7 +974,7 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
         ci_mode = str(project.get("ci_mode") or "")
         if ci_mode not in {"required", "advisory"}:
             validation.error(scope, f"Invalid ci_mode: {ci_mode}")
-        validate_semantic_coverage_config(validation, project, ci_mode == "required", scope)
+        validate_project_registry_entry(validation, project, scope)
         if path and not (ROOT / path).exists():
             validation.error(scope, f"Registered project path missing: {path}")
     for value, label in ((registered_paths, "project path"), (registered_ids, "project_id")):

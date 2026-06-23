@@ -1,0 +1,120 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S2PAT03-PROJECTS-20260623",
+  "project_id": "root-governance",
+  "task_id": "S2PAT03",
+  "acceptance_ids": [
+    "ACC-S2PAT03"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S2PAT03",
+  "generated_at": "2026-06-23T20:10:00+10:00",
+  "implementation_base_sha": "a9f4d1d9d73e570b4caa7596739af8fb5a07f99e",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:6c1105a6791ce304cb637fde167d3247ee15a985a9b5ca3eb19b5c9bf6fd9474",
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "projects_registry_simplification"
+  ],
+  "model_delta": "NOT_APPLICABLE: root project registry contract only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_is_identity_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_rejects_computed_fields tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_requires_migration_version -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_is_identity_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_rejects_computed_fields tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_requires_migration_version -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Three S2PAT03 focused registry tests passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "126 governance tests OK. The printed missing-base validation is an expected negative fixture inside the test suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed files STANDARD.md, projects.yaml, validator, tests, and run manifest; errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status PASS, errors 0, warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "all registered projects checked; errors 0 warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "manifest JSON parses."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "scripts/validate_project_governance.py",
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT03-PROJECTS-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S2PAT03 projects registry",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Shrink governance/projects.yaml project entries to identity, path, advisory/required mode, and migration version, and move semantic/extractor computation out of the per-project registry contract.",
+  "rollback": "Revert governance/projects.yaml, docs/governance/STANDARD.md, scripts/validate_project_governance.py, the S2PAT03 governance tests, and this run manifest.",
+  "unresolved_risks": [
+    "Project-level Lean v2 schemas remain planned for S2PB.",
+    "Project migrations remain locked until S2 and S3 gates pass.",
+    "Stage 6 must explicitly re-enable required project checks only after migrated project gates pass."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

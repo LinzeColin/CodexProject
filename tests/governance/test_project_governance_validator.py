@@ -135,110 +135,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, required)
             self.assertTrue((ROOT / path).is_file(), path)
 
-    def test_review6d_all_registered_projects_declare_semantic_coverage(self) -> None:
+    def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
         projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
-        self.assertGreaterEqual(len(projects), 9)
+        self.assertEqual(len(projects), 10)
         for project in projects:
-            coverage = project.get("semantic_coverage")
-            self.assertIsInstance(coverage, dict, project.get("project_id"))
-            self.assertIn(
-                coverage.get("status"),
-                validator.SEMANTIC_COVERAGE_STATES,
-                project.get("project_id"),
-            )
+            self.assertEqual(set(project), {"project_id", "path", "ci_mode", "migration"})
+            self.assertEqual(project["ci_mode"], "advisory")
+            self.assertEqual(project["migration"], {"version": "legacy-v1-pending-lean-v2"})
 
-    def test_review6d_alpha_semantic_rollout_is_task_bound(self) -> None:
-        validator = load_validator_module()
-        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
-        alpha = next(project for project in config["projects"] if project["project_id"] == "Alpha")
-        self.assertTrue(alpha.get("semantic_extractors"))
-        coverage = alpha["semantic_coverage"]
-        self.assertEqual(coverage["status"], "in_progress")
-        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-ALPHA-001")
-        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-ALPHA-001")
-        self.assertEqual(
-            coverage["evidence_ref"],
-            "governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json",
-        )
-
-    def test_review6d_whkm_semantic_rollout_is_task_bound(self) -> None:
-        validator = load_validator_module()
-        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
-        whkm = next(project for project in config["projects"] if project["project_id"] == "whkmSalary")
-        self.assertTrue(whkm.get("semantic_extractors"))
-        coverage = whkm["semantic_coverage"]
-        self.assertEqual(coverage["status"], "in_progress")
-        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-WHKM-001")
-        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-WHKM-001")
-        self.assertEqual(
-            coverage["evidence_ref"],
-            "governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json",
-        )
-
-    def test_review6d_openai_database_semantic_rollout_is_task_bound(self) -> None:
-        validator = load_validator_module()
-        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
-        openai_database = next(project for project in config["projects"] if project["project_id"] == "OpenAIDatabase")
-        self.assertTrue(openai_database.get("semantic_extractors"))
-        coverage = openai_database["semantic_coverage"]
-        self.assertEqual(coverage["status"], "in_progress")
-        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-OAIDB-001")
-        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-OAIDB-001")
-        self.assertEqual(
-            coverage["evidence_ref"],
-            "governance/run_manifests/GOV-SEMANTIC-OAIDB-EXTRACT-001.json",
-        )
-
-    def test_review6d_opme_semantic_rollout_is_task_bound(self) -> None:
-        validator = load_validator_module()
-        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
-        opme = next(project for project in config["projects"] if project["project_id"] == "OpMe_System")
-        self.assertTrue(opme.get("semantic_extractors"))
-        coverage = opme["semantic_coverage"]
-        self.assertEqual(coverage["status"], "in_progress")
-        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-OPME-001")
-        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-OPME-001")
-        self.assertEqual(
-            coverage["evidence_ref"],
-            "governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json",
-        )
-
-    def test_review6d_fifa_semantic_rollout_is_task_bound(self) -> None:
-        validator = load_validator_module()
-        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
-        fifa = next(project for project in config["projects"] if project["project_id"] == "FIFA")
-        self.assertTrue(fifa.get("semantic_extractors"))
-        coverage = fifa["semantic_coverage"]
-        self.assertEqual(coverage["status"], "in_progress")
-        self.assertEqual(coverage["task_id"], "GOV-SEMANTIC-FIFA-001")
-        self.assertEqual(coverage["acceptance_id"], "ACC-SEMANTIC-FIFA-001")
-        self.assertEqual(
-            coverage["evidence_ref"],
-            "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json",
-        )
-
-    def test_review6d_required_project_missing_semantic_coverage_fails(self) -> None:
-        validator = load_validator_module()
-        with tempfile.TemporaryDirectory() as tmp:
-            tmp_path = Path(tmp)
-            (tmp_path / "P").mkdir()
-            config = {
-                "root_governance": {"ci_mode": "required", "required_files": []},
-                "projects": [{"project_id": "P", "path": "P", "ci_mode": "required"}],
-            }
-            with patch.object(validator, "ROOT", tmp_path), patch.object(validator, "discover_project_dirs", return_value=["P"]):
-                validation = validator.Validation()
-                validator.validate_root(validation, config)
-        self.assertTrue(any("semantic_coverage" in issue.message for issue in validation.errors), validation.errors)
-
-    def test_review6d_machine_verified_requires_semantic_extractors(self) -> None:
+    def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
         project = {
             "project_id": "P",
             "path": "P",
-            "ci_mode": "required",
+            "ci_mode": "advisory",
+            "migration": {"version": "legacy-v1-pending-lean-v2"},
             "semantic_coverage": {
                 "status": "machine_verified",
                 "task_id": "GOV-SEMANTIC-P-001",
@@ -250,90 +163,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             },
         }
         validation = validator.Validation()
-        validator.validate_semantic_coverage_config(validation, project, True, "P")
-        self.assertTrue(any("semantic_extractors" in issue.message for issue in validation.errors), validation.errors)
+        validator.validate_project_registry_entry(validation, project, "P")
+        self.assertTrue(any("non-registry fields" in issue.message for issue in validation.errors), validation.errors)
 
-    def test_review6d_semantic_extractors_may_be_in_progress(self) -> None:
+    def test_review9_s2_projects_registry_requires_migration_version(self) -> None:
         validator = load_validator_module()
         project = {
             "project_id": "P",
             "path": "P",
-            "ci_mode": "required",
-            "semantic_extractors": True,
-            "semantic_coverage": {
-                "status": "in_progress",
-                "task_id": "GOV-SEMANTIC-P-001",
-                "acceptance_id": "ACC-SEMANTIC-P-001",
-                "target": "Partially machine-check active facts.",
-                "owner": "project owner",
-                "rationale": "test",
-                "evidence_ref": "governance/run_manifests/example.json",
-            },
+            "ci_mode": "advisory",
+            "migration": {},
         }
         validation = validator.Validation()
-        validator.validate_semantic_coverage_config(validation, project, True, "P")
-        self.assertFalse(validation.errors)
-
-    def test_review6e_semantic_coverage_task_must_exist_in_project_tasks(self) -> None:
-        validator = load_validator_module()
-        project = {
-            "project_id": "P",
-            "path": "P",
-            "ci_mode": "required",
-            "semantic_coverage": {
-                "status": "planned",
-                "task_id": "GOV-SEMANTIC-P-001",
-                "acceptance_id": "ACC-SEMANTIC-P-001",
-                "target": "Add semantic extractors.",
-                "owner": "project owner",
-                "rationale": "test",
-            },
-        }
-        validation = validator.Validation()
-        validator.check_semantic_coverage_task_binding(validation, project, {"tasks": []}, True, "P")
-        self.assertTrue(any("task_id not found" in issue.message for issue in validation.errors), validation.errors)
-
-    def test_review6e_semantic_coverage_acceptance_must_bind_to_task(self) -> None:
-        validator = load_validator_module()
-        project = {
-            "project_id": "P",
-            "path": "P",
-            "ci_mode": "required",
-            "semantic_coverage": {
-                "status": "planned",
-                "task_id": "GOV-SEMANTIC-P-001",
-                "acceptance_id": "ACC-SEMANTIC-P-001",
-                "target": "Add semantic extractors.",
-                "owner": "project owner",
-                "rationale": "test",
-            },
-        }
-        parsed = {"tasks": [{"task_id": "GOV-SEMANTIC-P-001", "status": "planned", "acceptance_ids": ["ACC-OTHER"]}]}
-        validation = validator.Validation()
-        validator.check_semantic_coverage_task_binding(validation, project, parsed, True, "P")
-        self.assertTrue(any("acceptance_id ACC-SEMANTIC-P-001" in issue.message for issue in validation.errors), validation.errors)
-
-    def test_review6e_machine_verified_semantic_coverage_requires_completed_task(self) -> None:
-        validator = load_validator_module()
-        project = {
-            "project_id": "P",
-            "path": "P",
-            "ci_mode": "required",
-            "semantic_extractors": True,
-            "semantic_coverage": {
-                "status": "machine_verified",
-                "task_id": "GOV-SEMANTIC-P-001",
-                "acceptance_id": "ACC-SEMANTIC-P-001",
-                "target": "Add semantic extractors.",
-                "owner": "project owner",
-                "rationale": "test",
-                "evidence_ref": "governance/run_manifests/example.json",
-            },
-        }
-        parsed = {"tasks": [{"task_id": "GOV-SEMANTIC-P-001", "status": "planned", "acceptance_ids": ["ACC-SEMANTIC-P-001"]}]}
-        validation = validator.Validation()
-        validator.check_semantic_coverage_task_binding(validation, project, parsed, True, "P")
-        self.assertTrue(any("requires task GOV-SEMANTIC-P-001 to be completed" in issue.message for issue in validation.errors), validation.errors)
+        validator.validate_project_registry_entry(validation, project, "P")
+        self.assertTrue(any("Invalid migration.version" in issue.message for issue in validation.errors), validation.errors)
 
     def test_unknown_project_returns_nonzero(self) -> None:
         result = run_validator("--project", "__missing_project__")
