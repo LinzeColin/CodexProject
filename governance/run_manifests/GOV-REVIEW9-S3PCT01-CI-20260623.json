@@ -1,0 +1,133 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S3PCT01-CI-20260623",
+  "project_id": "root-governance",
+  "task_id": "S3PCT01",
+  "acceptance_ids": [
+    "ACC-S3PCT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S3PCT01",
+  "generated_at": "2026-06-23T22:35:00+10:00",
+  "implementation_base_sha": "6edca25db4cb2fa5790163fa304739999f420f84",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:507449dcb74091891f689ab3e108d26cd62ab5a29eb8b41a60ee3955d104c0cb",
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "changed_only_ci",
+    "read_only_ci"
+  ],
+  "model_delta": "NOT_APPLICABLE: governance CI orchestration only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_ci_changed_only_orchestrates_read_only_gates tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_ci_changed_only_skips_unmigrated_check_render tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_pr_governance_keeps_full_computation_out_of_pr_path tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_standard_is_lean_v2_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review6_setup_doctor_reports_entry_gate_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review8_setup_doctor_non_strict_reports_warn_not_pass -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_ci_changed_only_orchestrates_read_only_gates tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_ci_changed_only_skips_unmigrated_check_render tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_pr_governance_keeps_full_computation_out_of_pr_path tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_standard_is_lean_v2_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review6_setup_doctor_reports_entry_gate_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review8_setup_doctor_non_strict_reports_warn_not_pass -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 focused S3PCT01 tests; OK. CI orchestration calls baseline, changed-scope validation, check-render where Lean canonical facts exist, zero-diff proof, and setup doctor recognizes the lean CI gate."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Governance unit test suite passed locally."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Lean single-entry changed-scope validation passed locally."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Lean changed-only CI orchestration passed locally on a clean committed worktree, including zero-diff proof."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope information quality validation passed locally."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Lean single-entry full registered-scope governance validation passed locally."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    ".github/workflows/project-governance.yml",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT01-CI-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S3PCT01 read-only changed-only CI",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Add `lean_governance.py ci --changed-only` as the single read-only PR/main CI orchestration for light baseline, changed-scope validation, Lean check-render where available, and zero-diff proof.",
+  "rollback": "Revert the lean CI subcommand, workflow rewiring, standard update, S3PCT01 tests, and this run manifest.",
+  "unresolved_risks": [
+    "S3PCT02 still needs to remove subprocess-based changed-file detection from the Stop Hook.",
+    "Check-render is skipped for unmigrated projects until Stage 4/5 create Lean canonical facts."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
