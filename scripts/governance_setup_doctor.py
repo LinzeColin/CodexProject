@@ -88,17 +88,17 @@ def workflow_entry_gate_status() -> dict[str, Any]:
         "workflow_exists": WORKFLOW.is_file(),
         "pull_request_changed_only_enforce_sync_semantic": (
             "github.event_name == 'pull_request'" in text
-            and "--changed-only --enforce-sync --semantic" in text
+            and "scripts/lean_governance.py ci --changed-only" in text
         ),
         "pull_request_changed_only_uses_base_sha": (
             "github.event_name == 'pull_request'" in text
             and "github.event.pull_request.base.sha" in text
-            and "--changed-only --enforce-sync --semantic" in text
+            and "--base-ref \"${GOVERNANCE_BASE_REF}\"" in text
         ),
         "main_push_changed_only_uses_event_before": (
             "github.event_name == 'push'" in text
             and "github.event.before || inputs.base_ref || ''" in text
-            and "--changed-only --enforce-sync --semantic" in text
+            and "scripts/lean_governance.py ci --changed-only" in text
         ),
         "pull_request_skips_information_quality": (
             "Validate information quality" in text

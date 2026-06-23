@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S3PCT02-HOOK-20260623",
+  "project_id": "root-governance",
+  "task_id": "S3PCT02",
+  "acceptance_ids": [
+    "ACC-S3PCT02"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S3PCT02",
+  "generated_at": "2026-06-23T22:55:00+10:00",
+  "implementation_base_sha": "c4b1da611ddf21f55d5ffefe64977d28685bf586",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1a4734ad04c2ee12861c9e3608c2962ba0d177a8fbbe35f8e85fe0089016fdb5",
+  "changed_files_declared": [
+    ".codex/hooks/governance_stop.py",
+    "docs/governance/STANDARD.md",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json"
+  ],
+  "changed_files_actual": [
+    ".codex/hooks/governance_stop.py",
+    "docs/governance/STANDARD.md",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json"
+  ],
+  "required_governance_files": [
+    ".codex/hooks/governance_stop.py",
+    "docs/governance/STANDARD.md",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json"
+  ],
+  "updated_governance_files": [
+    ".codex/hooks/governance_stop.py",
+    "docs/governance/STANDARD.md",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "pure_advisory_hook",
+    "zero_write_hook"
+  ],
+  "model_delta": "NOT_APPLICABLE: governance hook advisory behavior only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_governance_stop_hook_continues_enabled_repo_without_validator tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_governance_stop_hook_allows_recursive_stop_pass tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_stop_hook_is_advisory_and_non_writing tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_stop_hook_is_pure_advisory_under_one_second tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_information_quality_gate_reports_truth_without_pr_blocking_assumption -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_governance_stop_hook_continues_enabled_repo_without_validator tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_governance_stop_hook_allows_recursive_stop_pass tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_stop_hook_is_advisory_and_non_writing tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_stop_hook_is_pure_advisory_under_one_second tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_information_quality_gate_reports_truth_without_pr_blocking_assumption -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 5 focused hook tests; OK. Stop Hook returned continue=true advisory output, had no subprocess/git changed-file detector strings, and completed under 1 second."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Governance unit test suite passed locally."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Lean single-entry changed-scope validation passed locally."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Lean changed-only CI orchestration passed locally on a clean committed worktree, including zero-diff proof."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope information quality validation passed locally."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Lean single-entry full registered-scope governance validation passed locally."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    ".codex/hooks/governance_stop.py",
+    "docs/governance/STANDARD.md",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PCT02-HOOK-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S3PCT02 pure advisory Stop Hook",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Make the Stop Hook pure advisory: no subprocesses, no git state inspection, no changed-file detection, no receipt generation, and no blocking decision.",
+  "rollback": "Revert the Stop Hook simplification, standard and information-quality updates, S3PCT02 tests, and this run manifest.",
+  "unresolved_risks": [
+    "Stage 3 final gate still needs post-merge CI evidence for this PR and an overall Stage 3 gate check."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
