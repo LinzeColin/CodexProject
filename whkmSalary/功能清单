@@ -1,16 +1,41 @@
-# whkmSalary 功能清单
+# 功能清单
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再维护当前功能、模型、公式、参数或任务的机器事实。
+- project_id: `whkmSalary`
+- product_version: `0.0.0`
+- current_stage: `S5`
+- current_phase: `S5PA`
+- current_task: `S5PAT04`
+- progress: `100.00%`
+- capability_count: `5`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical files:
+## 功能概览
 
-- `docs/governance/MODEL_SPEC.md`
-- `docs/governance/model_registry.yaml`
-- `docs/governance/formula_registry.yaml`
-- `docs/governance/parameter_registry.csv`
-- `docs/governance/DELIVERY_PLAN.md`
-- `docs/governance/TRACEABILITY_MATRIX.csv`
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-WHKM-001 | 季度绩效工资总额与税后保留计算 | active | 计算 performance_rate、weighted_total、perf_money、total_salary 和 after_tax_salary；政策与税务依据仍未验证。 | EXTRACTED |
+| FEAT-WHKM-002 | 业绩与毛利率评分函数 | active | 覆盖 score_performance 与 score_margin 的阈值、斜率和分段输出。 | EXTRACTED |
+| FEAT-WHKM-003 | 结算、开票与回款时间评分边界 | active | 覆盖 score_settlement、score_invoice、score_payback；days=0 行为仍由 TASK-WHKM-B-001 跟踪。 | EXTRACTED |
+| FEAT-WHKM-004 | 审计偏差、客情成本与省份权重 | active | 覆盖 audit/customer score 函数以及新疆、山东、青海、湖北、华中区域的权重表和别名解析。 | EXTRACTED |
+| FEAT-WHKM-005 | Streamlit 输入约束与默认值 | active | 覆盖 number_input/selectbox 默认值和 UI 约束；FORM-010 仍需 HUMAN_REVIEW_REQUIRED。 | EXTRACTED |
 
-仍然有效的摘要：本项目包含 Streamlit 销售绩效工资计算 UI 和 `salary_logic.py` 业务计算。真实员工薪资、身份证、银行卡、手机号、Railway secrets 和 `.env` 不得提交。
+## 证据
+
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-WHKM-MODEL-REGISTRY | legacy_registry | whkmSalary/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-WHKM-FORMULA-REGISTRY | legacy_registry | whkmSalary/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-WHKM-PARAMETER-REGISTRY | legacy_registry | whkmSalary/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-WHKM-MODEL-SPEC | legacy_spec | whkmSalary/docs/governance/MODEL_SPEC.md | EXTRACTED |
+| EVID-WHKM-DELIVERY-TASKS | legacy_plan | whkmSalary/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-WHKM-ASSURANCE-STATUS | legacy_status | whkmSalary/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-WHKM-OWNER-STATUS | legacy_status | whkmSalary/docs/governance/OWNER_STATUS.md | EXTRACTED |
+| EVID-WHKM-STATUS | legacy_status | whkmSalary/docs/governance/STATUS.md | EXTRACTED |
+| EVID-WHKM-DEVELOPMENT-EVENTS | legacy_events | whkmSalary/docs/governance/development_events.jsonl | EXTRACTED |
+| EVID-WHKM-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-WHKM-EXTRACT-001.json | EXTRACTED |
+| EVID-REVIEW9-S5PAT04-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json | PROPOSED |
