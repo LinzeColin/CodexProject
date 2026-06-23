@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623",
+  "project_id": "root-governance",
+  "task_id": "S2PCT01",
+  "acceptance_ids": [
+    "ACC-S2PCT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S2PCT01",
+  "generated_at": "2026-06-23T21:31:00+10:00",
+  "implementation_base_sha": "40e4a9198c22b76184316d066113bcd98969ed66",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5d58831f3ba1e49888f4ec572a67f0d7f6aa136d46e3ec2befd131682e7fc132",
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "docs/governance/templates/功能清单.template.md",
+    "docs/governance/templates/模型参数文件.template.md",
+    "governance/projects.yaml",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "docs/governance/templates/功能清单.template.md",
+    "docs/governance/templates/模型参数文件.template.md",
+    "governance/projects.yaml",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "docs/governance/templates/功能清单.template.md",
+    "docs/governance/templates/模型参数文件.template.md",
+    "governance/projects.yaml",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "docs/governance/templates/功能清单.template.md",
+    "docs/governance/templates/模型参数文件.template.md",
+    "governance/projects.yaml",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "human_entry_template_definition"
+  ],
+  "model_delta": "NOT_APPLICABLE: template contract only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_human_entry_templates_are_owner_readable tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_git_changed_files_decodes_utf8_paths tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review3_root_governance_framework_files_are_required -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/validate_project_governance.py --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_human_entry_templates_are_owner_readable tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_git_changed_files_decodes_utf8_paths tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review3_root_governance_framework_files_are_required -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S2PCT01 human-entry template readability, UTF-8 changed-path decoding, and root required-file tests passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 131 tests; OK. Expected missing-base negative fixture output appeared inside the passing suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope governance sync validation passed with errors 0 warnings 0; project scope none."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Information quality status PASS with errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full governance validation checked root and all registered projects with errors 0 warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    "docs/governance/templates/功能清单.template.md",
+    "docs/governance/templates/模型参数文件.template.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PCT01-HUMAN-TEMPLATES-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S2PCT01 human entry templates",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Define owner-readable Chinese templates for 功能清单 and 模型参数文件 with first-screen summary, evidence, limitations, model/formula/parameter sections, and no link-page degradation.",
+  "rollback": "Revert the two Chinese templates, governance/projects.yaml, docs/governance/STANDARD.md, the UTF-8 changed-path decoding fix, the S2PCT01 governance tests, and this run manifest.",
+  "unresolved_risks": [
+    "开发记录 and Roadmap template remains planned for S2PCT02.",
+    "No project human files are rendered by this task.",
+    "Deterministic renderer work remains locked until S3."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

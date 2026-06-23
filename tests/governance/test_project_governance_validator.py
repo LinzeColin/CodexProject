@@ -133,6 +133,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/schemas/project.schema.json",
             "governance/schemas/roadmap.schema.json",
             "governance/schemas/events.schema.json",
+            "docs/governance/templates/功能清单.template.md",
+            "docs/governance/templates/模型参数文件.template.md",
             "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
@@ -235,6 +237,56 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("kind", evidence_ref["required"])
         self.assertIn("fact_level", evidence_ref["required"])
         self.assertIn("unknown", evidence_ref["properties"]["kind"]["enum"])
+
+    def test_review9_s2_human_entry_templates_are_owner_readable(self) -> None:
+        feature_text = (ROOT / "docs" / "governance" / "templates" / "功能清单.template.md").read_text(
+            encoding="utf-8"
+        )
+        model_text = (ROOT / "docs" / "governance" / "templates" / "模型参数文件.template.md").read_text(
+            encoding="utf-8"
+        )
+        for required in {
+            "project_id",
+            "product_version",
+            "current_stage",
+            "current_phase",
+            "current_task",
+            "blockers",
+            "next_gate",
+            "next_unique_task",
+            "evidence_status",
+        }:
+            self.assertIn(required, feature_text[:600])
+            self.assertIn(required, model_text[:700])
+        feature_order = ["## 摘要", "## Owner 决策", "## 功能概览", "## 证据", "## 限制与风险", "## 功能详情"]
+        model_order = ["## 摘要", "## 证据", "## 限制与未知", "## 模型", "## 公式", "## 参数", "## 验证"]
+        self.assertEqual(
+            [feature_text.index(item) for item in feature_order],
+            sorted(feature_text.index(item) for item in feature_order),
+        )
+        self.assertEqual(
+            [model_text.index(item) for item in model_order],
+            sorted(model_text.index(item) for item in model_order),
+        )
+        for text in (feature_text, model_text):
+            self.assertNotIn("兼容索引", text)
+            self.assertNotIn("详见 docs/governance", text)
+            self.assertNotIn("link page", text.lower())
+
+    def test_review9_git_changed_files_decodes_utf8_paths(self) -> None:
+        validator = load_validator_module()
+        with patch.object(validator, "explicit_base_ref", return_value=None), patch.object(
+            validator, "git_ref_exists", return_value=False
+        ), patch.object(
+            validator.subprocess,
+            "check_output",
+            return_value="docs/governance/templates/功能清单.template.md\n",
+        ) as check_output:
+            self.assertEqual(validator.git_changed_files(), ["docs/governance/templates/功能清单.template.md"])
+        self.assertTrue(check_output.called)
+        for call in check_output.call_args_list:
+            self.assertEqual(call.kwargs.get("encoding"), "utf-8")
+            self.assertTrue(call.kwargs.get("text"))
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()

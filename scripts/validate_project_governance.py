@@ -1041,7 +1041,12 @@ def git_changed_files(base_ref: str | None = None) -> list[str]:
     changed: set[str] = set()
     for command in commands:
         try:
-            output = subprocess.check_output(["git", "-c", "core.quotePath=false", *command[1:]], cwd=ROOT, text=True)
+            output = subprocess.check_output(
+                ["git", "-c", "core.quotePath=false", *command[1:]],
+                cwd=ROOT,
+                text=True,
+                encoding="utf-8",
+            )
         except subprocess.CalledProcessError:
             continue
         changed.update(line.strip() for line in output.splitlines() if line.strip())
@@ -1052,6 +1057,7 @@ def git_changed_files(base_ref: str | None = None) -> list[str]:
                 ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"{explicit_base}...HEAD"],
                 cwd=ROOT,
                 text=True,
+                encoding="utf-8",
                 stderr=subprocess.DEVNULL,
             )
             changed.update(line.strip() for line in output.splitlines() if line.strip())
@@ -1064,6 +1070,7 @@ def git_changed_files(base_ref: str | None = None) -> list[str]:
                 ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"origin/{github_base_ref}...HEAD"],
                 cwd=ROOT,
                 text=True,
+                encoding="utf-8",
                 stderr=subprocess.DEVNULL,
             )
             changed.update(line.strip() for line in output.splitlines() if line.strip())

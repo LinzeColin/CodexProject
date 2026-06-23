@@ -188,6 +188,7 @@ def git_output(args: list[str], *, default: str = "") -> str:
         ["git", "-c", "core.quotePath=false", *args],
         cwd=ROOT,
         text=True,
+        encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         check=False,
