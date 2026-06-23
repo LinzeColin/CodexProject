@@ -830,6 +830,34 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("must not modify", text)
         self.assertIn("Full semantic sweeps", text)
 
+    def test_review9_s2_standard_is_lean_v2_contract(self) -> None:
+        text = (ROOT / "docs" / "governance" / "STANDARD.md").read_text(encoding="utf-8")
+        for required in {
+            "Lean Project Governance Standard v2.0",
+            "功能清单",
+            "开发记录",
+            "模型参数文件",
+            "docs/governance/project.yaml",
+            "docs/governance/roadmap.yaml",
+            "docs/governance/events.jsonl",
+            "Stage -> Phase -> Task",
+            "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$",
+            "Run Modes And Writes",
+            "Risk-Tier Routing",
+            "Changed-Scope CI And Hook",
+            "Sync And Manifests",
+            "Machine Field Contracts",
+            "Semantic Accuracy",
+            "Token Budget And Scope",
+        }:
+            self.assertIn(required, text)
+        for forbidden in {
+            "Review-5 Diff Synchronization Contract",
+            "Review-9 Cost and Entry Gate Contract",
+            "Human-Readable Generated Status",
+        }:
+            self.assertNotIn(forbidden, text)
+
     def test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-stage1-bootstrap.yml").read_text(
             encoding="utf-8"
