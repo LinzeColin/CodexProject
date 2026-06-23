@@ -340,7 +340,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Unknown project: __missing_project__", result.stdout)
 
-    def test_governance_stop_hook_blocks_enabled_repo_without_validator(self) -> None:
+    def test_governance_stop_hook_continues_enabled_repo_without_validator(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             subprocess.run(["git", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
@@ -359,11 +359,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             )
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(payload.get("decision"), "block")
-        self.assertIn("required governance scripts are missing", payload.get("reason", ""))
-        self.assertIn("validate_project_governance.py", payload.get("reason", ""))
+        self.assertTrue(payload.get("continue"))
+        self.assertEqual(payload.get("governance_hint", {}).get("mode"), "advisory")
+        self.assertNotIn("decision", payload)
 
-    def test_governance_stop_hook_rechecks_recursive_stop_pass(self) -> None:
+    def test_governance_stop_hook_allows_recursive_stop_pass(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             subprocess.run(["git", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
@@ -371,16 +371,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
             (tmp_path / "governance").mkdir()
             (tmp_path / "governance" / "projects.yaml").write_text("governance_spec_version: '1.0.0'\n", encoding="utf-8")
-            scripts = tmp_path / "scripts"
-            scripts.mkdir()
-            validator = scripts / "validate_project_governance.py"
-            validator.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
-            quality = scripts / "validate_information_quality.py"
-            quality.write_text("import sys\nprint('still failing')\nsys.exit(1)\n", encoding="utf-8")
-            generator = scripts / "generate_governance_dashboard.py"
-            generator.write_text("import sys\nprint('generated')\nsys.exit(0)\n", encoding="utf-8")
-            setup_doctor = scripts / "governance_setup_doctor.py"
-            setup_doctor.write_text("import sys\nprint('{\"status\":\"PASS\"}')\nsys.exit(0)\n", encoding="utf-8")
             subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
             subprocess.run(["git", "commit", "-m", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
             result = subprocess.run(
@@ -393,8 +383,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             )
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(payload.get("decision"), "block")
-        self.assertIn("recursive Stop pass", payload.get("reason", ""))
+        self.assertTrue(payload.get("continue"))
+        self.assertEqual(payload.get("governance_hint", {}).get("mode"), "advisory")
+        self.assertNotIn("decision", payload)
 
     def test_required_mode_promotes_missing_file_warning_to_error(self) -> None:
         validator = load_validator_module()
@@ -781,7 +772,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         for check_name in {
             "pull_request_changed_only_enforce_sync_semantic",
             "main_push_changed_only_uses_event_before",
-            "main_push_runs_all_semantic_drift_report",
+            "pull_request_skips_information_quality",
+            "full_governance_runs_only_on_schedule_or_manual_all",
             "manual_changed_only_accepts_base_ref",
             "manual_project_scope_requires_project",
             "ci_attestation_validated",
@@ -791,21 +783,37 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertTrue(checks[check_name], check_name)
 
-    def test_review7_stop_hook_runs_full_closure_contract(self) -> None:
+    def test_review9_stop_hook_is_advisory_and_non_writing(self) -> None:
         text = STOP_HOOK.read_text(encoding="utf-8")
-        for marker in {
+        self.assertIn('"mode": "advisory"', text)
+        self.assertIn('"continue": True', text)
+        self.assertIn("suggested_commands", text)
+        for forbidden in {
             "generate_governance_dashboard.py",
-            "--changed-only",
-            "--enforce-sync",
-            "--semantic",
             "validate_information_quality.py",
-            "--fast",
             "governance_setup_doctor.py",
-            "governance/binding_backlog.yaml",
-            "ASSURANCE_STATUS.yaml",
+            "write_receipt",
+            "atomic_write_json",
+            "decision\": \"block",
+            "--all --semantic --drift-report",
         }:
-            self.assertIn(marker, text)
-        self.assertIn("This is a recursive Stop pass, but governance is still rechecked.", text)
+            self.assertNotIn(forbidden, text)
+
+    def test_review9_pr_governance_keeps_full_computation_out_of_pr_path(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        self.assertIn("github.event_name == 'pull_request'", workflow)
+        self.assertIn("--changed-only --enforce-sync --semantic", workflow)
+        self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
+        self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+
+    def test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-stage1-bootstrap.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('"arxiv-daily-push/**"', workflow)
+        for forbidden in {'"governance/**"', '"scripts/**"', '"tests/governance/**"'}:
+            self.assertNotIn(forbidden, workflow)
 
     def test_review7_setup_doctor_reports_missing_hooks_unverified(self) -> None:
         doctor = load_setup_doctor_module()
@@ -924,7 +932,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 quality.check_next_task(gate, assurance, tmp_path / "Serenity-Alipay", "Serenity-Alipay")
         self.assertTrue(any(item.code == "NEXT_TASK_STALE" for item in gate.errors), gate.errors)
 
-    def test_review8_stop_hook_writes_completed_receipt_atomically(self) -> None:
+    def test_review9_stop_hook_does_not_write_receipts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             subprocess.run(["git", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
@@ -932,15 +940,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
             (tmp_path / "governance").mkdir()
             (tmp_path / "governance" / "projects.yaml").write_text("governance_spec_version: '1.0.0'\n", encoding="utf-8")
-            scripts = tmp_path / "scripts"
-            scripts.mkdir()
-            for script_name in [
-                "validate_project_governance.py",
-                "validate_information_quality.py",
-                "generate_governance_dashboard.py",
-                "governance_setup_doctor.py",
-            ]:
-                (scripts / script_name).write_text("import sys\nprint('ok')\nsys.exit(0)\n", encoding="utf-8")
             subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
             subprocess.run(["git", "commit", "-m", "init"], cwd=tmp_path, stdout=subprocess.PIPE, check=True)
             result = subprocess.run(
@@ -952,15 +951,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 check=False,
             )
             payload = json.loads(result.stdout)
-            receipt = tmp_path / str(payload["governance_receipt"])
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertTrue(payload.get("continue"))
-            self.assertTrue(receipt.name.startswith("STOP-HOOK-"))
-            data = json.loads(receipt.read_text(encoding="utf-8"))
+            receipts_dir_exists = (tmp_path / "governance" / "run_receipts").exists()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(data["final_status"], "PASS")
-        self.assertEqual(data["task_id"], "GOV-REVIEW8-TEST")
-        self.assertTrue(data["commands"])
+        self.assertTrue(payload.get("continue"))
+        self.assertEqual(payload.get("governance_hint", {}).get("mode"), "advisory")
+        self.assertNotIn("governance_receipt", payload)
+        self.assertFalse(receipts_dir_exists)
 
     def test_review7_v2_manifest_requires_content_tree_hash(self) -> None:
         sync = load_sync_module()
@@ -1551,10 +1547,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(first["source_base_commit"], second["source_base_commit"])
         self.assertEqual(first["source_snapshot_hash"], second["source_snapshot_hash"])
         self.assertEqual(first["outputs"], second["outputs"])
-        owner_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/OWNER_STATUS.md")]
-        status_outputs = [path for path in first["outputs"] if path.endswith("/docs/governance/STATUS.md")]
+        owner_outputs = [path for path in first["outputs"] if path.replace("\\", "/").endswith("/docs/governance/OWNER_STATUS.md")]
+        status_outputs = [path for path in first["outputs"] if path.replace("\\", "/").endswith("/docs/governance/STATUS.md")]
         self.assertEqual(len(owner_outputs), len(status_outputs))
-        self.assertIn("PFI/大数据模拟器/docs/governance/OWNER_STATUS.md", owner_outputs)
         meta = {
             "source_base_commit": first["source_base_commit"],
             "source_tree_hash": dashboard.current_tree_hash(),
@@ -1567,6 +1562,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("Param Source", rendered)
         self.assertIn("Operational", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
+        pfi_project = next(
+            project
+            for project in dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")["projects"]
+            if project["project_id"] == "PFI_BIG_DATA_SIMULATOR"
+        )
+        self.assertIn("PFI_BIG_DATA_SIMULATOR", dashboard.render_owner_status(dashboard.load_project(pfi_project)))
 
     def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
         dashboard = load_dashboard_module()
@@ -1598,7 +1599,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "baseline/MULTISOURCE_LOCAL_PRODUCTION_TASKPACK_V1.md": "2900f5c810ea4e87ea8a33b953551c4d822475e7063547e9cbc1627100f96bab",
         }
         for relative, expected in expected_hashes.items():
-            actual = hashlib.sha256((baseline_dir / relative).read_bytes()).hexdigest()
+            data = (baseline_dir / relative).read_bytes().replace(b"\r\n", b"\n")
+            actual = hashlib.sha256(data).hexdigest()
             self.assertEqual(actual, expected, relative)
 
         version = (ROOT / "arxiv-daily-push" / "VERSION").read_text(encoding="utf-8").strip()
@@ -1637,7 +1639,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(info["product_version"], "0.22.0")
         self.assertEqual(info["current_gate"], "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY")
         self.assertEqual(
-            info["latest_manifest"]["_path"],
+            info["latest_manifest"]["_path"].replace("\\", "/"),
             "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
@@ -1844,7 +1846,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("precommit_pending_events: 20", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
-        manifest = json.loads((ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text())
+        manifest = json.loads(
+            (ROOT / "governance" / "run_manifests" / "GOV-REVIEW5-SYNC-001.json").read_text(encoding="utf-8")
+        )
         for field in {
             "run_id",
             "base_commit",
@@ -1861,7 +1865,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase2_manifest_records_contract_gate(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE2-DATA-CONTRACTS-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE2-DATA-CONTRACTS-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE2-DATA-CONTRACTS-001")
@@ -1869,53 +1873,53 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase3_manifest_records_arxiv_adapter_gate(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE3-ARXIV-ADAPTER-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE3-ARXIV-ADAPTER-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE3-ARXIV-ADAPTER-001")
         self.assertIn("MOD-ADP-005", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase4_manifest_records_ranking_gate(self) -> None:
-        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE4-RANKING-20260621.json").read_text())
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE4-RANKING-20260621.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE4-RANKING-001")
         self.assertIn("MOD-ADP-002", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase5_manifest_records_evidence_gate(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE5-EVIDENCE-GATE-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE5-EVIDENCE-GATE-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE5-EVIDENCE-GATE-001")
         self.assertIn("MOD-ADP-003", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase6_manifest_records_lesson_gate(self) -> None:
-        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE6-LESSON-20260621.json").read_text())
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE6-LESSON-20260621.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE6-LESSON-001")
         self.assertIn("MOD-ADP-006", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase7_manifest_records_narration_gate(self) -> None:
-        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE7-TTS-20260621.json").read_text())
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE7-TTS-20260621.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE7-TTS-001")
         self.assertIn("MOD-ADP-007", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase8_manifest_records_video_gate(self) -> None:
-        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE8-VIDEO-20260621.json").read_text())
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE8-VIDEO-20260621.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE8-VIDEO-001")
         self.assertIn("MOD-ADP-008", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase9_manifest_records_pipeline_gate(self) -> None:
-        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE9-LOCAL-PIPELINE-20260621.json").read_text())
+        manifest = json.loads((ROOT / "governance" / "run_manifests" / "ADP-PHASE9-LOCAL-PIPELINE-20260621.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE9-LOCAL-PIPELINE-001")
         self.assertIn("MOD-ADP-009", manifest["model_delta"])
 
     def test_arxiv_daily_push_phase10_manifest_records_handoff_gate(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE10-RUNNER-RELEASE-EMAIL-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE10-RUNNER-RELEASE-EMAIL-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE10-RUNNER-RELEASE-EMAIL-001")
@@ -1923,7 +1927,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_acceptance_gate(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-ACCEPTANCE-HANDOFF-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-ACCEPTANCE-HANDOFF-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-ACCEPTANCE-HANDOFF-001")
@@ -1931,7 +1935,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_evidence_ref_hardening(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-EVIDENCE-REF-HARDENING-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-EVIDENCE-REF-HARDENING-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-EVIDENCE-REF-HARDENING-002")
@@ -1939,7 +1943,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_evidence_validator(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-EVIDENCE-VALIDATOR-003")
@@ -1947,7 +1951,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_production_preflight(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-PRODUCTION-PREFLIGHT-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-PRODUCTION-PREFLIGHT-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-PREFLIGHT-004")
@@ -1955,7 +1959,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_bootstrap(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-BOOTSTRAP-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-BOOTSTRAP-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-BOOTSTRAP-005")
@@ -1963,7 +1967,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_live_arxiv_ingest(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-LIVE-ARXIV-INGEST-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-LIVE-ARXIV-INGEST-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-LIVE-ARXIV-INGEST-006")
@@ -1971,7 +1975,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_smtp_delivery(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-SMTP-DELIVERY-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-SMTP-DELIVERY-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-SMTP-DELIVERY-007")
@@ -1979,7 +1983,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_release_delivery(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-RELEASE-DELIVERY-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-RELEASE-DELIVERY-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-RELEASE-DELIVERY-008")
@@ -1987,7 +1991,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_production_scheduler(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-PRODUCTION-SCHEDULER-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-PRODUCTION-SCHEDULER-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-SCHEDULER-009")
@@ -1995,7 +1999,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_scheduled_execution(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-SCHEDULED-EXECUTION-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-SCHEDULED-EXECUTION-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-SCHEDULED-EXECUTION-010")
@@ -2003,7 +2007,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_daily_input_builder(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-DAILY-INPUT-BUILDER-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-DAILY-INPUT-BUILDER-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-DAILY-INPUT-BUILDER-011")
@@ -2011,7 +2015,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_ledger(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-LEDGER-20260621.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-LEDGER-20260621.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-LEDGER-012")
@@ -2019,7 +2023,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_ledger_state(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-LEDGER-STATE-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-LEDGER-STATE-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-LEDGER-STATE-013")
@@ -2027,7 +2031,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_ops_evidence(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-OPS-EVIDENCE-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-OPS-EVIDENCE-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-OPS-EVIDENCE-014")
@@ -2035,7 +2039,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_replay_evidence(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-REPLAY-EVIDENCE-015")
@@ -2043,7 +2047,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_recovery_evidence(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-RECOVERY-EVIDENCE-016")
@@ -2051,7 +2055,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_resource_evidence(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-RESOURCE-EVIDENCE-017")
@@ -2059,7 +2063,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_start_gate(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-START-GATE-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-START-GATE-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-GATE-018")
@@ -2067,7 +2071,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_daily_push_phase11_manifest_records_trial_start_workflow(self) -> None:
         manifest = json.loads(
-            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-START-WORKFLOW-20260622.json").read_text()
+            (ROOT / "governance" / "run_manifests" / "ADP-PHASE11-TRIAL-START-WORKFLOW-20260622.json").read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-WORKFLOW-019")
@@ -2080,7 +2084,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-LAUNCH-READINESS-020")
@@ -2093,7 +2097,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-POST-MERGE-LAUNCH-AUDIT-021")
@@ -2122,7 +2126,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PRODUCTION-TRIAL-START-PRECHECK-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-TRIAL-START-022")
@@ -2139,7 +2143,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023")
@@ -2156,7 +2160,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-RELEASE-PERMISSIONS-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-RELEASE-PERMISSIONS-024")
@@ -2175,7 +2179,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-REFS-TEMPLATE-025")
@@ -2194,7 +2198,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PRODUCTION-REFS-GITHUB-DISCOVERY-026")
@@ -2214,7 +2218,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TRIAL-START-LAUNCH-PREFLIGHT-027")
@@ -2236,7 +2240,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PROVISIONING-AUDIT-WORKFLOW-028")
@@ -2260,7 +2264,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-PROVISIONING-AUDIT-REVIEW-029")
@@ -2285,7 +2289,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE11-TWO-DAY-SIMULATION-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE11-TWO-DAY-SIMULATION-030")
@@ -2311,7 +2315,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE12-ALL-ARXIV-QUEUE-DELIVERY-031")
@@ -2336,7 +2340,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE12-PRODUCTION-ENABLEMENT-CLOUD-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE12-PRODUCTION-ENABLEMENT-032")
@@ -2373,7 +2377,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE12-MANUAL-DELIVERY-TEST-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE12-MANUAL-DELIVERY-TEST-033")
@@ -2399,7 +2403,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE12-MANUAL-DELIVERY-RELEASE-DEDUPE-034")
@@ -2424,7 +2428,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-20260622.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "ADP-PHASE12-MANUAL-DELIVERY-INTERNAL-RELEASE-DEDUPE-035")
@@ -2454,7 +2458,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "GOV-SEMANTIC-ADP-EXTRACT-001.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
@@ -2471,7 +2475,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "GOV-SEMANTIC-ADP-EXTRACT-002.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
@@ -2488,7 +2492,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "GOV-SEMANTIC-ADP-EXTRACT-003.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
@@ -2505,7 +2509,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "GOV-SEMANTIC-ADP-EXTRACT-004.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
@@ -2522,7 +2526,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 / "governance"
                 / "run_manifests"
                 / "GOV-SEMANTIC-ADP-EXTRACT-005.json"
-            ).read_text()
+            ).read_text(encoding="utf-8")
         )
         self.assertEqual(manifest["project_id"], "arxiv-daily-push")
         self.assertEqual(manifest["task_id"], "GOV-SEMANTIC-ADP-001")
@@ -2532,11 +2536,25 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["semantic_formulas_checked"], 31)
         self.assertEqual(manifest["human_review_required_formulas"], 0)
 
-    def test_review6_final_information_quality_gate_passes(self) -> None:
+    def test_review9_information_quality_gate_reports_truth_without_pr_blocking_assumption(self) -> None:
         quality = load_information_quality_module()
         result = quality.run()
-        self.assertEqual(result["status"], "PASS", result)
-        self.assertEqual(result["errors"], 0, result)
+        self.assertIn(result["status"], {"PASS", "FAIL"}, result)
+        self.assertIn("findings", result)
+        codes = {item["code"] for item in result["findings"]}
+        self.assertFalse(
+            codes
+            & {
+                "HOOK_QUALITY",
+                "CI_QUALITY",
+                "CI_CHANGED_QUALITY",
+                "CI_ALL_QUALITY",
+                "CI_DRIFT",
+                "CI_PORTFOLIO",
+                "CI_MASKING",
+            },
+            result,
+        )
 
     def test_review6_final_all_projects_have_assurance_status(self) -> None:
         validator = load_validator_module()

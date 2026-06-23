@@ -6,17 +6,11 @@ on:
     paths:
       - ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml"
       - "arxiv-daily-push/**"
-      - "governance/**"
-      - "scripts/**"
-      - "tests/governance/**"
   push:
     branches: ["main"]
     paths:
       - ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml"
       - "arxiv-daily-push/**"
-      - "governance/**"
-      - "scripts/**"
-      - "tests/governance/**"
 
 permissions:
   contents: read

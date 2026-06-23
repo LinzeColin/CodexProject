@@ -92,12 +92,17 @@ def workflow_entry_gate_status() -> dict[str, Any]:
         ),
         "main_push_changed_only_uses_event_before": (
             "github.event_name == 'push'" in text
-            and "GOVERNANCE_BASE_REF: ${{ github.event.before }}" in text
-            and '--base-ref "${GOVERNANCE_BASE_REF}"' in text
+            and "GOVERNANCE_BASE_REF: ${{ github.event.before || inputs.base_ref || '' }}" in text
+            and "--changed-only --enforce-sync --semantic" in text
         ),
-        "main_push_runs_all_semantic_drift_report": (
-            "github.event_name == 'push'" in text
+        "pull_request_skips_information_quality": (
+            "Validate information quality" in text
+            and "github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'" in text
+        ),
+        "full_governance_runs_only_on_schedule_or_manual_all": (
+            "github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')" in text
             and "--all --semantic --drift-report" in text
+            and "github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')" not in text
         ),
         "manual_changed_only_accepts_base_ref": (
             "inputs.scope == 'changed-only'" in text
@@ -110,11 +115,13 @@ def workflow_entry_gate_status() -> dict[str, Any]:
         "ci_attestation_validated": (
             "scripts/validate_ci_attestation.py write" in text
             and "scripts/validate_ci_attestation.py validate" in text
+            and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
         ),
         "ci_attestation_uploaded_as_artifact": (
             "actions/upload-artifact@v4" in text
             and "project-governance-ci-attestation-" in text
             and "if-no-files-found: error" in text
+            and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
         ),
         "setup_doctor_runs_in_ci": "scripts/governance_setup_doctor.py --json --check-github" in text,
         "generated_assurance_views_checked": "ASSURANCE_STATUS.yaml" in text and "governance/binding_backlog.yaml" in text,

@@ -380,16 +380,26 @@ def check_events(gate: Gate, project: dict[str, Any]) -> None:
 def check_hook_and_ci(gate: Gate) -> None:
     hook = ROOT / ".codex/hooks/governance_stop.py"
     workflow = ROOT / ".github/workflows/project-governance.yml"
-    for path, code in ((hook, "HOOK_QUALITY"), (workflow, "CI_QUALITY")):
+    if hook.exists():
+        text = hook.read_text(encoding="utf-8")
+        if '"mode": "advisory"' not in text or '"continue": True' not in text:
+            gate.add("ERROR", "HOOK_QUALITY", "Stop Hook must be advisory and allow completion", hook)
+        for forbidden in ("validate_information_quality.py", "generate_governance_dashboard.py", "governance_setup_doctor.py"):
+            if forbidden in text:
+                gate.add("ERROR", "HOOK_QUALITY", "Stop Hook must not run heavy governance computation", hook)
+    else:
+        gate.add("ERROR", "HOOK_QUALITY", "Stop Hook missing", hook)
+
+    for path, code in ((workflow, "CI_QUALITY"),):
         text = path.read_text(encoding="utf-8") if path.exists() else ""
         if "validate_information_quality.py" not in text or "--fast" not in text:
             gate.add("ERROR", code, "information-quality fast gate is not wired", path)
     if workflow.exists():
         text = workflow.read_text(encoding="utf-8")
-        if "--changed-only" not in text:
-            gate.add("ERROR", "CI_CHANGED_QUALITY", "pull_request changed-only information-quality gate missing", workflow)
+        if "inputs.scope == 'changed-only'" not in text or "--changed-only" not in text:
+            gate.add("ERROR", "CI_CHANGED_QUALITY", "manual changed-only information-quality gate missing", workflow)
         if "--all --fast --fail-on-error" not in text:
-            gate.add("ERROR", "CI_ALL_QUALITY", "main/manual all information-quality gate missing", workflow)
+            gate.add("ERROR", "CI_ALL_QUALITY", "scheduled/manual all information-quality gate missing", workflow)
         if "--all --semantic --drift-report" not in text:
             gate.add("ERROR", "CI_DRIFT", "all semantic drift check missing", workflow)
         if "OWNER_PORTFOLIO.md" not in text:

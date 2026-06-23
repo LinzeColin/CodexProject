@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-COST-STOPBLEED-001",
+  "project_id": "root-governance",
+  "task_id": "GOV-COST-STOPBLEED-001",
+  "acceptance_ids": [
+    "ACC-GOV-COST-STOPBLEED-001"
+  ],
+  "iteration_id": "ITER-20260623-GOV-COST-STOPBLEED-001",
+  "generated_at": "2026-06-23T14:30:00+10:00",
+  "implementation_base_sha": "df6f59f76014825d9aa028a38013d10ec23fc228",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:1b61752352efc0c4fa2bb34135e7d791138a1d5ad236c33c2219ec8686eab25b",
+  "changed_files_declared": [
+    ".codex/hooks.json",
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/GOV-COST-STOPBLEED-001.json",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".codex/hooks.json",
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/GOV-COST-STOPBLEED-001.json",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    ".codex/hooks.json",
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-COST-STOPBLEED-001.json"
+  ],
+  "updated_governance_files": [
+    ".codex/hooks.json",
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-COST-STOPBLEED-001.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_cost_stopbleed",
+    "governance_compute_decoupling"
+  ],
+  "model_delta": "NOT_APPLICABLE: root governance execution policy only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -m py_compile .codex/hooks/governance_stop.py scripts/governance_setup_doctor.py scripts/validate_information_quality.py scripts/validate_project_governance.py tests/governance/test_project_governance_validator.py",
+    "python -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review6_setup_doctor_reports_entry_gate_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_stop_hook_is_advisory_and_non_writing tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_stop_hook_does_not_write_receipts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_information_quality_gate_reports_truth_without_pr_blocking_assumption tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_governance_stop_hook_continues_enabled_repo_without_validator tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_governance_stop_hook_allows_recursive_stop_pass -q",
+    "python -m unittest discover -s tests/governance -p test_*.py -q",
+    "python scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "python scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -m json.tool governance/run_manifests/GOV-COST-STOPBLEED-001.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -m py_compile .codex/hooks/governance_stop.py scripts/governance_setup_doctor.py scripts/validate_information_quality.py scripts/validate_project_governance.py tests/governance/test_project_governance_validator.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Syntax compile passed."
+    },
+    {
+      "command": "python -m unittest targeted Review9 governance stopbleed tests -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "6 targeted tests OK."
+    },
+    {
+      "command": "python -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "133 governance tests OK; missing-base output is an expected negative fixture."
+    },
+    {
+      "command": "python scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only governance sync and root validation errors 0 warnings 0."
+    },
+    {
+      "command": "python scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status PASS, errors 0, warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-COST-STOPBLEED-001.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "manifest JSON parses."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    ".codex/hooks.json",
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 governance compute decoupling stopbleed",
+  "ci_run_reference": "MANUAL_FULL_GOVERNANCE_OR_RELEASE_GATE_NOT_REQUIRED_FOR_PR_FAST_GATE",
+  "summary": "Preserve canonical governance truth while removing generated-view, semantic full-portfolio, information-quality, setup doctor, receipt, and attestation computation from the Stop Hook and PR/main fast path.",
+  "rollback": "Revert this manifest plus the Stop Hook, Project Governance workflow, ADP bootstrap trigger, standard, setup doctor, information quality, and governance test updates in this branch.",
+  "unresolved_risks": [
+    "Manual or scheduled full governance may still report existing stale portfolio findings; those findings remain truth signals but no longer block ordinary PR completion.",
+    "Branch protection required-check configuration is external and remains UNVERIFIED unless inspected with authenticated GitHub ruleset evidence."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

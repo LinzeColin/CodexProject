@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "17 17 * * *"
   workflow_dispatch:
     inputs:
       scope:
@@ -44,6 +46,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Run governance validator tests
+        if: github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope != 'information-quality')
         run: |
           if python3 -c "import pytest" >/dev/null 2>&1; then
             python3 -m pytest tests/governance -q
@@ -51,25 +54,20 @@ jobs:
             python3 -m unittest discover -s tests/governance -p 'test_*.py' -q
           fi
       - name: Validate changed governance scope
-        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
         env:
-          GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}
+          GOVERNANCE_BASE_REF: ${{ github.event.before || inputs.base_ref || '' }}
         run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
       - name: Validate information quality
-        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        if: github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'
         env:
           GOVERNANCE_BASE_REF: ${{ inputs.base_ref || '' }}
         run: python3 scripts/validate_information_quality.py --changed-only --fast --fail-on-error
       - name: Validate all information quality
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.scope == 'information-quality' || inputs.scope == 'all'))
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.scope == 'information-quality' || inputs.scope == 'all'))
         run: python3 scripts/validate_information_quality.py --all --fast --fail-on-error
-      - name: Validate pushed governance diff
-        if: github.event_name == 'push'
-        env:
-          GOVERNANCE_BASE_REF: ${{ github.event.before }}
-        run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref "${GOVERNANCE_BASE_REF}"
       - name: Validate all registered scopes
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: python3 scripts/validate_project_governance.py --all --semantic --drift-report
       - name: Validate selected project
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'project'
@@ -80,15 +78,12 @@ jobs:
           fi
           python3 scripts/validate_project_governance.py --project "${{ inputs.project }}" --semantic
       - name: Verify generated governance dashboard
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ] || { [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.scope }}" = "changed-only" ]; }; then
-            python3 scripts/generate_governance_dashboard.py --write --changed-only
-          else
-            python3 scripts/generate_governance_dashboard.py --write --all
-          fi
+          python3 scripts/generate_governance_dashboard.py --write --all
           git diff --exit-code -- README.md GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md governance/binding_backlog.yaml ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
       - name: Write CI attestation
-        if: success()
+        if: success() && github.event_name == 'workflow_dispatch' && inputs.scope == 'all'
         env:
           GOVERNANCE_ATTESTATION_BASE_REF: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
           GOVERNANCE_ATTESTATION_ARTIFACT: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
@@ -108,7 +103,7 @@ jobs:
           python3 scripts/validate_ci_attestation.py validate --file "${GOVERNANCE_ATTESTATION_DIR}/governance-ci-attestation.json"
           python3 scripts/governance_setup_doctor.py --json --check-github > "${GOVERNANCE_ATTESTATION_DIR}/governance-setup-doctor.json"
       - name: Upload CI attestation artifact
-        if: success()
+        if: success() && github.event_name == 'workflow_dispatch' && inputs.scope == 'all'
         uses: actions/upload-artifact@v4
         with:
           name: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
@@ -123,5 +118,6 @@ jobs:
             echo "- event: ${{ github.event_name }}"
             echo "- scope: ${{ inputs.scope || 'auto' }}"
             echo "- project: ${{ inputs.project || 'not_applicable' }}"
-            echo "- required failures are not masked by continue-on-error"
+            echo "- PR/main path: changed-scope fast gate"
+            echo "- full governance, generated views, and attestation: scheduled or manual all scope"
           } >> "$GITHUB_STEP_SUMMARY"
