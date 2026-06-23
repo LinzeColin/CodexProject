@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623",
+  "project_id": "root-governance",
+  "task_id": "S3PAT03",
+  "acceptance_ids": [
+    "ACC-S3PAT03"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S3PAT03",
+  "generated_at": "2026-06-23T21:15:00+10:00",
+  "implementation_base_sha": "75b7230d8d2f6b6204c8b47447c1d72c228ab7cb",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:098a6be737a3111ebdc911d6ed5f447ff9831034da09ededec5c9242e5e43bf4",
+  "changed_files_declared": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json"
+  ],
+  "changed_files_actual": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json"
+  ],
+  "required_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json"
+  ],
+  "updated_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "changed_only_scope_selection"
+  ],
+  "model_delta": "NOT_APPLICABLE: governance CLI only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_changed_scope_root_change_selects_all_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_changed_scope_project_change_selects_only_matching_project -q",
+    "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/validate_project_governance.py --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_changed_scope_root_change_selects_all_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_changed_scope_project_change_selects_only_matching_project -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S3PAT03 changed-scope tests passed for root governance changes selecting all projects and project-only changes selecting the matching project."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Current root governance diff selected all 10 registered projects and printed compact JSON without writing repository files."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 137 tests; OK. Expected missing-base negative fixture output appeared inside the passing suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope governance sync validation passed with errors 0 warnings 0; project scope none."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Information quality status PASS with errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full governance validation checked root and all registered projects with errors 0 warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT03-CHANGED-SCOPE-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S3PAT03 changed-scope command in Lean governance CLI",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Add `lean_governance.py changed-scope` to report read-only changed project selection: root governance changes require all projects, while ordinary project path changes select only matching registered projects.",
+  "rollback": "Revert the changed-scope subcommand, S3PAT03 tests, and this run manifest.",
+  "unresolved_risks": [
+    "Renderer and check-render remain locked until S3PB.",
+    "Workflow still calls legacy validators directly until S3PC.",
+    "Stop hook remains to be made pure advisory in S3PCT02."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

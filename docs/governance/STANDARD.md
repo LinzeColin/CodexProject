@@ -117,6 +117,16 @@ link page.
 hours, progress, blockers, next Gate, and next unique task. It renders the full
 Roadmap and recent meaningful events.
 
+`docs/governance/templates/开发记录.template.md` is the template for that human
+view. It starts with summary fields, then owner decisions, progress overview,
+the full Roadmap, recent meaningful events, and risks or blockers. It must not
+degrade into a link page.
+
+`docs/governance/templates/Roadmap.template.md` is the owner-readable Roadmap
+template. It directly renders Stage, Phase, Task, Stop Gate, Acceptance, and
+Evidence sections, while derived calculations remain deterministic validator
+work rather than manual governance computation.
+
 `模型参数文件` records active models, assumptions, inputs, outputs, formulas or
 pseudocode, variables, units, domains, missing-value behavior, fallback behavior,
 parameters, defaults, priors, active values, ranges, weights, sources,
@@ -198,17 +208,18 @@ must not create a development event or product version.
 ## Changed-Scope CI And Hook
 
 Every pull request runs one required Project Governance job focused on
-changed-scope validation against the PR base. Pushes to `main` run the same
-contract against the previous main commit. Manual `scope=changed-only` accepts
-an optional `base_ref`.
+`lean_governance.py ci --changed-only` against the PR base. Pushes to `main`
+run the same contract against the previous main commit. Manual
+`scope=changed-only` accepts an optional `base_ref`.
 
 Scheduled and manual `scope=all` runs execute full information-quality,
 all-project semantic/drift validation, generated-view determinism checks, and CI
 attestation upload.
 
-The Stop Hook is advisory only. It may detect changed governance files and
-suggest commands. It must not run generators, validators, setup doctor,
-semantic extraction, receipt writing, attestation, or recursive repair loops.
+The Stop Hook is advisory only. It may suggest commands, but it must not run
+subprocesses, inspect git state, detect changed files, run generators,
+validators, setup doctor, semantic extraction, receipt writing, attestation, or
+recursive repair loops.
 
 If branch protection or ruleset details cannot be inspected with authenticated
 GitHub evidence, required-check and no-bypass status remain `UNVERIFIED`.
@@ -275,12 +286,12 @@ DELIVERY_PLAN.md, delivery_tasks.yaml, VERSION_MATRIX.yaml,
 TRACEABILITY_MATRIX.csv, STATUS.md, OWNER_STATUS.md, VERSION, CHANGELOG.md
 ```
 
-Validator commands remain:
+Lean validator commands remain:
 
 ```bash
-python scripts/validate_project_governance.py --all
-python scripts/validate_project_governance.py --project <project_id>
-python scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+python scripts/lean_governance.py validate --all
+python scripts/lean_governance.py validate --project <project_id>
+python scripts/lean_governance.py ci --changed-only --base-ref <base_ref>
 ```
 
 ## Semantic Accuracy

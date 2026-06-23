@@ -53,11 +53,16 @@ jobs:
           else
             python3 -m unittest discover -s tests/governance -p 'test_*.py' -q
           fi
-      - name: Validate changed governance scope
+      - name: Run changed-only governance CI
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
         env:
           GOVERNANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
-        run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+        run: |
+          if [ -n "${GOVERNANCE_BASE_REF}" ]; then
+            python3 scripts/lean_governance.py ci --changed-only --base-ref "${GOVERNANCE_BASE_REF}"
+          else
+            python3 scripts/lean_governance.py ci --changed-only
+          fi
       - name: Validate information quality
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'
         env:
@@ -68,7 +73,7 @@ jobs:
         run: python3 scripts/validate_information_quality.py --all --fast --fail-on-error
       - name: Validate all registered scopes
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
-        run: python3 scripts/validate_project_governance.py --all --semantic --drift-report
+        run: python3 scripts/lean_governance.py validate --all --semantic --drift-report
       - name: Validate selected project
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'project'
         run: |
@@ -76,7 +81,7 @@ jobs:
             echo "project input is required when scope=project"
             exit 1
           fi
-          python3 scripts/validate_project_governance.py --project "${{ inputs.project }}" --semantic
+          python3 scripts/lean_governance.py validate --project "${{ inputs.project }}" --semantic
       - name: Verify generated governance dashboard
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: |

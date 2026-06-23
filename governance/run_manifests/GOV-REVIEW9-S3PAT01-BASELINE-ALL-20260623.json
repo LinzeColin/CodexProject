@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623",
+  "project_id": "root-governance",
+  "task_id": "S3PAT01",
+  "acceptance_ids": [
+    "ACC-S3PAT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S3PAT01",
+  "generated_at": "2026-06-23T20:55:00+10:00",
+  "implementation_base_sha": "975383c46debfa4dd811ccb7e1c6c17a294472bf",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d94874ad445d5e133fead50f0f4b9695e75213e2262dde773e95e57155366fde",
+  "changed_files_declared": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json"
+  ],
+  "changed_files_actual": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json"
+  ],
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json"
+  ],
+  "updated_governance_files": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "read_only_baseline_cli"
+  ],
+  "model_delta": "NOT_APPLICABLE: governance CLI only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_baseline_all_is_read_only_compact_json tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review3_root_governance_framework_files_are_required -q",
+    "python -B scripts/lean_governance.py baseline --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B scripts/validate_project_governance.py --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_baseline_all_is_read_only_compact_json tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review3_root_governance_framework_files_are_required -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S3PAT01 read-only compact JSON baseline and root required-file tests passed."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py baseline --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Printed compact JSON baseline for root and 10 registered projects; totals included project path, human entry, canonical, and legacy governance missing counts."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 133 tests; OK. Expected missing-base negative fixture output appeared inside the passing suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-scope governance sync validation passed with errors 0 warnings 0; project scope none."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Information quality status PASS with errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full governance validation checked root and all registered projects with errors 0 warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S3PAT01-BASELINE-ALL-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S3PAT01 baseline --all read-only CLI",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Add the Lean governance single-entry CLI with a read-only `baseline --all` command that summarizes root governance, registered projects, human entry files, Lean canonical files, and legacy governance coverage without writing repository files.",
+  "rollback": "Revert scripts/lean_governance.py, governance/projects.yaml root required registration, the S3PAT01 tests, and this run manifest.",
+  "unresolved_risks": [
+    "S3PAT02 still needs validate structure and semantic rules in the same CLI.",
+    "S3PAT03 still needs changed-only target selection in the same CLI.",
+    "Renderer and check-render remain locked until S3PB."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

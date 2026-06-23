@@ -384,7 +384,14 @@ def check_hook_and_ci(gate: Gate) -> None:
         text = hook.read_text(encoding="utf-8")
         if '"mode": "advisory"' not in text or '"continue": True' not in text:
             gate.add("ERROR", "HOOK_QUALITY", "Stop Hook must be advisory and allow completion", hook)
-        for forbidden in ("validate_information_quality.py", "generate_governance_dashboard.py", "governance_setup_doctor.py"):
+        for forbidden in (
+            "validate_information_quality.py",
+            "generate_governance_dashboard.py",
+            "governance_setup_doctor.py",
+            "subprocess",
+            "git_root",
+            "changed_files",
+        ):
             if forbidden in text:
                 gate.add("ERROR", "HOOK_QUALITY", "Stop Hook must not run heavy governance computation", hook)
     else:
