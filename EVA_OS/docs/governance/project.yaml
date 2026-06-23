@@ -1,0 +1,5933 @@
+schema_version: "codexproject.project.v1"
+project_id: "EVA_OS"
+project_name: "EVA_OS"
+summary: "EVA_OS 是研究、验证、回测、报告和证据治理系统；当前不允许 live trading、real orders、broker password storage，且不声明生产交付就绪。"
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "model_owner + research_owner"
+current_status: "blocked_for_delivery_readiness"
+limitations:
+  -
+    statement: "实现一致性为 PARTIAL：16/16 active formulas 有 implementation fingerprints，但 52/189 active parameters machine-checked，137 个参数仍为 HUMAN_REVIEW_REQUIRED。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EVA-ASSURANCE-STATUS"
+      - "EVID-EVA-SEMANTIC-MANIFEST"
+      - "EVID-EVA-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-EVA-001"
+  -
+    statement: "方法依据和实证验证仍为 UNVERIFIED；参数来源、样本外、成本、报告 claim-to-evidence 证据不足，delivery_readiness 仍为 FAILED。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-EVA-OWNER-STATUS"
+      - "EVID-EVA-ASSURANCE-STATUS"
+      - "EVID-EVA-DELIVERY-TASKS"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+      - "TASK-EVA-B-002"
+      - "TASK-EVA-B-003"
+      - "TASK-EVA-B-004"
+      - "TASK-EVA-B-005"
+      - "TASK-EVA-B-006"
+      - "TASK-EVA-B-007"
+      - "TASK-EVA-B-008"
+  -
+    statement: "旧 development_events.jsonl 中 3 个 stale_unbound 事件和 1 个 pre_commit_pending 事件不得升格为 verified history。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EVA-DEVELOPMENT-EVENTS"
+      - "EVID-EVA-STATUS"
+    unknown_task_ids: []
+features:
+  -
+    feature_id: "FEAT-EVA-001"
+    name: "研究策略信号、回测与风险评分"
+    description: "覆盖 built-in research strategy signal、backtest metrics、research risk gate、decision quality score。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+      - "MOD-003"
+      - "MOD-004"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/profiles.py:322"
+      - "EVA_OS/src/quantlab/backtest/engine.py:13"
+      - "EVA_OS/src/quantlab/risk/gates.py:16"
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+      - "EVA_OS/tests/test_risk_gates.py"
+      - "EVA_OS/tests/test_decision_quality.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-FORMULA-REGISTRY"
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EVA-002"
+    name: "数据质量、跨源验证与数据可信审计"
+    description: "覆盖 OHLCV 质量、cross-source close validation、validation priority/execution gate 和 data trust audit。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+      - "MOD-007"
+    parameter_ids:
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:34"
+      - "EVA_OS/src/quantlab/research/validation_priority.py:52"
+      - "EVA_OS/src/quantlab/system/data_trust.py:48"
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py"
+      - "EVA_OS/tests/test_validation_priority.py"
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-FORMULA-REGISTRY"
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EVA-003"
+    name: "系统 readiness、command center 与报告证据缺口"
+    description: "聚合 integration audit、daily readiness、command center、report decision support 和 evidence gap tasks。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-008"
+      - "MOD-009"
+    parameter_ids:
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+      - "PARAM-109"
+      - "PARAM-110"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/daily_readiness.py:16"
+      - "EVA_OS/src/quantlab/executive/command_center.py:208"
+      - "EVA_OS/src/quantlab/reports/decision_support.py:28"
+    test_refs:
+      - "EVA_OS/tests/test_daily_readiness.py"
+      - "EVA_OS/tests/test_command_center.py"
+      - "EVA_OS/tests/test_report_decision_support.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-FORMULA-REGISTRY"
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EVA-004"
+    name: "跨系统专题模型"
+    description: "覆盖 market hotspot heat、company cashflow command、consumption guard、policy intelligence radar。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-010"
+      - "MOD-011"
+      - "MOD-012"
+      - "MOD-013"
+    parameter_ids:
+      - "PARAM-117"
+      - "PARAM-118"
+      - "PARAM-119"
+      - "PARAM-120"
+      - "PARAM-121"
+      - "PARAM-122"
+      - "PARAM-123"
+      - "PARAM-124"
+      - "PARAM-125"
+      - "PARAM-126"
+      - "PARAM-127"
+      - "PARAM-128"
+      - "PARAM-129"
+      - "PARAM-130"
+      - "PARAM-131"
+      - "PARAM-132"
+      - "PARAM-133"
+      - "PARAM-134"
+      - "PARAM-135"
+      - "PARAM-136"
+      - "PARAM-137"
+      - "PARAM-138"
+      - "PARAM-139"
+      - "PARAM-140"
+      - "PARAM-141"
+      - "PARAM-142"
+      - "PARAM-143"
+      - "PARAM-144"
+      - "PARAM-145"
+      - "PARAM-146"
+      - "PARAM-147"
+      - "PARAM-148"
+      - "PARAM-149"
+      - "PARAM-150"
+      - "PARAM-151"
+      - "PARAM-152"
+      - "PARAM-153"
+      - "PARAM-154"
+      - "PARAM-155"
+      - "PARAM-156"
+      - "PARAM-157"
+      - "PARAM-158"
+      - "PARAM-159"
+      - "PARAM-160"
+      - "PARAM-161"
+      - "PARAM-162"
+      - "PARAM-163"
+      - "PARAM-164"
+      - "PARAM-165"
+      - "PARAM-166"
+      - "PARAM-167"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:14"
+      - "EVA_OS/src/quantlab/business/cashflow.py:118"
+      - "EVA_OS/src/quantlab/policy/radar.py:109"
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+      - "EVA_OS/tests/test_cashflow_command.py"
+      - "EVA_OS/tests/test_policy_radar.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-FORMULA-REGISTRY"
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EVA-005"
+    name: "Token ROI、策略模板和开发 readiness"
+    description: "覆盖 token ROI ledger、custom strategy template/readiness gate 和 development readiness gate。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-014"
+      - "MOD-015"
+      - "MOD-016"
+    parameter_ids:
+      - "PARAM-168"
+      - "PARAM-169"
+      - "PARAM-170"
+      - "PARAM-171"
+      - "PARAM-172"
+      - "PARAM-173"
+      - "PARAM-174"
+      - "PARAM-175"
+      - "PARAM-176"
+      - "PARAM-177"
+      - "PARAM-178"
+      - "PARAM-179"
+      - "PARAM-180"
+      - "PARAM-181"
+      - "PARAM-182"
+      - "PARAM-183"
+      - "PARAM-184"
+      - "PARAM-185"
+      - "PARAM-186"
+      - "PARAM-187"
+      - "PARAM-188"
+      - "PARAM-189"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:33"
+      - "EVA_OS/src/quantlab/strategies/templates.py:136"
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:16"
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+      - "EVA_OS/tests/test_strategy_templates.py"
+      - "EVA_OS/tests/test_dev_readiness.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-FORMULA-REGISTRY"
+      - "EVID-EVA-PARAMETER-REGISTRY"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Built-in Research Strategy Signal Library"
+    purpose: "Generate target weights or order intent for built-in research strategies across trend, mean reversion, momentum and Alipay-style behavioral rules."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/ma_crossover.py:1"
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:11"
+      - "EVA_OS/src/quantlab/strategies/profiles.py:322"
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+      - "EVA_OS/tests/test_alipay_strategy.py"
+      - "EVA_OS/tests/test_strategy_profiles.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-002"
+    name: "Backtest Execution and Performance Metrics"
+    purpose: "Execute target-weight or order-value signals with modeled costs and compute return, risk, drawdown, turnover, win rate and cost metrics."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:13"
+      - "EVA_OS/src/quantlab/backtest/metrics.py:22"
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+      - "EVA_OS/tests/test_alipay_strategy.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-003"
+    name: "Research Risk Gate"
+    purpose: "Score data quality, return, drawdown, trading friction and validation evidence into ContinueResearch, WatchOnly, NeedsMoreEvidence or DoNotUse."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:16"
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-004"
+    name: "Decision Quality Score"
+    purpose: "Score thesis clarity, evidence quality, risk identification, exit conditions, exposure discipline, emotional risk, counterarguments, liquidity and validation sufficiency."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:36"
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-005"
+    name: "Data Quality and Cross-source Close Validation"
+    purpose: "Assess OHLCV bars, checksum canonical data, and compare close prices across at least two providers using percentage tolerance."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-002"
+      - "ASM-007"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids:
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:34"
+      - "EVA_OS/src/quantlab/data/validation.py:34"
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py"
+      - "EVA_OS/tests/test_validation_execution.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-006"
+    name: "Validation Priority and Execution Gate"
+    purpose: "Rank evidence-repair tasks, route missing-input blockers, and execute supported CrossSourceValidation tasks fail-closed."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:52"
+      - "EVA_OS/src/quantlab/research/validation_execution.py:37"
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py"
+      - "EVA_OS/tests/test_validation_execution.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-007"
+    name: "Data Trust Audit"
+    purpose: "Classify local project, provider, strategy, holdings, ResearchBus, validation, experiment and report artifacts into trust states and audit status."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+      - "ASM-007"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:48"
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-008"
+    name: "Integration, Daily Readiness and Command Center Status"
+    purpose: "Aggregate data trust, integration audit, health, provider, report and Token ROI evidence into readiness and command-center status/action queues."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids:
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/integration_audit.py:27"
+      - "EVA_OS/src/quantlab/system/daily_readiness.py:16"
+      - "EVA_OS/src/quantlab/executive/command_center.py:208"
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py"
+      - "EVA_OS/tests/test_daily_readiness.py"
+      - "EVA_OS/tests/test_command_center.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-009"
+    name: "Report Decision Support and Evidence Gap Tasks"
+    purpose: "Classify RunMetadata/report evidence into ContinueResearch, WatchOnly, NeedsMoreEvidence or DoNotUse and split missing evidence into validation tasks."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+      - "PARAM-109"
+      - "PARAM-110"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:28"
+      - "EVA_OS/src/quantlab/research/report_gap_tasks.py:22"
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py"
+      - "EVA_OS/tests/test_report_gap_tasks.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-010"
+    name: "Market Hotspot Heat and Evidence Gate"
+    purpose: "Compute cross-asset heat scores, stabilize heat history, classify hotspot states and gate hotspot evidence quality."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-007"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-117"
+      - "PARAM-118"
+      - "PARAM-119"
+      - "PARAM-120"
+      - "PARAM-121"
+      - "PARAM-122"
+      - "PARAM-123"
+      - "PARAM-124"
+      - "PARAM-125"
+      - "PARAM-126"
+      - "PARAM-127"
+      - "PARAM-128"
+      - "PARAM-129"
+      - "PARAM-130"
+      - "PARAM-131"
+      - "PARAM-132"
+      - "PARAM-133"
+      - "PARAM-134"
+      - "PARAM-135"
+      - "PARAM-136"
+      - "PARAM-137"
+      - "PARAM-138"
+      - "PARAM-139"
+      - "PARAM-140"
+      - "PARAM-141"
+      - "PARAM-142"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:14"
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:831"
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-011"
+    name: "Company CashFlow Command"
+    purpose: "Count reviewed evidence-backed cashflow entries, compute balance, inflow, outflow, net cashflow, daily burn, runway and runtime gates."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-143"
+      - "PARAM-144"
+      - "PARAM-145"
+      - "PARAM-146"
+      - "PARAM-147"
+      - "PARAM-148"
+      - "PARAM-149"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:118"
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-012"
+    name: "Consumption Guard"
+    purpose: "Normalize reviewed consumption events, score impulse/regret/necessity risk, compute pressure and produce guard/runtime status."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-004"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-150"
+      - "PARAM-151"
+      - "PARAM-152"
+      - "PARAM-153"
+      - "PARAM-154"
+      - "PARAM-155"
+      - "PARAM-156"
+      - "PARAM-157"
+      - "PARAM-158"
+      - "PARAM-159"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:103"
+      - "EVA_OS/src/quantlab/consumption/guard.py:532"
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-013"
+    name: "Policy Intelligence Radar"
+    purpose: "Score policy opportunities by authority, relevance, urgency and feasibility, enforce authoritative evidence gates and produce action queues."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-005"
+    formula_ids:
+      - "FORM-013"
+    parameter_ids:
+      - "PARAM-160"
+      - "PARAM-161"
+      - "PARAM-162"
+      - "PARAM-163"
+      - "PARAM-164"
+      - "PARAM-165"
+      - "PARAM-166"
+      - "PARAM-167"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:109"
+      - "EVA_OS/src/quantlab/policy/radar.py:351"
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-014"
+    name: "Token ROI Ledger"
+    purpose: "Collect artifact/manual value evidence, prevent fabricated financial value and compute reviewed Token ROI only when costs and benefits are supplied."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-014"
+    parameter_ids:
+      - "PARAM-168"
+      - "PARAM-169"
+      - "PARAM-170"
+      - "PARAM-171"
+      - "PARAM-172"
+      - "PARAM-173"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:33"
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-015"
+    name: "Custom Strategy Template and Readiness Gate"
+    purpose: "Score custom strategy code/profile readiness, smoke-test signal frames and gate approval status before research use."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-003"
+    formula_ids:
+      - "FORM-015"
+    parameter_ids:
+      - "PARAM-174"
+      - "PARAM-175"
+      - "PARAM-176"
+      - "PARAM-177"
+      - "PARAM-178"
+      - "PARAM-179"
+      - "PARAM-180"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:136"
+      - "EVA_OS/src/quantlab/strategies/templates.py:257"
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py"
+      - "EVA_OS/tests/test_strategy_profiles.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+  -
+    model_id: "MOD-016"
+    name: "Development Readiness Gate"
+    purpose: "Check required launch scripts, shell/Python syntax, runtime status, cache dry-run, git status and excluded heavy-gate policy."
+    status: "active"
+    fact_level: "EXTRACTED"
+    assumption_ids:
+      - "ASM-001"
+      - "ASM-002"
+    formula_ids:
+      - "FORM-016"
+    parameter_ids:
+      - "PARAM-181"
+      - "PARAM-182"
+      - "PARAM-183"
+      - "PARAM-184"
+      - "PARAM-185"
+      - "PARAM-186"
+      - "PARAM-187"
+      - "PARAM-188"
+      - "PARAM-189"
+    input_refs:
+      - "local project data/config/code inputs documented in MODEL_SPEC.md"
+      - "runtime payloads or data frames accepted by implementation"
+    output_refs:
+      - "status/score/signal/metric/report fields documented in formula registry"
+      - "research-only evidence or action queue; no live order output"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:16"
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+      - "EVID-EVA-MODEL-SPEC"
+assumptions:
+  -
+    assumption_id: "ASM-001"
+    statement: "EVA_OS and QuantLab are research, validation, backtesting, reporting and evidence systems only; no live trading, no real orders, and no broker password storage are permitted."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-002"
+    statement: "Research outputs may inform real-world trading decisions, so every promoted result requires traceable data quality, cross-source validation, cost assumptions and risk gate status."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-003"
+    statement: "Built-in strategies are approved for research use only; parameter or formula changes require report review and governance update."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-004"
+    statement: "Only reviewed records with evidence are counted in cashflow and consumption guard totals."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-005"
+    statement: "Policy opportunities require reviewed authoritative evidence before Actionable status."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-006"
+    statement: "Historical Git path commits are reconstructed events only and are not counted as confirmed iterations."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    assumption_id: "ASM-007"
+    statement: "Provider sample data and cached hotspot rows are demonstration or derived evidence and do not prove market conclusions without fresh data checks."
+    status: "active"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-MODEL-REGISTRY"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-001 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Strategy rules: MA target=1 if SMA(short)>SMA(long) else 0 or -1 if long_only=false; RSI invest after RSI<entry until RSI>exit; Bollinger invest when z<=-num_std until z>=exit_z; Breakout invest after close>prior rolling_high until close<prior rolling_low; Momentum select top_n by pct_change(lookback) and equal weight; Alipay buy floor(abs(daily_return)*buy_base_amount), sell by highest return threshold; Enhanced Alipay modifies buy amount by oversold/weak/trend multipliers and max_position_weight cap."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/ma_crossover.py:1"
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:11"
+      - "EVA_OS/src/quantlab/strategies/profiles.py:322"
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+      - "EVA_OS/tests/test_alipay_strategy.py"
+      - "EVA_OS/tests/test_strategy_profiles.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/ma_crossover.py::MovingAverageCrossoverStrategy"
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/rsi_reversion.py::RSIReversionStrategy"
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/bollinger_reversion.py::BollingerReversionStrategy"
+      - "EVA_OS/src/quantlab/strategies/trend/breakout.py::BreakoutStrategy"
+      - "EVA_OS/src/quantlab/strategies/momentum/momentum_rotation.py::MomentumRotationStrategy"
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py::AlipayStrategy"
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py::AlipayEnhancedStrategy"
+      - "EVA_OS/src/quantlab/strategies/profiles.py::DEFAULT_BUILT_IN_STRATEGY_PARAMETERS"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-002 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Target-weight path executes prior-bar target_weight at next open; slip_price=open*(1+side*(slippage_bps+market_impact_bps)/10000); commission=max(abs(notional)*commission_rate,min_commission); equity=cash+quantity*close; total_return=end_equity/initial_cash-1; annualized=(1+total_return)^(annualization/periods)-1; sharpe=mean_return*annualization/volatility; cost_total=sum(execution_cost)."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:13"
+      - "EVA_OS/src/quantlab/backtest/metrics.py:22"
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+      - "EVA_OS/tests/test_alipay_strategy.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py::BacktestEngine"
+      - "EVA_OS/src/quantlab/backtest/metrics.py::performance_metrics"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-003 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "score starts 0; missing data quality +2; bad data quality +3; total_return<=0 +3; max_drawdown<limit +3; cost_ratio>max_cost_ratio +2; fragile stability +2; failed train-test +3 or watch +1; failed walk-forward +6 or watch +2; missing evidence forces NeedsMoreEvidence; otherwise score>=6 DoNotUse, score>=2 WatchOnly, else ContinueResearch."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:16"
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py::evaluate_research_risk_gates"
+      - "EVA_OS/src/quantlab/risk/gates.py::_risk_status"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-004 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "dimension scores are clamped 0..10; overall score=round(mean(dimension_scores)*10). Status: missing evidence -> NeedsMoreEvidence; risk_gate DoNotUse -> DoNotUse; score>=80 ContinueResearch; >=60 WatchOnly; >=40 NeedsMoreEvidence; else DoNotUse."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:36"
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py::evaluate_decision_quality"
+      - "EVA_OS/src/quantlab/risk/decision_quality.py::simulated_exposure_summary"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-005 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Data quality status Pass when required datetime/open/high/low/close/volume have zero missing values and zero duplicate datetimes, else Review; checksum=sha256(sorted required columns CSV). Cross-source close_diff_pct=(max_close-min_close)/mean_close; status Pass if max_diff<=tolerance_pct, Review otherwise; fewer than two provider frames yields InsufficientData."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:34"
+      - "EVA_OS/src/quantlab/data/validation.py:34"
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py"
+      - "EVA_OS/tests/test_validation_execution.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/data/quality.py::assess_bars"
+      - "EVA_OS/src/quantlab/data/validation.py::validate_close_across_sources"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-006 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "priority_score=clamp(20+status_score+gap_score+foundational_bonus+report_gap_bonus+source_report_bonus+symbol_market_bonus-blocker_penalties+recency_score,0,100). Execution supports CrossSourceValidation only; unsupported/missing inputs/fewer than two providers return Blocked and NeedsMoreEvidence."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:52"
+      - "EVA_OS/src/quantlab/research/validation_execution.py:37"
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py"
+      - "EVA_OS/tests/test_validation_execution.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py::build_validation_priority_plan"
+      - "EVA_OS/src/quantlab/research/validation_priority.py::_priority_score"
+      - "EVA_OS/src/quantlab/research/validation_execution.py::build_validation_task_execution"
+      - "EVA_OS/src/quantlab/research/validation_execution.py::_conclusion"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-007 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Each inspected artifact receives trust_status; audit_status=Blocked if rejected_count>0, Review if review_count>0, else Pass. REJECTED maps Reject, NEEDS_REVIEW/PARSED_CANDIDATE/RAW_IMPORTED map Watch, ARCHIVED maps Observe, otherwise Actionable."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:48"
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py::build_data_trust_audit"
+      - "EVA_OS/src/quantlab/system/data_trust.py::DATA_TRUST_STATUSES"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-008 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Integration status Fail if any layer Fail, Review if any layer Review, else Pass. Daily readiness Blocked if any core gate Fail/Blocked, NeedsReview if any gate not Pass, else ReadyForResearch. Command center Blocked if daily readiness blocked or integration fail or business subsystem fail; NeedsReview for non-ready gaps; else ReadyForResearch."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/system/integration_audit.py:27"
+      - "EVA_OS/src/quantlab/system/daily_readiness.py:16"
+      - "EVA_OS/src/quantlab/executive/command_center.py:208"
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py"
+      - "EVA_OS/tests/test_daily_readiness.py"
+      - "EVA_OS/tests/test_command_center.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/system/integration_audit.py::build_quantlab_integration_audit"
+      - "EVA_OS/src/quantlab/system/daily_readiness.py::build_daily_readiness"
+      - "EVA_OS/src/quantlab/executive/command_center.py::build_command_center"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-009 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Evidence score starts 0: schema +20, linked Word report +10, data quality pass/info +20 or present-but-not-pass +8, cross validation pass/info +20 or present-but-not-pass +8, risk status +15, decision quality status +15, minus min(30,3*missing_count), clamped 0..100. Readiness follows DoNotUse first, then missing evidence, NeedsMoreEvidence, WatchOnly, ContinueResearch."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:28"
+      - "EVA_OS/src/quantlab/research/report_gap_tasks.py:22"
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py"
+      - "EVA_OS/tests/test_report_gap_tasks.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py::build_report_decision_support_index"
+      - "EVA_OS/src/quantlab/reports/decision_support.py::_report_readiness"
+      - "EVA_OS/src/quantlab/reports/decision_support.py::_evidence_score"
+      - "EVA_OS/src/quantlab/research/report_gap_tasks.py::build_report_gap_validation_tasks"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-010"
+    model_id: "MOD-010"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-010 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Hotspot raw score base 50 plus clipped one/five/twenty-step return, RSI, volatility penalty and drawdown terms; volatility symbols invert return terms. Stable heat applies EMA alpha=2/(span+1) with max per-slice step cap. State thresholds: >=72 strong diffusion, >=58 locally strong, >=43 neutral, >=28 locally weak, else risk cooling. Evidence gates enforce source, coverage, failure rate, sample length, slice count, cadence, freshness and concentration."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:14"
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:831"
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py::build_hotspot_history"
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py::build_hotspot_evidence_gate_rows"
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py::hotspot_state"
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py::_hotspot_heat_score"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-011"
+    model_id: "MOD-011"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-011 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Only Reviewed+Pass entries count. Window inflow/outflow are sums by direction; net_cashflow=inflow-outflow; daily_burn=outflow/lookback_days if outflow>0 else 0; runway_days=latest_balance/daily_burn if available. Status MissingBalance, NeedsEvidence, Critical if runway<14, Watch if runway<30, NeedsReview if net<0, StableWithPendingReview if pending, else Stable."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:118"
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py::build_cashflow_command"
+      - "EVA_OS/src/quantlab/business/cashflow.py::_summary"
+      - "EVA_OS/src/quantlab/business/cashflow.py::_cashflow_status"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-012"
+    model_id: "MOD-012"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-012 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "risk_score=clip(impulse_score*0.45 + regret_score*0.25 + (100-necessity_score)*0.20 + (0 if planned else 10),0,100). HighImpulse if event_type Impulse or score>=70, Watch if score>=40 else Controlled. Guard MissingConsumptionEvidence if no events, NeedsEvidence if reviewed missing evidence, StopBleeding if high_risk_count>=3 or pressure>1.0, Watch if high risk or pressure>0.6, StableWithPendingReview if pending, else Stable."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:103"
+      - "EVA_OS/src/quantlab/consumption/guard.py:532"
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py::build_consumption_guard"
+      - "EVA_OS/src/quantlab/consumption/guard.py::_risk_score"
+      - "EVA_OS/src/quantlab/consumption/guard.py::_guard_status"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-013"
+    model_id: "MOD-013"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-013 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "impact_score=authority*0.30+relevance*0.30+urgency*0.20+feasibility*0.20. Reviewed authoritative evidence and impact>=70 -> Actionable; impact>=50 -> Watch; missing/non-authoritative evidence -> NeedsEvidence; pending review -> PendingReview; no records -> MissingPolicyEvidence."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:109"
+      - "EVA_OS/src/quantlab/policy/radar.py:351"
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py::build_policy_radar"
+      - "EVA_OS/src/quantlab/policy/radar.py::_normalize_opportunity"
+      - "EVA_OS/src/quantlab/policy/radar.py::_opportunity_status"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-014"
+    model_id: "MOD-014"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-014 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "manual value benefit=revenue_generated+cost_saved+loss_avoided+asset_reuse_value; cost=ai_cost+human_time_cost; roi_score=(benefit-cost)/cost when cost>0 else null. Quantified only when review_status Reviewed and a real financial field is supplied; aggregate ROI uses reviewed totals only; no fabricated values."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:33"
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py::build_token_roi_ledger"
+      - "EVA_OS/src/quantlab/value/token_roi.py::build_token_roi_runtime_summary"
+      - "EVA_OS/src/quantlab/value/token_roi.py::create_manual_token_roi_entry"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-015"
+    model_id: "MOD-015"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-015 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Code quality score=round(passed_checks/8*100); CodeReadyForReview if no findings. SmokePass when signal frame exists, has required columns and target_weight in [-1,1]. Readiness ApprovedForResearch only when profile ReadyForReview, code CodeReadyForReview, smoke SmokePass and approval Approved; otherwise ReadyForReview or NotReady."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:136"
+      - "EVA_OS/src/quantlab/strategies/templates.py:257"
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py"
+      - "EVA_OS/tests/test_strategy_profiles.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py::create_strategy_template"
+      - "EVA_OS/src/quantlab/strategies/templates.py::evaluate_strategy_code_quality"
+      - "EVA_OS/src/quantlab/strategies/templates.py::evaluate_strategy_readiness_gate"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+  -
+    formula_id: "FORM-016"
+    model_id: "MOD-016"
+    description: "从 EVA_OS formula_registry.yaml 抽取的 MOD-016 公式或精确伪代码。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "Dev readiness checks required executable bits, zsh -n, ast.parse, status script, cache dry-run, git status and heavy-gate policy. status=Pass if fail count is 0 else Blocked. Dirty worktree is recorded but not failure; heavy release gates, market refresh, browser automation and broker/order flow are excluded by default."
+    variables:
+      -
+        name: "input_payload"
+        data_type: "dict/dataframe/files"
+        unit: "project-specific"
+        input_domain: "must satisfy implementation-specific required fields"
+        description: "Runtime or local evidence input"
+      -
+        name: "score_or_status"
+        data_type: "float/string"
+        unit: "score/status"
+        input_domain: "implementation-defined output range"
+        description: "Computed model output"
+    constraints:
+      - "Research-only; no live orders or external account mutations"
+      - "Inputs with missing evidence must fail closed or be downgraded"
+      - "Heuristic constants are not treated as calibrated unless evidence exists"
+    missing_policy: "Missing or invalid inputs return Review, Blocked, NeedsMoreEvidence, Missing, zero/empty output, or ValueError according to implementation."
+    output_range: "Status enums or numeric score/risk/metric ranges documented by implementation; no executable trading output."
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:16"
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    implementation_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py::build_dev_ready_check"
+      - "EVA_OS/src/quantlab/system/dev_readiness.py::_executable_checks"
+      - "EVA_OS/src/quantlab/system/dev_readiness.py::_shell_syntax_checks"
+      - "EVA_OS/src/quantlab/system/dev_readiness.py::_python_syntax_checks"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EVA-FORMULA-REGISTRY"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "MA_SHORT_WINDOW"
+    name: "Moving average short window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/ma_crossover.py:12"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "MA_LONG_WINDOW"
+    name: "Moving average long window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "60"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/ma_crossover.py:12"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "MA_LONG_ONLY"
+    name: "MA long-only flag"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "True"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/ma_crossover.py:12"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "RSI_WINDOW"
+    name: "RSI reversion window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "14"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/rsi_reversion.py:12"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "RSI_ENTRY"
+    name: "RSI reversion entry threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/rsi_reversion.py:12"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "RSI_EXIT"
+    name: "RSI reversion exit threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "55.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/rsi_reversion.py:12"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "BOLL_WINDOW"
+    name: "Bollinger window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/bollinger_reversion.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "BOLL_NUM_STD"
+    name: "Bollinger standard deviation multiplier"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/bollinger_reversion.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "BOLL_EXIT_Z"
+    name: "Bollinger exit z-score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/mean_reversion/bollinger_reversion.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "BREAKOUT_LOOKBACK"
+    name: "Breakout rolling high lookback"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "55"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/breakout.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "BREAKOUT_EXIT_LOOKBACK"
+    name: "Breakout rolling low exit lookback"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/trend/breakout.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "MOMENTUM_LOOKBACK"
+    name: "Momentum rotation lookback"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "126"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/momentum/momentum_rotation.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "MOMENTUM_TOP_N"
+    name: "Momentum rotation selected symbols"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/momentum/momentum_rotation.py:10"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ALIPAY_BUY_BASE_AMOUNT"
+    name: "Alipay buy base amount"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "100000.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:14"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ALIPAY_INITIAL_CASH"
+    name: "Alipay internal cash proxy"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "100000.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:15"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ALIPAY_SELL_25_RETURN"
+    name: "Alipay 25 percent sell return threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.1"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:16"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ALIPAY_SELL_50_RETURN"
+    name: "Alipay 50 percent sell return threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.15"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:17"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ALIPAY_SELL_100_RETURN"
+    name: "Alipay full sell return threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.2"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:18"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ALIPAY_SIGNAL_TIME"
+    name: "Alipay decision time"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "14:30"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:19"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_RSI_OVERSOLD"
+    name: "Enhanced RSI oversold threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "35.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:153"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_RSI_OVERBOUGHT"
+    name: "Enhanced RSI overbought threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "72.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:154"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_FAST_MA_WINDOW"
+    name: "Enhanced fast MA window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:155"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_SLOW_MA_WINDOW"
+    name: "Enhanced slow MA window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "60"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:156"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_BOLLINGER_WINDOW"
+    name: "Enhanced Bollinger window"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:157"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_BOLLINGER_STD"
+    name: "Enhanced Bollinger std multiplier"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:158"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_OVERSOLD_BUY_MULTIPLIER"
+    name: "Enhanced oversold buy multiplier"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.5"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:159"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_WEAK_TREND_BUY_MULTIPLIER"
+    name: "Enhanced weak trend buy multiplier"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.6"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:160"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_TREND_BUY_MULTIPLIER"
+    name: "Enhanced trend participation multiplier"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.35"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:161"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_MAX_POSITION_WEIGHT"
+    name: "Enhanced max position weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.95"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:162"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ENH_TREND_HOLD_BUFFER"
+    name: "Enhanced trend hold sell buffer"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.05"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/behavioral/alipay.py:163"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_alipay_strategy.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "INITIAL_CASH"
+    name: "Backtest initial cash"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "100000.0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:15"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "COMMISSION_RATE"
+    name: "Commission rate"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.001"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:16"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MIN_COMMISSION"
+    name: "Minimum commission"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:17"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "SLIPPAGE_BPS"
+    name: "Slippage basis points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "5.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:18"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MARKET_IMPACT_BPS"
+    name: "Market impact basis points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-001"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:19"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-001"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "ALLOW_SHORT"
+    name: "Allow short flag"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:20"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "ANNUALIZATION"
+    name: "Trading periods annualization"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "252"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:21"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "LOOKAHEAD_SHIFT"
+    name: "Execution signal lag bars"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:52"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "TRADE_EPSILON"
+    name: "Minimum trade absolute value threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1e-08"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:72"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "BPS_DENOMINATOR"
+    name: "Basis point denominator"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10000"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/backtest/engine.py:75"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_backtest.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "MAX_DRAWDOWN_LIMIT"
+    name: "Max drawdown breach limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "-0.25"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:22"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "MAX_COST_RATIO"
+    name: "Max cost ratio"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.08"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:23"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "MISSING_DATA_SCORE"
+    name: "Missing data score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:41"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "BAD_DATA_SCORE"
+    name: "Bad data score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:46"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "NON_POSITIVE_RETURN_SCORE"
+    name: "Non-positive return score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:51"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "DRAWDOWN_BREACH_SCORE"
+    name: "Drawdown breach score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:56"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "COST_BREACH_SCORE"
+    name: "Cost breach score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:61"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "STABILITY_REVIEW_SCORE"
+    name: "Stability review score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:71"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "TRAIN_FAILED_SCORE"
+    name: "Train-test failed score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:81"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "TRAIN_WATCH_SCORE"
+    name: "Train-test watch score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:85"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "WALK_FAILED_SCORE"
+    name: "Walk-forward failed score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:95"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "SCORE_DO_NOT_USE"
+    name: "DoNotUse score threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "score/ratio"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/gates.py:95"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_risk_gates.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "STATUS_CONTINUE_THRESHOLD"
+    name: "ContinueResearch score threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "80"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:231"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "STATUS_WATCH_THRESHOLD"
+    name: "WatchOnly score threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "60"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:231"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "STATUS_NEEDS_MORE_THRESHOLD"
+    name: "NeedsMoreEvidence score threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "40"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:231"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-056"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "THESIS_MISSING_SCORE"
+    name: "Thesis missing dimension score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "4"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:82"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-057"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "THESIS_PRESENT_SCORE"
+    name: "Thesis present dimension score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:82"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-058"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "EVIDENCE_PASS_SCORE"
+    name: "Evidence pass dimension score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "9"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:102"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-059"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "RISK_CONTINUE_SCORE"
+    name: "Risk continue score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "9"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:117"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-060"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "RISK_REVIEW_SCORE"
+    name: "Risk review score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:117"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-061"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "ALLOW_SHORT_SCORE"
+    name: "Allow short penalty score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "4"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:140"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-062"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "MAX_WEIGHT_REVIEW_THRESHOLD"
+    name: "Max actual weight review threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.2"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:144"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-063"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "ALIPAY_IMPULSE_SCORE"
+    name: "Alipay impulse dimension score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:155"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-064"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "OTHER_IMPULSE_SCORE"
+    name: "Other strategy impulse dimension score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "7"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:155"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-065"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "LIQUIDITY_COST_RATIO_THRESHOLD"
+    name: "Liquidity cost ratio threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.08"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:180"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-066"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "VALIDATION_MISSING_SCORE"
+    name: "Validation missing score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "4"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:213"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-067"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "VALIDATION_WATCH_SCORE"
+    name: "Validation watch score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:223"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-068"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "VALIDATION_PASS_SCORE"
+    name: "Validation pass score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "9"
+    unit: "score/threshold"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-002"
+    code_refs:
+      - "EVA_OS/src/quantlab/risk/decision_quality.py:227"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_decision_quality.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-002"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-069"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "CROSS_TOLERANCE_PCT"
+    name: "Cross-source close tolerance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.01"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-003"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/validation.py:37"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-003"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-070"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "MIN_PROVIDER_COUNT"
+    name: "Minimum provider count"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/validation.py:39"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-071"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "DUPLICATE_DATETIME_MAX"
+    name: "Duplicate datetime maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:44"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-072"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "MISSING_VALUES_MAX"
+    name: "Missing required values maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:45"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-073"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "REQUIRED_BAR_COLUMNS"
+    name: "Required OHLCV columns"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "datetime|open|high|low|close|volume"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:43"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-074"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "EMPTY_STATUS"
+    name: "Empty data status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Empty"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/quality.py:34"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-075"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "INSUFFICIENT_DATA_STATUS"
+    name: "Insufficient provider status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "InsufficientData"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/validation.py:62"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-076"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "NO_OVERLAP_STATUS"
+    name: "No overlap status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "NoOverlap"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/data/validation.py:79"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_quality.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-077"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "MAX_TASKS"
+    name: "Default validation priority max tasks"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "120"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:57"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-078"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "PRIORITY_BASE_SCORE"
+    name: "Priority base score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:205"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-079"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "STATUS_PENDING_SCORE"
+    name: "Pending status score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "18"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:206"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-080"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "STATUS_IN_PROGRESS_SCORE"
+    name: "In-progress status score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:206"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-081"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "STATUS_PAUSED_SCORE"
+    name: "Paused status score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "-10"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:206"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-082"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "STATUS_COMPLETED_SCORE"
+    name: "Completed status score"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "-50"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:206"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-083"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "FOUNDATIONAL_BONUS"
+    name: "Foundational gap bonus"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:208"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-084"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "REPORT_GAP_BONUS"
+    name: "Report gap task bonus"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:210"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-085"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "SOURCE_REPORT_BONUS"
+    name: "Source report bonus"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:212"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-086"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "SYMBOL_MARKET_BONUS"
+    name: "Symbol and market bonus"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:214"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-087"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "BLOCKER_PENALTY"
+    name: "Blocker penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "-12"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:216"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-088"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "MISSING_DATA_DEPENDENT_PENALTY"
+    name: "Missing data-dependent input penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "-8"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:218"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-089"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "EXECUTION_START"
+    name: "Default validation execution start"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2024-01-01"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_execution.py:46"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-090"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "EXECUTION_END"
+    name: "Default validation execution end"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2024-01-31"
+    unit: "score/date"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_execution.py:47"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py; EVA_OS/tests/test_validation_execution.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-091"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "GAP_SCORE_TABLE"
+    name: "Validation gap score table"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "DataQuality=30|CrossSourceValidation=29|ReportEvidence=24|RiskGate=22|WalkForwardValidation=21|TrainTestValidation=20|ParameterStability=18|DecisionQuality=17|WordReport=10|EvidenceReview=8"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-004"
+    code_refs:
+      - "EVA_OS/src/quantlab/research/validation_priority.py:38"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_validation_priority.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-004"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-092"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "MAX_INDEPENDENT_RUNS"
+    name: "Max independent validation runs inspected"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:48"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-093"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "STALE_LOCK_SECONDS"
+    name: "Stale empty lock threshold seconds"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3600"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:760"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-094"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "RAW_PROCESSED_LIMIT"
+    name: "Raw/processed files indexed limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "100"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:326"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-095"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "EXPERIMENT_DIR_LIMIT"
+    name: "Experiment directories indexed limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "40"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:340"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-096"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "REJECTED_BLOCKS_AUDIT"
+    name: "Rejected count blocks audit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "True"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:92"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-097"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "REVIEW_COUNT_REVIEWS_AUDIT"
+    name: "Review count triggers Review"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "True"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:93"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-098"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "DATA_TRUST_STATUSES"
+    name: "Data trust status enum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "RAW_IMPORTED|PARSED_CANDIDATE|NEEDS_REVIEW|USER_CONFIRMED|RECONCILED|ARCHIVED|REJECTED"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/data_trust.py:17"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_data_trust_audit.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-099"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "INTEGRATION_LAYER_COUNT"
+    name: "Integration audit layer count"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "6"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/integration_audit.py:37"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-100"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "DAILY_READY_STATUS"
+    name: "Daily ready status literal"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "ReadyForResearch"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/daily_readiness.py:136"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-101"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "DAILY_BLOCKED_STATUS"
+    name: "Daily blocked status literal"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Blocked"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/daily_readiness.py:134"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-102"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "DAILY_NEEDS_REVIEW_STATUS"
+    name: "Daily needs review status literal"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "NeedsReview"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/daily_readiness.py:135"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-103"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "TOKEN_ROI_RECORD_MIN"
+    name: "Token ROI required record count"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/executive/command_center.py:220"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-104"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "LATEST_REPORT_REQUIRED"
+    name: "Latest report required for ready command center"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "True"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/executive/command_center.py:218"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-105"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "NO_LIVE_TRADING_LAYER"
+    name: "No live trading boundary layer"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "NoLiveTradingBoundary"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/integration_audit.py:44"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_integration_audit.py; EVA_OS/tests/test_daily_readiness.py; EVA_OS/tests/test_command_center.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-106"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "REPORT_MAX_RECORDS"
+    name: "Report decision max records"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "500"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:34"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-107"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_SCHEMA_PRESENT"
+    name: "Evidence score schema points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:314"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-108"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_LINKED_REPORT"
+    name: "Evidence score linked Word report points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:316"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-109"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_DATA_PASS"
+    name: "Evidence data pass points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:318"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-110"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_DATA_REVIEW"
+    name: "Evidence data review points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:320"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-111"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_CROSS_PASS"
+    name: "Evidence cross validation pass points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "20"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:321"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-112"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_CROSS_REVIEW"
+    name: "Evidence cross validation review points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:323"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-113"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_RISK_STATUS"
+    name: "Risk gate status points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "15"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:324"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-114"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SCORE_DECISION_STATUS"
+    name: "Decision quality status points"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "15"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:326"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-115"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "MISSING_PENALTY_PER_ITEM"
+    name: "Missing evidence penalty per item"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:327"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-116"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "MISSING_PENALTY_CAP"
+    name: "Missing evidence penalty cap"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "score"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-005"
+    code_refs:
+      - "EVA_OS/src/quantlab/reports/decision_support.py:327"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_report_decision_support.py; EVA_OS/tests/test_report_gap_tasks.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-005"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-117"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "HOTSPOT_REFRESH_TTL_SECONDS"
+    name: "Hotspot cache TTL seconds"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3600"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:14"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-118"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "HOTSPOT_STABLE_HEAT_SPAN"
+    name: "Stable heat span"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "5"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:20"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-119"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "HOTSPOT_STABLE_HEAT_WARMUP"
+    name: "Stable heat warmup snapshots"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:21"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-120"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "HOTSPOT_MAX_STEP"
+    name: "Maximum stable heat step"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "12.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:22"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-121"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "MAX_SNAPSHOTS"
+    name: "Default max snapshots"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "48"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:76"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-122"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "MIN_RAW_ROWS"
+    name: "Minimum raw rows per instrument"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:88"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-123"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "COVERAGE_PASS"
+    name: "Coverage pass threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.8"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:559"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-124"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "SUCCESS_MIN_PASS"
+    name: "Minimum success instruments pass"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "5"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:559"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-125"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "SUCCESS_MIN_REVIEW"
+    name: "Minimum success instruments review"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:559"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-126"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "FAILURE_PASS"
+    name: "Failure rate pass threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.1"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:565"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-127"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "FAILURE_REVIEW"
+    name: "Failure rate review threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.25"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:565"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-128"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "SAMPLE_PASS"
+    name: "Sample length pass threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "60"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:570"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-129"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "SAMPLE_REVIEW"
+    name: "Sample length review threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:570"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-130"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "SLICE_PASS"
+    name: "Slice count pass threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "12"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:575"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-131"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "SLICE_REVIEW"
+    name: "Slice count review threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "4"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:575"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-132"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "STATE_STRONG"
+    name: "Strong diffusion threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "72"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:820"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-133"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "STATE_LOCAL_STRONG"
+    name: "Local strong threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "58"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:822"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-134"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "STATE_NEUTRAL"
+    name: "Neutral rotation threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "43"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:824"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-135"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "STATE_LOCAL_WEAK"
+    name: "Local weak threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "28"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:826"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-136"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "HEAT_BASE"
+    name: "Heat score base"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "50.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:844"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-137"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "ONE_STEP_COEF"
+    name: "One-step return coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "2.1"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:845"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-138"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "FIVE_STEP_COEF"
+    name: "Five-step return coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.35"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:846"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-139"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "TWENTY_STEP_COEF"
+    name: "Twenty-step return coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.45"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:847"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-140"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "RSI_COEF"
+    name: "RSI coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.24"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:848"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-141"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "VOL_PENALTY_COEF"
+    name: "Volatility penalty coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.12"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:849"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-142"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "DRAWDOWN_COEF"
+    name: "Drawdown coefficient"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.25"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-006"
+    code_refs:
+      - "EVA_OS/src/quantlab/analysis/market_hotspots.py:850"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_market_hotspots.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-006"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-143"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "CASHFLOW_LOOKBACK_DAYS"
+    name: "Cashflow lookback days"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:123"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-144"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "CRITICAL_RUNWAY_DAYS"
+    name: "Critical runway days"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "14"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:391"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-145"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "WATCH_RUNWAY_DAYS"
+    name: "Watch runway days"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:393"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-146"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "STALE_BALANCE_DAYS"
+    name: "Stale balance days"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "7"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:431"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-147"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "COUNT_REVIEW_STATUS"
+    name: "Counted review status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Reviewed"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:342"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-148"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "COUNT_EVIDENCE_STATUS"
+    name: "Counted evidence status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Pass"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:342"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-149"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "DEFAULT_CURRENCY"
+    name: "Cashflow default currency"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "AUD"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/business/cashflow.py:84"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_cashflow_command.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-150"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "CONSUMPTION_LOOKBACK_DAYS"
+    name: "Consumption lookback days"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "30"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:111"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-151"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "IMPULSE_WEIGHT"
+    name: "Impulse score weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.45"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:535"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-152"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "REGRET_WEIGHT"
+    name: "Regret score weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.25"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:535"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-153"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "NON_NECESSITY_WEIGHT"
+    name: "Non-necessity weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.2"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:535"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-154"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "UNPLANNED_PENALTY"
+    name: "Unplanned spending penalty"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "10.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:534"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-155"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "HIGH_IMPULSE_THRESHOLD"
+    name: "High impulse risk threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "70"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:540"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-156"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "WATCH_RISK_THRESHOLD"
+    name: "Watch risk threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "40"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:542"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-157"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "HIGH_RISK_STOP_COUNT"
+    name: "High risk stop count threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "3"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:365"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-158"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "PRESSURE_WATCH"
+    name: "Investable cashflow pressure watch"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.6"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:367"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-159"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "PRESSURE_STOP"
+    name: "Investable cashflow pressure stop"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.0"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-007"
+    code_refs:
+      - "EVA_OS/src/quantlab/consumption/guard.py:365"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_consumption_guard.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-007"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-160"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "POLICY_OPPORTUNITY_LIMIT"
+    name: "Policy opportunity limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "300"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:116"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-161"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "AUTHORITY_WEIGHT"
+    name: "Authority score weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.3"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:367"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-162"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "RELEVANCE_WEIGHT"
+    name: "Relevance score weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.3"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:368"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-163"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "URGENCY_WEIGHT"
+    name: "Urgency score weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.2"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:369"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-164"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "FEASIBILITY_WEIGHT"
+    name: "Feasibility score weight"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.2"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:370"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-165"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "ACTIONABLE_IMPACT_THRESHOLD"
+    name: "Actionable impact threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "70"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:506"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-166"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "WATCH_IMPACT_THRESHOLD"
+    name: "Watch impact threshold"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "50"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:508"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-167"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "AUTHORITATIVE_SOURCE_TYPES"
+    name: "Authoritative source types"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Official|Regulator|Government|Exchange"
+    unit: "mixed"
+    source: "UNKNOWN calibration/source rationale; see TASK-EVA-B-008"
+    code_refs:
+      - "EVA_OS/src/quantlab/policy/radar.py:506"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_policy_radar.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-EVA-B-008"
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-168"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "TOKEN_ROI_ARTIFACT_LIMIT"
+    name: "Token ROI artifact limit"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "300"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:42"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-169"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "ROI_COST_ZERO_FALLBACK"
+    name: "ROI score when cost base is zero"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "null"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:151"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-170"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "QUANTIFIED_REVIEW_STATUS"
+    name: "Quantified review status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "Reviewed"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:236"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-171"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "MANUAL_PENDING_DEFAULT"
+    name: "Manual entry default status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "PendingReview"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:211"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-172"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "LEDGER_SCHEMA"
+    name: "Token ROI ledger schema"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "EVATokenROILedgerV1"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:71"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-173"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "RUNTIME_SCHEMA"
+    name: "Token ROI runtime schema"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "EVATokenROIRuntimeSummaryV1"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/value/token_roi.py:154"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_token_roi_ledger.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-174"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "CODE_QUALITY_CHECK_COUNT"
+    name: "Strategy code quality check count"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:220"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-175"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "TARGET_WEIGHT_MIN"
+    name: "Smoke target weight minimum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "-1.0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:316"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-176"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "TARGET_WEIGHT_MAX"
+    name: "Smoke target weight maximum"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "1.0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:316"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-177"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "CUSTOM_DEFAULT_VERSION"
+    name: "Custom strategy default version"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "0.1.0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:75"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-178"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "STRATEGY_ID_REGEX"
+    name: "Strategy id regex"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "^[a-z][a-z0-9_]*$"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:131"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-179"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "READY_STATUS"
+    name: "Ready for review status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "ReadyForReview"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:281"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-180"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "APPROVED_STATUS"
+    name: "Approved research status"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "ApprovedForResearch"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/strategies/templates.py:279"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_strategy_templates.py; EVA_OS/tests/test_strategy_profiles.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-181"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "ZSH_TIMEOUT_SECONDS"
+    name: "Shell syntax timeout seconds"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:124"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-182"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "STATUS_SCRIPT_TIMEOUT_SECONDS"
+    name: "Runtime status script timeout seconds"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "8"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:165"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-183"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "RUNS_HEAVY_RELEASE_GATES"
+    name: "Default runs heavy release gates"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:83"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-184"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "RUNS_FULL_TEST_SUITE"
+    name: "Default runs full test suite"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:84"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-185"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "RUNS_BROWSER_AUTOMATION"
+    name: "Default runs browser automation"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:85"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-186"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "RUNS_MARKET_REFRESH"
+    name: "Default runs market refresh"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:86"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-187"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "RUNS_BROKER_OR_ORDER_FLOW"
+    name: "Default runs broker/order flow"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:87"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-188"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "DIRTY_WORKTREE_IS_FAILURE"
+    name: "Dirty worktree is failure flag"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "False"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:88"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-189"
+    model_id: "MOD-016"
+    formula_id: "FORM-016"
+    symbol: "DEV_READY_PASS_RULE"
+    name: "Dev readiness pass rule"
+    status: "active"
+    fact_level: "EXTRACTED"
+    value: "summary.fail == 0"
+    unit: "mixed"
+    source: "EXTRACTED from code default or literal rule"
+    code_refs:
+      - "EVA_OS/src/quantlab/system/dev_readiness.py:75"
+    config_refs: []
+    test_refs:
+      - "EVA_OS/tests/test_dev_readiness.py"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    evidence_refs:
+      - "EVID-EVA-PARAMETER-REGISTRY"
+strategies:
+  -
+    strategy_id: "STRAT-EVA-001"
+    name: "research-only strategy and backtest discipline"
+    description: "策略、回测、风险和决策质量模型只支持研究验证和报告，不产生 live order 输出。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+      - "MOD-003"
+      - "MOD-004"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+    evidence_refs:
+      - "EVID-EVA-MODEL-SPEC"
+      - "EVID-EVA-MODEL-REGISTRY"
+  -
+    strategy_id: "STRAT-EVA-002"
+    name: "evidence-first validation gates"
+    description: "跨源验证、data trust、readiness 和 report gap tasks 把证据缺口保留为 blocked 或 NeedsMoreEvidence。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+      - "MOD-007"
+      - "MOD-008"
+      - "MOD-009"
+    parameter_ids:
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+      - "PARAM-109"
+      - "PARAM-110"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+    evidence_refs:
+      - "EVID-EVA-MODEL-SPEC"
+      - "EVID-EVA-ASSURANCE-STATUS"
+  -
+    strategy_id: "STRAT-EVA-003"
+    name: "cross-system reports remain gated by evidence"
+    description: "market hotspots、cashflow、consumption、policy、Token ROI 和 strategy templates 必须保留参数来源、OOS、成本和 claim-to-evidence blocker。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-010"
+      - "MOD-011"
+      - "MOD-012"
+      - "MOD-013"
+      - "MOD-014"
+      - "MOD-015"
+      - "MOD-016"
+    parameter_ids:
+      - "PARAM-117"
+      - "PARAM-118"
+      - "PARAM-119"
+      - "PARAM-120"
+      - "PARAM-121"
+      - "PARAM-122"
+      - "PARAM-123"
+      - "PARAM-124"
+      - "PARAM-125"
+      - "PARAM-126"
+      - "PARAM-127"
+      - "PARAM-128"
+      - "PARAM-129"
+      - "PARAM-130"
+      - "PARAM-131"
+      - "PARAM-132"
+      - "PARAM-133"
+      - "PARAM-134"
+      - "PARAM-135"
+      - "PARAM-136"
+      - "PARAM-137"
+      - "PARAM-138"
+      - "PARAM-139"
+      - "PARAM-140"
+      - "PARAM-141"
+      - "PARAM-142"
+      - "PARAM-143"
+      - "PARAM-144"
+      - "PARAM-145"
+      - "PARAM-146"
+      - "PARAM-147"
+      - "PARAM-148"
+      - "PARAM-149"
+      - "PARAM-150"
+      - "PARAM-151"
+      - "PARAM-152"
+      - "PARAM-153"
+      - "PARAM-154"
+      - "PARAM-155"
+      - "PARAM-156"
+      - "PARAM-157"
+      - "PARAM-158"
+      - "PARAM-159"
+      - "PARAM-160"
+      - "PARAM-161"
+      - "PARAM-162"
+      - "PARAM-163"
+      - "PARAM-164"
+      - "PARAM-165"
+      - "PARAM-166"
+      - "PARAM-167"
+      - "PARAM-168"
+      - "PARAM-169"
+      - "PARAM-170"
+      - "PARAM-171"
+      - "PARAM-172"
+      - "PARAM-173"
+      - "PARAM-174"
+      - "PARAM-175"
+      - "PARAM-176"
+      - "PARAM-177"
+      - "PARAM-178"
+      - "PARAM-179"
+      - "PARAM-180"
+      - "PARAM-181"
+      - "PARAM-182"
+      - "PARAM-183"
+      - "PARAM-184"
+      - "PARAM-185"
+      - "PARAM-186"
+      - "PARAM-187"
+      - "PARAM-188"
+      - "PARAM-189"
+    evidence_refs:
+      - "EVID-EVA-OWNER-STATUS"
+      - "EVID-EVA-DELIVERY-TASKS"
+validations:
+  -
+    validation_id: "VAL-EVA-LEGACY-GOVERNANCE"
+    scope: "EVA_OS legacy governance completeness and semantic extractor state"
+    method: "Existing EVA_OS governance registries, semantic extractor manifest, status pages, and Review6 assurance state."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EVA-DEVELOPMENT-LEDGER"
+      - "EVID-EVA-SEMANTIC-MANIFEST"
+      - "EVID-EVA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-EVA-S5PAT02"
+    scope: "Review9 S5PAT02 Lean v2 canonical and Chinese human entry render"
+    method: "Local changed-only Lean governance validation, EVA_OS render drift check, focused governance tests, information-quality check, json.tool, and git diff --check before PR."
+    status: "active"
+    fact_level: "PROPOSED"
+    evidence_refs:
+      - "EVID-REVIEW9-S5PAT02-MANIFEST"
+assurance_summary:
+  structural_completeness: "VERIFIED"
+  implementation_congruence: "PARTIAL"
+  parameter_source_quality: "PARTIAL"
+  methodological_rationale: "UNVERIFIED"
+  empirical_validation: "UNVERIFIED"
+  operational_validation: "FAILED"
+  delivery_readiness: "FAILED"
+  next_task_id: "TASK-EVA-B-001"
+evidence_refs:
+  -
+    evidence_id: "EVID-EVA-README"
+    kind: "owner"
+    ref: "EVA_OS/README.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-HANDOFF"
+    kind: "owner"
+    ref: "EVA_OS/HANDOFF.md"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-EVA-MODEL-SPEC"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/MODEL_SPEC.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-MODEL-REGISTRY"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-FORMULA-REGISTRY"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-PARAMETER-REGISTRY"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-DELIVERY-TASKS"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-DEVELOPMENT-LEDGER"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-EVA-DEVELOPMENT-EVENTS"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/development_events.jsonl"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-EVA-ASSURANCE-STATUS"
+    kind: "assurance"
+    ref: "EVA_OS/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-OWNER-STATUS"
+    kind: "owner"
+    ref: "EVA_OS/docs/governance/OWNER_STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-STATUS"
+    kind: "status"
+    ref: "EVA_OS/docs/governance/STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-VERSION-MATRIX"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/VERSION_MATRIX.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-TRACEABILITY-MATRIX"
+    kind: "legacy_governance"
+    ref: "EVA_OS/docs/governance/TRACEABILITY_MATRIX.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EVA-SEMANTIC-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PAT01-MERGE"
+    kind: "ci"
+    ref: "github-actions://LinzeColin/CodexProject/actions/runs/28057939896"
+    fact_level: "VERIFIED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PAT02-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"
+legacy_refs:
+  -
+    legacy_path: "EVA_OS/docs/governance/model_registry.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/docs/governance/formula_registry.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/docs/governance/parameter_registry.csv"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/docs/governance/DELIVERY_PLAN.md"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/docs/governance/delivery_tasks.yaml"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/docs/governance/development_events.jsonl"
+    replacement_status: "mapped"
+  -
+    legacy_path: "EVA_OS/功能清单"
+    replacement_status: "replaced"
+  -
+    legacy_path: "EVA_OS/开发记录"
+    replacement_status: "replaced"
+  -
+    legacy_path: "EVA_OS/模型参数文件"
+    replacement_status: "replaced"
