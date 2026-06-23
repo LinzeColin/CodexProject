@@ -1,14 +1,47 @@
-# EVA_OS 功能清单索引
+# 功能清单
 
-本文件保留为兼容入口。EVA_OS 的 canonical 治理事实源已经迁移到：
+## 摘要
 
-- `docs/governance/MODEL_SPEC.md`
-- `docs/governance/model_registry.yaml`
-- `docs/governance/formula_registry.yaml`
-- `docs/governance/parameter_registry.csv`
-- `docs/governance/DEVELOPMENT_LEDGER.md`
-- `docs/governance/delivery_tasks.yaml`
-- `docs/governance/VERSION_MATRIX.yaml`
-- `docs/governance/TRACEABILITY_MATRIX.csv`
+- project_id: `EVA_OS`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PA`
+- current_task: `S5PAT02`
+- progress: `100.00%`
+- capability_count: `5`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PA-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-旧文件中的项目简介、当前状态和原则性描述仅作为历史入口；模型、公式、参数、任务、Acceptance、版本和追踪闭环以 `docs/governance/` 为准。
+## 功能概览
+
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-EVA-001 | 研究策略信号、回测与风险评分 | active | 覆盖 built-in research strategy signal、backtest metrics、research risk gate、decision quality score。 | EXTRACTED |
+| FEAT-EVA-002 | 数据质量、跨源验证与数据可信审计 | active | 覆盖 OHLCV 质量、cross-source close validation、validation priority/execution gate 和 data trust audit。 | EXTRACTED |
+| FEAT-EVA-003 | 系统 readiness、command center 与报告证据缺口 | active | 聚合 integration audit、daily readiness、command center、report decision support 和 evidence gap tasks。 | EXTRACTED |
+| FEAT-EVA-004 | 跨系统专题模型 | active | 覆盖 market hotspot heat、company cashflow command、consumption guard、policy intelligence radar。 | EXTRACTED |
+| FEAT-EVA-005 | Token ROI、策略模板和开发 readiness | active | 覆盖 token ROI ledger、custom strategy template/readiness gate 和 development readiness gate。 | EXTRACTED |
+
+## 证据
+
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-EVA-README | owner | EVA_OS/README.md | EXTRACTED |
+| EVID-EVA-HANDOFF | owner | EVA_OS/HANDOFF.md | RECONSTRUCTED |
+| EVID-EVA-MODEL-SPEC | legacy_governance | EVA_OS/docs/governance/MODEL_SPEC.md | EXTRACTED |
+| EVID-EVA-MODEL-REGISTRY | legacy_governance | EVA_OS/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-EVA-FORMULA-REGISTRY | legacy_governance | EVA_OS/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-EVA-PARAMETER-REGISTRY | legacy_governance | EVA_OS/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-EVA-DELIVERY-TASKS | legacy_governance | EVA_OS/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-EVA-DEVELOPMENT-LEDGER | legacy_governance | EVA_OS/docs/governance/DEVELOPMENT_LEDGER.md | RECONSTRUCTED |
+| EVID-EVA-DEVELOPMENT-EVENTS | legacy_governance | EVA_OS/docs/governance/development_events.jsonl | RECONSTRUCTED |
+| EVID-EVA-ASSURANCE-STATUS | assurance | EVA_OS/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-EVA-OWNER-STATUS | owner | EVA_OS/docs/governance/OWNER_STATUS.md | EXTRACTED |
+| EVID-EVA-STATUS | status | EVA_OS/docs/governance/STATUS.md | EXTRACTED |
+| EVID-EVA-VERSION-MATRIX | legacy_governance | EVA_OS/docs/governance/VERSION_MATRIX.yaml | EXTRACTED |
+| EVID-EVA-TRACEABILITY-MATRIX | legacy_governance | EVA_OS/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
+| EVID-EVA-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json | EXTRACTED |
+| EVID-REVIEW9-S5PAT01-MERGE | ci | github-actions://LinzeColin/CodexProject/actions/runs/28057939896 | VERIFIED |
+| EVID-REVIEW9-S5PAT02-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json | PROPOSED |
