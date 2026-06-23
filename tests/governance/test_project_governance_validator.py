@@ -1632,19 +1632,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-073")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-073")
-        self.assertEqual(info["product_version"], "0.21.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-074")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-074")
+        self.assertEqual(info["product_version"], "0.22.0")
+        self.assertEqual(info["current_gate"], "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY")
         self.assertEqual(
             info["latest_manifest"]["_path"],
-            "governance/run_manifests/ADP-S1-12-LIVE-ARXIV-PREFLIGHT-20260623.json",
+            "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
-        self.assertIn("0.21.0", rendered)
-        self.assertIn("ADP-S1-12-LIVE-ARXIV-PREFLIGHT-PARTIAL", rendered)
+        self.assertIn("0.22.0", rendered)
+        self.assertIn("ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY", rendered)
         self.assertIn("S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001", rendered)
-        self.assertIn("controlled live B1", rendered)
+        self.assertIn("Stage 1 B1/arXiv", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
@@ -2015,8 +2015,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         scheduled_workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-scheduled.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn("contents: write", trial_start_workflow)
-        self.assertIn("contents: write", scheduled_workflow)
+        self.assertIn("contents: read", trial_start_workflow)
+        self.assertIn("contents: read", scheduled_workflow)
+        self.assertNotIn("contents: write", trial_start_workflow)
+        self.assertNotIn("contents: write", scheduled_workflow)
         self.assertTrue(any("Production launch remains blocked" in risk for risk in manifest["risks"]))
         self.assertNotIn("draft and unmerged", " ".join(manifest["risks"]))
 

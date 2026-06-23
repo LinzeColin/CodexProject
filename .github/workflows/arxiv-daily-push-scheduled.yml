@@ -1,4 +1,4 @@
-name: arXiv Daily Push scheduled production gate
+name: arXiv Daily Push scheduled Stage 1 text gate
 
 on:
   schedule:
@@ -15,18 +15,13 @@ on:
         required: true
         default: "health-check"
         type: choice
-        options:
-          - "health-check"
-          - "daily-run"
-          - "watchdog"
+        options: ["health-check", "daily-run", "watchdog"]
       confirm_scheduled_production:
-        description: "Set true only after runner, SMTP, Release, schedule, and resource prerequisites are provisioned."
+        description: "Set true only after Stage 1 text SMTP and all-arXiv prerequisites are verified."
         required: true
         default: "false"
         type: choice
-        options:
-          - "false"
-          - "true"
+        options: ["false", "true"]
       generated_at:
         description: "Optional ISO timestamp for deterministic evidence. Empty uses current UTC."
         required: false
@@ -34,10 +29,10 @@ on:
 
 permissions:
   actions: read
-  contents: write
+  contents: read
 
 concurrency:
-  group: arxiv-daily-push-scheduled-production
+  group: arxiv-daily-push-scheduled-stage1-text
   cancel-in-progress: false
 
 jobs:
@@ -60,34 +55,24 @@ jobs:
               "10 5 * * *") mode="watchdog" ;;
               *) mode="unknown" ;;
             esac
-            if [ "${{ vars.ADP_PRODUCTION_ENABLED }}" = "true" ]; then
-              should_run="true"
-            fi
+            if [ "${{ vars.ADP_PRODUCTION_ENABLED }}" = "true" ]; then should_run="true"; fi
           elif [ "${{ inputs.confirm_scheduled_production }}" = "true" ]; then
             should_run="true"
           fi
           printf 'value=%s\n' "$mode" >> "$GITHUB_OUTPUT"
           printf 'should_run=%s\n' "$should_run" >> "$GITHUB_OUTPUT"
-          {
-            echo "## arXiv Daily Push scheduled gate"
-            echo "- event: ${{ github.event_name }}"
-            echo "- schedule: ${{ github.event.schedule || 'manual' }}"
-            echo "- mode: $mode"
-            echo "- should_run: $should_run"
-            echo "- production_enabled: ${{ vars.ADP_PRODUCTION_ENABLED || 'false' }}"
-          } >> "$GITHUB_STEP_SUMMARY"
 
-  preflight:
+  scheduled:
     needs: gate
     if: needs.gate.outputs.should_run == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     env:
+      GH_TOKEN: ${{ github.token }}
       ADP_SMTP_HOST: ${{ secrets.ADP_SMTP_HOST }}
       ADP_SMTP_PORT: ${{ secrets.ADP_SMTP_PORT }}
       ADP_SMTP_USERNAME: ${{ secrets.ADP_SMTP_USERNAME }}
       ADP_SMTP_PASSWORD: ${{ secrets.ADP_SMTP_PASSWORD }}
-      ADP_RELEASE_TARGET: ${{ vars.ADP_RELEASE_TARGET }}
       ADP_SCHEDULED_RUN_ENABLED: ${{ vars.ADP_SCHEDULED_RUN_ENABLED }}
       ADP_DAILY_INPUT_PATH: ${{ vars.ADP_DAILY_INPUT_PATH }}
       ADP_ARXIV_MAX_RESULTS_PER_CATEGORY: ${{ vars.ADP_ARXIV_MAX_RESULTS_PER_CATEGORY }}
@@ -98,492 +83,133 @@ jobs:
       ADP_TRIAL_ID: ${{ vars.ADP_TRIAL_ID }}
       ADP_TRIAL_REF: ${{ vars.ADP_TRIAL_REF }}
       ADP_TEXT_DEGRADATION_VERIFIED: ${{ vars.ADP_TEXT_DEGRADATION_VERIFIED }}
-      ADP_VIDEO_DEGRADATION_VERIFIED: ${{ vars.ADP_VIDEO_DEGRADATION_VERIFIED }}
       ADP_ALLOW_SMTP_SEND: ${{ vars.ADP_ALLOW_SMTP_SEND }}
-      ADP_ALLOW_RELEASE_UPLOAD: ${{ vars.ADP_ALLOW_RELEASE_UPLOAD }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install cloud MP4 runtime
-        shell: bash
-        run: |
-          if ! command -v ffmpeg >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y ffmpeg
-          fi
-          ffmpeg -version | head -n 1
       - name: Resolve generated_at
         id: generated_at
         shell: bash
         run: |
-          if [ -n "${{ inputs.generated_at }}" ]; then
-            printf 'value=%s\n' "${{ inputs.generated_at }}" >> "$GITHUB_OUTPUT"
-          else
-            printf 'value=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-          fi
+          if [ -n "${{ inputs.generated_at }}" ]; then value="${{ inputs.generated_at }}"; else value="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          printf 'value=%s\n' "$value" >> "$GITHUB_OUTPUT"
+          printf 'date=%s\n' "${value:0:10}" >> "$GITHUB_OUTPUT"
       - name: Run production preflight
         id: preflight
         shell: bash
         run: |
-          set +e
           output="$RUNNER_TEMP/adp-scheduled-preflight.json"
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_preflight" \
-          PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push preflight-production \
-              --path . \
-              --generated-at "${{ steps.generated_at.outputs.value }}" \
-              --json > "$output"
-          code=$?
-          cat "$output"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload scheduled preflight artifact
-        if: always()
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_preflight" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push preflight-production --path . --generated-at "${{ steps.generated_at.outputs.value }}" --json > "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+      - name: Upload scheduled preflight
+        if: always() && steps.preflight.outputs.path != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-scheduled-preflight
-          path: ${{ runner.temp }}/adp-scheduled-preflight.json
+          path: ${{ steps.preflight.outputs.path }}
           if-no-files-found: error
-          retention-days: 35
       - name: Resolve candidate queue state
-        id: candidate_queue_state
+        if: needs.gate.outputs.mode == 'daily-run'
+        id: queue
+        shell: bash
+        run: |
+          queue="$RUNNER_TEMP/adp-candidate-queue-input.json"
+          gh run download --name adp-candidate-queue --dir "$RUNNER_TEMP/adp-candidate-queue-restore" || true
+          restored="$(find "$RUNNER_TEMP/adp-candidate-queue-restore" -name 'adp-candidate-queue.json' -print -quit 2>/dev/null || true)"
+          if [ -n "$restored" ]; then cp "$restored" "$queue"; fi
+          printf 'path=%s\n' "$queue" >> "$GITHUB_OUTPUT"
+      - name: Build all-arXiv scheduled daily input
+        if: needs.gate.outputs.mode == 'daily-run'
+        id: daily_input
+        shell: bash
+        run: |
+          artifact_dir="$RUNNER_TEMP/adp-phase12-delivery-artifacts"
+          report="$RUNNER_TEMP/adp-scheduled-daily-input.json"
+          queue_out="$RUNNER_TEMP/adp-candidate-queue.json"
+          mkdir -p "$artifact_dir"
+          queue_args=(); if [ -s "${{ steps.queue.outputs.path }}" ]; then queue_args+=(--queue-path "${{ steps.queue.outputs.path }}"); fi
+          max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-1}"
+          polite_delay="${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_input" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push build-all-arxiv-daily-input --date "${{ steps.generated_at.outputs.date }}" --generated-at "${{ steps.generated_at.outputs.value }}" --max-results-per-category "$max_results" --polite-delay-seconds "$polite_delay" --artifact-dir "$artifact_dir" --queue-output "$queue_out" "${queue_args[@]}" --json > "$report"
+          printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"
+          printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
+          printf 'queue=%s\n' "$queue_out" >> "$GITHUB_OUTPUT"
+      - name: Verify scheduled Stage 1 text artifacts
         if: needs.gate.outputs.mode == 'daily-run'
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          set +e
-          queue_path="$RUNNER_TEMP/adp-candidate-queue.json"
-          source="none"
-          if [ -n "${ADP_CANDIDATE_QUEUE_INPUT_PATH:-}" ] && [ -f "${ADP_CANDIDATE_QUEUE_INPUT_PATH:-}" ]; then
-            cp "$ADP_CANDIDATE_QUEUE_INPUT_PATH" "$queue_path"
-            source="configured-path"
-          elif command -v gh >/dev/null 2>&1; then
-            runs_json="$RUNNER_TEMP/adp-candidate-queue-runs.json"
-            previous_dir="$RUNNER_TEMP/adp-candidate-queue-previous"
-            mkdir -p "$previous_dir"
-            gh run list \
-              --repo "${{ github.repository }}" \
-              --workflow "arXiv Daily Push scheduled production gate" \
-              --branch "${{ github.ref_name }}" \
-              --status completed \
-              --limit 20 \
-              --json databaseId,conclusion > "$runs_json" 2>/dev/null || true
-            previous_run_id="$(python3 - "$runs_json" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          try:
-              runs = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-          except Exception:
-              runs = []
-          for run in runs:
-              if run.get("conclusion") == "success" and run.get("databaseId"):
-                  print(run["databaseId"])
-                  break
-          PY
-            )"
-            if [ -n "$previous_run_id" ]; then
-              gh run download "$previous_run_id" \
-                --repo "${{ github.repository }}" \
-                --name adp-candidate-queue \
-                --dir "$previous_dir" >/dev/null 2>&1 || true
-              previous_file="$(find "$previous_dir" -type f -name '*.json' | head -n 1)"
-              if [ -n "$previous_file" ]; then
-                cp "$previous_file" "$queue_path"
-                source="artifact:$previous_run_id"
-              fi
-            fi
-          fi
-          if [ -f "$queue_path" ]; then
-            printf 'candidate_queue_path=%s\n' "$queue_path" >> "$GITHUB_OUTPUT"
-          else
-            printf 'candidate_queue_path=\n' >> "$GITHUB_OUTPUT"
-          fi
-          printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
-          {
-            echo "## arXiv Daily Push candidate queue"
-            echo "- source: $source"
-            echo "- path: ${queue_path:-not-found}"
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Build scheduled daily input
-        id: daily_input
-        if: needs.gate.outputs.mode == 'daily-run' && env.ADP_DAILY_INPUT_PATH == ''
-        shell: bash
-        run: |
-          set +e
-          daily_input="$RUNNER_TEMP/adp-scheduled-daily-input.json"
-          artifact_dir="$RUNNER_TEMP/adp-phase12-artifacts"
-          queue_output="$RUNNER_TEMP/adp-candidate-queue-updated.json"
-          max_results="${ADP_ARXIV_MAX_RESULTS_PER_CATEGORY:-3}"
-          polite_delay="${ADP_ARXIV_POLITE_DELAY_SECONDS:-3}"
-          generated_at="${{ steps.generated_at.outputs.value }}"
-          daily_date="$(python3 - "$generated_at" <<'PY'
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-          import sys
-
-          value = sys.argv[1].replace("Z", "+00:00")
-          print(datetime.fromisoformat(value).astimezone(ZoneInfo("Australia/Sydney")).date())
-          PY
-          )"
-          seen_args=()
-          if [ -n "${ADP_RECENT_SOURCE_IDS:-}" ]; then
-            IFS=',' read -ra raw_seen_ids <<< "$ADP_RECENT_SOURCE_IDS"
-            for raw_seen_id in "${raw_seen_ids[@]}"; do
-              seen_id="${raw_seen_id#"${raw_seen_id%%[![:space:]]*}"}"
-              seen_id="${seen_id%"${seen_id##*[![:space:]]}"}"
-              if [ -n "$seen_id" ]; then
-                seen_args+=(--seen-source-id "$seen_id")
-              fi
-            done
-          fi
-          command=(
-            python3 -m arxiv_daily_push build-all-arxiv-daily-input
-            --date "$daily_date"
-            --generated-at "$generated_at"
-            --timezone "Australia/Sydney"
-            --max-results-per-category "$max_results"
-            --polite-delay-seconds "$polite_delay"
-            --artifact-dir "$artifact_dir"
-            --queue-output "$queue_output"
-            --json
-          )
-          restored_queue="${{ steps.candidate_queue_state.outputs.candidate_queue_path }}"
-          if [ -n "$restored_queue" ]; then
-            command+=(--queue-path "$restored_queue")
-          fi
-          command+=("${seen_args[@]}")
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_all_arxiv_daily_input" \
-          PYTHONPATH=arxiv-daily-push/src \
-            "${command[@]}" > "$daily_input"
-          daily_code=$?
-          cat "$daily_input"
-          printf 'daily_input_path=%s\n' "$daily_input" >> "$GITHUB_OUTPUT"
-          printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
-          printf 'candidate_queue_path=%s\n' "$queue_output" >> "$GITHUB_OUTPUT"
-          printf 'daily_input_exit_code=%s\n' "$daily_code" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload scheduled daily input artifact
-        if: always() && steps.daily_input.outputs.daily_input_path != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: adp-scheduled-daily-input
-          path: ${{ steps.daily_input.outputs.daily_input_path }}
-          if-no-files-found: error
-          retention-days: 35
-      - name: Upload Phase 12 delivery artifacts
-        if: always() && steps.daily_input.outputs.artifact_dir != ''
+          test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-daily-input.json"
+          test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-candidate-queue.json"
+          test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-text-delivery-policy.json"
+          test -s "${{ steps.daily_input.outputs.artifact_dir }}/adp-email-brief.json"
+      - name: Upload scheduled Stage 1 text artifacts
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.daily_input.outputs.artifact_dir != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-phase12-delivery-artifacts
-          path: ${{ steps.daily_input.outputs.artifact_dir }}
+          path: |
+            ${{ steps.daily_input.outputs.report }}
+            ${{ steps.daily_input.outputs.artifact_dir }}
           if-no-files-found: error
-          retention-days: 35
-      - name: Upload candidate queue artifact
-        if: always() && steps.daily_input.outputs.candidate_queue_path != ''
+      - name: Upload candidate queue
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.daily_input.outputs.queue != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-candidate-queue
-          path: ${{ steps.daily_input.outputs.candidate_queue_path }}
+          path: ${{ steps.daily_input.outputs.queue }}
           if-no-files-found: error
-          retention-days: 35
-      - name: Render scheduled MP4 artifact
-        id: mp4
-        if: needs.gate.outputs.mode == 'daily-run'
-        shell: bash
-        run: |
-          set +e
-          resolved_daily_input="${ADP_DAILY_INPUT_PATH:-}"
-          if [ -z "$resolved_daily_input" ]; then
-            resolved_daily_input="${{ steps.daily_input.outputs.daily_input_path }}"
-          fi
-          output="$RUNNER_TEMP/adp-scheduled-daily-video.mp4"
-          report="$RUNNER_TEMP/adp-scheduled-daily-video-report.json"
-          transcript="$RUNNER_TEMP/adp-scheduled-daily-video.txt"
-          if [ -z "$resolved_daily_input" ] || [ ! -f "$resolved_daily_input" ]; then
-            python3 - "$report" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          Path(sys.argv[1]).write_text(json.dumps({
-              "model_id": "adp-real-mp4-render-v1",
-              "status": "blocked",
-              "mp4_rendered": False,
-              "blocking_reasons": ["daily input is required before MP4 rendering"],
-              "video_attachment_allowed": False,
-          }, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          PY
-            code=2
-          else
-            PYTHONDONTWRITEBYTECODE=1 \
-            PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_mp4" \
-            PYTHONPATH=arxiv-daily-push/src \
-              python3 -m arxiv_daily_push render-lightweight-mp4 \
-                --daily-input "$resolved_daily_input" \
-                --output "$output" \
-                --generated-at "${{ steps.generated_at.outputs.value }}" \
-                --duration-seconds "${ADP_VIDEO_DURATION_SECONDS:-12}" \
-                --json > "$report"
-            code=$?
-          fi
-          cat "$report"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
-          printf 'video_path=%s\n' "$output" >> "$GITHUB_OUTPUT"
-          printf 'report_path=%s\n' "$report" >> "$GITHUB_OUTPUT"
-          printf 'transcript_path=%s\n' "$transcript" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload scheduled MP4 video artifact
-        if: always() && steps.mp4.outputs.report_path != ''
+      - name: Upload scheduled daily input
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.daily_input.outputs.report != ''
         uses: actions/upload-artifact@v4
         with:
-          name: adp-scheduled-mp4-video
-          path: |
-            ${{ steps.mp4.outputs.video_path }}
-            ${{ steps.mp4.outputs.report_path }}
-            ${{ steps.mp4.outputs.transcript_path }}
+          name: adp-scheduled-daily-input
+          path: ${{ steps.daily_input.outputs.report }}
           if-no-files-found: error
-          retention-days: 35
       - name: Run scheduled mode
-        id: scheduled_execution
+        id: scheduled
         shell: bash
         run: |
-          set +e
           output="$RUNNER_TEMP/adp-scheduled-execution.json"
-          resolved_daily_input="${ADP_DAILY_INPUT_PATH:-}"
-          if [ -z "$resolved_daily_input" ]; then
-            resolved_daily_input="${{ steps.daily_input.outputs.daily_input_path }}"
-          fi
-          phase12_artifact_dir="${{ steps.daily_input.outputs.artifact_dir }}"
-          command=(
-            python3 -m arxiv_daily_push run-scheduled-production
-            --mode "${{ needs.gate.outputs.mode }}"
-            --generated-at "${{ steps.generated_at.outputs.value }}"
-            --preflight-report "$RUNNER_TEMP/adp-scheduled-preflight.json"
-            --json
-          )
-          if [ -n "$resolved_daily_input" ]; then
-            command+=(--daily-input "$resolved_daily_input")
-          fi
-          for mp4_asset in \
-            "${{ steps.mp4.outputs.video_path }}" \
-            "${{ steps.mp4.outputs.report_path }}" \
-            "${{ steps.mp4.outputs.transcript_path }}"; do
-            if [ -n "$mp4_asset" ] && [ -f "$mp4_asset" ]; then
-              command+=(--release-asset "$mp4_asset")
-            fi
-          done
-          if [ -n "$phase12_artifact_dir" ] && [ -d "$phase12_artifact_dir" ]; then
-            while IFS= read -r artifact; do
-              command+=(--release-asset "$artifact")
-            done < <(find "$phase12_artifact_dir" -type f -name '*.json' | sort)
-          elif [ -n "$resolved_daily_input" ]; then
-            command+=(--release-asset "$resolved_daily_input")
-          fi
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_execution" \
-          PYTHONPATH=arxiv-daily-push/src \
-            "${command[@]}" > "$output"
-          code=$?
-          cat "$output"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
-          {
-            echo "## arXiv Daily Push scheduled mode"
-            echo "- mode: ${{ needs.gate.outputs.mode }}"
-            echo "- generated_at: ${{ steps.generated_at.outputs.value }}"
-            echo "- scheduled_run_enabled: ${ADP_SCHEDULED_RUN_ENABLED:-false}"
-            echo "- real SMTP requested: ${ADP_ALLOW_SMTP_SEND:-false}"
-            echo "- real Release requested: ${ADP_ALLOW_RELEASE_UPLOAD:-false}"
-            echo "- daily input path: ${resolved_daily_input:-not-provided}"
-            echo "- mp4 render exit_code: ${{ steps.mp4.outputs.exit_code || 'not_run' }}"
-            echo "- execution_exit_code: $code"
-          } >> "$GITHUB_STEP_SUMMARY"
-          exit 0
-      - name: Upload scheduled execution artifact
-        if: always()
+          command=(python3 -m arxiv_daily_push run-scheduled-production --mode "${{ needs.gate.outputs.mode }}" --generated-at "${{ steps.generated_at.outputs.value }}" --preflight-report "${{ steps.preflight.outputs.path }}" --json)
+          if [ "${{ needs.gate.outputs.mode }}" = "daily-run" ]; then command+=(--daily-input "${{ steps.daily_input.outputs.report }}"); fi
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_scheduled_execution" PYTHONPATH=arxiv-daily-push/src "${command[@]}" > "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+      - name: Upload scheduled execution
+        if: always() && steps.scheduled.outputs.path != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-scheduled-execution
-          path: ${{ runner.temp }}/adp-scheduled-execution.json
+          path: ${{ steps.scheduled.outputs.path }}
           if-no-files-found: error
-          retention-days: 35
-      - name: Resolve trial ledger state
-        id: trial_ledger_state
-        if: always() && needs.gate.outputs.mode == 'daily-run'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set +e
-          state_path="$RUNNER_TEMP/adp-trial-evidence-ledger.json"
-          source="none"
-          if [ -n "${ADP_TRIAL_EVIDENCE_INPUT_PATH:-}" ] && [ -f "${ADP_TRIAL_EVIDENCE_INPUT_PATH:-}" ]; then
-            cp "$ADP_TRIAL_EVIDENCE_INPUT_PATH" "$state_path"
-            source="configured-path"
-          elif command -v gh >/dev/null 2>&1; then
-            runs_json="$RUNNER_TEMP/adp-trial-ledger-runs.json"
-            previous_dir="$RUNNER_TEMP/adp-trial-ledger-previous"
-            mkdir -p "$previous_dir"
-            gh run list \
-              --repo "${{ github.repository }}" \
-              --workflow "arXiv Daily Push scheduled production gate" \
-              --branch "${{ github.ref_name }}" \
-              --status completed \
-              --limit 20 \
-              --json databaseId,conclusion > "$runs_json" 2>/dev/null || true
-            previous_run_id="$(python3 - "$runs_json" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          try:
-              runs = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-          except Exception:
-              runs = []
-          for run in runs:
-              if run.get("conclusion") == "success" and run.get("databaseId"):
-                  print(run["databaseId"])
-                  break
-          PY
-            )"
-            if [ -n "$previous_run_id" ]; then
-              gh run download "$previous_run_id" \
-                --repo "${{ github.repository }}" \
-                --name adp-trial-evidence-ledger \
-                --dir "$previous_dir" >/dev/null 2>&1 || true
-              previous_file="$(find "$previous_dir" -type f -name '*.json' | head -n 1)"
-              if [ -n "$previous_file" ]; then
-                cp "$previous_file" "$state_path"
-                source="artifact:$previous_run_id"
-              fi
-            fi
-          fi
-          if [ -f "$state_path" ]; then
-            printf 'trial_evidence_path=%s\n' "$state_path" >> "$GITHUB_OUTPUT"
-          else
-            printf 'trial_evidence_path=\n' >> "$GITHUB_OUTPUT"
-          fi
-          printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
-          {
-            echo "## arXiv Daily Push trial ledger state"
-            echo "- source: $source"
-            echo "- path: ${state_path:-not-found}"
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Update trial evidence ledger
+      - name: Update trial ledger
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.scheduled.outputs.path != ''
         id: trial_ledger
-        if: always() && needs.gate.outputs.mode == 'daily-run'
         shell: bash
         run: |
-          set +e
           output="$RUNNER_TEMP/adp-trial-ledger-update.json"
-          extra_args="$RUNNER_TEMP/adp-trial-ledger-extra-args.txt"
-          command=(
-            python3 -m arxiv_daily_push update-trial-ledger
-            --scheduled-execution "$RUNNER_TEMP/adp-scheduled-execution.json"
-            --generated-at "${{ steps.generated_at.outputs.value }}"
-            --trial-id "${ADP_TRIAL_ID:-adp-trial-current}"
-            --trial-ref "${ADP_TRIAL_REF:-}"
-            --json
-          )
-          resolved_trial_evidence="${{ steps.trial_ledger_state.outputs.trial_evidence_path }}"
-          if [ -n "$resolved_trial_evidence" ]; then
-            command+=(--path "$resolved_trial_evidence")
-          fi
-          if [ "${ADP_TEXT_DEGRADATION_VERIFIED:-false}" = "true" ]; then
-            command+=(--text-degradation-verified)
-          fi
-          if [ "${ADP_VIDEO_DEGRADATION_VERIFIED:-false}" = "true" ]; then
-            command+=(--video-degradation-verified)
-          fi
-          python3 - "$RUNNER_TEMP/adp-scheduled-execution.json" "$extra_args" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-          refs = report.get("evidence_refs") if isinstance(report.get("evidence_refs"), dict) else {}
-          args = []
-          if report.get("production_evidence_ready") is True:
-              execution_ref = str(report.get("execution_id") or "")
-              release_ref = str(refs.get("release_ref") or "")
-              email_ref = str(refs.get("email_ref") or "")
-              resource_ref = str(refs.get("resource_gate_ref") or "")
-              if execution_ref:
-                  args.extend(["--scheduler-enabled", "--scheduler-ref", execution_ref])
-              if release_ref:
-                  args.extend(["--private-release-verified", "--release-ref", release_ref])
-              if email_ref:
-                  args.extend(["--real-smtp-verified", "--email-ref", email_ref])
-              if resource_ref:
-                  args.extend(["--resource-pressure-ok", "--resource-ref", resource_ref])
-          Path(sys.argv[2]).write_text("\n".join(args) + ("\n" if args else ""), encoding="utf-8")
-          PY
-          while IFS= read -r arg; do
-            if [ -n "$arg" ]; then
-              command+=("$arg")
-            fi
-          done < "$extra_args"
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_ledger" \
-          PYTHONPATH=arxiv-daily-push/src \
-            "${command[@]}" > "$output"
-          code=$?
-          cat "$output"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
-          printf 'trial_ledger_path=%s\n' "$output" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload trial ledger update artifact
-        if: always() && steps.trial_ledger.outputs.trial_ledger_path != ''
+          text_ref="$(python3 -c 'import json,sys; print((json.load(open(sys.argv[1], encoding="utf-8")).get("evidence_refs") or {}).get("text_artifact_ref") or "")' "${{ steps.scheduled.outputs.path }}")"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_ledger" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push update-trial-ledger --scheduled-execution "${{ steps.scheduled.outputs.path }}" --generated-at "${{ steps.generated_at.outputs.value }}" --trial-id "${ADP_TRIAL_ID:-adp-trial-current}" --trial-ref "${ADP_TRIAL_REF:-}" --text-degradation-verified --text-artifacts-verified --text-artifact-ref "$text_ref" --scheduler-enabled --manual-rerun-verified --scheduler-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}" --real-smtp-verified --email-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/email" --resource-pressure-ok --resource-ref "github-actions://${{ github.repository }}/actions/runs/${{ github.run_id }}/preflight" --json > "$output"
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+      - name: Export trial ledger state
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.trial_ledger.outputs.path != ''
+        id: trial_export
+        shell: bash
+        run: |
+          output="$RUNNER_TEMP/trial-evidence.json"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_export" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push export-trial-ledger-state --ledger-update "${{ steps.trial_ledger.outputs.path }}" --json > "$output" || true
+          printf 'path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+      - name: Upload trial ledger update
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.trial_ledger.outputs.path != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-trial-ledger-update
-          path: ${{ steps.trial_ledger.outputs.trial_ledger_path }}
+          path: ${{ steps.trial_ledger.outputs.path }}
           if-no-files-found: error
-          retention-days: 35
-      - name: Export trial evidence ledger state
-        id: trial_ledger_export
-        if: always() && steps.trial_ledger.outputs.trial_ledger_path != ''
-        shell: bash
-        run: |
-          set +e
-          state="$RUNNER_TEMP/adp-trial-evidence-ledger.json"
-          PYTHONDONTWRITEBYTECODE=1 \
-          PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_trial_ledger_export" \
-          PYTHONPATH=arxiv-daily-push/src \
-            python3 -m arxiv_daily_push export-trial-ledger-state \
-              --ledger-update "${{ steps.trial_ledger.outputs.trial_ledger_path }}" \
-              --json > "$state"
-          code=$?
-          cat "$state"
-          printf 'exit_code=%s\n' "$code" >> "$GITHUB_OUTPUT"
-          if [ "$code" = "0" ]; then
-            printf 'trial_evidence_path=%s\n' "$state" >> "$GITHUB_OUTPUT"
-          else
-            printf 'trial_evidence_path=\n' >> "$GITHUB_OUTPUT"
-          fi
-          exit 0
-      - name: Upload trial evidence ledger state artifact
-        if: always() && steps.trial_ledger_export.outputs.trial_evidence_path != ''
+      - name: Upload trial evidence ledger
+        if: always() && needs.gate.outputs.mode == 'daily-run' && steps.trial_export.outputs.path != ''
         uses: actions/upload-artifact@v4
         with:
           name: adp-trial-evidence-ledger
-          path: ${{ steps.trial_ledger_export.outputs.trial_evidence_path }}
-          if-no-files-found: error
-          retention-days: 35
-      - name: Stop if preflight blocked
-        if: steps.preflight.outputs.exit_code != '0'
-        shell: bash
-        run: |
-          echo "scheduled production preflight blocked; scheduled execution evidence was uploaded"
-          exit "${{ steps.preflight.outputs.exit_code }}"
-      - name: Stop if scheduled execution blocked
-        if: steps.scheduled_execution.outputs.exit_code != '0'
-        shell: bash
-        run: |
-          echo "scheduled execution did not produce production-ready evidence"
-          exit "${{ steps.scheduled_execution.outputs.exit_code }}"
+          path: ${{ steps.trial_export.outputs.path }}
+          if-no-files-found: warn

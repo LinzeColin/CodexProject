@@ -18,20 +18,16 @@ REQUIRED_SMTP_SECRET_NAMES = (
     "ADP_SMTP_PASSWORD",
 )
 REQUIRED_WORKFLOW_VAR_NAMES = (
-    "ADP_RELEASE_TARGET",
     "ADP_ALLOW_SMTP_SEND",
-    "ADP_ALLOW_RELEASE_UPLOAD",
 )
 REQUIRED_REF_KEYS = (
     "runner_ref",
     "smtp_secret_ref",
-    "release_target_ref",
     "workflow_vars_ref",
 )
 PRODUCTION_REFS_TEMPLATE_REQUIRED_SECTIONS = (
     "runner",
     "smtp_secrets",
-    "release_target",
     "workflow_vars",
 )
 PROVISIONING_AUDIT_REVIEW_ID = "adp-provisioning-audit-review-v1"
@@ -72,19 +68,16 @@ def build_production_refs_report(readiness_input: Mapping[str, Any], *, generate
     data: Mapping[str, Any] = readiness_input if isinstance(readiness_input, Mapping) else {}
     runner = _section(data, "runner")
     smtp_secrets = _section(data, "smtp_secrets")
-    release_target = _section(data, "release_target")
     workflow_vars = _section(data, "workflow_vars")
     readiness_refs = {
         "runner_ref": _ref(runner.get("evidence_ref")),
         "smtp_secret_ref": _ref(smtp_secrets.get("evidence_ref")),
-        "release_target_ref": _ref(release_target.get("evidence_ref")),
         "workflow_vars_ref": _ref(workflow_vars.get("evidence_ref")),
     }
     gates = [
         _gate("no_secret_values_in_input", not _secret_hygiene_errors(data), _secret_hygiene_errors(data)),
         _runner_gate(runner),
         _smtp_secret_gate(smtp_secrets),
-        _release_target_gate(release_target),
         _workflow_vars_gate(workflow_vars),
         _durable_refs_gate(readiness_refs),
     ]
@@ -118,7 +111,6 @@ def build_production_refs_report(readiness_input: Mapping[str, Any], *, generate
 def build_production_refs_input_template(
     *,
     runner_label: str = "ubuntu-latest",
-    release_target: str = "",
 ) -> dict[str, Any]:
     """Build a no-secret owner-fillable input template for production refs."""
 
@@ -133,12 +125,6 @@ def build_production_refs_input_template(
         "smtp_secrets": {
             "ready": False,
             "secret_names": list(REQUIRED_SMTP_SECRET_NAMES),
-            "evidence_ref": "",
-        },
-        "release_target": {
-            "ready": False,
-            "var_name": "ADP_RELEASE_TARGET",
-            "target": str(release_target or "").strip(),
             "evidence_ref": "",
         },
         "workflow_vars": {
@@ -168,13 +154,10 @@ def build_production_refs_input_from_github_metadata(
     variable_by_name = _metadata_by_name(variable_items)
     runner_matches = [runner for runner in runner_items if _runner_has_label(runner, label)]
     online_runner_matches = [runner for runner in runner_matches if str(runner.get("status") or "").lower() == "online"]
-    release_target_item = variable_by_name.get("ADP_RELEASE_TARGET", {})
-    release_target = str(release_target_item.get("value") or "").strip() if isinstance(release_target_item, Mapping) else ""
     configured_workflow_vars = sorted(name for name in REQUIRED_WORKFLOW_VAR_NAMES if name in variable_by_name)
     configured_smtp_secrets = sorted(name for name in REQUIRED_SMTP_SECRET_NAMES if name in secret_names)
     runner_ready = bool(online_runner_matches)
     smtp_ready = all(name in secret_names for name in REQUIRED_SMTP_SECRET_NAMES)
-    release_target_ready = "ADP_RELEASE_TARGET" in variable_by_name and bool(release_target)
     workflow_vars_ready = all(name in variable_by_name for name in REQUIRED_WORKFLOW_VAR_NAMES)
     return {
         "runner": {
@@ -199,19 +182,6 @@ def build_production_refs_input_from_github_metadata(
                 _named_item_fingerprint_payload(secret_items, REQUIRED_SMTP_SECRET_NAMES),
             )
             if smtp_ready
-            else "",
-        },
-        "release_target": {
-            "ready": release_target_ready,
-            "var_name": "ADP_RELEASE_TARGET",
-            "target": release_target,
-            "evidence_ref": _metadata_ref(
-                "github-vars",
-                repo_name,
-                "actions/ADP_RELEASE_TARGET",
-                {"name": "ADP_RELEASE_TARGET", "target": release_target},
-            )
-            if release_target_ready
             else "",
         },
         "workflow_vars": {
@@ -536,7 +506,6 @@ def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
         "no_secret_values_in_input": "remove secret values and provide only secret names plus durable evidence refs",
         "runner_ready": "provide ready GitHub-hosted runner label and durable runner readiness ref",
         "smtp_secrets_ready": "provide required SMTP secret names and durable GitHub secrets readiness ref without values",
-        "release_target_ready": "provide ADP_RELEASE_TARGET readiness and durable GitHub variables ref",
         "workflow_vars_ready": "provide required workflow variable names and durable GitHub variables readiness ref",
         "readiness_refs_durable": "provide all production readiness refs with a durable scheme",
     }
@@ -551,7 +520,7 @@ def _next_external_actions(gates: list[Mapping[str, Any]]) -> list[str]:
 def _next_audit_actions(gates: list[Mapping[str, Any]]) -> list[str]:
     action_map = {
         "production_refs_report_valid": "rerun the provisioning audit workflow and download a valid adp-production-refs-v1 artifact",
-        "production_refs_ready": "resolve blocked runner, SMTP secret-name, Release target, or workflow variable readiness in the provisioning audit",
+        "production_refs_ready": "resolve blocked runner, SMTP secret-name, workflow variable readiness in the provisioning audit",
         "workflow_run_ref": "provide a durable GitHub Actions workflow run ref for the provisioning audit",
         "artifact_ref": "provide a durable artifact ref for adp-production-provisioning-audit",
         "no_side_effects_confirmed": "use a no-secret provisioning refs report that records no side effects",

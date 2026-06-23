@@ -22,6 +22,8 @@ def annotate_trial_operational_evidence(
     scheduler_enabled: bool = False,
     manual_rerun_verified: bool = False,
     scheduler_ref: str = "",
+    text_artifacts_verified: bool = False,
+    text_artifact_ref: str = "",
     private_release_verified: bool = False,
     release_ref: str = "",
     real_smtp_verified: bool = False,
@@ -47,6 +49,7 @@ def annotate_trial_operational_evidence(
         scheduler_ref=scheduler_ref,
         reasons=reasons,
     )
+    updated |= _merge_text_artifacts(evidence, text_artifacts_verified=text_artifacts_verified, text_artifact_ref=text_artifact_ref, reasons=reasons)
     updated |= _merge_release(evidence, private_release_verified=private_release_verified, release_ref=release_ref, reasons=reasons)
     updated |= _merge_email(evidence, real_smtp_verified=real_smtp_verified, email_ref=email_ref, reasons=reasons)
     updated |= _merge_resource(evidence, resource_pressure_ok=resource_pressure_ok, resource_ref=resource_ref, reasons=reasons)
@@ -122,6 +125,7 @@ def _base_evidence(existing: Mapping[str, Any], *, trial_id: str, trial_ref: str
         "scheduler",
         {"enabled": False, "target_local_time": TARGET_LOCAL_TIME, "health_check_time": "04:45", "manual_rerun_verified": False, "ref": ""},
     )
+    _section(evidence, "text_artifacts", {"b1_text_artifacts_verified": False, "ref": ""})
     _section(evidence, "release", {"private_release_verified": False, "ref": ""})
     _section(evidence, "email", {"real_smtp_verified": False, "recipient": DEFAULT_RECIPIENT, "ref": ""})
     _section(
@@ -184,6 +188,19 @@ def _merge_release(evidence: dict[str, Any], *, private_release_verified: bool, 
         section["ref"] = release_ref
     if private_release_verified and not str(section.get("ref") or "").strip():
         reasons.append("release ref is required when private Release evidence is verified")
+    return True
+
+
+def _merge_text_artifacts(evidence: dict[str, Any], *, text_artifacts_verified: bool, text_artifact_ref: str, reasons: list[str]) -> bool:
+    requested = text_artifacts_verified or bool(text_artifact_ref)
+    if not requested:
+        return False
+    section = _section(evidence, "text_artifacts", {"b1_text_artifacts_verified": False, "ref": ""})
+    section["b1_text_artifacts_verified"] = _is_true(section.get("b1_text_artifacts_verified")) or text_artifacts_verified
+    if text_artifact_ref:
+        section["ref"] = text_artifact_ref
+    if text_artifacts_verified and not str(section.get("ref") or "").strip():
+        reasons.append("text artifact ref is required when Stage 1 text artifacts are verified")
     return True
 
 
