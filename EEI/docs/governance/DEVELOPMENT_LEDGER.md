@@ -991,6 +991,39 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Remaining risks: package evidence can become stale if generated before new artifacts are tracked; A209 can still fail before 288 windows.
 - Next step: amend/push the repair, bind CI, and continue A209 background soak until release-ready validation passes.
 
+## 2026-06-24 - EVENT-20260624-011 - T1309/A210 brand-clearance intake and A209 heartbeat refresh
+
+- Goal: add an operator/legal fill-in contract for formal A210 brand legal and market clearance while keeping the public release gate fail-closed, and refresh A209 background heartbeat evidence so the 24h soak remains an active background gate.
+- Assumptions: the A210 template is not legal advice, trademark clearance, market clearance, risk waiver or public launch approval; A209 heartbeat is progress evidence only and does not replace the final 24h summary or release-ready validator.
+- Files changed: `scripts/validate_brand_clearance.py`, `tests/unit/test_brand_clearance.py`, `artifacts/tests/a210/t1309_brand_clearance_intake_template.json`, `artifacts/tests/a209/t1307_operator_soak_background_progress.json`, `Makefile`, current governance status docs, traceability and phase synchronization docs.
+- Tests run so far: `scripts/validate_brand_clearance.py validate-template`, `scripts/validate_brand_clearance.py validate`, focused `pytest` for `tests/unit/test_brand_clearance.py`, focused `ruff`, `record_operator_soak_heartbeat.py validate --quiet` and `supervise_operator_soak.py --no-write --quiet`.
+- Test results so far: A210 template validation PASS with `TEMPLATE_ONLY` and `release_gate_closure_allowed=false`; A210 preflight validation PASS while real clearance remains missing; focused unit tests PASS `3/3`; focused ruff PASS; A209 heartbeat validator PASS; supervisor check PASS with operator PID `12478` running, watchdog PID `62233` running, `81/288` windows PASS, `0` failed, `207` remaining and `release_gate_closed_by_background_heartbeat=false`.
+- Decisions: keep product name `EEI`; require signed coverage for CN/US/EU/UK/AU trademark knockout, company/domain/social/app-store/GitHub/npm/PyPI searches, Chinese/English phonetic-semantic review, legal/owner decision and final attestation before A210 can close; do not restart the live A209 operator process while it is progressing.
+- Remaining risks: A210 still requires real signed legal/owner evidence or risk waiver; A209 can still fail before all 288 windows complete; A202 and A026/A027 external evidence also remain release blockers.
+- Rollback: revert the A210 validator/test/template and the A209 heartbeat refresh plus this governance entry; keep live A209 checkpoint/log files intact unless the operator process itself fails.
+- Next step: stage new tracked files before regenerating release artifacts, run `make verify`, run root changed-only semantic governance, then commit, push and bind CI.
+
+## 2026-06-24 - EVENT-20260624-012 - A210 governance parameter registry sync
+
+- Goal: repair the root governance failure requiring `docs/governance/parameter_registry.csv` after the A210 intake template introduced fixed evidence-contract constants.
+- Assumptions: PARAM-072 through PARAM-075 are non-scoring governance parameters; they do not change any business score, graph traversal formula, extraction model, model weight or runtime threshold.
+- Files changed: `docs/governance/parameter_registry.csv`, `docs/governance/MODEL_SPEC.md`, `docs/governance/TRACEABILITY_MATRIX.csv`, `docs/governance/STATUS.md`, `docs/governance/OWNER_STATUS.md`, `docs/governance/VERSION_MATRIX.yaml`, this ledger and `development_events.jsonl`.
+- Tests run so far: `python3 scripts/validate_semantic_extractors.py EEI`.
+- Test results so far: semantic extractor PASS with `semantic_formulas_checked=11` and `semantic_parameters_checked=75`.
+- Decisions: register `PARAM-072` as the A210 intake schema version, `PARAM-073` as CN/US/EU/UK/AU required trademark jurisdictions, `PARAM-074` as company/domain/social/app-store/GitHub/npm/PyPI required market surfaces and `PARAM-075` as accepted signed clearance statuses `CLEARED|RISK_WAIVER_ACCEPTED`.
+- Remaining risks: governance registry sync does not provide legal clearance; A210 still requires a real signed bundle or risk waiver.
+- Rollback: revert the PARAM-072 through PARAM-075 rows and the corresponding MODEL_SPEC, STATUS, OWNER_STATUS, TRACEABILITY and VERSION_MATRIX updates.
+- Next step: regenerate release artifacts after this append-only event and rerun `make verify`, `git diff --check`, root changed-only semantic governance and A209 supervisor status.
+
+## 2026-06-24 - EVENT-20260624-013 - Assurance status parameter-count sync
+
+- Goal: repair the remaining root governance drift after PARAM-072 through PARAM-075 increased the machine-checked active parameter count.
+- Files changed: `docs/governance/ASSURANCE_STATUS.yaml`, `docs/governance/VERSION_MATRIX.yaml`, this ledger and `development_events.jsonl`.
+- Change: `checked_active_parameters` and `total_active_parameters` now report `75`; release gate now matches `TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`; `as_of_event_id` points to this event.
+- Scope boundary: no product behavior, scoring formula, model weight, graph traversal or A210 legal status changed.
+- Rollback: revert these assurance-status fields and the append-only event, then regenerate release artifacts.
+- Next step: regenerate release artifacts and rerun full validation plus root governance.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.

@@ -56,9 +56,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `72/288` PASS at `2026-06-23T16:42:24Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `81/288` PASS at `2026-06-23T17:27:11Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
-3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract.
+3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract, and `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` is now available as the A210 brand-clearance / risk-waiver fill-in contract.
 
 ## 11. Evidence Required To Unblock
 
@@ -71,7 +71,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `68`
+- total_parameters: `75`
 - active_parameters: `68`
 - active_values_changed_by_this_view: `0`
 - latest_T1303_operator_cli: `scripts/apply_model_config.py` now supports dry-run preview plus explicit PostgreSQL `--execute`; `scripts/validate_release_manager_activation.py` now validates evidence-derived READY preflight only when all external gates are real; `artifacts/model_config_import_preview.json` remains non-closure evidence for A204/A205.
@@ -79,7 +79,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
+- release_gate: `TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`
 
 ## 14. Evidence Freshness
 
@@ -102,7 +102,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-23T04:05:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
+- phase/gate: `C / TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

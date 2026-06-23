@@ -97,6 +97,7 @@ generate-brand-clearance-artifact:
 
 validate-brand-clearance:
 	$(UV) run python scripts/validate_brand_clearance.py validate
+	$(UV) run python scripts/validate_brand_clearance.py validate-template
 
 generate-release-decision-bundle-artifact:
 	$(UV) run python scripts/validate_release_decision_bundle.py generate

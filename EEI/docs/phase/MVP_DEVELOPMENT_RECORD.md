@@ -5308,3 +5308,44 @@ Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTI
 
 - Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, `artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` and this governance/documentation update.
 - Regenerate development, clean-room and release artifacts, then rerun focused T904 validation.
+
+## 2026-06-24 - T1309/A210 brand-clearance intake template
+
+Status: LOCAL FOCUSED VALIDATED; A210 STILL IN PROGRESS
+
+### Scope
+
+- Added `generate-template`, `validate-template` and `validate-signed --bundle` subcommands to `scripts/validate_brand_clearance.py`.
+- Generated `artifacts/tests/a210/t1309_brand_clearance_intake_template.json` as the operator/legal fill-in contract for formal brand legal and market clearance evidence.
+- Added `tests/unit/test_brand_clearance.py` covering fail-closed template behavior, signed-bundle field requirements and non-release-ready semantics.
+- Wired `validate-template` into `make verify` through `validate-brand-clearance`.
+
+### Acceptance mapping
+
+- T1309 -> A210.
+- A210 remains `IN_PROGRESS`: the committed template is `TEMPLATE_ONLY` and does not provide legal advice, trademark availability, market clearance, signed risk waiver, public launch approval or A210 closure.
+
+### Evidence and controls
+
+- Required trademark knockout jurisdictions: CN, US, EU, UK and AU.
+- Required market search surfaces: company name, domain, social handle, app store, GitHub, npm and PyPI.
+- Required signed sections: phonetic/semantic Chinese-English review, legal-or-owner decision and final attestation.
+- Signed-bundle validation can prove `a210_clearance_complete=true` for a supplied bundle but still returns `release_ready=false` until A202, A026/A027, A209 and release-manager activation are complete.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_brand_clearance.py generate-template`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_brand_clearance.py validate-template`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_brand_clearance.py validate`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a210-pycache .venv/bin/python -m pytest -q tests/unit/test_brand_clearance.py -p no:cacheprovider`: PASS, 3 passed.
+- `PYTHONDONTWRITEBYTECODE=1 RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/validate_brand_clearance.py tests/unit/test_brand_clearance.py`: PASS.
+
+### Remaining gaps
+
+- Real trademark, company-name, domain, social, app-store, package-index, phonetic/semantic, legal/owner clearance evidence is not supplied.
+- A202 source/legal/owner clearance, A026/A027 production gold labels, A209 24h soak and release-manager activation remain incomplete.
+
+### Rollback
+
+- Revert `scripts/validate_brand_clearance.py`, `tests/unit/test_brand_clearance.py`, `artifacts/tests/a210/t1309_brand_clearance_intake_template.json`, `Makefile` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused A210 validation.

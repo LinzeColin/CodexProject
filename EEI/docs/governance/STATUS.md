@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Models/Formulas/Parameters total: `12 / 12 / 68`
-- Active formulas/parameters: `11 / 68`
-- Machine checked formulas/parameters: `11 / 68`
+- Phase/Gate: `C / TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`
+- Models/Formulas/Parameters total: `12 / 12 / 75`
+- Active formulas/parameters: `11 / 75`
+- Machine checked formulas/parameters: `11 / 75`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
+- Release gate: `TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
 - Pending/stale events: `43`
 - Tree-bound events: `0`
@@ -46,7 +46,7 @@
 ## A209 Background Soak Update
 
 - T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
-- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `72/288` windows PASS, `0` failed, `216` remaining, `25.00%` complete, generated at `2026-06-23T16:42:24Z`.
+- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `81/288` windows PASS, `0` failed, `207` remaining, `28.12%` complete, generated at `2026-06-23T17:27:11Z`.
 - Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, dry-runs recovery by default, and is included in clean-room release packaging. Watchdog contract `EEI/scripts/watch_operator_soak.py` reports `release_gate_closed_by_watchdog=false`, resumes only paused successful checkpoints when launched with `--execute --auto-resume`, and reports stale live PIDs without killing them. Heartbeat contract `EEI/scripts/record_operator_soak_heartbeat.py` reports `release_gate_closed_by_background_heartbeat=false` and keeps A209 `IN_PROGRESS`. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
 
 ## T1303 Model Config Apply Update
@@ -60,3 +60,9 @@
 - `scripts/validate_gold_quality_evaluation.py generate-template` now writes `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` with the exact A026/A027 production-label metadata fields, minimum case counts, case schemas and validation commands.
 - The template status is `TEMPLATE_ONLY`, with `release_gate_closure_allowed=false`, `production_claim_allowed=false` and `relationship_publication_allowed=false`; it is an operator intake artifact, not production gold-set evidence.
 - A026 and A027 remain `IN_PROGRESS` until a real operator-supplied production gold label payload passes `--allow-production-gold-set` validation and the release manager later sees all external gates ready.
+
+## T1309 Brand-Clearance Intake Template Update
+
+- `scripts/validate_brand_clearance.py generate-template` now writes `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` with the exact A210 evidence fields for CN/US/EU/UK/AU trademark knockout, company/domain/social/app-store/GitHub/npm/PyPI searches, Chinese/English phonetic-semantic review, legal/owner decision and final attestation.
+- The template status is `TEMPLATE_ONLY`, with `release_gate_closure_allowed=false`, `public_brand_launch_allowed=false` and `template_counts_as_clearance=false`; it is an operator/legal intake artifact, not formal legal advice, trademark clearance, market clearance or public-launch approval.
+- A210 remains `IN_PROGRESS` until a real signed brand-clearance or risk-waiver bundle passes validation and the release manager later sees all external gates ready.

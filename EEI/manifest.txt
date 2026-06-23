@@ -133,6 +133,7 @@ artifacts/tests/a209/t1307_operator_soak_evidence_validation.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
 artifacts/tests/a209/t1307_soak_smoke.json
+artifacts/tests/a210/t1309_brand_clearance_intake_template.json
 artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json
 artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
@@ -405,6 +406,7 @@ tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
+tests/unit/test_brand_clearance.py
 tests/unit/test_gold_quality_evaluation.py
 tests/unit/test_model_config_apply.py
 tests/unit/test_official_source_live_capture.py

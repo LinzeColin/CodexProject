@@ -131,6 +131,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1307_operator_soak_readiness.json
 │   │   │   └── t1307_soak_smoke.json
 │   │   ├── a210
+│   │   │   ├── t1309_brand_clearance_intake_template.json
 │   │   │   └── t1309_brand_clearance_preflight_contract.json
 │   │   └── a211
 │   │       └── t1308_frontend_workspace_context_contract.json
@@ -457,6 +458,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_api_health.py
+│       ├── test_brand_clearance.py
 │       ├── test_gold_quality_evaluation.py
 │       ├── test_model_config_apply.py
 │       ├── test_official_source_live_capture.py
