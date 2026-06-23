@@ -2368,8 +2368,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-09-MIGRATION_PACKAGE-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-10-POST_MIGRATION_BOOTSTRAP-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "completed")
-        self.assertEqual(task_by_id["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]["status"], "in_progress")
-        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "in_progress")
+        self.assertEqual(task_by_id["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]["status"], "completed")
+        self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "completed")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "planned")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "planned")
 
@@ -2399,31 +2399,36 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
-            "STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI",
+            "ARXIV_PRODUCTION_ACCEPTED",
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
             "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
         )
-        self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "FAILED")
-        self.assertFalse(info["latest_manifest"]["production_acceptance_claimed"])
+        self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
+        self.assertTrue(info["latest_manifest"]["production_acceptance_claimed"])
+        self.assertEqual(info["latest_manifest"]["cloud_artifact"]["run_id"], "28027759062")
+        self.assertEqual(info["latest_manifest"]["cloud_artifact"]["artifact_id"], "7821452823")
+        self.assertFalse(info["latest_manifest"]["production_schedule_enabled"])
+        self.assertFalse(info["latest_manifest"]["real_smtp_sent"])
+        self.assertFalse(info["latest_manifest"]["real_release_uploaded"])
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
-        self.assertIn("STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI", rendered)
-        self.assertIn("S1P5T03-R", rendered)
-        self.assertIn("30 个真实 arXiv as-of date", rendered)
+        self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
+        self.assertIn("ADP-PHASE12-EMAIL-HUMAN-FORMAT-036", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
         self.assertNotIn("是否继续执行 S1-10", rendered)
         self.assertNotIn("是否继续执行 S1-11", rendered)
+        self.assertNotIn("STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI", rendered)
         self.assertNotIn("DETERMINISTIC_GENERATION", rendered)
 
     def test_arxiv_s1_next_task_priority_does_not_reorder_other_projects(self) -> None:
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE",
+            "arxiv-daily-push": "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",

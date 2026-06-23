@@ -10,11 +10,11 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S1-A
-- Current gate: STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI
+- Current gate: ARXIV_PRODUCTION_ACCEPTED
 - Confirmed iteration count: 65
 - Reconstructed event count: 0
-- Current task: S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE
-- Blockers: GitHub Actions/cloud runner must complete the real 30 historical as-of-date backfill workflow and upload the `adp-s1p5t03-real-arxiv-30-day-backfill` artifact before strict `ARXIV_PRODUCTION_ACCEPTED` can be restored. Production schedule remains disabled; Stage 2 and email template work are out of scope.
+- Current task: S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE completed; waiting for owner decision before production schedule enablement
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Production schedule, SMTP send, Release upload, Stage 2, video, and email template work remain disabled or out of scope.
 
 ## Phase Matrix
 
@@ -1682,11 +1682,11 @@ None for this new project baseline.
 ### `ITER-20260623-S1P5T03-R-REAL-ARXIV-30-ASOF-REPLAY`
 
 - Date: 2026-06-23
-- Fact level: EXTRACTED from `stage1_real_replay.py`, focused tests, local real arXiv control run, `CONTENT_LEDGER.csv`, and pending GitHub Actions workflow wiring.
+- Fact level: EXTRACTED from `stage1_real_replay.py`, focused tests, local real arXiv control run, `CONTENT_LEDGER.csv`, and GitHub Actions run `28027759062` artifact `7821452823`.
 - Version before: 0.23.0
 - Version after: 0.23.0
 - Base commit: 738887de4034ad42d90347d0fa0db6c0f3ed966f
-- Result commit: PENDING
+- Result commit: PENDING_PR_CI_ACCEPTANCE_SYNC
 - Task IDs: `S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE`
 - Goal: Correct the strict Stage 1 acceptance boundary by requiring 30 real historical arXiv as-of-date replays and persistent selected/queued/email ledger closure before restoring `ARXIV_PRODUCTION_ACCEPTED`.
 - Assumptions: Manual delivery tests prove one-time cloud live delivery behavior only; they do not prove 30-day historical backfill or durable CONTENT_LEDGER continuity.
@@ -1694,11 +1694,11 @@ None for this new project baseline.
 - Model changes: Added MOD-ADP-046 `adp-stage1-real-arxiv-30-asof-replay-v1`.
 - Formula changes: Added FORM-ADP-048 for real 30 as-of-date replay, future-leakage, duplicate-lead, queue-continuity, P0/P1, artifact, and no-production-side-effect validation.
 - Parameter changes: Added PARAM-ADP-352 through PARAM-ADP-359 for model/schema/acceptance IDs, required count, lookback, max results, artifact file count, and all-arXiv submittedDate query policy.
-- Commands run: focused real replay tests; local live real arXiv 30 as-of replay via curl.
-- Test results: focused real replay tests passed locally; local live replay produced status pass, 30/30 success, 30 unique dates, 30 unique selected real arXiv IDs, future leakage 0, duplicate lead 0, queue continuity breaks 0, unsupported P0/P1 0, 30 daily inputs, 30 reports, 30 email previews, 30 queue ledgers, and 299 CONTENT_LEDGER rows.
+- Commands run: focused real replay tests; local live real arXiv 30 as-of replay via curl; GitHub Actions `arXiv Daily Push real 30-day backfill` run `28027759062`.
+- Test results: focused real replay tests passed locally; local live replay and GitHub/cloud replay both produced status pass, 30/30 success, 30 unique dates, 30 unique selected real arXiv IDs, future leakage 0, duplicate lead 0, queue continuity breaks 0, unsupported P0/P1 0, 30 daily inputs, 30 reports, 30 email previews, 30 queue ledgers, and 299 CONTENT_LEDGER rows.
 - Successes: `docs/owner/CONTENT_LEDGER.csv` no longer contains the S1-06 placeholder row; it now has 30 selected lead rows and 269 queued candidate rows with email/artifact state.
-- Failures: Strict `ARXIV_PRODUCTION_ACCEPTED` is not restored yet because PR CI must still execute the workflow on GitHub/cloud runner and produce the durable artifact.
+- Failures: None for S1P5T03-R; production schedule, SMTP send, Release upload, Stage 2, video, and template redesign remain intentionally disabled or deferred.
 - Decisions: Do not start Stage 2, do not enable production schedule, do not send production email, do not optimize the frontstage email template in this task.
-- Remaining risks: Live arXiv availability or API throttling can fail the PR backfill workflow; cloud artifact ledger must be reconciled against the committed CONTENT_LEDGER before acceptance is restored.
+- Remaining risks: Future scheduled production still requires a separate owner-approved flag/secrets task; Stage 2 and email template quality work remain outside this acceptance gate.
 - Rollback: Remove S1P5T03-R code/workflow/tests/governance records and restore the previous strict acceptance state only if the owner explicitly abandons this real-backfill gate.
-- Next step: Open PR, wait for PR CI, inspect `adp-s1p5t03-real-arxiv-30-day-backfill` artifact, then decide whether strict Stage 1 returns to `ARXIV_PRODUCTION_ACCEPTED`.
+- Next step: Stop S1P5T03-R, keep production schedule disabled, and wait for owner instruction before any production scheduler, SMTP, Release upload, Stage 2, video, or template task.
