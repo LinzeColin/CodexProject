@@ -476,8 +476,8 @@ Releases, install a scheduler, or claim production acceptance.
 - Scheduled workflow without `run-scheduled-production` or `adp-scheduled-execution` artifact upload -> scheduler validation blocked.
 - Scheduled daily execution without `ADP_SCHEDULED_RUN_ENABLED=true` -> scheduled execution blocked.
 - Scheduled daily execution without daily input package -> scheduled execution blocked.
-- Scheduled daily execution with dry-run SMTP or dry-run Release -> scheduled execution degraded and not production evidence.
-- Scheduled production evidence ready without daily run, Release, email, and resource refs -> validation error.
+- Scheduled daily execution with dry-run SMTP or missing Stage 1 text artifacts -> scheduled execution degraded and not production evidence.
+- Scheduled production evidence ready without daily run, text artifact, email, and resource refs -> validation error.
 - Daily input builder source batch blocked -> daily input report blocked.
 - Daily input builder missing Atom summary -> daily input report blocked.
 - Daily input builder selected candidate recently used -> daily input report blocked.
@@ -485,9 +485,9 @@ Releases, install a scheduler, or claim production acceptance.
 - All-arXiv scan plan missing a primary archive bucket or collapsing to `cat:cs.AI` -> Phase 12 daily input blocked.
 - All-arXiv daily selection chooses one new high-value candidate first, otherwise consumes a queued high-value candidate, otherwise blocks if no candidate meets the minimum threshold.
 - Phase 12 candidate queue persists high-value unselected candidates as a small JSON artifact and never stores PDFs, media, model weights, or secrets.
-- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, and a GitHub Release-hosted `.mp4` video artifact link.
-- Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, empty `ADP_RELEASE_TARGET`, or secret-like input -> refs report blocked or redacted discovery error.
-- Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or real MP4 render evidence -> production enablement blocked.
+- Scheduled production email cannot count as production-ready unless it includes Chinese lesson content, candidate queue summary, HTML/plain text bodies, and a Stage 1 text artifact ref; video/Release links are not required for Stage 1.
+- Production refs input without cloud runner evidence, missing SMTP secret names, missing workflow variables, or secret-like input -> refs report blocked or redacted discovery error.
+- Phase 12 cloud dry-run without 20 verified primary archive buckets, sample daily input, or Stage 1 text artifacts -> production enablement blocked.
 - Owner controls with production enabled, paid service allowed, token-like value, wrong owner view list, Window A resource overrun, or weight total drift -> owner validation blocked.
 - Owner impact preview can report S1-06 deterministic fixture queue readiness but cannot claim production replay or ranking impact until real replay data exists.
 - `docs/owner/*` files are regenerated from `config/owner_controls.yaml`; manual edits are drift, not facts.
@@ -526,11 +526,17 @@ Uncovered planned scenarios:
 - Claim extraction from paper text/PDF.
 - TTS/video sample gates.
 - Live 30-day operational trial evidence.
-- GitHub-hosted cloud dry-run workflow run, private Release, and real email transport health.
-- Actual production preflight pass on GitHub-hosted Actions with SMTP, Release, and media dependencies installed.
+- GitHub-hosted cloud dry-run workflow run and real email transport health.
+- Actual production preflight pass on GitHub-hosted Actions with SMTP and Stage 1 text artifact dependencies available.
 - Actual 30-day trial start and scheduled daily run execution on the default branch.
 - Local Python HTTPS certificate validation for `https://export.arxiv.org/api/query` currently blocks live source ingest on this machine.
 - Real SMTP delivery against the provisioned production SMTP server and archived message evidence.
-- Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact or private Release ref.
-- Actual recovery drill execution archived under a durable GitHub Actions artifact or private Release ref.
-- Actual 30-day resource telemetry evidence archived under a durable GitHub Actions artifact or private Release ref.
+- Actual weekly/monthly replay execution archived under a durable GitHub Actions artifact ref.
+- Actual recovery drill execution archived under a durable GitHub Actions artifact ref.
+- Actual 30-day resource telemetry evidence archived under a durable GitHub Actions artifact ref.
+
+## S1-12 Text-Only Production Enablement Delta
+
+- Stage 1 production readiness now requires all-arXiv source selection, candidate queue persistence, Chinese teaching email, HTML/plain text delivery, Gmail SMTP evidence, and GitHub Actions text artifacts.
+- Video generation, MP4 links, and GitHub Release upload are not Stage 1 production-readiness gates. Release delivery remains a legacy/optional transport module and must not be used to claim S1-12 completion.
+- Production schedule enablement and `ARXIV_PRODUCTION_ACCEPTED` remain blocked until PR CI, controlled manual SMTP evidence, and later acceptance gates pass.

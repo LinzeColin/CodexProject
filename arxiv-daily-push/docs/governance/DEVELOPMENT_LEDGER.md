@@ -1558,3 +1558,27 @@ None for this new project baseline.
 - Remaining risks: The live arXiv preflight used all 20 primary archives while the S1 Window A low-resource guidance still requires careful operator control; real SMTP credentials and two-day delivery evidence remain the blocking gate.
 - Rollback: Revert the S1-12 preflight phase record, run manifest, delivery task status change, ledger/event entry, generated status views, and test expectation update.
 - Next step: Execute controlled B1 Gmail SMTP delivery evidence for day 1 of 2 on the target runner, with production scheduler still disabled.
+
+### `ITER-20260623-S1-012`
+
+- Date: 2026-06-23
+- Fact level: EXTRACTED from Stage 1 text-only production enablement code, workflows, tests, semantic registry sync, and YAML workflow parsing.
+- Version before: 0.21.0
+- Version after: 0.22.0
+- Base commit: 2ff5adc7d10a971fd5bf4303a9d8936313bd070a
+- Result commit: PENDING
+- Task IDs: S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001
+- Goal: Prepare S1-12 for controlled B1/arXiv live email delivery by converting production enablement to all-arXiv text artifacts plus Gmail SMTP, with no video or GitHub Release production gate.
+- Assumptions: This iteration is PR/preflight preparation only; it must not send a real email, enable production scheduling, upload a Release, generate video, or claim `ARXIV_PRODUCTION_ACCEPTED`.
+- Files changed: all-arXiv delivery package, scheduled execution, preflight/scheduler/refs/launch/trial gates, four GitHub Actions workflows, schema/tests, version/changelog, semantic registries, and governance records.
+- Model changes: Refined existing Stage 1/Phase 12 models for text-only production enablement while preserving public validator IDs.
+- Formula changes: Refreshed FORM-ADP-013, 014, 015, 020, 021, 023, 024, 025, 029, 030, 031, 032, 034, 035, 036, 039, and CLI-linked S1 formulas 042-046.
+- Parameter changes: Updated active text-only values for Release/video/preflight/ref/workflow parameters including PARAM-ADP-053, 065, 066, 101, 110, 117, 131, 140, 142, 145, 147, 148, 152, 156, 157, 160, 161, 162, 183, 184, 186, and 277.
+- Commands run: py_compile, focused S1-12 tests, full arxiv-daily-push unit tests, YAML parse for four workflows, semantic extractor. Final governance validation pending after record generation.
+- Test results: arxiv-daily-push unit tests 190 OK; focused S1-12 tests 38 OK; semantic extractor 46 formulas and 331 parameters OK; four workflow YAML files parse OK.
+- Successes: Stage 1 frontstage email is Chinese text-first, candidate-queue aware, and no longer requires video/Release links; workflows target GitHub-hosted ubuntu-latest and keep contents read-only.
+- Failures: PR CI, controlled manual Gmail SMTP test, two natural-day evidence, production scheduler enablement, and final acceptance evidence are not complete.
+- Decisions: Do not enable production scheduled runs; open PR and wait for CI before any manual SMTP test.
+- Remaining risks: GitHub Actions expression syntax and Gmail SMTP provider behavior still require cloud-run verification; schedule must remain disabled until explicit owner acceptance.
+- Rollback: Revert version 0.22.0 S1-12 text-only production enablement code, workflows, schema/tests, and governance updates, restoring 0.21.0 with production disabled.
+- Next step: Open PR, wait for PR CI green, then run one controlled manual Gmail SMTP test on GitHub/cloud runner.

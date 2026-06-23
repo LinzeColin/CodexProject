@@ -68,7 +68,7 @@ assumptions:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md", "arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/tests/test_handoff.py"]
     status: "active"
   - assumption_id: "ASM-ADP-013"
-    statement: "Phase 11 generates a truthful acceptance and handoff readiness package; production acceptance remains blocked unless real 30-day trial, scheduler, Release, SMTP, and resource evidence is supplied."
+    statement: "Phase 11 generates a truthful acceptance and handoff readiness package; Stage 1 production acceptance remains blocked unless real 30-day trial, scheduler, Stage 1 text artifact, SMTP, and resource evidence is supplied."
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/tests/test_acceptance.py"]
     status: "active"
@@ -113,7 +113,7 @@ assumptions:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
     status: "active"
   - assumption_id: "ASM-ADP-022"
-    statement: "Scheduled execution must produce evidence artifacts after preflight and may count as production evidence only when daily run, real SMTP, real Release, and resource evidence refs are present."
+    statement: "Scheduled execution must produce evidence artifacts after preflight and may count as Stage 1 production evidence only when daily run, text artifact, real SMTP, and resource evidence refs are present."
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     status: "active"
@@ -153,17 +153,17 @@ assumptions:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/tests/test_trial_resource.py"]
     status: "active"
   - assumption_id: "ASM-ADP-033"
-    statement: "Production runner, SMTP secret, Release target, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report."
+    statement: "Production runner, SMTP secret, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report."
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
     status: "active"
   - assumption_id: "ASM-ADP-035"
-    statement: "Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP/Release delivery can count."
+    statement: "Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP delivery can count."
     fact_level: "EXTRACTED"
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_global_scan.py"]
     status: "active"
   - assumption_id: "ASM-ADP-036"
-    statement: "A controlled manual delivery test may create one GitHub Release and send one Gmail SMTP message only through an explicit workflow_dispatch confirmation on the default branch; it must not enable scheduled production."
+    statement: "A controlled manual delivery test may send one Gmail SMTP Stage 1 text email only through an explicit workflow_dispatch confirmation on the default branch; it must not create a required GitHub Release or enable scheduled production."
     fact_level: "EXTRACTED"
     evidence_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py"]
     status: "active"
