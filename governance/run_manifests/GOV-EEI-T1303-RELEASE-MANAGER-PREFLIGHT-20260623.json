@@ -113,6 +113,7 @@
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py",
     "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
@@ -224,6 +225,7 @@
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py",
     "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
@@ -233,7 +235,7 @@
   ],
   "ci_attestation_subject": "baaaee0f T1303/A204-A205 release-manager activation preflight CI evidence",
   "ci_run_reference": "Project Governance run 27994465700; EEI validation run 27994465691 job 82853640406",
-  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:44be78bad1beff0cc80ee584b0e3022b940f5362c22e175011dfc391bb536d13",
+  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:53c3fb4be81d7248b46d60b772a930a6f29d321dba8642c9439c6d67d3fbb0c8",
   "evidence_refs": [
     "EEI/scripts/validate_release_manager_activation.py",
     "EEI/tests/unit/test_release_manager_activation.py",
@@ -355,5 +357,6 @@
     "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json"
-  ]
+  ],
+  "content_tree_file_count_excluding_run_manifests": 102
 }

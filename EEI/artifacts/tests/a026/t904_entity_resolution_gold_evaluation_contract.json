@@ -40,14 +40,54 @@
       "recall_is_reported_not_release_threshold": true
     }
   },
-  "generated_at": "2026-06-22T10:18:34Z",
+  "generated_at": "2026-06-23T01:31:08Z",
   "manual_review_requirements": [
     "A026 requires at least 50 human-labeled entity-resolution cases and precision >= 95.00%.",
     "A027 requires at least 100 human-labeled relationship cases and precision >= 90.00%.",
     "Recall and source coverage must be reported for every run.",
-    "Repository fixtures are not production gold-set evidence."
+    "Repository fixtures are not production gold-set evidence.",
+    "Production gold labels require --allow-production-gold-set and production_gold_evidence with owner, sampling, labeler, source-license, passage-review and signature metadata."
   ],
   "production_claim_allowed": false,
+  "production_gold_evidence": null,
+  "production_intake_policy": {
+    "allow_flag_required": "--allow-production-gold-set",
+    "release_boundary": {
+      "does_not_close": [
+        "A202",
+        "A209",
+        "A210",
+        "release_manager_activation"
+      ],
+      "gold_quality_pass_only_closes": [
+        "A026",
+        "A027"
+      ],
+      "relationship_publication_allowed": false
+    },
+    "required_boolean_fields": {
+      "excludes_repository_fixtures": true,
+      "operator_supplied_labels": true,
+      "synthetic_or_fixture_labels": false
+    },
+    "required_list_fields": [
+      "source_document_refs",
+      "labeler_qualification_refs"
+    ],
+    "required_text_fields": [
+      "evidence_id",
+      "dataset_owner",
+      "owner_role",
+      "sampling_frame",
+      "labeling_protocol_ref",
+      "label_freeze_sha256",
+      "reviewer",
+      "reviewed_at",
+      "reviewer_signature_hash",
+      "source_license_review_ref",
+      "passage_review_policy_ref"
+    ]
+  },
   "quality_results": {
     "A026": {
       "acceptance_id": "A026",

@@ -4788,3 +4788,47 @@ Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209/A210/A026/A027 STILL 
 ### Rollback
 
 - Revert this CI-binding governance update and restore the preflight manifest to remote-pending if the cited GitHub Actions evidence is invalidated.
+
+## 2026-06-23 - T904/A026-A027 production gold-label intake contract
+
+Status: LOCAL VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABELS EXIST
+
+### Scope
+
+- Extended `scripts/validate_gold_quality_evaluation.py` so repository fixtures remain fail-closed by default.
+- Added explicit `--allow-production-gold-set` handling for future operator-supplied production labels.
+- Added required `production_gold_evidence` metadata: owner, owner role, sampling frame, labeling protocol, frozen dataset hash, reviewer, reviewer signature hash, source-license review reference, passage-review policy reference, source document refs, labeler qualification refs and fixture-exclusion booleans.
+- Added tests proving production labels are rejected without the explicit flag, rejected without evidence metadata, and can close only A026/A027 quality gates when sample counts, precision and source coverage thresholds are satisfied.
+
+### Acceptance mapping
+
+- T904 -> A026/A027.
+- A026 remains `IN_PROGRESS`: no real 50-case operator-supplied entity-resolution gold set is committed.
+- A027 remains `IN_PROGRESS`: no real 100-case operator-supplied relationship gold set is committed.
+- T1303 release-manager activation remains blocked because A202, A209 and A210 are still external gates.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight or threshold value changed.
+- Existing thresholds remain unchanged: A026 sample >= 50 and precision >= 95.00%; A027 sample >= 100 and precision >= 90.00%; minimum source coverage = 1.00.
+- Parameter profile `gold-quality-evaluation` remains `1` because threshold values did not change; this slice changes the label-intake evidence contract only.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache EEI/.venv/bin/python -m py_compile EEI/scripts/validate_gold_quality_evaluation.py EEI/tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache EEI/.venv/bin/uv run --directory EEI pytest tests/unit/test_gold_quality_evaluation.py -q -p no:cacheprovider`: PASS, 7 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache EEI/.venv/bin/ruff check EEI/scripts/validate_gold_quality_evaluation.py EEI/tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache EEI/.venv/bin/python EEI/scripts/validate_gold_quality_evaluation.py generate`: PASS with `release_gate_closure_allowed=false`.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-gold-pycache EEI/.venv/bin/python EEI/scripts/validate_gold_quality_evaluation.py validate`: PASS with A026/A027 `IN_PROGRESS`.
+
+### Remaining gaps
+
+- Real production labels are not present.
+- External source-license, passage-level, owner, legal, brand and 24h soak gates remain incomplete.
+- The validator enforces required metadata, but it cannot independently verify legal authority without the external evidence files.
+
+### Rollback
+
+- Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, A026/A027 artifacts and governance records.
+- Regenerate development, clean-room and release artifacts, then rerun validation.

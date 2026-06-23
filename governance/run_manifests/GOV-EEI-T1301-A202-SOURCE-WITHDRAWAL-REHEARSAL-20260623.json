@@ -109,6 +109,7 @@
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py",
     "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
@@ -220,6 +221,7 @@
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-WORKER-WAKE-CI-BINDING-20260623.json",
+    "governance/run_manifests/GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json",
     "scripts/generate_governance_dashboard.py",
     "tests/governance/test_project_governance_validator.py",
     "whkmSalary/docs/governance/ASSURANCE_STATUS.yaml",
@@ -229,7 +231,7 @@
   ],
   "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows",
   "ci_run_reference": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
-  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:75ab17051c54a3a23e6788680188eacc9a5fb71dba54bf058f13c8685c1afd7a",
+  "content_tree_hash": "sha256-changed-files-excluding-run-manifests:53c3fb4be81d7248b46d60b772a930a6f29d321dba8642c9439c6d67d3fbb0c8",
   "evidence_refs": [
     "EEI/scripts/publish_reviewed_relationship_facts.py",
     "EEI/tests/integration/test_database_migrations.py",
@@ -333,5 +335,6 @@
     "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "governance/run_manifests/GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623.json",
     "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json"
-  ]
+  ],
+  "content_tree_file_count_excluding_run_manifests": 102
 }
