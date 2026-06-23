@@ -45,8 +45,23 @@ jobs:
         run: |
           generated_at="${{ inputs.generated_at }}"
           if [ -z "$generated_at" ]; then generated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; fi
+          service_date="$(python3 - "$generated_at" <<'PY'
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          from zoneinfo import ZoneInfo
+          import sys
+
+          raw = sys.argv[1]
+          text = raw[:-1] + "+00:00" if raw.endswith("Z") else raw
+          dt = datetime.fromisoformat(text)
+          if dt.tzinfo is None:
+              dt = dt.replace(tzinfo=timezone.utc)
+          print(dt.astimezone(ZoneInfo("Australia/Sydney")).date().isoformat())
+          PY
+          )"
           printf 'generated_at=%s\n' "$generated_at" >> "$GITHUB_OUTPUT"
-          printf 'date=%s\n' "${generated_at:0:10}" >> "$GITHUB_OUTPUT"
+          printf 'date=%s\n' "$service_date" >> "$GITHUB_OUTPUT"
           printf 'max_results=%s\n' "${{ inputs.max_results_per_category || '3' }}" >> "$GITHUB_OUTPUT"
           printf 'polite_delay=%s\n' "${{ inputs.polite_delay_seconds || '3' }}" >> "$GITHUB_OUTPUT"
       - name: Run live all-arXiv dry-run
