@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (79/79 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (80/80 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -56,7 +56,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `113/288` PASS at `2026-06-23T20:09:12Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence (background run PID `12478`, checkpoint heartbeat `119/288` PASS at `2026-06-23T20:38:49Z`; detached watchdog PID `62233` is running; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` is now available as the A202 source/license/owner/legal release-decision fill-in contract, `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract, and `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` is now available as the A210 brand-clearance / risk-waiver fill-in contract.
 
@@ -71,19 +71,20 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `79`
-- active_parameters: `79`
+- total_parameters: `80`
+- active_parameters: `80`
 - active_values_changed_by_this_view: `0`
 - latest_T1302_A203_preflight: `scripts/validate_production_api_release_preflight.py` now proves `api_surface_ready=true` while keeping `release_ready=false` until A202 publication clearance, A204/A205 activation and A209 24h soak are complete.
 - latest_T1303_operator_cli: `scripts/apply_model_config.py` now supports dry-run preview plus explicit PostgreSQL `--execute`; `scripts/validate_release_manager_activation.py` now validates evidence-derived READY preflight only when all external gates are real; `artifacts/model_config_import_preview.json` remains non-closure evidence for A204/A205.
 - latest_T1303_mvp_release_gate: `scripts/validate_mvp_release_gate.py` now aggregates A202/A203/A204-A205/A209/A210/A026/A027 into `MVP_RELEASE_BLOCKED` until every required external gate is real and current.
-- latest_A209_finalization: `scripts/finalize_operator_soak_evidence.py` now reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `113/288` windows and blocks downstream release-gate refresh until 288/288 release-ready evidence exists.
+- latest_A209_finalization: `scripts/finalize_operator_soak_evidence.py` now reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `119/288` windows and blocks downstream release-gate refresh until 288/288 release-ready evidence exists.
+- latest_T1303_external_release_evidence_bundle: `scripts/validate_external_release_evidence_bundle.py` now consolidates A202/A210/A026/A027/A209 external gate evidence into `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED` and blocks release-manager refresh until all external inputs are real and ready.
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-OPERATOR-SOAK-FINALIZATION-IN-PROGRESS`
-- latest_clean_room_sync: fresh checkout should validate `package_paths=431`, `manifest_paths=438`, `checksum_paths=437` after the A209 finalization preflight files became staged.
+- release_gate: `TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
+- latest_clean_room_sync: fresh checkout should validate `package_paths=434`, `manifest_paths=441`, `checksum_paths=440` after the external release-evidence bundle files became staged.
 
 ## 14. Evidence Freshness
 
@@ -100,13 +101,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `f10765e4d936e15f9d0850b172898d334767bf82`
+- source_base_commit: `d80785a099d1ff7f16798381c3716e8793b2ffae`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
 - source_snapshot_hash: `sha256:075a0e30f6373607cd845134cdf957ae8af897ff4465d7813b9ab7a45d5b65a1`
-- snapshot_event_time: `2026-06-23T20:12:10Z`
+- snapshot_event_time: `2026-06-23T20:34:26Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1307-A209-OPERATOR-SOAK-FINALIZATION-IN-PROGRESS`
+- phase/gate: `C / TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

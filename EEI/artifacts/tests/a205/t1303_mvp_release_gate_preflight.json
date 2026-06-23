@@ -38,15 +38,15 @@
       "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 39.24,
+      "completion_percent": 41.32,
       "counts_as_release_ready": false,
       "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
-      "windows_completed": 113,
+      "windows_completed": 119,
       "windows_failed": 0,
-      "windows_remaining": 175
+      "windows_remaining": 169
     },
     "production_api": {
       "api_surface_ready": true,
@@ -95,7 +95,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-23T20:09:38Z",
+  "generated_at": "2026-06-23T20:38:59Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -184,15 +184,15 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "6c9fedc4c5629b129c5c3c010555f4033042a40ca8705fea2c9b7ad901b0605f",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "86597d31f30f1a38f82eaa861d2b8166f6e59e6ae48aa99472fb5f0feeaf4c9d",
+    "operator_soak_heartbeat_sha256": "70aa78f99aed0df951456788c9eea42bc2633ebac73f68d70500b0a86750dbf2",
     "production_api_preflight": "artifacts/tests/a203/t1302_production_api_release_preflight.json",
-    "production_api_preflight_sha256": "1544388f518f831a5350bbdbd47d9533b00a8673a56235f4423b49ecdd2eaa80",
+    "production_api_preflight_sha256": "2e7e0524a7a51774ef27a311fd16e9e2d84f3f414a256e6cb85745e20177d3c9",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "9d99ea2420567924a3659ad307aa11e97f0e93b93fc1a7ecd49726c56cdb55ba",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "release_decision_contract_sha256": "f11eb17e8242edd401e51ba76af4aa63e55081472822c2d0b030c067d8844027",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "0bddf5d804ea1cdfc21327e4901b5a445f0d587da79931a51b4b5d3bdbcdf969"
+    "release_manager_preflight_sha256": "9734a5ea31de8ba24d5776e3cf3063e0d7be8cd5e08369d17c1996fa79ddfc6b"
   },
   "status": "MVP_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

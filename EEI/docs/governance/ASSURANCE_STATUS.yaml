@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260624-021"
+as_of_event_id: "EVENT-20260624-022"
 source_snapshot_hash: "sha256:075a0e30f6373607cd845134cdf957ae8af897ff4465d7813b9ab7a45d5b65a1"
-source_base_commit: "f10765e4d936e15f9d0850b172898d334767bf82"
+source_base_commit: "d80785a099d1ff7f16798381c3716e8793b2ffae"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-23T20:12:10Z"
+snapshot_event_time: "2026-06-23T20:34:26Z"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 79
-    total_active_parameters: 79
+    checked_active_parameters: 80
+    total_active_parameters: 80
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 79
-    total_active_parameters: 79
+    checked_active_parameters: 80
+    total_active_parameters: 80
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -69,7 +69,7 @@ dimensions:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1307-A209-OPERATOR-SOAK-FINALIZATION-IN-PROGRESS"
+  release_gate: "TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"

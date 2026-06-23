@@ -5549,7 +5549,7 @@ Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BAC
 ### Current A209 evidence
 
 - Detached screen/operator/watchdog are still the active 24h path; this run did not stop, restart or close them.
-- Repository heartbeat refreshed to `113/288` successful windows, `0` failed, `175` remaining, `39.24%` complete, operator PID `12478` RUNNING and watchdog PID `62233` RUNNING.
+- Repository heartbeat refreshed to `119/288` successful windows, `0` failed, `169` remaining, `41.32%` complete, operator PID `12478` RUNNING and watchdog PID `62233` RUNNING.
 - Finalization artifact status is `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; `downstream_release_gate_refresh_allowed=false`; `release_gate_closed_by_finalizer=false`.
 
 ### Acceptance mapping
@@ -5562,8 +5562,8 @@ Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BAC
 - `python3 -m py_compile scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py`: PASS.
 - focused `ruff check scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py`: PASS.
 - `pytest -q tests/unit/test_operator_soak_finalization.py`: PASS, 3 passed.
-- `scripts/finalize_operator_soak_evidence.py generate --refresh-upstream`: PASS; generated `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `113/288`.
-- Development/risk/clean-room/release artifact generation after staging finalizer files: PASS; clean-room `package_paths=431`, release `manifest_paths=438`, `checksum_paths=437`.
+- `scripts/finalize_operator_soak_evidence.py generate --refresh-upstream`: PASS; generated `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `119/288`.
+- Development/risk/clean-room/release artifact generation after staging finalizer files: PASS; clean-room `package_paths=434`, release `manifest_paths=441`, `checksum_paths=440`.
 
 ### Remaining gaps
 
@@ -5573,3 +5573,41 @@ Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BAC
 ### Rollback
 
 - Revert the finalizer script, unit tests, Makefile target, v5 sync registration, finalization artifact and governance rows. Preserve `artifacts/tests/a209/t1307_operator_soak_24h.*` and `/private/tmp/eei-operator-soak-*` so the background soak can continue independently.
+
+
+## 2026-06-24 - T1303 external release evidence bundle preflight
+
+### Scope
+
+- Added `scripts/validate_external_release_evidence_bundle.py` and `artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json`.
+- Added `tests/unit/test_external_release_evidence_bundle.py` with blocked, ready and drift-detection coverage.
+- Wired `make generate-external-release-evidence-bundle`, `make validate-external-release-evidence-bundle`, `make verify` and v5 readiness sync.
+
+### Current evidence
+
+- Artifact status: `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`.
+- `external_release_evidence_ready=false`; `release_manager_preflight_refresh_allowed=false`; `mvp_release_gate_refresh_allowed=false`; `release_gate_closed_by_bundle_preflight=false`.
+- Missing external inputs: A202 source/license/passage/owner/legal release, A210 brand legal/market clearance or risk waiver, A026 production entity-resolution gold set, A027 production relationship-extraction gold set, and A209 24h operator-soak finalization.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- Upstream inputs remain mapped to existing acceptance IDs: T1301/A202, T1309/A210, T904/A026-A027 and T1307/A209.
+- This bundle does not close any upstream gate; it bounds the operator evidence packet required before release-manager refresh.
+
+### Validation
+
+- `python3 -m py_compile scripts/validate_external_release_evidence_bundle.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- focused `ruff check scripts/validate_external_release_evidence_bundle.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- `pytest -q tests/unit/test_external_release_evidence_bundle.py`: PASS, 3 passed.
+- `scripts/validate_external_release_evidence_bundle.py generate`: PASS; generated `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`.
+
+### Remaining gaps
+
+- A202, A210, A026/A027 and A209 remain incomplete external gates.
+- A204/A205 release-manager activation remains blocked until the external bundle, release-manager preflight and MVP release-gate preflight are all ready with real evidence.
+
+### Rollback
+
+- Revert the external bundle script, unit tests, Makefile targets, v5 sync registration, generated artifact and governance rows.
+- Preserve live A209 checkpoint/log files and any future operator-supplied signed evidence bundles.

@@ -1,0 +1,140 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+
+from scripts.validate_external_release_evidence_bundle import (
+    build_preflight,
+    validate_preflight,
+)
+
+
+def write_json(path: Path, payload: dict) -> Path:
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
+def release_decision(*, ready: bool) -> dict:
+    return {
+        "status": "RELEASE_DECISION_READY" if ready else "PENDING_SIGNED_DECISIONS",
+        "release_gate_closed_by_contract": ready,
+        "relationship_publication_allowed": ready,
+        "public_brand_launch_allowed": ready,
+    }
+
+
+def brand(*, ready: bool) -> dict:
+    return {
+        "release_gate": {
+            "status": "READY" if ready else "BLOCKING",
+            "public_release_allowed": ready,
+        },
+        "current_clearance_status": {
+            "a210_status": "DONE" if ready else "IN_PROGRESS",
+            "formal_legal_clearance": "CLEARED" if ready else "NOT_COMPLETE",
+            "market_clearance": "CLEARED" if ready else "NOT_COMPLETE",
+            "signed_risk_waiver": "NOT_REQUIRED" if ready else "NOT_PROVIDED",
+            "owner_signoff": "SIGNED" if ready else "NOT_PROVIDED",
+        },
+    }
+
+
+def gold(*, acceptance_id: str, ready: bool) -> dict:
+    return {
+        "focus_acceptance_id": acceptance_id,
+        "fixture_policy": {"production_gold_set": ready},
+        "focus_quality_result": {
+            "status": "DONE" if ready else "IN_PROGRESS",
+            "threshold_result": "PASS" if ready else "FAIL_CLOSED",
+            "release_gate_closure_allowed": ready,
+            "metrics": {
+                "sample_count": 100 if acceptance_id == "A026" else 150,
+                "precision": 0.98 if acceptance_id == "A026" else 0.93,
+                "source_coverage_min": 1.0,
+            },
+        },
+    }
+
+
+def finalization(*, ready: bool, windows_completed: int = 113) -> dict:
+    return {
+        "status": "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN"
+        if ready
+        else "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
+        "a209_evidence_ready_for_release_manager": ready,
+        "downstream_release_gate_refresh_allowed": ready,
+        "release_gate_closed_by_finalizer": False,
+        "source_statuses": {
+            "heartbeat": {
+                "windows_completed": 288 if ready else windows_completed,
+                "target_windows": 288,
+                "windows_failed": 0,
+                "progress_status": "COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
+                if ready
+                else "RUNNING_PARTIAL",
+            }
+        },
+    }
+
+
+def paths(tmp_path: Path, *, ready: bool) -> dict[str, Path]:
+    return {
+        "release_decision_contract_path": write_json(
+            tmp_path / "release_decision.json", release_decision(ready=ready)
+        ),
+        "brand_preflight_path": write_json(tmp_path / "brand.json", brand(ready=ready)),
+        "entity_gold_evaluation_path": write_json(
+            tmp_path / "entity_gold.json", gold(acceptance_id="A026", ready=ready)
+        ),
+        "relationship_gold_evaluation_path": write_json(
+            tmp_path / "relationship_gold.json", gold(acceptance_id="A027", ready=ready)
+        ),
+        "operator_soak_finalization_path": write_json(
+            tmp_path / "finalization.json", finalization(ready=ready)
+        ),
+    }
+
+
+def test_bundle_blocks_when_external_inputs_are_missing(tmp_path: Path) -> None:
+    input_paths = paths(tmp_path, ready=False)
+
+    payload = build_preflight(generated_at="2026-06-24T00:00:00Z", **input_paths)
+
+    assert payload["status"] == "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED"
+    assert payload["external_release_evidence_ready"] is False
+    assert payload["release_manager_preflight_refresh_allowed"] is False
+    assert payload["release_gate_closed_by_bundle_preflight"] is False
+    assert {row["acceptance_id"] for row in payload["missing_external_inputs"]} == {
+        "A202",
+        "A210",
+        "A026",
+        "A027",
+        "A209",
+    }
+    validate_preflight(payload, **input_paths)
+
+
+def test_bundle_allows_refresh_only_when_every_external_input_is_ready(
+    tmp_path: Path,
+) -> None:
+    input_paths = paths(tmp_path, ready=True)
+
+    payload = build_preflight(generated_at="2026-06-24T00:00:00Z", **input_paths)
+
+    assert payload["status"] == "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_READY"
+    assert payload["external_release_evidence_ready"] is True
+    assert payload["release_manager_preflight_refresh_allowed"] is True
+    assert payload["mvp_release_gate_refresh_allowed"] is True
+    assert payload["missing_external_inputs"] == []
+    validate_preflight(payload, **input_paths)
+
+
+def test_bundle_validation_detects_source_hash_drift(tmp_path: Path) -> None:
+    input_paths = paths(tmp_path, ready=True)
+    payload = build_preflight(generated_at="2026-06-24T00:00:00Z", **input_paths)
+    write_json(input_paths["brand_preflight_path"], brand(ready=False))
+
+    with pytest.raises(ValueError, match="external release evidence bundle drift"):
+        validate_preflight(payload, **input_paths)

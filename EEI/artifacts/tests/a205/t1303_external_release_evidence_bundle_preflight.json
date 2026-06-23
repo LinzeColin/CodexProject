@@ -1,0 +1,147 @@
+{
+  "acceptance_ids": [
+    "A202",
+    "A204",
+    "A205",
+    "A209",
+    "A210",
+    "A026",
+    "A027"
+  ],
+  "artifact_id": "t1303-external-release-evidence-bundle-preflight",
+  "external_release_evidence_ready": false,
+  "gate_statuses": {
+    "brand": {
+      "a210_status": "IN_PROGRESS",
+      "formal_legal_clearance": "NOT_COMPLETE",
+      "market_clearance": "NOT_COMPLETE",
+      "owner_signoff": "NOT_PROVIDED",
+      "public_release_allowed": false,
+      "release_gate_status": "BLOCKING",
+      "signed_risk_waiver": "NOT_PROVIDED"
+    },
+    "entity_gold": {
+      "expected_acceptance_id": "A026",
+      "focus_acceptance_id": "A026",
+      "precision": 0.8,
+      "production_gold_set": false,
+      "release_gate_closure_allowed": false,
+      "sample_count": 6,
+      "source_coverage_min": 1.0,
+      "status": "IN_PROGRESS",
+      "threshold_result": "FAIL_CLOSED"
+    },
+    "operator_soak_finalization": {
+      "a209_evidence_ready_for_release_manager": false,
+      "downstream_release_gate_refresh_allowed": false,
+      "progress_status": "RUNNING_PARTIAL",
+      "release_gate_closed_by_finalizer": false,
+      "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
+      "target_windows": 288,
+      "windows_completed": 119,
+      "windows_failed": 0
+    },
+    "relationship_gold": {
+      "expected_acceptance_id": "A027",
+      "focus_acceptance_id": "A027",
+      "precision": 0.75,
+      "production_gold_set": false,
+      "release_gate_closure_allowed": false,
+      "sample_count": 6,
+      "source_coverage_min": 1.0,
+      "status": "IN_PROGRESS",
+      "threshold_result": "FAIL_CLOSED"
+    },
+    "release_decision": {
+      "public_brand_launch_allowed": false,
+      "relationship_publication_allowed": false,
+      "release_gate_closed_by_contract": false,
+      "status": "PENDING_SIGNED_DECISIONS"
+    }
+  },
+  "generated_at": "2026-06-23T20:38:59Z",
+  "missing_external_inputs": [
+    {
+      "acceptance_id": "A202",
+      "input_id": "A202_source_license_passage_owner_legal_release",
+      "reason": "relationship publication clearance is not supplied"
+    },
+    {
+      "acceptance_id": "A210",
+      "input_id": "A210_brand_legal_market_clearance_or_risk_waiver",
+      "reason": "brand public release clearance or risk waiver is not complete"
+    },
+    {
+      "acceptance_id": "A026",
+      "input_id": "A026_entity_resolution_production_gold_set",
+      "reason": "entity-resolution production gold threshold is not met"
+    },
+    {
+      "acceptance_id": "A027",
+      "input_id": "A027_relationship_extraction_production_gold_set",
+      "reason": "relationship-extraction production gold threshold is not met"
+    },
+    {
+      "acceptance_id": "A209",
+      "input_id": "A209_24h_operator_soak_finalization",
+      "reason": "A209 finalization does not allow downstream refresh at 119/288 windows"
+    }
+  ],
+  "mvp_release_gate_refresh_allowed": false,
+  "non_claims": [
+    "This bundle preflight does not certify legal, source-license, brand or market clearance.",
+    "This bundle preflight does not convert templates or fixtures into clearance.",
+    "This bundle preflight does not close A202, A209, A210, A026 or A027.",
+    "This bundle preflight does not activate release-manager or MVP release gates."
+  ],
+  "operator_next_actions": [
+    "Attach real signed A202 source/license/passage/owner/legal evidence.",
+    "Attach real signed A210 brand clearance or risk waiver evidence.",
+    "Attach production A026/A027 gold-label evidence that meets thresholds.",
+    "Wait for A209 finalization to allow downstream release-gate refresh."
+  ],
+  "release_gate_closed_by_bundle_preflight": false,
+  "release_manager_preflight_refresh_allowed": false,
+  "required_external_inputs": [
+    "A202_source_license_passage_owner_legal_release",
+    "A210_brand_legal_market_clearance_or_risk_waiver",
+    "A026_entity_resolution_production_gold_set",
+    "A027_relationship_extraction_production_gold_set",
+    "A209_24h_operator_soak_finalization"
+  ],
+  "rollback": [
+    "Regenerate this preflight from the source gate artifacts.",
+    "Do not delete operator-supplied signed evidence bundles during rollback.",
+    "Do not delete live A209 checkpoint or log files during rollback."
+  ],
+  "schema_version": "eei-external-release-evidence-bundle-preflight-v1",
+  "source_files": {
+    "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
+    "brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
+    "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
+    "entity_gold_evaluation_sha256": "8ed692ff72c439c07debf1e8bb6c95e6dfc5e4167a6b2a9f640acb5b22fb5efc",
+    "operator_soak_finalization": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+    "operator_soak_finalization_sha256": "7bf417b0eb88f86867a04552fffeac23f9465ad6d7b159b4e751b998299a719e",
+    "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
+    "relationship_gold_evaluation_sha256": "9d99ea2420567924a3659ad307aa11e97f0e93b93fc1a7ecd49726c56cdb55ba",
+    "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
+    "release_decision_contract_sha256": "f11eb17e8242edd401e51ba76af4aa63e55081472822c2d0b030c067d8844027"
+  },
+  "status": "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301",
+    "T1303",
+    "T1307",
+    "T1309",
+    "T904"
+  ],
+  "validation_policy": {
+    "a209_partial_heartbeat_counts_as_clearance": false,
+    "all_external_inputs_required_before_release_manager_refresh": true,
+    "repository_fixtures_count_as_clearance": false,
+    "repository_templates_count_as_clearance": false
+  }
+}

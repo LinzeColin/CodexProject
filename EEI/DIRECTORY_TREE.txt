@@ -111,6 +111,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1303_transactional_model_activation_contract.json
 │   │   ├── a205
 │   │   │   ├── t1303_atomic_refresh_context_contract.json
+│   │   │   ├── t1303_external_release_evidence_bundle_preflight.json
 │   │   │   ├── t1303_mvp_release_gate_preflight.json
 │   │   │   └── t1303_release_manager_activation_preflight.json
 │   │   ├── a206
@@ -408,6 +409,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
+│   ├── validate_external_release_evidence_bundle.py
 │   ├── validate_github_governance.py
 │   ├── validate_gold_quality_evaluation.py
 │   ├── validate_governance.py
@@ -466,6 +468,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   └── unit
 │       ├── test_api_health.py
 │       ├── test_brand_clearance.py
+│       ├── test_external_release_evidence_bundle.py
 │       ├── test_gold_quality_evaluation.py
 │       ├── test_model_config_apply.py
 │       ├── test_mvp_release_gate.py

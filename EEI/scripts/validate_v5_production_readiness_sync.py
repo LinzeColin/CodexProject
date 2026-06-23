@@ -192,10 +192,13 @@ PARTIAL_EVIDENCE = {
         "scripts/validate_mvp_release_gate.py",
         "tests/unit/test_release_manager_activation.py",
         "tests/unit/test_mvp_release_gate.py",
+        "tests/unit/test_external_release_evidence_bundle.py",
         "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
         "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
+        "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
         "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
         "artifacts/tests/a205/t1303_mvp_release_gate_preflight.json",
+        "scripts/validate_external_release_evidence_bundle.py",
     },
     "T1307": {
         "scripts/run_soak_smoke.mjs",
