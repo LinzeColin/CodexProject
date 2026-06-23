@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.22.0 - 2026-06-23
+
+- Converted S1-12 production enablement to Stage 1 text-only delivery: all-arXiv scan, candidate queue, ROI-ranked lead selection, Chinese teaching email, and GitHub Actions text artifacts.
+- Removed video/MP4 and GitHub Release upload as production-readiness requirements for Stage 1; Gmail SMTP remains the only controlled frontstage side effect.
+- Kept production scheduler and `ARXIV_PRODUCTION_ACCEPTED` disabled pending PR CI, manual controlled SMTP test evidence, and later acceptance gates.
+
 ## 0.21.0 - 2026-06-23
 
 - Added S1-11 historical B1/arXiv preview evidence generation via `adp historical-b1-previews`.

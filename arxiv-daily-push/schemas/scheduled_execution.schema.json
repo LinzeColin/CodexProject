@@ -51,9 +51,10 @@
     },
     "evidence_refs": {
       "type": "object",
-      "required": ["daily_run_ref", "release_ref", "email_ref", "resource_gate_ref"],
+      "required": ["daily_run_ref", "text_artifact_ref", "email_ref", "resource_gate_ref"],
       "properties": {
         "daily_run_ref": {"type": "string"},
+        "text_artifact_ref": {"type": "string"},
         "release_ref": {"type": "string"},
         "email_ref": {"type": "string"},
         "resource_gate_ref": {"type": "string"}
