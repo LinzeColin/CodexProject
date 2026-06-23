@@ -82,10 +82,11 @@ OpMe_System remains UNVERIFIED and must not be treated as production safety tool
 
 ## 14. Evidence Freshness
 
+- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
 - tree_bound_events: `0`
-- commit_bound_events: `0`
+- commit_bound_events: `1`
 - legacy_unbound_events: `6`
-- precommit_pending_events: `1`
+- precommit_pending_events: `0`
 - pending_or_stale_events: `6`
 
 ## 15. UNKNOWN
@@ -96,7 +97,7 @@ OpMe_System remains UNVERIFIED and must not be treated as production safety tool
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:a3a6fb81408535bf4a238ce5e5a4e884417ff2e35eac416f1f03e6dddfbea41f`
+- source_snapshot_hash: `sha256:c8aa1214df10812313d0534bf02cf6f760edc80ad431d353ef2174def99d2efc`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `1.0.0`

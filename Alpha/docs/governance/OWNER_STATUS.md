@@ -82,10 +82,11 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 
 ## 14. Evidence Freshness
 
+- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
 - tree_bound_events: `0`
-- commit_bound_events: `0`
+- commit_bound_events: `1`
 - legacy_unbound_events: `5`
-- precommit_pending_events: `1`
+- precommit_pending_events: `0`
 - pending_or_stale_events: `5`
 
 ## 15. UNKNOWN
@@ -96,7 +97,7 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:a2cd25349f6bd5295ab00337f164c1d3752178b89188931a5b14474b021bb644`
+- source_snapshot_hash: `sha256:ccc4c719f6239884bb0a1cfcdb22864b65a8d1dd7b2ee27f2d30763eb8b953f5`
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`

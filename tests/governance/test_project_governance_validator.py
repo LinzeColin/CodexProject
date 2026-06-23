@@ -1759,7 +1759,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
-        self.assertIn("precommit_pending_events: 13", eei_backlog)
+        self.assertIn("precommit_pending_events: 21", eei_backlog)
 
     def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
         manifest = json.loads(
@@ -1788,7 +1788,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.21.0` |", dashboard_text)
+        self.assertIn("| `arxiv-daily-push` | `0.22.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
         self.assertIn("precommit_pending_events: 20", adp_backlog)
