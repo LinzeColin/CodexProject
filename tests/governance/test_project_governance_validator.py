@@ -472,6 +472,179 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(scope["selected_project_count"], 1)
         self.assertEqual(scope["selected_projects"][0]["project_id"], "B")
 
+    def test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            project_root = tmp_path / "ProjectA"
+            governance_root = project_root / "docs" / "governance"
+            governance_root.mkdir(parents=True)
+            (tmp_path / "governance").mkdir()
+            (tmp_path / "governance" / "projects.yaml").write_text(
+                "\n".join(
+                    [
+                        "projects:",
+                        "  - project_id: ProjectA",
+                        "    path: ProjectA",
+                        "    ci_mode: advisory",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "project.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.project.v1",
+                        "project_id: ProjectA",
+                        "project_name: Project A",
+                        "summary: Test project",
+                        "version: 0.1.0",
+                        "fact_level: VERIFIED",
+                        "features:",
+                        "  - feature_id: FEAT-A",
+                        "    name: Feature A",
+                        "    description: Owner value",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    evidence_refs: [EVID-A]",
+                        "models:",
+                        "  - model_id: MOD-A",
+                        "    name: Model A",
+                        "    purpose: Score",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    formula_ids: [FORM-A]",
+                        "    parameter_ids: [PARAM-A]",
+                        "    evidence_refs: [EVID-A]",
+                        "formulas:",
+                        "  - formula_id: FORM-A",
+                        "    model_id: MOD-A",
+                        "    description: Score formula",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    expression: x * w",
+                        "    variables: []",
+                        "    evidence_refs: [EVID-A]",
+                        "parameters:",
+                        "  - parameter_id: PARAM-A",
+                        "    symbol: w",
+                        "    name: Weight",
+                        "    status: active",
+                        "    fact_level: VERIFIED",
+                        "    value: 2",
+                        "    source: owner",
+                        "    evidence_refs: [EVID-A]",
+                        "evidence_refs:",
+                        "  - evidence_id: EVID-A",
+                        "    kind: owner",
+                        "    ref: owner-note",
+                        "    fact_level: VERIFIED",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "roadmap.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.roadmap.v1",
+                        "project_id: ProjectA",
+                        "total_estimated_hours: 999",
+                        "current_stage_id: S1",
+                        "current_phase_id: S1PA",
+                        "current_task_id: S1PAT02",
+                        "next_gate_id: S1-GATE",
+                        "stages:",
+                        "  - stage_id: S1",
+                        "    name: Stage One",
+                        "    person_goal: Ship",
+                        "    status: in_progress",
+                        "    estimated_hours: 999",
+                        "    estimated_pct: 99",
+                        "    stop_conditions: [stop]",
+                        "    stop_gate:",
+                        "      gate_id: S1-GATE",
+                        "      pass_criteria: [pass]",
+                        "      evidence: [EVID-A]",
+                        "      failure_action: blocked",
+                        "    phases:",
+                        "      - phase_id: S1PA",
+                        "        name: Phase A",
+                        "        objective: Do work",
+                        "        status: in_progress",
+                        "        estimated_hours: 999",
+                        "        estimated_pct: 99",
+                        "        stop_conditions: [stop]",
+                        "        stop_gate:",
+                        "          gate_id: S1PA-GATE",
+                        "          pass_criteria: [pass]",
+                        "          evidence: [EVID-A]",
+                        "          failure_action: remain_in_phase",
+                        "        tasks:",
+                        "          - task_id: S1PAT01",
+                        "            name: Done",
+                        "            objective: Finish first",
+                        "            status: completed",
+                        "            estimated_hours: 1",
+                        "            estimated_pct: 99",
+                        "            dependencies: [none]",
+                        "            acceptance_ids: [ACC-A]",
+                        "            acceptance: []",
+                        "            test_commands: [test]",
+                        "            test_results: [pass]",
+                        "            evidence_refs: [EVID-A]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                        "          - task_id: S1PAT02",
+                        "            name: Next",
+                        "            objective: Finish next",
+                        "            status: planned",
+                        "            estimated_hours: 3",
+                        "            estimated_pct: 99",
+                        "            dependencies: [S1PAT01]",
+                        "            acceptance_ids: [ACC-B]",
+                        "            acceptance: []",
+                        "            test_commands: [test]",
+                        "            test_results: [pending]",
+                        "            evidence_refs: [EVID-A]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "events.jsonl").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "codexproject.event.v1",
+                        "event_id": "EVT-A",
+                        "project_id": "ProjectA",
+                        "occurred_at": "2026-06-23T00:00:00Z",
+                        "event_type": "implementation",
+                        "summary": "Implemented",
+                        "fact_level": "VERIFIED",
+                        "task_id": "S1PAT01",
+                        "acceptance_ids": ["ACC-A"],
+                        "changed_files": ["ProjectA/app.py"],
+                        "evidence_refs": [{"evidence_id": "EVID-A", "kind": "owner", "ref": "owner-note", "fact_level": "VERIFIED"}],
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            dry = cli.render_registered_project("ProjectA", write=False, root=tmp_path, projects_file=tmp_path / "governance" / "projects.yaml")
+            self.assertFalse(dry["write"])
+            for path in ("功能清单", "开发记录", "模型参数文件"):
+                self.assertFalse((project_root / path).exists(), path)
+            written = cli.render_registered_project("ProjectA", write=True, root=tmp_path, projects_file=tmp_path / "governance" / "projects.yaml")
+            self.assertTrue(written["write"])
+            dev_record = (project_root / "开发记录").read_text(encoding="utf-8")
+        self.assertIn("progress: `25.00%`", dev_record)
+        self.assertIn("| S1PAT02 | Next | planned | 3.00 | 75.00%", dev_record)
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
