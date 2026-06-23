@@ -1,5 +1,5 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260624-013"
+as_of_event_id: "EVENT-20260624-014"
 source_snapshot_hash: "sha256:075a0e30f6373607cd845134cdf957ae8af897ff4465d7813b9ab7a45d5b65a1"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 75
-    total_active_parameters: 75
+    checked_active_parameters: 76
+    total_active_parameters: 76
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 75
-    total_active_parameters: 75
+    checked_active_parameters: 76
+    total_active_parameters: 76
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 13
     legacy_unbound_events: 17
-    precommit_pending_events: 27
+    precommit_pending_events: 28
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS"
+  release_gate: "TASK-T1301-A202-RELEASE-DECISION-INTAKE-IN-PROGRESS"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"

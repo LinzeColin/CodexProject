@@ -30,7 +30,7 @@
       "GV-SNAPSHOT-004"
     ]
   },
-  "generated_at": "2026-06-23T10:03:20Z",
+  "generated_at": "2026-06-23T17:56:36Z",
   "non_claims": [
     "This contract does not certify legal clearance.",
     "This contract does not certify trademark or market clearance.",
@@ -119,6 +119,8 @@
   "source_files": {
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "a202_operator_review_packet_sha256": "96fbed00c1b6c4ac19fa400f6a24ac8bb4b7f689b93647f4613f3b12fc9ac6c6",
+    "a202_release_decision_intake_template": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+    "a202_release_decision_intake_template_sha256": "1b8c2f7f0b03a5ec27e7b5c5fa54ad5900edb33aff7fd53fc4b58fb30ec1936e",
     "a210_brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "a210_brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
     "decision_bundle_template": "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
@@ -137,11 +139,13 @@
     "T1309"
   ],
   "validation_policy": {
+    "a202_intake_template_counts_as_clearance": false,
     "contract_test_signatures_are_not_clearance": true,
     "default_publication_state": "fail_closed",
     "production_owner_publication_requires_signed_bundle": true,
     "production_owner_publication_writes_operation_log": true,
     "publication_passage_reviews_must_cover_candidate_source_anchors": true,
+    "signed_a202_intake_required_for_source_owner_legal_closure": true,
     "signed_bundle_required_for_a202_a210_closure": true,
     "signed_contract_test_counts_as_clearance": false,
     "template_only_allowed_in_repository": true,

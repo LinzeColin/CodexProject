@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`
-- Models/Formulas/Parameters total: `12 / 12 / 75`
-- Active formulas/parameters: `11 / 75`
-- Machine checked formulas/parameters: `11 / 75`
+- Phase/Gate: `C / TASK-T1301-A202-RELEASE-DECISION-INTAKE-IN-PROGRESS`
+- Models/Formulas/Parameters total: `12 / 12 / 76`
+- Active formulas/parameters: `11 / 76`
+- Machine checked formulas/parameters: `11 / 76`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1309-A210-BRAND-CLEARANCE-INTAKE-IN-PROGRESS`
+- Release gate: `TASK-T1301-A202-RELEASE-DECISION-INTAKE-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
 - Pending/stale events: `43`
 - Tree-bound events: `0`
@@ -46,7 +46,7 @@
 ## A209 Background Soak Update
 
 - T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
-- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `81/288` windows PASS, `0` failed, `207` remaining, `28.12%` complete, generated at `2026-06-23T17:27:11Z`.
+- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `88/288` windows PASS, `0` failed, `200` remaining, `30.56%` complete, generated at `2026-06-23T18:05:13Z`.
 - Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, dry-runs recovery by default, and is included in clean-room release packaging. Watchdog contract `EEI/scripts/watch_operator_soak.py` reports `release_gate_closed_by_watchdog=false`, resumes only paused successful checkpoints when launched with `--execute --auto-resume`, and reports stale live PIDs without killing them. Heartbeat contract `EEI/scripts/record_operator_soak_heartbeat.py` reports `release_gate_closed_by_background_heartbeat=false` and keeps A209 `IN_PROGRESS`. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
 
 ## T1303 Model Config Apply Update
@@ -66,3 +66,9 @@
 - `scripts/validate_brand_clearance.py generate-template` now writes `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` with the exact A210 evidence fields for CN/US/EU/UK/AU trademark knockout, company/domain/social/app-store/GitHub/npm/PyPI searches, Chinese/English phonetic-semantic review, legal/owner decision and final attestation.
 - The template status is `TEMPLATE_ONLY`, with `release_gate_closure_allowed=false`, `public_brand_launch_allowed=false` and `template_counts_as_clearance=false`; it is an operator/legal intake artifact, not formal legal advice, trademark clearance, market clearance or public-launch approval.
 - A210 remains `IN_PROGRESS` until a real signed brand-clearance or risk-waiver bundle passes validation and the release manager later sees all external gates ready.
+
+## T1301 A202 Release-Decision Intake Template Update
+
+- `scripts/validate_release_decision_bundle.py generate-template` now writes `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` with exact A202 source-license, passage-level relationship review, production owner sign-off, legal release clearance and attestation fields for Golden Vertical relationship candidates `GV-FACT-001..002`.
+- The template status is `TEMPLATE_ONLY`, with `release_gate_closure_allowed=false`, `relationship_publication_allowed=false` and `template_counts_as_clearance=false`; it is an operator/legal intake artifact, not source-license approval, passage approval, owner approval, legal clearance, relationship publication or A202 closure.
+- A202 remains `IN_PROGRESS` until a real signed A202 intake or release-decision bundle passes validation and the release manager later sees all external gates ready. A209 24h soak continues as an independent background gate.

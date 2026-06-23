@@ -5349,3 +5349,45 @@ Status: LOCAL FOCUSED VALIDATED; A210 STILL IN PROGRESS
 
 - Revert `scripts/validate_brand_clearance.py`, `tests/unit/test_brand_clearance.py`, `artifacts/tests/a210/t1309_brand_clearance_intake_template.json`, `Makefile` and this governance/documentation update.
 - Regenerate development, clean-room and release artifacts, then rerun focused A210 validation.
+
+## 2026-06-24 - T1301/A202 release-decision intake template
+
+Status: LOCAL FOCUSED VALIDATED; A202/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Added `generate-template`, `validate-template` and `validate-signed-intake --bundle` subcommands to `scripts/validate_release_decision_bundle.py`.
+- Generated `artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` as the operator/legal fill-in contract for source-license review, passage-level relationship review, production owner sign-off, legal release clearance and final attestation.
+- Wired `validate-template` into `make verify` through `validate-release-decision-bundle`.
+- Added unit coverage proving the committed template is fail-closed and that a complete signed A202 intake still reports `release_ready=false` until A210, A026/A027, A209 and release-manager activation are complete.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`: the committed intake artifact is `TEMPLATE_ONLY` and does not provide source-license approval, passage-level relationship approval, production owner approval, legal clearance, relationship publication or A202 closure.
+- A209 remains a background independent gate and is not replaced by A202 intake evidence.
+
+### Parameters and formulas
+
+- Added `PARAM-076` / `release_decision_intake.schema_version = eei-a202-release-decision-intake-v1`.
+- No scoring formula, graph traversal formula, extraction model, model weight, threshold value or runtime scoring behavior changed.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py generate-template`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate-template`: PASS with `release_gate_closure_allowed=false`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --template-only`: PASS with `release_ready=false`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS with `release_ready=false`.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-intake-pycache .venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py -p no:cacheprovider`: PASS, 8 passed.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ruff check scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py`: PASS.
+
+### Remaining gaps
+
+- Real source-license reviews, passage-level approvals, production owner sign-offs and legal release clearance are still not supplied.
+- A210 brand clearance, A026/A027 production gold labels, A209 24h soak and release-manager activation remain incomplete.
+
+### Rollback
+
+- Revert `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, `artifacts/tests/a202/t1301_a202_release_decision_intake_template.json`, `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`, `Makefile` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused A202 release-decision validation.

@@ -1024,6 +1024,18 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Rollback: revert these assurance-status fields and the append-only event, then regenerate release artifacts.
 - Next step: regenerate release artifacts and rerun full validation plus root governance.
 
+## 2026-06-24 - EVENT-20260624-014 - T1301/A202 release-decision intake template
+
+- Goal: add an operator/legal fill-in contract for A202 source-license review, passage-level relationship review, production owner sign-off and legal release clearance while keeping relationship publication and release readiness fail-closed.
+- Assumptions: the A202 intake template is not source-license approval, passage approval, owner approval, legal clearance, relationship publication, A202 closure, A209 closure or release-manager activation.
+- Files changed: `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, `artifacts/tests/a202/t1301_a202_release_decision_intake_template.json`, `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`, `Makefile`, parameter/traceability/status docs and phase records.
+- Tests run so far: A202 intake template generate/validate, A202/A210 release-decision contract validate, template-only bundle validate, signed fixture validate, focused `pytest` for `tests/unit/test_release_decision_bundle.py`, focused `ruff`, semantic extractor validation, A209 heartbeat refresh/validation and A209 supervisor no-write check.
+- Test results so far: template generation PASS with `TEMPLATE_ONLY` and `release_gate_closure_allowed=false`; contract validation PASS; signed fixture validation PASS with `release_ready=false`; release-decision unit tests PASS `8/8`; focused ruff PASS; semantic extractor PASS with `76` parameters; A209 heartbeat PASS with operator PID `12478`, watchdog PID `62233`, `88/288` windows PASS, `0` failed, `200` remaining and `release_gate_closed_by_background_heartbeat=false`.
+- Decisions: register `PARAM-076` for `release_decision_intake.schema_version`; keep A202/A209/A210/A026/A027 and release-manager activation open; keep A209 as a background long-running gate and verify its live supervisor separately.
+- Remaining risks: real source-license reviews, passage-level approvals, production owner sign-offs and legal clearance are still absent; A209 can still fail before 288 windows complete.
+- Rollback: revert the A202 intake validator/test/template, regenerated A202/A210 contract artifact and governance updates; regenerate release artifacts afterward.
+- Next step: regenerate development, clean-room and release artifacts, rerun full validation, root changed-only semantic governance, A209 live supervisor/checkpoint check, then commit, push and bind CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.

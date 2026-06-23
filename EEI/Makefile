@@ -100,9 +100,11 @@ validate-brand-clearance:
 	$(UV) run python scripts/validate_brand_clearance.py validate-template
 
 generate-release-decision-bundle-artifact:
+	$(UV) run python scripts/validate_release_decision_bundle.py generate-template
 	$(UV) run python scripts/validate_release_decision_bundle.py generate
 
 validate-release-decision-bundle:
+	$(UV) run python scripts/validate_release_decision_bundle.py validate-template
 	$(UV) run python scripts/validate_release_decision_bundle.py validate
 	$(UV) run python scripts/validate_release_decision_bundle.py validate-bundle --template-only
 	$(UV) run python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json

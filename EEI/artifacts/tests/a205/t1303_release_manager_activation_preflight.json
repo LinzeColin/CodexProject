@@ -57,7 +57,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-23T10:03:36Z",
+  "generated_at": "2026-06-23T18:08:48Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -122,7 +122,7 @@
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "9d99ea2420567924a3659ad307aa11e97f0e93b93fc1a7ecd49726c56cdb55ba",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "c96ddce00c9cf00131b71739fcf90057ef7d1a2abc13f42ae1a20e2bcb920d20",
+    "release_decision_contract_sha256": "f11eb17e8242edd401e51ba76af4aa63e55081472822c2d0b030c067d8844027",
     "signed_decision_bundle": "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
     "signed_decision_bundle_sha256": "20bece9164778e85dcc0ff155d30344d9d304586f647375891bcd7660ae023ad"
   },
