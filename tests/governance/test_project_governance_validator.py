@@ -134,7 +134,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/schemas/roadmap.schema.json",
             "governance/schemas/events.schema.json",
             "docs/governance/templates/功能清单.template.md",
+            "docs/governance/templates/开发记录.template.md",
             "docs/governance/templates/模型参数文件.template.md",
+            "docs/governance/templates/Roadmap.template.md",
             "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
@@ -287,6 +289,44 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         for call in check_output.call_args_list:
             self.assertEqual(call.kwargs.get("encoding"), "utf-8")
             self.assertTrue(call.kwargs.get("text"))
+
+    def test_review9_s2_dev_record_and_roadmap_templates_are_owner_readable(self) -> None:
+        dev_text = (ROOT / "docs" / "governance" / "templates" / "开发记录.template.md").read_text(
+            encoding="utf-8"
+        )
+        roadmap_text = (ROOT / "docs" / "governance" / "templates" / "Roadmap.template.md").read_text(
+            encoding="utf-8"
+        )
+        for required in {
+            "project_id",
+            "product_version",
+            "current_stage",
+            "current_phase",
+            "current_task",
+            "blockers",
+            "next_gate",
+            "next_unique_task",
+            "evidence_status",
+        }:
+            self.assertIn(required, dev_text[:700])
+            self.assertIn(required, roadmap_text[:700])
+        dev_order = ["## 摘要", "## Owner 决策", "## 进度总览", "## Roadmap", "## 近期事件", "## 风险与阻塞"]
+        roadmap_order = ["## 摘要", "## 计算规则", "## Stages", "## Phases", "## Tasks", "## Stop Gates", "## Acceptance And Evidence"]
+        self.assertEqual(
+            [dev_text.index(item) for item in dev_order],
+            sorted(dev_text.index(item) for item in dev_order),
+        )
+        self.assertEqual(
+            [roadmap_text.index(item) for item in roadmap_order],
+            sorted(roadmap_text.index(item) for item in roadmap_order),
+        )
+        for text in (dev_text, roadmap_text):
+            self.assertIn("Stage -> Phase -> Task", text)
+            self.assertIn("stop_gate", text)
+            self.assertIn("evidence_refs", text)
+            self.assertNotIn("兼容索引", text)
+            self.assertNotIn("详见 docs/governance", text)
+            self.assertNotIn("link page", text.lower())
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
