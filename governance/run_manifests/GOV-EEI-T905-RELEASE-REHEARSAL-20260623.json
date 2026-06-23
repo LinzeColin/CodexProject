@@ -1,8 +1,7 @@
 {
   "acceptance_ids": [
-    "ACC-A202",
-    "ACC-A209",
-    "ACC-A210"
+    "ACC-A119",
+    "ACC-A120"
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
@@ -244,107 +243,74 @@
   "content_tree_file_count_excluding_run_manifests": 106,
   "content_tree_hash": "sha256-changed-files-excluding-run-manifests:a84a7080bea976eccf25179b501691e0d72351dc5ef6d18e435bf3184e50807c",
   "evidence_refs": [
-    "EEI/scripts/publish_reviewed_relationship_facts.py",
+    "EEI/artifacts/tests/a119/t905_migration_rollback_rehearsal.json",
+    "EEI/artifacts/tests/a120/t905_clean_start_operator_rehearsal.json",
+    "EEI/scripts/validate_t905_release_rehearsal.py",
     "EEI/tests/integration/test_database_migrations.py",
-    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
-    "EEI/docs/governance/development_events.jsonl",
-    "EEI/artifacts/release_evidence_t1211.json",
-    "EEI/CHECKSUMS.sha256"
+    "EEI/docs/governance/development_events.jsonl#EVENT-20260623-009"
   ],
+  "fact_level": "EXTRACTED",
   "finished_at": "PENDING_CI",
-  "generated_at": "2026-06-22T23:39:25Z",
-  "implementation_base_sha": "a23548d19ec658e58fb4afb2278df42ee69ede58",
-  "iteration_id": "ITER-20260623-005",
+  "generated_at": "2026-06-23T02:20:00Z",
+  "implementation_base_sha": "601db0c2c96a0cd2aa5ed9cc3540e4f7ebe9c4b9",
+  "iteration_id": "ITER-20260623-009",
+  "model_delta": "No scoring formula, graph traversal, extraction model, model weight or threshold value change; production gold-label evidence intake contract only.",
+  "notes": [
+    "This manifest proves production gold-label intake contract only; it does not provide production labels.",
+    "A026/A027 remain IN_PROGRESS until real operator-supplied labels meet thresholds and metadata requirements."
+  ],
   "observed_results": [
-    "LOCAL_MAKE_VERIFY_PASS",
+    "LOCAL_A026_A027_PRODUCTION_GOLD_INTAKE_CONTRACT_PASS",
+    "REPOSITORY_FIXTURE_REMAINS_FAIL_CLOSED",
+    "A026_A027_REMAIN_IN_PROGRESS",
     "PENDING_GITHUB_ACTIONS_AFTER_PUSH"
   ],
+  "parameter_delta": "No PARAM-064 through PARAM-068 value change.",
   "project_id": "root-governance",
   "required_governance_files": [
+    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/governance/STATUS.md",
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
-    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
-    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
     "EEI/data/acceptance_matrix.csv",
+    "EEI/data/task_backlog.csv",
     "EEI/data/acceptance_traceability.csv",
-    "EEI/data/development_status_ledger.csv",
-    "governance/run_manifests/GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623.json"
+    "EEI/docs/governance/TRACEABILITY_MATRIX.csv"
   ],
   "result_commit": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
   "risk_summary": [
-    "A202 remains open until real source/license/owner/legal/brand, production gold labels and release-manager evidence exist.",
-    "A209 24h soak remains a background long-running evidence gate.",
-    "Repository withdrawal rehearsal is not live operator withdrawal proof."
+    "Intake contract can be misread as real production labels if production_gold_evidence is ignored.",
+    "External source/license/legal/owner/brand and 24h soak evidence remain missing."
   ],
-  "rollback": "Revert the A202 source-withdrawal publication gate/test/governance updates, regenerate release artifacts and rerun make verify.",
-  "run_id": "GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623",
+  "rollback": "Revert the gold-quality validator/test/artifact/governance updates, regenerate artifacts and rerun validation.",
+  "run_id": "GOV-EEI-T905-RELEASE-REHEARSAL-20260623",
   "schema_version": 2,
-  "started_at": "2026-06-22T23:39:25Z",
-  "task_id": "GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623",
+  "self_reference_policy": "content_tree_hash excludes run manifests because this manifest cannot contain its own final hash before commit; CI attestation must bind the final commit after push.",
+  "started_at": "2026-06-23T01:35:00+00:00",
+  "summary": "T905/A119-A120 migration rollback and clean-start release rehearsal with remote CI binding pending.",
+  "task_id": "TASK-T905",
   "test_commands": [
-    "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/publish_reviewed_relationship_facts.py tests/integration/test_database_migrations.py",
-    "PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/unit/test_release_decision_bundle.py tests/unit/test_scoring.py -q -p no:cacheprovider",
-    "env -u DATABASE_URL PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_development_status_artifacts.py generate",
-    "python3 scripts/generate_governance_dashboard.py --write --project EEI",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_clean_room_release.py generate",
-    "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/manage_release_artifacts.py generate --remote-status PENDING",
-    "TMPDIR=/private/tmp PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify"
+    "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_t905_release_rehearsal.py generate",
+    "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_t905_release_rehearsal.py validate",
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-t905-pycache .venv/bin/python -m py_compile scripts/validate_t905_release_rehearsal.py tests/integration/test_database_migrations.py",
+    "UV_CACHE_DIR=/private/tmp/eei-uv-cache EEI/.venv/bin/ruff check EEI/scripts/validate_t905_release_rehearsal.py EEI/scripts/validate_governance.py EEI/tests/integration/test_database_migrations.py tests/governance/test_project_governance_validator.py",
+    "env -u DATABASE_URL PYTHONDONTWRITEBYTECODE=1 UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider"
   ],
   "test_results": [
-    {
-      "command": "py_compile scoped A202 source-withdrawal files",
-      "exit_code": 0,
-      "observed": "Publication script and integration test modules compile.",
-      "result": "PASS"
-    },
-    {
-      "command": "ruff scoped A202 source-withdrawal files",
-      "exit_code": 0,
-      "observed": "Scoped publication script and integration test pass lint.",
-      "result": "PASS"
-    },
-    {
-      "command": "unit tests release decision bundle and scoring",
-      "exit_code": 0,
-      "observed": "19 passed.",
-      "result": "PASS"
-    },
-    {
-      "command": "integration database migrations without local DATABASE_URL",
-      "exit_code": 0,
-      "observed": "1 skipped locally; remote PostgreSQL CI required for state-mutation rehearsal.",
-      "result": "SKIP"
-    },
-    {
-      "command": "make verify",
-      "exit_code": 0,
-      "observed": "Governance/catalog validators, release artifacts, scale/soak smoke, secret scan, UI copy, ruff, web typecheck and unit tests 62/62 passed.",
-      "result": "PASS"
-    }
+    "T905 artifact generation PASS for A119/A120",
+    "T905 validator PASS",
+    "py_compile PASS",
+    "focused ruff PASS",
+    "local integration suite SKIPPED without DATABASE_URL; remote G2 PostgreSQL CI required for execution proof"
   ],
   "updated_governance_files": [
-    "EEI/CHANGELOG.md",
-    "EEI/data/acceptance_matrix.csv",
-    "EEI/data/acceptance_traceability.csv",
-    "EEI/data/development_status_ledger.csv",
-    "EEI/docs/governance/ASSURANCE_STATUS.yaml",
     "EEI/docs/governance/DEVELOPMENT_LEDGER.md",
-    "EEI/docs/governance/MODEL_SPEC.md",
-    "EEI/docs/governance/OWNER_STATUS.md",
-    "EEI/docs/governance/STATUS.md",
     "EEI/docs/governance/VERSION_MATRIX.yaml",
     "EEI/docs/governance/delivery_tasks.yaml",
     "EEI/docs/governance/development_events.jsonl",
-    "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md",
-    "EEI/docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md",
-    "governance/run_manifests/GOV-EEI-T1301-A202-SOURCE-WITHDRAWAL-REHEARSAL-20260623.json",
-    "governance/run_manifests/GOV-EEI-T1303-RELEASE-MANAGER-PREFLIGHT-20260623.json"
+    "EEI/data/acceptance_matrix.csv",
+    "EEI/data/task_backlog.csv",
+    "EEI/data/acceptance_traceability.csv",
+    "EEI/docs/governance/TRACEABILITY_MATRIX.csv"
   ]
 }

@@ -4832,3 +4832,40 @@ Status: LOCAL VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABEL
 
 - Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, A026/A027 artifacts and governance records.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-23 - T905/A119-A120 migration rollback and clean-start release rehearsal
+
+Status: LOCAL VALIDATED; REMOTE POSTGRESQL CI BINDING PENDING
+
+### Scope
+
+- Added `scripts/validate_t905_release_rehearsal.py` to generate and validate A119/A120 release rehearsal evidence.
+- Added `tests/integration/test_database_migrations.py::test_t905_each_migration_suffix_rolls_down_and_re_upgrades` so GitHub Actions G2 PostgreSQL rehearses every migration suffix with `downgrade --steps N` followed by `upgrade`, then ends with `downgrade --all`.
+- Added README clean-start commands for a new operator: bootstrap, env copy, doctor, PostgreSQL start, migration, seeds, fixtures, schema/health, `make verify-g2-db`, clean-room/release validation and database shutdown.
+- Generated `artifacts/tests/a119/t905_migration_rollback_rehearsal.json` and `artifacts/tests/a120/t905_clean_start_operator_rehearsal.json`.
+- Wired `validate-t905-release-rehearsal` into `make verify`.
+
+### Acceptance mapping
+
+- T905 -> A119/A120.
+- A119 is now DONE for the migration/runbook contract; remote CI Step 10 must bind the PostgreSQL execution proof for this commit.
+- A120 is now DONE for README clean-start and critical-demo reproduction contract; it does not imply public release readiness.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold or active parameter value changed.
+- T905 introduces validation/runbook evidence only.
+
+### Remaining gaps
+
+- A202 still lacks real signed source-license review, passage-level relationship approval, production owner approval and legal release clearance.
+- A026/A027 still require production human-labeled gold cases.
+- A209 24h soak remains a background independent gate.
+- A210 formal brand legal/market clearance or signed risk waiver is still missing.
+- Release-manager activation remains blocked until the external gates above are complete.
+
+### Rollback
+
+- Revert the T905 validator, integration-test, README, artifacts and A119/A120/T905 governance rows.
+- Regenerate development, clean-room and release artifacts, then rerun validation.

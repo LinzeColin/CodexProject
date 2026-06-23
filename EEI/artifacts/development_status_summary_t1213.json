@@ -33,7 +33,7 @@
       "resolved": 32,
       "prototyped": 21,
       "specified": 14,
-      "not_started_tasks": 62,
+      "not_started_tasks": 61,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },
@@ -47,7 +47,7 @@
   },
   "traceability": {
     "function_rows": 17,
-    "traceability_rows": 232,
+    "traceability_rows": 234,
     "p0_functions_checked": 15,
     "p0_functions_with_trace": 15
   },

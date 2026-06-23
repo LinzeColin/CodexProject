@@ -1,0 +1,276 @@
+{
+  "acceptance_id": "A119",
+  "artifact_id": "t905-a119-migration-rollback-rehearsal",
+  "ci_binding": {
+    "postgresql_step": "make test-integration",
+    "preparation_steps": [
+      "cp .env.example .env",
+      "make db-up",
+      "make health"
+    ],
+    "workflow": ".github/workflows/eei-validation.yml"
+  },
+  "evidence_type": "postgresql_migration_suffix_rollback_rehearsal",
+  "generated_at": "2026-06-23T02:12:37Z",
+  "integration_test": "tests/integration/test_database_migrations.py::test_t905_each_migration_suffix_rolls_down_and_re_upgrades",
+  "migrations": [
+    {
+      "down_sha256": "67d4d2e7a154ba065fce48ab8ba27a252eb06ebd666249c33eb61c253f6d18ce",
+      "name": "core_domain",
+      "path": "infra/db/migrations/0001_core_domain",
+      "up_sha256": "5a0a7ed8eb88edbfc7ae9e1fa3f76497982322bb9bcb278c8364e87ff5e8cc76",
+      "version": "0001"
+    },
+    {
+      "down_sha256": "0997318641581aa4dd43b3f308438a34e13404e653fd7ca8985b24b5df21cebd",
+      "name": "exploration_state",
+      "path": "infra/db/migrations/0002_exploration_state",
+      "up_sha256": "674e02e96b875fe798f26dc175efa26fc9cf8b5305c83d3416a724a7c6f532a1",
+      "version": "0002"
+    },
+    {
+      "down_sha256": "163d5e8935b6c137b7c5e0d44d4e7c5b8769e2dcc6841db7573490fcfe7423aa",
+      "name": "production_fact_version_layers",
+      "path": "infra/db/migrations/0003_production_fact_version_layers",
+      "up_sha256": "b120c7767906d63fbc34c85866ef17971c760c1714e4dc82816fc3f7965e3b6f",
+      "version": "0003"
+    },
+    {
+      "down_sha256": "0cbe8140369b4939ba68a0b43eed3886f2787f7ce24a710f9bae5e6e6a961eba",
+      "name": "curated_ingestion_audit_layers",
+      "path": "infra/db/migrations/0004_curated_ingestion_audit_layers",
+      "up_sha256": "2227a43aac9a666a6a2fc5c307722e85a5346356e6d935235f93212f349bc75f",
+      "version": "0004"
+    },
+    {
+      "down_sha256": "a6abf5d75b73061632ec0af812d5ac891253a7728bc8f5f0da03237e936aa209",
+      "name": "relationship_fact_candidates",
+      "path": "infra/db/migrations/0005_relationship_fact_candidates",
+      "up_sha256": "1222b1878deb06b2186b2d53c2139126fa731c59ad10a067a6dae34a79a0562c",
+      "version": "0005"
+    },
+    {
+      "down_sha256": "162711a5f50d13abb744e54df1e11a95a9d976561b7fec5e4d4c3a393c14eb34",
+      "name": "model_activation_refresh_state",
+      "path": "infra/db/migrations/0006_model_activation_refresh_state",
+      "up_sha256": "3fc344ca05a3cd10fd1dfd4268890a5cd5efdceea89b11248159ece01d3f43d9",
+      "version": "0006"
+    },
+    {
+      "down_sha256": "dbf0ffbe5e3f34c3f4dee102509b7adb06c6bd7a33b60c1494211e971e869c87",
+      "name": "scheduler_job_queue",
+      "path": "infra/db/migrations/0007_scheduler_job_queue",
+      "up_sha256": "eac35b1a101f789b3a7d54e51adf412c8157f4a04892e8d17bf26ed9cc7d9a7f",
+      "version": "0007"
+    },
+    {
+      "down_sha256": "805cbe29c029e0470571eae6781f9dff8b90b2816e1a0a239ad3e746ea0c84ff",
+      "name": "server_saved_views",
+      "path": "infra/db/migrations/0008_server_saved_views",
+      "up_sha256": "d077bd0f2fce8468a3c5c1d849f8981e5e5aa5cae6c0cf3f992c6c28176878cd",
+      "version": "0008"
+    },
+    {
+      "down_sha256": "f1fa96a2f8900fedee1507cf261c881265e8deb46d956e446eadb28a918783a4",
+      "name": "transactional_outbox",
+      "path": "infra/db/migrations/0009_transactional_outbox",
+      "up_sha256": "5adac7ecb1120ddfbb2ef528e32d6001ed40482b13aa401679256af9ddf6d176",
+      "version": "0009"
+    },
+    {
+      "down_sha256": "5870f2b03e4bf93b79f2f965a71e797f08dd40a04ead50a910cca8b6bb5275bb",
+      "name": "operation_log_actor_principal",
+      "path": "infra/db/migrations/0010_operation_log_actor_principal",
+      "up_sha256": "908e091e9e53f6746cc64888fb267276d21c944a7f67b8cfc208b2a488106ceb",
+      "version": "0010"
+    },
+    {
+      "down_sha256": "68bb96e80c9243dda36ab2e6e8f143d301046e89992cfca398262b58423ab23a",
+      "name": "operator_source_capture_constraints",
+      "path": "infra/db/migrations/0011_operator_source_capture_constraints",
+      "up_sha256": "46bca103409889ba0696f003cb205c43cc8afbbd4c8f422323ba6e30bbf5472c",
+      "version": "0011"
+    }
+  ],
+  "migrations_checked": 11,
+  "rehearsal_steps": [
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 1",
+      "expected_pending_versions": [
+        "0011"
+      ],
+      "suffix_steps": 1,
+      "target_name": "operator_source_capture_constraints",
+      "target_version": "0011",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 2",
+      "expected_pending_versions": [
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 2,
+      "target_name": "operation_log_actor_principal",
+      "target_version": "0010",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 3",
+      "expected_pending_versions": [
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 3,
+      "target_name": "transactional_outbox",
+      "target_version": "0009",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 4",
+      "expected_pending_versions": [
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 4,
+      "target_name": "server_saved_views",
+      "target_version": "0008",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 5",
+      "expected_pending_versions": [
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 5,
+      "target_name": "scheduler_job_queue",
+      "target_version": "0007",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 6",
+      "expected_pending_versions": [
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 6,
+      "target_name": "model_activation_refresh_state",
+      "target_version": "0006",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 7",
+      "expected_pending_versions": [
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 7,
+      "target_name": "relationship_fact_candidates",
+      "target_version": "0005",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 8",
+      "expected_pending_versions": [
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 8,
+      "target_name": "curated_ingestion_audit_layers",
+      "target_version": "0004",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 9",
+      "expected_pending_versions": [
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 9,
+      "target_name": "production_fact_version_layers",
+      "target_version": "0003",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 10",
+      "expected_pending_versions": [
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 10,
+      "target_name": "exploration_state",
+      "target_version": "0002",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    },
+    {
+      "downgrade_command": "python scripts/migrate.py downgrade --steps 11",
+      "expected_pending_versions": [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011"
+      ],
+      "suffix_steps": 11,
+      "target_name": "core_domain",
+      "target_version": "0001",
+      "upgrade_command": "python scripts/migrate.py upgrade"
+    }
+  ],
+  "release_disposable_data_rollback": {
+    "cleanup_command": "python scripts/migrate.py downgrade --all",
+    "expected_final_state": "all schema_migrations rows are unapplied",
+    "scope": "CI disposable PostgreSQL database only"
+  },
+  "rollback": [
+    "Revert the T905 integration-test and validator changes.",
+    "Regenerate development, clean-room and release artifacts from the prior tree.",
+    "Rerun make verify and the GitHub Actions EEI validation workflow."
+  ],
+  "schema_version": "eei-t905-release-rehearsal-v1",
+  "status": "PASS",
+  "task_id": "T905"
+}

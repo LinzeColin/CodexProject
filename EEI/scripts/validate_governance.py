@@ -182,7 +182,7 @@ def main() -> int:
         len(tasks) != 130
         or len(acceptance) != 211
         or len(risks) != 53
-        or len(trace) != 232
+        or len(trace) != 234
         or len(gates) != 10
     ):
         raise AssertionError("task/acceptance/risk/trace/gate canonical counts invalid")

@@ -1670,7 +1670,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_eei_a209_4h_soak_governance_stays_partial_until_24h_exists(self) -> None:
         validator = load_validator_module()
         matrix = validator.load_yaml(ROOT / "EEI" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260623-008")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260623-009")
         self.assertEqual(
             matrix["current_gate"],
             "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS",
@@ -1724,6 +1724,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(gold_intake_event["binding_status"], "pre_commit_pending")
         self.assertIn("TASK-T1303", gold_intake_event["task_ids"])
         self.assertIn("gold-quality unit tests PASS 7/7", gold_intake_event["test_results"])
+        t905_event = next(event for event in events if event.get("event_id") == "EVENT-20260623-009")
+        self.assertEqual(t905_event["task_id"], "TASK-T905")
+        self.assertEqual(t905_event["binding_status"], "pre_commit_pending")
+        self.assertIn("TASK-T905", t905_event["task_ids"])
+        self.assertIn("T905 validator PASS", t905_event["test_results"])
 
         owner_text = (ROOT / "EEI" / "docs" / "governance" / "OWNER_STATUS.md").read_text(encoding="utf-8")
         self.assertIn(
@@ -1764,7 +1769,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
-        self.assertIn("precommit_pending_events: 21", eei_backlog)
+        self.assertIn("precommit_pending_events: 22", eei_backlog)
 
     def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
         manifest = json.loads(

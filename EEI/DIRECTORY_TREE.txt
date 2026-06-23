@@ -75,6 +75,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t501_structure_type_separation.json
 │   │   ├── a063
 │   │   │   └── t501_commercial_empire_not_control.json
+│   │   ├── a119
+│   │   │   └── t905_migration_rollback_rehearsal.json
+│   │   ├── a120
+│   │   │   └── t905_clean_start_operator_rehearsal.json
 │   │   ├── a182
 │   │   │   └── t1212_governance_consistency_workflow.json
 │   │   ├── a183
@@ -402,6 +406,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_prototype_parity.py
 │   ├── validate_release_decision_bundle.py
 │   ├── validate_release_manager_activation.py
+│   ├── validate_t905_release_rehearsal.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
 │   ├── validate_v5_production_readiness_sync.py

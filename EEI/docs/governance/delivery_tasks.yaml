@@ -2031,27 +2031,45 @@ tasks:
     legacy_task_id: "T905"
     phase: "A"
     objective: "Rehearse migrations, rollback and clean-start"
-    scope: "Legacy EEI gate G9 task from data/task_backlog.csv."
-    non_scope: "No business behavior changes in governance migration."
-    status: "planned"
+    scope: "T905/A119-A120 release rehearsal slice adds a machine-checked PostgreSQL migration suffix rollback contract, a CI-bound integration test for every migration rollback suffix, and a README clean-start operator runbook with critical demo commands."
+    non_scope: "No scoring formula, graph traversal, extraction model, production relationship publication, source/legal/owner clearance, 24h soak, brand clearance or release-manager activation behavior changed."
+    status: "completed"
     dependencies:
       - "TASK-T904"
     required_files:
+      - "EEI/README.md"
+      - "EEI/Makefile"
+      - ".github/workflows/eei-validation.yml"
+      - "EEI/scripts/validate_t905_release_rehearsal.py"
+      - "EEI/tests/integration/test_database_migrations.py"
+      - "EEI/artifacts/tests/a119/t905_migration_rollback_rehearsal.json"
+      - "EEI/artifacts/tests/a120/t905_clean_start_operator_rehearsal.json"
       - "EEI/data/task_backlog.csv"
       - "EEI/data/acceptance_traceability.csv"
     acceptance_ids:
       - "ACC-A119"
       - "ACC-A120"
-    test_commands: []
-    test_results: []
-    evidence_refs: []
-    risk: "UNKNOWN historical per-task risk mapping unless linked in legacy risk_control_traceability.csv; see TASK-T1214."
-    rollback: "Revert related task implementation commit or restore prior EEI subtree snapshot; exact commit varies by legacy task."
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_t905_release_rehearsal.py generate"
+      - "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_t905_release_rehearsal.py validate"
+      - "PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m py_compile scripts/validate_t905_release_rehearsal.py tests/integration/test_database_migrations.py"
+      - "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_t905_release_rehearsal.py tests/integration/test_database_migrations.py"
+      - "env -u DATABASE_URL PYTHONDONTWRITEBYTECODE=1 UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run pytest tests/integration/test_database_migrations.py -q -p no:cacheprovider"
+    test_results:
+      - "T905 artifact generation PASS for A119/A120"
+      - "T905 validator PASS"
+      - "Local PostgreSQL integration collection SKIPPED without DATABASE_URL; GitHub Actions EEI validation Step 10 must bind the PostgreSQL execution proof."
+    evidence_refs:
+      - "EEI/artifacts/tests/a119/t905_migration_rollback_rehearsal.json"
+      - "EEI/artifacts/tests/a120/t905_clean_start_operator_rehearsal.json"
+      - "EEI/tests/integration/test_database_migrations.py::test_t905_each_migration_suffix_rolls_down_and_re_upgrades"
+      - "EEI/README.md#operator-clean-start-rehearsal"
+    risk: "T905 can be falsely read as final release readiness if README clean-start or migration rollback proof is treated as A202 legal/source/owner clearance, A209 24h soak, A210 brand clearance, production gold labels or release-manager activation."
+    rollback: "Revert the T905 validator, integration-test, README, artifacts and A119/A120/T905 governance rows, regenerate development/clean-room/release artifacts, and rerun make verify."
     target_version: "0.1.0"
-    completed_version: ""
+    completed_version: "0.1.0"
     fact_level: "EXTRACTED"
-    unknown_task_ids:
-      - "TASK-T1206"
+    unknown_task_ids: []
   - task_id: "TASK-T906"
     legacy_task_id: "T906"
     phase: "A"

@@ -1,0 +1,71 @@
+{
+  "acceptance_id": "A120",
+  "artifact_id": "t905-a120-clean-start-operator-rehearsal",
+  "ci_binding": {
+    "steps": [
+      "Verify static, contract, lint, typecheck and unit tests",
+      "Prepare G2 PostgreSQL database",
+      "Verify G2 PostgreSQL integration",
+      "Verify G2 browser E2E",
+      "Verify G2 live FastAPI PostgreSQL E2E"
+    ],
+    "workflow": ".github/workflows/eei-validation.yml"
+  },
+  "clean_start_commands": [
+    "make bootstrap",
+    "cp .env.example .env",
+    "make doctor",
+    "make db-up",
+    "make migrate-up",
+    "make seed-catalogs",
+    "make load-fixtures",
+    "make check-db-schema",
+    "make health",
+    "make verify-g2-db",
+    "make validate-clean-room-release",
+    "make validate-release-artifacts",
+    "make db-down"
+  ],
+  "critical_demo": [
+    {
+      "commands": [
+        "make db-up",
+        "make migrate-up",
+        "make seed-catalogs",
+        "make load-fixtures",
+        "make check-db-schema",
+        "make health"
+      ],
+      "name": "PostgreSQL migrations, seeds, fixtures and API health"
+    },
+    {
+      "commands": [
+        "make verify-g2-db"
+      ],
+      "name": "Production API, recursive graph, scoring, saved-view and worker contracts"
+    },
+    {
+      "commands": [
+        "make validate-clean-room-release",
+        "make validate-release-artifacts"
+      ],
+      "name": "Release package reproducibility"
+    }
+  ],
+  "evidence_type": "readme_clean_start_and_critical_demo_rehearsal",
+  "generated_at": "2026-06-23T02:12:37Z",
+  "non_claims": [
+    "Does not close A202 source-license, owner, legal or relationship-publication gates.",
+    "Does not close A209 24h operator soak.",
+    "Does not close A210 formal brand/legal/market clearance."
+  ],
+  "operator_readme": "README.md",
+  "rollback": [
+    "Run make db-down to stop the clean-start PostgreSQL service.",
+    "Revert the README/runbook, T905 validator and generated A119/A120 artifacts.",
+    "Regenerate development, clean-room and release artifacts from the prior tree."
+  ],
+  "schema_version": "eei-t905-release-rehearsal-v1",
+  "status": "PASS",
+  "task_id": "T905"
+}
