@@ -24,6 +24,16 @@ LEAN_CANONICAL_FILES = [
     "VERSION",
     "CHANGELOG.md",
 ]
+ROOT_GOVERNANCE_PREFIXES = (
+    ".agents/",
+    ".codex/",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "docs/governance/",
+    "governance/",
+    "scripts/",
+    "tests/governance/",
+)
 
 
 def file_state(root: Path, rel_path: str) -> dict[str, Any]:
@@ -121,11 +131,50 @@ def build_validate_argv(args: argparse.Namespace) -> list[str]:
     return validate_argv
 
 
+def is_root_governance_change(path: str, root_required: set[str]) -> bool:
+    normalized = path.replace("\\", "/")
+    return normalized in root_required or normalized.startswith(ROOT_GOVERNANCE_PREFIXES)
+
+
+def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
+    config = governance.load_yaml(projects_file)
+    if not isinstance(config, dict):
+        raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
+    changed = governance.git_changed_files(base_ref)
+    projects = [item for item in governance.as_list(config.get("projects")) if isinstance(item, dict)]
+    root_required = {
+        str(item).replace("\\", "/")
+        for item in governance.as_list((config.get("root_governance") or {}).get("required_files"))
+    }
+    root_changed = any(is_root_governance_change(path, root_required) for path in changed)
+    selected = projects if root_changed else [project for project in projects if governance.project_matches_changed(project, changed)]
+    return {
+        "schema_version": 1,
+        "command": "changed-scope",
+        "base_ref": base_ref or "",
+        "changed_files": changed,
+        "root_governance_changed": root_changed,
+        "all_projects_required": root_changed,
+        "selected_projects": [
+            {
+                "project_id": str(project.get("project_id") or ""),
+                "path": str(project.get("path") or "").replace("\\", "/").rstrip("/"),
+                "ci_mode": str(project.get("ci_mode") or ""),
+            }
+            for project in selected
+        ],
+        "selected_project_count": len(selected),
+        "total_project_count": len(projects),
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
     baseline = subparsers.add_parser("baseline", help="Print a read-only repository baseline summary.")
     baseline.add_argument("--all", action="store_true", help="Inspect root governance and all registered projects.")
+    changed_scope = subparsers.add_parser("changed-scope", help="Print read-only changed project selection.")
+    changed_scope.add_argument("--base-ref", help="Explicit base commit/ref for changed-scope diff selection.")
     validate = subparsers.add_parser("validate", help="Run governance structure and semantic validation.")
     validate_scope = validate.add_mutually_exclusive_group()
     validate_scope.add_argument("--all", action="store_true", help="Validate root governance and all registered projects.")
@@ -141,6 +190,10 @@ def main(argv: list[str] | None = None) -> int:
         if not args.all:
             parser.error("baseline currently requires --all")
         summary = build_baseline(ROOT, PROJECTS_FILE)
+        print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+        return 0
+    if args.command == "changed-scope":
+        summary = build_changed_scope(args.base_ref, ROOT, PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "validate":

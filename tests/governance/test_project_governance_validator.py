@@ -410,6 +410,68 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertEqual(cli.main(["validate"]), 0)
         validator_main.assert_called_once_with(["--changed-only"])
 
+    def test_review9_s3_changed_scope_root_change_selects_all_projects(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            projects_yaml = tmp_path / "governance" / "projects.yaml"
+            projects_yaml.parent.mkdir(parents=True)
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  required_files:",
+                        "    - scripts/lean_governance.py",
+                        "projects:",
+                        "  - project_id: A",
+                        "    path: A",
+                        "    ci_mode: advisory",
+                        "  - project_id: B",
+                        "    path: B",
+                        "    ci_mode: advisory",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(cli.governance, "git_changed_files", return_value=["scripts/lean_governance.py"]):
+                scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
+        self.assertTrue(scope["root_governance_changed"])
+        self.assertTrue(scope["all_projects_required"])
+        self.assertEqual(scope["selected_project_count"], 2)
+        self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
+
+    def test_review9_s3_changed_scope_project_change_selects_only_matching_project(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            projects_yaml = tmp_path / "governance" / "projects.yaml"
+            projects_yaml.parent.mkdir(parents=True)
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  required_files:",
+                        "    - AGENTS.md",
+                        "projects:",
+                        "  - project_id: A",
+                        "    path: A",
+                        "    ci_mode: advisory",
+                        "  - project_id: B",
+                        "    path: nested/B",
+                        "    ci_mode: advisory",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(cli.governance, "git_changed_files", return_value=["nested/B/app.py"]):
+                scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
+        self.assertFalse(scope["root_governance_changed"])
+        self.assertFalse(scope["all_projects_required"])
+        self.assertEqual(scope["selected_project_count"], 1)
+        self.assertEqual(scope["selected_projects"][0]["project_id"], "B")
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
