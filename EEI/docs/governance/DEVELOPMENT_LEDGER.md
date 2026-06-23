@@ -849,6 +849,28 @@ Do not infer iteration count from Git commit count.
 - Rollback: revert the monitor script, Makefile target, unit tests and governance records; keep or remove local running checkpoint artifacts separately because they are not part of this commit.
 - Next step: run changed-only governance and focused EEI validation, commit/push the monitor contract, then continue MVP work while the detached 24h soak keeps running.
 
+## ITER-20260623-017 - T1307/A209 operator soak watchdog
+
+- Date: 2026-06-23
+- Base commit: `e782d70462b5e83936505d867680a70b61377d21`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Acceptance IDs: `ACC-A209`
+- Goal: add a detached watchdog for the A209 24h operator soak so paused successful checkpoints can be resumed in the background while other MVP work continues.
+- Assumptions: A209 remains incomplete until the 24h summary and checkpoint JSONL cover 288 successful 300-second windows and `validate_operator_soak_evidence.py --require-release-ready` passes.
+- Files read: A209 monitor, supervisor, evidence validator, unit tests, clean-room release manager, v5 readiness sync mapping and current 24h checkpoint JSONL.
+- Files changed: `EEI/scripts/watch_operator_soak.py`, `EEI/tests/unit/test_operator_soak_evidence.py`, `EEI/Makefile`, `EEI/scripts/validate_v5_production_readiness_sync.py`, `EEI/scripts/manage_clean_room_release.py`, this ledger, changelog, version matrix, traceability matrix, development event log, delivery task registry, MVP development record, v5 synchronization record, status records and regenerated clean-room/release artifacts.
+- Model changes: no scoring formula, graph traversal, extraction model, model weight, threshold value or runtime model behavior changed.
+- Parameter changes: no active parameter value changed; watchdog operational defaults are `interval_seconds=300` and `stale_after_seconds=900`.
+- Commands run: focused py_compile, focused ruff, A209 unit tests, watchdog dry-run, detached watchdog launch, live PID checks, V5 production readiness sync, clean-room/release generation and validation, full `make verify`, changed-only root governance reproduction and final A209 supervisor check.
+- Test results: py_compile PASS; focused ruff PASS; A209 unit tests PASS 16/16; watchdog dry-run PASS; detached watchdog PID `62233` launched; full `make verify` PASS with 81 unit tests; changed-only governance without enforce-sync PASS before this governance sync and enforce-sync reproduced the missing-file requirement.
+- Successes: A209 now has monitor, supervisor and watchdog contracts; the watchdog observes live PID `12478`, refuses double-starts through the supervisor, resumes only paused successful checkpoints when explicitly executed, and is included in clean-room/release artifacts.
+- Failures: first pushed governance CI failed because append-only governance sync files were not updated for the new product/test/generated-artifact change.
+- Decisions: keep A209 `IN_PROGRESS`; do not commit partial 24h checkpoint/output artifacts; treat watchdog progress as background recovery evidence only.
+- Remaining risks: the detached 24h run can still fail before 288 windows; stale live PID requires operator action because the watchdog intentionally does not kill live processes.
+- Rollback: stop only watchdog PID `62233` if needed, revert watchdog script/Makefile/tests/governance records and regenerated artifacts, and keep valid A209 partial checkpoints separate from release-ready evidence.
+- Next step: rerun generated artifact sync, changed-only governance with `--enforce-sync`, full `make verify`, commit/push the governance sync fix and check CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
