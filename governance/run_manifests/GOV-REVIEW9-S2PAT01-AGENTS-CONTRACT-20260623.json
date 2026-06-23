@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623",
+  "project_id": "root-governance",
+  "task_id": "S2PAT01",
+  "acceptance_ids": [
+    "ACC-S2PAT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S2PAT01",
+  "generated_at": "2026-06-23T19:35:00+10:00",
+  "implementation_base_sha": "055ad784b379a282aea8530f2b22b29f0b62f300",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:6ebe7744db04650f672ac5d9f243da34a4251c7af3df26b16fc221065be9367c",
+  "changed_files_declared": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json"
+  ],
+  "changed_files_actual": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json"
+  ],
+  "required_governance_files": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json"
+  ],
+  "updated_governance_files": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "agent_contract_update"
+  ],
+  "model_delta": "NOT_APPLICABLE: root agent governance contract only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_root_agents_declares_lean_v2_entry_contract -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_root_agents_declares_lean_v2_entry_contract -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S2PAT01 AGENTS contract assertions passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "134 governance tests OK. The printed missing-base validation is an expected negative fixture inside the test suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed files AGENTS.md, run manifest, and governance test; errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status PASS, errors 0, warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PAT01-AGENTS-CONTRACT-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "manifest JSON parses."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py",
+    "C:/Users/linze/Documents/Codex/2026-06-23/xian/outputs/review9_stage1_s1_readonly/S1_OWNER_ACCEPTANCE_PACKET.md"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S2PAT01 root AGENTS Lean v2 contract",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Rewrite the root AGENTS contract to make the three exact Chinese human-entry files, complete Roadmap requirements, run modes, evidence rules, and low-token scope contract explicit without migrating business projects.",
+  "rollback": "Revert AGENTS.md, the S2PAT01 governance test, and this run manifest.",
+  "unresolved_risks": [
+    "S2PAT02 must still shrink docs/governance/STANDARD.md into the Lean v2 standard.",
+    "S2PAT03 must still simplify governance/projects.yaml and migration state.",
+    "Project migrations remain locked until S2 and S3 gates pass."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
