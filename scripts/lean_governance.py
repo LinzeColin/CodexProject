@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
+import io
 import json
+import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -457,6 +461,121 @@ def check_render_registered_project(project_selector: str, *, root: Path = ROOT,
     }
 
 
+def has_check_render_inputs(project_root: Path) -> bool:
+    governance_root = project_root / "docs" / "governance"
+    return (governance_root / "project.yaml").is_file() and (governance_root / "roadmap.yaml").is_file()
+
+
+def git_status_porcelain(root: Path = ROOT) -> list[str]:
+    try:
+        result = subprocess.run(
+            ["git", "-c", "core.quotePath=false", "status", "--porcelain=v1"],
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=5.0,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        return [f"git_status_error:{exc}"]
+    if result.returncode != 0:
+        stderr = result.stderr.strip() or f"exit_{result.returncode}"
+        return [f"git_status_failed:{stderr}"]
+    return [line for line in result.stdout.splitlines() if line.strip()]
+
+
+def run_validator_capture(validate_argv: list[str]) -> dict[str, Any]:
+    stdout = io.StringIO()
+    with contextlib.redirect_stdout(stdout):
+        exit_code = governance.main(validate_argv)
+    return {
+        "argv": validate_argv,
+        "exit_code": exit_code,
+        "output": [line for line in stdout.getvalue().splitlines() if line.strip()],
+    }
+
+
+def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> tuple[int, dict[str, Any]]:
+    started = time.perf_counter()
+    baseline = build_baseline(root, projects_file)
+    scope = build_changed_scope(base_ref, root, projects_file)
+    validate_argv = ["--changed-only", "--enforce-sync", "--semantic"]
+    if base_ref:
+        validate_argv.extend(["--base-ref", base_ref])
+    validation = run_validator_capture(validate_argv)
+
+    check_render_results: list[dict[str, Any]] = []
+    check_render_skipped: list[dict[str, str]] = []
+    check_render_failed = False
+    for project in scope["selected_projects"]:
+        project_id = str(project.get("project_id") or "")
+        project_path = str(project.get("path") or "").replace("\\", "/").rstrip("/")
+        project_root = root / project_path
+        if not has_check_render_inputs(project_root):
+            check_render_skipped.append(
+                {
+                    "project_id": project_id,
+                    "path": project_path,
+                    "reason": "missing_lean_canonical_facts",
+                }
+            )
+            continue
+        try:
+            result = check_render_project_files(project_root)
+        except Exception as exc:
+            check_render_failed = True
+            check_render_results.append(
+                {
+                    "project_id": project_id,
+                    "path": project_path,
+                    "error": str(exc),
+                    "write": False,
+                }
+            )
+            continue
+        result = {
+            "project_id": project_id,
+            "path": project_path,
+            **result,
+        }
+        if result["drift_count"] or result["reference_issue_count"]:
+            check_render_failed = True
+        check_render_results.append(result)
+
+    dirty = git_status_porcelain(root)
+    zero_diff = not dirty
+    summary = {
+        "schema_version": 1,
+        "command": "ci",
+        "scope": "changed-only",
+        "base_ref": base_ref or "",
+        "write": False,
+        "baseline": {
+            "projects": baseline["totals"]["projects"],
+            "human_entry_missing": baseline["totals"]["human_entry_missing"],
+            "canonical_missing": baseline["totals"]["canonical_missing"],
+            "legacy_governance_missing": baseline["totals"]["legacy_governance_missing"],
+        },
+        "changed_scope": scope,
+        "validation": validation,
+        "check_render": {
+            "checked": check_render_results,
+            "checked_count": len(check_render_results),
+            "skipped": check_render_skipped,
+            "skipped_count": len(check_render_skipped),
+        },
+        "zero_diff": {
+            "clean": zero_diff,
+            "changed_count": len(dirty),
+            "changed_files": dirty[:20],
+        },
+        "duration_seconds": round(time.perf_counter() - started, 3),
+    }
+    exit_code = 0 if validation["exit_code"] == 0 and not check_render_failed and zero_diff else 1
+    return exit_code, summary
+
+
 def build_validate_argv(args: argparse.Namespace) -> list[str]:
     validate_argv: list[str] = []
     if args.all:
@@ -529,6 +648,10 @@ def main(argv: list[str] | None = None) -> int:
     render.add_argument("--write", action="store_true", help="Write rendered files to the selected project root.")
     check_render = subparsers.add_parser("check-render", help="Compare rendered human files in memory without writing.")
     check_render.add_argument("--project", required=True, help="Registered project_id or project path.")
+    ci = subparsers.add_parser("ci", help="Run the read-only changed-only CI orchestration.")
+    ci_scope = ci.add_mutually_exclusive_group(required=True)
+    ci_scope.add_argument("--changed-only", action="store_true", help="Run the PR/main changed-only CI gate.")
+    ci.add_argument("--base-ref", help="Explicit base commit/ref for changed-only CI.")
     validate = subparsers.add_parser("validate", help="Run governance structure and semantic validation.")
     validate_scope = validate.add_mutually_exclusive_group()
     validate_scope.add_argument("--all", action="store_true", help="Validate root governance and all registered projects.")
@@ -558,6 +681,10 @@ def main(argv: list[str] | None = None) -> int:
         summary = check_render_registered_project(args.project, root=ROOT, projects_file=PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
+    if args.command == "ci":
+        exit_code, summary = run_changed_only_ci(args.base_ref, root=ROOT, projects_file=PROJECTS_FILE)
+        print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+        return exit_code
     if args.command == "validate":
         return governance.main(build_validate_argv(args))
     parser.error(f"Unsupported command: {args.command}")

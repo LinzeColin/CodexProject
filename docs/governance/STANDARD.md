@@ -208,9 +208,9 @@ must not create a development event or product version.
 ## Changed-Scope CI And Hook
 
 Every pull request runs one required Project Governance job focused on
-changed-scope validation against the PR base. Pushes to `main` run the same
-contract against the previous main commit. Manual `scope=changed-only` accepts
-an optional `base_ref`.
+`lean_governance.py ci --changed-only` against the PR base. Pushes to `main`
+run the same contract against the previous main commit. Manual
+`scope=changed-only` accepts an optional `base_ref`.
 
 Scheduled and manual `scope=all` runs execute full information-quality,
 all-project semantic/drift validation, generated-view determinism checks, and CI
@@ -285,12 +285,12 @@ DELIVERY_PLAN.md, delivery_tasks.yaml, VERSION_MATRIX.yaml,
 TRACEABILITY_MATRIX.csv, STATUS.md, OWNER_STATUS.md, VERSION, CHANGELOG.md
 ```
 
-Validator commands remain:
+Lean validator commands remain:
 
 ```bash
-python scripts/validate_project_governance.py --all
-python scripts/validate_project_governance.py --project <project_id>
-python scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+python scripts/lean_governance.py validate --all
+python scripts/lean_governance.py validate --project <project_id>
+python scripts/lean_governance.py ci --changed-only --base-ref <base_ref>
 ```
 
 ## Semantic Accuracy

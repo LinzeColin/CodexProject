@@ -746,6 +746,86 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(drifted["drift_count"], 1)
         self.assertEqual(after, before + "\nmanual drift\n")
 
+    def test_review9_s3_ci_changed_only_orchestrates_read_only_gates(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "selected_projects": [
+                {
+                    "project_id": "ProjectA",
+                    "path": "ProjectA",
+                    "ci_mode": "required",
+                }
+            ]
+        }
+        check_render = {
+            "write": False,
+            "drift": [],
+            "drift_count": 0,
+            "reference_issues": [],
+            "reference_issue_count": 0,
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline) as build_baseline,
+            patch.object(cli, "build_changed_scope", return_value=scope) as build_changed_scope,
+            patch.object(cli, "has_check_render_inputs", return_value=True),
+            patch.object(cli, "check_render_project_files", return_value=check_render) as check_render_project,
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+            patch.object(cli.governance, "main", return_value=0) as validator_main,
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        build_baseline.assert_called_once_with(Path("root"), Path("projects.yaml"))
+        build_changed_scope.assert_called_once_with("BASE", Path("root"), Path("projects.yaml"))
+        validator_main.assert_called_once_with(["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"])
+        check_render_project.assert_called_once_with(Path("root") / "ProjectA")
+        self.assertFalse(summary["write"])
+        self.assertTrue(summary["zero_diff"]["clean"])
+        self.assertEqual(summary["check_render"]["checked_count"], 1)
+
+    def test_review9_s3_ci_changed_only_skips_unmigrated_check_render(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 2,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "selected_projects": [
+                {
+                    "project_id": "LegacyProject",
+                    "path": "LegacyProject",
+                    "ci_mode": "advisory",
+                }
+            ]
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "has_check_render_inputs", return_value=False),
+            patch.object(cli, "check_render_project_files") as check_render_project,
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+            patch.object(cli.governance, "main", return_value=0),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        check_render_project.assert_not_called()
+        self.assertEqual(summary["check_render"]["checked_count"], 0)
+        self.assertEqual(summary["check_render"]["skipped_count"], 1)
+        self.assertEqual(summary["check_render"]["skipped"][0]["reason"], "missing_lean_canonical_facts")
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
@@ -1257,7 +1337,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("github.event_name == 'pull_request'", workflow)
         self.assertIn("github.event.pull_request.base.sha", workflow)
-        self.assertIn("--changed-only --enforce-sync --semantic", workflow)
+        self.assertIn("scripts/lean_governance.py ci --changed-only", workflow)
+        self.assertNotIn("scripts/validate_project_governance.py --changed-only", workflow)
+        self.assertIn("scripts/lean_governance.py validate --all --semantic --drift-report", workflow)
+        self.assertIn("scripts/lean_governance.py validate --project", workflow)
         self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
         self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
