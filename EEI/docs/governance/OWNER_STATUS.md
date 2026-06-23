@@ -71,12 +71,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `80`
-- active_parameters: `80`
+- total_parameters: `81`
+- active_parameters: `81`
 - active_values_changed_by_this_view: `0`
 - latest_T1302_A203_preflight: `scripts/validate_production_api_release_preflight.py` now proves `api_surface_ready=true` while keeping `release_ready=false` until A202 publication clearance, A204/A205 activation and A209 24h soak are complete.
 - latest_T1303_operator_cli: `scripts/apply_model_config.py` now supports dry-run preview plus explicit PostgreSQL `--execute`; `scripts/validate_release_manager_activation.py` now validates evidence-derived READY preflight only when all external gates are real; `artifacts/model_config_import_preview.json` remains non-closure evidence for A204/A205.
 - latest_T1303_mvp_release_gate: `scripts/validate_mvp_release_gate.py` now aggregates A202/A203/A204-A205/A209/A210/A026/A027 into `MVP_RELEASE_BLOCKED` until every required external gate is real and current.
+- latest_T1301_A202_signed_intake_preflight: `scripts/validate_a202_signed_intake_preflight.py` now reports `A202_SIGNED_INTAKE_MISSING` with five missing signed input groups and keeps `release_ready=false`.
 - latest_A209_finalization: `scripts/finalize_operator_soak_evidence.py` now reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `119/288` windows and blocks downstream release-gate refresh until 288/288 release-ready evidence exists.
 - latest_T1303_external_release_evidence_bundle: `scripts/validate_external_release_evidence_bundle.py` now consolidates A202/A210/A026/A027/A209 external gate evidence into `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED` and blocks release-manager refresh until all external inputs are real and ready.
 

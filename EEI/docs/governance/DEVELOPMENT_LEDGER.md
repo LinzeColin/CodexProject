@@ -1169,6 +1169,7 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260624-020`: local T1303/A204-A205 MVP release-gate preflight; all external release gates remain explicit blockers and A209 stays open.
 - `EVENT-20260624-021`: local T1307/A209 operator-soak finalization preflight; 24h soak continues in detached background at 113/288 windows and downstream release-gate refresh is blocked until 288/288 release-ready evidence validates.
 - `EVENT-20260624-022`: local T1303 external release-evidence bundle preflight; A202/A210/A026/A027/A209 external inputs are consolidated into one blocked operator checklist and A204/A205 remain open.
+- `EVENT-20260624-023`: local T1301/A202 signed-intake preflight; default repository evidence is `A202_SIGNED_INTAKE_MISSING`, five signed input groups remain missing, and A202 stays open.
 
 ## Unknown Historical Periods
 

@@ -96,6 +96,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a202
 │   │   │   ├── t1301_a202_a210_release_decision_bundle_contract.json
 │   │   │   ├── t1301_a202_release_decision_intake_template.json
+│   │   │   ├── t1301_a202_signed_intake_preflight.json
 │   │   │   ├── t1301_context_anchor_semantic_revision_contract.json
 │   │   │   ├── t1301_curated_official_ingestion_contract.json
 │   │   │   ├── t1301_live_capture_postgres_ingestion_contract.json
@@ -406,6 +407,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── smoke_test_prototype.py
 │   ├── supervise_operator_soak.py
 │   ├── validate_a202_operator_review_packet.py
+│   ├── validate_a202_signed_intake_preflight.py
 │   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
@@ -466,6 +468,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── README.md
 │   │   └── test_database_migrations.py
 │   └── unit
+│       ├── test_a202_signed_intake_preflight.py
 │       ├── test_api_health.py
 │       ├── test_brand_clearance.py
 │       ├── test_external_release_evidence_bundle.py

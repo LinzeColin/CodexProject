@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
-- Models/Formulas/Parameters total: `12 / 12 / 80`
-- Active formulas/parameters: `11 / 80`
-- Machine checked formulas/parameters: `11 / 80`
+- Phase/Gate: `C / TASK-T1301-A202-SIGNED-INTAKE-PREFLIGHT-IN-PROGRESS`
+- Models/Formulas/Parameters total: `12 / 12 / 81`
+- Active formulas/parameters: `11 / 81`
+- Machine checked formulas/parameters: `11 / 81`
 
 ## Assurance
 
@@ -63,6 +63,13 @@
 - Missing external inputs are explicit: A202 source/license/passage/owner/legal release, A210 brand legal/market clearance or risk waiver, A026 entity-resolution production gold set, A027 relationship-extraction production gold set, and A209 24h operator-soak finalization.
 - Added `PARAM-080` for `external_release_evidence_bundle.preflight_schema_version`; no scoring formula, graph traversal formula, extraction model, model weight, business threshold or runtime API behavior changed.
 
+## T1301 A202 Signed-Intake Preflight Update
+
+- `scripts/validate_a202_signed_intake_preflight.py` now generates and validates `EEI/artifacts/tests/a202/t1301_a202_signed_intake_preflight.json`.
+- The committed artifact reports `A202_SIGNED_INTAKE_MISSING`, `a202_clearance_complete=false`, `relationship_publication_allowed=false`, `release_gate_closed_by_preflight=false` and `release_ready=false`.
+- Missing signed inputs are explicit: source-license reviews, passage-level relationship reviews, production owner sign-offs, legal release clearance or risk waiver, and final attestation.
+- Added `PARAM-081` for `release_decision_intake.preflight_schema_version`; no scoring formula, graph traversal formula, extraction model, model weight, business threshold or runtime API behavior changed.
+
 ## T1303 Model Config Apply Update
 
 - `scripts/apply_model_config.py` is now a fail-closed A204/A205 operator entrypoint: `--dry-run` emits hash-bound preview evidence without writes; `--execute` requires PostgreSQL and delegates draft creation, transactional activation and score recompute enqueue to `DomainRepository`.
@@ -75,7 +82,7 @@
 - `scripts/validate_production_api_release_preflight.py` now generates and validates `EEI/artifacts/tests/a203/t1302_production_api_release_preflight.json`.
 - The committed artifact reports `api_surface_ready=true` for the implemented graph, path, catalog, scoring explanation and evidence detail APIs, but `release_ready=false`, `production_graph_publication_allowed=false` and `score_publication_allowed=false`.
 - A203 remains `IN_PROGRESS` until A202 relationship publication clearance, A204/A205 release-manager activation and A209 24h operator soak evidence are real and current.
-- Clean-room and release artifacts have been refreshed after the T1303 external release-evidence bundle files became staged: expected fresh-checkout counts are `package_paths=434`, release `manifest_paths=441` and `checksum_paths=440`.
+- Clean-room and release artifacts have been refreshed after the current T1301/A202 signed-intake preflight files became staged: expected fresh-checkout counts are `package_paths=437`, release `manifest_paths=444` and `checksum_paths=443`.
 
 ## T1303 MVP Release Gate Preflight Update
 
@@ -101,4 +108,5 @@
 
 - `scripts/validate_release_decision_bundle.py generate-template` now writes `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` with exact A202 source-license, passage-level relationship review, production owner sign-off, legal release clearance and attestation fields for Golden Vertical relationship candidates `GV-FACT-001..002`.
 - The template status is `TEMPLATE_ONLY`, with `release_gate_closure_allowed=false`, `relationship_publication_allowed=false` and `template_counts_as_clearance=false`; it is an operator/legal intake artifact, not source-license approval, passage approval, owner approval, legal clearance, relationship publication or A202 closure.
+- The A202 signed-intake preflight is generated from the template by default and remains `A202_SIGNED_INTAKE_MISSING`; a future operator-supplied signed intake can validate A202 clearance but still leaves A210, A026/A027, A209 and release-manager activation open.
 - A202 remains `IN_PROGRESS` until a real signed A202 intake or release-decision bundle passes validation and the release manager later sees all external gates ready. A209 24h soak continues as an independent background gate.

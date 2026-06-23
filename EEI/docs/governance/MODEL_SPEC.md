@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 80
+- parameter_count: 81
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -34,6 +34,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-24 T904/A026-A027 production gold-label intake template adds an operator-fillable template artifact for required production-label metadata and case schemas; PARAM-064 through PARAM-068 values remain unchanged and the template is not release-ready evidence.
 - 2026-06-24 T1309/A210 brand-clearance intake adds governance evidence parameters `PARAM-072` through `PARAM-075` for schema version, required trademark jurisdictions, required market surfaces and accepted signed-clearance decisions; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1301/A202 release-decision intake adds governance evidence parameter `PARAM-076` for the A202 intake schema version covering source-license, passage-level, owner and legal review fields; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1301/A202 signed-intake preflight adds governance evidence parameter `PARAM-081` for the A202 preflight schema version that turns a template or future signed intake into a hash-bound gate artifact; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1302/A203 production API release preflight adds governance evidence parameter `PARAM-077` for the A203 preflight schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1303/A204-A205 MVP release-gate preflight adds governance evidence parameter `PARAM-078` for the final fail-closed release aggregator schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1307/A209 operator-soak finalization preflight adds governance evidence parameter `PARAM-079` for the finalizer schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
@@ -242,11 +243,11 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202 release-decision intake, A202/A210 release-decision bundle schema validation/publication binding, A026/A027 gold-quality/intake gates, A209 background heartbeat controls and A210 brand-clearance intake gates.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202 release-decision intake and signed-intake preflight, A202/A210 release-decision bundle schema validation/publication binding, A026/A027 gold-quality/intake gates, A209 background heartbeat controls and A210 brand-clearance intake gates.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
-- Implementation reference: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/scripts/watch_operator_soak.py, EEI/scripts/record_operator_soak_heartbeat.py, EEI/scripts/validate_brand_clearance.py
+- Implementation reference: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_a202_signed_intake_preflight.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/scripts/watch_operator_soak.py, EEI/scripts/record_operator_soak_heartbeat.py, EEI/scripts/validate_brand_clearance.py
 - Inputs: parameter_key; configured_value; default_value; min_value; max_value
 - Outputs: validated operational parameter value
 - Use cases: research prioritization, explainable visual focus, governance validation, and bounded exploration support.
