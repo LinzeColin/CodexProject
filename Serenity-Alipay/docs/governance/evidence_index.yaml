@@ -1,0 +1,177 @@
+schema_version: codexproject.evidence_index.v1
+project_id: Serenity-Alipay
+stage_id: S4
+phase_id: S4PA
+task_id: S4PAT01
+acceptance_id: ACC-S4PAT01
+purpose: "Bound the Serenity-Alipay pilot evidence read before any Lean v2 migration extraction. This index records which sources may be used, which facts remain deferred, and which contradictions must be preserved instead of smoothed over."
+read_scope:
+  mode: bounded_pilot_read
+  allowed_categories:
+    - README_and_handoff
+    - existing_governance
+    - model_implementation
+    - runtime_config
+    - focused_tests
+    - limited_related_git_history
+  excluded_categories:
+    - unrelated_project_files
+    - generated_output_archives
+    - broad_git_history_mining
+    - business_behavior_changes
+fact_policy:
+  verified_fact_requires:
+    - implementation_ref
+    - governance_or_test_ref
+  reconstructed_fact_requires:
+    - explicit_source_ref
+    - uncertainty_or_source_limit_note
+  unknown_fact_requires:
+    - followup_task_id
+    - owner_visible_caveat
+  forbidden_claims:
+    - no_template_empty_fill
+    - no_fake_history
+    - no_invented_iteration_or_hours
+    - no_technology_stack_as_model_parameter
+    - no_unqualified_formula_claim_when_watchlist_exists
+evidence_refs:
+  - evidence_id: EVID-SER-README-HANDOFF
+    kind: owner_readable_context
+    fact_level: EXTRACTED
+    refs:
+      - Serenity-Alipay/README.md
+      - Serenity-Alipay/HANDOFF.md
+    intended_use:
+      - S4PAT02
+      - S4PAT03
+  - evidence_id: EVID-SER-EXISTING-GOVERNANCE
+    kind: existing_governance_registry
+    fact_level: EXTRACTED
+    refs:
+      - Serenity-Alipay/docs/governance/MODEL_SPEC.md
+      - Serenity-Alipay/docs/governance/model_registry.yaml
+      - Serenity-Alipay/docs/governance/formula_registry.yaml
+      - Serenity-Alipay/docs/governance/parameter_registry.csv
+      - Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv
+      - Serenity-Alipay/docs/governance/delivery_tasks.yaml
+      - Serenity-Alipay/docs/governance/development_events.jsonl
+    intended_use:
+      - S4PAT02
+      - S4PAT03
+  - evidence_id: EVID-SER-SCORING-CODE
+    kind: model_implementation
+    fact_level: EXTRACTED
+    model_ids:
+      - MOD-001
+    refs:
+      - Serenity-Alipay/app/core/scoring.py
+      - Serenity-Alipay/tests/test_scoring.py
+      - Serenity-Alipay/tests/test_risk_gate_regression.py
+    intended_use:
+      - S4PAT02
+  - evidence_id: EVID-SER-RANKING-CODE
+    kind: model_implementation
+    fact_level: EXTRACTED
+    model_ids:
+      - MOD-002
+    refs:
+      - Serenity-Alipay/app/core/pipeline.py
+      - Serenity-Alipay/tests/test_pipeline_serenity_priority.py
+      - Serenity-Alipay/tests/test_discipline.py
+    intended_use:
+      - S4PAT02
+  - evidence_id: EVID-SER-METRICS-CODE
+    kind: model_implementation
+    fact_level: EXTRACTED
+    model_ids:
+      - MOD-003
+    refs:
+      - Serenity-Alipay/app/core/metrics.py
+      - Serenity-Alipay/tests/test_metrics.py
+    intended_use:
+      - S4PAT02
+  - evidence_id: EVID-SER-COMPARISON-DISCIPLINE-CODE
+    kind: model_implementation
+    fact_level: EXTRACTED
+    model_ids:
+      - MOD-004
+    refs:
+      - Serenity-Alipay/app/core/comparison.py
+      - Serenity-Alipay/app/core/discipline.py
+      - Serenity-Alipay/tests/test_comparison.py
+      - Serenity-Alipay/tests/test_discipline.py
+    intended_use:
+      - S4PAT02
+  - evidence_id: EVID-SER-SCHEDULER-CODE
+    kind: model_implementation_and_runtime_config
+    fact_level: EXTRACTED
+    model_ids:
+      - MOD-005
+    refs:
+      - Serenity-Alipay/app/scheduler.py
+      - Serenity-Alipay/app/core/scheduler_runner.py
+      - Serenity-Alipay/app/core/automation_tick.py
+      - Serenity-Alipay/app/config.py
+      - Serenity-Alipay/tests/test_scheduler.py
+      - Serenity-Alipay/tests/test_timezones.py
+      - Serenity-Alipay/tests/test_automation_tick.py
+    intended_use:
+      - S4PAT02
+  - evidence_id: EVID-SER-LIMITED-HISTORY
+    kind: limited_related_git_history
+    fact_level: RECONSTRUCTED
+    commits:
+      - baaaee0f Sync governance dashboard after CI evidence refs
+      - df1d8069 Fix EEI CI merge context evidence
+      - bc84b2a8 Harden Review8 owner truth governance
+      - 9764bf20 Harden Review7 governance closure
+      - 77273f08 Harden Review6 source base metadata
+      - 22775f3c Complete Review6 governance assurance gate
+      - 810ea9fd Bind semantic coverage to project delivery tasks
+      - 0fff4699 Require semantic coverage rollout contracts
+      - aad1145b Add generated owner governance status reports
+      - 4d84ffa6 Add Serenity semantic governance extractors
+      - 18c3773d Harden governance sync validation
+      - c024467c Complete project governance baseline
+    refs:
+      - Serenity-Alipay/docs/governance/development_events.jsonl
+      - Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md
+    intended_use:
+      - S4PAT03
+model_fact_targets:
+  source_status: existing_registry_reference
+  active_model_ids:
+    - MOD-001
+    - MOD-002
+    - MOD-003
+    - MOD-004
+    - MOD-005
+  extraction_task_id: S4PAT02
+roadmap_fact_targets:
+  source_status: existing_governance_and_limited_history
+  extraction_task_id: S4PAT03
+contradiction_watchlist:
+  - issue_id: S4PAT01-WATCH-FORM-008-CAP
+    severity: must_preserve
+    summary: "FORM-008 documents that final renormalization can raise weights above 0.30 in one-to-four-candidate cases; S4PAT02 must not present 0.30 as an unconditional invariant unless the code/test scope proves it."
+    evidence_refs:
+      - Serenity-Alipay/docs/governance/formula_registry.yaml
+      - Serenity-Alipay/app/core/pipeline.py
+      - Serenity-Alipay/tests/test_pipeline_serenity_priority.py
+    followup_task_id: S4PAT02
+non_scope:
+  - no business code changes
+  - no runtime configuration changes
+  - no generated Chinese entry-file rewrite
+  - no owner acceptance claim
+  - no full model extraction claim
+acceptance:
+  status: READY_FOR_REVIEW
+  acceptance_id: ACC-S4PAT01
+  evidence_index_created: true
+  read_scope_bounded: true
+  stop_conditions_checked:
+    code_doc_contradiction_unmarked: false
+    tech_stack_written_as_model_parameter: false
+    invented_iteration_or_hours: false
