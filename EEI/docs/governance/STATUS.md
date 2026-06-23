@@ -46,5 +46,10 @@
 ## A209 Background Soak Update
 
 - T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
-- Latest local checkpoint after post-verify supervisor check: operator PID `12478`, `40/288` windows PASS, generated at `2026-06-23T13:59:27Z`; detached watchdog PID `62233` is running with `cycles=300` and `interval_seconds=300`.
+- Latest local checkpoint after current supervisor check: operator PID `12478`, `44/288` windows PASS, generated at `2026-06-23T14:19:36Z`; detached watchdog PID `62233` is running with `cycles=300` and `interval_seconds=300`.
 - Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, dry-runs recovery by default, and is included in clean-room release packaging. Watchdog contract `EEI/scripts/watch_operator_soak.py` reports `release_gate_closed_by_watchdog=false`, resumes only paused successful checkpoints when launched with `--execute --auto-resume`, and reports stale live PIDs without killing them. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
+
+## T1303 Model Config Apply Update
+
+- `scripts/apply_model_config.py` is now a fail-closed A204/A205 operator entrypoint: `--dry-run` emits hash-bound preview evidence without writes; `--execute` requires PostgreSQL and delegates draft creation, transactional activation and score recompute enqueue to `DomainRepository`.
+- `artifacts/model_config_import_preview.json` records `release_gate_closed_by_apply_model_config=false`; A204/A205 remain `IN_PROGRESS` until final release-manager activation has real A202, A026/A027, A209 and A210 gate evidence.

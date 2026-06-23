@@ -871,6 +871,28 @@ Do not infer iteration count from Git commit count.
 - Rollback: stop only watchdog PID `62233` if needed, revert watchdog script/Makefile/tests/governance records and regenerated artifacts, and keep valid A209 partial checkpoints separate from release-ready evidence.
 - Next step: rerun generated artifact sync, changed-only governance with `--enforce-sync`, full `make verify`, commit/push the governance sync fix and check CI.
 
+## ITER-20260624-001 - T1303/A204-A205 model config apply CLI
+
+- Date: 2026-06-24
+- Base commit: `f8890a84512287449ffd0723472294e4e6253e4c`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1303`
+- Acceptance IDs: `ACC-A204`, `ACC-A205`
+- Goal: upgrade the model-configuration operator entrypoint from dry-run-only preview to an explicit PostgreSQL-backed transaction command that can create a draft profile, atomically activate it and enqueue score recomputation through the existing repository layer.
+- Assumptions: this operator CLI strengthens A204/A205 implementation evidence but does not close release-manager activation, A202 source/legal/owner clearance, A026/A027 production gold labels, A209 24h soak or A210 brand clearance.
+- Files read: existing model activation API/repository, integration tests, release-manager preflight, scoring profile configs, threshold config and T1303 delivery task records.
+- Files changed: `EEI/scripts/apply_model_config.py`, `EEI/tests/unit/test_model_config_apply.py`, `EEI/Makefile`, `EEI/artifacts/model_config_import_preview.json`, this ledger, changelog, version matrix, delivery task registry, acceptance traceability, MVP development record, V5 synchronization record and regenerated release artifacts.
+- Model changes: no scoring formula, graph traversal, extraction model, model weight, threshold value or active runtime model parameter changed.
+- Parameter changes: no active parameter value changed; the CLI applies existing profile and threshold files only when an operator explicitly passes `--execute` and a PostgreSQL URL.
+- Commands run: focused py_compile, focused ruff, T1303 unit tests, `apply_model_config.py --dry-run`, and dry-run artifact inspection.
+- Test results: py_compile PASS; focused ruff PASS; `tests/unit/test_model_config_apply.py` plus `tests/unit/test_release_manager_activation.py` PASS 5/5; dry-run artifact generated with schema `eei-model-config-apply-contract-v1`, `acceptance_ids=["A204","A205"]`, hash-bound `supply-chain-v3` and `default-v2`, and `release_gate_closed_by_apply_model_config=false`.
+- Successes: the CLI now fails closed without `--execute`, requires `DATABASE_URL` for writes, delegates creation/activation/recompute enqueue to existing transaction methods and records non-closure rules for A202, A209, A210 and A026/A027.
+- Failures: no focused local failures remain after ruff import/line-length fixes; full `make verify`, generated artifact sync, commit/push and CI are still pending.
+- Decisions: keep A204/A205 `IN_PROGRESS`; a runnable operator CLI is not final release-manager activation and does not replace external gates.
+- Remaining risks: an operator can still activate only against a configured PostgreSQL database; release-manager final activation remains blocked until external evidence gates are real and current.
+- Rollback: revert `scripts/apply_model_config.py`, `tests/unit/test_model_config_apply.py`, Makefile lint inclusion, the regenerated preview artifact and governance records; rerun focused T1303 validation and release artifact generation.
+- Next step: regenerate clean-room/release artifacts, run full `make verify`, run changed-only root governance with enforce-sync, commit, push and wait for CI.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.

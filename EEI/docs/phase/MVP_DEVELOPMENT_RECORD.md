@@ -4789,6 +4789,43 @@ Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209/A210/A026/A027 STILL 
 
 - Revert this CI-binding governance update and restore the preflight manifest to remote-pending if the cited GitHub Actions evidence is invalidated.
 
+## 2026-06-24 - T1303/A204-A205 model config apply operator CLI
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Upgraded `scripts/apply_model_config.py` from preview-only to a fail-closed operator CLI.
+- `--dry-run` validates the model profile and threshold files, emits hash-bound A204/A205 preview evidence and performs no database write.
+- `--execute` now requires `DATABASE_URL` or `--database-url` and reuses `DomainRepository` to create a draft profile version, atomically activate it and enqueue a score recompute job.
+- Added `tests/unit/test_model_config_apply.py` with a fake repository to assert call order, refresh-token propagation and recompute enqueue semantics without touching a live database.
+- Added `scripts/apply_model_config.py` to `make lint`.
+- Regenerated `artifacts/model_config_import_preview.json` under the new `eei-model-config-apply-contract-v1` schema.
+
+### Acceptance Mapping
+
+- T1303 -> A204 for immutable draft creation, transactional activation and operation entrypoint readiness.
+- T1303 -> A205 for refresh-token propagation and score recompute enqueue from the activated context.
+- A204/A205 remain `IN_PROGRESS`, not `DONE`, because final release-manager activation still requires real A202 source/license/owner/legal clearance, A026/A027 production gold labels, A209 24h soak and A210 brand clearance.
+
+### Validation
+
+- `python -m py_compile scripts/apply_model_config.py tests/unit/test_model_config_apply.py`: PASS.
+- `ruff check scripts/apply_model_config.py tests/unit/test_model_config_apply.py`: PASS after import ordering and line-length fixes.
+- `pytest -q tests/unit/test_model_config_apply.py tests/unit/test_release_manager_activation.py`: PASS, 5/5.
+- `python scripts/apply_model_config.py --profile config/model_profiles/supply-chain-v3.json --thresholds config/thresholds/default-v2.json --reason 'T1303/A204-A205 model config apply dry-run evidence' --dry-run`: PASS, generated `artifacts/model_config_import_preview.json`.
+
+### Non-Closure Rules
+
+- The dry-run artifact has `release_gate_closed_by_apply_model_config=false`.
+- The CLI does not close A202, A209, A210, A026 or A027.
+- Unit tests with a fake repository prove call contracts only; PostgreSQL execution remains covered by existing integration/CI paths and by any future operator `--execute` run against a real database.
+
+### Rollback
+
+- Revert `scripts/apply_model_config.py`, `tests/unit/test_model_config_apply.py`, Makefile lint inclusion, `artifacts/model_config_import_preview.json` and the associated governance records.
+- Rerun focused T1303 tests, regenerate release artifacts and rerun `make verify`.
+
 ## 2026-06-23 - T904/A026-A027 production gold-label intake contract
 
 Status: LOCAL VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABELS EXIST

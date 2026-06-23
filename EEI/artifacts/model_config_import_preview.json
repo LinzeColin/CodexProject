@@ -1,75 +1,61 @@
 {
-  "schema_version": "1.1",
-  "compiled_from": "config/model_runtime_defaults.yaml",
-  "config": {
-    "version": 14,
-    "profile_id": "balanced-v2",
-    "profile_name": "均衡 / 综合研究",
-    "status": "draft_import_template",
-    "notes": [
-      "本文件是便于人工审阅和修改的组合导入模板；正式机器配置仍由 profile JSON、threshold JSON 和 motion JSON 分层保存。",
-      "权重合计必须为 1.0 ± 0.0001；未知值不得自动填 0。",
-      "修改后先 dry-run 和影响预览，再生成不可变配置版本并原子激活。"
-    ],
-    "weights": {
-      "supply_chain_criticality": 0.24,
-      "strategic_dependency": 0.18,
-      "capital_momentum": 0.14,
-      "control_influence": 0.12,
-      "policy_exposure": 0.1,
-      "technology_dependency": 0.08,
-      "strategic_signal": 0.08,
-      "time_relevance": 0.06
-    },
-    "quality_adjustment": {
-      "floor": 0.45,
-      "evidence_weight": 0.55
-    },
-    "coverage_adjustment": {
-      "floor": 0.65,
-      "coverage_weight": 0.35
-    },
-    "half_life_days": {
-      "control_change": 730,
-      "mna": 730,
-      "long_term_supply": 540,
-      "capex_financing": 365,
-      "policy_regulatory": 270,
-      "product_partnership": 180,
-      "news_lead": 90
-    },
-    "thresholds": {
-      "minimum_evidence_quality": 55,
-      "minimum_edge_materiality": 48,
-      "minimum_adjusted_priority": 46,
-      "high_priority_alert": 80,
-      "strategic_signal_watch": 60,
-      "supply_chain_critical": 70,
-      "control_material": 55,
-      "visible_nodes_home": 42,
-      "visible_edges_home": 64
-    },
-    "refresh": {
-      "preview_debounce_ms": 120,
-      "browser_preview_p95_ms": 250,
-      "session_apply_p95_ms": 700,
-      "atomic_snapshot_switch": true
-    },
-    "visual": {
-      "home_visual_surface_ratio": 0.9,
-      "system_visual_first_coverage": 0.8
-    },
-    "motion": {
-      "micro_feedback_ms": 80,
-      "selection_ms": 160,
-      "spatial_relayout_ms": 380,
-      "full_view_transition_ms": 480,
-      "respect_reduced_motion": true
-    },
-    "calibration": {
-      "cadence_days": 14,
-      "auto_activate": false
-    }
-  },
-  "production_boundary": "dry-run overlay only; Codex must implement transactional DB/API activation"
+  "acceptance_ids": [
+    "A204",
+    "A205"
+  ],
+  "activation_attempted": false,
+  "affected_modules": [
+    "business_empire",
+    "group_structure",
+    "business_segments",
+    "supply_chain",
+    "capital_network",
+    "ma_transactions",
+    "control_relationships",
+    "policy_environment",
+    "strategic_signals",
+    "watchlist",
+    "evidence_center",
+    "model_center",
+    "data_center"
+  ],
+  "artifact_id": "t1303-model-config-apply-contract",
+  "database_write_attempted": false,
+  "expected_flow": [
+    "validate",
+    "preview",
+    "save immutable draft version",
+    "append operation log",
+    "atomic activate",
+    "write transactional outbox event",
+    "invalidate global refresh token",
+    "queue score recomputation"
+  ],
+  "generated_at": "2026-06-23T14:27:30Z",
+  "mode": "dry-run",
+  "non_closure": [
+    "does_not_close_A202_source_legal_owner_approval",
+    "does_not_close_A209_24h_operator_soak",
+    "does_not_close_A210_brand_clearance",
+    "does_not_close_A026_A027_production_gold_quality"
+  ],
+  "operator_next_step": "Run the same command with --execute and DATABASE_URL after reviewing profile/threshold hashes.",
+  "profile_key": "supply-chain-v3",
+  "profile_path": "config/model_profiles/supply-chain-v3.json",
+  "profile_sha256": "c7f8298a178db8ae5a0d5440a664f093c21d3ed27251581ff7f3e648642f4390",
+  "profile_version": 3,
+  "reason": "T1303/A204-A205 model config apply dry-run evidence",
+  "release_gate_closed_by_apply_model_config": false,
+  "schema_version": "eei-model-config-apply-contract-v1",
+  "status": "DRY_RUN_READY",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1303"
+  ],
+  "threshold_profile_key": "default-v2",
+  "threshold_version": 2,
+  "thresholds_path": "config/thresholds/default-v2.json",
+  "thresholds_sha256": "d7f47845012e2465b4f66f5fa23494b9a6e9c2128cfd64c13da84859198951a1"
 }

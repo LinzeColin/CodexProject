@@ -1,6 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "EEI"
 # 2026-06-22 audit: T1304/A206 scheduler closure changes delivery status only; formula expressions, weights and extraction logic are unchanged.
+# 2026-06-24 audit: T1303/A204-A205 apply CLI changes activation and recompute operations only; formula expressions, weights and thresholds are unchanged.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"
@@ -709,6 +710,7 @@ formulas:
       - "EEI/scripts/validate_a202_operator_review_packet.py"
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/scripts/validate_gold_quality_evaluation.py"
+      - "EEI/scripts/apply_model_config.py"
       - "EEI/config/thresholds/default-v2.json"
       - "EEI/config/ui/motion-tokens.json"
       - "EEI/config/model_runtime_defaults.yaml"
@@ -719,6 +721,7 @@ formulas:
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/tests/unit/test_release_decision_bundle.py"
       - "EEI/tests/unit/test_gold_quality_evaluation.py"
+      - "EEI/tests/unit/test_model_config_apply.py"
     evidence_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json:1"
@@ -727,6 +730,7 @@ formulas:
       - "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
       - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
       - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
+      - "EEI/artifacts/model_config_import_preview.json"
     unknown_task_ids: []
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:

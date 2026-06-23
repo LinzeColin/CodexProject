@@ -2,6 +2,7 @@ governance_spec_version: "1.0.0"
 project_id: "EEI"
 source_policy: "Canonical CodexProject governance source generated from EEI data/config evidence. Legacy EEI/data CSV files remain compatibility evidence, not independent editable governance sources."
 # 2026-06-22 audit: T1304/A206 scheduler closure changes delivery status only; model definitions and runtime scoring behavior are unchanged.
+# 2026-06-24 audit: T1303/A204-A205 apply CLI changes model-configuration activation operations only; model formulas, weights, thresholds and active values are unchanged.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."
@@ -677,6 +678,7 @@ models:
       - "EEI/scripts/validate_a202_operator_review_packet.py"
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/scripts/validate_gold_quality_evaluation.py"
+      - "EEI/scripts/apply_model_config.py"
       - "EEI/config/thresholds/default-v2.json"
       - "EEI/config/ui/motion-tokens.json"
       - "EEI/config/model_runtime_defaults.yaml"
@@ -684,6 +686,7 @@ models:
       - "EEI/scripts/validate_model_config.py"
       - "EEI/scripts/validate_governance.py:108-121"
       - "EEI/tests/unit/test_gold_quality_evaluation.py"
+      - "EEI/tests/unit/test_model_config_apply.py"
     fallback_policy: "Use catalog default when no separate configured value is present; motion duration controls are extracted from config/ui/motion-tokens.json; unavailable production approval evidence remains disclosed and task-linked."
     risk_controls:
       - "range validation"
@@ -700,4 +703,5 @@ models:
       - "EEI/config/thresholds/default-v2.json:1"
       - "EEI/config/ui/motion-tokens.json:1"
       - "EEI/config/model_runtime_defaults.yaml:1"
+      - "EEI/artifacts/model_config_import_preview.json"
     unknown_task_ids: []

@@ -521,7 +521,9 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 - Baseline: `balanced-v2@2`, `default-v2@2`.
 - Dataset or fixture: existing EEI fixtures and catalogs; live production data not confirmed.
 - Test command: `python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json`.
+- Test command: `python scripts/apply_model_config.py --profile config/model_profiles/supply-chain-v3.json --thresholds config/thresholds/default-v2.json --dry-run`.
 - Test command: `python scripts/validate_governance.py`.
+- Current operator activation boundary: `scripts/apply_model_config.py` dry-run is hash-bound and non-writing; `--execute` requires a PostgreSQL URL and delegates to the repository transaction layer. This changes the operator entrypoint only, not active formula, weight or threshold values.
 - Current result: see `DEVELOPMENT_LEDGER.md` after GOV-G2 validation run.
 - Result date: 2026-06-20.
 - Uncovered scenarios: live data calibration, empirical model quality, exact per-task historical stdout for all reconstructed tasks.

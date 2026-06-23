@@ -455,6 +455,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   └── unit
 │       ├── test_api_health.py
 │       ├── test_gold_quality_evaluation.py
+│       ├── test_model_config_apply.py
 │       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
 │       ├── test_release_decision_bundle.py

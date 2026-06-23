@@ -403,6 +403,7 @@ tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_api_health.py
 tests/unit/test_gold_quality_evaluation.py
+tests/unit/test_model_config_apply.py
 tests/unit/test_official_source_live_capture.py
 tests/unit/test_operator_soak_evidence.py
 tests/unit/test_release_decision_bundle.py

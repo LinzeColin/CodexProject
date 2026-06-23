@@ -23,6 +23,7 @@
 - Added a T1307/A209 operator-soak supervisor: it observes the existing 24h PID without double-starting, dry-runs recovery by default, requires explicit `--auto-resume --execute` for paused-run recovery, and keeps `release_gate_closed_by_supervisor=false`.
 - Bound the A209 supervisor into clean-room release packaging and governance evidence so `scripts/supervise_operator_soak.py` is included in release artifacts while A209 remains open.
 - Added a T1307/A209 operator-soak watchdog: it can run detached in the background, checks every 300 seconds, resumes only paused successful checkpoints when explicitly launched with `--execute --auto-resume`, reports stale live PIDs without killing them, and keeps `release_gate_closed_by_watchdog=false`.
+- Upgraded `scripts/apply_model_config.py` from dry-run-only preview to a fail-closed T1303/A204-A205 operator CLI: `--dry-run` remains hash-bound and non-writing, while explicit `--execute` requires PostgreSQL and delegates draft creation, transactional activation and score recompute enqueue to the existing repository transaction layer.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
