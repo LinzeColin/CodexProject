@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased - 2026-06-24
+
+- Added `adp local-runner preflight|daily|launchd-package` for Stage 1 local Mac + Codex/local runner operation.
+- Added local queue, local content ledger JSONL, per-run report, and plain/HTML email preview persistence under an owner-controlled state directory.
+- Added a disabled launchd package draft and 2026-06-30 migration runbook without installing the scheduler, sending production SMTP, enabling GitHub cloud scheduled production, uploading Release artifacts, or generating video.
+- Set the next executable roadmap task to `S2P1T01` after `ADP-S1P5T05` local production and migration prep.
+
 ## 0.23.1 - 2026-06-23
 
 - Reopened strict Stage 1 acceptance for `S1P5T03-R REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE`.

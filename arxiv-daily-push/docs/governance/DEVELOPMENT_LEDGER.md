@@ -9,12 +9,12 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S1-A
+- Current phase: S2P1
 - Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 69
+- Confirmed iteration count: 70
 - Reconstructed event count: 0
-- Current task: `ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041`; test10 (`28059194999`) completed from `main` after the Sydney service-date fix and is now recorded as Stage 1 post-merge email evidence.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge GitHub/cloud manual SMTP path, Sydney service-date subject `20260624`, recipient `linzezhang35@gmail.com`, Chinese lesson flag, and candidate queue summary flag. Production schedule, Release upload, Stage 2, and video remain disabled or out of scope until a separate owner-approved task.
+- Current task: `S2P1T01`; `ADP-S1P5T05` completed local production and 2026-06-30 migration prep after Stage 1 arXiv acceptance.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Real local SMTP production still requires owner-controlled local env/Keychain smoke; GitHub cloud scheduled production remains disabled and is not the daily production runner.
 
 ## Phase Matrix
 
@@ -25,10 +25,34 @@ The append-only machine record is `development_events.jsonl`.
 | C | Evidence and text lesson | completed | Claim Ledger and lesson verification pass | `docs/phase_records/PHASE_05.md`; `docs/phase_records/PHASE_06.md` |
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, text-only teaching email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
-| S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, and accelerated real-arXiv acceptance artifact pass within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json` |
-| S2 | Review8 V4 source and board promotion | planned | Additional source/board promotion starts only after Stage 1 arXiv production acceptance | `docs/pursuing_goal/BASELINE_LOCK.md` |
+| S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, accelerated real-arXiv acceptance artifact, test10 SMTP proof, and local production/migration prep within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`; `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
+| S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from owner deployment decision, local runner code/tests, migration runbooks, and S1P5T05 manifest.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 699e717f38d0c08b4e6f627cb5ca57297b564f95
+- Result commit: PENDING
+- Task IDs: `ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP`; next V6 task is `S2P1T01`
+- Goal: Prepare Stage 1 local production daily-run and 2026-06-30 migration without enabling GitHub cloud scheduled production.
+- Assumptions: Final runner strategy is local Mac + Codex/local runner; GitHub is code, PR/CI, evidence, status, and backup only; secrets stay in local env or Keychain-backed setup.
+- Files changed: `local_runner.py`, CLI local-runner commands, scheduled execution local enablement flag, migration packaging, local runner tests, local and Stage 1 migration runbooks, governance task/event/status files, and S1P5T05 manifest.
+- Model changes: Added Stage 1 local Codex runner orchestration and migration-prep model; no Stage 2 source adapter implemented yet.
+- Formula changes: No ranking, ROI, queue scoring, source selection, email frontstage, or Stage 2 formula changed.
+- Parameter changes: Added local daily-run enablement, state-dir queue/ledger/report/email evidence names, local SMTP secret-name policy, and launchd package label.
+- Commands run: `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_focus_now PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_stage1_migration.py -q`
+- Test results: 15 tests OK.
+- Successes: local runner dry-run persists queue, content ledger, reports, and email previews; real SMTP path fails closed without env keys and passes with fake SMTP; write=false does not persist state; launchd package is generated but not installed.
+- Failures: None in focused validation.
+- Decisions: Keep GitHub cloud scheduled production disabled; do not install launchd or send real local SMTP in this task.
+- Remaining risks: Owner-controlled local SMTP env/Keychain smoke and optional launchd install still need explicit execution; Stage 2 source gates are not implemented yet.
+- Rollback: Revert local runner code, tests, runbooks, S1P5T05 manifest/event, and generated governance files.
+- Next step: Start `S2P1T01` bioRxiv/medRxiv source promotion.
 
 ### `ITER-20260624-ADP-S1P5T04-POST-MERGE-TEST10-GATE-040`
 

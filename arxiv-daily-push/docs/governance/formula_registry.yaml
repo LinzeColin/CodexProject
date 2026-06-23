@@ -675,10 +675,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::validate_scheduled_execution_report", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_daily", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::_notification"]
-    implementation_fingerprint: "sha256:a1fef3bc51112509fe3ec98da1f75e026c555c85dee3c9da502ab3043d89bfaf"
+    implementation_fingerprint: "sha256:3bd921ff70251514aa33ceff002e2115f08f88152d3ce3035eb08e7aac4c63e5"
     last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
     verified_at: "2026-06-23T09:50:00+10:00"
-    evidence_hash: "sha256:14e566b5f1e674a0c265c84906802f56be7d083ed924f9a3fb7494b1dcf4655b"
+    evidence_hash: "sha256:e3eb91f0dcbba05a6fa99185a28ee6e915b15827b79793ee4c7bf40951756157"
   - formula_id: "FORM-ADP-022"
     model_id: "MOD-ADP-020"
     assumption_ids: ["ASM-ADP-023", "ASM-ADP-018", "ASM-ADP-006"]
@@ -779,10 +779,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::build_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py::validate_production_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:d7b08c774d7e7340ee183d63a736ec00a1e62e16d4b01c626a04131012772880"
+    implementation_fingerprint: "sha256:8adf3f3d0b9aad258090d1583ca6457691bde79260a691a20a4934db0987e9dc"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:aad02b410ed7828c29cf488ac1ebc5038291fafe6bdeb9eb35185206db67e5a0"
+    evidence_hash: "sha256:7252ee136bb7c996094b142c083dacbfe71c379dbd2b4115b2f93e3dcf36d795"
   - formula_id: "FORM-ADP-025"
     model_id: "MOD-ADP-023"
     assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
@@ -1250,10 +1250,10 @@ formulas:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
-    implementation_fingerprint: "sha256:90f79921a7db2ddd03c4ce99344226059610072a9018703cd986ef25ec18939d"
+    implementation_fingerprint: "sha256:2f16388a468621f227b193c1d44b3ed7800cb180f1ac1db25f9e0a2d0acd6753"
     last_verified_commit: "2ff5adc7d10a971fd5bf4303a9d8936313bd070a"
     verified_at: "2026-06-23T09:50:00+10:00"
-    evidence_hash: "sha256:b57901479e1ce59fdc06533375c7f478caa7c6182261f888843a4f4d57ae534a"
+    evidence_hash: "sha256:3759e36802c0f6c1e0f08c3061ed6ab1572654b64c587cb19ea080497e9674fa"
   - formula_id: "FORM-ADP-037"
     model_id: "MOD-ADP-035"
     assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
@@ -1494,10 +1494,10 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::build_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::validate_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_evidence_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_report_markdown", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_plain", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_html", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_candidate_queue_summary", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_write_artifacts", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:442ac3514dede658e65f35643c211dfac21275433b64ace3ab95f2c3667493d4"
+    implementation_fingerprint: "sha256:532a26c22087f1fc7b25c6859b64406db86e1e52aa3a4cfaee181936ca448603"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:46eaf29175b3320ad95e1329a0cd595215e01f6866142fd767a265f45d3cddf8"
+    evidence_hash: "sha256:12d6ea031691d2b610fb837765b2f3c62965701c2b64df12fb761af7ad614c32"
   - formula_id: "FORM-ADP-043"
     model_id: "MOD-ADP-041"
     assumption_ids: ["ASM-ADP-042", "ASM-ADP-038", "ASM-ADP-041"]
@@ -1528,10 +1528,10 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_runtime_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::run_tick", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::run_watchdog", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::create_runtime_backup", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::restore_runtime_backup", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_scheduler_plan", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::validate_stage1_runtime_report", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:479befe6641f89605f88a6fc7fc07eb887895addc63aaab9861f59abe7f16a25"
+    implementation_fingerprint: "sha256:920c071d5df5883156eade4faedb139d6b8bcae7458b63ec3863b1632b0fb1a8"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:8fe2607bce0d1628eaa51944c5083cc72b2c392034f23baa34f61d2654a729bf"
+    evidence_hash: "sha256:7f44fa3e8e499faff9f0d4207f8808b4af347d644f89cdbd9b3f22bbe81fa906"
   - formula_id: "FORM-ADP-044"
     model_id: "MOD-ADP-042"
     assumption_ids: ["ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
@@ -1566,10 +1566,10 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::build_migration_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::verify_migration_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::validate_stage1_migration_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::_package_documents", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py::_scan_output_secrets", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:d1f865c2ec1479a3b720d2a0a66eabff669631e45f9e85405ddfe8cbf0850a87"
+    implementation_fingerprint: "sha256:d1c7b7d75e70d75122fa954d0f0c4126353333a977ad509309e486804852a520"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:ae40ecc00fd4f03e811ada1f3718b44a4be297cebf43ad0a188fc6130c7662a4"
+    evidence_hash: "sha256:4e15086c85980a37d370231515e682084ea4759fab688517cd5a024da3ae1b92"
   - formula_id: "FORM-ADP-045"
     model_id: "MOD-ADP-043"
     assumption_ids: ["ASM-ADP-044", "ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
@@ -1604,10 +1604,10 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "arxiv-daily-push/tests/test_stage1_bootstrap.py"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::build_stage1_bootstrap_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::validate_stage1_bootstrap_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_python_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_git_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_ssl_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_sqlite_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_workflow_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_github_env_check", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_network_probe", "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py::_secret_name_report", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:bf2eb214e3456996612ae5e6e0ebba567b8dad976cad12b092089f8be0b7d407"
+    implementation_fingerprint: "sha256:17b783643bc397ae425905ed493790c1a58e4596756952cd1f43bbe8d822875a"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:868668ab136ebe838941d5ca84db1a093ceded9f793e9a59ac1987c15e9efaac"
+    evidence_hash: "sha256:a1d54e87802b6c46e8682c2c5b2279c3c43c65d0d118e18af7d0d31e3892c689"
   - formula_id: "FORM-ADP-046"
     model_id: "MOD-ADP-044"
     assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
@@ -1650,10 +1650,10 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md", "arxiv-daily-push/tests/test_stage1_historical_previews.py"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::load_historical_daily_inputs", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::build_historical_b1_previews_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::build_historical_b1_previews", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::validate_historical_b1_previews_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::_future_leakage_refs", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::_historical_payload", "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py::_write_manifest", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:f21a77c079f4b16e4fc12fbd9dfab1db4c9c5bb6f3cf008118f6435e2795e77e"
+    implementation_fingerprint: "sha256:894c89062c4839e69bf4967da2669201abbb60a30a2e879a1080da98e0d44cbe"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:596ed5f67f3293b31186b41c60c2c6824838fe2725a53f114d72af191f8a130a"
+    evidence_hash: "sha256:6eec67fd7d012462d9fa262dbc3d3df42c6a9a4252c3de0c404a96ed8e8b3fb4"
   - formula_id: "FORM-ADP-047"
     model_id: "MOD-ADP-045"
     assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
@@ -1684,10 +1684,10 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py::build_stage1_accelerated_acceptance_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py::validate_stage1_accelerated_acceptance_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py::_trial_input_from_candidates", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:9b15232fe249c7f761371f48febbd85a8cea892d6ccd570cf4263ce78ce9b772"
+    implementation_fingerprint: "sha256:4f03215d9eccc6c8e0c276b247e6f4faa289447beedb1b8fedce4c582c9c7ca2"
     last_verified_commit: "681cafd26dad312f78136fcb5ba095340e16e972"
     verified_at: "2026-06-23T20:10:00+10:00"
-    evidence_hash: "sha256:27b5f31850e45196660defc5f529f64f5ef57bfe71e64780edcd029f0d9dbb42"
+    evidence_hash: "sha256:971511a40b739eaa78c29a0fb8f887e92881eba4781761de0e4bc07fc4abffdf"
   - formula_id: "FORM-ADP-048"
     model_id: "MOD-ADP-046"
     assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
@@ -1722,7 +1722,7 @@ formulas:
     evidence_refs: ["governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md", "arxiv-daily-push/tests/test_stage1_real_replay.py"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py::build_real_historical_arxiv_replay", "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py::validate_real_historical_arxiv_replay_report", "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py::build_submitted_date_query", "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py::_build_replay_day", "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py::_summarize_replay", "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py::write_real_historical_replay_artifacts", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:b22925c8af0b437163f47847d880af3078e83d01a8800ac39b6e587293a0540d"
+    implementation_fingerprint: "sha256:56b2aa5bdca40111160568d012f886add7ea268b8bbf856d9788a8d638c7f419"
     last_verified_commit: "7f282ec7eeb426c6fde2925737a05ebb242d8788"
     verified_at: "2026-06-23T22:05:00+10:00"
-    evidence_hash: "sha256:e4da74a9dc040cefdf381a851ce0e826ab45995beb3e26a20c8b9e78f9f3b4ee"
+    evidence_hash: "sha256:cb7e35f9d5ed41a8896f2774b120be81b137ee68d7afa3f3de2244da8c56e892"

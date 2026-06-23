@@ -26,6 +26,7 @@ from .smtp_delivery import SmtpFactory, deliver_notification, validate_smtp_deli
 SCHEDULED_EXECUTION_MODEL_ID = "adp-scheduled-execution-v1"
 SCHEDULED_EXECUTION_MODES = ("health-check", "daily-run", "watchdog")
 SCHEDULED_RUN_ENV_KEY = "ADP_SCHEDULED_RUN_ENABLED"
+LOCAL_DAILY_RUN_ENV_KEY = "ADP_LOCAL_DAILY_RUN_ENABLED"
 SMTP_SEND_ENV_KEY = "ADP_ALLOW_SMTP_SEND"
 RELEASE_UPLOAD_ENV_KEY = "ADP_ALLOW_RELEASE_UPLOAD"
 
@@ -184,8 +185,11 @@ def _run_daily(
     release_command_resolver: CommandResolver | None,
     release_command_runner: CommandRunner | None,
 ) -> dict[str, Any]:
-    if _env_true(env, SCHEDULED_RUN_ENV_KEY) is not True:
-        report = _blocked(base, [f"{SCHEDULED_RUN_ENV_KEY} must be true before daily scheduled execution"])
+    if _daily_run_enabled(env) is not True:
+        report = _blocked(
+            base,
+            [f"{SCHEDULED_RUN_ENV_KEY} or {LOCAL_DAILY_RUN_ENV_KEY} must be true before daily execution"],
+        )
         report["notification_report"] = _notification(
             "failure",
             "daily-run",
@@ -418,6 +422,7 @@ def _base_report(
         "exit_code": 2,
         "preflight_status": preflight_report.get("status", "unknown"),
         "scheduled_run_enabled": _env_true(env, SCHEDULED_RUN_ENV_KEY),
+        "local_daily_run_enabled": _env_true(env, LOCAL_DAILY_RUN_ENV_KEY),
         "production_evidence_ready": False,
         "side_effect_policy": {
             "smtp_send_requested": _env_true(env, SMTP_SEND_ENV_KEY),
@@ -511,6 +516,10 @@ def _text_artifact_ref(payload: Mapping[str, Any], daily_report: Mapping[str, An
         return f"text-artifact://{Path(policy_path).name}"
     run_record = daily_report.get("run_record") if isinstance(daily_report.get("run_record"), Mapping) else {}
     return f"text-artifact://{run_record.get('run_id', 'unknown')}"
+
+
+def _daily_run_enabled(env: Mapping[str, str]) -> bool:
+    return _env_true(env, SCHEDULED_RUN_ENV_KEY) or _env_true(env, LOCAL_DAILY_RUN_ENV_KEY)
 
 
 def _blocked(base: Mapping[str, Any], reasons: Sequence[str]) -> dict[str, Any]:

@@ -3791,6 +3791,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1-11-HISTORICAL_B1_PREVIEWS-001"]["status"], "completed")
         self.assertEqual(task_by_id["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]["status"], "completed")
         self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "completed")
+        self.assertEqual(task_by_id["ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP"]["status"], "completed")
+        self.assertEqual(task_by_id["S2P1T01"]["status"], "ready")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "planned")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "planned")
 
@@ -3815,8 +3817,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-083")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-083")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-084")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-084")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -3824,19 +3826,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json",
+            "governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
         self.assertFalse(info["latest_manifest"].get("production_acceptance_claimed", False))
         self.assertFalse(info["latest_event"]["production_schedule_enabled"])
-        self.assertTrue(info["latest_event"]["real_smtp_sent"])
+        self.assertFalse(info["latest_event"]["real_smtp_sent"])
         self.assertFalse(info["latest_event"]["real_release_uploaded"])
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
-        self.assertIn("ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041", rendered)
-        self.assertIn("run `28059194999`", rendered)
+        self.assertIn("ADP-S1P5T05", rendered)
+        self.assertIn("S2P1T01", rendered)
+        self.assertIn("GitHub 只保留代码、PR/CI、证据、状态和备份角色", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
         self.assertNotIn("是否继续执行 S1-09", rendered)
@@ -3849,7 +3852,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041",
+            "arxiv-daily-push": "S2P1T01",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
@@ -4007,7 +4010,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
         self.assertIn(
-            "source_snapshot_hash: `sha256:8d5aca6984e447ee5427c2cd62ebcb45b771c963d3ae6665496b7e4f91ec0756`",
+            "source_snapshot_hash: `sha256:c7ced35444971c12ee3972e938dd0d98cf627e4afca460cc7bd97703ab91764e`",
             dashboard_text,
         )
 
@@ -4041,7 +4044,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("| `arxiv-daily-push` | `0.23.0` |", dashboard_text)
         backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
         adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 20", adp_backlog)
+        self.assertIn("precommit_pending_events: 30", adp_backlog)
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads(

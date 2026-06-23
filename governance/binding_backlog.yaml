@@ -3,7 +3,7 @@ generator_version: "4.0.0"
 task_id: "GOV-REVIEW7-BINDING-BACKLOG-001"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-source_snapshot_hash: "sha256:8d5aca6984e447ee5427c2cd62ebcb45b771c963d3ae6665496b7e4f91ec0756"
+source_snapshot_hash: "sha256:c7ced35444971c12ee3972e938dd0d98cf627e4afca460cc7bd97703ab91764e"
 status: "open"
 policy: "Legacy events are not rewritten. Future meaningful runs must be PRECOMMIT_TREE_BOUND before commit and commit-bound by CI attestation after merge."
 projects:
@@ -75,5 +75,5 @@ projects:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 20
+    precommit_pending_events: 30
     next_task: "GOV-REVIEW7-BINDING-BACKLOG-001"

@@ -13,10 +13,11 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   `docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md` are legacy baselines,
   not the current execution contract.
 - Every implementation closeout must state the current V6 Task ID. Current task:
-  `S1P5T04` controlled live B1 email evidence and Stage 1 acceptance. Stage 1
-  arXiv acceptance is recorded as `ARXIV_PRODUCTION_ACCEPTED`; scheduled
-  production remains fail-closed until GitHub variables/secrets are verified or
-  enabled.
+  `S2P1T01` bioRxiv/medRxiv source promotion. `ADP-S1P5T05` completed the
+  Stage 1 local production and migration prep after `ARXIV_PRODUCTION_ACCEPTED`.
+  Final Stage 1 production strategy is local Mac + Codex/local runner; GitHub
+  is code, PR/CI, evidence, status, and backup only, not the daily production
+  runner.
 - Stage 1 starts with arXiv as the only production-acceptance source; Stage 2
   may promote additional sources and boards only after the arXiv gates pass.
 - Do not use OpenAI Platform API keys or paid API fallbacks.
@@ -45,6 +46,7 @@ Forbidden:
 
 - PDFs or bulk source downloads.
 - large models, TTS model downloads, or media generation.
-- formal scheduler installation before migration readiness.
-- 30-day replay or production-acceptance claims.
+- formal scheduler installation before explicit owner smoke-test approval.
+- new 30-day replay or production-acceptance claims unless the task explicitly
+  requires them.
 - broad non-arXiv source expansion before Stage 1 gates pass.

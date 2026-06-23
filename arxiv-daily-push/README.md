@@ -2,8 +2,8 @@
 
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily teaching
 pipeline. V5 Stage 1 for the B1/arXiv single-source vertical slice is recorded
-as `ARXIV_PRODUCTION_ACCEPTED` from PR #82 evidence. Current V6 task pointer:
-`S1P5T04`.
+as `ARXIV_PRODUCTION_ACCEPTED`. `ADP-S1P5T05` completed local production and
+2026-06-30 migration prep. Current V6 task pointer: `S2P1T01`.
 
 The user-facing product must be an explanatory Chinese learning email, not a
 shallow news digest. Stage 1 delivery is text-first: high-density Chinese
@@ -12,10 +12,11 @@ artifacts. Video, TTS, MP4 rendering, GitHub Release video links, and media
 attachments are historical/legacy capabilities only and are not Stage 1 V5
 acceptance requirements.
 
-Stage 1 acceptance is not the same as enabling scheduled sends. Scheduled
-production remains fail-closed until GitHub repository variables/secrets are
-explicitly verified or enabled. Current operation must not rely on the user's
-Mac as a background production runner.
+Stage 1 acceptance is not the same as enabling unattended sends. The current
+owner-approved production strategy is local Mac + Codex/local runner, with
+state persisted under a local state directory and GitHub used for code, PR/CI,
+evidence, status, and backup only. GitHub cloud scheduled production remains
+disabled and must not become the daily runner without a new explicit task.
 
 Baseline clarification: 30-day-grade Stage 1/2 evidence means 30 independent
 unique-date artifacts and replay/coverage checks generated from real data where
@@ -41,7 +42,9 @@ Implemented foundations now:
 - Stage 1 B1 report/email preview, 30 historical preview evidence, local
   runtime recovery, migration package, and post-migration bootstrap gates via
   `adp build-b1-report-email`, `adp historical-b1-previews`,
-  `adp runtime-audit`, `adp migration`, and `adp post-migration-bootstrap`.
+  `adp runtime-audit`, `adp migration`, and `adp post-migration-bootstrap`;
+- Stage 1 local production prep via `adp local-runner preflight`,
+  `adp local-runner daily`, and `adp local-runner launchd-package`.
 
 Retained but inactive for V5 Stage 1 acceptance:
 
@@ -63,9 +66,11 @@ Completed Stage 1 acceptance evidence:
 
 Not enabled yet:
 
-- scheduled production repo variables/secrets;
-- automatic daily send on default branch;
-- deferred email frontstage template redesign.
+- GitHub cloud scheduled production;
+- real local SMTP production send without owner-controlled local env/Keychain
+  setup and smoke test;
+- actual launchd installation;
+- Stage 2 source promotion completion.
 
 ## Goal Baseline
 
@@ -83,9 +88,8 @@ Stage 1 covers only board one, B1/arXiv. Stage 2 may later promote the other
 boards and sources.
 
 V6 task-numbering rule: every completion report must state the current Task ID.
-The current Task is `S1P5T04` - controlled live B1 email evidence and Stage 1
-acceptance. Stage 1 arXiv is accepted; scheduled production remains a separate
-fail-closed enablement step.
+The current Task is `S2P1T01` - bioRxiv and medRxiv source promotion. Stage 1
+arXiv is accepted, and local production/migration prep is complete.
 
 Current V5-to-V6 Stage 1 task continuity:
 
@@ -109,6 +113,13 @@ Current V5-to-V6 Stage 1 task continuity:
   report/email previews.
 - `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`: completed through the PR #82
   accelerated real-arXiv acceptance artifact and existing controlled SMTP refs.
+- `S1P5T03-R`: completed 30 real historical arXiv as-of date backfill and
+  CONTENT_LEDGER reconciliation.
+- `S1P5T04`: completed controlled post-merge Gmail SMTP test10 and Stage 1
+  arXiv acceptance evidence.
+- `ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP`: completed local
+  production runner and 2026-06-30 migration prep without installing launchd or
+  enabling GitHub cloud scheduled production.
 
 ## Local Validation
 
@@ -121,8 +132,8 @@ git diff --check
 ## Resource Policy
 
 Do not commit media, model weights, voice samples, credentials, Codex auth,
-GitHub tokens, SMTP secrets, render cache, or dependency directories. Stage 1
-Window A remains low-resource until migration readiness is explicitly proven:
-no PDF bulk downloads, no large model/TTS downloads, no full 30-day replay, no
-real SMTP send, no Release upload, no production scheduler enablement, and no
-broad non-arXiv source expansion.
+GitHub tokens, SMTP secrets, render cache, or dependency directories. Local
+production must keep secrets in owner-controlled environment or Keychain-backed
+setup only. No PDF bulk downloads, no large model/TTS downloads, no uncontrolled
+real SMTP send, no Release upload, no GitHub cloud production schedule, and no
+Stage 2 source promotion without source gates.

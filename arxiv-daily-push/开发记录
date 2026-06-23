@@ -4,22 +4,22 @@
 
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
-- current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
-- current_phase: `S1P5 - 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收`
-- current_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036 - Stage 1 邮件前台中文讲解格式修复`
+- current_stage: `S2 - 逐来源、逐板块晋升与全系统生产验收`
+- current_phase: `S2P1 - B1 研究前沿来源逐源晋升`
+- current_task: `S2P1T01 - bioRxiv 与 medRxiv 晋升`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI`
+- next_unique_task: `S2P1T01`
 - roadmap_version: `V6`
 - roadmap_sha256: `76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10`
-- progress: `S1P5T03-R cloud artifact passed; Stage 1 arXiv strict accepted restored; email human-format focused tests pass; production schedule disabled; Stage 2 not started`
-- blockers: `production schedule disabled by design; email human-format full tests/PR CI/controlled test email pending`
+- progress: `S1P5T03-R cloud artifact passed; Stage 1 arXiv strict accepted restored; test10 SMTP proof passed; ADP-S1P5T05 local production and 2026-06-30 migration prep completed; GitHub cloud schedule disabled; Stage 2 ready to start at S2P1T01`
+- blockers: `real local SMTP production still needs owner-controlled local env/Keychain setup and smoke test; S2P1T01 source gates not implemented yet`
 
 ## Stage Roadmap
 
 | Stage | Goal | Phase / Task | 工作量 | Exit Gate | 当前状态 |
 |---|---|---:|---:|---|---|
-| `S1` | arXiv 单源完整纵向切片与生产验收 | 5 / 19 | 30.0% | `ARXIV_PRODUCTION_ACCEPTED` | in_progress |
-| `S2` | 逐来源、逐板块晋升与全系统生产验收 | 7 / 30 | 70.0% | `PRODUCTION_ACCEPTED -> DAILY_OPERATION` | planned |
+| `S1` | arXiv 单源完整纵向切片与生产验收 | 5 / 19 | 30.0% | `ARXIV_PRODUCTION_ACCEPTED` | completed |
+| `S2` | 逐来源、逐板块晋升与全系统生产验收 | 7 / 30 | 70.0% | `PRODUCTION_ACCEPTED -> DAILY_OPERATION` | in_progress |
 
 ## Phase Roadmap
 
@@ -29,8 +29,8 @@
 | `S1P2` | 人工控制面与数据基础 | 4 | 6.5% | S1P1 通过 | `owner_controls.yaml`、人类查看文件、SQLite 统一模型、备份/恢复接口通过 | completed |
 | `S1P3` | arXiv 纵向切片核心 | 5 | 9.5% | S1P2 通过；仅允许 fixture 和小样本在线验证 | arXiv 从采集到 EvidencePacket/Claim/排序/队列全链可重复、可解释、可审计 | completed |
 | `S1P4` | 文本交付、邮件合同与本地运行代码 | 3 | 4.5% | S1P3 通过；低资源窗口 | B1 报告、邮件预览、调度/恢复/迁移包均通过低资源测试 | completed |
-| `S1P5` | 新电脑/云端部署、30 日重放、2 日真实运行与 Stage 1 验收 | 4 | 6.0% | S1P4 通过；GitHub/cloud runner 可用 | `ARXIV_PRODUCTION_ACCEPTED`，B1 arXiv 基线稳定 | in_progress |
-| `S2P1` | B1 研究前沿来源逐源晋升 | 5 | 12.0% | `ARXIV_PRODUCTION_ACCEPTED` | B1 十来源完成来源级门禁 | planned |
+| `S1P5` | 本地/迁移部署、30 日重放、真实邮件证据与 Stage 1 验收 | 5 | 6.0% | S1P4 通过；目标 runner 可用 | `ARXIV_PRODUCTION_ACCEPTED`，B1 arXiv 基线稳定，本地生产/迁移准备完成 | completed |
+| `S2P1` | B1 研究前沿来源逐源晋升 | 5 | 12.0% | `ARXIV_PRODUCTION_ACCEPTED` | B1 十来源完成来源级门禁 | in_progress |
 | `S2P2` | B2 顶级期刊晋升 | 4 | 6.5% | S2P1 核心框架稳定 | Nature、Science、The Lancet 主刊门禁通过 | planned |
 | `S2P3` | B3 中国 C0/C1 权威主干 | 4 | 8.5% | B1/B2 生产无回归 | 全国/中央来源、法律元数据、效力和版本关系通过 | planned |
 | `S2P4` | B4 美国科技金融官方板块 | 4 | 8.5% | 通用来源/关系/评分框架稳定 | US-TA/US-LG/US-FM/US-TP 完成晋升 | planned |
@@ -62,7 +62,8 @@
 | `S1P5T03` | 30 个独立 arXiv 历史日重放与缺陷闭环 | 2.5% | 30 个 as-of 日、30 报告、30 邮件预览 | S1P5T02 通过 | 30/30 终态、未来泄漏 0、P0/P1=0 | superseded_by_S1P5T03-R |
 | `S1P5T03-R` | 真实 arXiv 30 个历史 as-of date backfill 与账本闭环 | P0 | 30 个真实 daily input/report/email preview/queue ledger/CONTENT_LEDGER row | S1P5T03 口径纠偏 | PR CI artifact 30/30、真实 source id、无未来泄漏、无重复主讲、队列连续、P0/P1=0 | completed |
 | `S1P5T04` | 连续 2 个真实自然日与 Stage 1 验收 | 1.5% | 验证真实调度、报告、邮件、恢复和验收 | S1P5T03-R 通过 | `ARXIV_PRODUCTION_ACCEPTED`，配置可回滚 | completed_for_stage1_acceptance; production_schedule_disabled |
-| `S2P1T01` | bioRxiv 与 medRxiv 晋升 | 2.5% | 生命科学和医学预印本 | Stage 1 通过 | 来源级门禁通过 | planned |
+| `ADP-S1P5T05` | 本机生产运行与 2026-06-30 迁移准备 | P1 | local-runner daily/preflight、queue/ledger/report/email preview 本地持久化、launchd 草案、迁移 runbook | S1P5T04/test10 通过 | 本地生产准备完成且 GitHub cloud schedule disabled | completed |
+| `S2P1T01` | bioRxiv 与 medRxiv 晋升 | 2.5% | 生命科学和医学预印本 | Stage 1 通过；S1P5T05 完成 | 来源级门禁通过 | in_progress |
 | `S2P1T02` | PubMed 与 Europe PMC 增强源晋升 | 2.5% | 索引增强、PMID/DOI 对齐、开放全文和资助关系 | S2P1T01 或框架稳定 | 不重复生成原始论文 | planned |
 | `S2P1T03` | TechRxiv、ChemRxiv、EarthArXiv 晋升 | 2.5% | 工程、化学、材料、地球环境预印本 | 前两批来源门禁稳定 | 三个来源均可独立回退 | planned |
 | `S2P1T04` | SSRN 与 ChinaXiv 高风险来源晋升 | 3.0% | 条款、低频网页、中文元数据和页面稳定性 | 通用 HTML/许可/健康框架通过 | 条款可审计、中文字段和失败回退通过 | planned |
@@ -97,6 +98,7 @@
 
 | Event | 结果 | 证据 | 当前结论 |
 |---|---|---|---|
+| `EVENT-20260624-ADP-084` | completed | `ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json`; focused local-runner tests 15 OK | 当前推进到 `S2P1T01`；Stage 1 本地生产/迁移准备完成；GitHub cloud schedule disabled；未安装 launchd、未发生产邮件、未做 Stage 2 source promotion |
 | `EVENT-20260623-ADP-080` | implemented_pending_pr_ci | focused email tests 23 OK; `global_scan.py` renderer and email regression tests | 当前推进到 `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`；前台邮件已改为中文教学型，ROI/Release/video/delivery policy/后台措辞不外露；production schedule disabled |
 | `EVENT-20260623-ADP-079` | completed | PR #94 run `28027759062`, artifact `7821452823`; local control run `/tmp/adp-real-replay-20260623` | 当前推进到 `S1P5T03-R` 且已完成；strict `ARXIV_PRODUCTION_ACCEPTED` 已按云端 30 天真实 backfill 证据恢复；production schedule disabled |
 | `EVENT-20260623-ADP-078` | superseded_for_strict_gate | PR #82; run `28019921500`; artifact `7818287996` | 证明一次性云端实时抓取/排序/生成链路，但不证明 30 天真实历史 backfill 与 CONTENT_LEDGER 闭环 |

@@ -1074,19 +1074,53 @@ tasks:
     unknown_task_ids: []
   - task_id: "ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041"
     phase: "S1-A"
-    objective: "Hold Stage 1 after accepted post-merge test10 and wait for an explicit owner decision before any production schedule enablement."
-    scope: "Document the post-test10 production boundary: Stage 1 arXiv delivery is accepted, manual SMTP proof passed, and scheduled daily production remains fail-closed until owner-approved GitHub variables/secrets enablement."
+    objective: "Deprecated GitHub cloud scheduled-production owner decision after the owner selected local Mac + Codex/local runner as the production strategy."
+    scope: "Record that the prior GitHub cloud schedule enablement path is superseded; GitHub remains code, PR/CI, evidence, status, and backup only."
     non_scope: "No production schedule enablement, no SMTP send, no Release upload, no Stage 2, no template redesign, and no video requirement."
-    status: "blocked"
+    status: "deprecated"
     dependencies: ["ADP-S1P5T04-POST-MERGE-TEST10-040"]
     required_files: ["arxiv-daily-push/docs/governance/OWNER_STATUS.md", "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml", ".github/workflows/arxiv-daily-push-scheduled.yml"]
     acceptance_ids: ["ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT"]
-    test_commands: ["Blocked until owner explicitly approves production schedule enablement and repository variables/secrets are verified fail-closed."]
-    test_results: ["blocked by design: test10 passed, but production schedule has not been enabled and must not be enabled without a separate owner instruction."]
+    test_commands: ["Owner deployment decision superseded this GitHub-cloud production schedule path; verify ADP-S1P5T05 local runner path instead."]
+    test_results: ["deprecated by owner decision: final production runner is local Mac + Codex/local runner; GitHub cloud schedule remains disabled and must not become the daily production runner."]
     evidence_refs: ["github-actions://LinzeColin/CodexProject/actions/runs/28059194999", "governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json"]
-    risk: "Enabling ADP_PRODUCTION_ENABLED, ADP_SCHEDULED_RUN_ENABLED, ADP_ALLOW_SMTP_SEND, or ADP_ALLOW_RELEASE_UPLOAD without a separate owner decision would violate the Stage 1 fail-closed delivery boundary."
-    rollback: "Keep production schedule disabled; if this decision task is removed, ensure no workflow variables are changed."
+    risk: "Confusing the deprecated GitHub cloud schedule path with the new local runner strategy could create unauthorized daily production email."
+    rollback: "Keep production schedule disabled; if cloud scheduling is ever reconsidered, create a new explicit owner-approved task."
     target_version: "0.23.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP"
+    phase: "S1-A"
+    objective: "Prepare Stage 1 local production operation and 2026-06-30 migration while keeping GitHub cloud scheduled production disabled."
+    scope: "Local Codex daily-run CLI, local preflight, state-dir queue/report/email evidence persistence, local content ledger JSONL, launchd package draft, smoke-testable runbook, and 2026-06-30 old/new Mac migration steps."
+    non_scope: "No GitHub cloud scheduled production enablement, no real SMTP send in this task, no Release upload, no Stage 2 source promotion, no video generation, no committed secrets, and no actual launchd installation."
+    status: "completed"
+    dependencies: ["ADP-S1P5T04-POST-MERGE-TEST10-040"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/tests/test_local_runner.py", "arxiv-daily-push/docs/runbooks/LOCAL_CODEX_RUNNER_RUNBOOK.md", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"]
+    acceptance_ids: ["ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_focus_now PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_stage1_migration.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_semantic PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "git diff --check"]
+    test_results: ["focused local runner, scheduled execution, and migration tests: 15 tests OK", "arxiv-daily-push unit tests: 207 tests OK", "semantic extractor: 48 active formulas and 342 active parameters checked with no errors", "changed-only governance validation with semantic checks: errors 0 warnings 0", "root governance unit tests: 192 tests OK", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files under arxiv-daily-push, tests, or scripts", "Local runner supports dry-run email previews, local queue persistence, JSONL content ledger rows, fail-closed SMTP secret checks, optional fake-SMTP proof, no-write non-persistence, and launchd package generation without installing the scheduler."]
+    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/tests/test_local_runner.py", "arxiv-daily-push/docs/runbooks/LOCAL_CODEX_RUNNER_RUNBOOK.md", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/phase_records/PHASE_S1P5T05_LOCAL_PRODUCTION_AND_MIGRATION_PREP.md", "governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json"]
+    risk: "Stage 1 local production prep is ready, but real daily production still requires owner-controlled local SMTP environment setup and an explicit smoke run; GitHub cloud schedule remains disabled."
+    rollback: "Revert local_runner.py, CLI local-runner commands, local runner tests, runbook edits, S1P5T05 manifest/event, and restore the post-test10 next task boundary."
+    target_version: "0.23.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2P1T01"
+    phase: "S2P1"
+    objective: "Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep."
+    scope: "Source registry extension, bioRxiv/medRxiv identity and version gates, fixture parsing, 30-day terminal replay plan, 48h shadow-mode contract, queue integration boundaries, and no-regression checks for the existing arXiv daily path."
+    non_scope: "No production inclusion of bioRxiv/medRxiv before source gates pass, no duplicate canonical papers, no unauthorized full-text access, no video requirement, and no GitHub cloud scheduled production enablement."
+    status: "ready"
+    dependencies: ["ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md", "arxiv-daily-push/src/arxiv_daily_push", "arxiv-daily-push/tests", "arxiv-daily-push/docs/governance"]
+    acceptance_ids: ["ADP-ACC-S2P1T01-SOURCE-PROMOTION"]
+    test_commands: ["PENDING"]
+    test_results: ["not started: S2P1T01 is the next executable Stage 2 task after S1P5T05."]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md"]
+    risk: "Stage 2 must not reduce all-arXiv coverage, duplicate canonical papers, or affect the accepted Stage 1 local arXiv production path."
+    rollback: "If Stage 2 work is paused, keep S2P1T01 in_progress or planned and preserve Stage 1 local runner state."
+    target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"

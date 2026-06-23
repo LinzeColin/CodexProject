@@ -25,6 +25,12 @@ from .global_scan import (
 )
 from .handoff import HandoffError, build_handoff, validate_handoff
 from .lesson import LessonGenerationError, generate_lesson
+from .local_runner import (
+    build_launchd_package,
+    build_local_preflight,
+    run_local_daily,
+    validate_local_runner_report,
+)
 from .narration import NarrationError, generate_narration_plan
 from .notifications import render_email
 from .owner_controls import (
@@ -270,6 +276,32 @@ def build_parser() -> argparse.ArgumentParser:
     migration_verify.add_argument("--manifest", required=True, help="migration_manifest.json path.")
     migration_verify.add_argument("--generated-at", required=True, help="Verification timestamp.")
     migration_verify.add_argument("--json", action="store_true", help="Print JSON migration verification report.")
+
+    local_runner = subparsers.add_parser("local-runner", help="Run or package the Stage 1 local Codex runner.")
+    local_subparsers = local_runner.add_subparsers(dest="local_runner_command", required=True)
+    local_preflight = local_subparsers.add_parser("preflight", help="Check local runner readiness without secret values.")
+    local_preflight.add_argument("--project-root", default=".", help="Repository root used for local execution.")
+    local_preflight.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    local_preflight.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    local_preflight.add_argument("--require-smtp", action="store_true", help="Require SMTP env names for a real local send.")
+    local_preflight.add_argument("--json", action="store_true", help="Print JSON local preflight report.")
+    local_daily = local_subparsers.add_parser("daily", help="Run one local Stage 1 daily path and persist evidence.")
+    local_daily.add_argument("--project-root", default=".", help="Repository root used for local execution.")
+    local_daily.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    local_daily.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    local_daily.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    local_daily.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
+    local_daily.add_argument("--polite-delay-seconds", type=float, default=0.0)
+    local_daily.add_argument("--allow-smtp-send", action="store_true", help="Attempt real SMTP only when env keys are present.")
+    local_daily.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    local_daily.add_argument("--json", action="store_true", help="Print JSON local runner report.")
+    local_launchd = local_subparsers.add_parser("launchd-package", help="Generate macOS launchd templates without installing.")
+    local_launchd.add_argument("--project-root", default=".", help="Repository root used by the launchd command.")
+    local_launchd.add_argument("--state-dir", required=True, help="Local ADP state directory used by launchd.")
+    local_launchd.add_argument("--artifact-dir", required=True, help="Directory that receives launchd package files.")
+    local_launchd.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    local_launchd.add_argument("--no-write", action="store_true", help="Preview package without writing files.")
+    local_launchd.add_argument("--json", action="store_true", help="Print JSON launchd package report.")
 
     post_migration_bootstrap = subparsers.add_parser(
         "post-migration-bootstrap",
@@ -1014,6 +1046,50 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             if report.get("package_manifest_path"):
                 print(f"- package_manifest_path: {report.get('package_manifest_path')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- error: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "local-runner":
+        if args.local_runner_command == "preflight":
+            report = build_local_preflight(
+                project_root=args.project_root,
+                state_dir=args.state_dir,
+                generated_at=args.generated_at,
+                require_smtp=args.require_smtp,
+            )
+            errors = validate_production_preflight(report)
+            if errors:
+                report = {**report, "status": "blocked", "production_run_allowed": False, "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        elif args.local_runner_command == "daily":
+            report = run_local_daily(
+                project_root=args.project_root,
+                state_dir=args.state_dir,
+                date=args.date,
+                generated_at=args.generated_at,
+                max_results_per_category=args.max_results_per_category,
+                polite_delay_seconds=args.polite_delay_seconds,
+                allow_smtp_send=args.allow_smtp_send,
+                write=not args.no_write,
+            )
+        else:
+            report = build_launchd_package(
+                project_root=args.project_root,
+                state_dir=args.state_dir,
+                artifact_dir=args.artifact_dir,
+                generated_at=args.generated_at,
+                write=not args.no_write,
+            )
+        errors = validate_local_runner_report(report) if report.get("model_id") else []
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            if report.get("run_dir"):
+                print(f"- run_dir: {report.get('run_dir')}")
+            if report.get("artifact_dir"):
+                print(f"- artifact_dir: {report.get('artifact_dir')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- error: {reason}")
         return 0 if report["status"] == "pass" else 2

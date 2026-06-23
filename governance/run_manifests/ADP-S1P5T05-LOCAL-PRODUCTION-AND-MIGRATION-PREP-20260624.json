@@ -1,0 +1,79 @@
+{
+  "run_id": "ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP",
+  "iteration_id": "ITER-20260624-ADP-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP",
+  "event_id": "EVENT-20260624-ADP-084",
+  "created_at": "2026-06-24T09:20:00+10:00",
+  "status": "completed",
+  "scope": [
+    "Prepare Stage 1 local production daily-run path for current Mac plus Codex/local runner.",
+    "Persist local queue, report, email preview, SMTP delivery report, and local content ledger evidence under a state directory.",
+    "Generate a launchd package draft and migration runbook for the 2026-06-30 new-computer move."
+  ],
+  "non_scope": [
+    "No GitHub cloud scheduled production enablement.",
+    "No real SMTP production send.",
+    "No GitHub Release upload.",
+    "No actual launchd installation.",
+    "No Stage 2 source promotion completion.",
+    "No video requirement."
+  ],
+  "runner_strategy": {
+    "production_runner": "local_mac_codex_runner",
+    "github_cloud_scheduled_production_runner": false,
+    "github_role": "code_pr_ci_evidence_status_backup",
+    "current_mac_until": "2026-06-30",
+    "new_mac_migration_date": "2026-06-30",
+    "local_state_dir_default": "$HOME/.adp/arxiv-daily-push"
+  },
+  "implemented_files": [
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py",
+    "arxiv-daily-push/tests/test_local_runner.py",
+    "arxiv-daily-push/docs/runbooks/LOCAL_CODEX_RUNNER_RUNBOOK.md",
+    "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"
+  ],
+  "local_runner_capabilities": {
+    "local_preflight": true,
+    "local_daily_cli": true,
+    "candidate_queue_persistence": true,
+    "local_content_ledger_jsonl": true,
+    "email_preview_plain_and_html": true,
+    "smtp_secret_names_only": true,
+    "no_write_preview_gate": true,
+    "launchd_package_generated_only": true,
+    "migration_runbook": true
+  },
+  "safety_gates": {
+    "secret_values_logged": false,
+    "secret_values_committed": false,
+    "codex_auth_read": false,
+    "github_cloud_schedule_required": false,
+    "github_cloud_schedule_enabled": false,
+    "production_schedule_enabled": false,
+    "release_upload_enabled": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "video_generated": false,
+    "launchd_installed": false
+  },
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_focus_now PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_stage1_migration.py -q"
+  ],
+  "test_results": [
+    "focused local runner, scheduled execution, and migration tests: 15 tests OK"
+  ],
+  "production_acceptance_claimed": false,
+  "arxiv_production_acceptance_label_preserved": "ARXIV_PRODUCTION_ACCEPTED",
+  "stage2_completion_claimed": false,
+  "next_task": "S2P1T01",
+  "rollback": "Revert local_runner.py, CLI local-runner commands, local runner tests, runbook edits, this manifest, EVENT-20260624-ADP-084, and generated governance status files.",
+  "risks": [
+    "Real local production still needs owner-controlled local SMTP environment setup and one explicit local smoke run.",
+    "The launchd package is intentionally generated but not installed.",
+    "Stage 2 source promotion must not affect the accepted Stage 1 all-arXiv path."
+  ]
+}
