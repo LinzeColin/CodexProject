@@ -4,15 +4,15 @@
 
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
-- current_stage: `S1 - arXiv 单源完整纵向切片与生产验收`
-- current_phase: `S1P5`
-- current_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`
+- current_stage: `S2 - 逐来源、逐板块晋升与全系统生产验收`
+- current_phase: `S2P1`
+- current_task: `S2P1T01`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
 - active_model_count: `46`
 - active_formula_count: `48`
 - active_parameter_count: `342`
-- next_unique_task: `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI`
-- evidence_status: `LOCAL_AND_CLOUD_BACKFILL_VERIFIED; EMAIL_FOCUSED_TESTS_PASS`
+- next_unique_task: `S2P1T01`
+- evidence_status: `STAGE1_ACCEPTED; LOCAL_PRODUCTION_MIGRATION_PREP_VERIFIED`
 
 ## 证据
 
@@ -23,6 +23,8 @@
 | `EVID-PARAM-001` | governance | `docs/governance/parameter_registry.csv` | active parameters | EXTRACTED |
 | `EVID-ACC-001` | run_manifest | `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json` | `MOD-ADP-046`; `FORM-ADP-048`; `PARAM-ADP-352..359` | EXTRACTED |
 | `EVID-EMAIL-HUMAN-036-001` | local_test | focused email/scheduled/notification unit tests 23 OK | `MOD-ADP-034`; `MOD-ADP-037`; `PARAM-ADP-277` | EXTRACTED |
+| `EVID-S1P5T05-001` | local_test | focused local runner/scheduled/migration unit tests 15 OK | `MOD-ADP-LOCAL-RUNNER`; `PARAM-ADP-LOCAL-001..006` | EXTRACTED |
+| `EVID-S1P5T05-002` | run_manifest | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` | local production and migration prep | EXTRACTED |
 
 ## 核心模型
 
@@ -66,6 +68,20 @@
 - evidence_refs: `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json`
 - fallback_behavior: If any date fails, candidate selection is missing, future leakage appears, duplicate lead appears, queue continuity breaks, P0/P1 unsupported claims appear, or production side effects are true, output `BLOCKED`.
 
+### `MOD-ADP-LOCAL-RUNNER` Stage 1 local Codex runner
+
+- status: active for local production prep; real local production send still requires owner-controlled smoke.
+- purpose: 在本机 Mac + Codex/local runner 上执行 Stage 1 daily-run，持久化候选队列、内容账本、报告、邮件预览和 SMTP 发送状态；6月30日可迁移到新电脑。
+- inputs: project_root, local state_dir, date, generated_at, all-arXiv source batches/fetcher, local env/Keychain-backed SMTP names, optional launchd package path.
+- outputs: local preflight report, daily input report, `candidate_queue.json`, `local_content_ledger.jsonl`, per-run JSON reports, plain/HTML email preview, launchd package draft.
+- assumptions: GitHub cloud scheduled production disabled; GitHub is code/PR/CI/evidence/status/backup only; secrets are never committed, logged, or written to plist.
+- formula_refs: `NOT_FORMALIZED`
+- parameter_refs: `PARAM-ADP-LOCAL-001`..`PARAM-ADP-LOCAL-006`
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/local_runner.py`; `arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py`
+- test_refs: `arxiv-daily-push/tests/test_local_runner.py`
+- evidence_refs: `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json`
+- fallback_behavior: If local preflight, daily input, release dry-run, SMTP requirements, queue persistence, or secret policy fails, output `blocked`; launchd package generation never installs the scheduler.
+
 ## 关键公式
 
 ### `FORM-ADP-047` Stage 1 accelerated acceptance gate
@@ -105,15 +121,21 @@
 | `PARAM-ADP-357` | `STAGE1_REAL_REPLAY_DEFAULT_MAX_RESULTS` | max results per date-window request | `10` | `10` | records | `1..50` | `stage1_real_replay.py` | EXTRACTED |
 | `PARAM-ADP-358` | `STAGE1_REAL_REPLAY_ARTIFACT_FILE_COUNT` | aggregate artifact file count | `7` | `7` | files | `7` | `stage1_real_replay.py` | EXTRACTED |
 | `PARAM-ADP-359` | `STAGE1_REAL_REPLAY_QUERY_POLICY` | all-arXiv date-window query policy | `submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359]` | same | arXiv query | fixed | `stage1_real_replay.py` | EXTRACTED |
+| `PARAM-ADP-LOCAL-001` | `ADP_LOCAL_DAILY_RUN_ENABLED` | local daily-run enablement flag | `true` only inside local runner command env | fail-closed false outside command | boolean | `{true,false}` | `scheduled_execution.py`; `local_runner.py` | EXTRACTED |
+| `PARAM-ADP-LOCAL-002` | `LOCAL_RUNNER_CONTENT_LEDGER_FILENAME` | local content ledger file | `local_content_ledger.jsonl` | same | filename | fixed | `local_runner.py` | EXTRACTED |
+| `PARAM-ADP-LOCAL-003` | `LOCAL_RUNNER_QUEUE_FILENAME` | local candidate queue file | `candidate_queue.json` | same | filename | fixed | `local_runner.py` | EXTRACTED |
+| `PARAM-ADP-LOCAL-004` | `LOCAL_LAUNCHD_LABEL` | generated launchd label | `com.linze.adp.local.daily` | same | launchd label | fixed | `local_runner.py` | EXTRACTED |
+| `PARAM-ADP-LOCAL-005` | `LOCAL_RUNNER_SECRET_NAMES` | local SMTP secret names | `ADP_SMTP_HOST, ADP_SMTP_PORT, ADP_SMTP_USERNAME, ADP_SMTP_PASSWORD` | names only | env names | no values logged | `local_runner.py`; `smtp_delivery.py` | EXTRACTED |
+| `PARAM-ADP-LOCAL-006` | `LOCAL_RUNNER_STATE_DIR_DEFAULT` | recommended local state dir | `$HOME/.adp/arxiv-daily-push` | same | path | owner local filesystem | `LOCAL_CODEX_RUNNER_RUNBOOK.md` | EXTRACTED |
 
 ## 限制与未知
 
 | 项目 | 类型 | 当前状态 | 解决任务 | 事实等级 |
 |---|---|---|---|---|
 | S1P5T03-R 云端 artifact | validation | PR #94 run `28027759062` artifact `7821452823` 通过；strict accepted restored | `ARXIV_PRODUCTION_ACCEPTED` | MACHINE_VERIFIED |
-| GitHub repo production variables/secrets | validation | 本轮未读取或启用；scheduled send 仍 fail-closed | production variable verification task after S1P5T03-R | EXTRACTED |
+| 本地 SMTP 环境/Keychain | validation | 本轮未读取 secret 值、未发送真实生产邮件；只验证 fail-closed 和 fake SMTP path | owner-controlled local smoke before launchd install | EXTRACTED |
 | 邮件前台模板 | product_quality | 本轮已改为中文教学型并清洗 ROI/Release/video/delivery policy/后台词；全量验证和 PR CI 待跑 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI` | EXTRACTED |
-| Stage 2 多来源模型 | model_scope | planned，未进入 arXiv Stage 1 验收 | `S2P1` | EXTRACTED |
+| Stage 2 多来源模型 | model_scope | next task is `S2P1T01`; bioRxiv/medRxiv source gates not implemented yet | `S2P1T01` | EXTRACTED |
 
 ## 验证
 
@@ -122,3 +144,4 @@
 | `VAL-S1P5T03R-001` | strict real historical replay | local live replay control run plus GitHub/cloud artifact | LOCAL PASS; CLOUD PASS | `test_stage1_real_replay.py` | `/tmp/adp-real-replay-20260623/report.json`; PR #94 run `28027759062` artifact `7821452823` | EXTRACTED |
 | `VAL-S1P5T04-001` | one-time live cloud chain | PR #82 GitHub Actions + artifact inspection | PASS but insufficient for strict 30-day backfill | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |
 | `VAL-EMAIL-HUMAN-036-001` | human-facing email format | focused unit tests plus full arxiv-daily-push suite | PASS 23 focused tests OK; 200 full tests OK | `test_global_scan.py`; `test_scheduled_execution.py`; `test_notifications.py`; `python3 -m unittest discover -s arxiv-daily-push/tests -q` | `/tmp/codex_adp_email_human_focus`; `/tmp/codex_adp_email_human_all`; no repo cache | EXTRACTED |
+| `VAL-S1P5T05-001` | local production and migration prep | focused local runner/scheduled/migration unit tests | PASS 15 focused tests OK | `test_local_runner.py`; `test_scheduled_execution.py`; `test_stage1_migration.py` | `/tmp/codex_adp_s1p5t05_focus_now`; no real SMTP send; no launchd install | EXTRACTED |

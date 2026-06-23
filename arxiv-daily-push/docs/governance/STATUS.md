@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:009708329b335e423040b86c28f4510954390e9ce4a96d77a759d62f62dd42f8`
-- snapshot_event_time: `2026-06-24T07:52:00+10:00`
+- source_snapshot_hash: `sha256:8cf539b66c16360081b9d843cabdb657395409b4fc609f9d92b801ed65ae1ecc`
+- snapshot_event_time: `2026-06-24T09:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S1-A / ARXIV_PRODUCTION_ACCEPTED`
+- Phase/Gate: `S2P1 / ARXIV_PRODUCTION_ACCEPTED`
 - Models/Formulas/Parameters total: `46 / 48 / 359`
 - Active formulas/parameters: `48 / 342`
 - Machine checked formulas/parameters: `48 / 342`
@@ -36,8 +36,8 @@
 
 - Readiness: `VERIFIED`
 - Release gate: `ARXIV_PRODUCTION_ACCEPTED`
-- Next executable task: `ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041`
-- Pending/stale events: `83`
+- Next executable task: `S2P1T01`
+- Pending/stale events: `84`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `54`

@@ -30,7 +30,6 @@ STAGE1_MIGRATION_REQUIRED_SECRET_NAMES = (
     "ADP_SMTP_USERNAME",
     "ADP_SMTP_PASSWORD",
     "ADP_SMTP_TO",
-    "ADP_RELEASE_TARGET",
 )
 STAGE1_MIGRATION_REQUIRED_RELATIVE_PATHS = (
     "arxiv-daily-push/VERSION",
@@ -39,10 +38,13 @@ STAGE1_MIGRATION_REQUIRED_RELATIVE_PATHS = (
     "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md",
     "arxiv-daily-push/src/arxiv_daily_push/storage.py",
     "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
     "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
     "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py",
+    "arxiv-daily-push/docs/runbooks/LOCAL_CODEX_RUNNER_RUNBOOK.md",
     "arxiv-daily-push/tests/test_storage.py",
     "arxiv-daily-push/tests/test_stage1_runtime.py",
+    "arxiv-daily-push/tests/test_local_runner.py",
     "arxiv-daily-push/tests/test_stage1_b1_report.py",
     "arxiv-daily-push/tests/test_stage1_queue.py",
 )
@@ -51,6 +53,7 @@ STAGE1_MIGRATION_PACKAGE_FILES = (
     "LOW_RESOURCE_SMOKE.json",
     "NEW_MACHINE_BOOTSTRAP_CHECKLIST.md",
     "SECRET_NAMES_CHECKLIST.md",
+    "LOCAL_RUNNER_RUNBOOK.md",
     "RESTORE_DRILL.md",
 )
 _SECRET_VALUE_PATTERNS = (
@@ -316,8 +319,8 @@ def _package_documents(*, generated_at: str, required_inventory: list[dict[str, 
             "## Required Checks\n\n"
             "- OS, Python, Git, SSL, network, browser, and power policy checked on the new machine.\n"
             "- Free SSD is at least 60 GB before heavy validation.\n"
-            "- Production scheduler remains disabled until S1-13 and S1-14 evidence passes.\n"
-            "- Gmail SMTP and GitHub Release credentials are configured as secret names only; values are never written here.\n"
+            "- GitHub cloud production schedule remains disabled; daily production uses the local Codex runner.\n"
+            "- Gmail SMTP credentials are configured as secret names only; values are never written here.\n"
             "- Restore drill uses the backup manifest and explicit `--confirm-restore`.\n\n"
             "## Required Source Files\n\n"
             f"{required_lines}\n"
@@ -327,14 +330,23 @@ def _package_documents(*, generated_at: str, required_inventory: list[dict[str, 
             "This file lists required secret names only. Do not paste values into this repository or migration package.\n\n"
             f"{secret_lines}\n"
         ),
+        "LOCAL_RUNNER_RUNBOOK.md": (
+            "# Local Runner Runbook\n\n"
+            "1. Keep GitHub scheduled production disabled; GitHub is for code, PR/CI, evidence backup, and status records.\n"
+            "2. Store Gmail SMTP values only in the local environment or Keychain-backed shell setup.\n"
+            "3. Run one smoke path with `adp local-runner daily --state-dir <state> --date <YYYY-MM-DD> --generated-at <ISO> --json`.\n"
+            "4. Inspect `<state>/runs/<YYYYMMDD>/email_preview.txt`, `adp-local-runner-report.json`, and `<state>/candidate_queue.json`.\n"
+            "5. Generate launchd templates with `adp local-runner launchd-package`; install only after owner approval.\n"
+            "6. On 2026-06-30 migration day, copy the repository, migration package, and state directory to the new computer, then run preflight and smoke before enabling launchd.\n"
+        ),
         "RESTORE_DRILL.md": (
             "# Restore Drill\n\n"
             "1. Copy the migration package to the new machine.\n"
             "2. Verify `migration_manifest.json` hashes with `adp migration verify`.\n"
             "3. Restore the SQLite backup to an explicit new path using `adp restore --confirm-restore`.\n"
             "4. Run `adp storage inspect` on the restored database.\n"
-            "5. Run `adp runtime-audit`, `adp tick`, and `adp watchdog` with an explicit state directory.\n"
-            "6. Keep production schedule, real SMTP, Release upload, and heavy replay disabled until later gates pass.\n"
+            "5. Run `adp runtime-audit`, `adp tick`, `adp watchdog`, and `adp local-runner preflight` with an explicit state directory.\n"
+            "6. Keep GitHub cloud production schedule, Release upload, and video disabled; real SMTP requires explicit local env and owner approval.\n"
         ),
     }
 
