@@ -130,10 +130,42 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "scripts/validate_semantic_extractors.py",
             "scripts/validate_ci_attestation.py",
             "scripts/governance_setup_doctor.py",
+            "governance/schemas/project.schema.json",
             "governance/schemas/ci_attestation.schema.json",
         }:
             self.assertIn(path, required)
             self.assertTrue((ROOT / path).is_file(), path)
+
+    def test_review9_s2_project_schema_declares_lean_v2_fact_contract(self) -> None:
+        schema = json.loads((ROOT / "governance" / "schemas" / "project.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+        self.assertEqual(schema["properties"]["schema_version"]["const"], "codexproject.project.v1")
+        self.assertFalse(schema["additionalProperties"])
+        for required in {
+            "features",
+            "models",
+            "assumptions",
+            "formulas",
+            "parameters",
+            "strategies",
+            "validations",
+            "evidence_refs",
+        }:
+            self.assertIn(required, schema["required"])
+            self.assertIn(required, schema["properties"])
+        for definition in {
+            "feature",
+            "model",
+            "assumption",
+            "formula",
+            "parameter",
+            "strategy",
+            "validation",
+            "evidence_ref",
+        }:
+            self.assertIn(definition, schema["$defs"])
+        self.assertIn("UNKNOWN", schema["$defs"]["fact_level"]["enum"])
+        self.assertIn("VERIFIED", schema["$defs"]["fact_level"]["enum"])
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()

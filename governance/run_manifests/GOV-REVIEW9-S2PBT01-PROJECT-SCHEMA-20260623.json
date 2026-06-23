@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623",
+  "project_id": "root-governance",
+  "task_id": "S2PBT01",
+  "acceptance_ids": [
+    "ACC-S2PBT01"
+  ],
+  "iteration_id": "ITER-20260623-REVIEW9-S2PBT01",
+  "generated_at": "2026-06-23T20:32:00+10:00",
+  "implementation_base_sha": "49c2d7b2391d5ff74adae6f9c6ad5d69319f8f7b",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:fccca5063b1b38f58d9b33d9b3d44a8ebdc1fab21e520151af361bcb87db271f",
+  "changed_files_declared": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/schemas/project.schema.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json"
+  ],
+  "changed_files_actual": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/schemas/project.schema.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json"
+  ],
+  "required_governance_files": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/schemas/project.schema.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/schemas/project.schema.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_lean_governance_v2",
+    "project_schema_definition"
+  ],
+  "model_delta": "NOT_APPLICABLE: schema contract only",
+  "formula_delta": "NOT_APPLICABLE",
+  "parameter_delta": "NOT_APPLICABLE",
+  "version_delta": "No product, model, parameter profile, or data snapshot version change",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_project_schema_declares_lean_v2_fact_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review3_root_governance_framework_files_are_required -q",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -m json.tool governance/schemas/project.schema.json",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_project_schema_declares_lean_v2_fact_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review3_root_governance_framework_files_are_required -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S2PBT01 schema contract and root required-file tests passed."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "127 governance tests OK. The printed missing-base validation is an expected negative fixture inside the test suite."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed files STANDARD.md, projects.yaml, project schema, tests, and run manifest; errors 0 warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status PASS, errors 0, warnings 0."
+    },
+    {
+      "command": "python -B scripts/validate_project_governance.py --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "all registered projects checked; errors 0 warnings 0."
+    },
+    {
+      "command": "python -m json.tool governance/schemas/project.schema.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "project schema JSON parses."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "manifest JSON parses."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "governance/schemas/project.schema.json",
+    "governance/projects.yaml",
+    "docs/governance/STANDARD.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S2PBT01-PROJECT-SCHEMA-20260623.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S2PBT01 project schema",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Define the Lean v2 project.yaml schema for project features, models, assumptions, formulas, parameters, strategies, validation records, and evidence references.",
+  "rollback": "Revert governance/schemas/project.schema.json, governance/projects.yaml, docs/governance/STANDARD.md, the S2PBT01 governance tests, and this run manifest.",
+  "unresolved_risks": [
+    "roadmap.yaml and events.jsonl schemas remain planned for S2PBT02 and S2PBT03.",
+    "No project facts are migrated by this task; Stage 4/5 migrations must instantiate the schema with evidence-backed facts.",
+    "Renderer and check-render work remains locked until S3."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

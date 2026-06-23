@@ -21,6 +21,7 @@ root_governance:
     - "docs/governance/templates/OWNER_STATUS.template.md"
     - "docs/governance/CODEX_SETUP.md"
     - "governance/projects.yaml"
+    - "governance/schemas/project.schema.json"
     - "governance/schemas/model_registry.schema.json"
     - "governance/schemas/formula_registry.schema.json"
     - "governance/schemas/delivery_tasks.schema.json"
