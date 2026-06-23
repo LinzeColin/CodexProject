@@ -19,15 +19,17 @@ parameter_profile_versions:
   active_profile: "param-profile-20260620"
   legacy_profile: "rules-v1.0.0"
 data_snapshot_version: "NOT_APPLICABLE-governance-baseline-no-data-refresh"
-current_iteration: "ITER-20260621-FIFA-001"
-current_phase: "B"
-current_gate: "GOV-SEMANTIC-FIFA-in-progress"
+current_iteration: "ITER-20260624-REVIEW9-S5PBT02"
+current_phase: "S5PB"
+current_gate: "S5PB-GATE-IN-PROGRESS"
 legacy_version_labels:
-  - label: "tab-research-pipeline package.json version"
+  -
+    label: "tab-research-pipeline package.json version"
     value: "0.1.0"
     fact_level: "EXTRACTED"
     evidence_ref: "FIFA/tab-research-pipeline/package.json"
-  - label: "legacy rules model version"
+  -
+    label: "legacy rules model version"
     value: "rules-v1.0.0"
     fact_level: "EXTRACTED"
     evidence_ref: "FIFA/legacy/fifa-analysis-system/app/config.py:9"
@@ -35,3 +37,4 @@ notes:
   - "Product version is extracted from the active tab-research-pipeline package manifest. This governance baseline does not change product behavior."
   - "Active TAB research model versions are provisional because no separate code-level model version labels were found for those modules."
   - "Review6-D semantic extractor rollout adds machine checks for 91 active parameters and 10 active formulas; 17 active parameters remain HUMAN_REVIEW_REQUIRED under GOV-SEMANTIC-FIFA-001."
+  - "Review9 S5PBT02 migrates FIFA to Lean v2 canonical facts and Chinese human-readable entries without changing research, odds, stake, raw refresh, live board, automation, or legacy softmax behavior."
