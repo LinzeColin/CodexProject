@@ -124,6 +124,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a209
 │   │   │   ├── t1307_operator_soak_4h.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_4h.json
+│   │   │   ├── t1307_operator_soak_background_progress.json
 │   │   │   ├── t1307_operator_soak_evidence_validation.json
 │   │   │   ├── t1307_operator_soak_readiness.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_readiness.json
@@ -386,6 +387,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── monitor_operator_soak.py
 │   ├── preflight.sh
 │   ├── publish_reviewed_relationship_facts.py
+│   ├── record_operator_soak_heartbeat.py
 │   ├── run_browser_scale_benchmarks.mjs
 │   ├── run_codex_autonomous.sh
 │   ├── run_live_e2e_api.sh

@@ -127,6 +127,7 @@ artifacts/tests/a208/t1306_scale_benchmark_operator_contract.json
 artifacts/tests/a208/t1306_scale_benchmark_smoke.json
 artifacts/tests/a209/t1307_operator_soak_4h.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_4h.json
+artifacts/tests/a209/t1307_operator_soak_background_progress.json
 artifacts/tests/a209/t1307_operator_soak_evidence_validation.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
@@ -345,6 +346,7 @@ scripts/migrate.py
 scripts/monitor_operator_soak.py
 scripts/preflight.sh
 scripts/publish_reviewed_relationship_facts.py
+scripts/record_operator_soak_heartbeat.py
 scripts/run_browser_scale_benchmarks.mjs
 scripts/run_codex_autonomous.sh
 scripts/run_live_e2e_api.sh

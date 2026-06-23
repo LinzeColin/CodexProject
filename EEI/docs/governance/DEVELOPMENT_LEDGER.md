@@ -14,8 +14,8 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
 - Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T1307 A209 background heartbeat evidence`
-- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; current heartbeat records operator PID `12478`, watchdog PID `62233`, `58/288` successful windows and `release_gate_closed_by_background_heartbeat=false`, but the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+- Current task: `TASK-T1307 A209 background heartbeat governance CI repair`
+- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; current heartbeat records operator PID `12478`, watchdog PID `62233`, `61/288` successful windows and `release_gate_closed_by_background_heartbeat=false`, but the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
 
 ## Phase Matrix
 
@@ -895,7 +895,7 @@ Do not infer iteration count from Git commit count.
 
 ## 2026-06-24 - T1307/A209 background heartbeat evidence
 
-Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNING IN BACKGROUND
+Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNING IN BACKGROUND
 
 ### Scope
 
@@ -908,13 +908,14 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG R
 
 - T1307 -> A209.
 - A209 remains `IN_PROGRESS`: heartbeat evidence proves background progress tracking only.
-- Current heartbeat: operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `58/288` windows PASS, `0` failed, `230` remaining, `20.14%` complete, generated at `2026-06-23T15:34:39Z`.
+- Current heartbeat: operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `61/288` windows PASS, `0` failed, `227` remaining, `21.18%` complete, generated at `2026-06-23T15:47:26Z`.
 
 ### Parameters and formulas
 
 - No scoring formula changed.
-- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
-- Existing A209 parameters remain: long duration `24h`, operator window `300s`, target windows `288`.
+- No graph traversal, extraction model, model weight or business scoring threshold changed.
+- Existing A209 long-duration parameters remain: long duration `24h`, operator window `300s`, target windows `288`.
+- Added operational evidence parameters `PARAM-069` through `PARAM-071` for watchdog interval `300s`, stale threshold `900s` and heartbeat schema version; these are not release-ready closure evidence.
 
 ### Validation
 
@@ -924,6 +925,8 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG R
 - `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/record_operator_soak_heartbeat.py generate`: PASS; artifact generated with `release_gate_closed_by_background_heartbeat=false`.
 - `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/record_operator_soak_heartbeat.py validate`: PASS.
 - `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-heartbeat-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `GOVERNANCE_BASE_REF=a00a9ed8e1d9712af2f33da8d65afbdf652b7b22 python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`: PASS, errors 0, warnings 0.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-fix-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; clean-room `package_paths=418`, release `manifest_paths=425`, scale 10k/100k/1m, soak smoke, ruff, typecheck and unit tests `86 passed`.
 
 ### Remaining gaps
 
@@ -983,6 +986,7 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG R
 - `EVENT-20260623-013`: local T1307/A209 operator soak monitor and recovery contract; A209 remains open until 24h evidence validates.
 - `EVENT-20260623-016`: local T1307/A209 operator-soak supervisor clean-room package binding; A209 remains open until 24h evidence validates.
 - `EVENT-20260624-003`: local T1307/A209 background heartbeat evidence records operator/watchdog live PIDs and 58/288 successful windows; A209 remains open until 24h evidence validates.
+- `EVENT-20260624-004`: local T1307/A209 background heartbeat governance CI repair registers PARAM-069 through PARAM-071, refreshes the heartbeat to 61/288 successful windows and regenerates clean-room release evidence; A209 remains open until 24h evidence validates.
 
 ## Unknown Historical Periods
 
