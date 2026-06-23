@@ -108,6 +108,11 @@ blockers, next Gate, and next unique task. Capabilities include value, scope,
 non-scope, implementation refs, test refs, evidence, limitations, and current
 status.
 
+`docs/governance/templates/功能清单.template.md` is the template for that
+human view. It starts with summary fields, then owner decisions, capability
+overview, evidence, limitations, and feature detail. It must not degrade into a
+link page.
+
 `开发记录` first screen: version, current Stage/Phase/Task, total and completed
 hours, progress, blockers, next Gate, and next unique task. It renders the full
 Roadmap and recent meaningful events.
@@ -117,6 +122,11 @@ pseudocode, variables, units, domains, missing-value behavior, fallback behavior
 parameters, defaults, priors, active values, ranges, weights, sources,
 calibration, validation, limitations, stop conditions, and code/config/test
 evidence refs.
+
+`docs/governance/templates/模型参数文件.template.md` is the template for that
+human view. It starts with summary fields, then evidence, limitations, models,
+formulas, parameters, and validation. It must keep formulas and parameters in
+the owner-readable file rather than replacing them with links.
 
 Technology stack names are architecture facts, not model parameters. A project
 with no model still documents evidence-backed `NOT_APPLICABLE`.
