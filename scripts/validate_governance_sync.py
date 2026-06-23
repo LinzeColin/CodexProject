@@ -102,6 +102,11 @@ PROJECT_GOVERNANCE_FILES = {
     "roadmap_draft.yaml",
     "roadmap.yaml",
 }
+PROJECT_GOVERNANCE_TOOL_FILES = {
+    "scripts/manage_clean_room_release.py",
+    "scripts/manage_release_artifacts.py",
+    "tests/unit/test_clean_room_release_paths.py",
+}
 COMMON_REQUIRED_BY_CLASS = {
     "model_behavior_change": {
         "docs/governance/MODEL_SPEC.md",
@@ -309,6 +314,10 @@ def is_project_governance_file(rel_path: str) -> bool:
     return name in PROJECT_GOVERNANCE_FILES
 
 
+def is_project_governance_tool_file(rel_path: str) -> bool:
+    return rel_path in PROJECT_GOVERNANCE_TOOL_FILES
+
+
 def is_generated_release_artifact(rel_path: str) -> bool:
     if rel_path in {"CHECKSUMS.sha256", "DIRECTORY_TREE.txt", "manifest.txt"}:
         return True
@@ -325,6 +334,9 @@ def classify_project_file(project: dict[str, Any], path: str) -> set[str]:
     rel = project_relative(path, project)
     classes: set[str] = set()
     if is_project_governance_file(rel):
+        classes.add("governance_only_change")
+        return classes
+    if is_project_governance_tool_file(rel):
         classes.add("governance_only_change")
         return classes
     if is_generated_release_artifact(rel):
@@ -419,6 +431,7 @@ def base_file_text(base: str | None, path: str) -> str | None:
         ["git", "show", f"{base}:{path}"],
         cwd=ROOT,
         text=True,
+        encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         check=False,
@@ -453,6 +466,7 @@ def binding_classification_only(old: str, new: str) -> bool:
         "binding_rationale",
         "ci_attestation_ref",
         "original_timestamp",
+        "stale_classification_reason",
         "timestamp_correction_rationale",
         "unresolved_fact_ids",
     }
@@ -466,6 +480,8 @@ def binding_classification_only(old: str, new: str) -> bool:
             return False
         for key, value in old_event.items():
             if key == "timestamp" and new_event.get("original_timestamp") == value:
+                continue
+            if key == "binding_status" and value == "pre_commit_pending" and new_event.get(key) == "stale_unbound":
                 continue
             if new_event.get(key) != value:
                 return False

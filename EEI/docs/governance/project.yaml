@@ -1,0 +1,1858 @@
+schema_version: "codexproject.project.v1"
+project_id: "EEI"
+project_name: "Enterprise Ecosystem Intelligence"
+summary: "EEI 是企业生态、关系、证据和发布决策研究系统；当前迁移保留 active 模型、公式、参数和交付边界事实，不把研究评分、fixture、preflight、4h soak 或签名模板误写成 production/publication readiness。"
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "product_owner + data_owner + risk_owner"
+current_status: "failed_delivery_readiness"
+limitations:
+  -
+    statement: "实现一致性为 PARTIAL：61/68 active parameters 和 10/11 active formulas 有抽取/指纹证据；FORM-012 与 PARAM-052..PARAM-058 仍为 HUMAN_REVIEW_REQUIRED 或 UNKNOWN。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+      - "EVID-EEI-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-EEI-001"
+      - "TASK-T1206"
+  -
+    statement: "delivery_readiness 仍为 FAILED；A202 real source/legal/owner clearance、A026/A027 production gold labels、A209 24h soak、A210 formal clearance 和 release-manager activation 仍未闭合。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+      - "EVID-EEI-DELIVERY-TASKS"
+      - "EVID-EEI-OWNER-STATUS"
+    unknown_task_ids:
+      - "TASK-T1301"
+      - "TASK-T1307"
+      - "TASK-T1309"
+      - "TASK-T904"
+  -
+    statement: "本迁移不改 scoring formula、graph traversal、extraction model、model weight、threshold value、数据库、API、worker、前端或发布流程。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-DEVELOPMENT-EVENTS"
+      - "EVID-REVIEW9-S5PBT01-MANIFEST"
+    unknown_task_ids: []
+features:
+  -
+    feature_id: "FEAT-EEI-001"
+    name: "研究对象优先级、证据质量与时间衰减"
+    description: "汇总综合研究优先级、证据质量和时间相关性模型；用于排序、Watchlist 与证据解释，不证明投资回报或发布就绪。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+      - "MOD-003"
+    formula_ids:
+      - "FORM-001"
+      - "FORM-002"
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+    code_refs:
+      - "EEI/data/formula_registry.csv:2-4"
+    test_refs:
+      - "EEI/scripts/validate_model_config.py"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EEI-002"
+    name: "关系重要性与边显示控制"
+    description: "记录关系强度、战略依赖、交易重要性、证据质量和时间相关性对边显示、宽度与 Top-N 的影响。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-004"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+    code_refs:
+      - "EEI/data/formula_registry.csv:5"
+    test_refs:
+      - "EEI/scripts/validate_governance.py"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EEI-003"
+    name: "供应链、控制影响、资本动量、政策暴露与战略信号"
+    description: "迁移五个研究评分模型的表达式事实；它们是研究优先级/解释辅助，不是生产发布或法律结论。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+      - "MOD-007"
+      - "MOD-008"
+      - "MOD-009"
+    formula_ids:
+      - "FORM-005"
+      - "FORM-006"
+      - "FORM-007"
+      - "FORM-008"
+      - "FORM-009"
+    parameter_ids: []
+    code_refs:
+      - "EEI/data/formula_registry.csv:6-11"
+    test_refs:
+      - "EEI/scripts/validate_model_config.py"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-FORMULA-REGISTRY"
+  -
+    feature_id: "FEAT-EEI-004"
+    name: "变化告警与 Watchlist 优先级"
+    description: "记录 score_delta、novelty、evidence_quality 和 watchlist_relevance 的告警优先级公式与参数。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-010"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+    code_refs:
+      - "EEI/data/formula_registry.csv:7"
+    test_refs:
+      - "EEI/scripts/validate_governance.py"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EEI-005"
+    name: "运行、视觉、发布决策与黄金集阈值控制"
+    description: "记录非评分阈值、motion、refresh、release-decision bundle、gold-quality 和 soak gate 参数；FORM-012 与 7 个 motion 参数仍需人工语义复核。"
+    status: "active"
+    fact_level: "RECONSTRUCTED"
+    model_ids:
+      - "MOD-012"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+    code_refs:
+      - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/config/thresholds/default-v2.json"
+    test_refs:
+      - "EEI/scripts/validate_release_decision_bundle.py"
+      - "EEI/scripts/validate_gold_quality_evaluation.py"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+models:
+  -
+    model_id: "MOD-001"
+    name: "综合研究优先级"
+    purpose: "节点大小、排序、路径、Watchlist"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:2"
+      - "EEI/config/model_profiles/balanced-v2.json"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-002"
+    name: "证据质量"
+    purpose: "证据等级、发布门槛、解释"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:3"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-003"
+    name: "时间相关性"
+    purpose: "所有时间衰减"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:4"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-004"
+    name: "关系重要性"
+    purpose: "边显示、宽度、Top-N"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:5"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-005"
+    name: "供应链关键性"
+    purpose: "瓶颈、替代性、关键路径"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:6"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-006"
+    name: "控制影响"
+    purpose: "所有权与控制视图"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:7"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-007"
+    name: "资本动量"
+    purpose: "资金与并购视图"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:8"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-008"
+    name: "政策暴露"
+    purpose: "政策雷达和风险"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:9"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-009"
+    name: "战略信号"
+    purpose: "战略主题和反证"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:10"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-010"
+    name: "变化告警"
+    purpose: "变化优先级和 Watchlist 告警"
+    status: "active"
+    fact_level: "EXTRACTED"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+    semantic_status: "MACHINE_VERIFIED"
+    code_refs:
+      - "EEI/data/model_registry.csv:11"
+      - "EEI/config/model_runtime_defaults.yaml"
+      - "EEI/scripts/validate_governance.py:108-121"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+  -
+    model_id: "MOD-012"
+    name: "运行、视觉与校准阈值控制"
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding and gold-quality evaluation gates."
+    status: "active"
+    fact_level: "RECONSTRUCTED"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    code_refs:
+      - "EEI/data/parameter_catalog.csv:43-84"
+      - "EEI/scripts/run_operator_soak.mjs"
+      - "EEI/scripts/validate_a202_operator_review_packet.py"
+      - "EEI/scripts/validate_release_decision_bundle.py"
+      - "EEI/scripts/validate_gold_quality_evaluation.py"
+      - "EEI/config/thresholds/default-v2.json"
+      - "EEI/config/model_runtime_defaults.yaml"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-MODEL-SPEC"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    expression: "sum(component_i * weight_i) * QualityFactor * CoverageFactor"
+    description: "控制节点大小、排序、路径和 Watchlist 优先级"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    expression: "0.28*source_authority + 0.18*locator_precision + 0.14*temporal_fit + 0.16*cross_source_confirmation + 0.12*source_independence + 0.12*entity_resolution_quality"
+    description: "衡量证据可信度与可定位性"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    expression: "exp(-ln(2) * age_days / half_life_days)"
+    description: "按信息类型衰减时间贡献"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    expression: "0.35*relationship_strength + 0.25*strategic_dependency + 0.20*transaction_materiality + 0.10*evidence_quality + 0.10*time_relevance"
+    description: "控制关系边显示、宽度和聚合"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    expression: "0.30*uniqueness + 0.25*switching_cost + 0.20*lead_time + 0.15*capacity_concentration + 0.10*geopolitical_exposure"
+    description: "定位瓶颈、替代性和单点依赖"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    expression: "0.30*voting_power + 0.25*board_rights + 0.20*special_rights + 0.15*economic_interest + 0.10*founder_management_power"
+    description: "区分经济所有权与实际控制"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    expression: "0.25*capex_growth + 0.20*financing_activity + 0.20*strategic_investment + 0.15*mna_activity + 0.10*buyback_dividend_shift + 0.10*commitment_growth"
+    description: "识别资本配置方向"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    expression: "0.25*revenue_dependency + 0.20*subsidy_dependency + 0.20*export_control + 0.15*regulatory_intensity + 0.10*government_contract + 0.10*geographic_concentration"
+    description: "呈现政策机会、约束和依赖"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    expression: "0.28*capex_acceleration + 0.20*investment_and_mna + 0.18*capacity_and_long_contracts + 0.14*talent_and_hiring + 0.10*patent_product_signal + 0.10*policy_alignment"
+    description: "形成下一步战略主题研究假设"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-010"
+    model_id: "MOD-010"
+    expression: "0.35*score_delta + 0.25*novelty + 0.20*evidence_quality + 0.20*watchlist_relevance"
+    description: "决定变化与告警优先级"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+    semantic_review_task_ids: []
+  -
+    formula_id: "FORM-012"
+    model_id: "MOD-012"
+    expression: "value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured."
+    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration and gold-quality gate parameters without a scoring formula."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-FORMULA-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+    semantic_review_task_ids:
+      - "GOV-SEMANTIC-EEI-001"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.supply_chain_criticality"
+    name: "供应链关键性"
+    value: "0.24"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:2; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.strategic_dependency"
+    name: "战略依赖"
+    value: "0.18"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:3; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.capital_momentum"
+    name: "资本动量"
+    value: "0.14"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:4; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.control_influence"
+    name: "控制影响"
+    value: "0.12"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:5; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.policy_exposure"
+    name: "政策暴露"
+    value: "0.1"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:6; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.technology_dependency"
+    name: "技术依赖"
+    value: "0.08"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:7; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.strategic_signal"
+    name: "战略信号"
+    value: "0.08"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:8; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "weights.time_relevance"
+    name: "时间相关性"
+    value: "0.06"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:9; legacy validation=all weights sum 1.0 ± 0.0001; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "quality_adjustment.floor"
+    name: "证据质量最低修正"
+    value: "0.45"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:10; legacy validation=pair sums 1.0; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "quality_adjustment.evidence_weight"
+    name: "证据质量修正权重"
+    value: "0.55"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:11; legacy validation=pair sums 1.0; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "coverage_adjustment.floor"
+    name: "覆盖率最低修正"
+    value: "0.65"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:12; legacy validation=pair sums 1.0; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "coverage_adjustment.coverage_weight"
+    name: "覆盖率修正权重"
+    value: "0.35"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:13; legacy validation=pair sums 1.0; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.control_change"
+    name: "控制变化"
+    value: "730"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:14; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.mna"
+    name: "并购"
+    value: "730"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:15; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.long_term_supply"
+    name: "长期供应合同"
+    value: "540"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:16; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.capex_financing"
+    name: "资本开支与融资"
+    value: "365"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:17; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.policy_regulatory"
+    name: "政策监管"
+    value: "270"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:18; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.product_partnership"
+    name: "产品与合作"
+    value: "180"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:19; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "half_life_days.news_lead"
+    name: "新闻线索"
+    value: "90"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:20; legacy validation=positive integer; live_preview=True; refresh=all_loaded_views"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "evidence.publish_min_evidence_count"
+    name: "正式关系最少证据数"
+    value: "1"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:21; legacy validation=schema range; live_preview=True; refresh=graph+inspector+alerts"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "evidence.inferred_min_independent_sources"
+    name: "推断关系独立来源数"
+    value: "2"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:22; legacy validation=schema range; live_preview=True; refresh=graph+inspector+alerts"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "evidence.minimum_evidence_quality"
+    name: "最低证据质量"
+    value: "55"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:23; legacy validation=schema range; live_preview=True; refresh=graph+inspector+alerts"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "evidence.minimum_entity_resolution_confidence"
+    name: "实体解析最低置信度"
+    value: "0.88"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:24; legacy validation=schema range; live_preview=True; refresh=graph+inspector+alerts"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "evidence.conflict_penalty"
+    name: "冲突惩罚"
+    value: "12"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:25; legacy validation=schema range; live_preview=True; refresh=graph+inspector+alerts"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "evidence.unknown_coverage_warning_below"
+    name: "未知覆盖警告门槛"
+    value: "65"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:26; legacy validation=schema range; live_preview=True; refresh=graph+inspector+alerts"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.minimum_adjusted_priority"
+    name: "节点最低优先级"
+    value: "46"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:27; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.minimum_edge_materiality"
+    name: "关系最低重要性"
+    value: "48"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:28; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.home_max_nodes"
+    name: "首页最大节点"
+    value: "42"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:29; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.home_max_edges"
+    name: "首页最大关系"
+    value: "64"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:30; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.expand_batch_size"
+    name: "单次展开数量"
+    value: "12"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:31; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.aggregate_same_type_after"
+    name: "同类聚合门槛"
+    value: "6"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:32; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.label_priority_threshold"
+    name: "标签显示门槛"
+    value: "62"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:33; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.max_hops_interactive"
+    name: "交互最大层数"
+    value: "2"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:34; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.max_path_length"
+    name: "路径最大长度"
+    value: "8"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:35; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "graph.fade_unselected_opacity"
+    name: "未选对象透明度"
+    value: "0.16"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:36; legacy validation=schema range; live_preview=True; refresh=graph+all_graph_projections"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "alerts.high_priority"
+    name: "高优先级门槛"
+    value: "80"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:37; legacy validation=schema range; live_preview=True; refresh=changes+watchlist+badges"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "alerts.material_score_delta"
+    name: "重大变化分差"
+    value: "8"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:38; legacy validation=schema range; live_preview=True; refresh=changes+watchlist+badges"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "alerts.new_relation_min_quality"
+    name: "新关系告警最低质量"
+    value: "70"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:39; legacy validation=schema range; live_preview=True; refresh=changes+watchlist+badges"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "alerts.capital_event_usd"
+    name: "重大资本事件金额"
+    value: "100000000"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:40; legacy validation=schema range; live_preview=True; refresh=changes+watchlist+badges"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "alerts.policy_impact"
+    name: "政策影响门槛"
+    value: "65"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:41; legacy validation=schema range; live_preview=True; refresh=changes+watchlist+badges"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "alerts.watchlist_relevance"
+    name: "Watchlist 相关门槛"
+    value: "55"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:42; legacy validation=schema range; live_preview=True; refresh=changes+watchlist+badges"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "refresh.preview_debounce_ms"
+    name: "参数预览防抖"
+    value: "120"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:43; legacy validation=positive integer; live_preview=False; refresh=monitoring+acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "refresh.preview_p95_ms"
+    name: "本地预览目标"
+    value: "250"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:44; legacy validation=positive integer; live_preview=False; refresh=monitoring+acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "refresh.session_apply_p95_ms"
+    name: "会话应用目标"
+    value: "700"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:45; legacy validation=positive integer; live_preview=False; refresh=monitoring+acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "refresh.small_scope_activate_p95_ms"
+    name: "小范围激活目标"
+    value: "5000"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:46; legacy validation=positive integer; live_preview=False; refresh=monitoring+acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "refresh.sse_visible_p95_ms"
+    name: "推送可见目标"
+    value: "1500"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:47; legacy validation=positive integer; live_preview=False; refresh=monitoring+acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "visual.home_visual_surface_ratio"
+    name: "首页视觉面积比"
+    value: "0.9"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:48; legacy validation=schema range; live_preview=False; refresh=acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "visual.system_visual_first_coverage"
+    name: "系统视觉优先覆盖"
+    value: "0.8"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:49; legacy validation=schema range; live_preview=False; refresh=acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "visual.home_text_max_lines"
+    name: "首页说明最大行数"
+    value: "3"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:50; legacy validation=schema range; live_preview=False; refresh=acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "visual.primary_pointer_target_px"
+    name: "主要点击目标"
+    value: "40"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:51; legacy validation=schema range; live_preview=False; refresh=acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "visual.minimum_pointer_target_px"
+    name: "最小点击目标"
+    value: "24"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:52; legacy validation=schema range; live_preview=False; refresh=acceptance"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.instant"
+    name: "即时反馈"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:53; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.local"
+    name: "局部过渡"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:54; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.panel"
+    name: "面板过渡"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:55; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.data_update"
+    name: "数据更新过渡"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:56; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-056"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.lens_change"
+    name: "镜头切换"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:57; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-057"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.reroot"
+    name: "主体切换"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:58; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-058"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "motion.full_relayout_max"
+    name: "全布局最大时长"
+    value: "UNKNOWN (TASK-T1206: motion runtime activation source not separately evidenced)"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:59; legacy validation=schema range; live_preview=True; refresh=all_visuals"
+    status: "active"
+    fact_level: "UNKNOWN"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1206"
+      - "GOV-SEMANTIC-EEI-001"
+  -
+    parameter_id: "PARAM-059"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "calibration.cadence_days"
+    name: "校准周期"
+    value: "14"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:60; legacy validation=const 14; live_preview=False; refresh=scheduler"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-060"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "calibration.auto_activate"
+    name: "校准建议自动激活"
+    value: "False"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:61; legacy validation=must be false; live_preview=False; refresh=calibration"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-061"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.operator_window_seconds"
+    name: "Operator soak 窗口时长"
+    value: "300"
+    source: "EXTRACTED from EEI/data/parameter_catalog.csv:79; legacy validation=schema range; live_preview=False; refresh=soak"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-062"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "a202.review_packet_required_gate_count"
+    name: "A202 审查包必需门禁数"
+    value: "7"
+    source: "EXTRACTED from EEI/scripts/validate_a202_operator_review_packet.py REQUIRED_GATE_IDS; A202 cannot close without all listed gates; A206 gate is present while source-license, passage-level, owner, legal and A209 gates remain blocking."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-063"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "release_decision_bundle.contract_schema_version"
+    name: "A202/A210 签核合同版本"
+    value: "eei-a202-a210-release-decision-bundle-contract-v1"
+    source: "EXTRACTED from EEI/scripts/validate_release_decision_bundle.py CONTRACT_SCHEMA_VERSION; signed decision completion remains separate from release_ready until A209 and release-manager activation are satisfied; signed passage reviews must cover Golden Vertical candidate source anchors from EEI/data/golden_vertical_fact_candidates.json."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-064"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "gold_quality.entity_min_cases"
+    name: "实体解析 gold 最少样本"
+    value: "50"
+    source: "EXTRACTED from EEI/scripts/validate_gold_quality_evaluation.py ENTITY_MIN_CASES; A026/T904 cannot close below required sample count."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-065"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "gold_quality.entity_min_precision"
+    name: "实体解析 gold 精确率门槛"
+    value: "0.95"
+    source: "EXTRACTED from EEI/scripts/validate_gold_quality_evaluation.py ENTITY_MIN_PRECISION; A026/T904 cannot close below 95 percent precision."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-066"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "gold_quality.relationship_min_cases"
+    name: "关系抽取 gold 最少样本"
+    value: "100"
+    source: "EXTRACTED from EEI/scripts/validate_gold_quality_evaluation.py RELATIONSHIP_MIN_CASES; A027/T904 cannot close below required sample count."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-067"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "gold_quality.relationship_min_precision"
+    name: "关系抽取 gold 精确率门槛"
+    value: "0.9"
+    source: "EXTRACTED from EEI/scripts/validate_gold_quality_evaluation.py RELATIONSHIP_MIN_PRECISION; A027/T904 cannot close below 90 percent precision."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-068"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "gold_quality.source_coverage_min"
+    name: "Gold 证据来源覆盖门槛"
+    value: "1.0"
+    source: "EXTRACTED from EEI/scripts/validate_gold_quality_evaluation.py SOURCE_COVERAGE_MIN; every gold evaluation row must report full required source coverage."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+strategies:
+  -
+    strategy_id: "STRAT-EEI-001"
+    name: "缺失输入不归零"
+    description: "缺失或未观测输入按 missing_policy 处理：可重归一、降覆盖或披露，不被默认为 0。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-FORMULA-REGISTRY"
+  -
+    strategy_id: "STRAT-EEI-002"
+    name: "模型/参数变更先验证再激活"
+    description: "模型和参数变更需要 dry-run、不可变版本、预览和 rollback 证据后才可激活。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-MODEL-REGISTRY"
+      - "EVID-EEI-DELIVERY-TASKS"
+  -
+    strategy_id: "STRAT-EEI-003"
+    name: "研究评分不等于发布或生产就绪"
+    description: "当前评分用于研究优先级与解释；真实 source/legal/owner clearance、24h soak、gold labels 和 release-manager activation 仍独立阻塞。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+      - "EVID-EEI-OWNER-STATUS"
+validations:
+  -
+    validation_id: "VAL-EEI-STRUCTURAL-COMPLETENESS"
+    name: "structural_completeness"
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids: []
+  -
+    validation_id: "VAL-EEI-IMPLEMENTATION-CONGRUENCE"
+    name: "implementation_congruence"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids:
+      - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
+      - "FACT-EEI-IMPLEMENTATION-PARAMETER-REVIEW"
+  -
+    validation_id: "VAL-EEI-PARAMETER-SOURCE-QUALITY"
+    name: "parameter_source_quality"
+    status: "PARTIAL"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids: []
+  -
+    validation_id: "VAL-EEI-METHODOLOGICAL-RATIONALE"
+    name: "methodological_rationale"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids:
+      - "FACT-EEI-EMPIRICAL-EVIDENCE"
+  -
+    validation_id: "VAL-EEI-EMPIRICAL-VALIDATION"
+    name: "empirical_validation"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids:
+      - "FACT-EEI-EMPIRICAL-EVIDENCE"
+  -
+    validation_id: "VAL-EEI-OPERATIONAL-VALIDATION"
+    name: "operational_validation"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids:
+      - "FACT-EEI-OPERATIONAL-EVIDENCE"
+  -
+    validation_id: "VAL-EEI-DELIVERY-EVIDENCE"
+    name: "delivery_evidence"
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids: []
+  -
+    validation_id: "VAL-EEI-EVIDENCE-FRESHNESS"
+    name: "evidence_freshness"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-ASSURANCE-STATUS"
+    unknown_task_ids: []
+delivery_readiness:
+  status: "FAILED"
+  release_gate: "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS"
+  owner_decision_required: true
+  blocker_ids:
+    - "FACT-EEI-EMPIRICAL-EVIDENCE"
+    - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
+    - "FACT-EEI-IMPLEMENTATION-PARAMETER-REVIEW"
+    - "FACT-EEI-OPERATIONAL-EVIDENCE"
+    - "GOV-SEMANTIC-EEI-001"
+    - "TASK-T1206"
+    - "TASK-T1206|GOV-SEMANTIC-EEI-001"
+  evidence_refs:
+    - "EVID-EEI-ASSURANCE-STATUS"
+    - "EVID-EEI-OWNER-STATUS"
+evidence_refs:
+  -
+    evidence_id: "EVID-EEI-MODEL-REGISTRY"
+    kind: "legacy_registry"
+    ref: "EEI/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-FORMULA-REGISTRY"
+    kind: "legacy_registry"
+    ref: "EEI/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-PARAMETER-REGISTRY"
+    kind: "legacy_registry"
+    ref: "EEI/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-MODEL-SPEC"
+    kind: "legacy_spec"
+    ref: "EEI/docs/governance/MODEL_SPEC.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-DELIVERY-TASKS"
+    kind: "legacy_plan"
+    ref: "EEI/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-ASSURANCE-STATUS"
+    kind: "legacy_status"
+    ref: "EEI/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-OWNER-STATUS"
+    kind: "legacy_status"
+    ref: "EEI/docs/governance/OWNER_STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-STATUS"
+    kind: "legacy_status"
+    ref: "EEI/docs/governance/STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-DEVELOPMENT-EVENTS"
+    kind: "legacy_events"
+    ref: "EEI/docs/governance/development_events.jsonl"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-EEI-SEMANTIC-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-EEI-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PBT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"
