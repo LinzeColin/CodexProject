@@ -4,6 +4,8 @@
   ],
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "changed_files_actual": [
+    ".github/workflows/eei-validation.yml",
+    ".github/workflows/project-governance.yml",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
@@ -41,6 +43,8 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "changed_files_declared": [
+    ".github/workflows/eei-validation.yml",
+    ".github/workflows/project-governance.yml",
     "EEI/CHANGELOG.md",
     "EEI/CHECKSUMS.sha256",
     "EEI/artifacts/release_evidence_t1211.json",
@@ -77,10 +81,10 @@
     "scripts/validate_information_quality.py",
     "tests/governance/test_project_governance_validator.py"
   ],
-  "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows",
+  "ci_attestation_subject": "commit pending until push; expected Project Governance and EEI validation workflows on codex branch push",
   "ci_run_reference": "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
-  "content_tree_file_count_excluding_this_manifest": 34,
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c42ded67b9458178a54ff397926cdce24105cabb909ba14c74db71d305901b8b",
+  "content_tree_file_count_excluding_this_manifest": 36,
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:17832579b29c45764d9cb976ffcdda7e14301ee82f337f70c414d404d67272e6",
   "evidence_refs": [
     "EEI/config/ui/motion-tokens.json",
     "EEI/scripts/validate_model_config.py",
@@ -100,14 +104,16 @@
     "PARAM-052 through PARAM-058 extract from EEI/config/ui/motion-tokens.json.",
     "FORM-012 is treated as a deterministic configuration lookup contract, not a scoring formula.",
     "A026/A027, A202, A209, A210 and release-manager activation remain open production gates.",
-    "Updated changed-file coverage after T1301/A202 operator review candidate queue binding."
+    "Updated changed-file coverage after T1301/A202 operator review candidate queue binding.",
+    "Added codex/** push trigger coverage for EEI validation and Project Governance workflows so this branch can create CI evidence after push."
   ],
   "observed_results": [
     "EEI_SEMANTIC_PARAMETERS_CHECKED_68",
     "EEI_SEMANTIC_FORMULAS_CHECKED_11",
     "EEI_SEMANTIC_COVERAGE_MACHINE_VERIFIED",
     "PRODUCTION_RELEASE_GATES_REMAIN_OPEN",
-    "PENDING_GITHUB_ACTIONS_AFTER_PUSH"
+    "PENDING_GITHUB_ACTIONS_AFTER_PUSH",
+    "CODEX_BRANCH_PUSH_CI_TRIGGER_BOUND"
   ],
   "parameter_delta": "No numeric active value changed; PARAM-052 through PARAM-058 now extract active values from config/ui/motion-tokens.json.",
   "project_id": "root-governance",
@@ -140,7 +146,8 @@
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-semantic-pycache python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
     ".venv/bin/python scripts/manage_clean_room_release.py validate",
     ".venv/bin/python scripts/manage_release_artifacts.py validate",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify"
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-gov-test-pycache python3 -m pytest -q tests/governance/test_project_governance_validator.py -p no:cacheprovider"
   ],
   "test_results": [
     "semantic extractor PASS semantic_parameters_checked=68 semantic_formulas_checked=11",
@@ -151,7 +158,8 @@
     "changed-only semantic governance PASS errors 0 warnings 0",
     "clean-room release validate PASS package_paths 412 package_sha256 7c6ef1f4b4b59b422ae446feac66c00eb71222c7308667355e835d62e4180c32",
     "release artifacts validate PASS manifest_paths 419 checksum_paths 418 remote_status PENDING",
-    "make verify PASS: release artifacts valid, browser scale 10k/100k/1m PASS, soak smoke PASS, operator soak smoke PASS, secret scan PASS, UI copy PASS, ruff PASS, web typecheck PASS, unit tests PASS 69/69"
+    "make verify PASS: release artifacts valid, browser scale 10k/100k/1m PASS, soak smoke PASS, operator soak smoke PASS, secret scan PASS, UI copy PASS, ruff PASS, web typecheck PASS, unit tests PASS 69/69",
+    "root governance focused tests PASS 137 passed and 4 subtests, including codex branch workflow trigger coverage"
   ],
   "updated_governance_files": [
     "governance/projects.yaml",

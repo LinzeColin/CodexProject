@@ -2,7 +2,9 @@ name: Project Governance
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "codex/**"
   pull_request:
   schedule:
     - cron: "17 17 * * *"

@@ -2,7 +2,9 @@ name: EEI validation
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "codex/**"
     paths:
       - "EEI/**"
       - ".github/workflows/eei-validation.yml"

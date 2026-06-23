@@ -810,6 +810,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
         self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
 
+    def test_eei_and_project_governance_workflows_run_on_codex_branches(self) -> None:
+        eei_workflow = (ROOT / ".github" / "workflows" / "eei-validation.yml").read_text(
+            encoding="utf-8"
+        )
+        governance_workflow = (
+            ROOT / ".github" / "workflows" / "project-governance.yml"
+        ).read_text(encoding="utf-8")
+
+        for workflow in (eei_workflow, governance_workflow):
+            self.assertIn("branches:", workflow)
+            self.assertIn("- main", workflow)
+            self.assertIn('- "codex/**"', workflow)
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
