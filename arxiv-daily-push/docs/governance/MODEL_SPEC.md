@@ -19,6 +19,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   ranking behavior, Claim Ledger gates, SMTP behavior, Release behavior,
   scheduler behavior, or media behavior.
 
+- `S1P5T04` imported the V6 task-numbering roadmap, recorded the first
+  controlled GitHub/cloud-runner Gmail SMTP send evidence from run
+  `28002478689`, and kept `ARXIV_PRODUCTION_ACCEPTED` plus production
+  scheduling disabled. No model count, formula expression, parameter
+  active value, or runtime behavior changed in this intake.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |

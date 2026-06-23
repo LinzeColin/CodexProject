@@ -802,6 +802,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_pr_governance_keeps_full_computation_out_of_pr_path(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("github.event_name == 'pull_request'", workflow)
+        self.assertIn("github.event.pull_request.base.sha", workflow)
         self.assertIn("--changed-only --enforce-sync --semantic", workflow)
         self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
@@ -1634,18 +1635,18 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-074")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-074")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260623-ADP-075")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260623-ADP-075")
         self.assertEqual(info["product_version"], "0.22.0")
-        self.assertEqual(info["current_gate"], "ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY")
+        self.assertEqual(info["current_gate"], "S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS")
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-20260623.json",
+            "governance/run_manifests/ADP-S1P5T04-V6-ROADMAP-INTAKE-20260623.json",
         )
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.22.0", rendered)
-        self.assertIn("ADP-S1-12-TEXT-ONLY-PRODUCTION-ENABLEMENT-PR-READY", rendered)
-        self.assertIn("S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001", rendered)
+        self.assertIn("S1P5T04-CONTROLLED-B1-LIVE-EMAIL-EVIDENCE-IN-PROGRESS", rendered)
+        self.assertIn("S1P5T04", rendered)
         self.assertIn("Stage 1 B1/arXiv", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
