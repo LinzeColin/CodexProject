@@ -86,8 +86,8 @@ The repository governance framework is enforced in layers:
 - Global `~/.codex/AGENTS.md`: user-wide development constraints.
 - Repository `AGENTS.md`: this repository's mandatory governance contract.
 - Repository `.agents/skills/codex-dex/SKILL.md`: governed development workflow for implementation, model changes, releases, and multi-file fixes.
-- Repository `.codex/hooks.json` and `.codex/hooks/governance_stop.py`: Stop Hook that runs changed-scope governance validation before a Codex turn is allowed to finish.
-- `.github/workflows/project-governance.yml`: GitHub Actions validation for PRs, pushes to `main`, and manual all/project/changed-only runs.
+- Repository `.codex/hooks.json` and `.codex/hooks/governance_stop.py`: advisory Stop Hook that performs only lightweight changed-file detection and never writes generated files, receipts, semantic validation, or attestation evidence.
+- `.github/workflows/project-governance.yml`: GitHub Actions changed-scope validation for PRs and pushes to `main`, plus scheduled/manual full governance runs for portfolio drift, generated views, and attestation.
 - GitHub branch protection or rulesets: repository setting that must make Project Governance a required status check for `main`.
 
 ## Review-5 Diff Synchronization Contract
@@ -127,18 +127,47 @@ Project `development_events.jsonl` files are append-only. Existing lines must
 not be modified or removed; follow-up evidence belongs in a new event or a
 post-commit binding.
 
-## Review-6 Entry Gate Contract
+## Review-9 Cost and Entry Gate Contract
 
-Every execution entry must use the same diff contract when a diff is available:
+Governance truth remains mandatory. Governance computation is tiered so routine
+development does not pay release-grade proof costs on every action.
 
-- Pull requests run `--changed-only --enforce-sync --semantic` against the PR base.
-- Pushes to `main` run `--changed-only --enforce-sync --semantic --base-ref <github.event.before>` and then `--all --semantic --drift-report`.
-- Manual `workflow_dispatch` with `scope=changed-only` accepts an optional `base_ref` and uses the same diff contract.
-- The Codex Stop Hook reruns the validator even on recursive Stop passes. It may cap automatic repair loops, but it must not unconditionally allow a failed second Stop.
+Every execution entry must use the lightweight diff contract when a diff is
+available:
+
+- Pull requests run one required Project Governance job focused on
+  `--changed-only --enforce-sync --semantic` against the PR base.
+- Pushes to `main` run the same changed-only contract against
+  `<github.event.before>`.
+- Manual `workflow_dispatch` with `scope=changed-only` accepts an optional
+  `base_ref` and uses the same changed-only contract.
+- Scheduled and manual `scope=all` runs execute full information-quality,
+  all-project semantic/drift validation, generated view determinism checks, and
+  CI attestation upload.
+- The Codex Stop Hook is advisory only. It must not run generators, validators,
+  setup doctor, receipt writing, semantic extraction, or recursive repair loops.
+  Stop Hook output may suggest explicit validation commands, but it must allow
+  the turn to finish.
 
 If branch protection or ruleset details cannot be inspected with authenticated
 GitHub evidence, their required-check and no-bypass status must remain
 `UNVERIFIED`.
+
+## Risk-Tier Routing
+
+Default work is T0 or T1 unless a concrete risk signal upgrades it. Do not apply
+T2/T3 governance computation to ordinary development by default.
+
+| Tier | Typical changes | Required PR gate | Full governance |
+|---|---|---|---|
+| `T0` | Documentation, copy, formatting, small UI text | Changed-scope Project Governance only | Not required |
+| `T1` | Local bug fix, isolated logic, non-critical config | Affected project tests plus changed-scope Project Governance | Not required |
+| `T2` | Model, formula, parameter, schema, migration, security rule, evidence contract | Affected project full tests plus project governance records | Manual full gate before release or merge when owner requires it |
+| `T3` | Production release, money, payroll, legal, privacy, permissions, deletion, live delivery | Full tests, human approval evidence, release/manual all governance | Required before production or release acceptance |
+
+Generated dashboards, owner views, status pages, portfolio summaries, and CI
+attestations are derived evidence. They preserve governance truth, but ordinary
+T0/T1 PRs must not be forced to update or prove them.
 
 ## Run Manifest and Post-Commit Binding
 
@@ -202,12 +231,10 @@ Run manifests may remain local/pre-submit facts. A manifest that still says
 `PENDING_CI` after the allowed binding window must have a matching successful
 CI attestation or the semantic validator reports a governance issue.
 
-Stop Hook execution receipts are separate local execution facts. A completed
-receipt must include run ID, task ID, repository, workspace root, base commit,
-source tree hash, hook start and completion timestamps, commands, return codes,
-final status, changed files, generated views, and `fact_level: EXTRACTED`.
-Start markers, missing `hook_completed_at`, missing command results, or
-`final_status` outside `PASS`/`FAIL` are not valid completion evidence.
+Stop Hook execution is not delivery evidence and does not create receipts.
+Manual full governance runs, scheduled full governance runs, release gates, and
+post-commit CI attestations remain the durable evidence paths for generated
+views and full-portfolio proof.
 
 ## Semantic Accuracy
 
@@ -267,7 +294,9 @@ Facts that cannot be machine-verified must remain `UNKNOWN` or
 
 These pages are read-only views generated from registries, events, version
 matrices, ledgers, and Git metadata. They must not become duplicate editable
-fact sources. CI regenerates them and fails if committed status pages drift.
+fact sources. Scheduled/manual full governance regenerates them and fails if
+committed status pages drift. PR and `main` push gates do not fail solely
+because a derived status page needs refresh.
 `OWNER_STATUS.md` is the project-owner view: it must answer current version,
 recent changes, why they matter, key risks, owner decisions, and the selected
 next task without Python list/dict representations.

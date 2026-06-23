@@ -437,9 +437,9 @@ def check_semantic_coverage_task_binding(
 
 def rel(path: Path) -> str:
     try:
-        return str(path.relative_to(ROOT))
+        return path.relative_to(ROOT).as_posix()
     except ValueError:
-        return str(path)
+        return path.as_posix()
 
 
 def check_file_nonempty(validation: Validation, path: Path, required: bool, scope: str) -> bool:
@@ -935,7 +935,7 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
     projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
     validate_readme_project_list(validation, projects)
     validate_projects_yaml_count_claims(validation, projects)
-    registered_paths = [str(project.get("path") or "").rstrip("/") for project in projects]
+    registered_paths = [str(project.get("path") or "").replace("\\", "/").rstrip("/") for project in projects]
     registered_ids = [str(project.get("project_id") or "") for project in projects]
     actual_project_dirs = discover_project_dirs()
     missing = [path for path in actual_project_dirs if path not in registered_paths]
