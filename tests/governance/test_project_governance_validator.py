@@ -827,6 +827,129 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(summary["check_render"]["skipped_count"], 1)
         self.assertEqual(summary["check_render"]["skipped"][0]["reason"], "missing_lean_canonical_facts")
 
+    def test_review9_s4pat01_serenity_evidence_index_bounds_read_scope(self) -> None:
+        validator = load_validator_module()
+        path = ROOT / "Serenity-Alipay" / "docs" / "governance" / "evidence_index.yaml"
+        data = validator.load_yaml(path)
+        self.assertEqual(data["schema_version"], "codexproject.evidence_index.v1")
+        self.assertEqual(data["project_id"], "Serenity-Alipay")
+        self.assertEqual(data["task_id"], "S4PAT01")
+        self.assertEqual(data["acceptance_id"], "ACC-S4PAT01")
+
+        read_scope = data["read_scope"]
+        self.assertEqual(read_scope["mode"], "bounded_pilot_read")
+        for category in {
+            "README_and_handoff",
+            "existing_governance",
+            "model_implementation",
+            "runtime_config",
+            "focused_tests",
+            "limited_related_git_history",
+        }:
+            self.assertIn(category, read_scope["allowed_categories"])
+        for forbidden in {
+            "business_behavior_changes",
+            "broad_git_history_mining",
+            "generated_output_archives",
+        }:
+            self.assertIn(forbidden, read_scope["excluded_categories"])
+
+        refs: set[str] = set()
+        evidence_ids: set[str] = set()
+        for item in data["evidence_refs"]:
+            evidence_ids.add(item["evidence_id"])
+            refs.update(item.get("refs", []))
+        for required_id in {
+            "EVID-SER-README-HANDOFF",
+            "EVID-SER-EXISTING-GOVERNANCE",
+            "EVID-SER-SCORING-CODE",
+            "EVID-SER-RANKING-CODE",
+            "EVID-SER-METRICS-CODE",
+            "EVID-SER-COMPARISON-DISCIPLINE-CODE",
+            "EVID-SER-SCHEDULER-CODE",
+            "EVID-SER-LIMITED-HISTORY",
+        }:
+            self.assertIn(required_id, evidence_ids)
+        for required_ref in {
+            "Serenity-Alipay/README.md",
+            "Serenity-Alipay/HANDOFF.md",
+            "Serenity-Alipay/docs/governance/MODEL_SPEC.md",
+            "Serenity-Alipay/docs/governance/model_registry.yaml",
+            "Serenity-Alipay/docs/governance/formula_registry.yaml",
+            "Serenity-Alipay/docs/governance/parameter_registry.csv",
+            "Serenity-Alipay/app/core/scoring.py",
+            "Serenity-Alipay/app/core/pipeline.py",
+            "Serenity-Alipay/app/core/metrics.py",
+            "Serenity-Alipay/app/core/comparison.py",
+            "Serenity-Alipay/app/core/discipline.py",
+            "Serenity-Alipay/app/scheduler.py",
+            "Serenity-Alipay/app/core/scheduler_runner.py",
+            "Serenity-Alipay/app/core/automation_tick.py",
+            "Serenity-Alipay/app/config.py",
+            "Serenity-Alipay/tests/test_pipeline_serenity_priority.py",
+        }:
+            self.assertIn(required_ref, refs)
+        for ref in refs:
+            self.assertTrue((ROOT / ref).exists(), ref)
+
+        self.assertEqual(
+            set(data["model_fact_targets"]["active_model_ids"]),
+            {"MOD-001", "MOD-002", "MOD-003", "MOD-004", "MOD-005"},
+        )
+        self.assertEqual(data["model_fact_targets"]["extraction_task_id"], "S4PAT02")
+        watchlist = data["contradiction_watchlist"]
+        self.assertEqual(watchlist[0]["issue_id"], "S4PAT01-WATCH-FORM-008-CAP")
+        self.assertEqual(watchlist[0]["followup_task_id"], "S4PAT02")
+        self.assertIn("0.30", watchlist[0]["summary"])
+        self.assertIn("no_technology_stack_as_model_parameter", data["fact_policy"]["forbidden_claims"])
+        self.assertIn("no_invented_iteration_or_hours", data["fact_policy"]["forbidden_claims"])
+        self.assertFalse(data["acceptance"]["stop_conditions_checked"]["code_doc_contradiction_unmarked"])
+
+    def test_review9_s4pat01_manifest_records_bounded_pilot_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S4PAT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PAT01"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("bounded_evidence_index", manifest["change_classification"])
+        self.assertIn("no_business_behavior_change", manifest["change_classification"])
+        self.assertTrue(str(manifest["content_tree_hash"]).startswith("sha256-changed-files-excluding-this-manifest:"))
+        changed = set(manifest["changed_files_actual"])
+        self.assertIn("Serenity-Alipay/docs/governance/evidence_index.yaml", changed)
+        self.assertIn("tests/governance/test_project_governance_validator.py", changed)
+        self.assertIn(
+            "governance/run_manifests/GOV-REVIEW9-S4PAT01-EVIDENCE-INDEX-20260623.json",
+            changed,
+        )
+        self.assertIn("Serenity-Alipay/docs/governance/formula_registry.yaml", manifest["evidence_refs"])
+        self.assertIn("Serenity-Alipay/app/core/pipeline.py", manifest["evidence_refs"])
+        self.assertIn("S4PAT02 still must extract formulas", " ".join(manifest["unresolved_risks"]))
+
+    def test_review9_s4pat01_evidence_index_is_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "Serenity-Alipay",
+            "path": "Serenity-Alipay",
+            "model_behavior_globs": ["app/**/*.py", "tests/**/*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            ["Serenity-Alipay/docs/governance/evidence_index.yaml"],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change"})
+        self.assertEqual(changes[0].updated_governance_files, {"docs/governance/evidence_index.yaml"})
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
