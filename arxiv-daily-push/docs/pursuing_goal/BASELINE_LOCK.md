@@ -51,7 +51,9 @@ goal unless a later owner decision explicitly restores it.
 - Stage 1 target state: `ARXIV_PRODUCTION_ACCEPTED`.
 - Final target state after Stage 2: `PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
 - Current V6 task: `S1P5T04` - controlled live B1 email evidence and Stage 1 acceptance.
-- Current state: `NOT_PRODUCTION_ACCEPTED`; one owner-confirmed manual Gmail SMTP test succeeded on GitHub/cloud runner.
+- Current state: `ARXIV_PRODUCTION_ACCEPTED` from PR #82 cloud artifact
+  `7818287996`; scheduled production send remains fail-closed until GitHub
+  repository variables/secrets are explicitly verified or enabled.
 
 ## V6 Roadmap Rule
 
@@ -64,8 +66,8 @@ required video/TTS/media work.
 
 Where the V6 calendar/new-machine wording conflicts with later owner-approved
 GitHub/cloud-runner execution, the later owner instruction controls the runner
-choice for Stage 1 evidence collection. Production scheduling still remains
-disabled until the Stage 1 gate passes.
+choice for Stage 1 evidence collection. Production scheduling remains a
+separate fail-closed enablement step after Stage 1 acceptance.
 
 ## V5 Delivery Boundary
 
@@ -82,10 +84,10 @@ requirements under V5.
 ## Current Evidence Boundary
 
 S1-03, S1-04, and S1-05 provide reusable foundations for owner controls,
-SQLite/WAL/FTS5 storage, and the arXiv connector contract. They do not prove
-Stage 1 production acceptance.
+SQLite/WAL/FTS5 storage, and the arXiv connector contract.
 
-Stage 1 remains blocked until the V5 gates pass, including scoring and queue,
-content ledger, B1 text report, B1 email contract, local runtime recovery,
-migration package, 30 independent historical B1 report/email previews, and two
-real natural days of B1 email delivery.
+Stage 1 acceptance is evidenced by `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`,
+PR #82, and GitHub Actions run `28019921500`. The acceptance artifact reports
+49 real arXiv candidates, 30 selected samples, 20/20 primary archive buckets,
+two controlled SMTP refs, no blockers, no Release/video requirement, and
+`production_schedule_enabled=false`.
