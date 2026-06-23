@@ -1,23 +1,215 @@
-# Alpha 模型参数文件
+# 模型参数文件
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再维护当前模型、公式或参数的机器事实。
+- project_id: `Alpha`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PA`
+- current_task: `S5PAT01`
+- active_model_count: `9`
+- active_formula_count: `9`
+- active_parameter_count: `55`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PA-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical files:
+## 模型
 
-- `docs/governance/MODEL_SPEC.md`
-- `docs/governance/model_registry.yaml`
-- `docs/governance/formula_registry.yaml`
-- `docs/governance/parameter_registry.csv`
-- `docs/governance/VERSION_MATRIX.yaml`
+### MOD-001 Momentum strategy tournament ranking
 
-仍然有效的安全原则：
+- purpose: `Rank fixture momentum candidates by risk decision and deterministic score.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-001`
+- parameter_refs: `PARAM-001, PARAM-002, PARAM-003, PARAM-004, PARAM-005, PARAM-006, PARAM-007, PARAM-008`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
 
-- 默认模式是 research / backtest / paper-only / owner-review。
-- `live_trading.enabled` 的 committed active value 为 `false`。
-- broker-ready order ticket 需要人工确认。
-- policy、risk、audit、kill-switch、idempotency、freshness gate 必须 fail-closed。
-- 不提交 broker credentials、API keys、账户标识或 `.env`。
+### MOD-002 Research risk score
 
-当前参数默认值、先验值、激活值、来源、代码引用和测试引用以 `docs/governance/parameter_registry.csv` 为准。
+- purpose: `Map backtest metrics to promote_to_paper, hold_research, or reject.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-002`
+- parameter_refs: `PARAM-009, PARAM-010, PARAM-011, PARAM-012, PARAM-013, PARAM-014, PARAM-015, PARAM-016`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-003 Pre-trade owner-review gate
+
+- purpose: `Reject unsafe order intents before owner approval queue entry.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-003`
+- parameter_refs: `PARAM-017, PARAM-018, PARAM-019, PARAM-020, PARAM-021, PARAM-022`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-004 Live order policy and fail-closed broker
+
+- purpose: `Prevent unattended real-money order submission in committed defaults.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-004`
+- parameter_refs: `PARAM-023, PARAM-024, PARAM-025, PARAM-026, PARAM-027, PARAM-028, PARAM-029, PARAM-030`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-005 Paper trading loop
+
+- purpose: `Generate paper order intents, risk-check them, enqueue broker-ready tickets, fill paper orders, and emit audit payloads.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-005`
+- parameter_refs: `PARAM-031, PARAM-032, PARAM-033, PARAM-034, PARAM-035, PARAM-036, PARAM-037`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-006 Paper broker accounting
+
+- purpose: `Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-006`
+- parameter_refs: `PARAM-038, PARAM-039, PARAM-040, PARAM-041`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-007 Approval queue freshness
+
+- purpose: `Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-007`
+- parameter_refs: `PARAM-042, PARAM-043, PARAM-044`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-008 Strategy DSL safety validation
+
+- purpose: `Validate strategy payload boundaries and reject prohibited MVP trading categories.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-008`
+- parameter_refs: `PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+### MOD-009 Equal-weight buy-and-hold fixture benchmark
+
+- purpose: `Compute deterministic fixture benchmark return, drawdown, volatility, turnover, trade count, and ending equity.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-009`
+- parameter_refs: `PARAM-052, PARAM-053, PARAM-054, PARAM-055`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+
+## 公式
+
+### FORM-001
+
+- model_id: `MOD-001`
+- expression_or_pseudocode: `For each symbol and lookback in (5,10,20): total_return=end/start-1; drawdown=min(close/running_max-1); oos_return and hit_rate come from positive momentum one-step-forward windows; score=total_return+0.5*oos_return+0.01*hit_rate-abs(drawdown); rank desc by (decision=='promote_to_paper', score).`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-002
+
+- model_id: `MOD-002`
+- expression_or_pseudocode: `risk_score=max(100 - 30*I(abs(max_drawdown)>0.10) - 20*I(trade_count<10) - 20*I(turnover>3), 0); decision='promote_to_paper' if score>=70 else 'hold_research'; if score<50 decision='reject'.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-003
+
+- model_id: `MOD-003`
+- expression_or_pseudocode: `Reject in order: kill_switch_active; missing idempotency_key; side not buy/sell; quantity<=0 or price<=0 or notional<=0; max_notional<=0; notional>max_notional. Otherwise allowed=True and status=approved_for_owner_review.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-004
+
+- model_id: `MOD-004`
+- expression_or_pseudocode: `If live_trading.enabled is false reject; else require LIVE_TRADING_ENABLED=true when configured, kill switch clear, audit sink OK, broker health OK, idempotency key present, and notional<=max_order_value_aud. FailClosedLiveBroker returns rejected even if policy allows.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-005
+
+- model_id: `MOD-005`
+- expression_or_pseudocode: `Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket; if risk.allowed submit PaperOrder; return run result and audit payload.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-006
+
+- model_id: `MOD-006`
+- expression_or_pseudocode: `Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Portfolio total_equity=cash+sum(quantity*mark_price).`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-007
+
+- model_id: `MOD-007`
+- expression_or_pseudocode: `seconds_until_expiry=int(expires_at-now); freshness='fresh' if seconds_until_expiry>0 else 'expired'; pending tickets map to fresh_pending_owner_approval or expired_owner_approval; blocked tickets map to blocked_by_risk.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-008
+
+- model_id: `MOD-008`
+- expression_or_pseudocode: `Pydantic validates strategy payload. Universe symbols are stripped/upcased and duplicates reject. MVP rejects no_leverage=false, no_short=false, no_options=false, no_crypto_withdrawal=false.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+### FORM-009
+
+- model_id: `MOD-009`
+- expression_or_pseudocode: `Load fixture prices; pivot close by date/symbol; daily returns=pct_change; equal-weight portfolio return=mean(symbol returns); one_time_cost=(cost_bps+slippage_bps)/10000; equity=initial_capital*(1-one_time_cost)*cumprod(1+portfolio_returns).`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+
+## 参数
+
+| 参数 ID | 符号 | 名称 | 当前值 | 来源 | 事实等级 |
+|---|---|---|---|---|---|
+| PARAM-001 | lookbacks | strategy tournament lookbacks | 5|10|20 | EXTRACTED from function default | EXTRACTED |
+| PARAM-002 | w_oos | oos return coefficient | 0.5 | EXTRACTED from momentum_score expression | EXTRACTED |
+| PARAM-003 | w_hit | hit rate coefficient | 0.01 | EXTRACTED from momentum_score expression | EXTRACTED |
+| PARAM-004 | w_drawdown | drawdown penalty coefficient | 1.0 | EXTRACTED from expression -abs(drawdown) | EXTRACTED |
+| PARAM-005 | min_rows_gt_lookback | min rows greater than lookback | true | EXTRACTED from skip branch | EXTRACTED |
+| PARAM-006 | rank_decision_priority | promote decision rank priority | promote_to_paper first | EXTRACTED from sorted key | EXTRACTED |
+| PARAM-007 | default_turnover | turnover supplied to risk score | 1.0 | EXTRACTED from metrics dict | EXTRACTED |
+| PARAM-008 | signal_positive_rule | walk-forward positive momentum rule | close_t > close_t_minus_lookback | EXTRACTED from _walk_forward_momentum | EXTRACTED |
+| PARAM-009 | risk_score_start | start risk score | 100 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-010 | max_drawdown_threshold | drawdown threshold | 0.10 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-011 | max_drawdown_penalty | drawdown penalty | 30 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-012 | min_trade_count_threshold | low trade count threshold | 10 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-013 | low_trade_count_penalty | low trade count penalty | 20 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-014 | turnover_threshold | high turnover threshold | 3 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-015 | high_turnover_penalty | high turnover penalty | 20 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-016 | promote_score_threshold | paper promotion threshold | 70 | EXTRACTED from risk_score | EXTRACTED |
+| PARAM-017 | max_order_value_aud | max order value | 100 | EXTRACTED from policy config | EXTRACTED |
+| PARAM-018 | allowed_sides | allowed order sides | buy|sell | EXTRACTED from pre_trade_risk_check | EXTRACTED |
+| PARAM-019 | require_positive_quantity | quantity positive gate | true | EXTRACTED from pre_trade_risk_check | EXTRACTED |
+| PARAM-020 | require_positive_price | price positive gate | true | EXTRACTED from pre_trade_risk_check | EXTRACTED |
+| PARAM-021 | require_positive_notional | notional positive gate | true | EXTRACTED from pre_trade_risk_check | EXTRACTED |
+| PARAM-022 | require_idempotency_key | pre trade idempotency gate | true | EXTRACTED from pre_trade_risk_check | EXTRACTED |
+| PARAM-023 | live_trading.enabled | live trading enabled | false | EXTRACTED from committed config | EXTRACTED |
+| PARAM-024 | require_environment_flag | require live env flag | true | EXTRACTED from committed config | EXTRACTED |
+| PARAM-025 | environment_flag_name | live env flag name | LIVE_TRADING_ENABLED | EXTRACTED from committed config | EXTRACTED |
+| PARAM-026 | require_audit_sink | require audit sink | true | EXTRACTED from committed config | EXTRACTED |
+| PARAM-027 | require_broker_health_check | require broker health | true | EXTRACTED from committed config | EXTRACTED |
+| PARAM-028 | live_require_idempotency_key | live idempotency gate | true | EXTRACTED from committed config | EXTRACTED |
+| PARAM-029 | require_kill_switch_clear | kill switch clear gate | true | EXTRACTED from committed config | EXTRACTED |
+| PARAM-030 | fail_closed_live_broker | live broker never submits | true | EXTRACTED from adapter | EXTRACTED |
+| PARAM-031 | DEFAULT_REFRESH_INTERVAL_SECONDS | paper loop refresh interval | 300 | EXTRACTED from service and config | EXTRACTED |
+| PARAM-032 | order_ticket_ttl_seconds | order ticket TTL | 300 | EXTRACTED from config and OrderIntent | EXTRACTED |
+| PARAM-033 | generated_quantity | generated paper intent quantity | 1 | EXTRACTED from generator | EXTRACTED |
+| PARAM-034 | generated_side | generated paper intent side | buy | EXTRACTED from generator | EXTRACTED |
+| PARAM-035 | order_type | broker payload order type | market | EXTRACTED from dataclass factory | EXTRACTED |
+| PARAM-036 | time_in_force | broker payload time in force | day | EXTRACTED from dataclass factory | EXTRACTED |
+| PARAM-037 | paper_price_path | paper loop fixture path | data/sample_prices.csv | EXTRACTED from build_default_loop | EXTRACTED |
+| PARAM-038 | initial_cash | initial paper cash | 10000 | EXTRACTED from dataclass and load | EXTRACTED |
+| PARAM-039 | duplicate_idempotency_reject | duplicate idempotency rejection | true | EXTRACTED from submit_order | EXTRACTED |
+| PARAM-040 | round_cash_digits | cash rounding digits | 2 | EXTRACTED from snapshot | EXTRACTED |
+| PARAM-041 | round_mark_price_digits | mark price rounding digits | 4 | EXTRACTED from portfolio snapshot | EXTRACTED |
+| PARAM-042 | latest_limit | approval queue latest limit | 20 | EXTRACTED from method default | EXTRACTED |
+| PARAM-043 | fresh_seconds_rule | freshness positive seconds rule | seconds_until_expiry > 0 | EXTRACTED from _freshness | EXTRACTED |
+| PARAM-044 | missing_expires_policy | missing expiry handling | unknown | EXTRACTED from _freshness | EXTRACTED |
+| PARAM-045 | lookback_days_min | DSL lookback min | 2 | EXTRACTED from schema | EXTRACTED |
+| PARAM-046 | lookback_days_max | DSL lookback max | 756 | EXTRACTED from schema | EXTRACTED |
+| PARAM-047 | max_positions_default | DSL max positions default | 2 | EXTRACTED from schema | EXTRACTED |
+| PARAM-048 | max_weight_per_asset_default | DSL max weight per asset | 0.5 | EXTRACTED from schema | EXTRACTED |
+| PARAM-049 | no_leverage | DSL no leverage requirement | true | EXTRACTED from model validator | EXTRACTED |
+| PARAM-050 | no_short | DSL no short requirement | true | EXTRACTED from model validator | EXTRACTED |
+| PARAM-051 | no_options | DSL no options requirement | true | EXTRACTED from model validator | EXTRACTED |
+| PARAM-052 | initial_capital | fixture benchmark initial capital | 10000 | EXTRACTED from function signature | EXTRACTED |
+| PARAM-053 | cost_bps | fixture benchmark cost bps | 2 | EXTRACTED from function signature | EXTRACTED |
+| PARAM-054 | slippage_bps | fixture benchmark slippage bps | 5 | EXTRACTED from function signature | EXTRACTED |
+| PARAM-055 | periods_per_year | annualized volatility periods per year | 252 | EXTRACTED from function signature | EXTRACTED |

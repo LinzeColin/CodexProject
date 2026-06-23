@@ -1,0 +1,90 @@
+schema_version: "codexproject.roadmap.v1"
+project_id: "Alpha"
+total_estimated_hours: 5
+completed_estimated_hours: 5
+current_stage_id: "S5"
+current_phase_id: "S5PA"
+current_task_id: "S5PAT01"
+next_gate_id: "S5PA-GATE-IN-PROGRESS"
+stages:
+  -
+    stage_id: "S5"
+    name: "其余九个项目逐项迁移"
+    person_goal: "一次只迁移一个项目、一个任务和一个验收目标；先提取真实事实，再生成文件。禁止一次性批量生成空泛模板。"
+    status: "in_progress"
+    estimated_hours: 40
+    estimated_pct: 20.41
+    stop_conditions:
+      - "一次 PR 同时迁移多个项目"
+      - "为了通过 schema 虚构数据"
+      - "业务测试失败"
+    stop_gate:
+      gate_id: "S5-GATE"
+      pass_criteria:
+        - "10/10 项目通过结构、准确性和人类可读验收"
+        - "迁移过程中无批量空泛文件"
+      evidence:
+        - "migration_PRs"
+        - "full_readonly_baseline"
+        - "project_acceptance_matrix"
+      failure_action: "blocked"
+    phases:
+      -
+        phase_id: "S5PA"
+        name: "模型密集项目迁移"
+        objective: "优先处理模型、策略和参数复杂度高的项目；本任务只迁移 Alpha。"
+        status: "in_progress"
+        estimated_hours: 20
+        estimated_pct: 10.2
+        stop_conditions:
+          - "上一项目未通过 Gate"
+          - "批量脚本产生无证据事实"
+        stop_gate:
+          gate_id: "S5PA-GATE"
+          pass_criteria:
+            - "4 个项目逐一验证通过"
+            - "每项有独立 diff/test/evidence"
+          evidence:
+            - "four_project_PRs"
+            - "owner_reviews"
+          failure_action: "remain_in_phase"
+        tasks:
+          -
+            task_id: "S5PAT01"
+            name: "迁移 Alpha"
+            objective: "提取量化模型、风控、策略和 Roadmap，生成 Lean v2 三个 canonical 文件并渲染三份中文人类入口文件。"
+            status: "completed"
+            estimated_hours: 5
+            estimated_pct: 2.55
+            dependencies:
+              - "S4-GATE"
+            acceptance_ids:
+              - "ACC-S5PAT01"
+            acceptance:
+              -
+                acceptance_id: "ACC-S5PAT01"
+                description: "Alpha 单项目 canonical facts、roadmap、events 与中文 human entry render 通过本地验证；未迁移其他项目。"
+                evidence_refs:
+                  - "Alpha/docs/governance/project.yaml"
+                  - "Alpha/docs/governance/roadmap.yaml"
+                  - "Alpha/docs/governance/events.jsonl"
+                  - "Alpha/功能清单"
+                  - "Alpha/开发记录"
+                  - "Alpha/模型参数文件"
+                  - "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+            test_commands:
+              - "See S5PAT01 run manifest and Project Governance CI."
+            test_results:
+              - "PASS evidence required before task is considered complete; PR/main CI evidence remains outside this precommit file."
+            evidence_refs:
+              - "Alpha/docs/governance/project.yaml"
+              - "Alpha/docs/governance/roadmap.yaml"
+              - "Alpha/docs/governance/events.jsonl"
+              - "Alpha/功能清单"
+              - "Alpha/开发记录"
+              - "Alpha/模型参数文件"
+              - "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
+            risks:
+              - "范围扩张、事实失真或治理回归"
+              - "Alpha live readiness 仍 blocked，不能误写成生产上线就绪"
+            rollback: "Revert only this task commit; retain prior read-only audit evidence."
