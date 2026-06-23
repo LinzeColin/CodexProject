@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260623-ADP-074"
-source_snapshot_hash: "sha256:561df30cc48cfa35460125c98dc9fb079829459e3cd0ee268e476a769c699daa"
+source_snapshot_hash: "sha256:2be43aa5f1b1a7f63e4273157d372afe0af58449970ed0716438df6c1076d713"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-23T09:55:00+10:00"
