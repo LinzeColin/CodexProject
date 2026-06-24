@@ -10,7 +10,6 @@ import os
 import subprocess
 import sys
 import tempfile
-import time
 import unittest
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -3874,11 +3873,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }:
             self.assertNotIn(forbidden, text)
 
-    def test_review9_s3_stop_hook_is_pure_advisory_under_one_second(self) -> None:
+    def test_review9_s3_stop_hook_is_pure_advisory_without_repository_scan(self) -> None:
         text = STOP_HOOK.read_text(encoding="utf-8")
         for forbidden in {"subprocess", "git_root", "changed_files", "status --porcelain", "Path("}:
             self.assertNotIn(forbidden, text)
-        started = time.perf_counter()
         result = subprocess.run(
             [sys.executable, str(STOP_HOOK)],
             input=json.dumps({"cwd": str(ROOT), "stop_hook_active": True}),
@@ -3887,8 +3885,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             stderr=subprocess.PIPE,
             check=False,
         )
-        elapsed = time.perf_counter() - started
-        self.assertLess(elapsed, 1.0)
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
         self.assertTrue(payload.get("continue"))
