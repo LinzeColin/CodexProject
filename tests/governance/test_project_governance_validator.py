@@ -3267,8 +3267,34 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(len(projects), 10)
         for project in projects:
             self.assertEqual(set(project), {"project_id", "path", "ci_mode", "migration"})
-            self.assertEqual(project["ci_mode"], "advisory")
-            self.assertEqual(project["migration"], {"version": "legacy-v1-pending-lean-v2"})
+            self.assertEqual(project["ci_mode"], "required")
+            self.assertEqual(project["migration"], {"version": "lean-v2"})
+
+    def test_review9_s6pbt01_all_migrated_projects_are_required(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+        self.assertEqual(len(projects), 10)
+
+        manifest_path = ROOT / "governance" / "run_manifests" / "GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json"
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        matrix = {row["project_id"]: row for row in manifest["required_matrix"]}
+        self.assertEqual(set(matrix), {project["project_id"] for project in projects})
+
+        for project in projects:
+            project_id = project["project_id"]
+            project_root = ROOT / project["path"]
+            self.assertEqual(project["ci_mode"], "required", project_id)
+            self.assertEqual(project["migration"], {"version": "lean-v2"}, project_id)
+            self.assertTrue((project_root / "docs" / "governance" / "project.yaml").is_file(), project_id)
+            self.assertTrue((project_root / "docs" / "governance" / "roadmap.yaml").is_file(), project_id)
+            self.assertTrue((project_root / "docs" / "governance" / "events.jsonl").is_file(), project_id)
+            for human_file in ("功能清单", "开发记录", "模型参数文件"):
+                self.assertTrue((project_root / human_file).is_file(), f"{project_id}:{human_file}")
+            self.assertEqual(matrix[project_id]["ci_mode_after"], "required")
+            self.assertEqual(matrix[project_id]["migration_version_after"], "lean-v2")
+            self.assertEqual(matrix[project_id]["rollback"], "set this project ci_mode to advisory")
 
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
