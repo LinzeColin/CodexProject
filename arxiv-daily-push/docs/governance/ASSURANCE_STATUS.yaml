@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-089"
-source_snapshot_hash: "sha256:ecbb2dc6f95cea8a84a880f029ec6fa506281abbc276022f01bb9dcc35fd262d"
+as_of_event_id: "EVENT-20260624-ADP-091"
+source_snapshot_hash: "sha256:9c03db2bc5caa050d81ca19c1b0cf2b4a27b1705ea525681919d1cd8d26e9dc4"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T11:12:00+10:00"
+snapshot_event_time: "2026-06-24T11:45:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -61,7 +61,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 54
-    precommit_pending_events: 35
+    precommit_pending_events: 36
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -70,45 +70,45 @@ delivery_readiness:
   blocker_ids: []
 next_executable_task:
   task_id: "S2P1T01"
-  status: "in_progress"
-  reason: "Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep; V7 alias S2PBT01."
+  status: "evidence_passed_no_formal_production"
+  reason: "bioRxiv and medRxiv metadata-only no-send replay/shadow evidence passed; V7/root contract, baseline files, and CI contract hash gate still block formal source production inclusion."
   acceptance_ids:
     - "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
   owner: "content_owner + engineering_owner"
   human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2p1_focus4 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_source_registry.py arxiv-daily-push/tests/test_owner_controls.py arxiv-daily-push/tests/test_contracts.py -q` and attach the listed evidence refs."
+  unblock_condition: "Merge the V7/root contract, AGENTS, three baseline files, and CI contract hash gate; then reconcile the S2PBT01/S2P1T01 alias before any formal production inclusion or Stage 2 acceptance claim."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
       reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
-  decision_id: "DEC-arxiv-daily-push-S2P1T01-001"
+  decision_id: "DEC-arxiv-daily-push-S2PBT01-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。"
-  question: "是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。"
+  decision_question: "是否保持 S2PBT01/S2P1T01 为 evidence-passed/no-formal-production，等待 V7/root contract hash gate。"
+  question: "是否保持 S2PBT01/S2P1T01 为 evidence-passed/no-formal-production，等待 V7/root contract hash gate。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: start S2P1T01 after S1 local runner migration prep"
-  option_a: "开始 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。"
-  option_b: "先只做 Stage 1 本地 smoke，不进入新来源；风险更低但 Stage 2 不推进。"
-  option_c: "越过 source gate 直接把新来源放进正式邮件；禁止。"
+  current_recommendation: "A: keep S2PBT01/S2P1T01 as evidence-passed/no-formal-production until the V7/root contract hash gate is merged"
+  option_a: "保持 no-send shadow 证据状态，等待 V7/root contract hash gate，不进入正式生产。"
+  option_b: "暂停 Stage 2，继续只维护 Stage 1 arXiv local runner。"
+  option_c: "越过 V7/root contract gate 把 bioRxiv/medRxiv 放进正式邮件；禁止。"
   options:
-    - "开始 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。"
-    - "先只做 Stage 1 本地 smoke，不进入新来源；风险更低但 Stage 2 不推进。"
-    - "越过 source gate 直接把新来源放进正式邮件；禁止。"
-  estimated_effort: "P1/P2; source adapter, fixtures, 30-day replay plan, 48h shadow contract, arXiv no-regression tests"
-  estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
-  expected_benefit: "在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到生命科学与医学预印本。"
-  principal_risks: "源身份混淆、重复 canonical paper、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "source adapter tests, source registry gate, fixture parse, replay/shadow reports, arXiv no-regression evidence"
+    - "保持 no-send shadow 证据状态，等待 V7/root contract hash gate，不进入正式生产。"
+    - "暂停 Stage 2，继续只维护 Stage 1 arXiv local runner。"
+    - "越过 V7/root contract gate 把 bioRxiv/medRxiv 放进正式邮件；禁止。"
+  estimated_effort: "P1; V7/root contract hash gate reconciliation and alias sync only"
+  estimated_cost_or_resource: "local governance and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
+  expected_benefit: "在不影响 Stage 1 arXiv accepted 的前提下保留 Stage 2 preprint source 证据，并防止误上线。"
+  principal_risks: "V6/V7 alias 冲突、contract hash mismatch、no-send 证据被误读为正式生产纳入"
+  evidence_required: "V7/root contract hash gate, alias reconciliation, and no-formal-production flag verification"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "Stage 1 local production prep remains complete, but Stage 2 does not begin."
-  unblock_task_id: "S2P1T01"
+  consequence_of_no_decision: "S2PBT01/S2P1T01 remains evidence-passed but cannot be formally promoted into production."
+  unblock_task_id: "S2PBT01/S2P1T01"
   acceptance_ids:
     - "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T11:12:00+10:00"
+  last_reviewed_at: "2026-06-24T11:45:00+10:00"

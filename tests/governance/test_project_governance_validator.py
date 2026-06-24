@@ -2942,7 +2942,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "evidence_passed_no_formal_production")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PBT01-LEAN-V2-MERGE-SYNC")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PBT01-POST-MERGE-GATE-SYNC")
         self.assertEqual(matrix["current_phase"], "S2P1")
         self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
         self.assertEqual(matrix["review9_migration_iteration"], "ITER-20260624-REVIEW9-S5PBT05")
@@ -4682,8 +4682,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-090")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-090")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-091")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-091")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -4691,7 +4691,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json",
+            "governance/run_manifests/ADP-S2PBT01-POST-MERGE-GATE-SYNC-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
