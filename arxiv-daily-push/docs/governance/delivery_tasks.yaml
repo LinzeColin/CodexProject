@@ -3220,23 +3220,31 @@ tasks:
     objective: "接入法律法规、人大、国务院、公报和两高，建立中国 C0 全国权威主干 metadata-only source-domain foundation。"
     scope: "C0 national authority source taxonomy, official-domain identity, document number/date/attachment traceability, no-production shadow evidence, and governance registration."
     non_scope: "No D3_CORE_SOURCE_DOMAIN_ACCEPTED, no Stage2 production acceptance, no SMTP send, no Release upload, no scheduler enablement, no bulk scraping, no PDF/full-text download, and no paid API use."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PCT07"
     required_files:
-      - "planned: S2PDT01 C0 source connector contract, fixtures, focused tests, and governance registrations"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
     acceptance_ids:
       - "ACC-S2PDT01-C0"
     test_commands:
-      - "planned: C0 authority source metadata and traceability tests"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt01_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt01_semantic1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
     test_results:
-      - "PENDING"
+      - "focused Stage2 source tests: 35 OK"
+      - "S2PDT01 C0 gates passed for D2 qualification upstream, authority taxonomy, official identity, document traceability, metadata-only, and no-production flags"
+      - "semantic extractor: semantic_formulas_checked 63, semantic_parameters_checked 414"
     evidence_refs:
-      - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+      - "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md"
     risk: "转载冒充原始源、机关/文号/日期/附件不可追溯，或 D3 shadow evidence 被误当作正式生产 inclusion 必须阻断。"
-    rollback: "Remove planned S2PDT01 governance entry if D3 C0 source-domain work is deferred or superseded."
+    rollback: "Revert S2PDT01 China C0 source foundation additions in stage2_sources.py, CLI, tests, model/formula/parameter registries, phase record, manifest, event records, and root-lock pointer."
     target_version: "0.24.0"
-    completed_version: ""
+    completed_version: "0.23.0"
     unknown_task_ids: []
   -
     task_id: "S2PDT02"

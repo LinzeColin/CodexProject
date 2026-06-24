@@ -639,6 +639,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PCT07 D2 qualification readiness remains completed as no-production evidence, but D3 China official source-domain work remains unavailable.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PDT02":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PDT02-C1-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PDT02 / legacy S2P3T02 中国 C1 中央机关与重点部门 source map，同时保持 D3 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PDT02 China C1 central department source map after completed C0 foundation",
+                "option_a": "接入宏观、科技、产业、金融、市场和重点行业部门的 metadata-only 官方来源映射，保留机构别名、官方域名和行业路由，不影响 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PDT01，只保留 C0 全国权威主干；风险更低但 C1 部门覆盖不推进。",
+                "option_c": "越过 C1 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; C1 institution templates, aliases, industry mapping, official domain registry, metadata-only evidence, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "把中国官方来源从 C0 主干扩展到中央机关与重点部门 source map，为政策、科技、产业、金融和市场阅读板块提供可审计来源路由。",
+                "risks": "部门清单缩水、人工逐源硬编码、别名映射错误、非官方域名污染 source map、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "C1 department fixtures, official-domain and alias tests, industry routing checks, semantic extractor, project governance validator",
+                "priority": "P1",
+                "no_decision": "S2PDT01 China C0 foundation remains completed as no-production evidence, but C1 central department source-map work remains unavailable.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
@@ -1249,7 +1270,12 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "last_reviewed_at": max_event_time(events),
     }
     existing_owner_task = str(existing_owner_decision.get("unblock_task_id") or "")
-    if not existing_owner_task or existing_owner_task == str(next_task.get("task_id") or ""):
+    existing_owner_decision_id = str(existing_owner_decision.get("decision_id") or "")
+    current_owner_decision_id = str(owner_decision.get("decision_id") or "")
+    if (
+        (not existing_owner_task or existing_owner_task == str(next_task.get("task_id") or ""))
+        and existing_owner_decision_id == current_owner_decision_id
+    ):
         for key, value in existing_owner_decision.items():
             if value not in (None, ""):
                 owner_decision[key] = value

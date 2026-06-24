@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PD`
-- current_task: `S2PDT01`
-- active_model_count: `60`
-- active_formula_count: `62`
-- active_parameter_count: `406`
+- current_task: `S2PDT02`
+- active_model_count: `61`
+- active_formula_count: `63`
+- active_parameter_count: `414`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PD-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,9 +24,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PDT01`
+- stage2_current_task: `S2PDT02`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01; S2PDT02 -> S2P3T02`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PDT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PDT02` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -582,6 +582,15 @@
 - parameter_refs: `PARAM-ADP-416, PARAM-ADP-417, PARAM-ADP-418, PARAM-ADP-419, PARAM-ADP-420, PARAM-ADP-421, PARAM-ADP-422, PARAM-ADP-423`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT07-D2`
 
+### MOD-ADP-061 S2PDT01 China C0 national authority source foundation
+
+- purpose: `Validate China C0 national authority metadata-only source taxonomy, official identity, document traceability, and no-production boundaries after S2PCT07 D2 qualification readiness.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-063`
+- parameter_refs: `PARAM-ADP-424, PARAM-ADP-425, PARAM-ADP-426, PARAM-ADP-427, PARAM-ADP-428, PARAM-ADP-429, PARAM-ADP-430, PARAM-ADP-431`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PDT01-C0`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -955,6 +964,12 @@
 - model_id: `MOD-ADP-060`
 - expression_or_pseudocode: `A S2PCT07 D2 source-domain qualification report passes only when S2PCT04, S2PCT05, and S2PCT06 upstream reports pass; top-journal, engineering-signal, and authoritative-report domains each have complete required type coverage; D2 replay has 30 unique passing dates with no future leakage or P0/P1 blockers; no-production shadow evidence covers at least 48 hours; correction and retraction forced events force review and update conclusion state; queue explanations cover selected, queued, and deferred decisions; type calibration has full required coverage and zero spread; and D2 source-domain acceptance, formal production inclusion, Stage2/integrated production, SMTP, Release, scheduler, queue mutation, schema migration, PDF/full-text, paid API, paywall bypass, and marketing-material acceptance remain false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT07-D2`
+
+### FORM-ADP-063
+
+- model_id: `MOD-ADP-061`
+- expression_or_pseudocode: `A S2PDT01 China C0 source foundation report passes only when the S2PCT07 D2 qualification report passes; required national authority types are all observed; every record has accepted official identity, official domain, source URL, authority name, document number, published date, attachment trace, evidence refs, and metadata-only no-download boundaries; and D3 core source-domain acceptance plus production side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PDT01-C0`
 
 ## 参数
 
@@ -1366,3 +1381,11 @@
 | PARAM-ADP-421 | S2PCT07_REQUIRED_SHADOW_HOURS | S2PCT07 required no-production shadow hours | 48 | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
 | PARAM-ADP-422 | S2PCT07_REQUIRED_FORCED_EVENT_TYPES | S2PCT07 required forced event types | correction;retraction | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
 | PARAM-ADP-423 | S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES | S2PCT07 required queue explanation states | selected;queued;deferred | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-424 | S2PDT01_CHINA_C0_SOURCE_MODEL_ID | S2PDT01 China C0 source model id | adp-s2pdt01-china-c0-source-foundation-v1 | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-425 | S2PDT01_ACCEPTANCE_ID | S2PDT01 acceptance id | ACC-S2PDT01-C0 | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-426 | S2PDT01_TASK_ID | S2PDT01 canonical task id | S2PDT01 | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-427 | S2PDT01_LEGACY_TASK_ID | S2PDT01 legacy task id | S2P3T01 | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-428 | S2PDT01_REQUIRED_AUTHORITY_TYPES | S2PDT01 required C0 authority types | law_regulation;npc_document;state_council_document;gazette;supreme_court_procuratorate_document | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-429 | S2PDT01_REQUIRED_TRACE_FIELDS | S2PDT01 required trace fields | authority_name;official_domain;document_number;published_date | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-430 | S2PDT01_ALLOWED_IDENTITY_STATES | S2PDT01 allowed official identity states | official_domain;official_gazette;official_publication_portal | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-431 | S2PDT01_REPORT_FILENAME | S2PDT01 China C0 report filename | stage2_s2pdt01_china_c0_source_foundation_report.json | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |

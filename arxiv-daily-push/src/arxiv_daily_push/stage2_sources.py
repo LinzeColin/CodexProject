@@ -144,6 +144,20 @@ S2PCT07_REQUIRED_SHADOW_HOURS = 48
 S2PCT07_REQUIRED_FORCED_EVENT_TYPES = ("correction", "retraction")
 S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES = ("selected", "queued", "deferred")
 S2PCT07_QUALIFICATION_REPORT_FILENAME = "stage2_s2pct07_d2_source_domain_qualification_report.json"
+S2PDT01_CHINA_C0_SOURCE_MODEL_ID = "adp-s2pdt01-china-c0-source-foundation-v1"
+S2PDT01_ACCEPTANCE_ID = "ACC-S2PDT01-C0"
+S2PDT01_TASK_ID = "S2PDT01"
+S2PDT01_LEGACY_TASK_ID = "S2P3T01"
+S2PDT01_REQUIRED_AUTHORITY_TYPES = (
+    "law_regulation",
+    "npc_document",
+    "state_council_document",
+    "gazette",
+    "supreme_court_procuratorate_document",
+)
+S2PDT01_REQUIRED_TRACE_FIELDS = ("authority_name", "official_domain", "document_number", "published_date")
+S2PDT01_ALLOWED_IDENTITY_STATES = ("official_domain", "official_gazette", "official_publication_portal")
+S2PDT01_REPORT_FILENAME = "stage2_s2pdt01_china_c0_source_foundation_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -2051,6 +2065,214 @@ def validate_s2pct07_d2_source_domain_qualification_report(report: Mapping[str, 
     return errors
 
 
+def build_s2pdt01_china_c0_source_foundation_report(
+    *,
+    generated_at: str,
+    d2_qualification_report: Mapping[str, Any],
+    authority_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build C0 China official source foundation evidence without production inclusion."""
+
+    d2_errors = validate_s2pct07_d2_source_domain_qualification_report(d2_qualification_report)
+    d2_gate = (
+        "pass"
+        if not d2_errors
+        and d2_qualification_report.get("status") == "pass"
+        and d2_qualification_report.get("d2_source_domain_qualification_ready") is True
+        else "blocked"
+    )
+    authority_rows, authority_errors = _s2pdt01_authority_rows(authority_records)
+    taxonomy_gate = _s2pdt01_taxonomy_gate(authority_rows)
+    identity_gate = _s2pdt01_identity_gate(authority_rows)
+    traceability_gate = _s2pdt01_traceability_gate(authority_rows)
+    metadata_gate = _s2pdt01_metadata_gate(authority_rows)
+    blocking_reasons = [
+        *d2_errors,
+        *authority_errors,
+        *taxonomy_gate["blocking_reasons"],
+        *identity_gate["blocking_reasons"],
+        *traceability_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if d2_gate != "pass":
+        blocking_reasons.append("S2PDT01 requires passing S2PCT07 D2 qualification readiness")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and d2_gate
+        == taxonomy_gate["status"]
+        == identity_gate["status"]
+        == traceability_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
+        "acceptance_id": S2PDT01_ACCEPTANCE_ID,
+        "task_id": S2PDT01_TASK_ID,
+        "legacy_task_id": S2PDT01_LEGACY_TASK_ID,
+        "phase": "S2PD",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_d2_qualification_gate": d2_gate,
+        "authority_taxonomy_gate": taxonomy_gate["status"],
+        "official_identity_gate": identity_gate["status"],
+        "document_traceability_gate": traceability_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_authority_types": list(S2PDT01_REQUIRED_AUTHORITY_TYPES),
+        "authority_types_observed": taxonomy_gate["authority_types_observed"],
+        "required_trace_fields": list(S2PDT01_REQUIRED_TRACE_FIELDS),
+        "authority_records": authority_rows,
+        "authority_record_count": len(authority_rows),
+        "taxonomy_summary": taxonomy_gate,
+        "identity_summary": identity_gate,
+        "traceability_summary": traceability_gate,
+        "metadata_summary": metadata_gate,
+        "d3_c0_source_foundation_ready": status == "pass",
+        "d3_core_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pdt01_china_c0_source_foundation(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    d2_qualification_report: Mapping[str, Any],
+    authority_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PDT01 China C0 source foundation evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pdt01-china-c0-source-foundation"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pdt01_china_c0_source_foundation_report(
+        generated_at=generated_at,
+        d2_qualification_report=d2_qualification_report,
+        authority_records=authority_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "source_foundation_report_path": str(run_dir / "adp-s2pdt01-china-c0-source-foundation-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pdt01-china-c0-source-foundation-report.json", report)
+        _write_json(state / S2PDT01_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pdt01_china_c0_source_foundation_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PDT01_CHINA_C0_SOURCE_MODEL_ID:
+        errors.append("S2PDT01 C0 model_id must be adp-s2pdt01-china-c0-source-foundation-v1")
+    if report.get("task_id") != S2PDT01_TASK_ID:
+        errors.append("S2PDT01 C0 task_id must be S2PDT01")
+    if report.get("legacy_task_id") != S2PDT01_LEGACY_TASK_ID:
+        errors.append("S2PDT01 C0 legacy_task_id must be S2P3T01")
+    if report.get("acceptance_id") != S2PDT01_ACCEPTANCE_ID:
+        errors.append("S2PDT01 C0 acceptance_id must be ACC-S2PDT01-C0")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PDT01 C0 status must be pass or blocked")
+    for key in (
+        "d3_core_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PDT01 C0 source foundation")
+    records = report.get("authority_records")
+    if not isinstance(records, list):
+        errors.append("S2PDT01 authority_records must be a list")
+        records = []
+    observed = set(report.get("authority_types_observed") or [])
+    missing = [authority_type for authority_type in S2PDT01_REQUIRED_AUTHORITY_TYPES if authority_type not in observed]
+    if missing:
+        errors.append("S2PDT01 C0 taxonomy missing required authority types: " + ", ".join(missing))
+    source_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"authority_records[{index}] must be an object")
+            continue
+        source_id = str(record.get("source_id") or "")
+        if not source_id:
+            errors.append(f"authority_records[{index}].source_id is required")
+        if source_id in source_ids:
+            errors.append(f"duplicate S2PDT01 source_id: {source_id}")
+        source_ids.add(source_id)
+        if record.get("authority_type") not in S2PDT01_REQUIRED_AUTHORITY_TYPES:
+            errors.append(f"authority_records[{index}].authority_type is not supported")
+        if record.get("identity_state") not in S2PDT01_ALLOWED_IDENTITY_STATES:
+            errors.append(f"authority_records[{index}].identity_state is not accepted")
+        if record.get("metadata_only") is not True:
+            errors.append(f"authority_records[{index}].metadata_only must be true")
+        if record.get("pdf_downloaded") is not False:
+            errors.append(f"authority_records[{index}].pdf_downloaded must be false")
+        if record.get("full_text_extracted") is not False:
+            errors.append(f"authority_records[{index}].full_text_extracted must be false")
+        for field in S2PDT01_REQUIRED_TRACE_FIELDS:
+            if not record.get(field):
+                errors.append(f"authority_records[{index}].{field} is required")
+        if not record.get("source_url"):
+            errors.append(f"authority_records[{index}].source_url is required")
+        if not record.get("attachment_trace"):
+            errors.append(f"authority_records[{index}].attachment_trace is required")
+        if not record.get("evidence_refs"):
+            errors.append(f"authority_records[{index}].evidence_refs is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PDT01 C0 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_d2_qualification_gate",
+            "authority_taxonomy_gate",
+            "official_identity_gate",
+            "document_traceability_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PDT01 C0 report requires {key}=pass")
+        if report.get("d3_c0_source_foundation_ready") is not True:
+            errors.append("passing S2PDT01 C0 report requires d3_c0_source_foundation_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -3495,6 +3717,125 @@ def _s2pct07_type_calibration(matrix: Mapping[str, Mapping[str, Any]]) -> dict[s
         "required_coverage_ratio": 1.0,
         "coverage_rows": rows,
         "coverage_spread": round(spread, 4),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt01_authority_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    source_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"authority_records[{index}] must be an object")
+            continue
+        source_id = str(record.get("source_id") or "").strip()
+        authority_type = str(record.get("authority_type") or "").strip()
+        official_domain = str(record.get("official_domain") or "").strip().lower()
+        source_url = str(record.get("source_url") or "").strip()
+        row = {
+            "source_id": source_id,
+            "authority_type": authority_type,
+            "authority_name": str(record.get("authority_name") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "document_number": str(record.get("document_number") or "").strip(),
+            "published_date": str(record.get("published_date") or "").strip(),
+            "attachment_trace": str(record.get("attachment_trace") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not source_id:
+            errors.append(f"authority_records[{index}].source_id is required")
+        if source_id in source_ids:
+            errors.append(f"duplicate S2PDT01 source_id: {source_id}")
+        source_ids.add(source_id)
+        if official_domain and source_url and official_domain not in source_url.lower():
+            errors.append(f"authority_records[{index}].source_url must contain official_domain")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT01 requires at least one C0 authority record")
+    return rows, errors
+
+
+def _s2pdt01_taxonomy_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("authority_type") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PDT01_REQUIRED_AUTHORITY_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PDT01_REQUIRED_AUTHORITY_TYPES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT01 C0 taxonomy missing authority types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PDT01 C0 taxonomy has unsupported authority types: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_authority_types": list(S2PDT01_REQUIRED_AUTHORITY_TYPES),
+        "authority_types_observed": sorted(authority_type for authority_type in observed if authority_type),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt01_identity_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("identity_state") not in S2PDT01_ALLOWED_IDENTITY_STATES
+        or not str(row.get("official_domain") or "")
+        or not str(row.get("source_url") or "")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PDT01 C0 identity requires accepted identity_state, official_domain, and source_url")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_identity_states": list(S2PDT01_ALLOWED_IDENTITY_STATES),
+        "verified_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt01_traceability_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing_rows = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            missing_rows.append(row)
+            continue
+        if any(not row.get(field) for field in S2PDT01_REQUIRED_TRACE_FIELDS) or not row.get("attachment_trace") or not row.get("evidence_refs"):
+            missing_rows.append(row)
+    reasons: list[str] = []
+    if missing_rows:
+        reasons.append("S2PDT01 C0 traceability requires authority_name, official_domain, document_number, published_date, attachment_trace, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_trace_fields": list(S2PDT01_REQUIRED_TRACE_FIELDS),
+        "traceable_record_count": len(rows) - len(missing_rows),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt01_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PDT01 C0 records must be metadata-only with pdf_downloaded=false and full_text_extracted=false")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(rows) - len(violations),
+        "record_count": len(rows),
         "blocking_reasons": reasons,
     }
 

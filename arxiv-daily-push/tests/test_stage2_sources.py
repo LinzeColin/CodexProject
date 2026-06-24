@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -25,6 +26,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pdt01_china_c0_source_foundation_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -35,6 +37,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pdt01_china_c0_source_foundation,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -43,6 +46,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -232,6 +236,99 @@ def d2_queue_explanation_records() -> list[dict]:
             "candidate_id": "candidate:deferred",
             "queue_state": "deferred",
             "explanation": "awaits forced-event or source-domain review",
+        },
+    ]
+
+
+def d2_qualification_report() -> dict:
+    return build_s2pct07_d2_source_domain_qualification_report(
+        generated_at=GENERATED_AT,
+        profile_report=top_journal_profile_report(),
+        engineering_signal_report=engineering_signal_report(),
+        authoritative_report=authoritative_report(),
+        replay_records=d2_replay_records(),
+        shadow_records=d2_shadow_records(),
+        forced_event_records=d2_forced_event_records(),
+        queue_explanation_records=d2_queue_explanation_records(),
+    )
+
+
+def china_c0_authority_records() -> list[dict]:
+    return [
+        {
+            "source_id": "china-c0:law:constitution-amendment",
+            "authority_type": "law_regulation",
+            "authority_name": "全国人民代表大会",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c30834/constitution-amendment.html",
+            "document_number": "全国人民代表大会公告",
+            "published_date": "2026-05-01",
+            "attachment_trace": "html-metadata-only",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-law"],
+        },
+        {
+            "source_id": "china-c0:npc:committee-report",
+            "authority_type": "npc_document",
+            "authority_name": "全国人大常委会",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c2/committee-report.html",
+            "document_number": "委员长会议纪要",
+            "published_date": "2026-05-02",
+            "attachment_trace": "official-page-metadata",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-npc"],
+        },
+        {
+            "source_id": "china-c0:state-council:policy-notice",
+            "authority_type": "state_council_document",
+            "authority_name": "国务院",
+            "official_domain": "gov.cn",
+            "source_url": "https://www.gov.cn/zhengce/content/policy-notice.html",
+            "document_number": "国发〔2026〕1号",
+            "published_date": "2026-05-03",
+            "attachment_trace": "state-council-html",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-state-council"],
+        },
+        {
+            "source_id": "china-c0:gazette:state-council-gazette",
+            "authority_type": "gazette",
+            "authority_name": "国务院公报",
+            "official_domain": "gov.cn",
+            "source_url": "https://www.gov.cn/gongbao/2026/issue.html",
+            "document_number": "国务院公报2026年第1号",
+            "published_date": "2026-05-04",
+            "attachment_trace": "gazette-index-metadata",
+            "identity_state": "official_gazette",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-gazette"],
+        },
+        {
+            "source_id": "china-c0:spc-spp:judicial-interpretation",
+            "authority_type": "supreme_court_procuratorate_document",
+            "authority_name": "最高人民法院、最高人民检察院",
+            "official_domain": "court.gov.cn",
+            "source_url": "https://www.court.gov.cn/fabu/xiangqing/judicial-interpretation.html",
+            "document_number": "法释〔2026〕1号",
+            "published_date": "2026-05-05",
+            "attachment_trace": "official-publication-page",
+            "identity_state": "official_publication_portal",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-spc-spp"],
         },
     ]
 
@@ -605,6 +702,80 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["production_affected"])
             self.assertTrue(Path(report["qualification_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pct07_d2_source_domain_qualification_report.json").is_file())
+
+    def test_s2pdt01_china_c0_source_foundation_validates_authority_traceability_without_production(self) -> None:
+        report = build_s2pdt01_china_c0_source_foundation_report(
+            generated_at=GENERATED_AT,
+            d2_qualification_report=d2_qualification_report(),
+            authority_records=china_c0_authority_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT01_CHINA_C0_SOURCE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT01-C0")
+        self.assertEqual(report["task_id"], "S2PDT01")
+        self.assertEqual(report["legacy_task_id"], "S2P3T01")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_c0_source_foundation_ready"])
+        self.assertEqual(report["upstream_d2_qualification_gate"], "pass")
+        self.assertEqual(report["authority_taxonomy_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["document_traceability_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_authority_types"]).issubset(set(report["authority_types_observed"])))
+        self.assertEqual(report["authority_record_count"], 5)
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["bulk_scraping_allowed"])
+        self.assertFalse(report["pdf_download_enabled"])
+        self.assertFalse(report["full_text_download_enabled"])
+        self.assertFalse(validate_s2pdt01_china_c0_source_foundation_report(report))
+
+    def test_s2pdt01_china_c0_source_foundation_blocks_unofficial_missing_trace_and_pdf_download(self) -> None:
+        records = china_c0_authority_records()
+        records[0] = dict(
+            records[0],
+            source_url="https://mirror.example.com/law.html",
+            document_number="",
+            identity_state="mirror",
+            pdf_downloaded=True,
+        )
+
+        report = build_s2pdt01_china_c0_source_foundation_report(
+            generated_at=GENERATED_AT,
+            d2_qualification_report=d2_qualification_report(),
+            authority_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["official_identity_gate"], "blocked")
+        self.assertEqual(report["document_traceability_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("traceability requires", joined)
+        self.assertIn("metadata-only", joined)
+
+    def test_s2pdt01_china_c0_source_foundation_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt01_china_c0_source_foundation(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                d2_qualification_report=d2_qualification_report(),
+                authority_records=china_c0_authority_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt01_china_c0_source_foundation_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["source_foundation_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt01_china_c0_source_foundation_report.json").is_file())
 
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1117,6 +1288,39 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d2_source_domain_qualification_ready"])
         self.assertFalse(payload["d2_source_domain_accepted"])
+
+    def test_cli_stage2_china_c0_source_foundation_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            d2_report_path = Path(tmp) / "d2-qualification-report.json"
+            authority_records_path = Path(tmp) / "authority-records.json"
+            d2_report_path.write_text(json.dumps(d2_qualification_report(), ensure_ascii=False), encoding="utf-8")
+            authority_records_path.write_text(json.dumps({"authority_records": china_c0_authority_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-c0-source-foundation",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--d2-qualification-report",
+                    str(d2_report_path),
+                    "--authority-records",
+                    str(authority_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT01_CHINA_C0_SOURCE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT01")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_c0_source_foundation_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
 
 
 if __name__ == "__main__":

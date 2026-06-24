@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:a5905e309339c084f94bef2e49c83e77864be6f9a46bff7d7b4d380dd31510ca`
-- snapshot_event_time: `2026-06-24T19:10:00+10:00`
+- source_snapshot_hash: `sha256:6bda35190e058806ec892690d0bf9bd2694c2745cf1db84da42a0b7b3a0afa44`
+- snapshot_event_time: `2026-06-24T20:10:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -15,9 +15,9 @@
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
 - Phase/Gate: `S2PD / ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED`
-- Models/Formulas/Parameters total: `60 / 62 / 423`
-- Active formulas/parameters: `62 / 406`
-- Machine checked formulas/parameters: `62 / 406`
+- Models/Formulas/Parameters total: `61 / 63 / 431`
+- Active formulas/parameters: `63 / 414`
+- Machine checked formulas/parameters: `63 / 414`
 
 ## Assurance
 
@@ -45,11 +45,11 @@
 - Production-forbidden until: `P0=0; P1=0; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PDT01`
+- Next governance task: `S2PDT02`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `S2PDT01`
-- Pending/stale events: `101`
+- Next executable task: `S2PDT02`
+- Pending/stale events: `102`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
-- Legacy unbound events: `62`
+- Legacy unbound events: `63`
 - Unresolved fact IDs: `0`

@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pdt01_china_c0_source_foundation,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -117,6 +118,7 @@ from .stage2_sources import (
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -566,6 +568,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pct07_qualification.add_argument("--queue-explanation-records", required=True, help="Queue explanation records JSON list or object with queue_explanation_records.")
     s2pct07_qualification.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pct07_qualification.add_argument("--json", action="store_true", help="Print JSON qualification report.")
+
+    s2pdt01_china_c0 = subparsers.add_parser(
+        "stage2-china-c0-source-foundation",
+        help="Run S2PDT01/S2P3T01 China C0 national authority metadata-only source foundation evidence.",
+    )
+    s2pdt01_china_c0.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pdt01_china_c0.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pdt01_china_c0.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pdt01_china_c0.add_argument("--d2-qualification-report", required=True, help="Passing S2PCT07 D2 qualification report JSON.")
+    s2pdt01_china_c0.add_argument("--authority-records", required=True, help="China C0 authority metadata JSON list or object with authority_records.")
+    s2pdt01_china_c0.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pdt01_china_c0.add_argument("--json", action="store_true", help="Print JSON C0 source foundation report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1725,6 +1739,28 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- replay_gate: {report.get('replay_gate')}")
             print(f"- shadow_gate: {report.get('shadow_gate')}")
             print(f"- type_calibration_gate: {report.get('type_calibration_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-china-c0-source-foundation":
+        report = run_s2pdt01_china_c0_source_foundation(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            d2_qualification_report=load_json_mapping(args.d2_qualification_report),
+            authority_records=load_json_records(args.authority_records, "authority_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pdt01_china_c0_source_foundation_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- authority_taxonomy_gate: {report.get('authority_taxonomy_gate')}")
+            print(f"- official_identity_gate: {report.get('official_identity_gate')}")
+            print(f"- document_traceability_gate: {report.get('document_traceability_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

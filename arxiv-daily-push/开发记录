@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PD`
-- current_task: `S2PDT01`
+- current_task: `S2PDT02`
 - total_hours: `28.50`
-- completed_hours: `20.50`
-- progress: `71.93%`
+- completed_hours: `22.50`
+- progress: `78.95%`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PD-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -71,8 +71,8 @@ Stage -> Phase -> Task
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PDT01 | China official core data-source metadata-only no-send shadow foundation | planned | 2.00 | 7.02% | S2PCT07 | ACC-S2PDT01-C0 |
-| S2PDT02 | China official policy and standards relation shadow | planned | 2.00 | 7.02% | S2PDT01 | ACC-S2PDT02-CN-POLICY-STANDARDS |
+| S2PDT01 | China official core data-source metadata-only no-send shadow foundation | completed | 2.00 | 7.02% | S2PCT07 | ACC-S2PDT01-C0 |
+| S2PDT02 | China official policy and standards relation shadow | planned | 2.00 | 7.02% | S2PDT01 | ACC-S2PDT02-C1 |
 | S2PDT03 | China official source replay and shadow qualification | planned | 2.00 | 7.02% | S2PDT02 | ACC-S2PDT03-CN-REPLAY-SHADOW |
 | S2PDT04 | China official D3 source-domain readiness review | planned | 2.00 | 7.02% | S2PDT03 | ACC-S2PDT04-CN-READINESS |
 
@@ -108,9 +108,9 @@ Stage -> Phase -> Task
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PDT01`
+- stage2_current_task: `S2PDT02`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01; S2PDT02 -> S2P3T02`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -134,3 +134,4 @@ Stage -> Phase -> Task
 | 2026-06-24T17:30:00+10:00 | stage2_engineering_signal_evidence | S2PCT05 engineering open-source/code/release/model-card/benchmark/standards signal path passed fixture tests and CLI no-write canary while preserving Stage 1 arXiv local production boundaries and routing next S2PC work to S2PCT06 authoritative report framework. | S2PCT05 | EXTRACTED |
 | 2026-06-24T18:20:00+10:00 | stage2_authoritative_report_evidence | S2PCT06 authoritative research institution, laboratory, industry technical report, and product technical note path passed fixture tests and CLI/report gates while preserving Stage 1 arXiv local production boundaries and routing next S2PC work to S2PCT07 D2 qualification. | S2PCT06 | EXTRACTED |
 | 2026-06-24T19:10:00+10:00 | stage2_d2_qualification_evidence | S2PCT07 D2 qualification readiness evidence completed while all production acceptance and transport flags remain false, routing next Stage 2 work to S2PDT01/S2P3T01 China C0 national authoritative backbone. | S2PCT07 | EXTRACTED |
+| 2026-06-24T20:10:00+10:00 | stage2_china_c0_source_foundation_evidence | S2PDT01 China C0 source foundation evidence completed while all production acceptance and transport flags remain false, routing next Stage 2 work to S2PDT02/S2P3T02 China C1 central department source map. | S2PDT01 | EXTRACTED |

@@ -2880,7 +2880,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["schema_version"], "codexproject.project.v1")
         self.assertEqual(project["project_id"], "arxiv-daily-push")
         self.assertEqual(project["fact_level"], "EXTRACTED")
-        self.assertEqual(project["current_status"], "stage1_accepted_s2pct07_d2_qualification_ready_s2pdt01_next_no_formal_production")
+        self.assertEqual(project["current_status"], "stage1_accepted_s2pdt01_china_c0_source_foundation_complete_s2pdt02_next_no_formal_production")
         self.assertIn("Stage 1 B1/arXiv accepted", project["summary"])
         self.assertIn("S2PBT01/S2P1T01 bioRxiv/medRxiv", project["summary"])
         self.assertIn("S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet", project["summary"])
@@ -2888,12 +2888,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S2PCT05 工程开源", project["summary"])
         self.assertIn("S2PCT06 权威研究机构", project["summary"])
         self.assertIn("S2PCT07 D2 source-domain qualification readiness", project["summary"])
-        self.assertIn("S2PDT01/S2P3T01 中国官方核心数据源", project["summary"])
+        self.assertIn("S2PDT01/S2P3T01 中国 C0 全国权威主干", project["summary"])
+        self.assertIn("S2PDT02/S2P3T02 中国 C1 中央机关", project["summary"])
         self.assertIn("不得宣称 Stage 2 或 integrated production accepted", project["summary"])
         self.assertEqual(len(project["features"]), 14)
-        self.assertEqual(len(project["models"]), 60)
-        self.assertEqual(len(project["formulas"]), 62)
-        self.assertEqual(len(project["parameters"]), 406)
+        self.assertEqual(len(project["models"]), 61)
+        self.assertEqual(len(project["formulas"]), 63)
+        self.assertEqual(len(project["parameters"]), 414)
         self.assertEqual(len(project["strategies"]), 3)
         self.assertEqual(len(project["validations"]), 4)
 
@@ -2926,6 +2927,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("EVID-ADP-S2PCT05-ENGINEERING", evidence_ids)
         self.assertIn("EVID-ADP-S2PCT06-REPORTS", evidence_ids)
         self.assertIn("EVID-ADP-S2PCT07-D2", evidence_ids)
+        self.assertIn("EVID-ADP-S2PDT01-C0", evidence_ids)
         for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
             for item in project[section]:
                 for evidence_id in item["evidence_refs"]:
@@ -2934,14 +2936,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
         formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
         model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
-        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 406)
-        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 62)
-        self.assertEqual(model_semantic_counts["EXTRACTED"], 60)
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 414)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 63)
+        self.assertEqual(model_semantic_counts["EXTRACTED"], 61)
 
         limitations = " ".join(item["statement"] for item in project["limitations"])
-        self.assertIn("406/406 semantically checked active parameters", limitations)
-        self.assertIn("62/62 active formulas", limitations)
-        self.assertIn("60 个 active models 只从 model_registry EXTRACTED", limitations)
+        self.assertIn("414/414 semantically checked active parameters", limitations)
+        self.assertIn("63/63 active formulas", limitations)
+        self.assertIn("61 个 active models 只从 model_registry EXTRACTED", limitations)
         self.assertIn("delivery_readiness 对 Stage 1 arXiv 为 VERIFIED", limitations)
         self.assertIn("evidence_freshness 仍为 PARTIAL", limitations)
         self.assertIn("S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet", limitations)
@@ -2949,20 +2951,21 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S2PCT05 engineering public-signal", limitations)
         self.assertIn("S2PCT06 authoritative report", limitations)
         self.assertIn("S2PCT07 D2 source-domain qualification readiness", limitations)
+        self.assertIn("S2PDT01/S2P3T01 中国 C0", limitations)
         self.assertEqual(project["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(project["delivery_readiness"]["release_gate"], "ARXIV_PRODUCTION_ACCEPTED")
         self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
         self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 0)
         self.assertEqual(project["delivery_readiness"]["active_requirements"], 10)
         self.assertEqual(project["delivery_readiness"]["partial_requirements"], 1)
-        self.assertEqual(project["delivery_readiness"]["next_executable_task_id"], "S2PDT01")
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_id"], "S2PDT02")
         self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "planned")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PCT07-D2-QUALIFICATION")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PDT01-CHINA-C0-SOURCE")
         self.assertEqual(matrix["current_phase"], "S2PD")
         self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED")
-        self.assertEqual(matrix["current_v7_task_id"], "S2PDT01")
+        self.assertEqual(matrix["current_v7_task_id"], "S2PDT02")
         self.assertEqual(matrix["current_v6_task_id"], "NOT_APPLICABLE")
         self.assertIn("S2PCT01 -> S2P2T01", matrix["current_v7_legacy_alias"])
         self.assertIn("S2PCT02 -> S2P2T02", matrix["current_v7_legacy_alias"])
@@ -2971,7 +2974,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S2PCT05 completed", matrix["current_v7_legacy_alias"])
         self.assertIn("S2PCT06 completed", matrix["current_v7_legacy_alias"])
         self.assertIn("S2PCT07 completed", matrix["current_v7_legacy_alias"])
-        self.assertIn("next S2PDT01 -> S2P3T01", matrix["current_v7_legacy_alias"])
+        self.assertIn("S2PDT01 -> S2P3T01 completed", matrix["current_v7_legacy_alias"])
+        self.assertIn("next S2PDT02 -> S2P3T02", matrix["current_v7_legacy_alias"])
         self.assertEqual(matrix["current_v7_shadow_source_task_id"], "S2PBT01")
         self.assertEqual(matrix["current_v7_final_task_id"], "S2PMT07")
         self.assertEqual(matrix["review9_migration_iteration"], "ITER-20260624-REVIEW9-S5PBT05")
@@ -2985,7 +2989,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(roadmap["project_id"], "arxiv-daily-push")
         self.assertEqual(roadmap["current_stage_id"], "S2")
         self.assertEqual(roadmap["current_phase_id"], "S2PD")
-        self.assertEqual(roadmap["current_task_id"], "S2PDT01")
+        self.assertEqual(roadmap["current_task_id"], "S2PDT02")
         self.assertEqual(roadmap["next_gate_id"], "S2PD-GATE-V7-CONTRACT-BLOCKED")
         self.assertEqual(roadmap["total_estimated_hours"], 28.5)
         self.assertEqual(roadmap["completed_estimated_hours"], 20.5)
@@ -3061,8 +3065,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         china_task = tasks[8]
         self.assertEqual(china_task["task_id"], "S2PDT01")
         self.assertEqual(china_task["legacy_alias"], "S2P3T01")
-        self.assertEqual(china_task["status"], "planned")
+        self.assertEqual(china_task["status"], "completed")
         self.assertEqual(china_task["acceptance_ids"], ["ACC-S2PDT01-C0"])
+        department_task = tasks[9]
+        self.assertEqual(department_task["task_id"], "S2PDT02")
+        self.assertEqual(department_task["legacy_alias"], "S2P3T02")
+        self.assertEqual(department_task["status"], "planned")
+        self.assertEqual(department_task["acceptance_ids"], ["ACC-S2PDT02-C1"])
         self.assertIn("V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED", roadmap["stages"][0]["stop_conditions"])
 
     def test_review9_s5pbt05_arxiv_events_preserve_truth_levels(self) -> None:
@@ -3073,7 +3082,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             .splitlines()
             if line.strip()
         ]
-        self.assertEqual(len(events), 13)
+        self.assertEqual(len(events), 14)
         self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
         self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
         by_id = {event["event_id"]: event for event in events}
@@ -3097,6 +3106,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("authoritative report metadata-only no-send shadow evidence only", by_id["EVT-ADP-S2PCT06-AUTHORITATIVE-REPORTS-20260624-001"]["notes"])
         self.assertEqual(by_id["EVT-ADP-S2PCT07-D2-QUALIFICATION-20260624-001"]["fact_level"], "EXTRACTED")
         self.assertIn("D2 source-domain qualification readiness only", by_id["EVT-ADP-S2PCT07-D2-QUALIFICATION-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-S2PDT01-CHINA-C0-SOURCE-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("China C0 national authority metadata-only source foundation readiness only", by_id["EVT-ADP-S2PDT01-CHINA-C0-SOURCE-20260624-001"]["notes"])
         self.assertEqual(by_id["EVT-ADP-REVIEW9-S5PBT05-LOCAL"]["fact_level"], "PROPOSED")
         self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
 
@@ -3126,6 +3137,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S2PCT07", dev_text)
         self.assertIn("S2PDT01", dev_text)
         self.assertIn("S2P3T01", dev_text)
+        self.assertIn("S2PDT02", dev_text)
+        self.assertIn("S2P3T02", dev_text)
         self.assertIn("MOD-ADP-058", model_text)
         self.assertIn("FORM-ADP-060", model_text)
         self.assertIn("PARAM-ADP-406", model_text)
@@ -3135,6 +3148,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("MOD-ADP-060", model_text)
         self.assertIn("FORM-ADP-062", model_text)
         self.assertIn("PARAM-ADP-423", model_text)
+        self.assertIn("MOD-ADP-061", model_text)
+        self.assertIn("FORM-ADP-063", model_text)
+        self.assertIn("PARAM-ADP-431", model_text)
         for text in (feature_text, dev_text, model_text):
             self.assertNotIn("docs/governance/", text.splitlines()[0])
 
@@ -5022,8 +5038,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-100")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-100")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-101")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-101")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -5031,7 +5047,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json",
+            "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(
@@ -5047,9 +5063,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
         self.assertIn("ADP-S1P5T05", rendered)
         self.assertIn("V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED", rendered)
-        self.assertIn("S2PDT01", rendered)
-        self.assertIn("S2P3T01", rendered)
-        self.assertIn("C0", rendered)
+        self.assertIn("S2PDT02", rendered)
+        self.assertIn("S2P3T02", rendered)
+        self.assertIn("C1", rendered)
         self.assertIn("GitHub 只保留代码、PR/CI、证据、状态和备份角色", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
@@ -5063,7 +5079,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S2PDT01",
+            "arxiv-daily-push": "S2PDT02",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
@@ -5964,7 +5980,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(lock["stage1_boundary"]["must_not_regress"])
         self.assertEqual(lock["stage2_boundary"]["stop_gate"], "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION")
         self.assertFalse(lock["stage2_boundary"]["production_accepted"])
-        self.assertEqual(lock["stage2_boundary"]["current_task_id"], "S2PDT01")
+        self.assertEqual(lock["stage2_boundary"]["current_task_id"], "S2PDT02")
         self.assertEqual(lock["stage2_boundary"]["current_shadow_source_task"], "S2PBT01")
         self.assertEqual(lock["stage2_boundary"]["final_task"], "S2PMT07")
         self.assertEqual(lock["stage2_boundary"]["legacy_aliases"]["S2PCT01"], "S2P2T01")
@@ -6011,6 +6027,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn("S2PCT07", text)
             self.assertIn("S2PDT01", text)
             self.assertIn("S2P3T01", text)
+            self.assertIn("S2PDT02", text)
+            self.assertIn("S2P3T02", text)
             self.assertIn("S2PBT01", text)
             self.assertIn("S2PMT07", text)
 

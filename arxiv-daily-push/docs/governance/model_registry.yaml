@@ -3222,3 +3222,48 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-061"
+    name: "S2PDT01 China C0 national authority source foundation"
+    kind: "deterministic official-source foundation model"
+    purpose: "Validate China C0 national authority metadata-only source taxonomy, official identity, document traceability, and no-production boundaries after S2PCT07 D2 qualification readiness."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt01-china-c0-source-foundation-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-063"
+    parameter_ids:
+      - "PARAM-ADP-424"
+      - "PARAM-ADP-425"
+      - "PARAM-ADP-426"
+      - "PARAM-ADP-427"
+      - "PARAM-ADP-428"
+      - "PARAM-ADP-429"
+      - "PARAM-ADP-430"
+      - "PARAM-ADP-431"
+    inputs:
+      - "passing S2PCT07 D2 qualification report"
+      - "China C0 authority metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China C0 source foundation report"
+      - "authority taxonomy gate"
+      - "official identity gate"
+      - "document traceability gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md"

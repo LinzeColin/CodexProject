@@ -2,7 +2,7 @@ schema_version: "codexproject.roadmap.v1"
 project_id: "arxiv-daily-push"
 current_stage_id: "S2"
 current_phase_id: "S2PD"
-current_task_id: "S2PDT01"
+current_task_id: "S2PDT02"
 next_gate_id: "S2PD-GATE-V7-CONTRACT-BLOCKED"
 total_estimated_hours: 28.5
 completed_estimated_hours: 20.5
@@ -262,6 +262,7 @@ stages:
           status: "in_progress"
           pass_conditions:
             - "S2PDT01/S2P3T01 China official core source shadow evidence persisted"
+            - "S2PDT02/S2P3T02 China C1 department source-map evidence persisted"
             - "formal production flags remain false"
             - "V7.1 P0/P1 cleared and S2PMT07 independent review passes before acceptance"
           evidence_refs:
@@ -272,7 +273,7 @@ stages:
             legacy_alias: "S2P3T01"
             name: "China official core data-source metadata-only no-send shadow foundation"
             objective: "接入 D3 中国官方核心数据源的 metadata-only source gate、队列解释和 no-send shadow evidence，保持 Stage 1 arXiv accepted 与 D2 readiness 边界不回归。"
-            status: "planned"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "7.02%"
             dependencies:
@@ -280,11 +281,13 @@ stages:
             acceptance_ids:
               - "ACC-S2PDT01-C0"
             test_commands:
-              - "planned: China official core source adapter, source gate, queue explanation, no-send shadow, semantic governance, and project governance"
+              - "python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+              - "scripts/validate_semantic_extractors.py arxiv-daily-push"
             evidence_refs:
-              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+              - "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
+              - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md"
             risk: "官方来源身份、许可证、地区/部委口径、时效或 no-send 边界错误时必须阻断；不得宣称 Stage2 production accepted。"
-            rollback: "Remove planned S2PDT01 governance entry if D3 source work is deferred or superseded."
+            rollback: "Revert S2PDT01 China C0 source foundation code, tests, governance registrations, phase record, manifest, and rendered governance sync."
           -
             task_id: "S2PDT02"
             legacy_alias: "S2P3T02"
@@ -296,7 +299,7 @@ stages:
             dependencies:
               - "S2PDT01"
             acceptance_ids:
-              - "ACC-S2PDT02-CN-POLICY-STANDARDS"
+              - "ACC-S2PDT02-C1"
             test_commands:
               - "planned: China policy/standards relation shadow and forced update tests"
             evidence_refs:
