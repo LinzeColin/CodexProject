@@ -3308,6 +3308,42 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertEqual(matrix[project_id]["migration_version_after"], "lean-v2")
             self.assertEqual(matrix[project_id]["rollback"], "set this project ci_mode to advisory")
 
+    def test_review9_s6pbt02_branch_protection_truth_packet_is_unverified(self) -> None:
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-REVIEW9-S6PBT02-BRANCH-PROTECTION-UNVERIFIED-20260624.json"
+        )
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["task_id"], "S6PBT02")
+        self.assertEqual(manifest["stage_gate_status"]["S6PBT02"], "UNVERIFIED_EXTERNAL_OWNER_ACTION_REQUIRED")
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
+        self.assertNotIn("PASSED", set(manifest["stage_gate_status"].values()))
+
+        contract = manifest["required_check_contract"]
+        self.assertEqual(contract["branch"], "main")
+        self.assertEqual(contract["required_status_checks"], ["Project Governance / governance"])
+        self.assertEqual(contract["required_status_check_count"], 1)
+        self.assertTrue(contract["require_pull_request_before_merging"])
+        self.assertTrue(contract["require_status_checks_to_pass"])
+        self.assertTrue(contract["no_bypass_required"])
+
+        evidence = manifest["branch_protection_evidence"]
+        self.assertEqual(evidence["status"], "UNVERIFIED")
+        self.assertEqual(evidence["required_status_checks"], "UNVERIFIED")
+        self.assertEqual(evidence["no_bypass"], "UNVERIFIED")
+        self.assertIn("GITHUB_TOKEN", evidence["protection_error"])
+
+        setup = (ROOT / "docs" / "governance" / "CODEX_SETUP.md").read_text(encoding="utf-8")
+        self.assertIn("Review9 S6PBT02 Owner Checklist", setup)
+        self.assertIn("Project Governance / governance", setup)
+        self.assertIn("--check-github --strict-github --json", setup)
+        self.assertNotIn("generate_governance_dashboard.py --write --all --root-artifact-dir", setup)
+
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
         project = {
