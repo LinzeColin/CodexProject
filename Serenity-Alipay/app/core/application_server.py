@@ -13,9 +13,6 @@ from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 from app.config import Settings
-from app.core.application_portal import build_application_portal
-from app.core.automation_tick import automation_tick
-from app.core.pipeline import run_slot
 from app.core.run_visibility import is_future_controlled_backfill
 from app.core.time_display import format_now_display
 from app.db import connect, init_db
@@ -26,9 +23,28 @@ _APPLICATION_WRITE_LOCK = threading.RLock()
 _MANUAL_REVIEW_WRITE_LOCK = threading.RLock()
 _MANUAL_REVIEW_REFRESH_LOCK = threading.RLock()
 _MANUAL_REVIEW_REFRESH_IN_FLIGHT: set[int] = set()
+MANUAL_REVIEW_STALE_REFRESH_SECONDS = 15 * 60
 DEFAULT_AUTO_SHUTDOWN_SECONDS = 0
 DEFAULT_AUTOSCHEDULER_INTERVAL_SECONDS = 60
 DEFAULT_AUTOSCHEDULER_INITIAL_DELAY_SECONDS = 3
+
+
+def automation_tick(*args: object, **kwargs: object) -> dict[str, object]:
+    from app.core.automation_tick import automation_tick as real_automation_tick
+
+    return real_automation_tick(*args, **kwargs)
+
+
+def run_slot(*args: object, **kwargs: object) -> dict[str, object]:
+    from app.core.pipeline import run_slot as real_run_slot
+
+    return real_run_slot(*args, **kwargs)
+
+
+def build_application_portal(*args: object, **kwargs: object) -> dict[str, object]:
+    from app.core.application_portal import build_application_portal as real_build_application_portal
+
+    return real_build_application_portal(*args, **kwargs)
 
 
 MANUAL_REVIEW_OUTCOMES: dict[str, dict[str, str]] = {
@@ -368,6 +384,19 @@ def build_refresh_message(
     return f"目前更新到最新时间 {_refresh_time(settings)} {summarize_refresh_changes(before, after)}"
 
 
+def _parse_iso_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    normalized = value.strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
 def _manual_review_outcome(payload: dict[str, object]) -> tuple[str, dict[str, str]]:
     raw = str(payload.get("outcome") or payload.get("decision") or "").strip()
     if raw in MANUAL_REVIEW_OUTCOMES:
@@ -406,6 +435,28 @@ def refresh_application(settings: Settings) -> dict[str, object]:
 def fetch_manual_review_decisions(settings: Settings) -> dict[str, dict[str, object]]:
     init_db(settings.db_path)
     with connect(settings.db_path) as conn:
+        now = datetime.now(timezone.utc)
+        stale_rows = conn.execute(
+            """
+            SELECT review_id, updated_at, created_at
+            FROM manual_review_decision
+            WHERE refresh_status='running'
+            """
+        ).fetchall()
+        for stale in stale_rows:
+            last_update = _parse_iso_datetime(stale["updated_at"]) or _parse_iso_datetime(stale["created_at"])
+            if last_update and (now - last_update).total_seconds() <= MANUAL_REVIEW_STALE_REFRESH_SECONDS:
+                continue
+            conn.execute(
+                """
+                UPDATE manual_review_decision
+                SET refresh_status='error',
+                    refresh_message='后台刷新超过15分钟未完成；复核已写入数据库，请点击刷新重新同步首页',
+                    updated_at=?
+                WHERE review_id=? AND refresh_status='running'
+                """,
+                (now.isoformat(), stale["review_id"]),
+            )
         rows = conn.execute(
             """
             SELECT review_id, run_id, decision, outcome, outcome_label, system_disposition,
@@ -576,6 +627,13 @@ def save_manual_review_decision(
     if refresh_async:
         if not _start_manual_review_refresh(settings, review_id):
             refresh_message = "已保存到数据库，上一轮 Serenity 后台刷新仍在运行"
+            _update_manual_review_refresh_result(
+                settings,
+                review_id,
+                refresh_status="running",
+                refresh_message=refresh_message,
+                refresh_run_id="",
+            )
     elif refresh_triggered:
         try:
             refresh_result = refresh_application(settings)
@@ -747,7 +805,9 @@ def serve_application(
     autoscheduler_initial_delay_seconds: int | None = None,
 ) -> None:
     init_db(settings.db_path)
-    build_application_portal(settings, install_apps=False)
+    portal_path = settings.root_dir / "outputs" / "application" / "index.html"
+    if not portal_path.exists():
+        build_application_portal(settings, install_apps=False)
     handler = make_handler(settings)
     server = ThreadingHTTPServer((host, port), handler)
     shutdown_timer: threading.Timer | None = None
@@ -783,3 +843,32 @@ def serve_application(
         if shutdown_timer:
             shutdown_timer.cancel()
         server.server_close()
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Run the local Serenity application server.")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--ttl-seconds", type=int, default=None)
+    parser.add_argument("--disable-autoscheduler", action="store_true")
+    parser.add_argument("--autoscheduler-interval-seconds", type=int, default=None)
+    parser.add_argument("--autoscheduler-initial-delay-seconds", type=int, default=None)
+    args = parser.parse_args(argv)
+    settings = Settings.load()
+    settings.ensure_dirs()
+    serve_application(
+        settings,
+        host=args.host,
+        port=args.port,
+        ttl_seconds=args.ttl_seconds,
+        enable_autoscheduler=not args.disable_autoscheduler,
+        autoscheduler_interval_seconds=args.autoscheduler_interval_seconds,
+        autoscheduler_initial_delay_seconds=args.autoscheduler_initial_delay_seconds,
+    )
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover - launcher entry
+    raise SystemExit(main())

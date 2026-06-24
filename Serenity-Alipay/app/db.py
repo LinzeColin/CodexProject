@@ -379,6 +379,8 @@ def init_db(db_path: Path) -> None:
         if init_key in _INITIALIZED_DB_PATHS and db_path.exists() and db_path.stat().st_size > 0:
             return
         with connect(db_path) as conn:
+            conn.execute("PRAGMA journal_mode = WAL")
+            conn.execute("PRAGMA synchronous = NORMAL")
             conn.executescript(SCHEMA)
             _ensure_columns(
                 conn,

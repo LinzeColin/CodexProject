@@ -1,7 +1,7 @@
 import json
 import threading
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from http.server import ThreadingHTTPServer
 from zoneinfo import ZoneInfo
 
@@ -238,6 +238,77 @@ def test_manual_review_http_mode_returns_before_background_refresh(monkeypatch, 
     assert records["67"]["refreshStatus"] == "running"
 
 
+def test_manual_review_fetch_marks_stale_running_refresh_as_error(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    old_time = (datetime.now(timezone.utc) - timedelta(minutes=20)).isoformat()
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO manual_review_decision (
+              review_id, run_id, decision, outcome, outcome_label, system_disposition,
+              refresh_triggered, refresh_status, refresh_message, refresh_run_id,
+              note, saved_at, created_at, updated_at
+            )
+            VALUES (
+              69, 'sda_test_stale', '放入观察池继续观察', 'observe_pool', '放入观察池继续观察', '',
+              1, 'running', '已保存到数据库，正在重新运行 Serenity 全流程', '',
+              '', '20260614 - 16:52 AEST', ?, ?
+            )
+            """,
+            (old_time, old_time),
+        )
+
+    records = fetch_manual_review_decisions(settings)
+
+    assert records["69"]["refreshStatus"] == "error"
+    assert "超过15分钟" in records["69"]["refreshMessage"]
+
+
+def test_manual_review_save_reports_existing_background_refresh(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+                id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                70,
+                "sda_test_existing_refresh",
+                None,
+                "同一复核已有后台刷新时也要快速写库",
+                "No-New-Order",
+                "open",
+                "2026-06-13T00:00:00Z",
+            ),
+        )
+
+    with app_server._MANUAL_REVIEW_REFRESH_LOCK:
+        app_server._MANUAL_REVIEW_REFRESH_IN_FLIGHT.add(70)
+    try:
+        result = save_manual_review_decision(
+            settings,
+            {
+                "review_id": 70,
+                "outcome": "observe_pool",
+                "savedAt": "20260614 - 16:52 AEST",
+            },
+            refresh_async=True,
+        )
+    finally:
+        with app_server._MANUAL_REVIEW_REFRESH_LOCK:
+            app_server._MANUAL_REVIEW_REFRESH_IN_FLIGHT.discard(70)
+
+    assert result["record"]["refreshStatus"] == "running"
+    assert "上一轮 Serenity 后台刷新仍在运行" in result["record"]["refreshMessage"]
+    records = fetch_manual_review_decisions(settings)
+    assert "上一轮 Serenity 后台刷新仍在运行" in records["70"]["refreshMessage"]
+
+
 def test_manual_review_http_save_does_not_wait_for_full_refresh_lock(monkeypatch, tmp_path):
     settings = temp_settings(tmp_path)
     init_db(settings.db_path)
@@ -405,6 +476,36 @@ def test_application_server_schedules_auto_shutdown(monkeypatch, tmp_path):
     assert events["timer_started"] is True
     assert events["served"] is True
     assert events["timer_cancelled"] is True
+    assert events["closed"] is True
+
+
+def test_application_server_skips_startup_rebuild_when_portal_exists(monkeypatch, tmp_path):
+    settings = temp_settings(tmp_path)
+    portal_path = settings.root_dir / "outputs" / "application" / "index.html"
+    portal_path.parent.mkdir(parents=True, exist_ok=True)
+    portal_path.write_text("<html>ready</html>", encoding="utf-8")
+    events = {}
+
+    class FakeServer:
+        def __init__(self, address, handler):
+            events["address"] = address
+
+        def serve_forever(self):
+            events["served"] = True
+
+        def server_close(self):
+            events["closed"] = True
+
+    def forbidden_build(settings_arg, *, install_apps=True):
+        raise AssertionError("startup must not rebuild an existing portal")
+
+    monkeypatch.setattr("app.core.application_server.build_application_portal", forbidden_build)
+    monkeypatch.setattr("app.core.application_server.ThreadingHTTPServer", FakeServer)
+
+    serve_application(settings, host="127.0.0.1", port=8769, ttl_seconds=0, enable_autoscheduler=False)
+
+    assert events["address"] == ("127.0.0.1", 8769)
+    assert events["served"] is True
     assert events["closed"] is True
 
 
