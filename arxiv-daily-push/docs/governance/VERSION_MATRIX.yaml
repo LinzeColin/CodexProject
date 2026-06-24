@@ -97,7 +97,7 @@ parameter_profile_versions:
   adp-stage1-accelerated-acceptance-parameters: "adp-stage1-accelerated-acceptance-parameters-v1"
   adp-stage1-real-arxiv-replay-parameters: "adp-stage1-real-arxiv-replay-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260624-ADP-S2PCT01-POST-MERGE-STATUS"
+current_iteration: "ITER-20260624-ADP-STAGE1-LOCAL-DAILY-SIDE-SYNC"
 current_phase: "S2PC"
 current_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED"
 current_v6_task_id: "S2P2T01"
@@ -117,9 +117,9 @@ stage2_production_forbidden_until: "P0=0; P1=0; S2PMT07 independent review passe
 stage1_acceptance_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED"
 stage1_daily_runner: "local_macos_launchd_with_codex_local_python"
 stage1_codex_automation_runner: false
-stage1_stable_daily_email_ready: false
+stage1_stable_daily_email_ready: true
 stage1_stable_daily_email_gate: "local-runner readiness --require-smtp --require-scheduler"
-stage1_stable_daily_email_blockers: "local SMTP env, launchd install evidence, and latest real local SMTP sent evidence are not attached in repo; V7.1 P0/P1 production-forbidden policy remains open"
+stage1_stable_daily_email_blockers: "none for this Mac after local SMTP Keychain/env, launchd install evidence, latest real local SMTP sent evidence, and readiness pass; V7.1 P0/P1 production-forbidden policy still blocks Stage2 integrated production acceptance"
 stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
 stage2_integrated_production_accepted: false
 email_subject_contract: "YYYYMMDD -- Project Name -- arXiv Group -- Theme"
