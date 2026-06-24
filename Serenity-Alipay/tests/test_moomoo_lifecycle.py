@@ -1,4 +1,6 @@
-from app.core.moomoo_lifecycle import OpenDLifecycle, ProcessInfo, _wait_for_socket, cleanup_started_processes
+from app.core.moomoo_lifecycle import OpenDLifecycle, ProcessInfo, _wait_for_socket, cleanup_started_processes, ensure_opend
+from app.core.moomoo_smoke import SocketProbe
+from tests.helpers import temp_settings
 
 
 class _Connection:
@@ -35,6 +37,54 @@ def test_cleanup_does_not_touch_user_owned_opend(monkeypatch):
 
     assert result["cleanup_attempted"] is False
     assert result["cleanup_result"] == "not_started_by_tool"
+
+
+def test_cleanup_defers_auto_started_opend_until_socket_ready(monkeypatch):
+    started_process = ProcessInfo(pid="200", command="/Applications/MoomooOpenD/moomoo_OpenD.app/Contents/MacOS/moomoo_OpenD")
+    monkeypatch.setattr("app.core.moomoo_lifecycle.process_snapshot", lambda: [started_process])
+
+    lifecycle = OpenDLifecycle(
+        socket_was_reachable=False,
+        socket_is_reachable=False,
+        auto_start_requested=True,
+        start_attempted=True,
+        started_by_tool=True,
+        start_command="/Applications/MoomooOpenD/moomoo_OpenD.app",
+        cleanup_requested=True,
+        cleanup_attempted=False,
+        cleanup_result=None,
+        before_processes=[],
+        after_processes=[started_process],
+        started_processes=[started_process],
+        detail="moomoo_OpenD start attempted, but socket did not become reachable",
+    )
+
+    result = cleanup_started_processes(lifecycle)
+
+    assert result["cleanup_attempted"] is False
+    assert result["cleanup_result"] == "deferred_socket_not_ready"
+
+
+def test_ensure_opend_suppresses_duplicate_start_when_existing_process_is_launching(monkeypatch, tmp_path):
+    settings = temp_settings(tmp_path)
+    existing_process = ProcessInfo(pid="300", command="/Applications/MoomooOpenD/moomoo_OpenD.app/Contents/MacOS/moomoo_OpenD")
+    commands: list[list[str]] = []
+
+    monkeypatch.setattr("app.core.moomoo_lifecycle.process_snapshot", lambda: [existing_process])
+    monkeypatch.setattr(
+        "app.core.moomoo_lifecycle.probe_socket",
+        lambda host, port, timeout: SocketProbe(host, port, False, "closed"),
+    )
+    monkeypatch.setattr("app.core.moomoo_lifecycle._wait_for_socket", lambda *args, **kwargs: False)
+    monkeypatch.setattr("app.core.moomoo_lifecycle.subprocess.run", lambda command, **kwargs: commands.append(command))
+
+    lifecycle = ensure_opend(settings, auto_start=True)
+
+    assert lifecycle.start_attempted is False
+    assert lifecycle.started_by_tool is False
+    assert lifecycle.socket_is_reachable is False
+    assert "duplicate auto-start was suppressed" in lifecycle.detail
+    assert commands == []
 
 
 def test_wait_for_socket_requires_consecutive_stable_connections(monkeypatch):

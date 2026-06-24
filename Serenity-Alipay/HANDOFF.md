@@ -1,5 +1,47 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260624 - 13:35 CST / 20260624 - 15:35 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复真实页面点击“保存复核”后长时间无反馈/卡住的问题。
+- 根因：真实服务日志显示保存复核时出现 SQLite `database is locked` 和 `BrokenPipeError`；进一步确认 `/api/manual-review` HTTP 保存路径复用了完整 Serenity 刷新锁，后台刷新运行时新的保存请求会等待完整刷新结束；同时复核 GET/POST 每次都调用 `init_db()`，会重复执行 schema/backfill 并放大 SQLite 写锁竞争。
+- 已改后端：`app/db.py` 的 `init_db()` 增加进程内 once guard 和初始化锁；`serve_application()` 启动时先初始化数据库，避免请求热路径反复 schema/backfill。
+- 已改后端：`app/core/application_server.py` 拆分长刷新锁和短复核写入锁；`/api/manual-review` 保存/清空只用短锁，不再等待完整刷新锁；后台复核刷新增加同一 `review_id` in-flight 去重，保存响应先返回 `refreshStatus=running`。
+- 已改前端：`app/core/application_portal.py` 将“保存复核”从逐按钮一次性绑定改为 document 事件委托；点击后立即禁用按钮并显示 `保存中`，写库成功后显示 `刷新中` 和后台运行状态。
+- 已重建并重启入口：`application-portal --json` 通过，`~/Downloads/Serenity 每日分析.app` 和 `/Applications/Serenity 每日分析.app` 已更新；当前新服务由 `/Applications/Serenity 每日分析.app` 拉起，PID `25044`，健康接口 `ok`。
+- 验证：`py_compile app/db.py app/core/application_server.py app/core/application_portal.py tests/test_application_server.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_application_server.py` 为 12 passed；`pytest -q tests/test_reporting_ui.py` 为 10 passed；同步仓库同组测试为 22 passed。
+- 真实页面验证：用 Google Chrome headless 打开 `http://127.0.0.1:8765/`，拦截 `/api/manual-review` 避免写库；点击“保存复核”后 0.5 秒内按钮为 `刷新中`、状态为 `已写入数据库 ... 正在重新运行 Serenity 全流程`，console/pageerror 均为 0。
+- 性能验证：当前服务 `/api/health` 约 37.61ms，`/api/manual-review` 约 9.60ms 返回 11 条记录。
+- 历史保护：`history-integrity --require-pass --json` 通过，`violation_count=0`；本轮没有新增真实复核 run，没有真实 POST 保存复核，没有发邮件，没有启动 OpenD/MooMoo。
+- GitHub 备份：已同步到 `LinzeColin/CodexProject` 的 `Serenity-Alipay` 目录，commit `86819f58 Fix Serenity review save responsiveness` 已推送到 `main`。
+
+Timestamp: 20260624 - 13:12 CST / 20260624 - 15:12 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复真实页面点击“保存复核”后看起来没有反应的问题。
+- 根因：`/api/manual-review` 过去在 HTTP 请求内同步执行完整 Serenity refresh；保存数据库和重新运行全流程都完成前，前端按钮不禁用、不改文案、不显示“保存中/刷新中”，用户会感觉点击无效。并发情况下还可能遇到 SQLite `database is locked`，导致反馈更慢。
+- 已改后端：`app/core/application_server.py` 的 HTTP 保存复核路径现在先写入 SQLite 并立即返回 `refreshStatus=running`；完整 Serenity refresh 放到后台线程执行，完成后回写同一条 `manual_review_decision` 的 `refresh_status/refresh_message/refresh_run_id`。直接函数调用默认仍保持同步，避免破坏既有测试和内部语义。
+- 已改数据库连接：`app/db.py` 为 SQLite 连接设置 `timeout=30` 和 `PRAGMA busy_timeout=30000`，降低短时并发写导致直接失败的概率。
+- 已改前端：点击“保存复核”立即把按钮变为 `保存中`，状态显示 `正在写入数据库...`；写库成功后按钮变为 `刷新中`，状态显示 `已写入数据库，正在重新运行 Serenity 全流程`，并轮询 `/api/manual-review`，后台刷新 pass 后显示 toast 并自动重载首页，error 时明确提示。
+- 已重建并重启入口：`application-portal --json` 通过，Downloads/Applications app 已更新；本地服务 `http://127.0.0.1:8765/api/health` 返回 `ok`。本轮没有向真实 `/api/manual-review` POST，避免额外触发真实 run 和 OpenD 自动唤醒。
+- 验证：`py_compile app/db.py app/core/application_server.py app/core/application_portal.py tests/test_application_server.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_application_server.py tests/test_reporting_ui.py` 为 21 passed；生成 HTML 包含 `保存中`、`刷新中`、`waitForReviewRefresh`、`后台刷新仍在运行`；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
+- 边界：未新增真实 run，未发邮件，未启动 OpenD/MooMoo，未改候选扩容逻辑，未覆盖旧报告、旧快照或 SQLite 受保护历史行。
+
+Timestamp: 20260624 - 12:51 CST / 20260624 - 14:51 AEST
+
+## 最新交接摘要
+
+- 本轮优先级：先紧急修复 OpenD/MooMoo 自动启动后几秒内被 cleanup、导致反复开关的死循环；随后完成用户要求的首页/指标 UI 修正。
+- OpenD 根因与修复：`ensure_opend` 过去只看 socket，不看已有 OpenD 进程；当 OpenD 处于启动/登录/初始化中但 socket 暂未就绪时，下一轮会重复 `open`，并且部分调用点会按 `started_by_tool=True` 立即 cleanup。现在若已存在 OpenD 相关进程但 socket 未就绪，只等待，不重复启动；自动启动但 socket 未稳定可用时，`cleanup_started_processes` 返回 `deferred_socket_not_ready`，不会秒杀进程。`healthcheck` 也只有在 socket-ready 后才要求外层任务结束时 cleanup。
+- 仍保留的生命周期规则：用户已打开的 OpenD/MooMoo 不清理；自动化自己启动且 socket-ready 并完成任务后仍可清理；未完成登录/未稳定 socket 的启动不再被立即关闭，避免启动-关闭-再启动循环。
+- UI 修正：删除首页“时间与口径”小板块；持仓建议表的“初始持仓权重时间”改为按每只基金首次进入持仓池时间显示，表头显示“按各基金首次入池时间”，不再和上轮对比时间混用。
+- UI 修正：持仓池表现指标表把 Alpha/Beta/Gamma/Theta/Vega 合并为单列“希腊字母（日/周）”，把 Sharpe/Sortino/Calmar/Treynor 合并为单列“风险调整（日/周）”；Alpha/Treynor 的日均/周均由年化值折算，Theta 由日均超额折算周均。Alpha/Beta 基准列删除 `主题基准：` 前缀，只显示基准名称。
+- 已重建入口并重启本地 Serenity 服务：`/Applications/Serenity 每日分析.app` 已重新打开，当前服务 `http://127.0.0.1:8765/api/health` 返回 `ok`；重启过程未启动 OpenD/MooMoo，进程检查只看到 Serenity app server 和系统 `opendirectoryd`。
+- 验证：`py_compile` 通过；`pytest -q tests/test_reporting_ui.py tests/test_moomoo_lifecycle.py tests/test_moomoo_adapter.py tests/test_pipeline_opend_lifecycle.py tests/test_moomoo_smoke.py tests/test_benchmark_smoke.py tests/test_preflight.py` 为 34 passed；`application-portal --json` 通过并更新 Downloads/Applications app；HTML 检查通过；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
+- 边界：本轮未运行任何会自动启动 OpenD 的 smoke/benchmark/collect 命令；未新增真实 run，未发邮件，未改候选扩容逻辑，未覆盖旧报告、旧快照或 SQLite 受保护历史行。
+
 Timestamp: 20260624 - 12:22 CST / 20260624 - 14:22 AEST
 
 ## 最新交接摘要

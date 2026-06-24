@@ -139,8 +139,7 @@ class PortalPoolMetric:
     trigger_reason: str
     review_text: str
     entry_time_bj: str | None
-    nav_as_of: str | None
-    updated_at_bj: str | None
+    metric_data_date: str | None
     since_entry_return: float | None
     return_1m: float | None
     return_3m: float | None
@@ -148,9 +147,28 @@ class PortalPoolMetric:
     benchmark_label: str
     alpha: float | None
     beta: float | None
+    gamma: float | None
     theta: float | None
+    vega: float | None
     sharpe: float | None
     sortino: float | None
+    calmar: float | None
+    treynor: float | None
+
+
+@dataclass(frozen=True)
+class PortalExpansionCandidate:
+    sequence: int
+    code: str
+    name: str
+    fund_type: str
+    theme_score: int
+    matched_keywords: tuple[str, ...]
+    nav_status: str
+    rule_status: str
+    current_status: str
+    note: str
+    source_url: str | None = None
 
 
 def _pct(value: float | None) -> str:
@@ -188,6 +206,72 @@ def _ratio(value: float | None) -> str:
     if value is None:
         return "-"
     return f"{value:.2f}"
+
+
+def _benchmark_display_label(value: str | None) -> str:
+    text = str(value or "-").strip()
+    return text.removeprefix("主题基准：") or "-"
+
+
+def _pct_pair_from_annualized(value: float | None) -> tuple[str, str]:
+    if value is None:
+        return "-", "-"
+    daily = value / TRADING_DAYS_PER_YEAR
+    weekly = daily * 5
+    return _pct(daily), _pct(weekly)
+
+
+def _pct_pair_from_daily(value: float | None) -> tuple[str, str]:
+    if value is None:
+        return "-", "-"
+    return _pct(value), _pct(value * 5)
+
+
+def _ratio_pair_same(value: float | None) -> tuple[str, str]:
+    text = _ratio(value)
+    return text, text
+
+
+def _metric_pair_line(label: str, left_label: str, left: str, right_label: str, right: str) -> str:
+    return (
+        '<span class="metric-pair-line">'
+        f"<strong>{_escape(label)}</strong>"
+        f"<em>{_escape(left_label)} {left}</em>"
+        f"<em>{_escape(right_label)} {right}</em>"
+        "</span>"
+    )
+
+
+def _greek_metric_cell(row: PortalPoolMetric) -> str:
+    alpha_daily, alpha_weekly = _pct_pair_from_annualized(row.alpha)
+    theta_daily, theta_weekly = _pct_pair_from_daily(row.theta)
+    gamma_daily, gamma_weekly = _ratio(row.gamma), _ratio(row.gamma * 5 if row.gamma is not None else None)
+    beta_daily, beta_weekly = _ratio_pair_same(row.beta)
+    vega_daily, vega_weekly = _ratio_pair_same(row.vega)
+    return (
+        '<div class="metric-pair-stack">'
+        + _metric_pair_line("Alpha", "日均", alpha_daily, "周均", alpha_weekly)
+        + _metric_pair_line("Beta", "日频", beta_daily, "周频", beta_weekly)
+        + _metric_pair_line("Gamma", "日均", gamma_daily, "周均", gamma_weekly)
+        + _metric_pair_line("Theta", "日均", theta_daily, "周均", theta_weekly)
+        + _metric_pair_line("Vega", "日频", vega_daily, "周频", vega_weekly)
+        + "</div>"
+    )
+
+
+def _risk_metric_cell(row: PortalPoolMetric) -> str:
+    sharpe_daily, sharpe_weekly = _ratio_pair_same(row.sharpe)
+    sortino_daily, sortino_weekly = _ratio_pair_same(row.sortino)
+    calmar_daily, calmar_weekly = _ratio_pair_same(row.calmar)
+    treynor_daily, treynor_weekly = _pct_pair_from_annualized(row.treynor)
+    return (
+        '<div class="metric-pair-stack">'
+        + _metric_pair_line("Sharpe", "日频", sharpe_daily, "周频", sharpe_weekly)
+        + _metric_pair_line("Sortino", "日频", sortino_daily, "周频", sortino_weekly)
+        + _metric_pair_line("Calmar", "日频", calmar_daily, "周频", calmar_weekly)
+        + _metric_pair_line("Treynor", "日均", treynor_daily, "周均", treynor_weekly)
+        + "</div>"
+    )
 
 
 def _escape(value: object) -> str:
@@ -365,6 +449,94 @@ def _recommendations_for_run(conn, run_id: str, min_rank: int = 1, max_rank: int
 
 def _holdings_for_run(conn, run_id: str) -> list[PortalHolding]:
     return _recommendations_for_run(conn, run_id, 1, 5)
+
+
+def _audit_context_for_run(conn, run_id: str | None, event_type: str) -> dict[str, object]:
+    if not run_id:
+        return {}
+    row = conn.execute(
+        """
+        SELECT context_json
+        FROM audit_log
+        WHERE run_id=? AND event_type=?
+        ORDER BY id DESC
+        LIMIT 1
+        """,
+        (run_id, event_type),
+    ).fetchone()
+    if not row or not row["context_json"]:
+        return {}
+    try:
+        payload = json.loads(row["context_json"])
+    except (TypeError, ValueError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _expansion_candidates_for_run(conn, run_id: str | None) -> list[PortalExpansionCandidate]:
+    expansion = _audit_context_for_run(conn, run_id, "candidate_universe_expansion")
+    raw_additions = expansion.get("additions")
+    if not isinstance(raw_additions, list):
+        return []
+
+    price_history = expansion.get("price_history_expansion")
+    nav_backfilled_codes = set()
+    if isinstance(price_history, dict):
+        nav_backfilled_codes = {str(code) for code in price_history.get("nav_backfilled_codes") or []}
+
+    rule_context = _audit_context_for_run(conn, run_id, "fund_rule_autofill")
+    rule_rows = rule_context.get("rows") if isinstance(rule_context, dict) else []
+    rule_by_code: dict[str, dict[str, object]] = {}
+    if isinstance(rule_rows, list):
+        for row in rule_rows:
+            if isinstance(row, dict) and row.get("asset_code"):
+                rule_by_code[str(row["asset_code"])] = row
+
+    ranked_rows = conn.execute(
+        """
+        SELECT a.asset_code, r.rank
+        FROM recommendation_snapshot r
+        JOIN asset_master a ON a.asset_id=r.asset_id
+        WHERE r.run_id=?
+        """,
+        (run_id,),
+    ).fetchall() if run_id else []
+    ranked_by_code = {str(row["asset_code"]): int(row["rank"] or 0) for row in ranked_rows}
+
+    candidates: list[PortalExpansionCandidate] = []
+    for index, item in enumerate(raw_additions, start=1):
+        if not isinstance(item, dict):
+            continue
+        code = str(item.get("code") or "").strip()
+        name = str(item.get("name") or "").strip()
+        if not code or not name:
+            continue
+        matched_keywords = tuple(str(value) for value in item.get("matched_keywords") or [] if value)
+        rule_row = rule_by_code.get(code, {})
+        rule_status = str(rule_row.get("message") or rule_row.get("status") or "规则待补齐")
+        rank = ranked_by_code.get(code)
+        if rank:
+            current_status = f"已进入当前排序 #{rank}"
+            note = "已进入持仓池/观察池排序，按 Serenity 当前权重规则处理。"
+        else:
+            current_status = "扩容观察"
+            note = "已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。"
+        candidates.append(
+            PortalExpansionCandidate(
+                sequence=index,
+                code=code,
+                name=name,
+                fund_type=str(item.get("fund_type") or "-"),
+                theme_score=int(item.get("theme_score") or 0),
+                matched_keywords=matched_keywords,
+                nav_status="24个月净值已补齐" if code in nav_backfilled_codes else "净值历史待补齐/沿用",
+                rule_status=rule_status,
+                current_status=current_status,
+                note=note,
+                source_url=str(rule_row.get("source_url") or "") or None,
+            )
+        )
+    return candidates
 
 
 def _manual_review_decision_rows(conn) -> list:
@@ -867,15 +1039,39 @@ def _entry_times_for_pool_rows(conn, rows: list[PortalHolding]) -> dict[tuple[st
     }
 
 
+def _latest_indicator_rows(conn, run_id: str | None, rows: list[PortalHolding]) -> dict[str, object]:
+    if not run_id or not rows:
+        return {}
+    codes = sorted({row.code for row in rows})
+    placeholders = ",".join("?" for _ in codes)
+    indicator_rows = conn.execute(
+        f"""
+        SELECT a.asset_code, i.*
+        FROM asset_indicator_snapshot i
+        JOIN asset_master a ON a.asset_id=i.asset_id
+        JOIN (
+          SELECT asset_id, MAX(metric_date) AS metric_date
+          FROM asset_indicator_snapshot
+          WHERE run_id=?
+          GROUP BY asset_id
+        ) latest ON latest.asset_id=i.asset_id AND latest.metric_date=i.metric_date
+        WHERE i.run_id=?
+          AND a.asset_code IN ({placeholders})
+        """,
+        tuple([run_id, run_id] + codes),
+    ).fetchall()
+    return {str(row["asset_code"]): row for row in indicator_rows}
+
+
 def _pool_performance_metric(
     row: PortalHolding,
     *,
     entry_time_bj: str | None,
-    updated_at_bj: str | None,
     price_history: dict[str, list[PricePoint]],
     benchmark_returns_by_code: dict[str, dict[date, float]],
     candidate: Candidate | None,
     resolved_review_keys: set[tuple[str, str]],
+    indicator_row=None,
 ) -> PortalPoolMetric:
     points = price_history.get(row.code, [])
     entry_date = _beijing_date(entry_time_bj)
@@ -898,6 +1094,26 @@ def _pool_performance_metric(
     )
     recent_aligned = aligned[-20:]
     theta = _mean([asset - benchmark for _, asset, benchmark in recent_aligned]) if len(recent_aligned) >= 5 else None
+    gamma = None
+    vega = None
+    calmar = None
+    treynor = None
+    sharpe = _sharpe(asset_returns) if len(asset_returns) >= 20 else None
+    sortino = _sortino(asset_returns) if len(asset_returns) >= 20 else None
+    metric_data_date = points[-1].date.strftime("%Y%m%d") if points else None
+    if indicator_row is not None:
+        benchmark_label = f"主题基准：{indicator_row['benchmark_label'] or indicator_row['benchmark_code'] or '-'}"
+        alpha = indicator_row["alpha"]
+        beta = indicator_row["beta"]
+        gamma = indicator_row["gamma"]
+        theta = indicator_row["theta"]
+        vega = indicator_row["vega"]
+        sharpe = indicator_row["sharpe"]
+        sortino = indicator_row["sortino"]
+        calmar = indicator_row["calmar"]
+        treynor = indicator_row["treynor"]
+        metric_raw_date = str(indicator_row["metric_date"] or "")
+        metric_data_date = metric_raw_date.replace("-", "") if metric_raw_date else metric_data_date
     is_holding = row.rank <= 5
     needs_review = row.grade == "Manual Review" or row.action_label == "Manual Review"
     review_text = (
@@ -918,8 +1134,7 @@ def _pool_performance_metric(
         trigger_reason=row.trigger_reason,
         review_text=review_text,
         entry_time_bj=entry_time_bj,
-        nav_as_of=points[-1].date.strftime("%Y%m%d") if points else None,
-        updated_at_bj=updated_at_bj,
+        metric_data_date=metric_data_date,
         since_entry_return=_return_since_date(points, entry_date),
         return_1m=_return_over_days(points, 31),
         return_3m=_return_over_days(points, 93),
@@ -927,9 +1142,13 @@ def _pool_performance_metric(
         benchmark_label=benchmark_label,
         alpha=alpha,
         beta=beta,
+        gamma=gamma,
         theta=theta,
-        sharpe=_sharpe(asset_returns) if len(asset_returns) >= 20 else None,
-        sortino=_sortino(asset_returns) if len(asset_returns) >= 20 else None,
+        vega=vega,
+        sharpe=sharpe,
+        sortino=sortino,
+        calmar=calmar,
+        treynor=treynor,
     )
 
 
@@ -957,7 +1176,7 @@ def _pool_performance_metrics(
     benchmark_returns_by_code = _benchmark_returns_by_code(benchmark_history)
     candidates_by_code = {candidate.asset_code: candidate for candidate in candidates}
     entry_times = _entry_times_for_pool_rows(conn, sorted_rows)
-    updated_at_bj = current_run.run_time_bj if current_run else None
+    indicator_rows = _latest_indicator_rows(conn, current_run.run_id if current_run else None, sorted_rows)
     resolved_review_keys = resolved_review_keys or set()
     metrics: list[PortalPoolMetric] = []
     for row in sorted_rows:
@@ -966,11 +1185,11 @@ def _pool_performance_metrics(
             _pool_performance_metric(
                 row,
                 entry_time_bj=entry_times.get((row.code, pool_kind)),
-                updated_at_bj=updated_at_bj,
                 price_history=price_history,
                 benchmark_returns_by_code=benchmark_returns_by_code,
                 candidate=candidates_by_code.get(row.code),
                 resolved_review_keys=resolved_review_keys,
+                indicator_row=indicator_rows.get(row.code),
             )
         )
     return metrics
@@ -1136,6 +1355,7 @@ def _holding_rows(
     target_time: str,
     baseline_time: str,
     previous_time: str,
+    initial_times_by_code: dict[str, str] | None = None,
 ) -> str:
     if not rows:
         return '<tr><td colspan="9">暂无可展示的持仓建议。</td></tr>'
@@ -1147,6 +1367,7 @@ def _holding_rows(
         previous_class, previous_ratio, previous_action = _relative_ratio(row.target_weight, previous_weight)
         initial_value = _pct(row.current_weight)
         previous_value = _pct(previous_weight)
+        initial_time = (initial_times_by_code or {}).get(row.code) or baseline_time
         cells.append(
             f'<tr class="row-{initial_class}" data-reference-row data-initial-class="{initial_class}" data-previous-class="{previous_class}">'
             f"<td>{row.rank}</td>"
@@ -1156,7 +1377,7 @@ def _holding_rows(
             f"<td><strong>{_pct(row.target_weight)}</strong><span>目标时间：{_escape(target_time)}</span></td>"
             "<td>"
             f'<strong data-reference-weight data-initial-value="{_escape(initial_value)}" data-previous-value="{_escape(previous_value)}">{_escape(initial_value)}</strong>'
-            f'<span data-reference-time data-initial-value="初始持仓权重时间：{_escape(baseline_time)}" data-previous-value="上轮对比权重时间：{_escape(previous_time)}">初始持仓权重时间：{_escape(baseline_time)}</span>'
+            f'<span data-reference-time data-initial-value="初始持仓权重时间：{_escape(initial_time)}" data-previous-value="上轮对比权重时间：{_escape(previous_time)}">初始持仓权重时间：{_escape(initial_time)}</span>'
             "</td>"
             "<td>"
             f'<span class="change {initial_class}" data-relative-ratio data-initial-value="{_escape(initial_ratio)}" data-previous-value="{_escape(previous_ratio)}" data-initial-class="{initial_class}" data-previous-class="{previous_class}">{_escape(initial_ratio)}</span>'
@@ -1205,7 +1426,7 @@ def _pool_rows(
 
 def _pool_metric_rows(metrics: list[PortalPoolMetric]) -> str:
     if not metrics:
-        return '<tr><td colspan="21">暂无可展示的持仓池/观察池表现指标；下一次全局数据刷新后会重新计算。</td></tr>'
+        return '<tr><td colspan="17">暂无可展示的持仓池/观察池表现指标；下一次全局数据刷新后会重新计算。</td></tr>'
     cells: list[str] = []
     for row in metrics:
         weight_text = _pct(row.target_weight) if row.pool_class == "holding" else "0.00% · 观察"
@@ -1220,18 +1441,40 @@ def _pool_metric_rows(metrics: list[PortalPoolMetric]) -> str:
             f"<td>{_escape(row.review_text)}</td>"
             f"<td>{_escape(row.trigger_reason)}</td>"
             f"<td>{_escape(_format_time(row.entry_time_bj, 'Asia/Shanghai'))}</td>"
-            f"<td>{_escape(row.nav_as_of or '-')}</td>"
-            f"<td>{_escape(_format_time(row.updated_at_bj, 'Asia/Shanghai'))}</td>"
+            f"<td>{_escape(row.metric_data_date or '-')}</td>"
             f"<td>{_pct(row.since_entry_return)}</td>"
             f"<td>{_pct(row.return_1m)}</td>"
             f"<td>{_pct(row.return_3m)}</td>"
             f"<td>{_pct(row.return_6m)}</td>"
-            f"<td>{_escape(row.benchmark_label)}</td>"
-            f"<td>{_pct(row.alpha)}</td>"
-            f"<td>{_ratio(row.beta)}</td>"
-            f"<td>{_pct(row.theta)}</td>"
-            f"<td>{_ratio(row.sharpe)}</td>"
-            f"<td>{_ratio(row.sortino)}</td>"
+            f"<td>{_escape(_benchmark_display_label(row.benchmark_label))}</td>"
+            f"<td>{_greek_metric_cell(row)}</td>"
+            f"<td>{_risk_metric_cell(row)}</td>"
+            "</tr>"
+        )
+    return "\n".join(cells)
+
+
+def _expansion_candidate_rows(candidates: list[PortalExpansionCandidate]) -> str:
+    if not candidates:
+        return '<tr><td colspan="8">最新运行未记录新增扩容候选；当前候选池以持仓池和观察池排序为准。</td></tr>'
+    cells: list[str] = []
+    for row in candidates:
+        keywords = "、".join(row.matched_keywords) if row.matched_keywords else "-"
+        source = (
+            f'<a href="{_escape(row.source_url)}" target="_blank" rel="noreferrer">费率来源</a>'
+            if row.source_url
+            else "-"
+        )
+        cells.append(
+            '<tr class="expansion-row">'
+            f"<td><strong>E{row.sequence}</strong></td>"
+            f"<td>{_fund_table_cell(row.code, row.name)}</td>"
+            f"<td>{_escape(row.fund_type)}</td>"
+            f"<td>{_escape(str(row.theme_score))}</td>"
+            f"<td>{_escape(keywords)}</td>"
+            f"<td>{_escape(row.nav_status)}<br>{_escape(row.rule_status)}</td>"
+            f'<td><span class="pool-badge expand">{_escape(row.current_status)}</span><br><small>{_escape(row.note)}</small></td>'
+            f"<td>{source}</td>"
             "</tr>"
         )
     return "\n".join(cells)
@@ -1524,6 +1767,7 @@ def _usage_guide_modal() -> str:
           <button type="button" data-guide-target="guide-selection">Skill 选股逻辑</button>
           <button type="button" data-guide-target="guide-admission">准入规则</button>
           <button type="button" data-guide-target="guide-exit">剔除规则</button>
+          <button type="button" data-guide-target="guide-indicators">指标说明</button>
           <button type="button" data-guide-target="guide-confidence">证据置信度</button>
           <button type="button" data-guide-target="guide-sources">数据源</button>
           <button type="button" data-guide-target="guide-weight">权重配置</button>
@@ -1582,14 +1826,33 @@ def _usage_guide_modal() -> str:
               <span class="guide-kicker">剔除</span>
               <h3>入池后的纪律规则</h3>
             </div>
-            <p class="guide-lead">剔除规则只约束已经进入持仓池或观察池的对象，不作为 Serenity 初始准入规则。</p>
+            <p class="guide-lead">剔除规则只约束已经进入持仓池或观察池的对象，不作为 Serenity 初始准入规则；只统计希腊字母指标和风险指标。</p>
             <div class="guide-steps">
-              <p><strong>六项跟踪</strong>每个交易日跟踪近 3 月收益、近 6 月收益、Alpha、Theta、Sharpe、Sortino 六项。Theta 在基金语境下按时间衰减/趋势退化指标解释，具体以系统计算字段为准。</p>
-              <p><strong>5 日剔除</strong>连续 5 个交易日共 30 个结果中，任意 20 项小于 0，则剔除或给出降权/清仓标签。</p>
-              <p><strong>10 日剔除</strong>连续 10 个交易日共 60 个结果中，任意 40 项小于 0，则剔除或给出降权/清仓标签。</p>
+              <p><strong>跟踪对象</strong>每个交易日计算 Alpha、Beta、Gamma、Theta、Vega、Sharpe、Sortino、Calmar、Treynor；当天可计算指标数量记为 x。</p>
+              <p><strong>5 日剔除</strong>连续 5 个交易日中，负项数量达到 ceil(80.00% * 5 * x) 时剔除或给出降权/清仓标签。</p>
+              <p><strong>10 日剔除</strong>连续 10 个交易日中，负项数量达到 ceil(60.00% * 10 * x) 时剔除或给出降权/清仓标签。</p>
               <p><strong>硬风险剔除</strong>MDD 达到 40.00%、7 日回撤恶化超过 5.00%、或单标过度放大连续 2 次，会触发风险纪律，优先输出减少、暂停新增、Block 或清仓标签。</p>
               <p><strong>数据异常剔除</strong>连续缺失净值/持仓超过 2 天、费率/赎回状态缺失、官方级来源少于 2 个或来源冲突时，不硬下买入结论，进入 Manual Review 或观察池。</p>
               <p><strong>重新进入</strong>被剔除对象解决当前问题后，或 14 天后重新满足 Serenity 标准和证据条件，才允许重新进入观察池；进入 Top5 仍由 Serenity 优先判断。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-indicators" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">指标</span>
+              <h3>希腊字母与风险指标</h3>
+            </div>
+            <p class="guide-lead">这些指标用于入池后纪律审计和剔除判断，不取代 Serenity 的准入判断；所有指标每日写入本机 SQLite。</p>
+            <div class="guide-steps">
+              <p><strong>Alpha</strong>公式：年化基金收益 - Beta x 年化基准收益；意义：剔除基准暴露后是否有正超额收益。</p>
+              <p><strong>Beta</strong>公式：Cov(基金日收益, 基准日收益) / Var(基准日收益)；意义：基金对主题/市场基准的方向敏感度。</p>
+              <p><strong>Gamma</strong>公式：本期 Beta - 上期 Beta；意义：基准敏感度是否继续放大或快速衰减。</p>
+              <p><strong>Theta</strong>公式：近 20 个净值点平均日超额收益；意义：本系统把它定义为时间衰减/趋势退化代理，不是期权定价 Theta。</p>
+              <p><strong>Vega</strong>公式：基金波动率 / 基准波动率 - 1；意义：相对基准的波动暴露是否过度放大。</p>
+              <p><strong>Sharpe</strong>公式：平均日收益 / 日收益标准差 x sqrt(252)；意义：单位总波动获得的年化收益。</p>
+              <p><strong>Sortino</strong>公式：平均日收益 / 下行日收益标准差 x sqrt(252)；意义：只惩罚下行波动后的收益质量。</p>
+              <p><strong>Calmar</strong>公式：年化收益 / 最大回撤；意义：承担回撤后是否仍有足够收益补偿。</p>
+              <p><strong>Treynor</strong>公式：(年化基金收益 - 年化基准收益) / Beta；意义：单位系统性风险获得的超额收益。</p>
             </div>
           </section>
 
@@ -1811,6 +2074,8 @@ def render_application_portal(
     manual_review_items: list[PortalManualReviewItem] | None = None,
     resolved_review_keys: set[tuple[str, str]] | None = None,
     pool_metrics: list[PortalPoolMetric] | None = None,
+    expansion_candidates: list[PortalExpansionCandidate] | None = None,
+    initial_reference_times_by_code: dict[str, str] | None = None,
 ) -> str:
     current_bj = (
         display_run_time_with_backfill_note(current_run.run_time_bj, current_run.created_at)
@@ -1846,6 +2111,7 @@ def render_application_portal(
     resolved_review_keys = resolved_review_keys or set()
     observation_rows = observation_pool or []
     pool_metric_rows = pool_metrics or []
+    expansion_rows = expansion_candidates or []
     if not pool_metric_rows:
         fallback_pool_rows = sorted([*current_holdings, *observation_rows], key=lambda item: item.rank)
         for row in fallback_pool_rows:
@@ -1870,8 +2136,7 @@ def render_application_portal(
                     trigger_reason=row.trigger_reason,
                     review_text=review_text,
                     entry_time_bj=None,
-                    nav_as_of=None,
-                    updated_at_bj=current_run.run_time_bj if current_run else None,
+                    metric_data_date=None,
                     since_entry_return=None,
                     return_1m=None,
                     return_3m=None,
@@ -1879,11 +2144,27 @@ def render_application_portal(
                     benchmark_label="基准缺失",
                     alpha=None,
                     beta=None,
+                    gamma=None,
                     theta=None,
+                    vega=None,
                     sharpe=None,
                     sortino=None,
+                    calmar=None,
+                    treynor=None,
                 )
             )
+    initial_reference_times = {
+        code: _format_time(value, "Asia/Shanghai")
+        for code, value in (initial_reference_times_by_code or {}).items()
+        if value
+    }
+    if not initial_reference_times:
+        initial_reference_times = {
+            metric.code: _format_time(metric.entry_time_bj, "Asia/Shanghai")
+            for metric in pool_metric_rows
+            if metric.pool_class == "holding" and metric.entry_time_bj
+        }
+    initial_head_time = "按各基金首次入池时间" if initial_reference_times else baseline_bj
     review_count_text = f"{len(review_items)} 项待复核" if review_items else "无打开项"
     fund_count = len(fund_library or {})
     fund_count_text = f"已入库 {fund_count} 只基金" if fund_count else "暂无入库基金"
@@ -2001,7 +2282,7 @@ def render_application_portal(
       box-shadow: var(--shadow);
       min-width: 0;
     }}
-    .home-grid {{ display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; align-items: start; }}
+    .home-grid {{ display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }}
     .discipline-list {{ display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }}
     .discipline-card {{
       border: 1px solid var(--line);
@@ -2245,8 +2526,12 @@ def render_application_portal(
     .pool-ranking-note {{ margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }}
     .pool-table {{ min-width: 1040px; }}
     .pool-metric-panel {{ margin-bottom: 16px; }}
-    .pool-metric-table {{ min-width: 2140px; }}
+    .pool-metric-table {{ min-width: 1760px; }}
     .pool-metric-table th, .pool-metric-table td {{ font-size: 12px; }}
+    .metric-pair-stack {{ display: grid; gap: 6px; min-width: 250px; }}
+    .metric-pair-line {{ display: grid; grid-template-columns: 58px minmax(82px, 1fr) minmax(82px, 1fr); gap: 6px; align-items: center; line-height: 1.35; }}
+    .metric-pair-line strong {{ color: var(--ink); }}
+    .metric-pair-line em {{ font-style: normal; color: var(--muted); white-space: nowrap; }}
     .pool-metric-table th:nth-child(1),
     .pool-metric-table td:nth-child(1) {{
       position: sticky;
@@ -2296,6 +2581,33 @@ def render_application_portal(
     }}
     .pool-badge.holding {{ color: var(--hold); background: var(--hold-bg); border-color: var(--hold-border); }}
     .pool-badge.observe {{ color: #6b4b11; background: #fff4d8; border-color: #ead59d; }}
+    .pool-badge.expand {{ color: #075f6a; background: #e7f7f9; border-color: #b7e4e8; }}
+    .expansion-candidate-panel {{ margin-bottom: 16px; }}
+    .expansion-table {{ min-width: 1180px; }}
+    .expansion-table th, .expansion-table td {{ font-size: 13px; }}
+    .expansion-table th:nth-child(1),
+    .expansion-table td:nth-child(1) {{
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 78px;
+      background: inherit;
+    }}
+    .expansion-table th:nth-child(2),
+    .expansion-table td:nth-child(2) {{
+      position: sticky;
+      left: 78px;
+      z-index: 2;
+      min-width: 300px;
+      background: inherit;
+      box-shadow: 1px 0 0 var(--line);
+    }}
+    .expansion-table thead th:nth-child(1),
+    .expansion-table thead th:nth-child(2) {{ z-index: 3; background: var(--surface-2); }}
+    .expansion-row td {{ background: #fbfeff; }}
+    .expansion-row td:nth-child(1),
+    .expansion-row td:nth-child(2) {{ background: #fbfeff; }}
+    .expansion-row small {{ display: block; margin-top: 6px; color: var(--muted); line-height: 1.4; }}
     .badge {{
       display: inline-flex;
       align-items: center;
@@ -2807,13 +3119,13 @@ def render_application_portal(
                 <th>等级</th>
                 <th>证据置信度</th>
                 <th>目标权重<span>{_escape(current_bj)}</span></th>
-                <th>基准权重<span data-reference-head-time data-initial-value="{_escape(baseline_bj)}" data-previous-value="{_escape(previous_bj)}">{_escape(baseline_bj)}</span></th>
+                <th>基准权重<span data-reference-head-time data-initial-value="{_escape(initial_head_time)}" data-previous-value="{_escape(previous_bj)}">{_escape(initial_head_time)}</span></th>
                 <th>相对比例</th>
                 <th>动作</th>
                 <th>操作口径</th>
               </tr>
             </thead>
-            <tbody>{_holding_rows(current_holdings, previous_by_code=previous_by_code, target_time=current_bj, baseline_time=baseline_bj, previous_time=previous_bj)}</tbody>
+            <tbody>{_holding_rows(current_holdings, previous_by_code=previous_by_code, target_time=current_bj, baseline_time=baseline_bj, previous_time=previous_bj, initial_times_by_code=initial_reference_times)}</tbody>
           </table>
         </div>
 
@@ -2834,36 +3146,11 @@ def render_application_portal(
         </section>
       </div>
 
-      <aside class="panel">
-        <h2>时间与口径</h2>
-        <div class="timeline">
-          <div class="time-card">
-            <div class="label">当前持仓及时间</div>
-            <strong>{_escape(current_bj)}</strong>
-            <small>澳洲：{_escape(current_au)}<br>生成：{_escape(current_created)}</small>
-          </div>
-          <div class="time-card">
-            <div class="label">上轮持仓及时间</div>
-            <strong>{_escape(previous_bj)}</strong>
-            <small>澳洲：{_escape(previous_au)}<br>生成：{_escape(previous_created)}</small>
-          </div>
-          <div class="time-card">
-            <div class="label">基准权重时间</div>
-            <strong>{_escape(baseline_bj)}</strong>
-            <small>基准来自 Serenity baseline reference，不是支付宝真实账户持仓。</small>
-          </div>
-          <div class="time-card">
-            <div class="label">口径说明</div>
-            <strong>策略份额/权重</strong>
-            <small>页面里的“份额”指策略配置份额，即目标权重；支付宝持仓仅作为后续可选 overlay。</small>
-          </div>
-        </div>
-      </aside>
     </section>
 
     <section class="panel pool-metric-panel" aria-label="持仓池与观察池表现指标">
       <h2>持仓池表现指标</h2>
-      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池；观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。表内同时展示等级、证据置信度、策略份额、动作/复核、排序原因和收益/风险指标。每次全局数据刷新后按最新净值历史重新计算；入池后涨跌幅使用不可覆盖的首次入池时间，若入池后暂无新净值则显示为空值。Alpha/Beta 按基金主题选择专项或主题代理基准；主题源不可用时留空，不再用沪指/标普500通用降级基准凑数。Theta 为本表定义的近20个净值点日均超额收益，不是期权定价 Theta。</p>
+      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池；观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。表内同时展示等级、证据置信度、策略份额、动作/复核、排序原因和希腊字母/风险指标。每次全局数据刷新后按最新净值历史重新计算并写入数据库；入池后涨跌幅使用不可覆盖的首次入池时间，若入池后暂无新净值则显示为空值。Alpha/Treynor 的日均和周均由年化值折算；Theta 使用近20个净值点日均超额并折算周均，不是期权定价 Theta。</p>
       <div class="table-wrap">
         <table class="pool-metric-table">
           <thead>
@@ -2877,21 +3164,39 @@ def render_application_portal(
               <th>动作/复核</th>
               <th>排序原因</th>
               <th>入池时间</th>
-              <th>净值截至</th>
-              <th>指标更新时间</th>
+              <th>指标数据日</th>
               <th>入池后涨跌幅</th>
               <th>近1个月</th>
               <th>近3个月</th>
               <th>近6个月</th>
               <th>Alpha/Beta基准</th>
-              <th>Alpha（年化）</th>
-              <th>Beta</th>
-              <th>Theta（日均超额）</th>
-              <th>Sharpe</th>
-              <th>Sortino</th>
+              <th>希腊字母（日/周）</th>
+              <th>风险调整（日/周）</th>
             </tr>
           </thead>
           <tbody>{_pool_metric_rows(pool_metric_rows)}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel expansion-candidate-panel" aria-label="扩容观察候选">
+      <h2>扩容观察候选</h2>
+      <p class="pool-ranking-note">每次刷新会先从全市场公开基金列表自动扩容高成长方向，再补 24 个月净值和申赎/费率规则。这里显示“新增发现但尚未必然进入 Top5”的候选，属于观察与后续排序对象，不等同于当前买入建议。</p>
+      <div class="table-wrap">
+        <table class="expansion-table">
+          <thead>
+            <tr>
+              <th>新增序号</th>
+              <th>基金</th>
+              <th>类型</th>
+              <th>主题分</th>
+              <th>命中主题</th>
+              <th>数据补齐</th>
+              <th>当前处置</th>
+              <th>来源</th>
+            </tr>
+          </thead>
+          <tbody>{_expansion_candidate_rows(expansion_rows)}</tbody>
         </table>
       </div>
     </section>
@@ -3116,7 +3421,46 @@ def render_application_portal(
       if (!record) return "未保存";
       const savedAt = record.savedAt || record.saved_at || "";
       const label = record.outcomeLabel || record.decision || "";
+      if (record.refreshStatus === "running") {{
+        return `已写入数据库 ${{savedAt}} · 正在重新运行 Serenity 全流程`;
+      }}
       return `已保存到数据库 ${{savedAt}}${{label ? ` · ${{label}}` : ""}}`;
+    }};
+    const waitForReviewRefresh = async (reviewId, state, button, originalText) => {{
+      for (let attempt = 0; attempt < 30; attempt += 1) {{
+        await new Promise((resolve) => window.setTimeout(resolve, 2000));
+        let log = {{}};
+        try {{
+          log = await loadReviewLog();
+        }} catch {{
+          continue;
+        }}
+        const record = log[reviewId];
+        if (!record || record.refreshStatus === "running") {{
+          if (state) state.textContent = "已写入数据库，正在重新运行 Serenity 全流程";
+          continue;
+        }}
+        if (state) state.textContent = reviewStateText(record);
+        if (record.refreshStatus === "error") {{
+          if (button) {{
+            button.disabled = false;
+            button.textContent = originalText || "保存复核";
+          }}
+          showToast(record.refreshMessage || "已保存到数据库，但同步刷新失败");
+          return;
+        }}
+        window.sessionStorage.setItem(
+          "serenityRefreshToast",
+          record.refreshMessage || "人工复核已保存到数据库，并已重新运行 Serenity 全流程"
+        );
+        reloadAfterServerUpdate();
+        return;
+      }}
+      if (button) {{
+        button.disabled = false;
+        button.textContent = originalText || "保存复核";
+      }}
+      showToast("已写入数据库，后台刷新仍在运行；稍后请点击刷新查看最新结果");
     }};
     const applyReviewLog = async () => {{
       let log = {{}};
@@ -3152,15 +3496,20 @@ def render_application_portal(
     document.querySelectorAll("[data-close-review]").forEach((button) => {{
       button.addEventListener("click", closeReview);
     }});
-    document.querySelectorAll("[data-save-review]").forEach((button) => {{
-      button.addEventListener("click", async () => {{
+    const handleSaveReviewClick = async (button) => {{
+        if (button.disabled) return;
         const item = button.closest("[data-review-item]");
         if (!item) return;
+        const originalText = button.textContent;
         const decision = item.querySelector("[data-review-decision]");
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         const savedAt = formatReviewSavedAt();
         const outcome = normalizeReviewOutcome(decision ? decision.value : "observe_pool");
+        button.disabled = true;
+        button.textContent = "保存中";
+        if (state) state.textContent = "正在写入数据库...";
+        showToast("正在保存复核到数据库");
         const record = {{
           review_id: item.dataset.reviewId || "",
           run_id: item.dataset.reviewRunId || "",
@@ -3172,8 +3521,16 @@ def render_application_portal(
         try {{
           const saved = await saveReviewRecord(record);
           if (state) state.textContent = reviewStateText(saved);
+          if (saved.refreshStatus === "running") {{
+            button.textContent = "刷新中";
+            showToast("已写入数据库，正在重新运行 Serenity 全流程");
+            void waitForReviewRefresh(String(saved.review_id || record.review_id), state, button, originalText);
+            return;
+          }}
           if (saved.refreshTriggered) {{
             if (saved.refreshStatus === "error") {{
+              button.disabled = false;
+              button.textContent = originalText;
               showToast(saved.refreshMessage || "已保存到数据库，但同步刷新失败");
             }} else {{
               window.sessionStorage.setItem(
@@ -3183,14 +3540,23 @@ def render_application_portal(
               reloadAfterServerUpdate();
             }}
           }} else {{
+            button.disabled = false;
+            button.textContent = originalText;
             showToast(`人工复核已保存到数据库：${{saved.outcomeLabel || saved.decision || "已保存"}}`);
           }}
         }} catch (error) {{
           const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
           if (state) state.textContent = "保存失败，未写入数据库";
+          button.disabled = false;
+          button.textContent = originalText;
           showToast(message);
         }}
-      }});
+    }};
+    document.addEventListener("click", (event) => {{
+      const button = event.target.closest("[data-save-review]");
+      if (!button) return;
+      event.preventDefault();
+      void handleSaveReviewClick(button);
     }});
     document.querySelectorAll("[data-copy-review-log]").forEach((button) => {{
       button.addEventListener("click", async () => {{
@@ -4055,10 +4421,25 @@ def build_application_portal(settings: Settings, *, install_apps: bool = True) -
         manual_review_items = _manual_review_items(conn, current_run.run_id if current_run else None)
         resolved_review_keys = _resolved_review_code_reason_keys(conn)
         baseline_time_bj = _baseline_reference_time(conn, current_run.run_id if current_run else None)
+        expansion_candidates = _expansion_candidates_for_run(conn, current_run.run_id if current_run else None)
+        expansion_holdings = [
+            PortalHolding(
+                rank=10_000 + item.sequence,
+                code=item.code,
+                name=item.name,
+                grade="Watch",
+                score=0.0,
+                target_weight=0.0,
+                current_weight=0.0,
+                action_label="Maintain",
+                trigger_reason="全市场扩容观察候选",
+            )
+            for item in expansion_candidates
+        ]
         fund_library = _fund_library_for_run(
             conn,
             current_run.run_id if current_run else None,
-            current_holdings + observation_pool + previous_holdings,
+            current_holdings + observation_pool + previous_holdings + expansion_holdings,
         )
         pool_metrics = _pool_performance_metrics(
             settings,
@@ -4088,6 +4469,7 @@ def build_application_portal(settings: Settings, *, install_apps: bool = True) -
             manual_review_items=manual_review_items,
             resolved_review_keys=resolved_review_keys,
             pool_metrics=pool_metrics,
+            expansion_candidates=expansion_candidates,
         ),
         encoding="utf-8",
     )
@@ -4114,4 +4496,5 @@ def build_application_portal(settings: Settings, *, install_apps: bool = True) -
         "manual_review_rows": len(manual_review_items),
         "fund_library_rows": len(fund_library),
         "pool_metric_rows": len(pool_metrics),
+        "expansion_candidate_rows": len(expansion_candidates),
     }

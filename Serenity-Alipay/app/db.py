@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Any, Iterable
+
+
+_INIT_DB_LOCK = threading.RLock()
+_INITIALIZED_DB_PATHS: set[Path] = set()
 
 
 SCHEMA = """
@@ -142,6 +147,40 @@ CREATE TABLE IF NOT EXISTS score_snapshot (
   evidence_coverage REAL NOT NULL,
   grade TEXT NOT NULL,
   hard_block_reason TEXT
+);
+
+CREATE TABLE IF NOT EXISTS asset_indicator_snapshot (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id TEXT NOT NULL,
+  asset_id TEXT NOT NULL,
+  metric_date TEXT NOT NULL,
+  alpha REAL,
+  beta REAL,
+  gamma REAL,
+  theta REAL,
+  vega REAL,
+  sharpe REAL,
+  sortino REAL,
+  calmar REAL,
+  treynor REAL,
+  negative_indicator_count INTEGER NOT NULL,
+  total_indicator_count INTEGER NOT NULL,
+  benchmark_code TEXT,
+  benchmark_label TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS asset_exclusion_event (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id TEXT NOT NULL,
+  asset_id TEXT NOT NULL,
+  rule_window_days INTEGER NOT NULL,
+  negative_count INTEGER NOT NULL,
+  threshold_count INTEGER NOT NULL,
+  total_count INTEGER NOT NULL,
+  action TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  created_at TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS recommendation_snapshot (
@@ -326,42 +365,49 @@ CREATE TABLE IF NOT EXISTS platform_trade_check_snapshot (
 
 def connect(db_path: Path) -> sqlite3.Connection:
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA busy_timeout = 30000")
     return conn
 
 
 def init_db(db_path: Path) -> None:
-    with connect(db_path) as conn:
-        conn.executescript(SCHEMA)
-        _ensure_columns(
-            conn,
-            "fund_rule_snapshot",
-            {
-                "subscription_fee_schedule": "TEXT",
-                "redemption_fee_schedule": "TEXT",
-                "fee_schedule_as_of": "TEXT",
-                "fee_schedule_note": "TEXT",
-                "alipay_trade_status": "TEXT",
-                "moomoo_trade_status": "TEXT",
-                "platform_trade_note": "TEXT",
-            },
-        )
-        _ensure_columns(
-            conn,
-            "manual_review_decision",
-            {
-                "outcome": "TEXT",
-                "outcome_label": "TEXT",
-                "system_disposition": "TEXT",
-                "refresh_triggered": "INTEGER NOT NULL DEFAULT 0",
-                "refresh_status": "TEXT",
-                "refresh_message": "TEXT",
-                "refresh_run_id": "TEXT",
-            },
-        )
-        _backfill_asset_pool_entries(conn)
+    db_path = db_path.expanduser()
+    init_key = db_path.resolve(strict=False)
+    with _INIT_DB_LOCK:
+        if init_key in _INITIALIZED_DB_PATHS and db_path.exists() and db_path.stat().st_size > 0:
+            return
+        with connect(db_path) as conn:
+            conn.executescript(SCHEMA)
+            _ensure_columns(
+                conn,
+                "fund_rule_snapshot",
+                {
+                    "subscription_fee_schedule": "TEXT",
+                    "redemption_fee_schedule": "TEXT",
+                    "fee_schedule_as_of": "TEXT",
+                    "fee_schedule_note": "TEXT",
+                    "alipay_trade_status": "TEXT",
+                    "moomoo_trade_status": "TEXT",
+                    "platform_trade_note": "TEXT",
+                },
+            )
+            _ensure_columns(
+                conn,
+                "manual_review_decision",
+                {
+                    "outcome": "TEXT",
+                    "outcome_label": "TEXT",
+                    "system_disposition": "TEXT",
+                    "refresh_triggered": "INTEGER NOT NULL DEFAULT 0",
+                    "refresh_status": "TEXT",
+                    "refresh_message": "TEXT",
+                    "refresh_run_id": "TEXT",
+                },
+            )
+            _backfill_asset_pool_entries(conn)
+        _INITIALIZED_DB_PATHS.add(init_key)
 
 
 def _ensure_columns(conn: sqlite3.Connection, table: str, columns: dict[str, str]) -> None:
