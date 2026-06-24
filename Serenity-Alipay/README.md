@@ -4,27 +4,14 @@ Local-first, auditable investment research automation for aggressive but control
 
 This tool produces research, ranking, discipline labels, and notification drafts. It does not place trades. Future outperformance versus Shanghai Composite or S&P 500 cannot be guaranteed.
 
-## Governance Entry
-
-The canonical CodexProject governance baseline is maintained in `docs/governance/`:
-
-- `MODEL_SPEC.md` for model, assumption, formula, methodology, strategy, and validation narrative.
-- `model_registry.yaml`, `formula_registry.yaml`, and `parameter_registry.csv` for machine-readable model facts.
-- `DEVELOPMENT_LEDGER.md` and `development_events.jsonl` for iteration and event evidence.
-- `DELIVERY_PLAN.md` and `delivery_tasks.yaml` for phase tasks and acceptance evidence.
-- `VERSION_MATRIX.yaml` for product, model, parameter, data, schema, and governance version separation.
-- `TRACEABILITY_MATRIX.csv` for requirement-to-evidence closure.
-
-Legacy files `模型参数文件`, `开发记录`, and `功能清单` are compatibility indexes.
-They are not independent editable governance sources.
-
 ## What It Does
 
 - Imports Alipay fund positions from CSV.
 - Loads manual candidate universe, fund rules, and price history snapshots.
 - Scores fund-first candidates with deterministic rules.
 - Enforces hard gates: MDD >= 40.00% and recovery time >= 365 days.
-- Compares 1m, 3m, and 10 trading day returns with Shanghai Composite and S&P 500.
+- Enforces candidate NAV history: every fund entering screening or candidate scope must have at least 24 months of NAV history.
+- Compares 1m, 3m, 12m, and 10 trading day returns with Shanghai Composite and S&P 500.
 - Generates Top5 target weights, current-vs-target deviation, and action labels.
 - Persists runs, sources, scores, recommendations, comparisons, review queues, and notifications in SQLite.
 - Generates Markdown reports, offline HTML reports, offline report index, and Mail-ready notification drafts.
@@ -74,7 +61,9 @@ Generate a fill-ready production intake pack:
 ```bash
 python -m app.cli production-intake-pack --scan-path ~/Downloads --scan-path ~/Documents --json
 python -m app.cli production-unblock-matrix --scan-path ~/Downloads --scan-path ~/Documents --json
+python -m app.cli collect-fund-nav-history --apply --require-pass --json
 python -m app.cli source-evidence-audit --json
+python -m app.cli platform-trade-check --limit 5 --json
 ```
 
 Outputs are written to:
@@ -84,8 +73,12 @@ outputs/preflight/PRODUCTION_DATA_REQUEST.md
 outputs/intake_pack/
 outputs/preflight/PRODUCTION_UNBLOCK_EVIDENCE_MATRIX.md
 outputs/preflight/production_unblock_evidence_matrix.csv
+outputs/preflight/fund_nav_history_latest.md
+outputs/preflight/fund_nav_history_latest.csv
 outputs/preflight/source_evidence_audit_latest.md
 outputs/preflight/source_evidence_audit_latest.csv
+outputs/preflight/platform_trade_check_latest.md
+outputs/preflight/platform_trade_check_latest.csv
 ```
 
 After filling the pack, validate and promote it safely:
@@ -96,7 +89,7 @@ python -m app.cli promote-intake-pack --json
 python -m app.cli promote-intake-pack --apply --json
 ```
 
-`source-evidence-audit` hashes local evidence files, validates URL shape, and persists rows into SQLite `source_evidence_audit_snapshot`. For a filled intake pack, local evidence can be placed under `outputs/intake_pack/evidence/` and referenced as `evidence/<file>`; audit it with `source-evidence-audit --pack-dir outputs/intake_pack --json`. `promote-intake-pack --apply` only copies files after placeholder and production validation pass. It creates backups under `data/backups/intake_promotions/` and copies validated pack-local evidence into project-level `evidence/`.
+`collect-fund-nav-history` fetches candidate fund NAV history, writes a backup before replacing `data/manual/price_history.csv`, and fails closed unless every non-excluded candidate has at least 24 months of NAV history. This is a root rule: any future fund pulled into screening scope or the candidate pool must have 24-month NAV history before it can become Action-Ready. `source-evidence-audit` hashes local evidence files, validates URL shape, and persists rows into SQLite `source_evidence_audit_snapshot`; it also audits candidate NAV history source URLs. `platform-trade-check` fetches Alipay or official fund pages when available, records HTTP status, content hash, evidence snippet, and buy/sell availability into `platform_trade_check_snapshot`; it is advisory-only and must not change candidate inclusion, target weights, or order behavior. For a filled intake pack, local evidence can be placed under `outputs/intake_pack/evidence/` and referenced as `evidence/<file>`; audit it with `source-evidence-audit --pack-dir outputs/intake_pack --json`. `promote-intake-pack --apply` only copies files after placeholder and production validation pass. It creates backups under `data/backups/intake_promotions/` and copies validated pack-local evidence into project-level `evidence/`.
 
 For a single fail-closed production unlock workflow after filling the pack:
 
@@ -246,7 +239,7 @@ Historical K-line rows are also persisted into SQLite `market_kline_snapshot` wi
 
 ## Benchmark Smoke
 
-Production benchmark sources must support exact Shanghai Composite and S&P 500 comparisons across 1m, 3m, and recent 10 trading days.
+Production benchmark sources must support exact Shanghai Composite and S&P 500 comparisons across 1m, 3m, 12m, and recent 10 trading days.
 
 ```bash
 python -m app.cli benchmark-smoke --require-production --json
@@ -254,7 +247,7 @@ python -m app.cli benchmark-smoke --require-production --json
 
 Current implementation can generate exact benchmark fallback history into `data/manual/benchmark_price_history.csv` using Yahoo Finance chart data. This unlocks benchmark calculation but remains source priority 5 public aggregation; MooMoo, official exchange/index provider, Alipay, or fund-company official evidence remains preferred.
 
-MooMoo exact-index probes must cover the full 1m/3m/recent-10-trading-day window before they can unlock production benchmark proof. ETF proxies such as SPY/VOO can support warning-level review but cannot unlock exact benchmark proof by themselves.
+MooMoo exact-index probes must cover the full 1m/3m/12m/recent-10-trading-day window before they can unlock production benchmark proof. ETF proxies such as SPY/VOO can support warning-level review but cannot unlock exact benchmark proof by themselves.
 
 ## Notifications
 

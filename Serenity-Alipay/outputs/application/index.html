@@ -334,6 +334,24 @@
     .row-up td { background: #fffaf8; }
     .row-down td { background: #f7fcf8; }
     .row-flat td { background: #f6fbff; }
+    .pool-ranking-panel { margin-bottom: 16px; }
+    .pool-ranking-note { margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }
+    .pool-table { min-width: 1040px; }
+    .pool-row.holding td { background: #f8fbff; }
+    .pool-row.observe td { background: #fbfcfb; }
+    .pool-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .pool-badge.holding { color: var(--hold); background: var(--hold-bg); border-color: var(--hold-border); }
+    .pool-badge.observe { color: #6b4b11; background: #fff4d8; border-color: #ead59d; }
     .badge {
       display: inline-flex;
       align-items: center;
@@ -354,17 +372,58 @@
     .change.up { color: var(--buy); background: #fde9e6; }
     .change.down { color: var(--sell); background: #e8f5ed; }
     .change.flat { color: var(--hold); background: var(--hold-bg); }
-    .action-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 16px 0; }
+    .change.mixed {
+      color: #783b12;
+      background: linear-gradient(90deg, #fde9e6 0, #fde9e6 50%, #e8f5ed 50%, #e8f5ed 100%);
+      border: 1px solid #ead1c2;
+    }
+    .action-decision {
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .action-decision-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .action-decision-head h2 { margin: 0; }
+    .action-decision-head small {
+      display: block;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.45;
+    }
+    .action-decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
     .action-box {
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 14px;
       background: #fbfcfb;
-      min-height: 110px;
+      min-height: 88px;
     }
     .action-box span { color: var(--muted); display: block; font-size: 13px; }
-    .action-box strong { display: block; margin-top: 8px; font-size: 19px; }
+    .action-box strong { display: block; margin-top: 8px; font-size: 17px; line-height: 1.3; }
+    .action-detail {
+      margin: 0;
+      border-left: 3px solid var(--accent);
+      padding: 8px 0 8px 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
     .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }
+    .top-actions { margin: 16px 0; }
+    .top-actions .actions { margin-top: 0; }
     .action-card {
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -395,6 +454,22 @@
     }
     .review-panel { width: min(900px, 100%); }
     .modal-top { display: flex; justify-content: space-between; gap: 12px; align-items: start; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 12px; }
+    .review-result-guide {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .review-result-guide article {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f8faf9;
+      padding: 11px;
+      display: grid;
+      gap: 6px;
+    }
+    .review-result-guide strong { font-size: 13px; }
+    .review-result-guide p { margin: 0; color: var(--muted); line-height: 1.45; font-size: 12px; }
     .review-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
     .review-list { display: grid; gap: 10px; }
     .review-empty { color: var(--muted); border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px; background: #fbfcfb; }
@@ -414,7 +489,8 @@
     }
     .review-item-head strong, .review-item-head span { overflow-wrap: anywhere; }
     .review-item-head span, .review-reason, .review-item-actions span { color: var(--muted); line-height: 1.45; }
-    .review-reason { border-left: 3px solid var(--danger); padding-left: 10px; }
+    .review-reason { border-left: 3px solid var(--danger); padding-left: 10px; display: grid; gap: 3px; }
+    .review-reason strong { color: var(--ink); font-size: 13px; }
     .review-item label { display: grid; gap: 5px; color: var(--muted); font-size: 13px; }
     .review-item select, .review-item textarea {
       width: 100%;
@@ -427,32 +503,143 @@
     }
     .review-item textarea { resize: vertical; min-height: 76px; }
     .review-item-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .guide-panel { width: min(1060px, 100%); }
-    .guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .guide-section {
+    .guide-panel { width: min(1080px, 100%); }
+    .guide-layout {
+      display: grid;
+      grid-template-columns: 184px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .guide-nav {
+      position: sticky;
+      top: 0;
+      display: grid;
+      gap: 6px;
+      align-self: start;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fbfcfb;
-      padding: 12px;
+      padding: 8px;
     }
-    .guide-section h3 { margin: 0 0 8px; font-size: 16px; }
-    .guide-section p { margin: 8px 0; color: var(--muted); line-height: 1.55; }
-    .guide-section ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.55; }
-    .guide-section li + li { margin-top: 5px; }
-    .guide-section code {
-      display: inline-block;
-      max-width: 100%;
+    .guide-nav button {
+      width: 100%;
+      justify-content: flex-start;
+      background: transparent;
+      border-color: transparent;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 10px;
+    }
+    .guide-nav button.active {
+      background: #eaf3f9;
+      border-color: #bed7e7;
+      color: var(--ink);
+    }
+    .guide-content { display: grid; gap: 12px; }
+    .guide-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f8faf8;
+      padding: 14px;
+    }
+    .guide-hero h3, .guide-section h3 { margin: 0; font-size: 17px; line-height: 1.35; }
+    .guide-hero p, .guide-lead {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .guide-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .guide-summary span {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 9px;
+      color: var(--muted);
+      line-height: 1.35;
+      min-height: 58px;
+    }
+    .guide-summary strong { display: block; color: var(--ink); margin-bottom: 4px; }
+    .guide-section {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 14px;
+      scroll-margin-top: 16px;
+    }
+    .guide-section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .guide-kicker {
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 999px;
+      background: #eaf3f9;
+      color: #24546b;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .guide-steps p {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfb;
+      padding: 10px;
+      color: var(--muted);
+      line-height: 1.55;
       overflow-wrap: anywhere;
-      white-space: normal;
+    }
+    .guide-steps strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .guide-callout {
+      margin-top: 10px;
+      border-left: 3px solid var(--accent);
       background: #eef3ef;
       color: var(--ink);
       border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 2px 5px;
+      border-left-color: var(--accent);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      line-height: 1.55;
+    }
+    .guide-formula {
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #eef3ef;
+      color: var(--ink);
+      padding: 9px 10px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      white-space: normal;
     }
-    .fund-library-panel { width: min(1080px, 100%); }
+    .fund-library-panel { width: min(1180px, 100%); }
     .fund-library-view-switch { margin: 0 0 12px; }
     .fund-library-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .fund-library-card {
@@ -493,12 +680,26 @@
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }
-    .fund-library-table-view { max-height: 560px; overflow: auto; }
-    .fund-library-table { min-width: 3200px; }
+    .fund-library-schedule strong { display: block; color: var(--ink); margin-bottom: 4px; }
+    .fund-library-schedule span { display: block; margin-top: 6px; white-space: pre-line; }
+    .fund-library-table-view {
+      max-height: min(640px, 72vh);
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .fund-library-table {
+      min-width: 2460px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
     .fund-library-table th {
       position: sticky;
       top: 0;
-      z-index: 1;
+      z-index: 3;
+      background: #eef3ef;
+      box-shadow: 0 1px 0 var(--line);
     }
     .fund-library-table td {
       min-width: 112px;
@@ -507,14 +708,40 @@
       overflow-wrap: anywhere;
       line-height: 1.45;
       font-size: 12px;
+      background: var(--surface);
     }
-    .fund-library-table td:nth-child(1) { min-width: 86px; }
-    .fund-library-table td:nth-child(2) { min-width: 220px; font-weight: 800; color: var(--ink); }
-    .fund-library-table td:nth-child(14),
-    .fund-library-table td:nth-child(16),
-    .fund-library-table td:nth-child(18),
-    .fund-library-table td:nth-child(24),
-    .fund-library-table td:nth-child(27) { min-width: 260px; }
+    .fund-library-table tbody tr:nth-child(even) td { background: #fbfcfb; }
+    .fund-library-table th:nth-child(1),
+    .fund-library-table td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 92px;
+      max-width: 92px;
+    }
+    .fund-library-table th:nth-child(2),
+    .fund-library-table td:nth-child(2) {
+      position: sticky;
+      left: 92px;
+      z-index: 2;
+      min-width: 260px;
+      max-width: 260px;
+      font-weight: 800;
+      color: var(--ink);
+      box-shadow: 8px 0 14px -14px rgba(19, 32, 39, 0.48);
+    }
+    .fund-library-table th:nth-child(1),
+    .fund-library-table th:nth-child(2) {
+      z-index: 5;
+    }
+    .fund-library-table td.fee-schedule-cell {
+      min-width: 300px;
+      max-width: 340px;
+      white-space: pre-line;
+      line-height: 1.55;
+    }
+    .fund-library-table td.fee-note-cell { min-width: 260px; max-width: 320px; }
+    .fund-field strong.multi-line-value { white-space: pre-line; line-height: 1.55; }
     .fund-library-empty { color: var(--muted); border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px; background: #fbfcfb; }
     .fund-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .fund-field { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; background: #fbfcfb; }
@@ -545,8 +772,11 @@
       .topbar, .home-grid { grid-template-columns: 1fr; }
       .topbar { padding-right: 86px; }
       .gate { min-width: 0; }
-      .metrics, .action-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metrics, .action-decision-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .actions { grid-template-columns: 1fr; }
+      .guide-layout { grid-template-columns: 1fr; }
+      .guide-nav { position: static; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .guide-nav button { justify-content: center; text-align: center; }
     }
     @media (max-width: 560px) {
       .shell { padding: 18px 12px 32px; }
@@ -554,7 +784,8 @@
       h1 { font-size: 24px; }
       .section-head { align-items: stretch; flex-direction: column; }
       .view-switch { width: 100%; }
-      .metrics, .action-summary, .discipline-list, .fund-fields, .fund-library-grid, .fund-library-meta, .guide-grid, .review-item-head { grid-template-columns: 1fr; }
+      .metrics, .action-decision-grid, .discipline-list, .fund-fields, .fund-library-grid, .fund-library-meta, .guide-hero, .guide-summary, .guide-steps, .review-item-head, .review-result-guide { grid-template-columns: 1fr; }
+      .guide-nav { grid-template-columns: 1fr; }
       button, a.action { width: 100%; }
       .fund-link { width: auto; }
     }
@@ -575,20 +806,76 @@
     </header>
 
     <section class="metrics" aria-label="关键状态">
-      <div class="metric"><span>当前运行</span><strong>20260615 - 14:30 CST · 通过</strong></div>
-      <div class="metric"><span>当前持仓及时间</span><strong>20260615 - 14:30 CST</strong></div>
-      <div class="metric"><span>需操作行为</span><strong>需要人工确认</strong></div>
-      <div class="metric"><span>候选池</span><strong>Top5 混合</strong></div>
+      <div class="metric"><span>当前运行</span><strong>20260624 - 10:47 CST · 通过</strong></div>
+      <div class="metric"><span>当前持仓及时间</span><strong>20260624 - 10:47 CST</strong></div>
+      <div class="metric"><span>需操作行为</span><strong data-action-level data-initial-value="保持当前持仓" data-previous-value="保持当前持仓">保持当前持仓</strong></div>
+      <div class="metric"><span>候选池</span><strong>Top5 持仓 / Top6-10 观察</strong></div>
+    </section>
+
+    <section class="panel top-actions" aria-label="操作入口">
+      <div class="section-head">
+        <h2>操作入口</h2>
+      </div>
+      <div class="actions">
+        <article class="action-card">
+          <div><strong>基金库</strong><p>已入库 7 只基金；申赎、费率、状态。</p></div>
+          <button type="button" data-open-fund-library>查看基金</button>
+        </article>
+        <article class="action-card">
+          <div><strong>使用说明</strong><p>选股、权重、调仓原因。</p></div>
+          <button type="button" data-open-usage-guide>打开说明</button>
+        </article>
+        <article class="action-card">
+          <div><strong>人工复核</strong><p>无打开项；保存到数据库。</p></div>
+          <button type="button" data-open-review>处理复核</button>
+        </article>
+        <article class="action-card">
+          <div><strong>报告</strong><p>查看最新结果和历史归档。</p></div>
+          <a class="action primary" href="../../data/reports/index.html">查看报告</a>
+        </article>
+        <article class="action-card">
+          <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>
+          <a class="action" href="../../data/reports/sda_20260624T024751Z_r3_1ad9c8e1_report.html">查看快照</a>
+        </article>
+      </div>
     </section>
 
     <section class="panel" style="margin-bottom:16px;">
       <h2>当前持仓建议</h2>
       <div class="legend"><span class="change up">增加/买入</span><span class="change down">减少/卖出</span><span class="change flat">维持</span></div>
-      <div class="discipline-list"><article class="discipline-card up"><div class="recommendation-head"><span class="recommendation-rank">#1</span><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div><strong class="change up">28.70%</strong><div class="recommendation-meta"><span>最新更新时间 20260613 - 19:45 AEST</span><span>策略份额 · 增加/买入 · +8.07%</span><span>相较对比时间 20260613 - 15:25 AEST</span></div></article>
-<article class="discipline-card up"><div class="recommendation-head"><span class="recommendation-rank">#2</span><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div><strong class="change up">23.40%</strong><div class="recommendation-meta"><span>最新更新时间 20260613 - 19:45 AEST</span><span>策略份额 · 增加/买入 · +3.62%</span><span>相较对比时间 20260613 - 15:25 AEST</span></div></article>
-<article class="discipline-card down"><div class="recommendation-head"><span class="recommendation-rank">#3</span><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div><strong class="change down">19.28%</strong><div class="recommendation-meta"><span>最新更新时间 20260613 - 19:45 AEST</span><span>策略份额 · 减少/卖出 · -1.21%</span><span>相较对比时间 20260613 - 15:25 AEST</span></div></article>
-<article class="discipline-card down"><div class="recommendation-head"><span class="recommendation-rank">#4</span><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div><strong class="change down">15.83%</strong><div class="recommendation-meta"><span>最新更新时间 20260613 - 19:45 AEST</span><span>策略份额 · 减少/卖出 · -4.88%</span><span>相较对比时间 20260613 - 15:25 AEST</span></div></article>
-<article class="discipline-card down"><div class="recommendation-head"><span class="recommendation-rank">#5</span><button type="button" class="fund-link" data-fund-code="013171">华夏恒生互联网科技业ETF联接(QDII)A</button></div><strong class="change down">12.78%</strong><div class="recommendation-meta"><span>最新更新时间 20260613 - 19:45 AEST</span><span>策略份额 · 减少/卖出 · -5.60%</span><span>相较对比时间 20260613 - 15:25 AEST</span></div></article></div>
+      <div class="discipline-list"><article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#1</span><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div><strong class="change flat">28.71%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#2</span><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div><strong class="change flat">23.39%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#3</span><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div><strong class="change flat">19.16%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#4</span><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div><strong class="change flat">15.84%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#5</span><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div><strong class="change flat">12.91%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article></div>
+    </section>
+
+    <section class="panel pool-ranking-panel" aria-label="持仓池与观察池排序">
+      <h2>持仓池 / 观察池排序</h2>
+      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池。观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。</p>
+      <div class="table-wrap">
+        <table class="pool-table">
+          <thead>
+            <tr>
+              <th>基金分析排序</th>
+              <th>池</th>
+              <th>基金</th>
+              <th>等级</th>
+              <th>证据置信度</th>
+              <th>策略份额</th>
+              <th>动作/复核</th>
+              <th>排序原因</th>
+            </tr>
+          </thead>
+          <tbody><tr class="pool-row holding"><td><strong>#1</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.08</td><td>28.71%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
+<tr class="pool-row holding"><td><strong>#2</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></td><td><span class="badge">可执行</span></td><td>87.75</td><td>23.39%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
+<tr class="pool-row holding"><td><strong>#3</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></td><td><span class="badge">可执行</span></td><td>87.02</td><td>19.16%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
+<tr class="pool-row holding"><td><strong>#4</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.45</td><td>15.84%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
+<tr class="pool-row holding"><td><strong>#5</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></td><td><span class="badge">观察</span></td><td>88.75</td><td>12.91%</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td></tr>
+<tr class="pool-row observe"><td><strong>#6</strong></td><td><span class="pool-badge observe">观察池</span></td><td><strong>018043</strong><button type="button" class="fund-link" data-fund-code="018043">天弘纳斯达克100指数发起(QDII)A</button></td><td><span class="badge">观察</span></td><td>88.98</td><td>0.00% · 观察</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td></tr>
+<tr class="pool-row observe"><td><strong>#7</strong></td><td><span class="pool-badge observe">观察池</span></td><td><strong>013171</strong><button type="button" class="fund-link" data-fund-code="013171">华夏恒生互联网科技业ETF联接(QDII)A</button></td><td><span class="badge">观察</span></td><td>77.82</td><td>0.00% · 观察</td><td>维持</td><td>underperformed Shanghai Composite and S&amp;P 500 across windows</td></tr></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="home-grid">
@@ -607,30 +894,36 @@
                 <th>基金</th>
                 <th>等级</th>
                 <th>证据置信度</th>
-                <th>目标权重<span>20260615 - 14:30 CST</span></th>
-                <th>基准权重<span data-reference-head-time data-initial-value="20260615 - 14:30 CST" data-previous-value="20260615 - 14:00 CST">20260615 - 14:30 CST</span></th>
+                <th>目标权重<span>20260624 - 10:47 CST</span></th>
+                <th>基准权重<span data-reference-head-time data-initial-value="20260624 - 10:30 CST" data-previous-value="20260624 - 10:30 CST">20260624 - 10:30 CST</span></th>
                 <th>相对比例</th>
                 <th>动作</th>
                 <th>操作口径</th>
               </tr>
             </thead>
-            <tbody><tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="up"><td>1</td><td><strong>008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></td><td><span class="badge">可执行</span></td><td>90.83</td><td><strong>28.70%</strong><span>目标时间：20260615 - 14:30 CST</span></td><td><strong data-reference-weight data-initial-value="28.70%" data-previous-value="20.63%">28.70%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260615 - 14:30 CST" data-previous-value="上轮对比权重时间：20260615 - 14:00 CST">初始持仓权重时间：20260615 - 14:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="0.00%" data-previous-value="+39.11%" data-initial-class="flat" data-previous-class="up">0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="增加/买入">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="up"><td>2</td><td><strong>011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></td><td><span class="badge">可执行</span></td><td>87.07</td><td><strong>23.40%</strong><span>目标时间：20260615 - 14:30 CST</span></td><td><strong data-reference-weight data-initial-value="23.40%" data-previous-value="19.78%">23.40%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260615 - 14:30 CST" data-previous-value="上轮对比权重时间：20260615 - 14:00 CST">初始持仓权重时间：20260615 - 14:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="0.00%" data-previous-value="+18.32%" data-initial-class="flat" data-previous-class="up">0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="增加/买入">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="down"><td>3</td><td><strong>110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></td><td><span class="badge">可执行</span></td><td>90.20</td><td><strong>19.28%</strong><span>目标时间：20260615 - 14:30 CST</span></td><td><strong data-reference-weight data-initial-value="19.28%" data-previous-value="20.49%">19.28%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260615 - 14:30 CST" data-previous-value="上轮对比权重时间：20260615 - 14:00 CST">初始持仓权重时间：20260615 - 14:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="0.00%" data-previous-value="-5.90%" data-initial-class="flat" data-previous-class="down">0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="减少/卖出">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="down"><td>4</td><td><strong>007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></td><td><span class="badge">可执行</span></td><td>91.20</td><td><strong>15.83%</strong><span>目标时间：20260615 - 14:30 CST</span></td><td><strong data-reference-weight data-initial-value="15.83%" data-previous-value="20.72%">15.83%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260615 - 14:30 CST" data-previous-value="上轮对比权重时间：20260615 - 14:00 CST">初始持仓权重时间：20260615 - 14:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="0.00%" data-previous-value="-23.56%" data-initial-class="flat" data-previous-class="down">0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="减少/卖出">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="down"><td>5</td><td><strong>013171</strong><button type="button" class="fund-link" data-fund-code="013171">华夏恒生互联网科技业ETF联接(QDII)A</button></td><td><span class="badge">观察</span></td><td>80.94</td><td><strong>12.78%</strong><span>目标时间：20260615 - 14:30 CST</span></td><td><strong data-reference-weight data-initial-value="12.78%" data-previous-value="18.38%">12.78%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260615 - 14:30 CST" data-previous-value="上轮对比权重时间：20260615 - 14:00 CST">初始持仓权重时间：20260615 - 14:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="0.00%" data-previous-value="-30.48%" data-initial-class="flat" data-previous-class="down">0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="减少/卖出">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr></tbody>
+            <tbody><tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>1</td><td><strong>008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.08</td><td><strong>28.71%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="28.71%" data-previous-value="28.71%">28.71%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>2</td><td><strong>011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></td><td><span class="badge">可执行</span></td><td>87.75</td><td><strong>23.39%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="23.39%" data-previous-value="23.39%">23.39%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>3</td><td><strong>110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></td><td><span class="badge">可执行</span></td><td>87.02</td><td><strong>19.16%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="19.16%" data-previous-value="19.16%">19.16%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>4</td><td><strong>007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.45</td><td><strong>15.84%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="15.84%" data-previous-value="15.84%">15.84%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>5</td><td><strong>270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></td><td><span class="badge">观察</span></td><td>88.75</td><td><strong>12.91%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="12.91%" data-previous-value="12.91%">12.91%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr></tbody>
           </table>
         </div>
 
-        <section class="action-summary" aria-label="需操作的行为">
-          <div class="action-box"><span>立即动作</span><strong>需要人工确认</strong></div>
-          <div class="action-box"><span>动作数量</span><strong>5 项变化</strong></div>
-          <div class="action-box"><span>执行边界</span><strong>人工确认</strong></div>
+        <section class="action-decision" aria-label="需操作的行为">
+          <div class="action-decision-head">
+            <div>
+              <h2>需操作的行为</h2>
+              <small>跟随上方“基准权重口径”切换；与持仓建议表的相对比例动作保持一致。</small>
+            </div>
+            <strong class="change flat" data-action-level data-action-class data-initial-value="保持当前持仓" data-previous-value="保持当前持仓" data-initial-class="flat" data-previous-class="flat">保持当前持仓</strong>
+          </div>
+          <div class="action-decision-grid">
+            <div class="action-box"><span>基准口径</span><strong data-action-reference data-initial-value="初始持仓权重" data-previous-value="上轮对比权重">初始持仓权重</strong></div>
+            <div class="action-box"><span>变化数量</span><strong data-action-count data-initial-value="0 项变化" data-previous-value="0 项变化">0 项变化</strong></div>
+            <div class="action-box"><span>执行边界</span><strong data-action-boundary data-initial-value="无需新增操作" data-previous-value="无需新增操作">无需新增操作</strong></div>
+          </div>
+          <p class="action-detail" data-action-detail data-initial-value="持仓建议表当前基准口径下全部为维持；无需新增申购、赎回、增配或减配。" data-previous-value="持仓建议表当前基准口径下全部为维持；无需新增申购、赎回、增配或减配。">持仓建议表当前基准口径下全部为维持；无需新增申购、赎回、增配或减配。</p>
         </section>
-        <div class="panel" style="box-shadow:none;background:#fbfcfb;">
-          <h2>需操作的行为</h2>
-          <p style="margin:0;color:var(--muted);line-height:1.6;">008887 增加/买入 +8.07%, 011839 增加/买入 +3.62%, 110026 减少/卖出 -1.21%, 007300 减少/卖出 -4.88%, 013171 减少/卖出 -5.60%</p>
-        </div>
       </div>
 
       <aside class="panel">
@@ -638,17 +931,17 @@
         <div class="timeline">
           <div class="time-card">
             <div class="label">当前持仓及时间</div>
-            <strong>20260615 - 14:30 CST</strong>
-            <small>澳洲：20260615 - 16:30 AEST<br>生成：20260613 - 17:45 CST</small>
+            <strong>20260624 - 10:47 CST</strong>
+            <small>澳洲：20260624 - 12:47 AEST<br>生成：20260624 - 10:47 CST</small>
           </div>
           <div class="time-card">
             <div class="label">上轮持仓及时间</div>
-            <strong>20260615 - 14:00 CST</strong>
-            <small>澳洲：20260615 - 16:00 AEST<br>生成：20260613 - 13:25 CST</small>
+            <strong>20260624 - 10:30 CST</strong>
+            <small>澳洲：20260624 - 12:30 AEST<br>生成：20260624 - 10:27 CST</small>
           </div>
           <div class="time-card">
             <div class="label">基准权重时间</div>
-            <strong>20260615 - 14:30 CST</strong>
+            <strong>20260624 - 10:30 CST</strong>
             <small>基准来自 Serenity baseline reference，不是支付宝真实账户持仓。</small>
           </div>
           <div class="time-card">
@@ -684,50 +977,38 @@
                 <th>证据摘要</th>
               </tr>
             </thead>
-            <tbody><tr class="timeline-row-mixed"><td><strong>20260615 - 14:30 CST</strong><span>澳洲：20260615 - 16:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge mixed">买 2 / 卖 3</span></td><td><span class="timeline-count buy">买 2</span></td><td><span class="timeline-count sell">卖 3</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 增加 +8.07%；</span><span>天弘中证人工智能A 增加 +3.62%；</span><span>易方达创业板ETF联接A 减少 -1.21%；</span><span>国联安中证半导体ETF联接A 减少 -4.88%</span></div></td></tr>
-<tr class="timeline-row-mixed"><td><strong>20260615 - 14:00 CST</strong><span>澳洲：20260615 - 16:00 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge mixed">买 2 / 卖 3</span></td><td><span class="timeline-count buy">买 2</span></td><td><span class="timeline-count sell">卖 3</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 增加 +0.35%；</span><span>易方达创业板ETF联接A 增加 +0.34%；</span><span>国联安中证半导体ETF联接A 减少 -0.21%；</span><span>天弘中证人工智能A 减少 -0.23%</span></div></td></tr>
-<tr class="timeline-row-flat"><td><strong>20260613 - 14:00 CST</strong><span>澳洲：20260613 - 16:00 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-flat"><td><strong>20260613 - 08:00 CST</strong><span>澳洲：20260613 - 10:00 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-buy"><td><strong>20260613 - 06:00 CST</strong><span>澳洲：20260613 - 08:00 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge buy">买入/增加 5</span></td><td><span class="timeline-count buy">买 5</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>国联安中证半导体ETF联接A 新增 20.93%；</span><span>华夏国证半导体芯片ETF联接A 新增 20.29%；</span><span>易方达创业板ETF联接A 新增 20.15%；</span><span>天弘中证人工智能A 新增 20.00%</span></div></td></tr></tbody>
+            <tbody><tr class="timeline-row-flat"><td><strong>20260624 - 10:47 CST</strong><span>澳洲：20260624 - 12:47 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-mixed"><td><strong>20260624 - 10:30 CST</strong><span>澳洲：20260624 - 12:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 1 / 卖 4</span></td><td><span class="timeline-count buy">买 1</span></td><td><span class="timeline-count sell">卖 4</span></td><td><div class="timeline-detail-lines"><span>广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；</span><span>华夏国证半导体芯片ETF联接A 减少 -0.01%；</span><span>天弘中证人工智能A 减少 -0.01%；</span><span>易方达创业板ETF联接A 减少 -0.01%</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260624 - 09:30 CST</strong><span>澳洲：20260624 - 11:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-mixed"><td><strong>20260624 - 08:30 CST</strong><span>澳洲：20260624 - 10:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 1 / 卖 4</span></td><td><span class="timeline-count buy">买 1</span></td><td><span class="timeline-count sell">卖 4</span></td><td><div class="timeline-detail-lines"><span>易方达创业板ETF联接A 增加 +0.04%；</span><span>华夏国证半导体芯片ETF联接A 减少 -0.02%；</span><span>天弘中证人工智能A 减少 -0.01%；</span><span>国联安中证半导体ETF联接A 减少 -0.01%</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260623 - 17:30 CST</strong><span>澳洲：20260623 - 19:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260623 - 16:30 CST</strong><span>澳洲：20260623 - 18:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-mixed"><td><strong>20260623 - 15:30 CST</strong><span>澳洲：20260623 - 17:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 4 / 卖 1</span></td><td><span class="timeline-count buy">买 4</span></td><td><span class="timeline-count sell">卖 1</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 增加 +0.02%；</span><span>天弘中证人工智能A 增加 +0.01%；</span><span>国联安中证半导体ETF联接A 增加 +0.01%；</span><span>广发纳指100ETF联接(QDII)人民币A 增加 +0.01%</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260623 - 13:19 CST</strong><span>澳洲：20260623 - 15:19 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260619 - 17:30 CST</strong><span>澳洲：20260619 - 19:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260619 - 16:30 CST</strong><span>澳洲：20260619 - 18:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260619 - 15:30 CST</strong><span>澳洲：20260619 - 17:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-buy"><td><strong>20260619 - 14:30 CST</strong><span>澳洲：20260619 - 16:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge buy">买入/增加 5</span></td><td><span class="timeline-count buy">买 5</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 新增 28.72%；</span><span>天弘中证人工智能A 新增 23.39%；</span><span>易方达创业板ETF联接A 新增 19.16%；</span><span>国联安中证半导体ETF联接A 新增 15.84%</span></div></td></tr></tbody>
           </table>
         </div>
       </div>
       <div class="timeline-visual" data-timeline-view="visual" hidden>
         <div class="timeline-axis" aria-hidden="true"></div>
-        <div class="timeline-nodes"><article class="timeline-node buy"><div class="timeline-dot buy" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260613 - 06:00 CST</strong><span><span class="timeline-badge buy">买入/增加 5</span></span><small>国联安中证半导体ETF联接A 新增 20.93%；华夏国证半导体芯片ETF联接A 新增 20.29%；易方达创业板ETF联接A 新增 20.15%；天弘中证人工智能A 新增 20.00%</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260613 - 08:00 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260613 - 14:00 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
-<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260615 - 14:00 CST</strong><span><span class="timeline-badge mixed">买 2 / 卖 3</span></span><small>华夏国证半导体芯片ETF联接A 增加 +0.35%；易方达创业板ETF联接A 增加 +0.34%；国联安中证半导体ETF联接A 减少 -0.21%；天弘中证人工智能A 减少 -0.23%</small></div></article>
-<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260615 - 14:30 CST</strong><span><span class="timeline-badge mixed">买 2 / 卖 3</span></span><small>华夏国证半导体芯片ETF联接A 增加 +8.07%；天弘中证人工智能A 增加 +3.62%；易方达创业板ETF联接A 减少 -1.21%；国联安中证半导体ETF联接A 减少 -4.88%</small></div></article></div>
+        <div class="timeline-nodes"><article class="timeline-node buy"><div class="timeline-dot buy" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 14:30 CST</strong><span><span class="timeline-badge buy">买入/增加 5</span></span><small>华夏国证半导体芯片ETF联接A 新增 28.72%；天弘中证人工智能A 新增 23.39%；易方达创业板ETF联接A 新增 19.16%；国联安中证半导体ETF联接A 新增 15.84%</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 15:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 16:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 17:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 13:19 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 15:30 CST</strong><span><span class="timeline-badge mixed">买 4 / 卖 1</span></span><small>华夏国证半导体芯片ETF联接A 增加 +0.02%；天弘中证人工智能A 增加 +0.01%；国联安中证半导体ETF联接A 增加 +0.01%；广发纳指100ETF联接(QDII)人民币A 增加 +0.01%</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 16:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 17:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 08:30 CST</strong><span><span class="timeline-badge mixed">买 1 / 卖 4</span></span><small>易方达创业板ETF联接A 增加 +0.04%；华夏国证半导体芯片ETF联接A 减少 -0.02%；天弘中证人工智能A 减少 -0.01%；国联安中证半导体ETF联接A 减少 -0.01%</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 09:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:30 CST</strong><span><span class="timeline-badge mixed">买 1 / 卖 4</span></span><small>广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；华夏国证半导体芯片ETF联接A 减少 -0.01%；天弘中证人工智能A 减少 -0.01%；易方达创业板ETF联接A 减少 -0.01%</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:47 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article></div>
       </div>
     </section>
     
-
-    <section class="panel" style="margin-top:16px;">
-      <h2>操作入口</h2>
-      <div class="actions">
-        <article class="action-card">
-          <div><strong>报告</strong><p>查看最新结果和历史归档。</p></div>
-          <a class="action primary" href="../../data/reports/index.html">查看报告</a>
-        </article>
-        <article class="action-card">
-          <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>
-          <a class="action" href="../../data/reports/sda_20260613T094539Z_r7_31fb1cc3_report.html">查看快照</a>
-        </article>
-        <article class="action-card">
-          <div><strong>基金库</strong><p>已入库 5 只基金；申赎、费率、状态。</p></div>
-          <button type="button" data-open-fund-library>查看基金</button>
-        </article>
-        <article class="action-card">
-          <div><strong>使用说明</strong><p>策略、权重、调仓纪律。</p></div>
-          <button type="button" data-open-usage-guide>查看说明</button>
-        </article>
-        <article class="action-card">
-          <div><strong>人工复核</strong><p>2 项待复核；保存到数据库。</p></div>
-          <button type="button" data-open-review>处理复核</button>
-        </article>
-      </div>
-    </section>
 
     <section class="panel" style="margin-top:16px;">
       <h2>执行边界</h2>
@@ -771,17 +1052,16 @@
         <button type="button" data-close-fund-library>关闭</button>
       </div>
       <div class="view-switch fund-library-view-switch" aria-label="基金库视图切换">
-        <button type="button" class="active" data-fund-library-mode="gallery">Gallery</button>
-        <button type="button" data-fund-library-mode="table">Table</button>
+        <button type="button" class="active" data-fund-library-mode="table">表格</button>
+        <button type="button" data-fund-library-mode="gallery">卡片</button>
       </div>
-      <div class="fund-library-grid" id="fund-library-body" data-fund-library-view="gallery"></div>
-      <div class="table-wrap fund-library-table-view" data-fund-library-view="table" hidden>
+      <div class="fund-library-grid" id="fund-library-body" data-fund-library-view="gallery" hidden></div>
+      <div class="table-wrap fund-library-table-view" data-fund-library-view="table">
         <table class="fund-library-table">
           <thead>
             <tr>
               <th>代码</th>
               <th>基金名称</th>
-              <th>首次进入策略 Top5</th>
               <th>上次进入候选池时间</th>
               <th>当前进入候选池天数</th>
               <th>当前状态</th>
@@ -802,10 +1082,6 @@
               <th>销售服务费</th>
               <th>合计运营费（年）</th>
               <th>最低申购金额</th>
-              <th>来源名称</th>
-              <th>来源类型</th>
-              <th>来源优先级</th>
-              <th>来源链接</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -822,100 +1098,118 @@
       <div class="modal-top">
         <div>
           <h2 id="usage-guide-modal-title">使用说明</h2>
-          <div class="subtitle">说明 Skill 选股逻辑、策略口径、权重配置公式和持仓调整纪律；本说明不构成自动交易指令。</div>
+          <div class="subtitle">用来解释 Serenity 为什么挑选、为什么调仓、怎么计算权重；Score 只表示证据置信度。</div>
         </div>
         <button type="button" data-close-usage-guide>关闭</button>
       </div>
-      <div class="guide-grid">
-        <article class="guide-section">
-          <h3>Skill 选股逻辑</h3>
-          <p>Serenity 不是先拿一张规则表机械筛选，而是先建立“未来 1-3 个月最可能获得资金和业绩弹性的高成长方向”假设，再用证据验证这个假设能否落到可执行的场外基金上。</p>
-          <ul>
-            <li>如何挑选：先看高成长主题是否仍有景气度、资金关注和可解释的上涨来源，再把主题映射到能在场外买到的基金，而不是直接从基金列表里随便排序。</li>
-            <li>怎么挑选：先按产业链卡点、稀缺层、主题暴露和 1-3 个月资金弹性形成 Serenity 优先级，再映射到能在场外买到的基金。</li>
-            <li>为什么挑选：Top5 先由 Serenity 判断决定，不由 Score 机械排序；如果一只基金分数高但不在更关键的产业链位置，它不能越过更高 Serenity 优先级。</li>
-            <li>为什么调仓：当新一轮证据显示产业链强弱、资金方向、风险回撤、费用/申赎状态或 Top5 排名发生变化，系统会把它解释为原 baseline 假设需要修正，并输出增配、减少、暂停新增或维持。</li>
-            <li>思考公示方式：页面展示证据置信度、等级、目标权重、基准权重、相对比例、费用状态、基金库证据和运行时间线，让用户能看到“为什么是这只、为什么是这个权重、为什么现在动或不动”。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>证据置信度</h3>
-          <p><code>ConfidenceScore = Data 25 + Timeliness 15 + Source 15 + Return 15 + Risk 20 + Executable 10</code></p>
-          <ul>
-            <li>证据置信度不是选股主排序，只回答“Serenity 判断有多少数据支持、能不能执行”。</li>
-            <li>Data = max(0, 25 - 8 x 缺失字段数)。</li>
-            <li>Timeliness = 净值/持仓缺失不超过 2 天得 15，否则 0。</li>
-            <li>Source = 官方级来源至少 2 个且无冲突得 15；至少 1 个得 7.5；否则 0。</li>
-            <li>Return = 15 x 跑赢次数 / 6，比较窗口为 1 个月、3 个月、10 交易日，对照沪指和标普 500。</li>
-            <li>Risk = MDD 小于 40.00% 才计分；回撤修复时间达到 365 天会强制压低风险分。</li>
-            <li>Executable = 申购/赎回开放且费率分档完整才得 10，否则 0。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>等级与策略口径</h3>
-          <ul>
-            <li>ConfidenceScore >= 85：Action-Ready，说明 Serenity 判断的证据和执行条件足够强。</li>
-            <li>70-84：Watch，Serenity 判断可保留，但证据或执行条件需要继续观察。</li>
-            <li>55-69：Manual Review，必须人工复核后处理。</li>
-            <li>&lt;55：Block/skip，不执行调仓建议。</li>
-            <li>MDD >= 40.00%、保守类资产、来源冲突、关键费率缺失会触发硬降级。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>权重配置公式</h3>
-          <p><code>SerenityRank_i = 产业链卡点优先级 + 主题暴露 + 场外可执行性</code></p>
-          <p><code>ConfidenceModifier_i = 0.85 + 0.15 x ConfidenceScore_i / 100</code></p>
-          <p><code>RawWeight_i = SerenityBase_i x ConfidenceModifier_i</code></p>
-          <p><code>Capped_i = min(normalize(RawWeight_i), 30.00%)</code></p>
-          <p><code>TargetWeight_i = Capped_i / sum(Capped)</code></p>
-          <ul>
-            <li>仅非 Block 候选参与 Top5；排序优先服从 Serenity 判断，证据置信度只做辅助修正。</li>
-            <li>低 Serenity 优先级标的不会仅凭更高 ConfidenceScore 超过高优先级标的。</li>
-            <li>目标权重是策略份额，不是支付宝真实账户仓位。</li>
-            <li>首轮基准从 0.00% 开始；后续运行相对上一轮 Serenity baseline 比较。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>持仓调整逻辑</h3>
-          <p>这里不是把 Deviation 翻译成买卖术语，而是说明系统如何从 Serenity 新判断推导到人工操作建议。</p>
-          <ul>
-            <li><code>Deviation = TargetWeight - BaselineWeight</code>。</li>
-            <li>凭什么：先确认数据质量通过、基金申赎和费率可执行、候选没有 Block，再比较新一轮 Serenity 目标权重和上一轮 Serenity baseline。</li>
-            <li>为什么：偏离不是账户盈亏，而是 Serenity 对产业链优先级、主题弹性、风险和执行条件的最新判断相对旧 baseline 的变化。</li>
-            <li>怎么做：|Deviation| &lt;= 1.00%：维持；Deviation &gt; 1.00% 且 Action-Ready：增配；非 Action-Ready：暂停新增或人工复核；Deviation &lt; -1.00%：减少；Block：阻断或清仓标签。</li>
-            <li>做多少：策略调整份额 = TargetWeight - BaselineWeight；若需要换算金额，人工按“计划投入资金 x |Deviation|”在支付宝或官方平台确认，系统不自动下单。</li>
-            <li>为什么做这么多：TargetWeight 已由 Serenity 优先级、证据置信度修正、30.00% 单标上限和归一化约束计算完成；Deviation 是把旧 baseline 调到新目标所需的最小策略差额。</li>
-            <li>为什么 1.00% 内维持：小于等于 1.00% 的变化通常不足以覆盖确认成本、申赎费、净值时差和短时噪声，除非同时触发风险硬门槛。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>重平衡触发</h3>
-          <ul>
-            <li>单标偏离超过 1.00% 会触发纪律事件。</li>
-            <li>Top5 变动率超过 20.00%、新增 1 只、替换 2 只会触发复核。</li>
-            <li>关键字段变化超过 1σ 会触发 regime check。</li>
-            <li>同日、前一日、前一周、前一月都会生成对比快照。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>人工复核与降级</h3>
-          <ul>
-            <li>连续缺失净值/持仓超过 2 天，进入 Manual Review。</li>
-            <li>申购费、赎回费、申购状态、赎回状态或费率分档缺失，暂停新增。</li>
-            <li>官方级来源少于 2 个或来源冲突，不能 Action-Ready。</li>
-            <li>执行锁开启时，只输出研究排序和纪律标签，不给新增订单。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>如何使用</h3>
-          <ul>
-            <li>先看“当前持仓建议”，确认最新时间和动作颜色。</li>
-            <li>再看“持仓建议”表，切换初始持仓权重或上轮对比权重。</li>
-            <li>点击“基金库”核对申赎状态和费用分档。</li>
-            <li>若出现人工复核，先补证据或记录复核结论，再考虑平台操作。</li>
-            <li>所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</li>
-          </ul>
-        </article>
+      <div class="guide-layout">
+        <nav class="guide-nav" aria-label="使用说明目录">
+          <button type="button" class="active" data-guide-target="guide-overview">阅读顺序</button>
+          <button type="button" data-guide-target="guide-selection">Skill 选股逻辑</button>
+          <button type="button" data-guide-target="guide-confidence">证据置信度</button>
+          <button type="button" data-guide-target="guide-weight">权重配置</button>
+          <button type="button" data-guide-target="guide-discipline">调仓纪律</button>
+          <button type="button" data-guide-target="guide-review">复核与边界</button>
+        </nav>
+        <div class="guide-content">
+          <section class="guide-hero" id="guide-overview" data-guide-section>
+            <div>
+              <span class="guide-kicker">默认阅读顺序</span>
+              <h3>先看结论，再追溯原因。</h3>
+              <p>首页只保留关键动作；这块说明专门回答“为什么是这只基金、为什么是这个权重、为什么现在动或不动”。</p>
+            </div>
+            <div class="guide-summary">
+              <span><strong>持有期</strong>1个月-1年</span>
+              <span><strong>排序口径</strong>Serenity 优先</span>
+              <span><strong>Score 角色</strong>置信度/说服力</span>
+              <span><strong>执行边界</strong>人工确认</span>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-selection" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第一层</span>
+              <h3>Skill 选股逻辑</h3>
+            </div>
+            <p class="guide-lead">Serenity 不是先拿一张规则表机械筛选，而是先形成“未来 1个月-1年最值得承担高波动的高成长方向”判断，再检查这个判断能否落到可执行的场外基金上。</p>
+            <div class="guide-steps">
+              <p><strong>如何挑选</strong>先看高成长主题是否仍有景气度、资金关注和可解释的上涨来源，再把主题映射到能在场外买到的基金。</p>
+              <p><strong>怎么挑选</strong>按产业链卡点、稀缺层、主题暴露、资金弹性和执行可得性形成 Serenity 优先级。</p>
+              <p><strong>为什么挑选</strong>Top5 先由 Serenity 判断决定，不由 Score 机械排序；低 Serenity 优先级标的不会仅凭更高 ConfidenceScore 超过高优先级标的。</p>
+              <p><strong>为什么调仓</strong>当产业链强弱、资金方向、风险回撤、费用/申赎状态或 Top5 排名改变，系统会视为旧 baseline 需要修正。</p>
+            </div>
+            <div class="guide-callout">页面公开证据置信度、等级、目标权重、基准权重、相对比例、费用状态、基金库证据和运行时间线，方便追溯每一次建议。</div>
+          </section>
+
+          <section class="guide-section" id="guide-confidence" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第二层</span>
+              <h3>证据置信度</h3>
+            </div>
+            <p class="guide-lead">Score 不替代 Serenity 判断，只回答“这次判断有多少数据支持、是否足够可执行”。</p>
+            <div class="guide-formula">ConfidenceScore = Data 25 + Timeliness 15 + Source 15 + Return 15 + Risk 20 + Executable 10</div>
+            <div class="guide-steps">
+              <p><strong>Data</strong>普通关键字段缺失按项扣分；return_windows 缺失按关键缺失处理，最高扣 20 分并触发复核。</p>
+              <p><strong>Timeliness</strong>净值/持仓缺失不超过 2 天得分，否则进入时间完整性降级。</p>
+              <p><strong>Source</strong>官方级来源至少 2 个且无冲突才完整得分；来源冲突优先解释冲突。</p>
+              <p><strong>Return</strong>Return = 15 x 跑赢次数 / 8；比较 1个月、3个月、1年、10交易日，对照沪指和标普500。</p>
+              <p><strong>Risk</strong>MDD 小于 40.00% 才可继续；回撤修复时间达到 365 天会强制压低风险分。</p>
+              <p><strong>Executable</strong>申购/赎回开放且费率分档完整才完整得分。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-weight" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第三层</span>
+              <h3>权重配置</h3>
+            </div>
+            <div class="guide-formula">SerenityRank_i = 产业链卡点优先级 + 主题暴露 + 场外可执行性</div>
+            <div class="guide-formula">ConfidenceModifier_i = 0.85 + 0.15 x ConfidenceScore_i / 100</div>
+            <div class="guide-formula">RawWeight_i = SerenityBase_i x ConfidenceModifier_i</div>
+            <div class="guide-formula">Capped_i = min(normalize(RawWeight_i), 30.00%)</div>
+            <div class="guide-formula">TargetWeight_i = Capped_i / sum(Capped)</div>
+            <div class="guide-steps">
+              <p><strong>排序</strong>仅非 Block 候选进入 Top5；排序优先服从 Serenity，ConfidenceScore 只做辅助修正。</p>
+              <p><strong>权重</strong>目标权重是策略份额，不是支付宝真实账户仓位。</p>
+              <p><strong>基准</strong>首轮基准从 0.00% 开始；后续运行相对上一轮 Serenity baseline 比较。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-discipline" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第四层</span>
+              <h3>持仓调整逻辑</h3>
+            </div>
+            <p class="guide-lead">这里不是把 Deviation 翻译成买卖术语，而是说明系统如何从 Serenity 新判断推导到人工操作建议。</p>
+            <div class="guide-formula">Deviation = TargetWeight - BaselineWeight</div>
+            <div class="guide-steps">
+              <p><strong>凭什么</strong>先确认数据质量通过、基金申赎和费率可执行、候选没有 Block，再比较新一轮 Serenity 目标权重和上一轮 Serenity baseline。</p>
+              <p><strong>为什么</strong>偏离不是账户盈亏，而是 Serenity 对产业链优先级、主题弹性、风险和执行条件的最新判断相对旧 baseline 的变化。</p>
+              <p><strong>怎么做</strong>|Deviation| &lt;= 1.00%：维持；Deviation &gt; 1.00% 且 Action-Ready：增配；非 Action-Ready：暂停新增或人工复核；Deviation &lt; -1.00%：减少；Block：阻断或清仓标签。</p>
+              <p><strong>做多少</strong>策略调整份额 = TargetWeight - BaselineWeight；若需要换算金额，人工按“计划投入资金 x |Deviation|”在支付宝或官方平台确认。</p>
+              <p><strong>为什么做这么多</strong>TargetWeight 已由 Serenity 优先级、证据置信度修正、30.00% 单标上限和归一化约束计算完成；Deviation 是把旧 baseline 调到新目标所需的最小策略差额。</p>
+              <p><strong>为什么 1.00% 内维持</strong>小于等于 1.00% 的变化通常不足以覆盖确认成本、申赎费、净值时差和短时噪声，除非同时触发风险硬门槛。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-review" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第五层</span>
+              <h3>重平衡、复核与边界</h3>
+            </div>
+            <div class="guide-steps">
+              <p><strong>重平衡</strong>单标偏离超过 1.00%、Top5 变动率超过 20.00%、新增 1 只、替换 2 只或关键字段变化超过 1σ，会触发纪律事件。</p>
+              <p><strong>人工复核</strong>连续缺失净值/持仓超过 2 天、费率分档缺失、官方级来源少于 2 个或来源冲突，会进入 Manual Review。</p>
+              <p><strong>为什么需要复核</strong>每个复核对象都会显示进入复核的具体原因，例如费率/申赎状态缺失、来源冲突、净值或持仓时间滞后、数据质量不足或执行条件不明确。</p>
+              <p><strong>放入观察池继续观察</strong>保存复核后立即新增一次真实 Serenity run；对象继续保留在观察池，后续满足 Serenity 标准和条件后更新进持仓建议，不满足则继续观察，直到不再满足观察池标准后移出。</p>
+              <p><strong>剔除这一轮观察池</strong>保存复核后立即新增一次真实 Serenity run；对象从本轮观察池移除，当前问题解决后，或 14 天后再次满足 Serenity 标准和条件时，才允许重新进入观察池。</p>
+              <p><strong>进入 Top 5 候选操作池</strong>保存复核后立即运行一次 Serenity 全流程，同步刷新首页持仓建议、报告、数据库和全局展示数据。</p>
+              <p><strong>保存处置</strong>保存复核必须写入本机 SQLite 数据库；页面不会把复核保存在浏览器端。</p>
+              <p><strong>执行边界</strong>执行锁开启时，只输出研究排序和纪律标签；所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</p>
+              <p><strong>使用顺序</strong>先看“当前持仓建议”，再看“持仓建议”表里的基准权重口径；需要追溯费用和申赎状态时进入“基金库”。</p>
+            </div>
+          </section>
+        </div>
       </div>
     </section>
   </div>
@@ -927,79 +1221,36 @@
       <div class="modal-top">
         <div>
           <h2 id="review-modal-title">人工复核</h2>
-          <div class="subtitle">复核记录会保存到本机 SQLite 数据库；静态入口离线时临时缓存到浏览器。</div>
+          <div class="subtitle">复核记录实时保存到本机 SQLite 数据库；不做浏览器端保存。</div>
         </div>
         <button type="button" data-close-review>关闭</button>
+      </div>
+      <div class="review-result-guide" aria-label="复核结果含义">
+        <article>
+          <strong>放入观察池继续观察</strong>
+          <p>保存后立即新增一次真实 Serenity run；对象继续观察，后续满足 Serenity 标准和条件后更新进持仓建议，不满足则继续观察，直到不再满足观察池标准后移出。</p>
+        </article>
+        <article>
+          <strong>剔除这一轮观察池</strong>
+          <p>保存后立即新增一次真实 Serenity run；对象本轮移除，当前问题解决后，或 14 天后再次满足 Serenity 标准和条件时，才允许重新进入观察池。</p>
+        </article>
+        <article>
+          <strong>进入 Top 5 候选操作池</strong>
+          <p>保存后立即运行一次 Serenity 全流程，并同步更新首页持仓建议、报告、数据库和全局展示数据。</p>
+        </article>
       </div>
       <div class="review-toolbar">
         <button type="button" data-copy-review-log>复制复核记录</button>
         <button type="button" data-clear-review-log>清空复核记录</button>
       </div>
-      <div class="review-list">
-            <article class="review-item" data-review-item data-review-id="69" data-review-run-id="sda_20260613T094539Z_r7_31fb1cc3">
-              <div class="review-item-head">
-                <div>
-                  <strong>018043 · 天弘纳斯达克100指数发起(QDII)A</strong>
-                  <span>20260613 - 17:45 CST · open · sda_20260613T094539Z_r7_31fb1cc3</span>
-                </div>
-                <span class="badge locked">No-New-Order</span>
-              </div>
-              <div class="review-reason">fee/redemption/subscription status missing or closed</div>
-              <label>
-                <span>复核动作</span>
-                <select data-review-decision>
-                  <option value="保持禁止新增">保持禁止新增</option>
-                  <option value="需要补证据">需要补证据</option>
-                  <option value="确认观察">确认观察</option>
-                  <option value="已人工处理">已人工处理</option>
-                </select>
-              </label>
-              <label>
-                <span>备注</span>
-                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率或暂不处理原因"></textarea>
-              </label>
-              <div class="review-item-actions">
-                <button type="button" data-save-review>保存复核</button>
-                <span data-review-state>未保存</span>
-              </div>
-            </article>
-            
-
-            <article class="review-item" data-review-item data-review-id="68" data-review-run-id="sda_20260613T094539Z_r7_31fb1cc3">
-              <div class="review-item-head">
-                <div>
-                  <strong>270042 · 广发纳指100ETF联接(QDII)人民币A</strong>
-                  <span>20260613 - 17:45 CST · open · sda_20260613T094539Z_r7_31fb1cc3</span>
-                </div>
-                <span class="badge locked">No-New-Order</span>
-              </div>
-              <div class="review-reason">fee/redemption/subscription status missing or closed</div>
-              <label>
-                <span>复核动作</span>
-                <select data-review-decision>
-                  <option value="保持禁止新增">保持禁止新增</option>
-                  <option value="需要补证据">需要补证据</option>
-                  <option value="确认观察">确认观察</option>
-                  <option value="已人工处理">已人工处理</option>
-                </select>
-              </label>
-              <label>
-                <span>备注</span>
-                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率或暂不处理原因"></textarea>
-              </label>
-              <div class="review-item-actions">
-                <button type="button" data-save-review>保存复核</button>
-                <span data-review-state>未保存</span>
-              </div>
-            </article>
-            </div>
+      <div class="review-list"><div class="review-empty">当前没有待处理复核项；已处理记录保留在 SQLite 数据库和历史运行中。</div></div>
     </section>
   </div>
     
   <div class="toast" role="status" aria-live="polite" id="toast">完成</div>
   <script>
     const toast = document.getElementById("toast");
-    const fundLibrary = {"007300": {"code": "007300", "name": "国联安中证半导体ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260613 - 06:00 CST", "currentCandidateDays": "3 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260615 - 14:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "alipayTradeStatus": "待支付宝交易页确认（基金本身申赎开放）", "moomooTradeStatus": "未验证MooMoo场外基金交易；MooMoo仅作行情/代理数据参考", "platformTradeNote": "平台交易可用性只作建议；不支持支付宝或MooMoo交易不能单独排除候选；执行前以支付宝交易确认页或基金公司官方平台为准", "subscriptionFee": "0.80%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 0.80%；100万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<365天 0.50%；N≥365天 0.00%", "feeScheduleAsOf": "2026-05-15", "feeScheduleNote": "A类前端法定费率；销售渠道可能有申购费折扣；执行前以支付宝交易确认页和国联安最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Guolianan product summary PDF + Eastmoney status + public sales disclosure", "sourceType": "official", "sourcePriority": 3, "sourceUrl": "https://pdf.dfcfw.com/pdf/H2_AN202605151822335541_1.pdf"}, "008887": {"code": "008887", "name": "华夏国证半导体芯片ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260613 - 06:00 CST", "currentCandidateDays": "3 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260615 - 14:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "alipayTradeStatus": "待支付宝交易页确认（基金本身申赎开放）", "moomooTradeStatus": "未验证MooMoo场外基金交易；MooMoo仅作行情/代理数据参考", "platformTradeNote": "平台交易可用性只作建议；不支持支付宝或MooMoo交易不能单独排除候选；执行前以支付宝交易确认页或基金公司官方平台为准", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<50万元 1.20%；50万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；N≥7日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；销售渠道可能给申购费折扣；赎回按持有期限和先进先出口径匹配；执行前以支付宝交易确认页为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official fund page + CCB rule snapshot + Eastmoney NAV/status", "sourceType": "official", "sourcePriority": 3, "sourceUrl": "https://www.chinaamc.com/fund/008887/jijinfeilv.shtml?source=click"}, "011839": {"code": "011839", "name": "天弘中证人工智能A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260613 - 06:00 CST", "currentCandidateDays": "3 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260615 - 14:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "alipayTradeStatus": "待支付宝交易页确认（基金本身申赎开放）", "moomooTradeStatus": "未验证MooMoo场外基金交易；MooMoo仅作行情/代理数据参考", "platformTradeNote": "平台交易可用性只作建议；不支持支付宝或MooMoo交易不能单独排除候选；执行前以支付宝交易确认页或基金公司官方平台为准", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<30天 0.30%；N≥30天 0.05%", "feeScheduleAsOf": "2025-06-27", "feeScheduleNote": "A类前端法定费率；同一交易日多笔申购按单笔申请分别适用分档；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong/CNInfo product document + Eastmoney NAV/status", "sourceType": "official", "sourcePriority": 3, "sourceUrl": "https://static.cninfo.com.cn/finalpage/2025-06-27/1224007185.PDF"}, "013171": {"code": "013171", "name": "华夏恒生互联网科技业ETF联接(QDII)A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260613 - 06:00 CST", "currentCandidateDays": "3 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260615 - 14:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "alipayTradeStatus": "待支付宝交易页确认（基金本身申赎开放）", "moomooTradeStatus": "未验证MooMoo场外基金交易；MooMoo仅作行情/代理数据参考", "platformTradeNote": "平台交易可用性只作建议；不支持支付宝或MooMoo交易不能单独排除候选；执行前以支付宝交易确认页或基金公司官方平台为准", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<30日 0.50%；N≥30日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；申购可能受单日额度/港股节假日限制；执行前以支付宝交易确认页和华夏基金公告为准", "managementFee": "0.50%", "custodyFee": "0.15%", "salesServiceFee": "0.00%", "operatingFee": "0.65%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official page + AMC Fortune official page + public fee/status", "sourceType": "official", "sourcePriority": 3, "sourceUrl": "https://www.chinaamc.com/fund/013171/jijinfeilv.shtml?source=click"}, "110026": {"code": "110026", "name": "易方达创业板ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260613 - 06:00 CST", "currentCandidateDays": "3 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260615 - 14:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "alipayTradeStatus": "待支付宝交易页确认（基金本身申赎开放）", "moomooTradeStatus": "未验证MooMoo场外基金交易；MooMoo仅作行情/代理数据参考", "platformTradeNote": "平台交易可用性只作建议；不支持支付宝或MooMoo交易不能单独排除候选；执行前以支付宝交易确认页或基金公司官方平台为准", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<500万元 0.50%；500万元≤M<1000万元 0.10%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "0天≤N≤6天 1.50%；7天≤N≤29天 0.50%；30天≤N≤179天 0.10%；N≥180天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；多次申购按单笔申购金额适用费率；执行前以支付宝交易确认页为准", "managementFee": "0.15%", "custodyFee": "0.05%", "salesServiceFee": "0.00%", "operatingFee": "0.20%", "minPurchaseAmount": "10.00", "sourceName": "E Fund official fund page + Eastmoney NAV/status", "sourceType": "official", "sourcePriority": 3, "sourceUrl": "https://www.efunds.com.cn/Mobile/fund/110026.shtml"}};
+    const fundLibrary = {"007300": {"code": "007300", "name": "国联安中证半导体ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "0.80%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 0.80%；100万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<365天 0.50%；N≥365天 0.00%", "feeScheduleAsOf": "2026-05-15", "feeScheduleNote": "A类前端法定费率；销售渠道可能有申购费折扣；执行前以支付宝交易确认页和国联安最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Guolianan product summary PDF + Eastmoney status + public sales disclosure", "sourceUrl": "https://pdf.dfcfw.com/pdf/H2_AN202605151822335541_1.pdf"}, "008887": {"code": "008887", "name": "华夏国证半导体芯片ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<50万元 1.20%；50万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；N≥7日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；销售渠道可能给申购费折扣；赎回按持有期限和先进先出口径匹配；执行前以支付宝交易确认页为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official fund page + CCB rule snapshot + Eastmoney NAV/status", "sourceUrl": "https://www.chinaamc.com/fund/008887/jijinfeilv.shtml?source=click"}, "011839": {"code": "011839", "name": "天弘中证人工智能A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<30天 0.30%；N≥30天 0.05%", "feeScheduleAsOf": "2025-06-27", "feeScheduleNote": "A类前端法定费率；同一交易日多笔申购按单笔申请分别适用分档；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong/CNInfo product document + Eastmoney NAV/status", "sourceUrl": "https://static.cninfo.com.cn/finalpage/2025-06-27/1224007185.PDF"}, "013171": {"code": "013171", "name": "华夏恒生互联网科技业ETF联接(QDII)A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<30日 0.50%；N≥30日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；申购可能受单日额度/港股节假日限制；执行前以支付宝交易确认页和华夏基金公告为准", "managementFee": "0.50%", "custodyFee": "0.15%", "salesServiceFee": "0.00%", "operatingFee": "0.65%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official page + AMC Fortune official page + public fee/status", "sourceUrl": "https://www.chinaamc.com/fund/013171/jijinfeilv.shtml?source=click"}, "018043": {"code": "018043", "name": "天弘纳斯达克100指数发起(QDII)A", "firstTop5Time": "20260615 - 12:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<180天 0.50%；180天≤N<365天 0.25%；N≥365天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；当前申购状态可能受额度/暂停影响；多源交叉验证含天弘官网、东方财富/天天基金、新浪和代销平台；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong official page + Eastmoney/Tiantian fee page + Sina fee/status + CCB/TTFund status + MooMoo QQQ proxy", "sourceUrl": "https://www.thfund.com.cn/fundinfo/018043"}, "110026": {"code": "110026", "name": "易方达创业板ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<500万元 0.50%；500万元≤M<1000万元 0.10%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "0天≤N≤6天 1.50%；7天≤N≤29天 0.50%；30天≤N≤179天 0.10%；N≥180天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；多次申购按单笔申购金额适用费率；执行前以支付宝交易确认页为准", "managementFee": "0.15%", "custodyFee": "0.05%", "salesServiceFee": "0.00%", "operatingFee": "0.20%", "minPurchaseAmount": "10.00", "sourceName": "E Fund official fund page + Eastmoney NAV/status", "sourceUrl": "https://www.efunds.com.cn/Mobile/fund/110026.shtml"}, "270042": {"code": "270042", "name": "广发纳指100ETF联接(QDII)人民币A", "firstTop5Time": "20260612 - 17:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.30%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.30%；100万元≤M<500万元 0.70%；500万元≤M<1000万元 0.20%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<365日 0.50%；1年≤N<2年 0.30%；N≥2年 0.00%", "feeScheduleAsOf": "2026-06-05", "feeScheduleNote": "QDII人民币A前端法定费率；申购可能受大额/额度限制；多源交叉验证含广发官网/产品概要、东方财富/天天基金、新浪和银行代销页；执行前以支付宝交易确认页和广发最新公告为准", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "GF official fund page/product summary + Eastmoney/Tiantian fee page + Sina fee page + CCB/ABC agency status + MooMoo QQQ proxy", "sourceUrl": "https://www.gffunds.com.cn/jjgg/flwj/202606/P020260605334092544639.pdf"}};
     const showToast = (message) => {
       toast.textContent = message;
       toast.classList.add("show");
@@ -1011,33 +1262,66 @@
       window.sessionStorage.removeItem("serenityRefreshToast");
       showToast(pendingRefreshToast);
     }
+    const localServiceOrigins = Array.from({ length: 31 }, (_, index) => `http://127.0.0.1:${8765 + index}`);
+    let activeServiceOrigin = window.location.protocol === "http:" ? window.location.origin : localServiceOrigins[0];
+    const localServiceRequiredMessage = "本地服务未启动。请重新打开 Serenity 每日分析.app，或稍等几秒后再试。";
+    const candidateServiceOrigins = () => {
+      const origins = [];
+      if (window.location.protocol === "http:" || window.location.protocol === "https:") origins.push(window.location.origin);
+      origins.push(activeServiceOrigin, ...localServiceOrigins);
+      return [...new Set(origins.filter(Boolean))];
+    };
+    const fetchApiJson = async (path, options = {}) => {
+      let lastError = null;
+      for (const origin of candidateServiceOrigins()) {
+        try {
+          const response = await fetch(`${origin}${path}`, options);
+          const raw = await response.text();
+          let data = {};
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch {
+            lastError = new Error(localServiceRequiredMessage);
+            continue;
+          }
+          if (!Object.prototype.hasOwnProperty.call(data, "status")) {
+            lastError = new Error(localServiceRequiredMessage);
+            continue;
+          }
+          activeServiceOrigin = origin;
+          return { response, data, origin };
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error(localServiceRequiredMessage);
+    };
+    const reloadAfterServerUpdate = (origin = activeServiceOrigin) => {
+      window.setTimeout(() => {
+        const targetOrigin = origin || activeServiceOrigin || localServiceOrigins[0];
+        if (window.location.protocol === "file:" || window.location.origin !== targetOrigin) {
+          window.location.href = `${targetOrigin}/`;
+        } else {
+          window.location.reload();
+        }
+      }, 500);
+    };
     document.querySelectorAll("[data-refresh]").forEach((button) => {
       button.addEventListener("click", async () => {
         const original = button.textContent;
         button.disabled = true;
         button.textContent = "更新中";
-        showToast("正在同步最新信息");
-        if (window.location.protocol === "file:") {
-          showToast("当前为静态入口，已重新载入本地页面");
-          window.setTimeout(() => window.location.reload(), 900);
-          window.setTimeout(() => {
-            button.disabled = false;
-            button.textContent = original;
-          }, 1000);
-          return;
-        }
+        showToast("正在运行 Serenity 全流程并同步最新信息");
         try {
-          const response = await fetch("/api/refresh", { method: "POST" });
-          const data = await response.json();
+          const { response, data, origin } = await fetchApiJson("/api/refresh", { method: "POST" });
           if (!response.ok || data.status !== "pass") {
             throw new Error(data.message || "刷新失败");
           }
           window.sessionStorage.setItem("serenityRefreshToast", data.message);
-          window.location.reload();
+          reloadAfterServerUpdate(origin);
         } catch (error) {
-          const message = error && error.message ? error.message : "当前为静态入口，已重新载入本地页面";
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : localServiceRequiredMessage;
           showToast(message);
-          window.setTimeout(() => window.location.reload(), 900);
         } finally {
           window.setTimeout(() => {
             button.disabled = false;
@@ -1070,6 +1354,14 @@
         node.classList.remove("up", "down", "flat");
         node.classList.add(nextClass);
       });
+      document.querySelectorAll("[data-action-level], [data-action-reference], [data-action-count], [data-action-boundary], [data-action-detail]").forEach((node) => {
+        node.textContent = node.dataset[`${mode}Value`] || "-";
+      });
+      document.querySelectorAll("[data-action-class]").forEach((node) => {
+        const nextClass = node.dataset[`${mode}Class`] || "flat";
+        node.classList.remove("up", "down", "flat", "mixed");
+        node.classList.add(nextClass);
+      });
     };
     document.querySelectorAll("[data-reference-mode]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -1098,73 +1390,44 @@
     setTimelineMode("table");
 
     const reviewModal = document.getElementById("review-modal");
-    const reviewStorageKey = "serenityManualReview.v1.cache";
-    const reviewApiBacked = () => window.location.protocol !== "file:";
-    const readReviewCache = () => {
-      try {
-        return JSON.parse(window.localStorage.getItem(reviewStorageKey) || "{}");
-      } catch {
-        return {};
-      }
+    const reviewDatabaseRequiredMessage = "本地服务未启动。请重新打开 Serenity 每日分析.app；复核必须实时写入数据库。";
+    const reviewOutcomeLabels = {
+      observe_pool: "放入观察池继续观察",
+      exclude_current_observation: "剔除这一轮观察池",
+      promote_top5_candidate_pool: "进入 Top 5 候选操作池",
     };
-    const writeReviewCache = (log) => {
-      try {
-        window.localStorage.setItem(reviewStorageKey, JSON.stringify(log));
-      } catch {
-        /* 静态入口缓存失败时不阻断页面主流程。 */
-      }
+    const reviewOutcomeKeysByLabel = Object.fromEntries(
+      Object.entries(reviewOutcomeLabels).map(([key, label]) => [label, key])
+    );
+    const reviewApiBacked = () => true;
+    const normalizeReviewOutcome = (value) => {
+      if (reviewOutcomeLabels[value]) return value;
+      if (reviewOutcomeKeysByLabel[value]) return reviewOutcomeKeysByLabel[value];
+      return "observe_pool";
     };
     const loadReviewLog = async () => {
-      if (!reviewApiBacked()) {
-        return readReviewCache();
+      const { response, data } = await fetchApiJson("/api/manual-review", { method: "GET" });
+      if (!response.ok || data.status !== "pass") {
+        throw new Error(data.message || "读取复核失败");
       }
-      try {
-        const response = await fetch("/api/manual-review", { method: "GET" });
-        const data = await response.json();
-        if (!response.ok || data.status !== "pass") {
-          throw new Error(data.message || "读取复核失败");
-        }
-        const records = data.records || {};
-        writeReviewCache(records);
-        return records;
-      } catch {
-        return readReviewCache();
-      }
+      return data.records || {};
     };
     const saveReviewRecord = async (record) => {
-      const key = String(record.review_id || "");
-      if (!reviewApiBacked()) {
-        const cache = readReviewCache();
-        cache[key] = { ...record, source: "local" };
-        writeReviewCache(cache);
-        return cache[key];
-      }
-      const response = await fetch("/api/manual-review", {
+      const { response, data } = await fetchApiJson("/api/manual-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(record),
       });
-      const data = await response.json();
       if (!response.ok || data.status !== "pass") {
         throw new Error(data.message || "保存复核失败");
       }
-      const saved = data.record || { ...record, source: "sqlite" };
-      const cache = readReviewCache();
-      cache[key] = saved;
-      writeReviewCache(cache);
-      return saved;
+      return data.record || { ...record, source: "sqlite" };
     };
     const clearReviewRecords = async () => {
-      if (!reviewApiBacked()) {
-        window.localStorage.removeItem(reviewStorageKey);
-        return { status: "pass", source: "local" };
-      }
-      const response = await fetch("/api/manual-review", { method: "DELETE" });
-      const data = await response.json();
+      const { response, data } = await fetchApiJson("/api/manual-review", { method: "DELETE" });
       if (!response.ok || data.status !== "pass") {
         throw new Error(data.message || "清空复核失败");
       }
-      window.localStorage.removeItem(reviewStorageKey);
       return data;
     };
     const formatReviewSavedAt = () => {
@@ -1184,21 +1447,28 @@
     const reviewStateText = (record) => {
       if (!record) return "未保存";
       const savedAt = record.savedAt || record.saved_at || "";
-      return record.source === "sqlite" ? `已保存到数据库 ${savedAt}` : `已临时保存 ${savedAt}`;
+      const label = record.outcomeLabel || record.decision || "";
+      return `已保存到数据库 ${savedAt}${label ? ` · ${label}` : ""}`;
     };
     const applyReviewLog = async () => {
-      const log = await loadReviewLog();
+      let log = {};
+      try {
+        log = await loadReviewLog();
+      } catch (error) {
+        const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
+        showToast(message);
+      }
       document.querySelectorAll("[data-review-item]").forEach((item) => {
         const record = log[item.dataset.reviewId || ""];
         const decision = item.querySelector("[data-review-decision]");
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         if (record) {
-          if (decision) decision.value = record.decision || decision.value;
+          if (decision) decision.value = normalizeReviewOutcome(record.outcome || record.decision || decision.value);
           if (note) note.value = record.note || "";
           if (state) state.textContent = reviewStateText(record);
         } else if (state) {
-          state.textContent = "未保存";
+          state.textContent = reviewApiBacked() ? "未保存" : "数据库入口不可用";
         }
       });
     };
@@ -1222,35 +1492,53 @@
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         const savedAt = formatReviewSavedAt();
+        const outcome = normalizeReviewOutcome(decision ? decision.value : "observe_pool");
         const record = {
           review_id: item.dataset.reviewId || "",
           run_id: item.dataset.reviewRunId || "",
-          decision: decision ? decision.value : "保持禁止新增",
+          outcome,
+          decision: reviewOutcomeLabels[outcome],
           note: note ? note.value : "",
           savedAt,
         };
         try {
           const saved = await saveReviewRecord(record);
           if (state) state.textContent = reviewStateText(saved);
-          showToast(saved.source === "sqlite" ? "人工复核已保存到数据库" : "当前为静态入口，已临时保存到浏览器");
+          if (saved.refreshTriggered) {
+            if (saved.refreshStatus === "error") {
+              showToast(saved.refreshMessage || "已保存到数据库，但同步刷新失败");
+            } else {
+              window.sessionStorage.setItem(
+                "serenityRefreshToast",
+                saved.refreshMessage || "人工复核已保存到数据库，并已重新运行 Serenity 全流程"
+              );
+              reloadAfterServerUpdate();
+            }
+          } else {
+            showToast(`人工复核已保存到数据库：${saved.outcomeLabel || saved.decision || "已保存"}`);
+          }
         } catch (error) {
-          const cache = readReviewCache();
-          cache[String(record.review_id || "")] = { ...record, source: "local" };
-          writeReviewCache(cache);
-          if (state) state.textContent = reviewStateText(cache[String(record.review_id || "")]);
-          const message = error && error.message ? error.message : "数据库保存失败";
-          showToast(`${message}，已临时缓存到浏览器`);
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
+          if (state) state.textContent = "保存失败，未写入数据库";
+          showToast(message);
         }
       });
     });
     document.querySelectorAll("[data-copy-review-log]").forEach((button) => {
       button.addEventListener("click", async () => {
-        const log = await loadReviewLog();
+        let log = {};
+        try {
+          log = await loadReviewLog();
+        } catch (error) {
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
+          showToast(message);
+        }
         const lines = Array.from(document.querySelectorAll("[data-review-item]")).map((item) => {
           const id = item.dataset.reviewId || "";
           const title = item.querySelector(".review-item-head strong")?.textContent?.trim() || id;
           const reason = item.querySelector(".review-reason")?.textContent?.trim() || "-";
-          const decision = item.querySelector("[data-review-decision]")?.value || log[id]?.decision || "保持禁止新增";
+          const outcome = normalizeReviewOutcome(item.querySelector("[data-review-decision]")?.value || log[id]?.outcome || log[id]?.decision);
+          const decision = reviewOutcomeLabels[outcome];
           const note = item.querySelector("[data-review-note]")?.value || log[id]?.note || "";
           return `#${id} ${title} | 决策:${decision} | 原因:${reason} | 备注:${note || "-"}`;
         });
@@ -1280,12 +1568,12 @@
             const state = item.querySelector("[data-review-state]");
             const decision = item.querySelector("[data-review-decision]");
             if (note) note.value = "";
-            if (decision) decision.value = "保持禁止新增";
+            if (decision) decision.value = "observe_pool";
             if (state) state.textContent = "未保存";
           });
-          showToast(result.source === "local" ? "临时复核记录已清空" : "数据库复核记录已清空");
+          showToast("数据库复核记录已清空");
         } catch (error) {
-          const message = error && error.message ? error.message : "清空复核失败";
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
           showToast(message);
         }
       });
@@ -1293,8 +1581,15 @@
     void applyReviewLog();
 
     const usageGuideModal = document.getElementById("usage-guide-modal");
+    const guideNavButtons = Array.from(document.querySelectorAll("[data-guide-target]"));
+    const setActiveGuideTarget = (targetId) => {
+      guideNavButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.guideTarget === targetId);
+      });
+    };
     const openUsageGuide = () => {
       if (usageGuideModal) usageGuideModal.hidden = false;
+      setActiveGuideTarget("guide-overview");
       showToast("已打开使用说明");
     };
     const closeUsageGuide = () => {
@@ -1306,6 +1601,15 @@
     document.querySelectorAll("[data-close-usage-guide]").forEach((button) => {
       button.addEventListener("click", closeUsageGuide);
     });
+    guideNavButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId = button.dataset.guideTarget;
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (!target) return;
+        setActiveGuideTarget(targetId);
+        target.scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+    });
 
     const modal = document.getElementById("fund-modal");
     const modalTitle = document.getElementById("fund-modal-title");
@@ -1316,6 +1620,19 @@
     const fundLibraryBody = document.getElementById("fund-library-body");
     const fundLibraryTableBody = document.getElementById("fund-library-table-body");
     let fundDetailOpenedFromLibrary = false;
+    const formatFeeSchedule = (value) => {
+      const raw = String(value ?? "-").trim();
+      if (!raw || raw === "-") return "-";
+      return raw
+        .split(/[；;]/)
+        .map((part) => part.trim())
+        .filter(Boolean)
+        .join("\n");
+    };
+    const formatFundValue = (key, value) => {
+      if (key.includes("Schedule")) return formatFeeSchedule(value);
+      return String(value ?? "-");
+    };
     const fieldLabels = [
       ["首次进入策略 Top5", "firstTop5Time"],
       ["上次进入候选池时间", "lastTop5EntryTime"],
@@ -1327,9 +1644,6 @@
       ["交易截止时间", "cutoffTime"],
       ["确认周期", "confirmLag"],
       ["赎回到账", "redeemLag"],
-      ["支付宝交易可用性", "alipayTradeStatus"],
-      ["MooMoo交易可用性", "moomooTradeStatus"],
-      ["平台交易备注", "platformTradeNote"],
       ["申购费（基础/最高）", "subscriptionFee"],
       ["申购费分档规则", "subscriptionFeeSchedule"],
       ["赎回费（基础/最高）", "redemptionFee"],
@@ -1342,15 +1656,36 @@
       ["合计运营费（年）", "operatingFee"],
       ["最低申购金额", "minPurchaseAmount"],
       ["来源名称", "sourceName"],
-      ["来源类型", "sourceType"],
-      ["来源优先级", "sourcePriority"],
       ["来源链接", "sourceUrl"]
+    ];
+    const fundLibraryTableColumns = [
+      ["代码", "code"],
+      ["基金名称", "name"],
+      ["上次进入候选池时间", "lastTop5EntryTime"],
+      ["当前进入候选池天数", "currentCandidateDays"],
+      ["当前状态", "candidateStatus"],
+      ["费用/状态快照时间", "ruleSnapshotTime"],
+      ["申购状态", "subscriptionStatus"],
+      ["赎回状态", "redemptionStatus"],
+      ["交易截止时间", "cutoffTime"],
+      ["确认周期", "confirmLag"],
+      ["赎回到账", "redeemLag"],
+      ["申购费（基础/最高）", "subscriptionFee"],
+      ["申购费分档规则", "subscriptionFeeSchedule"],
+      ["赎回费（基础/最高）", "redemptionFee"],
+      ["赎回费分档规则", "redemptionFeeSchedule"],
+      ["费率规则时间", "feeScheduleAsOf"],
+      ["费率口径说明", "feeScheduleNote"],
+      ["管理费（年）", "managementFee"],
+      ["托管费（年）", "custodyFee"],
+      ["销售服务费", "salesServiceFee"],
+      ["合计运营费（年）", "operatingFee"],
+      ["最低申购金额", "minPurchaseAmount"],
     ];
     const fundLibrarySummaryLabels = [
       ["当前状态", "candidateStatus"],
+      ["费用快照", "ruleSnapshotTime"],
       ["入池天数", "currentCandidateDays"],
-      ["支付宝交易可用性", "alipayTradeStatus"],
-      ["MooMoo交易可用性", "moomooTradeStatus"],
       ["申购状态", "subscriptionStatus"],
       ["赎回状态", "redemptionStatus"],
       ["申购费", "subscriptionFee"],
@@ -1389,7 +1724,10 @@
           const labelNode = document.createElement("span");
           labelNode.textContent = label;
           const valueNode = document.createElement("strong");
-          valueNode.textContent = String(info[key] ?? "-");
+          valueNode.textContent = formatFundValue(key, info[key]);
+          if (key.includes("Schedule")) {
+            valueNode.classList.add("multi-line-value");
+          }
           if (valueNode.textContent.includes("未提供完整")) {
             field.classList.add("warning");
           }
@@ -1425,7 +1763,7 @@
         if (fundLibraryTableBody) {
           const row = document.createElement("tr");
           const cell = document.createElement("td");
-          cell.colSpan = fieldLabels.length + 3;
+          cell.colSpan = fundLibraryTableColumns.length + 1;
           cell.textContent = "当前没有已入库基金信息。";
           row.appendChild(cell);
           fundLibraryTableBody.appendChild(row);
@@ -1467,20 +1805,33 @@
 
         const schedule = document.createElement("div");
         schedule.className = "fund-library-schedule";
-        schedule.textContent = `申购费分档：${info.subscriptionFeeSchedule || "-"}\n赎回费分档：${info.redemptionFeeSchedule || "-"}\n支付宝交易：${info.alipayTradeStatus || "-"}\nMooMoo交易：${info.moomooTradeStatus || "-"}\n来源：${info.sourceName || "-"}`;
+        schedule.innerHTML = "";
+        [
+          ["申购费分档", formatFeeSchedule(info.subscriptionFeeSchedule)],
+          ["赎回费分档", formatFeeSchedule(info.redemptionFeeSchedule)],
+          ["费率说明", info.feeScheduleNote || "-"],
+        ].forEach(([label, value]) => {
+          const labelNode = document.createElement("strong");
+          labelNode.textContent = label;
+          const valueNode = document.createElement("span");
+          valueNode.textContent = String(value || "-");
+          schedule.appendChild(labelNode);
+          schedule.appendChild(valueNode);
+        });
         card.appendChild(schedule);
         fundLibraryBody.appendChild(card);
 
         if (fundLibraryTableBody) {
           const row = document.createElement("tr");
-          const values = [
-            info.code || "-",
-            info.name || "-",
-            ...fieldLabels.map(([, key]) => info[key] ?? "-")
-          ];
-          values.forEach((value) => {
+          fundLibraryTableColumns.forEach(([, key]) => {
             const cell = document.createElement("td");
-            cell.textContent = String(value);
+            cell.textContent = formatFundValue(key, info[key]);
+            if (key.includes("Schedule")) {
+              cell.classList.add("fee-schedule-cell");
+            }
+            if (key === "feeScheduleNote") {
+              cell.classList.add("fee-note-cell");
+            }
             row.appendChild(cell);
           });
           const actionCell = document.createElement("td");
@@ -1499,7 +1850,7 @@
     };
     const openFundLibrary = () => {
       renderFundLibrary();
-      setFundLibraryMode("gallery");
+      setFundLibraryMode("table");
       if (fundLibraryModal) fundLibraryModal.hidden = false;
       showToast("已打开基金库");
     };
@@ -1513,7 +1864,7 @@
       button.addEventListener("click", closeFundLibrary);
     });
     document.querySelectorAll("[data-fund-library-mode]").forEach((button) => {
-      button.addEventListener("click", () => setFundLibraryMode(button.dataset.fundLibraryMode || "gallery"));
+      button.addEventListener("click", () => setFundLibraryMode(button.dataset.fundLibraryMode || "table"));
     });
     document.querySelectorAll("[data-fund-code]").forEach((button) => {
       button.addEventListener("click", () => openFundModal(button.dataset.fundCode, { fromLibrary: false }));

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime
+import csv
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -13,9 +14,45 @@ def _today() -> str:
     return datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
 
 
+def _write_fund001_price_history(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "asset_code",
+                "date",
+                "close",
+                "source_name",
+                "source_type",
+                "source_priority",
+                "url_or_path",
+                "evidence_level",
+                "as_of",
+            ],
+        )
+        writer.writeheader()
+        start = datetime(2024, 1, 1).date()
+        for idx in range(760):
+            writer.writerow(
+                {
+                    "asset_code": "FUND001",
+                    "date": (start + timedelta(days=idx)).isoformat(),
+                    "close": f"{1.0 + idx * 0.001:.4f}",
+                    "source_name": "test official NAV",
+                    "source_type": "official",
+                    "source_priority": "3",
+                    "url_or_path": "https://example.com/fund001/nav",
+                    "evidence_level": "Strong",
+                    "as_of": _today(),
+                }
+            )
+
+
 def test_normalize_intake_bundle_writes_pack_and_dry_runs_promotion(tmp_path: Path):
     settings = temp_settings(tmp_path)
     copy_sample_data(settings, Path.cwd())
+    _write_fund001_price_history(settings.manual_dir / "price_history.csv")
     build_production_intake_pack(settings)
     today = _today()
     alipay = tmp_path / "alipay.csv"

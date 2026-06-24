@@ -67,7 +67,7 @@ AREA_RULES: dict[str, dict[str, str]] = {
         "helper_files": "outputs/preflight/benchmark_smoke_latest.md",
         "accepted_sources": "MooMoo, official index/exchange provider, or exact public aggregation fallback with metadata",
         "source_priority_rule": "MooMoo/official preferred; public_aggregation is warning-only and cannot override higher-priority conflict",
-        "freshness_requirement": "Must cover 1m, 3m, and recent 10 trading-day windows",
+        "freshness_requirement": "Must cover 1m, 3m, 12m, and recent 10 trading-day windows",
         "unlock_effect": "Maintains Shanghai Composite and S&P 500 benchmark comparison windows",
     },
 }

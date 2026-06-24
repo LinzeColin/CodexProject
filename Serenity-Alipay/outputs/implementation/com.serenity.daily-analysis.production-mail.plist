@@ -23,12 +23,5 @@
 	<string>/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_launchd.out.log</string>
 	<key>StandardErrorPath</key>
 	<string>/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_launchd.err.log</string>
-	<key>EnvironmentVariables</key>
-	<dict>
-		<key>SERENITY_DRY_RUN</key>
-		<string>false</string>
-		<key>SERENITY_MAIL_SEND_ENABLED</key>
-		<string>true</string>
-	</dict>
 </dict>
 </plist>

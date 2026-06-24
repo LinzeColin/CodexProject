@@ -79,7 +79,7 @@ def test_default_benchmark_window_uses_same_weekday(tmp_path: Path):
     start, end = default_benchmark_window(settings, today=date(2026, 6, 12))
 
     assert end == "2026-06-12"
-    assert start == "2026-03-01"
+    assert start == "2025-05-12"
 
 
 def test_default_benchmark_window_rolls_weekend_back_to_friday(tmp_path: Path):
@@ -88,7 +88,7 @@ def test_default_benchmark_window_rolls_weekend_back_to_friday(tmp_path: Path):
     start, end = default_benchmark_window(settings, today=date(2026, 6, 13))
 
     assert end == "2026-06-12"
-    assert start == "2026-03-01"
+    assert start == "2025-05-12"
 
 
 def test_moomoo_exact_index_requires_full_benchmark_window(monkeypatch):
@@ -106,7 +106,7 @@ def test_moomoo_exact_index_requires_full_benchmark_window(monkeypatch):
     ]
     monkeypatch.setitem(sys.modules, "moomoo", _fake_moomoo_module(short_rows))
 
-    rows = _probe_moomoo_candidates((candidate,), start="2026-03-01", end="2026-06-12", host="127.0.0.1", port=11111)
+    rows = _probe_moomoo_candidates((candidate,), start="2025-05-12", end="2026-06-12", host="127.0.0.1", port=11111)
 
     assert rows[0]["status"] == "pass"
     assert rows[0]["rows"] == 5
@@ -123,16 +123,16 @@ def test_moomoo_exact_index_is_eligible_only_when_window_is_sufficient(monkeypat
         "exact_index",
         "test",
     )
-    start_day = date(2026, 3, 1)
+    start_day = date(2025, 5, 12)
     rows = [
         {"time_key": (start_day + timedelta(days=offset)).isoformat() + " 00:00:00", "close": 4000 + offset}
-        for offset in range(0, 100, 2)
+        for offset in range(0, 397, 2)
     ]
     monkeypatch.setitem(sys.modules, "moomoo", _fake_moomoo_module(rows))
 
-    result = _probe_moomoo_candidates((candidate,), start="2026-03-01", end="2026-06-12", host="127.0.0.1", port=11111)
+    result = _probe_moomoo_candidates((candidate,), start="2025-05-12", end="2026-06-12", host="127.0.0.1", port=11111)
 
-    assert result[0]["rows"] == 50
+    assert result[0]["rows"] == 199
     assert result[0]["sufficient_for_required_windows"] is True
     assert result[0]["production_eligible"] is True
     assert result[0]["history"][0]["source_type"] == "moomoo"

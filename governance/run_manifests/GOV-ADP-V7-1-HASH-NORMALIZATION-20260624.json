@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-ADP-V7-1-HASH-NORMALIZATION-20260624",
+  "project_id": "CodexProject",
+  "task_id": "ADP-V7-1-HASH-NORMALIZATION",
+  "acceptance_ids": [
+    "ACC-ADP-V7-1-HASH-NORMALIZATION"
+  ],
+  "iteration_id": "ITER-20260624-ADP-V7-1-HASH-NORMALIZATION",
+  "generated_at": "2026-06-24T14:55:00+10:00",
+  "implementation_base_sha": "1fc53791f3aa27675c6235f6236681ee36d71629",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:fb6617fb71c322852ca0b281c4cdf0a6bf9290beeb5cbdaed3e795b0ad89a114",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-ADP-V7-1-HASH-NORMALIZATION-20260624.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-ADP-V7-1-HASH-NORMALIZATION-20260624.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-ADP-V7-1-HASH-NORMALIZATION-20260624.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-ADP-V7-1-HASH-NORMALIZATION-20260624.json",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "cross_platform_hash_normalization",
+    "adp_v7_1_lock_truth_preserved",
+    "no_product_runtime_change"
+  ],
+  "model_delta": "NOT_CHANGED: validator hashing normalizes CRLF to LF before comparing ADP V7.1 text contract hashes.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, formula, parameter, data, runtime behavior, or GitHub setting change.",
+  "test_commands": [
+    "python -B scripts/validate_project_governance.py --project arxiv-daily-push",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_adp_v7_1_root_lock_hashes_stage_gates_and_aliases_are_machine_checkable tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_adp_v7_1_hashing_normalizes_windows_line_endings tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_adp_v7_1_root_lock_is_enforced_by_project_validator_and_human_entries -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B scripts/validate_project_governance.py --project arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "arxiv-daily-push checked with errors=0 warnings=0 after line-ending-normalized hash comparison."
+    },
+    {
+      "command": "python -B -m unittest ...ADP V7.1 hash focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "3 focused tests OK, including CRLF to LF hash normalization."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 237 tests; OK. Output includes expected fixture diagnostics for missing-base/root-governance negative cases."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ADP-V7-1-HASH-NORMALIZATION-20260624.json",
+    "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "ADP V7.1 root-lock hash validation is cross-platform while preserving repository LF contract truth",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_PASS_REMOTE_PR_CI_REQUIRED",
+  "summary": "This repair keeps the ADP V7.1 locked hashes unchanged and updates governance validation/tests to normalize Windows CRLF working-tree text to repository LF bytes before comparing hashes.",
+  "rollback": "Revert this manifest plus the validator/test normalization change. Do not rewrite ADP V7.1 contract hashes unless the repository contract files themselves intentionally change.",
+  "unresolved_risks": [
+    "PR CI must attest the same behavior on the Ubuntu runner.",
+    "Review9 S6PBT02 branch-protection evidence remains externally unverified and is not changed by this repair."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

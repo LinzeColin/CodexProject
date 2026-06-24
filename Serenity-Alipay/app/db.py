@@ -158,6 +158,19 @@ CREATE TABLE IF NOT EXISTS recommendation_snapshot (
   manual_review_required INTEGER NOT NULL DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS asset_pool_entry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  asset_id TEXT NOT NULL,
+  pool_kind TEXT NOT NULL,
+  first_run_id TEXT NOT NULL,
+  first_rank INTEGER,
+  first_run_time_bj TEXT NOT NULL,
+  first_run_time_au TEXT,
+  first_run_created_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE(asset_id, pool_kind)
+);
+
 CREATE TABLE IF NOT EXISTS comparison_snapshot (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   run_id TEXT NOT NULL,
@@ -217,6 +230,13 @@ CREATE TABLE IF NOT EXISTS manual_review_decision (
   review_id INTEGER PRIMARY KEY,
   run_id TEXT NOT NULL,
   decision TEXT NOT NULL,
+  outcome TEXT,
+  outcome_label TEXT,
+  system_disposition TEXT,
+  refresh_triggered INTEGER NOT NULL DEFAULT 0,
+  refresh_status TEXT,
+  refresh_message TEXT,
+  refresh_run_id TEXT,
   note TEXT,
   saved_at TEXT NOT NULL,
   created_at TEXT NOT NULL,
@@ -280,6 +300,27 @@ CREATE TABLE IF NOT EXISTS source_evidence_audit_snapshot (
   mtime TEXT,
   created_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS platform_trade_check_snapshot (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  check_run_id TEXT NOT NULL,
+  generated_at TEXT NOT NULL,
+  asset_code TEXT NOT NULL,
+  asset_name TEXT NOT NULL,
+  preferred_source TEXT NOT NULL,
+  source_field TEXT NOT NULL,
+  source_url TEXT,
+  http_status INTEGER,
+  fetch_status TEXT NOT NULL,
+  subscription_advisory TEXT NOT NULL,
+  redemption_advisory TEXT NOT NULL,
+  confidence TEXT NOT NULL,
+  advisory_only INTEGER NOT NULL DEFAULT 1,
+  evidence_snippet TEXT,
+  matched_terms TEXT,
+  content_sha256 TEXT,
+  message TEXT NOT NULL
+);
 """
 
 
@@ -307,6 +348,20 @@ def init_db(db_path: Path) -> None:
                 "platform_trade_note": "TEXT",
             },
         )
+        _ensure_columns(
+            conn,
+            "manual_review_decision",
+            {
+                "outcome": "TEXT",
+                "outcome_label": "TEXT",
+                "system_disposition": "TEXT",
+                "refresh_triggered": "INTEGER NOT NULL DEFAULT 0",
+                "refresh_status": "TEXT",
+                "refresh_message": "TEXT",
+                "refresh_run_id": "TEXT",
+            },
+        )
+        _backfill_asset_pool_entries(conn)
 
 
 def _ensure_columns(conn: sqlite3.Connection, table: str, columns: dict[str, str]) -> None:
@@ -322,6 +377,83 @@ def insert_row(conn: sqlite3.Connection, table: str, row: dict[str, Any]) -> Non
     names = ", ".join(columns)
     values = [row[column] for column in columns]
     conn.execute(f"INSERT INTO {table} ({names}) VALUES ({placeholders})", values)
+
+
+def _pool_kinds_for_rank(rank: int | None) -> list[str]:
+    if rank is None or rank <= 0 or rank > 10:
+        return []
+    kinds = ["candidate_pool"]
+    if rank <= 5:
+        kinds.append("holding_pool")
+    else:
+        kinds.append("observation_pool")
+    return kinds
+
+
+def record_asset_pool_entries(
+    conn: sqlite3.Connection,
+    *,
+    run_id: str,
+    asset_id: str,
+    rank: int | None,
+    run_time_bj: str,
+    run_time_au: str | None,
+    run_created_at: str,
+    created_at: str,
+) -> None:
+    """Persist first pool-entry facts without rewriting earlier membership."""
+    for pool_kind in _pool_kinds_for_rank(rank):
+        conn.execute(
+            """
+            INSERT OR IGNORE INTO asset_pool_entry (
+                asset_id, pool_kind, first_run_id, first_rank,
+                first_run_time_bj, first_run_time_au, first_run_created_at,
+                created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                asset_id,
+                pool_kind,
+                run_id,
+                rank,
+                run_time_bj,
+                run_time_au,
+                run_created_at,
+                created_at,
+            ),
+        )
+
+
+def _backfill_asset_pool_entries(conn: sqlite3.Connection) -> None:
+    tables = {
+        row["name"]
+        for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        if not str(row["name"]).startswith("sqlite_")
+    }
+    if not {"asset_pool_entry", "recommendation_snapshot", "run_log"}.issubset(tables):
+        return
+    rows = conn.execute(
+        """
+        SELECT r.run_id, r.asset_id, r.rank,
+               l.run_time_bj, l.run_time_au, l.created_at AS run_created_at
+        FROM recommendation_snapshot r
+        JOIN run_log l ON l.run_id=r.run_id
+        WHERE r.rank BETWEEN 1 AND 10
+        ORDER BY l.created_at ASC, l.run_time_bj ASC, r.id ASC
+        """
+    ).fetchall()
+    for row in rows:
+        record_asset_pool_entries(
+            conn,
+            run_id=row["run_id"],
+            asset_id=row["asset_id"],
+            rank=int(row["rank"]) if row["rank"] is not None else None,
+            run_time_bj=row["run_time_bj"],
+            run_time_au=row["run_time_au"],
+            run_created_at=row["run_created_at"],
+            created_at=row["run_created_at"],
+        )
 
 
 def upsert_asset(conn: sqlite3.Connection, row: dict[str, Any]) -> None:

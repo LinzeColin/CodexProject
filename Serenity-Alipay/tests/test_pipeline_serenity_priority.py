@@ -1,7 +1,7 @@
 from dataclasses import replace
 
 from app.adapters.manual_sources import Candidate
-from app.core.pipeline import _ranked_recommendation_rows, _target_weights
+from app.core.pipeline import _action_pool_requires_manual_review, _action_pool_rows, _ranked_recommendation_rows, _target_weights
 from app.core.scoring import ScoreResult
 
 
@@ -108,3 +108,34 @@ def test_same_serenity_priority_uses_confidence_score_as_tiebreaker():
     ranked = _ranked_recommendation_rows([base, higher])
 
     assert [row["candidate"].asset_code for row in ranked] == ["HIGH_SCORE", "LOW_SCORE"]
+
+
+def test_observation_pool_manual_review_does_not_lock_action_pool():
+    recommendations = [
+        {"rank": 1, "asset_code": "TOP1", "manual_review_required": False},
+        {"rank": 2, "asset_code": "TOP2", "manual_review_required": False},
+        {"rank": 3, "asset_code": "TOP3", "manual_review_required": False},
+        {"rank": 4, "asset_code": "TOP4", "manual_review_required": False},
+        {"rank": 5, "asset_code": "TOP5", "manual_review_required": False},
+        {"rank": 6, "asset_code": "WATCH6", "manual_review_required": True},
+        {"rank": 7, "asset_code": "WATCH7", "manual_review_required": True},
+    ]
+
+    assert [row["asset_code"] for row in _action_pool_rows(recommendations)] == [
+        "TOP1",
+        "TOP2",
+        "TOP3",
+        "TOP4",
+        "TOP5",
+    ]
+    assert _action_pool_requires_manual_review(recommendations) is False
+
+
+def test_top5_manual_review_locks_action_pool():
+    recommendations = [
+        {"rank": 1, "asset_code": "TOP1", "manual_review_required": False},
+        {"rank": 5, "asset_code": "TOP5", "manual_review_required": True},
+        {"rank": 6, "asset_code": "WATCH6", "manual_review_required": False},
+    ]
+
+    assert _action_pool_requires_manual_review(recommendations) is True

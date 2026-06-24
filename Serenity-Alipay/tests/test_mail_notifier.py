@@ -1,4 +1,5 @@
 from app.adapters.mail_notifier import send_with_apple_mail
+from subprocess import TimeoutExpired
 
 
 class _Completed:
@@ -28,6 +29,8 @@ def test_send_with_apple_mail_prefers_html_content(monkeypatch):
     assert len(calls) == 1
     assert "set html content to" in calls[0][2]
     assert "set content to" in calls[0][2]
+    assert "ignoring application responses" in calls[0][2]
+    assert "with timeout of" in calls[0][2]
 
 
 def test_send_with_apple_mail_falls_back_to_plain_text_when_html_script_fails(monkeypatch):
@@ -52,3 +55,16 @@ def test_send_with_apple_mail_falls_back_to_plain_text_when_html_script_fails(mo
     assert len(calls) == 2
     assert "set html content to" in calls[0][2]
     assert "content:" in calls[1][2]
+    assert "ignoring application responses" in calls[1][2]
+
+
+def test_send_with_apple_mail_reports_subprocess_timeout(monkeypatch):
+    def fake_run(args, **kwargs):
+        raise TimeoutExpired(args, kwargs.get("timeout"))
+
+    monkeypatch.setattr("app.adapters.mail_notifier.subprocess.run", fake_run)
+
+    result = send_with_apple_mail("标题", "纯文本兜底", "linzezhang35@gmail.com")
+
+    assert result["status"] == "failed"
+    assert "timed out" in result["error"]

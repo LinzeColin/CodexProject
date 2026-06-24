@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -16,6 +16,38 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, object]])
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+
+
+def _write_fund001_price_history(path: Path) -> None:
+    start = datetime(2024, 1, 1).date()
+    _write_csv(
+        path,
+        [
+            "asset_code",
+            "date",
+            "close",
+            "source_name",
+            "source_type",
+            "source_priority",
+            "url_or_path",
+            "evidence_level",
+            "as_of",
+        ],
+        [
+            {
+                "asset_code": "FUND001",
+                "date": (start + timedelta(days=idx)).isoformat(),
+                "close": f"{1.0 + idx * 0.001:.4f}",
+                "source_name": "test official NAV",
+                "source_type": "official",
+                "source_priority": "3",
+                "url_or_path": "https://example.com/fund001/nav",
+                "evidence_level": "Strong",
+                "as_of": datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat(),
+            }
+            for idx in range(760)
+        ],
+    )
 
 
 def _fill_pack_with_production_like_data(pack_dir: Path) -> None:
@@ -163,6 +195,7 @@ def _fill_pack_with_production_like_data(pack_dir: Path) -> None:
 def test_promote_intake_pack_blocks_placeholders(tmp_path: Path):
     settings = temp_settings(tmp_path)
     copy_sample_data(settings, Path.cwd())
+    _write_fund001_price_history(settings.manual_dir / "price_history.csv")
     build_production_intake_pack(settings)
 
     result = promote_intake_pack(settings, apply=True)
@@ -178,6 +211,7 @@ def test_promote_intake_pack_blocks_placeholders(tmp_path: Path):
 def test_promote_intake_pack_apply_copies_after_validation(tmp_path: Path):
     settings = temp_settings(tmp_path)
     copy_sample_data(settings, Path.cwd())
+    _write_fund001_price_history(settings.manual_dir / "price_history.csv")
     build_production_intake_pack(settings)
     pack_dir = settings.root_dir / "outputs" / "intake_pack"
     _fill_pack_with_production_like_data(pack_dir)

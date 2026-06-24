@@ -101,13 +101,21 @@ def test_latest_surfaces_keep_latest_data_with_plain_run_time(tmp_path: Path):
             created_at="2026-06-13T09:45:39+00:00",
             weight=0.3,
         )
+        _insert_visible_test_run(
+            conn,
+            settings,
+            run_id="delayed_old_slot",
+            run_time_bj="2026-06-14T12:30:00+08:00",
+            created_at="2026-06-15T05:12:56+00:00",
+            weight=0.1,
+        )
         latest_runs = _latest_runs(conn, limit=1)
         index_path = _write_offline_index(conn, settings)
 
     latest_holdings = _latest_holdings(settings)
 
-    assert [run.run_id for run in latest_runs] == ["future_backfill"]
-    assert latest_holdings["007300"].weight == 0.3
+    assert [run.run_id for run in latest_runs] == ["delayed_old_slot"]
+    assert latest_holdings["007300"].weight == 0.1
     index_html = index_path.read_text(encoding="utf-8")
     assert "real_run_report.html" in index_html
     assert "future_backfill_report.html" in index_html

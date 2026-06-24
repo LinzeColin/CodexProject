@@ -21,10 +21,6 @@ def _write_launchd_plist(path: Path) -> None:
             "--local",
             "--json",
         ],
-        "EnvironmentVariables": {
-            "SERENITY_DRY_RUN": "true",
-            "SERENITY_MAIL_SEND_ENABLED": "false",
-        },
     }
     with path.open("wb") as handle:
         plistlib.dump(data, handle)
@@ -55,8 +51,11 @@ def test_mail_unlock_check_generates_template_without_sending_or_installing(monk
     assert production_plist.exists()
     with production_plist.open("rb") as handle:
         data = plistlib.load(handle)
-    assert data["EnvironmentVariables"]["SERENITY_MAIL_SEND_ENABLED"] == "true"
-    assert data["EnvironmentVariables"]["SERENITY_DRY_RUN"] == "false"
+    assert data["ProgramArguments"][3:] == ["automation-tick", "--no-dry-run", "--send-mail", "--local", "--json"]
+    assert "EnvironmentVariables" not in data or (
+        "SERENITY_MAIL_SEND_ENABLED" not in data["EnvironmentVariables"]
+        and "SERENITY_DRY_RUN" not in data["EnvironmentVariables"]
+    )
     assert Path(str(result["json_path"])).exists()
     assert Path(str(result["markdown_path"])).exists()
 

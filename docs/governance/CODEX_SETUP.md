@@ -93,7 +93,7 @@ Pushes and manual full audits also run all-project semantic drift reporting:
 
 ```bash
 python3 scripts/validate_project_governance.py --all --semantic --drift-report
-python3 scripts/generate_governance_dashboard.py --write --all --root-artifact-dir /tmp/governance-generated-views
+python3 scripts/generate_governance_dashboard.py --write --root-artifact-dir /tmp/governance-generated-views
 git diff --exit-code -- ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
 ```
 
@@ -114,3 +114,30 @@ for `main` so `Project Governance / governance` is a required status check.
 Without this repository setting, CI runs but cannot block merges by itself.
 If branch protection cannot be verified through an authenticated API or UI
 inspection, report it as `UNVERIFIED`; do not claim no-bypass enforcement.
+
+### Review9 S6PBT02 Owner Checklist
+
+Configure `main` with exactly one required governance status check:
+
+- Required check: `Project Governance / governance`
+- Require a pull request before merging into `main`.
+- Require status checks to pass before merging.
+- Require branches to be up to date before merging when GitHub exposes that
+  setting for the selected protection/ruleset mode.
+- Do not allow bypassing the configured protection for administrators or app
+  actors unless an explicit emergency rollback rule is documented in the same
+  owner evidence bundle.
+
+Valid S6PBT02 evidence is one of:
+
+- Authenticated API output captured by:
+
+```bash
+GITHUB_TOKEN=<repo-admin-token> python3 scripts/governance_setup_doctor.py --check-github --strict-github --json
+```
+
+- GitHub UI screenshot/export showing the `main` protection/ruleset with the
+  required check, PR requirement, and no-bypass state.
+
+If neither authenticated API output nor UI evidence is available, keep
+`S6PBT02`, `S6PB-GATE`, and `S6-GATE` as `IN_PROGRESS` or `UNVERIFIED`.
