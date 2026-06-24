@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (82/82 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (83/83 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,23 +71,23 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `82`
-- active_parameters: `82`
+- total_parameters: `83`
+- active_parameters: `83`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
+- release_gate: `TASK-T904-A026-A027-GOVERNANCE-SYNC-IN-PROGRESS`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `14`
-- legacy_unbound_events: `18`
+- legacy_unbound_events: `19`
 - precommit_pending_events: `59`
-- pending_or_stale_events: `79`
+- pending_or_stale_events: `80`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `d80785a099d1ff7f16798381c3716e8793b2ffae`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:385ba409ac5a4f450e78cdf2eca5df1d6fd0020e9912ba6bc26135e347499a7c`
-- snapshot_event_time: `2026-06-24T11:45:50Z`
+- source_snapshot_hash: `sha256:d322066ededba3eb1bd029bf31d97bda694ba0a27c46706f2cd400516f97367b`
+- snapshot_event_time: `2026-06-24T12:06:46Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
+- phase/gate: `C / TASK-T904-A026-A027-GOVERNANCE-SYNC-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

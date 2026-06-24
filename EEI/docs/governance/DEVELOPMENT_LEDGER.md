@@ -11,11 +11,34 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Confirmed iteration count: 38
+- Current gate: `TASK-T904-A026-A027-GOVERNANCE-SYNC-IN-PROGRESS`
+- Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T904 A026/A027 production gold-set fixture-ref exclusion hardening`
+- Current task: `TASK-T904 A026/A027 production gold-set governance traceability sync`
 - Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. This run hardens the A026/A027 production gold-set path so repository fixture refs and fixture labelers are rejected when `production_gold_set=true`; it still does not supply real production labels. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the previous CI-attested heartbeat at commit `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd` records `128/288` PASS, but the post-crash resume failed because the fixed Playwright browser path was missing. The clean restarted attempt now records operator PID `57281`, watchdog PID `17163`, `3/288` successful windows and `release_gate_closed_by_background_heartbeat=false`; the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+
+## ITER-20260624-033 - T904/A026-A027 production gold-set governance traceability sync
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `1143a076640096bef114f76f71e5267ad0d3d860`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T904`
+- Goal: bind the T904 production gold-set fixture-ref exclusion to the canonical parameter registry and traceability matrix after Project Governance CI identified the missing governance companions.
+- Assumptions: the implementation hardening in `1143a076` is already proven by EEI validation; this iteration changes governance and release evidence only.
+- Files changed: `EEI/docs/governance/parameter_registry.csv`, `EEI/docs/governance/TRACEABILITY_MATRIX.csv`, `EEI/docs/governance/DEVELOPMENT_LEDGER.md`, `EEI/docs/governance/VERSION_MATRIX.yaml`, `EEI/docs/governance/development_events.jsonl` plus generated governance/release artifacts.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight or runtime route behavior changed.
+- Parameter changes: added `PARAM-083` / `gold_quality.production_forbidden_fixture_refs` to machine-bind the production gold-set forbidden evidence-ref prefixes and fixture labeler exclusion.
+- Commands run: semantic extractor validation, EEI governance dashboard generation, clean-room/release artifact generation, gold-quality/release validation, CI-base event coverage check, `git diff --check -- EEI`, and clean temporary worktree Project Governance changed-only semantic reproduction.
+- Test results: semantic extractor PASS with `semantic_parameters_checked=83` and `semantic_formulas_checked=11`; gold-quality validation PASS with A026/A027 still `IN_PROGRESS`; clean-room validate PASS with `package_paths=437`; release artifacts validate PASS with `manifest_paths=444` and `checksum_paths=443`; CI-base latest event coverage PASS with `24/24` files; clean worktree Project Governance changed-only semantic PASS with `errors=0` and `warnings=0`.
+- Successes: Project Governance required companions are now explicitly scoped and locally reproduced in a clean worktree before rerun.
+- Failures: no real 50-case entity gold set, real 100-case relationship gold set, owner approval, legal/source clearance, A210 clearance or A209 24h completion was added.
+- Decisions: keep A026 and A027 `IN_PROGRESS`; keep A209 as a separate background 24h gate; do not change EEI system name.
+- Remaining risks: GitHub Project Governance still needs to prove the governance sync remotely; A209 can still fail before 288/288 windows.
+- Rollback: revert this governance sync and regenerated release artifacts; preserve the live A209 checkpoint unless operator intervention is required.
+- Next step: run changed-only governance validation, regenerate release artifacts, commit/push and verify CI while A209 continues in background.
 
 ## ITER-20260624-032 - T904/A026-A027 production gold-set fixture-ref exclusion
 

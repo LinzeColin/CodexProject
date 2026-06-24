@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 82
+- parameter_count: 83
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -40,6 +40,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-24 T1307/A209 operator-soak finalization preflight adds governance evidence parameter `PARAM-079` for the finalizer schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1303 external release evidence bundle preflight adds governance evidence parameter `PARAM-080` for the bundle schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
 - 2026-06-24 T1307/A209 background heartbeat refresh adds governance evidence parameter `PARAM-082` for the invariant policy `soak.background_heartbeat_counts_as_release_ready=false`; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T904/A026-A027 governance sync adds `PARAM-083` for the production gold-set forbidden fixture-ref/labeler exclusion; no scoring model, formula weight or precision threshold value changed.
 
 ## A. Model Overview
 
