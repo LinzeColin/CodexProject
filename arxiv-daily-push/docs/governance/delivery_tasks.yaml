@@ -1390,17 +1390,17 @@ tasks:
     objective: "Run the EMAIL_LEARNING_V1 read-only exact H/M repository path audit required by V7.2 before any mail production implementation work."
     scope: "Read-only path audit for product contract, feature registry, roadmap/task registry, H/M dual-plane governance, receipt targets, owners, rollback paths, and no-write boundaries."
     non_scope: "No mail production code, no public schema, no connectors, no queue/DB/scheduler/SMTP/Release/3+1 implementation, and no CURRENT/V7.2 shared contract edits."
-    status: "planned"
+    status: "completed"
     dependencies: ["V7_2_AGENT_REVALIDATION_RECEIPT"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/dual_plane_governance_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md", "governance/run_manifests/ADP-S2PHT01V1-1-T01-EMAIL-PATH-AUDIT-20260625.json"]
     acceptance_ids: ["ACC-S2PHT01V1.1-T01-PATH-AUDIT"]
-    test_commands: ["planned: read-only repository path audit; no implementation writes"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md"]
-    risk: "Starting EMAIL_LEARNING_V1 implementation before exact H/M path audit would violate V7.2."
-    rollback: "Remove this planned task entry if V7.2 task routing is superseded by a later product contract."
+    test_commands: ["python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "scripts/validate_project_governance.py --project arxiv-daily-push", "scripts/lean_governance.py check-render --project arxiv-daily-push", "focused mail-chain unittest targets", "JSON/YAML/JSONL parse", "git diff --check"]
+    test_results: ["V7.2 contract validator PASS", "ADP project governance errors 0 warnings 0", "changed-only governance validate errors 0 warnings 0", "lean check-render drift_count 0 reference_issue_count 0", "focused mail-chain unittest: 32 tests OK", "semantic extractor checked 66 formulas / 441 parameters", "JSON/JSONL/YAML parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md", "governance/run_manifests/ADP-S2PHT01V1-1-T01-EMAIL-PATH-AUDIT-20260625.json"]
+    risk: "T01 only records exact H/M paths and does not implement EMAIL_LEARNING_V1, M1-M4 routing, real SMTP, scheduler, Release, public schema, queue, DB, or production acceptance. mail_templates.py is absent on main and cannot be assumed as current runtime."
+    rollback: "Revert the T01 phase record, run manifest, delivery_tasks status update, generated governance views, and development event; runtime code, schemas, SMTP, scheduler, CURRENT, V7.2, and V7.1 files were not changed."
     target_version: "0.24.0"
-    completed_version: ""
+    completed_version: "0.23.0"
     unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
