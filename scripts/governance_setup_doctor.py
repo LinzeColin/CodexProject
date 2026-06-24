@@ -21,6 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "project-governance.yml"
 BAD_STATUSES = {"FAIL", "NOT_CONFIGURED"}
 UNKNOWN_STATUSES = {"UNVERIFIED"}
+REQUIRED_GOVERNANCE_CHECK_CONTEXT = "governance"
+REQUIRED_GOVERNANCE_CHECK_LABEL = "Project Governance / governance"
 
 
 def git_output(*args: str) -> str:
@@ -146,6 +148,85 @@ def workflow_entry_gate_status() -> dict[str, Any]:
     }
 
 
+def enabled_flag(value: Any) -> bool:
+    if isinstance(value, dict):
+        return bool(value.get("enabled"))
+    return bool(value)
+
+
+def required_status_check_contexts(checks: Any) -> list[str]:
+    if not isinstance(checks, dict):
+        return []
+    contexts = [str(item) for item in checks.get("contexts") or []]
+    for check in checks.get("checks") or []:
+        if isinstance(check, dict) and check.get("context"):
+            context = str(check["context"])
+            if context not in contexts:
+                contexts.append(context)
+    return contexts
+
+
+def bypass_allowances(review_rule: Any) -> dict[str, list[str]]:
+    if not isinstance(review_rule, dict):
+        return {"users": [], "teams": [], "apps": []}
+    allowances = review_rule.get("bypass_pull_request_allowances")
+    if not isinstance(allowances, dict):
+        return {"users": [], "teams": [], "apps": []}
+    return {
+        "users": [str(item) for item in allowances.get("users") or []],
+        "teams": [str(item) for item in allowances.get("teams") or []],
+        "apps": [str(item) for item in allowances.get("apps") or []],
+    }
+
+
+def evaluate_branch_protection_contract(data: dict[str, Any]) -> dict[str, Any]:
+    checks = data.get("required_status_checks")
+    contexts = required_status_check_contexts(checks)
+    exact_required_check = contexts == [REQUIRED_GOVERNANCE_CHECK_CONTEXT]
+    strict_checks = bool(checks.get("strict")) if isinstance(checks, dict) else False
+    review_rule = data.get("required_pull_request_reviews")
+    pull_request_required = isinstance(review_rule, dict)
+    enforce_admins = enabled_flag(data.get("enforce_admins"))
+    allowances = bypass_allowances(review_rule)
+    bypass_empty = not any(allowances.values())
+    force_pushes_blocked = not enabled_flag(data.get("allow_force_pushes"))
+    deletions_blocked = not enabled_flag(data.get("allow_deletions"))
+    failures: list[str] = []
+
+    if not exact_required_check:
+        failures.append(
+            f"required_status_checks must be exactly [{REQUIRED_GOVERNANCE_CHECK_CONTEXT}], observed {contexts}"
+        )
+    if not strict_checks:
+        failures.append("required_status_checks.strict must be true")
+    if not pull_request_required:
+        failures.append("required_pull_request_reviews must be configured")
+    if not enforce_admins:
+        failures.append("enforce_admins must be true")
+    if not bypass_empty:
+        failures.append(f"bypass_pull_request_allowances must be empty, observed {allowances}")
+    if not force_pushes_blocked:
+        failures.append("allow_force_pushes must be false")
+    if not deletions_blocked:
+        failures.append("allow_deletions must be false")
+
+    return {
+        "status": "PASS" if not failures else "FAIL",
+        "required_status_check_contexts": contexts,
+        "required_status_check_display": [REQUIRED_GOVERNANCE_CHECK_LABEL] if exact_required_check else [],
+        "required_status_check_count": len(contexts),
+        "required_status_check_contract": "PASS" if exact_required_check else "FAIL",
+        "status_checks_strict": "PASS" if strict_checks else "FAIL",
+        "pull_request_required": "PASS" if pull_request_required else "FAIL",
+        "enforce_admins": "PASS" if enforce_admins else "FAIL",
+        "bypass_pull_request_allowances": allowances,
+        "force_pushes_blocked": "PASS" if force_pushes_blocked else "FAIL",
+        "deletions_blocked": "PASS" if deletions_blocked else "FAIL",
+        "no_bypass": "PASS" if enforce_admins and bypass_empty else "FAIL",
+        "failures": failures,
+    }
+
+
 def github_branch_status(owner_repo: str, token: str | None) -> dict[str, Any]:
     result: dict[str, Any] = {
         "repository": owner_repo,
@@ -165,7 +246,7 @@ def github_branch_status(owner_repo: str, token: str | None) -> dict[str, Any]:
     try:
         with urllib.request.urlopen(urllib.request.Request(branch_url, headers=headers), timeout=20) as response:
             data = json.loads(response.read().decode("utf-8"))
-            result["protected"] = bool(data.get("protected"))
+            result["protected"] = "PASS" if data.get("protected") else "FAIL"
     except (OSError, urllib.error.HTTPError, json.JSONDecodeError) as exc:
         result["branch_error"] = str(exc)
     if not token:
@@ -176,7 +257,7 @@ def github_branch_status(owner_repo: str, token: str | None) -> dict[str, Any]:
             data = json.loads(response.read().decode("utf-8"))
             checks = data.get("required_status_checks")
             result["required_status_checks"] = checks if checks else "NOT_CONFIGURED"
-            result["no_bypass"] = "UNVERIFIED: ruleset bypass actors require authenticated ruleset inspection"
+            result.update(evaluate_branch_protection_contract(data))
     except urllib.error.HTTPError as exc:
         result["protection_error"] = f"HTTP {exc.code}: {exc.reason}"
     except (OSError, json.JSONDecodeError) as exc:
@@ -222,7 +303,12 @@ def evaluate_report(report: dict[str, Any], strict_local: bool, strict_github: b
     }
     github_paths = {
         "branch_protection.protected",
-        "branch_protection.required_status_checks",
+        "branch_protection.required_status_check_contract",
+        "branch_protection.status_checks_strict",
+        "branch_protection.pull_request_required",
+        "branch_protection.enforce_admins",
+        "branch_protection.force_pushes_blocked",
+        "branch_protection.deletions_blocked",
         "branch_protection.no_bypass",
     }
     failures: list[str] = []
