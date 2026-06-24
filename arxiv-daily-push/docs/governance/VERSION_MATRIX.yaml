@@ -108,3 +108,6 @@ email_frontstage_release_or_video_visible: false
 version_file_value: "0.23.0"
 changelog_ref: "CHANGELOG.md"
 ledger_ref: "docs/governance/DEVELOPMENT_LEDGER.md"
+review9_migration_iteration: "ITER-20260624-REVIEW9-S5PBT05"
+review9_migration_phase: "S5PB"
+review9_migration_gate: "S5PB-GATE-IN-PROGRESS"
