@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PCT02`
+- next_task_id: `ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037`
 - responsible_role: `content_owner + product_owner`
-- acceptance_ids: `ACC-S2PCT02-SCIENCE`
-- unblock_condition: Run `planned: focused Science/top-journal adapter and Stage2 source tests` and attach the listed evidence refs.
+- acceptance_ids: `ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST`
+- unblock_condition: Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_cli.py -q` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (364/364 active parameters, 54/54 active formulas)
+- implementation_congruence: `VERIFIED` (441/441 active parameters, 66/66 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,11 +68,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `52`
-- total_formulas: `54`
-- active_formulas: `54`
-- total_parameters: `381`
-- active_parameters: `364`
+- model_count: `64`
+- total_formulas: `66`
+- active_formulas: `66`
+- total_parameters: `458`
+- active_parameters: `441`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -85,9 +85,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `59`
+- legacy_unbound_events: `60`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `98`
+- pending_or_stale_events: `99`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:9a7af70e788c281c3b3ad236a8714d90920dd2454079d05b2bcdabe260102061`
-- snapshot_event_time: `2026-06-24T20:55:00+10:00`
+- source_snapshot_hash: `sha256:8627b18bc859b92b859194db99d1b5faccd905fded531aebb0fbca82e101ed48`
+- snapshot_event_time: `2026-06-24T23:55:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
 - phase/gate: `S2PC / ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PCT02`
-- reason: Add Science main-journal metadata-only no-send shadow evidence using the stabilized S2PCT01 top-journal framework before any formal D2 source-domain or Stage 2 production inclusion.
+- task_id: `ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037`
+- reason: Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format.

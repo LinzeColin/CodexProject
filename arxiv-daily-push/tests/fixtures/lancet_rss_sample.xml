@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns="http://purl.org/rss/1.0/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/">
+  <channel rdf:about="https://www.thelancet.com/journals/lancet/issues">
+    <title>The Lancet</title>
+    <description>The Lancet RSS feed.</description>
+    <link>https://www.thelancet.com/journals/lancet/issues</link>
+    <dc:publisher>Elsevier Limited</dc:publisher>
+    <dc:language>en</dc:language>
+    <dc:rights>Copyright 2026 Elsevier Limited</dc:rights>
+    <prism:publicationName>The Lancet</prism:publicationName>
+    <prism:issn>0140-6736</prism:issn>
+    <prism:publicationDate>2026-06-23-07:00</prism:publicationDate>
+  </channel>
+  <item rdf:about="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01256-0/fulltext?rss=yes">
+    <title>[Articles] AI triage and health-system risk optimization: a clinical trial</title>
+    <link>https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01256-0/fulltext?rss=yes</link>
+    <description>This clinical trial evaluates artificial intelligence triage, benchmark datasets, decision risk controls, automation efficiency, privacy, security, cost optimization, and health economics for deployable learning value.</description>
+    <dc:title>AI triage and health-system risk optimization: a clinical trial</dc:title>
+    <dc:creator>Example Author</dc:creator>
+    <dc:identifier>10.1016/S0140-6736(26)01256-0</dc:identifier>
+    <dc:source>The Lancet 407 (2026)</dc:source>
+    <dc:date>2026-06-23</dc:date>
+    <prism:publicationName>The Lancet</prism:publicationName>
+    <prism:publicationDate>2026-06-23</prism:publicationDate>
+    <prism:section>Articles</prism:section>
+  </item>
+  <item rdf:about="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01156-6/fulltext?rss=yes">
+    <title>[Review] Foundation models, privacy, and safety in digital health systems</title>
+    <link>https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01156-6/fulltext?rss=yes</link>
+    <description>This review surveys foundation model evaluation, language model governance, risk management, security, privacy, cost, and automation tradeoffs for health systems and clinical decision support.</description>
+    <dc:title>Foundation models, privacy, and safety in digital health systems</dc:title>
+    <dc:creator>Review Author</dc:creator>
+    <dc:identifier>10.1016/S0140-6736(26)01156-6</dc:identifier>
+    <dc:source>The Lancet 407 (2026)</dc:source>
+    <dc:date>2026-06-22</dc:date>
+    <prism:publicationName>The Lancet</prism:publicationName>
+    <prism:publicationDate>2026-06-22</prism:publicationDate>
+    <prism:section>Review</prism:section>
+  </item>
+  <item rdf:about="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01025-1/fulltext?rss=yes">
+    <title>[Series] Health AI regulation, market incentives, and operational governance</title>
+    <link>https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01025-1/fulltext?rss=yes</link>
+    <description>This series analyzes policy, finance, market incentives, risk controls, statistical evaluation, agent workflows, data quality, and operational governance for high ROI health technology decisions.</description>
+    <dc:title>Health AI regulation, market incentives, and operational governance</dc:title>
+    <dc:creator>Series Author</dc:creator>
+    <dc:identifier>10.1016/S0140-6736(26)01025-1</dc:identifier>
+    <dc:source>The Lancet 407 (2026)</dc:source>
+    <dc:date>2026-06-21</dc:date>
+    <prism:publicationName>The Lancet</prism:publicationName>
+    <prism:publicationDate>2026-06-21</prism:publicationDate>
+    <prism:section>Series</prism:section>
+  </item>
+  <item rdf:about="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)00001-1/fulltext?rss=yes">
+    <title>[Correspondence] A short letter that must not enter the research queue</title>
+    <link>https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)00001-1/fulltext?rss=yes</link>
+    <description>Correspondence item that must not enter S2PCT03 as a research-grade article.</description>
+    <dc:identifier>10.1016/S0140-6736(26)00001-1</dc:identifier>
+    <prism:section>Correspondence</prism:section>
+  </item>
+  <item rdf:about="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)00002-3/fulltext?rss=yes">
+    <title>[Comment] A commentary that must not enter the research queue</title>
+    <link>https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)00002-3/fulltext?rss=yes</link>
+    <description>Comment item that must not enter S2PCT03 as a research-grade article.</description>
+    <dc:identifier>10.1016/S0140-6736(26)00002-3</dc:identifier>
+    <prism:section>Comment</prism:section>
+  </item>
+</rdf:RDF>

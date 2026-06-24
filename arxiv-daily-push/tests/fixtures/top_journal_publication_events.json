@@ -1,0 +1,64 @@
+{
+  "events": [
+    {
+      "event_id": "evt-s2pct04-science-editorial-001",
+      "source_id": "science-editorial:10.1126/science.editorial-v7-1",
+      "canonical_document_id": "science-editorial:10.1126/science.editorial-v7-1",
+      "journal": "science",
+      "journal_display": "Science",
+      "article_type": "Editorial",
+      "relation_type": "discusses",
+      "target_canonical_document_id": "science:10.1126/science.ads7910",
+      "title": "Editorial context for a Science research article",
+      "observed_at": "2026-06-24T09:30:00+10:00",
+      "evidence_refs": [
+        "https://www.science.org/"
+      ]
+    },
+    {
+      "event_id": "evt-s2pct04-nature-news-001",
+      "source_id": "nature-news:s41586-news-v7-1",
+      "canonical_document_id": "nature-news:s41586-news-v7-1",
+      "journal": "nature",
+      "journal_display": "Nature",
+      "article_type": "News",
+      "relation_type": "discusses",
+      "target_canonical_document_id": "nature:s41586-026-10807-x",
+      "title": "News context for a Nature research article",
+      "observed_at": "2026-06-24T09:30:00+10:00",
+      "evidence_refs": [
+        "https://www.nature.com/"
+      ]
+    },
+    {
+      "event_id": "evt-s2pct04-lancet-correction-001",
+      "source_id": "lancet-correction:10.1016/s0140-6736(26)corr-001",
+      "canonical_document_id": "lancet-correction:10.1016/s0140-6736(26)corr-001",
+      "journal": "lancet",
+      "journal_display": "The Lancet",
+      "article_type": "Correction",
+      "relation_type": "corrects",
+      "target_canonical_document_id": "lancet:10.1016/s0140-6736(26)01256-0",
+      "title": "Correction to a Lancet article",
+      "observed_at": "2026-06-24T09:30:00+10:00",
+      "evidence_refs": [
+        "https://www.thelancet.com/"
+      ]
+    },
+    {
+      "event_id": "evt-s2pct04-science-retraction-001",
+      "source_id": "science-retraction:10.1126/science.retract-v7-1",
+      "canonical_document_id": "science-retraction:10.1126/science.retract-v7-1",
+      "journal": "science",
+      "journal_display": "Science",
+      "article_type": "Retraction",
+      "relation_type": "retracts",
+      "target_canonical_document_id": "science:10.1126/science.adx1369",
+      "title": "Retraction notice for a Science report",
+      "observed_at": "2026-06-24T09:30:00+10:00",
+      "evidence_refs": [
+        "https://www.science.org/"
+      ]
+    }
+  ]
+}

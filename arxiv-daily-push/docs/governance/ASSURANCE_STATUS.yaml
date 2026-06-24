@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-097"
-source_snapshot_hash: "sha256:9a7af70e788c281c3b3ad236a8714d90920dd2454079d05b2bcdabe260102061"
+as_of_event_id: "EVENT-20260624-ADP-S2PCT02-S2PDT04-CLEAN-BUNDLE-001"
+source_snapshot_hash: "sha256:8627b18bc859b92b859194db99d1b5faccd905fded531aebb0fbca82e101ed48"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T20:55:00+10:00"
+snapshot_event_time: "2026-06-24T23:55:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 364
-    total_active_parameters: 364
-    checked_active_formulas: 54
-    total_active_formulas: 54
+    checked_active_parameters: 441
+    total_active_parameters: 441
+    checked_active_formulas: 66
+    total_active_formulas: 66
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 364
-    total_active_parameters: 364
+    checked_active_parameters: 441
+    total_active_parameters: 441
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,7 +60,7 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 59
+    legacy_unbound_events: 60
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
@@ -82,14 +82,14 @@ delivery_readiness:
   parallel_shadow_source_task: "S2PBT01"
   current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PCT02"
+  task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
   status: "planned"
-  reason: "Add Science main-journal metadata-only no-send shadow evidence using the stabilized S2PCT01 top-journal framework before any formal D2 source-domain or Stage 2 production inclusion."
+  reason: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
   acceptance_ids:
-    - "ACC-S2PCT02-SCIENCE"
+    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `planned: focused Science/top-journal adapter and Stage2 source tests` and attach the listed evidence refs."
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_cli.py -q` and attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

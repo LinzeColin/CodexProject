@@ -1,0 +1,73 @@
+{
+  "manifest_id": "ADP-V7-2-REVALIDATION-S2PD-COMPLETED-WORK-20260624",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PA",
+  "task_id": "V7_2_AGENT_REVALIDATION_RECEIPT",
+  "acceptance_id": "ACC-S2PAT06-V7-2-CURRENT",
+  "generated_at": "2026-06-24T22:02:07+10:00",
+  "v7_2_pr": "https://github.com/LinzeColin/CodexProject/pull/140",
+  "v7_2_attestation_pr": "https://github.com/LinzeColin/CodexProject/pull/141",
+  "v7_2_branch": "codex/adp-v7-2-baseline-20260624",
+  "v7_2_head": "4770fad1209d92c16ff3e3df06263dad66e18b9d",
+  "v7_2_merge_commit": "7a5e83ca4c4e59742334899c540fd264d3bb25c4",
+  "v7_2_attestation_merge_commit": "9d6c314afa38bd1a1903fd5bbe0db586b842ea85",
+  "stage2_branch_head_reviewed": "abe1ea1fa472259fae0960c888076503818a3d78",
+  "status": "completed_local_revalidation_receipt",
+  "scope": "Record V7.2 revalidation receipt for completed Stage2 metadata-only/no-send shadow and qualification work before continuing S2PDT04.",
+  "completed_tasks_revalidated": [
+    "S2PCT02",
+    "S2PCT03",
+    "S2PCT04",
+    "S2PCT05",
+    "S2PCT06",
+    "S2PCT07",
+    "S2PDT01",
+    "S2PDT02",
+    "S2PDT03"
+  ],
+  "in_progress_tasks_not_claimed_complete": [
+    "S2PDT04"
+  ],
+  "contract_points_checked": [
+    "CURRENT.yaml points to ADP-PRODUCT-CONTRACT-V7.2 on merged origin/main including PR #141 attestation",
+    "V7.1 remains read-only historical baseline",
+    "V7.2 baseline migration blockers are P0=0/P1=0",
+    "Inherited V7.1 blockers remain production blocking at P0=8/P1=37",
+    "Stage2 agents require V7.2 revalidation before continuing new work",
+    "S2PHT01V1.1-T01 remains read-only exact H/M repository path audit before EMAIL_LEARNING_V1 implementation"
+  ],
+  "tests_run": [
+    "git worktree add --detach /tmp/adp_v72_contract_revalidation_20260624 origin/main && cd /tmp/adp_v72_contract_revalidation_20260624 && python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_revalidation_stage2_pycache PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt04_focus2_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+  ],
+  "test_results": [
+    "V7.2 contract validator: PASS; contract_version ADP-PRODUCT-CONTRACT-V7.2; errors 0; warnings 0",
+    "focused Stage2 source tests: 43 OK before S2PDT04",
+    "focused Stage2 source tests: 47 OK after S2PDT04 implementation"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_V7_2_REVALIDATION_S2PD_COMPLETED_WORK_RECEIPT.md",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml@9d6c314afa38bd1a1903fd5bbe0db586b842ea85",
+    "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml@9d6c314afa38bd1a1903fd5bbe0db586b842ea85"
+  ],
+  "formal_production_inclusion": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_schedule_enabled": false,
+  "production_restore_executed": false,
+  "daily_operation_enabled": false,
+  "public_schema_changed": false,
+  "queue_schema_changed": false,
+  "smtp_transport_allowed": false,
+  "scheduler_changed": false,
+  "mail_production_code_changed": false,
+  "v7_2_current_switched_in_this_branch": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "v7_2_baseline_migration_open_p0_findings": 0,
+  "v7_2_baseline_migration_open_p1_findings": 0,
+  "rollback": "Remove this revalidation receipt phase record and manifest; no runtime or production state change was made."
+}

@@ -1,214 +1,382 @@
 governance_spec_version: "1.0.0"
 project_id: "arxiv-daily-push"
 governance_notes:
-  - note_id: "GOV-NOTE-S1-02-BASELINE-LOCK"
+  -
+    note_id: "GOV-NOTE-S1-02-BASELINE-LOCK"
     task_id: "S1-02-BASELINE-LOCK-TRACEABILITY-001"
     evidence_level: "EXTRACTED"
     summary: "Review8 V4 baseline lock and version metadata alignment only; no active model behavior changed."
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md", "governance/run_manifests/ADP-S1-02-BASELINE-LOCK-TRACEABILITY-20260622.json"]
-  - note_id: "GOV-NOTE-S1P5T04-V6-ROADMAP-INTAKE"
+    evidence_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
+      - "governance/run_manifests/ADP-S1-02-BASELINE-LOCK-TRACEABILITY-20260622.json"
+  -
+    note_id: "GOV-NOTE-S1P5T04-V6-ROADMAP-INTAKE"
     task_id: "S1P5T04"
     evidence_level: "EXTRACTED"
     summary: "V6 now controls progress/task numbering while V5 text-delivery remains the Stage 1 product boundary; one controlled GitHub/cloud-runner Gmail SMTP send is recorded, and production scheduling remains disabled."
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md", "github-actions://LinzeColin/CodexProject/actions/runs/28002478689"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md"
+      - "github-actions://LinzeColin/CodexProject/actions/runs/28002478689"
 assumptions:
-  - assumption_id: "ASM-ADP-001"
+  -
+    assumption_id: "ASM-ADP-001"
     statement: "Phase 1 is limited to repository foundation, CLI doctor/version, dry-run notification rendering, schemas, config examples, and governance records."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/README.md", "arxiv-daily-push/AGENTS.md", "arxiv-daily-push/docs/phase_records/PHASE_01.md"]
+    evidence_refs:
+      - "arxiv-daily-push/README.md"
+      - "arxiv-daily-push/AGENTS.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_01.md"
     status: "active"
-  - assumption_id: "ASM-ADP-002"
+  -
+    assumption_id: "ASM-ADP-002"
     statement: "Email is the system notification channel and linzezhang35@gmail.com is the recipient."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/config.py", "arxiv-daily-push/config/examples/notification.example.yaml"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/config.py"
+      - "arxiv-daily-push/config/examples/notification.example.yaml"
     status: "active"
-  - assumption_id: "ASM-ADP-003"
+  -
+    assumption_id: "ASM-ADP-003"
     statement: "The first implemented source is arXiv, while source interfaces remain generic for future data sources."
     fact_level: "PROPOSED"
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
     status: "active"
-  - assumption_id: "ASM-ADP-004"
+  -
+    assumption_id: "ASM-ADP-004"
     statement: "Phase 2 implements only offline generic contracts and RunRecord state validation; it does not fetch sources or generate publishable content."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md", "arxiv-daily-push/src/arxiv_daily_push/contracts.py", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_02.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/contracts.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"
     status: "active"
-  - assumption_id: "ASM-ADP-005"
+  -
+    assumption_id: "ASM-ADP-005"
     statement: "Phase 3 implements the first arXiv adapter with offline fixture tests and no scheduled or bulk ingestion."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_03.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"
     status: "active"
-  - assumption_id: "ASM-ADP-006"
+  -
+    assumption_id: "ASM-ADP-006"
     statement: "Phase 4 ranks only explicit candidate inputs with supported P0 evidence and non-conflicting metadata; it does not extract claims or fetch live sources."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/tests/test_ranking.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_04.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/ranking.py"
+      - "arxiv-daily-push/tests/test_ranking.py"
     status: "active"
-  - assumption_id: "ASM-ADP-007"
+  -
+    assumption_id: "ASM-ADP-007"
     statement: "Phase 5 builds a Claim Ledger from explicit evidence claims and blocks publication on unsupported P0 claims, metadata conflicts, or unsupported arXiv peer-review claims."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/tests/test_evidence_gate.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_05.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py"
+      - "arxiv-daily-push/tests/test_evidence_gate.py"
     status: "active"
-  - assumption_id: "ASM-ADP-008"
+  -
+    assumption_id: "ASM-ADP-008"
     statement: "Phase 6 generates deterministic Chinese Lesson JSON only from supported Claim Ledger evidence and does not create narration, TTS, video, runner automation, or SMTP output."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/tests/test_lesson.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_06.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/lesson.py"
+      - "arxiv-daily-push/tests/test_lesson.py"
     status: "active"
-  - assumption_id: "ASM-ADP-009"
+  -
+    assumption_id: "ASM-ADP-009"
     statement: "Phase 7 generates dry-run narration/TTS plan JSON from Lesson objects and blocks audio synthesis, model downloads, audio writes, and media retention."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/tests/test_narration.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_07.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/narration.py"
+      - "arxiv-daily-push/tests/test_narration.py"
     status: "active"
-  - assumption_id: "ASM-ADP-010"
+  -
+    assumption_id: "ASM-ADP-010"
     statement: "Phase 8 generates Storyboard JSON and video media gate outputs in dry-run mode while blocking rendering, media writes, and asset downloads."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/tests/test_video.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_08.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/video.py"
+      - "arxiv-daily-push/tests/test_video.py"
     status: "active"
-  - assumption_id: "ASM-ADP-011"
+  -
+    assumption_id: "ASM-ADP-011"
     statement: "Phase 9 runs a local daily dry-run pipeline across evidence, lesson, narration, storyboard, publication, RunRecord, and email preview without scheduler, Release upload, or real SMTP send."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md", "arxiv-daily-push/src/arxiv_daily_push/pipeline.py", "arxiv-daily-push/tests/test_pipeline.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_09.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/pipeline.py"
+      - "arxiv-daily-push/tests/test_pipeline.py"
     status: "active"
-  - assumption_id: "ASM-ADP-012"
+  -
+    assumption_id: "ASM-ADP-012"
     statement: "Phase 10 builds a runner/release/email dry-run handoff from a completed RunRecord while keeping scheduler, GitHub Actions runner, Release upload, unattended execution, and real SMTP send disabled."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md", "arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/tests/test_handoff.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_10.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/handoff.py"
+      - "arxiv-daily-push/tests/test_handoff.py"
     status: "active"
-  - assumption_id: "ASM-ADP-013"
+  -
+    assumption_id: "ASM-ADP-013"
     statement: "Phase 11 generates a truthful acceptance and handoff readiness package; Stage 1 production acceptance remains blocked unless real 30-day trial, scheduler, Stage 1 text artifact, SMTP, and resource evidence is supplied."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/acceptance.py"
+      - "arxiv-daily-push/tests/test_acceptance.py"
     status: "active"
-  - assumption_id: "ASM-ADP-014"
+  -
+    assumption_id: "ASM-ADP-014"
     statement: "Production acceptance pass requires non-empty evidence references for every true operational evidence flag."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md", "arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/tests/test_acceptance.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_EVIDENCE_REF_HARDENING.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/acceptance.py"
+      - "arxiv-daily-push/tests/test_acceptance.py"
     status: "active"
-  - assumption_id: "ASM-ADP-015"
+  -
+    assumption_id: "ASM-ADP-015"
     statement: "Production acceptance pass requires operational evidence generated by the 30-day trial evidence validator, not raw manually supplied booleans."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/tests/test_trial.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial.py"
+      - "arxiv-daily-push/tests/test_trial.py"
     status: "active"
-  - assumption_id: "ASM-ADP-016"
+  -
+    assumption_id: "ASM-ADP-016"
     statement: "Scheduled production execution must be blocked unless runtime commands, secret environment keys, disk, memory, Git artifact hygiene, and local cache/staging checks pass without logging secret values."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/tests/test_production_preflight.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py"
+      - "arxiv-daily-push/tests/test_production_preflight.py"
     status: "active"
-  - assumption_id: "ASM-ADP-017"
+  -
+    assumption_id: "ASM-ADP-017"
     statement: "Production trial startup is manual-only until prerequisites pass; the GitHub bootstrap workflow must run preflight before trial work, upload preflight evidence, and avoid Release upload or SMTP sending."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md", "arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", ".github/workflows/arxiv-daily-push-production-trial.yml"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py"
+      - ".github/workflows/arxiv-daily-push-production-trial.yml"
     status: "active"
-  - assumption_id: "ASM-ADP-018"
+  -
+    assumption_id: "ASM-ADP-018"
     statement: "Live arXiv source ingest uses the official Atom API in small windows, filters duplicate source IDs, avoids PDF/bulk download, and fails closed on network, TLS, API, Atom, or SourceItem errors."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/tests/test_source_ingest.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py"
+      - "arxiv-daily-push/tests/test_source_ingest.py"
     status: "active"
-  - assumption_id: "ASM-ADP-019"
+  -
+    assumption_id: "ASM-ADP-019"
     statement: "SMTP notification transport defaults to dry-run, requires explicit allow-send for real mail, uses only external environment keys for secrets, requires TLS, and never logs SMTP secret values or email body text."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/tests/test_notifications.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"
+      - "arxiv-daily-push/tests/test_notifications.py"
     status: "active"
-  - assumption_id: "ASM-ADP-020"
+  -
+    assumption_id: "ASM-ADP-020"
     statement: "GitHub Release transport defaults to dry-run, requires explicit allow-upload for real Release creation, uses ADP_RELEASE_TARGET or --target, avoids clobber upload, and never logs Release notes, secrets, gh stdout, or gh stderr."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/tests/test_release_delivery.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py"
+      - "arxiv-daily-push/tests/test_release_delivery.py"
     status: "active"
-  - assumption_id: "ASM-ADP-021"
+  -
+    assumption_id: "ASM-ADP-021"
     statement: "Scheduled production workflow declares Australia/Sydney 04:45 health-check, 05:00 daily-run, and 05:10 watchdog slots, supports manual rerun, runs preflight first, and remains disabled unless production GitHub variables are explicitly configured."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+      - "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
     status: "active"
-  - assumption_id: "ASM-ADP-022"
+  -
+    assumption_id: "ASM-ADP-022"
     statement: "Scheduled execution must produce evidence artifacts after preflight and may count as Stage 1 production evidence only when daily run, text artifact, real SMTP, and resource evidence refs are present."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
     status: "active"
-  - assumption_id: "ASM-ADP-023"
+  -
+    assumption_id: "ASM-ADP-023"
     statement: "Daily input generation must use only arXiv Atom summary/metadata evidence, avoid PDF download and bulk harvest, and fail closed before scheduled daily-run if the source batch, summary, metadata, or ranking gate is unsafe."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/tests/test_daily_input.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/daily_input.py"
+      - "arxiv-daily-push/tests/test_daily_input.py"
     status: "active"
-  - assumption_id: "ASM-ADP-024"
+  -
+    assumption_id: "ASM-ADP-024"
     statement: "Trial ledger updates may append daily evidence only from production-ready scheduled daily-run reports and must block duplicates, dry-run evidence, missing refs, unsupported claims, and misleading failure output."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/tests/test_trial_ledger.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py"
+      - "arxiv-daily-push/tests/test_trial_ledger.py"
     status: "active"
-  - assumption_id: "ASM-ADP-025"
+  -
+    assumption_id: "ASM-ADP-025"
     statement: "Trial evidence ledger state must be carried forward as a small GitHub Actions artifact, never committed to Git, and must not be replaced when a daily ledger update is blocked."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_production_scheduler.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
     status: "active"
-  - assumption_id: "ASM-ADP-026"
+  -
+    assumption_id: "ASM-ADP-026"
     statement: "Weekly/monthly replay and recovery drill evidence must be merged through explicit refs, not by hand-editing trial evidence or inferring that the operations occurred."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/tests/test_trial_ops.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py"
+      - "arxiv-daily-push/tests/test_trial_ops.py"
     status: "active"
-  - assumption_id: "ASM-ADP-027"
+  -
+    assumption_id: "ASM-ADP-027"
     statement: "Weekly/monthly replay evidence must be generated from production-ready daily trial entries and archived under a durable replay ref before it can be merged into trial evidence."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/tests/test_trial_replay.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_replay.py"
+      - "arxiv-daily-push/tests/test_trial_replay.py"
     status: "active"
-  - assumption_id: "ASM-ADP-028"
+  -
+    assumption_id: "ASM-ADP-028"
     statement: "Recovery drill evidence must be generated from an archived failed, blocked, or degraded scheduled daily-run report and a recovered production-ready rerun report with real sent notifications before it can be merged into trial evidence."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/tests/test_trial_recovery.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py"
+      - "arxiv-daily-push/tests/test_trial_recovery.py"
     status: "active"
-  - assumption_id: "ASM-ADP-029"
+  -
+    assumption_id: "ASM-ADP-029"
     statement: "Resource telemetry evidence must be generated from unique daily trial resource refs that match passing production preflight reports before the global resource gate can be merged into trial evidence."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md", "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/tests/test_trial_resource.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py"
+      - "arxiv-daily-push/tests/test_trial_resource.py"
     status: "active"
-  - assumption_id: "ASM-ADP-033"
+  -
+    assumption_id: "ASM-ADP-033"
     statement: "Production runner, SMTP secret, and workflow variable readiness must be collected through a no-secret template or GitHub metadata discovery as names and durable refs only; secret values and credential material must never enter the readiness report."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/production_refs.py"
+      - "arxiv-daily-push/config/examples/production_refs.input.example.json"
+      - "arxiv-daily-push/tests/test_production_refs.py"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
     status: "active"
-  - assumption_id: "ASM-ADP-035"
+  -
+    assumption_id: "ASM-ADP-035"
     statement: "Production daily source selection must scan the primary arXiv archive set, not collapse to the legacy cs.AI-only query, and must persist a candidate queue with ROI-ranked fallback before real SMTP delivery can count."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", ".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/tests/test_global_scan.py"]
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+      - "arxiv-daily-push/tests/test_global_scan.py"
     status: "active"
-  - assumption_id: "ASM-ADP-036"
+  -
+    assumption_id: "ASM-ADP-036"
     statement: "A controlled manual delivery test may send one Gmail SMTP Stage 1 text email only through an explicit workflow_dispatch confirmation on the default branch; it must not create a required GitHub Release or enable scheduled production."
     fact_level: "EXTRACTED"
-    evidence_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml", "arxiv-daily-push/tests/test_manual_delivery_workflow.py"]
+    evidence_refs:
+      - ".github/workflows/arxiv-daily-push-manual-delivery-test.yml"
+      - "arxiv-daily-push/tests/test_manual_delivery_workflow.py"
     status: "active"
-  - assumption_id: "ASM-ADP-037"
+  -
+    assumption_id: "ASM-ADP-037"
     statement: "Review8 V4 owner controls must use one owner-editable YAML file, while owner-visible Markdown and CSV views are generated artifacts and not second editable fact sources."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/docs/owner/OWNER_CONSOLE.md"]
+    evidence_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py"
+      - "arxiv-daily-push/tests/test_owner_controls.py"
+      - "arxiv-daily-push/docs/owner/OWNER_CONSOLE.md"
     status: "active"
-  - assumption_id: "ASM-ADP-038"
+  -
+    assumption_id: "ASM-ADP-038"
     statement: "Review8 Stage 1 Window A storage must remain a local SQLite database with WAL journal mode, FTS5 search, deterministic schema migration, and rollback support, with no bulk import, retained PDF corpus, production scheduler enablement, SMTP send, Release upload, or source expansion in S1-04."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/storage.py"
+      - "arxiv-daily-push/tests/test_storage.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
     status: "active"
-  - assumption_id: "ASM-ADP-039"
+  -
+    assumption_id: "ASM-ADP-039"
     statement: "Review8 Stage 1 Window A source registry must keep `config/owner_controls.yaml` as the single editable source list, enable only SRC-ARXIV with arxiv.atom.v1, cap online metadata canaries at 10, and block PDFs, bulk harvest, paid APIs, secrets, scheduler enablement, SMTP, Release upload, and production acceptance claims."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/source_registry.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py"
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/tests/test_source_registry.py"
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
     status: "active"
-  - assumption_id: "ASM-ADP-040"
+  -
+    assumption_id: "ASM-ADP-040"
     statement: "Review8 Stage 1 scoring and queue behavior must use owner_controls.yaml as the active parameter source, keep at most 10000 active items, treat 365 days as an inclusive event-age boundary, retain deterministic reason codes for every non-active item, and emit the canonical content ledger columns without claiming production replay output."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py"
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/tests/test_stage1_queue.py"
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
     status: "active"
-  - assumption_id: "ASM-ADP-041"
+  -
+    assumption_id: "ASM-ADP-041"
     statement: "Review8 Stage 1 B1/arXiv text delivery must produce Chinese teaching report/email previews with supported claim evidence, candidate queue summary, human-frontstage wording, and no video, Release upload, real SMTP send, production scheduler enablement, or visible backend ROI/policy clutter."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
+      - "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
     status: "active"
-  - assumption_id: "ASM-ADP-042"
+  -
+    assumption_id: "ASM-ADP-042"
     statement: "Review8 Stage 1 local runtime recovery must provide explicit heartbeat/checkpoint, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls while keeping production scheduling, real SMTP, Release upload, video generation, and long-running local background work disabled."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py"
+      - "arxiv-daily-push/tests/test_stage1_runtime.py"
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
     status: "active"
-  - assumption_id: "ASM-ADP-043"
+  -
+    assumption_id: "ASM-ADP-043"
     statement: "Review8 Stage 1 migration packaging must produce a low-resource, hash-verifiable package and new-machine checklist while keeping production scheduling, real SMTP, Release upload, video generation, 30-day replay, and secret-value persistence disabled."
     fact_level: "EXTRACTED"
-    evidence_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md", "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"]
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py"
+      - "arxiv-daily-push/tests/test_stage1_migration.py"
+      - "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"
+      - "arxiv-daily-push/docs/pursuing_goal/BASELINE_LOCK.md"
     status: "active"
 models:
-  - model_id: "MOD-ADP-001"
+  -
+    model_id: "MOD-ADP-001"
     name: "Phase 1 readiness and notification dry-run gate"
     kind: "deterministic rule engine"
     purpose: "Classify local Phase 1 readiness and render non-secret dry-run email notifications."
@@ -216,16 +384,47 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-foundation-v1"
-    assumption_ids: ["ASM-ADP-001", "ASM-ADP-002"]
-    formula_ids: ["FORM-ADP-001", "FORM-ADP-002"]
-    parameter_ids: ["PARAM-ADP-001", "PARAM-ADP-002", "PARAM-ADP-003", "PARAM-ADP-004", "PARAM-ADP-005", "PARAM-ADP-006", "PARAM-ADP-007", "PARAM-ADP-008"]
-    inputs: ["current PATH", "current disk usage", "notification status", "run_id", "summary", "date"]
-    outputs: ["doctor status", "missing required commands", "missing future runtime commands", "dry-run email subject", "dry-run email body"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/doctor.py", "arxiv-daily-push/src/arxiv_daily_push/notifications.py"]
-    config_refs: ["arxiv-daily-push/src/arxiv_daily_push/config.py", "arxiv-daily-push/config/examples/notification.example.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_doctor.py", "arxiv-daily-push/tests/test_notifications.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_01.md"]
-  - model_id: "MOD-ADP-004"
+    assumption_ids:
+      - "ASM-ADP-001"
+      - "ASM-ADP-002"
+    formula_ids:
+      - "FORM-ADP-001"
+      - "FORM-ADP-002"
+    parameter_ids:
+      - "PARAM-ADP-001"
+      - "PARAM-ADP-002"
+      - "PARAM-ADP-003"
+      - "PARAM-ADP-004"
+      - "PARAM-ADP-005"
+      - "PARAM-ADP-006"
+      - "PARAM-ADP-007"
+      - "PARAM-ADP-008"
+    inputs:
+      - "current PATH"
+      - "current disk usage"
+      - "notification status"
+      - "run_id"
+      - "summary"
+      - "date"
+    outputs:
+      - "doctor status"
+      - "missing required commands"
+      - "missing future runtime commands"
+      - "dry-run email subject"
+      - "dry-run email body"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/doctor.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/notifications.py"
+    config_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/config.py"
+      - "arxiv-daily-push/config/examples/notification.example.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_doctor.py"
+      - "arxiv-daily-push/tests/test_notifications.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_01.md"
+  -
+    model_id: "MOD-ADP-004"
     name: "Generic data contract and RunRecord state gate"
     kind: "deterministic contract/state validator"
     purpose: "Validate SourceItem, EvidenceClaim, Lesson, Storyboard, Publication, and RunRecord boundaries without network or media side effects."
@@ -233,16 +432,51 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-contracts-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-004"]
-    formula_ids: ["FORM-ADP-005", "FORM-ADP-006"]
-    parameter_ids: ["PARAM-ADP-020", "PARAM-ADP-021", "PARAM-ADP-022", "PARAM-ADP-023", "PARAM-ADP-024", "PARAM-ADP-025", "PARAM-ADP-026", "PARAM-ADP-027", "PARAM-ADP-028"]
-    inputs: ["SourceItem", "EvidenceClaim", "Lesson", "Storyboard", "Publication", "RunRecord", "current_state", "next_state"]
-    outputs: ["validation errors", "validated RunRecord", "transition result"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/contracts.py", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/source_item.schema.json", "arxiv-daily-push/schemas/evidence_claim.schema.json", "arxiv-daily-push/schemas/run_record.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_contracts.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_02.md"]
-  - model_id: "MOD-ADP-005"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-004"
+    formula_ids:
+      - "FORM-ADP-005"
+      - "FORM-ADP-006"
+    parameter_ids:
+      - "PARAM-ADP-020"
+      - "PARAM-ADP-021"
+      - "PARAM-ADP-022"
+      - "PARAM-ADP-023"
+      - "PARAM-ADP-024"
+      - "PARAM-ADP-025"
+      - "PARAM-ADP-026"
+      - "PARAM-ADP-027"
+      - "PARAM-ADP-028"
+    inputs:
+      - "SourceItem"
+      - "EvidenceClaim"
+      - "Lesson"
+      - "Storyboard"
+      - "Publication"
+      - "RunRecord"
+      - "current_state"
+      - "next_state"
+    outputs:
+      - "validation errors"
+      - "validated RunRecord"
+      - "transition result"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/contracts.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/source_item.schema.json"
+      - "arxiv-daily-push/schemas/evidence_claim.schema.json"
+      - "arxiv-daily-push/schemas/run_record.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_contracts.py"
+      - "arxiv-daily-push/tests/test_state_machine.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_02.md"
+  -
+    model_id: "MOD-ADP-005"
     name: "arXiv Atom source adapter"
     kind: "deterministic source adapter"
     purpose: "Build bounded arXiv API URLs and map Atom entries into generic SourceItem records."
@@ -250,16 +484,41 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-arxiv-adapter-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-005"]
-    formula_ids: ["FORM-ADP-007"]
-    parameter_ids: ["PARAM-ADP-029", "PARAM-ADP-030", "PARAM-ADP-031", "PARAM-ADP-032", "PARAM-ADP-033", "PARAM-ADP-034"]
-    inputs: ["arXiv query parameters", "arXiv Atom XML"]
-    outputs: ["arXiv API URL", "SourceItem records", "adapter errors"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/examples/sources.example.yaml", "arxiv-daily-push/schemas/source_item.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_arxiv_adapter.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_03.md", "https://info.arxiv.org/help/api/basics.html", "https://info.arxiv.org/help/api/user-manual.html", "https://info.arxiv.org/help/api/index.html"]
-  - model_id: "MOD-ADP-002"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-005"
+    formula_ids:
+      - "FORM-ADP-007"
+    parameter_ids:
+      - "PARAM-ADP-029"
+      - "PARAM-ADP-030"
+      - "PARAM-ADP-031"
+      - "PARAM-ADP-032"
+      - "PARAM-ADP-033"
+      - "PARAM-ADP-034"
+    inputs:
+      - "arXiv query parameters"
+      - "arXiv Atom XML"
+    outputs:
+      - "arXiv API URL"
+      - "SourceItem records"
+      - "adapter errors"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/sources.example.yaml"
+      - "arxiv-daily-push/schemas/source_item.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_arxiv_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_03.md"
+      - "https://info.arxiv.org/help/api/basics.html"
+      - "https://info.arxiv.org/help/api/user-manual.html"
+      - "https://info.arxiv.org/help/api/index.html"
+  -
+    model_id: "MOD-ADP-002"
     name: "100-point arXiv selection score"
     kind: "deterministic scoring model"
     purpose: "Score eligible arXiv candidates and select the daily learning item."
@@ -267,16 +526,43 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-ranking-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-006"]
-    formula_ids: ["FORM-ADP-003"]
-    parameter_ids: ["PARAM-ADP-009", "PARAM-ADP-010", "PARAM-ADP-011", "PARAM-ADP-012", "PARAM-ADP-013", "PARAM-ADP-014", "PARAM-ADP-015", "PARAM-ADP-016"]
-    inputs: ["SourceItem", "EvidenceClaim", "normalized component signals", "recent selection history"]
-    outputs: ["selection score", "selection audit", "daily selected item", "blocking reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/ranking.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/examples/sources.example.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_ranking.py", "arxiv-daily-push/tests/fixtures/ranking_candidates.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_04.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-  - model_id: "MOD-ADP-003"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-006"
+    formula_ids:
+      - "FORM-ADP-003"
+    parameter_ids:
+      - "PARAM-ADP-009"
+      - "PARAM-ADP-010"
+      - "PARAM-ADP-011"
+      - "PARAM-ADP-012"
+      - "PARAM-ADP-013"
+      - "PARAM-ADP-014"
+      - "PARAM-ADP-015"
+      - "PARAM-ADP-016"
+    inputs:
+      - "SourceItem"
+      - "EvidenceClaim"
+      - "normalized component signals"
+      - "recent selection history"
+    outputs:
+      - "selection score"
+      - "selection audit"
+      - "daily selected item"
+      - "blocking reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/ranking.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/sources.example.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_ranking.py"
+      - "arxiv-daily-push/tests/fixtures/ranking_candidates.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_04.md"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+  -
+    model_id: "MOD-ADP-003"
     name: "Claim Ledger publication gate"
     kind: "deterministic evidence gate"
     purpose: "Block publication when claims lack source locators or conflict with source metadata."
@@ -284,17 +570,38 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-claim-gate-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-007"]
-    formula_ids: ["FORM-ADP-004"]
-    parameter_ids: ["PARAM-ADP-017", "PARAM-ADP-018"]
-    inputs: ["SourceItem", "EvidenceClaim", "source locator", "paper metadata"]
-    outputs: ["Claim Ledger", "publish allowed", "blocking reason", "Publication status"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/evidence_claim.schema.json", "arxiv-daily-push/schemas/publication.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_evidence_gate.py", "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_05.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-
-  - model_id: "MOD-ADP-006"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-007"
+    formula_ids:
+      - "FORM-ADP-004"
+    parameter_ids:
+      - "PARAM-ADP-017"
+      - "PARAM-ADP-018"
+    inputs:
+      - "SourceItem"
+      - "EvidenceClaim"
+      - "source locator"
+      - "paper metadata"
+    outputs:
+      - "Claim Ledger"
+      - "publish allowed"
+      - "blocking reason"
+      - "Publication status"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/evidence_gate.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/evidence_claim.schema.json"
+      - "arxiv-daily-push/schemas/publication.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_evidence_gate.py"
+      - "arxiv-daily-push/tests/fixtures/claim_ledger_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_05.md"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+  -
+    model_id: "MOD-ADP-006"
     name: "Evidence-linked Chinese lesson generator"
     kind: "deterministic lesson generator"
     purpose: "Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence while blocking unsupported or unregistered claim references."
@@ -302,17 +609,35 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-lesson-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-008"]
-    formula_ids: ["FORM-ADP-008"]
-    parameter_ids: ["PARAM-ADP-035", "PARAM-ADP-036"]
-    inputs: ["SourceItem", "EvidenceClaim", "Claim Ledger"]
-    outputs: ["Lesson", "lesson validation errors"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/lesson.schema.json", "arxiv-daily-push/schemas/evidence_claim.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/fixtures/lesson_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_06.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-
-  - model_id: "MOD-ADP-007"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-008"
+    formula_ids:
+      - "FORM-ADP-008"
+    parameter_ids:
+      - "PARAM-ADP-035"
+      - "PARAM-ADP-036"
+    inputs:
+      - "SourceItem"
+      - "EvidenceClaim"
+      - "Claim Ledger"
+    outputs:
+      - "Lesson"
+      - "lesson validation errors"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/lesson.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/lesson.schema.json"
+      - "arxiv-daily-push/schemas/evidence_claim.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_lesson.py"
+      - "arxiv-daily-push/tests/fixtures/lesson_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_06.md"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+  -
+    model_id: "MOD-ADP-007"
     name: "Narration and TTS dry-run gate"
     kind: "deterministic narration planner"
     purpose: "Generate narration/TTS-ready dry-run JSON from Lesson objects while blocking real audio synthesis and retained media artifacts."
@@ -320,17 +645,38 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-narration-v1"
-    assumption_ids: ["ASM-ADP-009"]
-    formula_ids: ["FORM-ADP-009"]
-    parameter_ids: ["PARAM-ADP-037", "PARAM-ADP-038", "PARAM-ADP-039", "PARAM-ADP-040"]
-    inputs: ["Lesson", "local command availability", "local disk status"]
-    outputs: ["Narration plan", "TTS resource gate", "dry-run validation errors"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/narration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/config.py"]
-    config_refs: ["arxiv-daily-push/schemas/narration.schema.json", "arxiv-daily-push/config/examples/runtime.example.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_narration.py", "arxiv-daily-push/tests/fixtures/narration_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_07.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-
-  - model_id: "MOD-ADP-008"
+    assumption_ids:
+      - "ASM-ADP-009"
+    formula_ids:
+      - "FORM-ADP-009"
+    parameter_ids:
+      - "PARAM-ADP-037"
+      - "PARAM-ADP-038"
+      - "PARAM-ADP-039"
+      - "PARAM-ADP-040"
+    inputs:
+      - "Lesson"
+      - "local command availability"
+      - "local disk status"
+    outputs:
+      - "Narration plan"
+      - "TTS resource gate"
+      - "dry-run validation errors"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/narration.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/config.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/narration.schema.json"
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_narration.py"
+      - "arxiv-daily-push/tests/fixtures/narration_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_07.md"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+  -
+    model_id: "MOD-ADP-008"
     name: "Storyboard and video dry-run media gate"
     kind: "deterministic storyboard planner"
     purpose: "Generate video storyboard dry-run JSON from narration segments while blocking rendering, media writes, and asset downloads."
@@ -338,17 +684,36 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-video-dry-run-v1"
-    assumption_ids: ["ASM-ADP-010"]
-    formula_ids: ["FORM-ADP-010"]
-    parameter_ids: ["PARAM-ADP-041", "PARAM-ADP-042", "PARAM-ADP-043", "PARAM-ADP-044"]
-    inputs: ["Narration", "local command availability", "local disk status"]
-    outputs: ["Storyboard", "video media gate", "dry-run validation errors"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/storyboard.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/fixtures/video_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_08.md", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-
-  - model_id: "MOD-ADP-009"
+    assumption_ids:
+      - "ASM-ADP-010"
+    formula_ids:
+      - "FORM-ADP-010"
+    parameter_ids:
+      - "PARAM-ADP-041"
+      - "PARAM-ADP-042"
+      - "PARAM-ADP-043"
+      - "PARAM-ADP-044"
+    inputs:
+      - "Narration"
+      - "local command availability"
+      - "local disk status"
+    outputs:
+      - "Storyboard"
+      - "video media gate"
+      - "dry-run validation errors"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/video.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/storyboard.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_video.py"
+      - "arxiv-daily-push/tests/fixtures/video_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_08.md"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+  -
+    model_id: "MOD-ADP-009"
     name: "Local daily dry-run pipeline"
     kind: "deterministic orchestration pipeline"
     purpose: "Run a single local daily dry-run from SourceItem and EvidenceClaim inputs through publication gate, Lesson, Narration, Storyboard, RunRecord completion, and email preview."
@@ -356,17 +721,38 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-local-pipeline-v1"
-    assumption_ids: ["ASM-ADP-011"]
-    formula_ids: ["FORM-ADP-011"]
-    parameter_ids: ["PARAM-ADP-045", "PARAM-ADP-046", "PARAM-ADP-047"]
-    inputs: ["SourceItem", "EvidenceClaim", "run_id", "date"]
-    outputs: ["RunRecord", "Publication", "Lesson", "Narration", "Storyboard", "email preview"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/pipeline.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/run_record.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_pipeline.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_09.md"]
-
-  - model_id: "MOD-ADP-010"
+    assumption_ids:
+      - "ASM-ADP-011"
+    formula_ids:
+      - "FORM-ADP-011"
+    parameter_ids:
+      - "PARAM-ADP-045"
+      - "PARAM-ADP-046"
+      - "PARAM-ADP-047"
+    inputs:
+      - "SourceItem"
+      - "EvidenceClaim"
+      - "run_id"
+      - "date"
+    outputs:
+      - "RunRecord"
+      - "Publication"
+      - "Lesson"
+      - "Narration"
+      - "Storyboard"
+      - "email preview"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/pipeline.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/run_record.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_pipeline.py"
+      - "arxiv-daily-push/tests/fixtures/pipeline_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_09.md"
+  -
+    model_id: "MOD-ADP-010"
     name: "Runner release email dry-run handoff"
     kind: "deterministic handoff gate"
     purpose: "Build a Phase 10 handoff preview from a completed daily dry-run payload while blocking all external side effects."
@@ -374,17 +760,37 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-handoff-v1"
-    assumption_ids: ["ASM-ADP-012", "ASM-ADP-002"]
-    formula_ids: ["FORM-ADP-012"]
-    parameter_ids: ["PARAM-ADP-048", "PARAM-ADP-049", "PARAM-ADP-050"]
-    inputs: ["completed RunRecord", "dry-run pipeline payload", "generated_at"]
-    outputs: ["handoff_id", "runner_gate", "release_gate", "email_transport_gate", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/handoff.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/examples/notification.example.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_handoff.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_10.md"]
-
-  - model_id: "MOD-ADP-011"
+    assumption_ids:
+      - "ASM-ADP-012"
+      - "ASM-ADP-002"
+    formula_ids:
+      - "FORM-ADP-012"
+    parameter_ids:
+      - "PARAM-ADP-048"
+      - "PARAM-ADP-049"
+      - "PARAM-ADP-050"
+    inputs:
+      - "completed RunRecord"
+      - "dry-run pipeline payload"
+      - "generated_at"
+    outputs:
+      - "handoff_id"
+      - "runner_gate"
+      - "release_gate"
+      - "email_transport_gate"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/handoff.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/notification.example.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_handoff.py"
+      - "arxiv-daily-push/tests/fixtures/pipeline_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_10.md"
+  -
+    model_id: "MOD-ADP-011"
     name: "Final acceptance and handoff readiness gate"
     kind: "deterministic acceptance gate"
     purpose: "Build a final handoff package that separates dry-run readiness from production acceptance and accepts production evidence only from a validated 30-day trial report."
@@ -392,16 +798,44 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-acceptance-v1.2"
-    assumption_ids: ["ASM-ADP-013", "ASM-ADP-014", "ASM-ADP-015"]
-    formula_ids: ["FORM-ADP-013"]
-    parameter_ids: ["PARAM-ADP-051", "PARAM-ADP-052", "PARAM-ADP-053", "PARAM-ADP-054", "PARAM-ADP-055", "PARAM-ADP-056", "PARAM-ADP-064"]
-    inputs: ["Phase 10 handoff", "validated trial evidence report", "generated_at"]
-    outputs: ["acceptance package", "production_acceptance_status", "evidence_validator", "trial_evidence_id", "blocking_reasons", "next_actions"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    test_refs: ["arxiv-daily-push/tests/test_acceptance.py", "arxiv-daily-push/tests/fixtures/pipeline_input.json"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
-  - model_id: "MOD-ADP-012"
+    assumption_ids:
+      - "ASM-ADP-013"
+      - "ASM-ADP-014"
+      - "ASM-ADP-015"
+    formula_ids:
+      - "FORM-ADP-013"
+    parameter_ids:
+      - "PARAM-ADP-051"
+      - "PARAM-ADP-052"
+      - "PARAM-ADP-053"
+      - "PARAM-ADP-054"
+      - "PARAM-ADP-055"
+      - "PARAM-ADP-056"
+      - "PARAM-ADP-064"
+    inputs:
+      - "Phase 10 handoff"
+      - "validated trial evidence report"
+      - "generated_at"
+    outputs:
+      - "acceptance package"
+      - "production_acceptance_status"
+      - "evidence_validator"
+      - "trial_evidence_id"
+      - "blocking_reasons"
+      - "next_actions"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/acceptance.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_acceptance.py"
+      - "arxiv-daily-push/tests/fixtures/pipeline_input.json"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"
+  -
+    model_id: "MOD-ADP-012"
     name: "Thirty-day operational trial evidence validator"
     kind: "deterministic production evidence validator"
     purpose: "Validate the 30-day run evidence package before it can feed production acceptance."
@@ -409,16 +843,45 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-evidence-v1"
-    assumption_ids: ["ASM-ADP-015", "ASM-ADP-002"]
-    formula_ids: ["FORM-ADP-014"]
-    parameter_ids: ["PARAM-ADP-057", "PARAM-ADP-058", "PARAM-ADP-059", "PARAM-ADP-060", "PARAM-ADP-061", "PARAM-ADP-062", "PARAM-ADP-063"]
-    inputs: ["30-day trial evidence JSON", "daily run refs", "scheduler evidence", "Release evidence", "SMTP evidence", "resource evidence", "weekly/monthly replay evidence", "recovery drill evidence"]
-    outputs: ["trial evidence report", "production_evidence_status", "operational_evidence"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/trial_evidence.schema.json", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    test_refs: ["arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_acceptance.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"]
-  - model_id: "MOD-ADP-013"
+    assumption_ids:
+      - "ASM-ADP-015"
+      - "ASM-ADP-002"
+    formula_ids:
+      - "FORM-ADP-014"
+    parameter_ids:
+      - "PARAM-ADP-057"
+      - "PARAM-ADP-058"
+      - "PARAM-ADP-059"
+      - "PARAM-ADP-060"
+      - "PARAM-ADP-061"
+      - "PARAM-ADP-062"
+      - "PARAM-ADP-063"
+    inputs:
+      - "30-day trial evidence JSON"
+      - "daily run refs"
+      - "scheduler evidence"
+      - "Release evidence"
+      - "SMTP evidence"
+      - "resource evidence"
+      - "weekly/monthly replay evidence"
+      - "recovery drill evidence"
+    outputs:
+      - "trial evidence report"
+      - "production_evidence_status"
+      - "operational_evidence"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/trial_evidence.schema.json"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial.py"
+      - "arxiv-daily-push/tests/test_acceptance.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md"
+  -
+    model_id: "MOD-ADP-013"
     name: "Production preflight fail-closed gate"
     kind: "deterministic production readiness validator"
     purpose: "Block scheduled production execution unless local runtime, secret-key presence, resource, Git artifact, and cache gates pass."
@@ -426,16 +889,43 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-production-preflight-v1"
-    assumption_ids: ["ASM-ADP-016", "ASM-ADP-002"]
-    formula_ids: ["FORM-ADP-015"]
-    parameter_ids: ["PARAM-ADP-065", "PARAM-ADP-066", "PARAM-ADP-067", "PARAM-ADP-068", "PARAM-ADP-069", "PARAM-ADP-070"]
-    inputs: ["repository path", "PATH command availability", "secret environment key presence", "disk usage", "memory total", "Git tracked and untracked files", "local cache/staging directories"]
-    outputs: ["production preflight report", "production_run_allowed", "blocking_reasons", "resource_evidence"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/production_preflight.schema.json", "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"]
-    test_refs: ["arxiv-daily-push/tests/test_production_preflight.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"]
-  - model_id: "MOD-ADP-014"
+    assumption_ids:
+      - "ASM-ADP-016"
+      - "ASM-ADP-002"
+    formula_ids:
+      - "FORM-ADP-015"
+    parameter_ids:
+      - "PARAM-ADP-065"
+      - "PARAM-ADP-066"
+      - "PARAM-ADP-067"
+      - "PARAM-ADP-068"
+      - "PARAM-ADP-069"
+      - "PARAM-ADP-070"
+    inputs:
+      - "repository path"
+      - "PATH command availability"
+      - "secret environment key presence"
+      - "disk usage"
+      - "memory total"
+      - "Git tracked and untracked files"
+      - "local cache/staging directories"
+    outputs:
+      - "production preflight report"
+      - "production_run_allowed"
+      - "blocking_reasons"
+      - "resource_evidence"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/production_preflight.schema.json"
+      - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_production_preflight.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md"
+  -
+    model_id: "MOD-ADP-014"
     name: "Manual production trial bootstrap gate"
     kind: "deterministic workflow contract validator"
     purpose: "Validate the manual GitHub trial bootstrap workflow and runbook before any real 30-day trial startup."
@@ -443,16 +933,39 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-bootstrap-v1"
-    assumption_ids: ["ASM-ADP-017", "ASM-ADP-016", "ASM-ADP-002"]
-    formula_ids: ["FORM-ADP-016"]
-    parameter_ids: ["PARAM-ADP-071", "PARAM-ADP-072", "PARAM-ADP-073", "PARAM-ADP-074"]
-    inputs: ["workflow file", "production trial runbook", "generated_at"]
-    outputs: ["trial bootstrap plan", "trial_bootstrap_ready", "blocking_reasons", "next_external_actions"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: [".github/workflows/arxiv-daily-push-production-trial.yml", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", "arxiv-daily-push/schemas/trial_bootstrap.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_bootstrap.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"]
-  - model_id: "MOD-ADP-015"
+    assumption_ids:
+      - "ASM-ADP-017"
+      - "ASM-ADP-016"
+      - "ASM-ADP-002"
+    formula_ids:
+      - "FORM-ADP-016"
+    parameter_ids:
+      - "PARAM-ADP-071"
+      - "PARAM-ADP-072"
+      - "PARAM-ADP-073"
+      - "PARAM-ADP-074"
+    inputs:
+      - "workflow file"
+      - "production trial runbook"
+      - "generated_at"
+    outputs:
+      - "trial bootstrap plan"
+      - "trial_bootstrap_ready"
+      - "blocking_reasons"
+      - "next_external_actions"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_bootstrap.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - ".github/workflows/arxiv-daily-push-production-trial.yml"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+      - "arxiv-daily-push/schemas/trial_bootstrap.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_bootstrap.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_BOOTSTRAP_WORKFLOW.md"
+  -
+    model_id: "MOD-ADP-015"
     name: "Live arXiv latest source ingest"
     kind: "deterministic source ingest adapter"
     purpose: "Fetch latest arXiv Atom SourceItems, validate generic SourceItem records, and filter already-seen source IDs before ranking."
@@ -460,17 +973,44 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-live-arxiv-ingest-v1"
-    assumption_ids: ["ASM-ADP-018", "ASM-ADP-003"]
-    formula_ids: ["FORM-ADP-017"]
-    parameter_ids: ["PARAM-ADP-075", "PARAM-ADP-076", "PARAM-ADP-077", "PARAM-ADP-078", "PARAM-ADP-079", "PARAM-ADP-080"]
-    inputs: ["arXiv search_query", "generated_at", "max_results", "seen source IDs", "arXiv Atom XML"]
-    outputs: ["SourceBatch", "new SourceItems", "duplicate_source_ids", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/source_batch.schema.json", "arxiv-daily-push/config/examples/sources.example.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md", "https://info.arxiv.org/help/api/user-manual.html"]
-
-  - model_id: "MOD-ADP-016"
+    assumption_ids:
+      - "ASM-ADP-018"
+      - "ASM-ADP-003"
+    formula_ids:
+      - "FORM-ADP-017"
+    parameter_ids:
+      - "PARAM-ADP-075"
+      - "PARAM-ADP-076"
+      - "PARAM-ADP-077"
+      - "PARAM-ADP-078"
+      - "PARAM-ADP-079"
+      - "PARAM-ADP-080"
+    inputs:
+      - "arXiv search_query"
+      - "generated_at"
+      - "max_results"
+      - "seen source IDs"
+      - "arXiv Atom XML"
+    outputs:
+      - "SourceBatch"
+      - "new SourceItems"
+      - "duplicate_source_ids"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/source_batch.schema.json"
+      - "arxiv-daily-push/config/examples/sources.example.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_source_ingest.py"
+      - "arxiv-daily-push/tests/fixtures/arxiv_atom_sample.xml"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md"
+      - "https://info.arxiv.org/help/api/user-manual.html"
+  -
+    model_id: "MOD-ADP-016"
     name: "SMTP notification delivery boundary"
     kind: "deterministic notification transport gate"
     purpose: "Render notification evidence and send real SMTP mail only when explicit allow-send, recipient, environment-key, TLS, login, and delivery checks pass."
@@ -478,17 +1018,41 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-smtp-delivery-v1"
-    assumption_ids: ["ASM-ADP-019", "ASM-ADP-002"]
-    formula_ids: ["FORM-ADP-018"]
-    parameter_ids: ["PARAM-ADP-081", "PARAM-ADP-082", "PARAM-ADP-083", "PARAM-ADP-084", "PARAM-ADP-085"]
-    inputs: ["EmailNotification", "generated_at", "allow_send flag", "SMTP environment key presence"]
-    outputs: ["SMTP delivery report", "body_sha256", "delivery_ref", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/notifications.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/examples/notification.example.yaml", "arxiv-daily-push/schemas/smtp_delivery.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"]
-
-  - model_id: "MOD-ADP-017"
+    assumption_ids:
+      - "ASM-ADP-019"
+      - "ASM-ADP-002"
+    formula_ids:
+      - "FORM-ADP-018"
+    parameter_ids:
+      - "PARAM-ADP-081"
+      - "PARAM-ADP-082"
+      - "PARAM-ADP-083"
+      - "PARAM-ADP-084"
+      - "PARAM-ADP-085"
+    inputs:
+      - "EmailNotification"
+      - "generated_at"
+      - "allow_send flag"
+      - "SMTP environment key presence"
+    outputs:
+      - "SMTP delivery report"
+      - "body_sha256"
+      - "delivery_ref"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/notifications.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/notification.example.yaml"
+      - "arxiv-daily-push/schemas/smtp_delivery.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_notifications.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_SMTP_DELIVERY.md"
+  -
+    model_id: "MOD-ADP-017"
     name: "GitHub Release delivery boundary"
     kind: "deterministic release transport gate"
     purpose: "Render Release delivery evidence and create a real GitHub Release only when explicit allow-upload, target, deduplicated safe assets, gh, and no-clobber checks pass."
@@ -496,17 +1060,46 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-release-delivery-v1.1"
-    assumption_ids: ["ASM-ADP-020", "ASM-ADP-003"]
-    formula_ids: ["FORM-ADP-019"]
-    parameter_ids: ["PARAM-ADP-086", "PARAM-ADP-087", "PARAM-ADP-088", "PARAM-ADP-089", "PARAM-ADP-090", "PARAM-ADP-091", "PARAM-ADP-185"]
-    inputs: ["Release tag", "Release title", "Release notes", "asset paths", "generated_at", "allow_upload flag", "Release target"]
-    outputs: ["Release delivery report", "asset SHA256 values", "release_ref", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/release_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/release_delivery.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_release_delivery.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md", "https://cli.github.com/manual/gh_release_create"]
-
-  - model_id: "MOD-ADP-018"
+    assumption_ids:
+      - "ASM-ADP-020"
+      - "ASM-ADP-003"
+    formula_ids:
+      - "FORM-ADP-019"
+    parameter_ids:
+      - "PARAM-ADP-086"
+      - "PARAM-ADP-087"
+      - "PARAM-ADP-088"
+      - "PARAM-ADP-089"
+      - "PARAM-ADP-090"
+      - "PARAM-ADP-091"
+      - "PARAM-ADP-185"
+    inputs:
+      - "Release tag"
+      - "Release title"
+      - "Release notes"
+      - "asset paths"
+      - "generated_at"
+      - "allow_upload flag"
+      - "Release target"
+    outputs:
+      - "Release delivery report"
+      - "asset SHA256 values"
+      - "release_ref"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/release_delivery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/schemas/release_delivery.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_release_delivery.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_RELEASE_DELIVERY.md"
+      - "https://cli.github.com/manual/gh_release_create"
+  -
+    model_id: "MOD-ADP-018"
     name: "Scheduled production workflow gate"
     kind: "deterministic scheduler contract validator"
     purpose: "Validate the timezone-aware GitHub Actions production scheduler contract while keeping scheduled production, SMTP, and Release side effects disabled by default."
@@ -514,17 +1107,43 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-production-scheduler-v1"
-    assumption_ids: ["ASM-ADP-021", "ASM-ADP-017"]
-    formula_ids: ["FORM-ADP-020"]
-    parameter_ids: ["PARAM-ADP-092", "PARAM-ADP-093", "PARAM-ADP-094", "PARAM-ADP-095", "PARAM-ADP-096", "PARAM-ADP-160"]
-    inputs: ["scheduled workflow text", "production trial runbook text", "generated_at"]
-    outputs: ["scheduler plan", "schedule slots", "checks", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/production_scheduler.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md", "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows", "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"]
-
-  - model_id: "MOD-ADP-019"
+    assumption_ids:
+      - "ASM-ADP-021"
+      - "ASM-ADP-017"
+    formula_ids:
+      - "FORM-ADP-020"
+    parameter_ids:
+      - "PARAM-ADP-092"
+      - "PARAM-ADP-093"
+      - "PARAM-ADP-094"
+      - "PARAM-ADP-095"
+      - "PARAM-ADP-096"
+      - "PARAM-ADP-160"
+    inputs:
+      - "scheduled workflow text"
+      - "production trial runbook text"
+      - "generated_at"
+    outputs:
+      - "scheduler plan"
+      - "schedule slots"
+      - "checks"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/schemas/production_scheduler.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md"
+      - "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+      - "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"
+  -
+    model_id: "MOD-ADP-019"
     name: "Scheduled execution driver"
     kind: "deterministic scheduled execution gate"
     purpose: "Run one scheduled health-check, daily-run, or watchdog mode after preflight and produce evidence without counting dry-run side effects as production acceptance."
@@ -532,17 +1151,46 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-scheduled-execution-v1"
-    assumption_ids: ["ASM-ADP-022", "ASM-ADP-021", "ASM-ADP-016"]
-    formula_ids: ["FORM-ADP-021"]
-    parameter_ids: ["PARAM-ADP-097", "PARAM-ADP-098", "PARAM-ADP-099", "PARAM-ADP-100", "PARAM-ADP-101"]
-    inputs: ["scheduled mode", "generated_at", "production preflight report", "daily input package", "previous execution report", "SMTP/Release enablement variables"]
-    outputs: ["scheduled execution report", "notification report", "Release report", "evidence_refs", "production_evidence_ready"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/scheduled_execution.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"]
-
-  - model_id: "MOD-ADP-020"
+    assumption_ids:
+      - "ASM-ADP-022"
+      - "ASM-ADP-021"
+      - "ASM-ADP-016"
+    formula_ids:
+      - "FORM-ADP-021"
+    parameter_ids:
+      - "PARAM-ADP-097"
+      - "PARAM-ADP-098"
+      - "PARAM-ADP-099"
+      - "PARAM-ADP-100"
+      - "PARAM-ADP-101"
+    inputs:
+      - "scheduled mode"
+      - "generated_at"
+      - "production preflight report"
+      - "daily input package"
+      - "previous execution report"
+      - "SMTP/Release enablement variables"
+    outputs:
+      - "scheduled execution report"
+      - "notification report"
+      - "Release report"
+      - "evidence_refs"
+      - "production_evidence_ready"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/schemas/scheduled_execution.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md"
+  -
+    model_id: "MOD-ADP-020"
     name: "Daily input builder"
     kind: "deterministic source-to-input builder"
     purpose: "Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary and metadata claims only."
@@ -550,17 +1198,46 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-daily-input-builder-v1"
-    assumption_ids: ["ASM-ADP-023", "ASM-ADP-018", "ASM-ADP-006"]
-    formula_ids: ["FORM-ADP-022"]
-    parameter_ids: ["PARAM-ADP-102", "PARAM-ADP-103", "PARAM-ADP-104", "PARAM-ADP-105", "PARAM-ADP-106", "PARAM-ADP-107"]
-    inputs: ["arXiv SourceBatch", "date", "generated_at", "timezone", "recent source IDs"]
-    outputs: ["daily input builder report", "daily input package", "selection audit", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/daily_input.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/daily_input.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_daily_input.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md", "https://info.arxiv.org/help/api/user-manual.html"]
-
-  - model_id: "MOD-ADP-021"
+    assumption_ids:
+      - "ASM-ADP-023"
+      - "ASM-ADP-018"
+      - "ASM-ADP-006"
+    formula_ids:
+      - "FORM-ADP-022"
+    parameter_ids:
+      - "PARAM-ADP-102"
+      - "PARAM-ADP-103"
+      - "PARAM-ADP-104"
+      - "PARAM-ADP-105"
+      - "PARAM-ADP-106"
+      - "PARAM-ADP-107"
+    inputs:
+      - "arXiv SourceBatch"
+      - "date"
+      - "generated_at"
+      - "timezone"
+      - "recent source IDs"
+    outputs:
+      - "daily input builder report"
+      - "daily input package"
+      - "selection audit"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/daily_input.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/schemas/daily_input.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_daily_input.py"
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md"
+      - "https://info.arxiv.org/help/api/user-manual.html"
+  -
+    model_id: "MOD-ADP-021"
     name: "Trial evidence ledger update"
     kind: "deterministic trial ledger updater"
     purpose: "Append one production-ready scheduled daily-run report into the 30-day trial evidence ledger without claiming acceptance early."
@@ -568,17 +1245,47 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-ledger-v1"
-    assumption_ids: ["ASM-ADP-024", "ASM-ADP-022", "ASM-ADP-015"]
-    formula_ids: ["FORM-ADP-023"]
-    parameter_ids: ["PARAM-ADP-108", "PARAM-ADP-109", "PARAM-ADP-110", "PARAM-ADP-111", "PARAM-ADP-112"]
-    inputs: ["existing trial evidence", "scheduled execution report", "generated_at", "trial refs", "explicit operational evidence flags"]
-    outputs: ["trial ledger update report", "updated trial evidence", "daily_entry", "embedded trial evidence report", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-scheduled.yml"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/trial_ledger.schema.json", "arxiv-daily-push/schemas/trial_evidence.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"]
-
-  - model_id: "MOD-ADP-022"
+    assumption_ids:
+      - "ASM-ADP-024"
+      - "ASM-ADP-022"
+      - "ASM-ADP-015"
+    formula_ids:
+      - "FORM-ADP-023"
+    parameter_ids:
+      - "PARAM-ADP-108"
+      - "PARAM-ADP-109"
+      - "PARAM-ADP-110"
+      - "PARAM-ADP-111"
+      - "PARAM-ADP-112"
+    inputs:
+      - "existing trial evidence"
+      - "scheduled execution report"
+      - "generated_at"
+      - "trial refs"
+      - "explicit operational evidence flags"
+    outputs:
+      - "trial ledger update report"
+      - "updated trial evidence"
+      - "daily_entry"
+      - "embedded trial evidence report"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/schemas/trial_ledger.schema.json"
+      - "arxiv-daily-push/schemas/trial_evidence.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_ledger.py"
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md"
+  -
+    model_id: "MOD-ADP-022"
     name: "Trial ledger state persistence"
     kind: "deterministic workflow state bridge"
     purpose: "Restore and upload small trial evidence ledger state artifacts across scheduled GitHub Actions runs."
@@ -586,17 +1293,42 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-ledger-state-v1"
-    assumption_ids: ["ASM-ADP-025", "ASM-ADP-024", "ASM-ADP-021"]
-    formula_ids: ["FORM-ADP-024"]
-    parameter_ids: ["PARAM-ADP-113", "PARAM-ADP-114", "PARAM-ADP-115", "PARAM-ADP-116", "PARAM-ADP-117"]
-    inputs: ["configured trial evidence path", "previous GitHub Actions artifact", "trial ledger update report", "workflow token"]
-    outputs: ["restored trial evidence path", "trial evidence ledger state artifact", "state source", "export status"]
-    code_refs: [".github/workflows/arxiv-daily-push-scheduled.yml", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_ledger.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"]
-
-  - model_id: "MOD-ADP-023"
+    assumption_ids:
+      - "ASM-ADP-025"
+      - "ASM-ADP-024"
+      - "ASM-ADP-021"
+    formula_ids:
+      - "FORM-ADP-024"
+    parameter_ids:
+      - "PARAM-ADP-113"
+      - "PARAM-ADP-114"
+      - "PARAM-ADP-115"
+      - "PARAM-ADP-116"
+      - "PARAM-ADP-117"
+    inputs:
+      - "configured trial evidence path"
+      - "previous GitHub Actions artifact"
+      - "trial ledger update report"
+      - "workflow token"
+    outputs:
+      - "restored trial evidence path"
+      - "trial evidence ledger state artifact"
+      - "state source"
+      - "export status"
+    code_refs:
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_ledger.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_ledger.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md"
+  -
+    model_id: "MOD-ADP-023"
     name: "Trial operational evidence annotation"
     kind: "deterministic operational evidence annotator"
     purpose: "Merge explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs into trial evidence without hand-editing JSON."
@@ -604,17 +1336,42 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-ops-evidence-v1"
-    assumption_ids: ["ASM-ADP-026", "ASM-ADP-015", "ASM-ADP-025"]
-    formula_ids: ["FORM-ADP-025"]
-    parameter_ids: ["PARAM-ADP-118", "PARAM-ADP-119", "PARAM-ADP-120", "PARAM-ADP-121", "PARAM-ADP-122"]
-    inputs: ["existing trial evidence", "generated_at", "explicit operational evidence flags", "operational evidence refs"]
-    outputs: ["trial ops update report", "updated trial evidence", "embedded trial evidence report", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_ops.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/schemas/trial_evidence.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_ops.py", "arxiv-daily-push/tests/test_trial.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"]
-
-  - model_id: "MOD-ADP-024"
+    assumption_ids:
+      - "ASM-ADP-026"
+      - "ASM-ADP-015"
+      - "ASM-ADP-025"
+    formula_ids:
+      - "FORM-ADP-025"
+    parameter_ids:
+      - "PARAM-ADP-118"
+      - "PARAM-ADP-119"
+      - "PARAM-ADP-120"
+      - "PARAM-ADP-121"
+      - "PARAM-ADP-122"
+    inputs:
+      - "existing trial evidence"
+      - "generated_at"
+      - "explicit operational evidence flags"
+      - "operational evidence refs"
+    outputs:
+      - "trial ops update report"
+      - "updated trial evidence"
+      - "embedded trial evidence report"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_ops.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/schemas/trial_evidence.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_ops.py"
+      - "arxiv-daily-push/tests/test_trial.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-024"
     name: "Trial replay evidence builder"
     kind: "deterministic replay evidence validator"
     purpose: "Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage."
@@ -622,17 +1379,42 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-replay-v1"
-    assumption_ids: ["ASM-ADP-027", "ASM-ADP-026", "ASM-ADP-024"]
-    formula_ids: ["FORM-ADP-026"]
-    parameter_ids: ["PARAM-ADP-123", "PARAM-ADP-124", "PARAM-ADP-125", "PARAM-ADP-126", "PARAM-ADP-127"]
-    inputs: ["existing trial evidence", "generated_at", "requested replay modes", "durable replay ref"]
-    outputs: ["trial replay evidence report", "annotation_hint", "daily_entry_refs", "coverage", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_replay.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/trial_replay.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_replay.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"]
-
-  - model_id: "MOD-ADP-025"
+    assumption_ids:
+      - "ASM-ADP-027"
+      - "ASM-ADP-026"
+      - "ASM-ADP-024"
+    formula_ids:
+      - "FORM-ADP-026"
+    parameter_ids:
+      - "PARAM-ADP-123"
+      - "PARAM-ADP-124"
+      - "PARAM-ADP-125"
+      - "PARAM-ADP-126"
+      - "PARAM-ADP-127"
+    inputs:
+      - "existing trial evidence"
+      - "generated_at"
+      - "requested replay modes"
+      - "durable replay ref"
+    outputs:
+      - "trial replay evidence report"
+      - "annotation_hint"
+      - "daily_entry_refs"
+      - "coverage"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_replay.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/trial_replay.schema.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_replay.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-025"
     name: "Trial recovery evidence builder"
     kind: "deterministic recovery evidence validator"
     purpose: "Build recovery drill evidence from a failed, blocked, or degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs."
@@ -640,17 +1422,43 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-recovery-v1"
-    assumption_ids: ["ASM-ADP-028", "ASM-ADP-026", "ASM-ADP-022"]
-    formula_ids: ["FORM-ADP-027"]
-    parameter_ids: ["PARAM-ADP-128", "PARAM-ADP-129", "PARAM-ADP-130", "PARAM-ADP-131", "PARAM-ADP-132"]
-    inputs: ["failed scheduled execution report", "recovered scheduled execution report", "generated_at", "failure ref", "recovery ref"]
-    outputs: ["trial recovery evidence report", "annotation_hint", "failure_summary", "recovery_summary", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/trial_recovery.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_recovery.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"]
-
-  - model_id: "MOD-ADP-026"
+    assumption_ids:
+      - "ASM-ADP-028"
+      - "ASM-ADP-026"
+      - "ASM-ADP-022"
+    formula_ids:
+      - "FORM-ADP-027"
+    parameter_ids:
+      - "PARAM-ADP-128"
+      - "PARAM-ADP-129"
+      - "PARAM-ADP-130"
+      - "PARAM-ADP-131"
+      - "PARAM-ADP-132"
+    inputs:
+      - "failed scheduled execution report"
+      - "recovered scheduled execution report"
+      - "generated_at"
+      - "failure ref"
+      - "recovery ref"
+    outputs:
+      - "trial recovery evidence report"
+      - "annotation_hint"
+      - "failure_summary"
+      - "recovery_summary"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_recovery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/trial_recovery.schema.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_recovery.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-026"
     name: "Trial resource telemetry evidence builder"
     kind: "deterministic resource evidence validator"
     purpose: "Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs."
@@ -658,17 +1466,45 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-resource-v1"
-    assumption_ids: ["ASM-ADP-029", "ASM-ADP-016", "ASM-ADP-026"]
-    formula_ids: ["FORM-ADP-028"]
-    parameter_ids: ["PARAM-ADP-133", "PARAM-ADP-134", "PARAM-ADP-135", "PARAM-ADP-136", "PARAM-ADP-137"]
-    inputs: ["existing trial evidence", "production preflight reports", "generated_at", "durable resource ref"]
-    outputs: ["trial resource evidence report", "annotation_hint", "daily_resource_refs", "preflight_resource_refs", "coverage", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_resource.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/trial_resource.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_resource.py", "arxiv-daily-push/tests/test_production_preflight.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"]
-
-  - model_id: "MOD-ADP-027"
+    assumption_ids:
+      - "ASM-ADP-029"
+      - "ASM-ADP-016"
+      - "ASM-ADP-026"
+    formula_ids:
+      - "FORM-ADP-028"
+    parameter_ids:
+      - "PARAM-ADP-133"
+      - "PARAM-ADP-134"
+      - "PARAM-ADP-135"
+      - "PARAM-ADP-136"
+      - "PARAM-ADP-137"
+    inputs:
+      - "existing trial evidence"
+      - "production preflight reports"
+      - "generated_at"
+      - "durable resource ref"
+    outputs:
+      - "trial resource evidence report"
+      - "annotation_hint"
+      - "daily_resource_refs"
+      - "preflight_resource_refs"
+      - "coverage"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_resource.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/trial_resource.schema.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_resource.py"
+      - "arxiv-daily-push/tests/test_production_preflight.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-027"
     name: "Trial start readiness gate"
     kind: "deterministic start-readiness validator"
     purpose: "Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready."
@@ -676,17 +1512,47 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-start-v1"
-    assumption_ids: ["ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-029"]
-    parameter_ids: ["PARAM-ADP-138", "PARAM-ADP-139", "PARAM-ADP-140", "PARAM-ADP-141", "PARAM-ADP-142", "PARAM-ADP-143"]
-    inputs: ["production preflight report", "trial bootstrap plan", "production scheduler plan", "live source batch", "SMTP delivery report", "Release delivery report", "durable evidence refs", "confirm_start"]
-    outputs: ["trial start readiness report", "readiness_gates", "evidence_refs", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/trial_start.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_start.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"]
-
-  - model_id: "MOD-ADP-028"
+    assumption_ids:
+      - "ASM-ADP-030"
+      - "ASM-ADP-016"
+      - "ASM-ADP-019"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-029"
+    parameter_ids:
+      - "PARAM-ADP-138"
+      - "PARAM-ADP-139"
+      - "PARAM-ADP-140"
+      - "PARAM-ADP-141"
+      - "PARAM-ADP-142"
+      - "PARAM-ADP-143"
+    inputs:
+      - "production preflight report"
+      - "trial bootstrap plan"
+      - "production scheduler plan"
+      - "live source batch"
+      - "SMTP delivery report"
+      - "Release delivery report"
+      - "durable evidence refs"
+      - "confirm_start"
+    outputs:
+      - "trial start readiness report"
+      - "readiness_gates"
+      - "evidence_refs"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_start.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/trial_start.schema.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_start.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_GATE.md"
+  -
+    model_id: "MOD-ADP-028"
     name: "Trial start evidence workflow validator"
     kind: "deterministic workflow contract validator"
     purpose: "Validate the manual GitHub workflow that collects default-branch trial start preflight, production refs, launch readiness, source, SMTP, Release, and start-gate artifacts on the private runner."
@@ -694,17 +1560,49 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-trial-start-workflow-v1"
-    assumption_ids: ["ASM-ADP-031", "ASM-ADP-030", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-030"]
-    parameter_ids: ["PARAM-ADP-144", "PARAM-ADP-145", "PARAM-ADP-146", "PARAM-ADP-147", "PARAM-ADP-148", "PARAM-ADP-161", "PARAM-ADP-164"]
-    inputs: ["trial start workflow file", "production refs discovery step", "production launch readiness step", "production trial runbook", "generated_at"]
-    outputs: ["trial start workflow plan", "checks", "required_artifacts", "blocking_reasons", "next_external_actions"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-trial-start.yml"]
-    config_refs: ["arxiv-daily-push/schemas/trial_start_workflow.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"]
-
-  - model_id: "MOD-ADP-029"
+    assumption_ids:
+      - "ASM-ADP-031"
+      - "ASM-ADP-030"
+      - "ASM-ADP-016"
+      - "ASM-ADP-019"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-030"
+    parameter_ids:
+      - "PARAM-ADP-144"
+      - "PARAM-ADP-145"
+      - "PARAM-ADP-146"
+      - "PARAM-ADP-147"
+      - "PARAM-ADP-148"
+      - "PARAM-ADP-161"
+      - "PARAM-ADP-164"
+    inputs:
+      - "trial start workflow file"
+      - "production refs discovery step"
+      - "production launch readiness step"
+      - "production trial runbook"
+      - "generated_at"
+    outputs:
+      - "trial start workflow plan"
+      - "checks"
+      - "required_artifacts"
+      - "blocking_reasons"
+      - "next_external_actions"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - ".github/workflows/arxiv-daily-push-trial-start.yml"
+    config_refs:
+      - "arxiv-daily-push/schemas/trial_start_workflow.schema.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_trial_start_workflow.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md"
+  -
+    model_id: "MOD-ADP-029"
     name: "Production launch readiness gate"
     kind: "deterministic launch-readiness validator"
     purpose: "Block default-branch trial start workflow dispatch until the PR is merged and non-draft, expected head SHA matches, workflow contract is ready, and external runner, secret, Release target, and variable refs are durable."
@@ -712,17 +1610,46 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-production-launch-readiness-v1"
-    assumption_ids: ["ASM-ADP-032", "ASM-ADP-031", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-031"]
-    parameter_ids: ["PARAM-ADP-149", "PARAM-ADP-150", "PARAM-ADP-151", "PARAM-ADP-152", "PARAM-ADP-153"]
-    inputs: ["repository path", "GitHub PR metadata JSON", "expected head SHA", "external readiness refs", "confirm_launch"]
-    outputs: ["production launch readiness report", "PR summary", "workflow plan summary", "readiness_gates", "blocking_reasons", "next_external_actions"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_launch.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/schemas/production_launch.schema.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_production_launch.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"]
-
-  - model_id: "MOD-ADP-030"
+    assumption_ids:
+      - "ASM-ADP-032"
+      - "ASM-ADP-031"
+      - "ASM-ADP-016"
+      - "ASM-ADP-019"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-031"
+    parameter_ids:
+      - "PARAM-ADP-149"
+      - "PARAM-ADP-150"
+      - "PARAM-ADP-151"
+      - "PARAM-ADP-152"
+      - "PARAM-ADP-153"
+    inputs:
+      - "repository path"
+      - "GitHub PR metadata JSON"
+      - "expected head SHA"
+      - "external readiness refs"
+      - "confirm_launch"
+    outputs:
+      - "production launch readiness report"
+      - "PR summary"
+      - "workflow plan summary"
+      - "readiness_gates"
+      - "blocking_reasons"
+      - "next_external_actions"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/production_launch.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/production_launch.schema.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_production_launch.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md"
+  -
+    model_id: "MOD-ADP-030"
     name: "Production refs readiness bundle"
     kind: "deterministic no-secret readiness validator"
     purpose: "Generate a no-secret owner-fillable refs input template, discover GitHub Actions metadata, expose a GitHub-hosted provisioning audit workflow, and review downloaded audit artifacts before launch readiness can consume refs."
@@ -730,17 +1657,66 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-production-refs-v1"
-    assumption_ids: ["ASM-ADP-033", "ASM-ADP-032", "ASM-ADP-016", "ASM-ADP-019", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-032"]
-    parameter_ids: ["PARAM-ADP-154", "PARAM-ADP-155", "PARAM-ADP-156", "PARAM-ADP-157", "PARAM-ADP-158", "PARAM-ADP-159", "PARAM-ADP-162", "PARAM-ADP-163", "PARAM-ADP-165", "PARAM-ADP-166"]
-    inputs: ["repo", "runner_label", "release_target", "no-secret readiness metadata JSON", "GitHub Actions metadata from gh api", "manual provisioning audit dispatch", "downloaded provisioning audit artifact", "workflow_run_ref", "artifact_ref", "generated_at"]
-    outputs: ["production refs input template", "production refs readiness report", "provisioning audit artifact", "provisioning audit review", "readiness_refs", "readiness_gates", "review_gates", "blocking_reasons", "next_external_actions", "redacted discovery errors"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/production_refs.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
-    config_refs: ["arxiv-daily-push/schemas/production_refs.schema.json", "arxiv-daily-push/config/examples/production_refs.input.example.json", "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_production_refs.py", "arxiv-daily-push/tests/test_production_launch.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md", "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"]
-
-  - model_id: "MOD-ADP-031"
+    assumption_ids:
+      - "ASM-ADP-033"
+      - "ASM-ADP-032"
+      - "ASM-ADP-016"
+      - "ASM-ADP-019"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-032"
+    parameter_ids:
+      - "PARAM-ADP-154"
+      - "PARAM-ADP-155"
+      - "PARAM-ADP-156"
+      - "PARAM-ADP-157"
+      - "PARAM-ADP-158"
+      - "PARAM-ADP-159"
+      - "PARAM-ADP-162"
+      - "PARAM-ADP-163"
+      - "PARAM-ADP-165"
+      - "PARAM-ADP-166"
+    inputs:
+      - "repo"
+      - "runner_label"
+      - "release_target"
+      - "no-secret readiness metadata JSON"
+      - "GitHub Actions metadata from gh api"
+      - "manual provisioning audit dispatch"
+      - "downloaded provisioning audit artifact"
+      - "workflow_run_ref"
+      - "artifact_ref"
+      - "generated_at"
+    outputs:
+      - "production refs input template"
+      - "production refs readiness report"
+      - "provisioning audit artifact"
+      - "provisioning audit review"
+      - "readiness_refs"
+      - "readiness_gates"
+      - "review_gates"
+      - "blocking_reasons"
+      - "next_external_actions"
+      - "redacted discovery errors"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/production_refs.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - ".github/workflows/arxiv-daily-push-provisioning-audit.yml"
+    config_refs:
+      - "arxiv-daily-push/schemas/production_refs.schema.json"
+      - "arxiv-daily-push/config/examples/production_refs.input.example.json"
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+      - ".github/workflows/arxiv-daily-push-provisioning-audit.yml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_production_refs.py"
+      - "arxiv-daily-push/tests/test_production_launch.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md"
+  -
+    model_id: "MOD-ADP-031"
     name: "Two-day simulation acceptance gate"
     kind: "deterministic simulation validator"
     purpose: "Run and validate the updated Phase 11 two-day simulation path without real SMTP, real Release upload, network fetch, retained media/cache artifacts, or production acceptance claim."
@@ -748,16 +1724,39 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-two-day-simulation-v1"
-    assumption_ids: ["ASM-ADP-024", "ASM-ADP-026", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-033"]
-    parameter_ids: ["PARAM-ADP-167", "PARAM-ADP-168", "PARAM-ADP-169"]
-    inputs: ["repository path", "generated_at", "start_date"]
-    outputs: ["two-day simulation report", "scheduled_execution_summaries", "ledger_update_summaries", "trial_evidence", "gates", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/simulation.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"]
-    test_refs: ["arxiv-daily-push/tests/test_simulation.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"]
-  - model_id: "MOD-ADP-032"
+    assumption_ids:
+      - "ASM-ADP-024"
+      - "ASM-ADP-026"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-033"
+    parameter_ids:
+      - "PARAM-ADP-167"
+      - "PARAM-ADP-168"
+      - "PARAM-ADP-169"
+    inputs:
+      - "repository path"
+      - "generated_at"
+      - "start_date"
+    outputs:
+      - "two-day simulation report"
+      - "scheduled_execution_summaries"
+      - "ledger_update_summaries"
+      - "trial_evidence"
+      - "gates"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/simulation.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/docs/runbooks/PRODUCTION_TRIAL_RUNBOOK.md"
+    test_refs:
+      - "arxiv-daily-push/tests/test_simulation.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md"
+  -
+    model_id: "MOD-ADP-032"
     name: "All-arXiv Phase 12 scan queue delivery gate"
     kind: "deterministic source selection and delivery gate"
     purpose: "Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified."
@@ -765,16 +1764,53 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-all-arxiv-scan-v1"
-    assumption_ids: ["ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
-    formula_ids: ["FORM-ADP-034"]
-    parameter_ids: ["PARAM-ADP-170", "PARAM-ADP-171", "PARAM-ADP-172", "PARAM-ADP-173", "PARAM-ADP-174", "PARAM-ADP-175", "PARAM-ADP-176"]
-    inputs: ["generated_at", "date", "recent_source_ids", "candidate queue JSON", "bounded arXiv Atom source batches"]
-    outputs: ["all-arXiv scan plan", "daily input", "candidate queue", "video artifact manifest", "email brief", "delivery package"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"]
-    config_refs: ["arxiv-daily-push/config/examples/runtime.example.yaml", "arxiv-daily-push/config/examples/sources.example.yaml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"]
-  - model_id: "MOD-ADP-033"
+    assumption_ids:
+      - "ASM-ADP-035"
+      - "ASM-ADP-002"
+      - "ASM-ADP-020"
+      - "ASM-ADP-021"
+      - "ASM-ADP-022"
+    formula_ids:
+      - "FORM-ADP-034"
+    parameter_ids:
+      - "PARAM-ADP-170"
+      - "PARAM-ADP-171"
+      - "PARAM-ADP-172"
+      - "PARAM-ADP-173"
+      - "PARAM-ADP-174"
+      - "PARAM-ADP-175"
+      - "PARAM-ADP-176"
+    inputs:
+      - "generated_at"
+      - "date"
+      - "recent_source_ids"
+      - "candidate queue JSON"
+      - "bounded arXiv Atom source batches"
+    outputs:
+      - "all-arXiv scan plan"
+      - "daily input"
+      - "candidate queue"
+      - "video artifact manifest"
+      - "email brief"
+      - "delivery package"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"
+    config_refs:
+      - "arxiv-daily-push/config/examples/runtime.example.yaml"
+      - "arxiv-daily-push/config/examples/sources.example.yaml"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+      - ".github/workflows/arxiv-daily-push-trial-start.yml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_global_scan.py"
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+      - "arxiv-daily-push/tests/test_trial_start_workflow.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md"
+  -
+    model_id: "MOD-ADP-033"
     name: "Phase 12 cloud production enablement gate"
     kind: "deterministic cloud workflow and media evidence validator"
     purpose: "Move Phase 12 verification to GitHub-hosted runners, require live all-arXiv dry-run coverage across all 20 primary archive buckets, render a real lightweight MP4 artifact, and keep production schedule, SMTP, and Release uploads disabled until manual evidence passes."
@@ -782,16 +1818,55 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-phase12-cloud-enablement-v1"
-    assumption_ids: ["ASM-ADP-035", "ASM-ADP-020", "ASM-ADP-021", "ASM-ADP-022"]
-    formula_ids: ["FORM-ADP-035"]
-    parameter_ids: ["PARAM-ADP-177", "PARAM-ADP-178", "PARAM-ADP-179", "PARAM-ADP-180"]
-    inputs: ["generated_at", "cloud workflow run", "live arXiv Atom fetches", "sample daily input", "ffmpeg runtime", "GitHub workflow variables"]
-    outputs: ["live all-arXiv dry-run report", "sample daily input", "MP4 render report", "MP4 artifact", "cloud workflow artifacts", "fail-closed production enablement status"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py", "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py", "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"]
-    config_refs: [".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml", ".github/workflows/arxiv-daily-push-scheduled.yml", ".github/workflows/arxiv-daily-push-trial-start.yml", ".github/workflows/arxiv-daily-push-production-trial.yml", ".github/workflows/arxiv-daily-push-provisioning-audit.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_cloud_dry_run_workflow.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/tests/test_production_scheduler.py", "arxiv-daily-push/tests/test_trial_start_workflow.py", "arxiv-daily-push/tests/test_production_refs.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md"]
-  - model_id: "MOD-ADP-034"
+    assumption_ids:
+      - "ASM-ADP-035"
+      - "ASM-ADP-020"
+      - "ASM-ADP-021"
+      - "ASM-ADP-022"
+    formula_ids:
+      - "FORM-ADP-035"
+    parameter_ids:
+      - "PARAM-ADP-177"
+      - "PARAM-ADP-178"
+      - "PARAM-ADP-179"
+      - "PARAM-ADP-180"
+    inputs:
+      - "generated_at"
+      - "cloud workflow run"
+      - "live arXiv Atom fetches"
+      - "sample daily input"
+      - "ffmpeg runtime"
+      - "GitHub workflow variables"
+    outputs:
+      - "live all-arXiv dry-run report"
+      - "sample daily input"
+      - "MP4 render report"
+      - "MP4 artifact"
+      - "cloud workflow artifacts"
+      - "fail-closed production enablement status"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/video.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/production_preflight.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/production_scheduler.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial_start_workflow.py"
+    config_refs:
+      - ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml"
+      - ".github/workflows/arxiv-daily-push-scheduled.yml"
+      - ".github/workflows/arxiv-daily-push-trial-start.yml"
+      - ".github/workflows/arxiv-daily-push-production-trial.yml"
+      - ".github/workflows/arxiv-daily-push-provisioning-audit.yml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_cloud_dry_run_workflow.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+      - "arxiv-daily-push/tests/test_video.py"
+      - "arxiv-daily-push/tests/test_production_scheduler.py"
+      - "arxiv-daily-push/tests/test_trial_start_workflow.py"
+      - "arxiv-daily-push/tests/test_production_refs.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_PRODUCTION_ENABLEMENT_CLOUD.md"
+  -
+    model_id: "MOD-ADP-034"
     name: "Phase 12 manual Release and SMTP delivery test gate"
     kind: "deterministic GitHub Actions manual delivery workflow contract"
     purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, the subject follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, Release remains backend evidence/download storage, video is only an optional file link, the V2 decision-first email frontstage is consumed, backend ROI and numeric score labels are hidden from email and MP4 transcript, and scheduled production stays disabled."
@@ -799,16 +1874,54 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-manual-delivery-test-v1.4"
-    assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
-    formula_ids: ["FORM-ADP-036"]
-    parameter_ids: ["PARAM-ADP-181", "PARAM-ADP-182", "PARAM-ADP-183", "PARAM-ADP-184", "PARAM-ADP-186", "PARAM-ADP-267"]
-    inputs: ["workflow_dispatch confirmation", "generated_at", "max_results_per_category", "GitHub token", "Gmail SMTP password secret", "all-arXiv Atom fetches"]
-    outputs: ["manual delivery preflight", "daily input", "candidate queue", "MP4 artifact", "GitHub Release", "SMTP delivery report", "scheduled execution evidence"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
-    config_refs: [".github/workflows/arxiv-daily-push-manual-delivery-test.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_video.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
-  - model_id: "MOD-ADP-035"
+    assumption_ids:
+      - "ASM-ADP-036"
+      - "ASM-ADP-035"
+      - "ASM-ADP-002"
+      - "ASM-ADP-020"
+      - "ASM-ADP-022"
+    formula_ids:
+      - "FORM-ADP-036"
+    parameter_ids:
+      - "PARAM-ADP-181"
+      - "PARAM-ADP-182"
+      - "PARAM-ADP-183"
+      - "PARAM-ADP-184"
+      - "PARAM-ADP-186"
+      - "PARAM-ADP-267"
+    inputs:
+      - "workflow_dispatch confirmation"
+      - "generated_at"
+      - "max_results_per_category"
+      - "GitHub token"
+      - "Gmail SMTP password secret"
+      - "all-arXiv Atom fetches"
+    outputs:
+      - "manual delivery preflight"
+      - "daily input"
+      - "candidate queue"
+      - "MP4 artifact"
+      - "GitHub Release"
+      - "SMTP delivery report"
+      - "scheduled execution evidence"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/video.py"
+    config_refs:
+      - ".github/workflows/arxiv-daily-push-manual-delivery-test.yml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_manual_delivery_workflow.py"
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+      - "arxiv-daily-push/tests/test_video.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"
+  -
+    model_id: "MOD-ADP-035"
     name: "Review8 V4 owner controls and generated owner views"
     kind: "deterministic owner configuration validator and view generator"
     purpose: "Validate the single owner-editable `config/owner_controls.yaml`, preview non-side-effect impact, and generate four owner-readable files from machine facts without enabling production behavior."
@@ -816,8 +1929,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-owner-controls-v1"
-    assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-037"]
+    assumption_ids:
+      - "ASM-ADP-037"
+      - "ASM-ADP-035"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-037"
     parameter_ids:
       - "PARAM-ADP-187"
       - "PARAM-ADP-188"
@@ -899,13 +2016,34 @@ models:
       - "PARAM-ADP-264"
       - "PARAM-ADP-265"
       - "PARAM-ADP-266"
-    inputs: ["config/owner_controls.yaml", "generated_at", "preview_days", "project_path"]
-    outputs: ["owner validation report", "owner impact preview", "docs/owner/OWNER_CONSOLE.md", "docs/owner/SOURCE_CATALOG.md", "docs/owner/MODEL_AND_QUEUE.md", "docs/owner/CONTENT_LEDGER.csv"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/owner_controls.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["arxiv-daily-push/docs/owner/OWNER_CONSOLE.md", "arxiv-daily-push/docs/owner/SOURCE_CATALOG.md", "arxiv-daily-push/docs/owner/MODEL_AND_QUEUE.md", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
-  - model_id: "MOD-ADP-036"
+    inputs:
+      - "config/owner_controls.yaml"
+      - "generated_at"
+      - "preview_days"
+      - "project_path"
+    outputs:
+      - "owner validation report"
+      - "owner impact preview"
+      - "docs/owner/OWNER_CONSOLE.md"
+      - "docs/owner/SOURCE_CATALOG.md"
+      - "docs/owner/MODEL_AND_QUEUE.md"
+      - "docs/owner/CONTENT_LEDGER.csv"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/schemas/owner_controls.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_owner_controls.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/owner/OWNER_CONSOLE.md"
+      - "arxiv-daily-push/docs/owner/SOURCE_CATALOG.md"
+      - "arxiv-daily-push/docs/owner/MODEL_AND_QUEUE.md"
+      - "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"
+  -
+    model_id: "MOD-ADP-036"
     name: "Review8 Stage 1 SQLite document and event data model"
     kind: "deterministic local storage schema and migration gate"
     purpose: "Create, inspect, validate, populate, search, and rollback the low-resource local SQLite/WAL/FTS5 document/event model required before the Stage 1 connector, queue, ledger, runtime recovery, and migration tasks."
@@ -913,8 +2051,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-sqlite-data-model-v1"
-    assumption_ids: ["ASM-ADP-038", "ASM-ADP-035", "ASM-ADP-020"]
-    formula_ids: ["FORM-ADP-038"]
+    assumption_ids:
+      - "ASM-ADP-038"
+      - "ASM-ADP-035"
+      - "ASM-ADP-020"
+    formula_ids:
+      - "FORM-ADP-038"
     parameter_ids:
       - "PARAM-ADP-268"
       - "PARAM-ADP-269"
@@ -924,13 +2066,34 @@ models:
       - "PARAM-ADP-273"
       - "PARAM-ADP-274"
       - "PARAM-ADP-275"
-    inputs: ["database path", "SourceItem mapping", "fetch_run_id", "storage CLI command", "target rollback version"]
-    outputs: ["SQLite database", "migration report", "inspection report", "rollback report", "canonical document rows", "document_versions rows", "FTS5 rows", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/storage.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json", "arxiv-daily-push/tests/test_storage.py"]
-  - model_id: "MOD-ADP-037"
+    inputs:
+      - "database path"
+      - "SourceItem mapping"
+      - "fetch_run_id"
+      - "storage CLI command"
+      - "target rollback version"
+    outputs:
+      - "SQLite database"
+      - "migration report"
+      - "inspection report"
+      - "rollback report"
+      - "canonical document rows"
+      - "document_versions rows"
+      - "FTS5 rows"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/storage.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_storage.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json"
+      - "arxiv-daily-push/tests/test_storage.py"
+  -
+    model_id: "MOD-ADP-037"
     name: "Phase 12 email decision UI V2"
     kind: "deterministic human-frontstage email renderer"
     purpose: "Render a Chinese, decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground."
@@ -938,16 +2101,45 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-email-decision-ui-v2"
-    assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
-    formula_ids: ["FORM-ADP-039"]
-    parameter_ids: ["PARAM-ADP-276", "PARAM-ADP-277", "PARAM-ADP-278", "PARAM-ADP-279"]
-    inputs: ["Lesson frontstage payload", "daily selected SourceItem", "ROI-ranked queue snapshot", "Release-hosted .mp4 link", "recipient email"]
-    outputs: ["multipart email notification", "Chinese plain-text fallback", "responsive HTML alternative", "delivery evidence with body hashes only"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
-    config_refs: ["arxiv-daily-push/schemas/lesson.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
-  - model_id: "MOD-ADP-038"
+    assumption_ids:
+      - "ASM-ADP-002"
+      - "ASM-ADP-035"
+      - "ASM-ADP-036"
+    formula_ids:
+      - "FORM-ADP-039"
+    parameter_ids:
+      - "PARAM-ADP-276"
+      - "PARAM-ADP-277"
+      - "PARAM-ADP-278"
+      - "PARAM-ADP-279"
+    inputs:
+      - "Lesson frontstage payload"
+      - "daily selected SourceItem"
+      - "ROI-ranked queue snapshot"
+      - "Release-hosted .mp4 link"
+      - "recipient email"
+    outputs:
+      - "multipart email notification"
+      - "Chinese plain-text fallback"
+      - "responsive HTML alternative"
+      - "delivery evidence with body hashes only"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/lesson.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/video.py"
+    config_refs:
+      - "arxiv-daily-push/schemas/lesson.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_global_scan.py"
+      - "arxiv-daily-push/tests/test_lesson.py"
+      - "arxiv-daily-push/tests/test_notifications.py"
+      - "arxiv-daily-push/tests/test_scheduled_execution.py"
+      - "arxiv-daily-push/tests/test_video.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"
+  -
+    model_id: "MOD-ADP-038"
     name: "Review8 Stage 1 source registry and arXiv connector contract"
     kind: "deterministic source registry and connector contract validator"
     purpose: "Bind the Stage 1 source registry to the single owner controls fact source, prove SRC-ARXIV/arxiv.atom.v1 is the only active connector, cap online canaries at 10 metadata records, and fail closed without PDFs, bulk harvest, secrets, production scheduler enablement, SMTP, Release upload, or production acceptance claims."
@@ -955,8 +2147,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-source-registry-contract-v1"
-    assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]
-    formula_ids: ["FORM-ADP-040"]
+    assumption_ids:
+      - "ASM-ADP-039"
+      - "ASM-ADP-037"
+      - "ASM-ADP-018"
+    formula_ids:
+      - "FORM-ADP-040"
     parameter_ids:
       - "PARAM-ADP-280"
       - "PARAM-ADP-281"
@@ -965,13 +2161,35 @@ models:
       - "PARAM-ADP-284"
       - "PARAM-ADP-285"
       - "PARAM-ADP-286"
-    inputs: ["config/owner_controls.yaml", "fixture Atom XML", "generated_at", "source_ingest limits"]
-    outputs: ["source registry report", "connector contract section", "active source list", "active adapter descriptor", "fixture validation", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/source_registry.py", "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py", "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/source_registry.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_source_registry.py", "arxiv-daily-push/tests/test_source_ingest.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json", "arxiv-daily-push/tests/test_source_registry.py"]
-  - model_id: "MOD-ADP-039"
+    inputs:
+      - "config/owner_controls.yaml"
+      - "fixture Atom XML"
+      - "generated_at"
+      - "source_ingest limits"
+    outputs:
+      - "source registry report"
+      - "connector contract section"
+      - "active source list"
+      - "active adapter descriptor"
+      - "fixture validation"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/source_registry.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/source_ingest.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/arxiv_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/schemas/source_registry.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_source_registry.py"
+      - "arxiv-daily-push/tests/test_source_ingest.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-05-ARXIV-CONNECTOR-CONTRACT-20260622.json"
+      - "arxiv-daily-push/tests/test_source_registry.py"
+  -
+    model_id: "MOD-ADP-039"
     name: "Review8 Stage 1 scoring, queue, and content ledger contract"
     kind: "deterministic weighted scoring, queue ranking, and ledger renderer"
     purpose: "Score explicit Stage 1 research signals using frozen owner-controls weights, rank eligible items into a deterministic active queue capped at 10000 items and 365 event-age days, enforce multi-source share caps when feasible, preserve soft-quota borrowing evidence, and emit canonical CONTENT_LEDGER rows with reason codes for every non-active item."
@@ -979,8 +2197,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-scoring-queue-ledger-v1"
-    assumption_ids: ["ASM-ADP-040", "ASM-ADP-037", "ASM-ADP-039"]
-    formula_ids: ["FORM-ADP-041"]
+    assumption_ids:
+      - "ASM-ADP-040"
+      - "ASM-ADP-037"
+      - "ASM-ADP-039"
+    formula_ids:
+      - "FORM-ADP-041"
     parameter_ids:
       - "PARAM-ADP-287"
       - "PARAM-ADP-288"
@@ -1005,13 +2227,35 @@ models:
       - "PARAM-ADP-307"
       - "PARAM-ADP-308"
       - "PARAM-ADP-309"
-    inputs: ["explicit item signals", "config/owner_controls.yaml", "as_of_date", "generated_at", "previous content ledger rows"]
-    outputs: ["research score snapshots", "queue report", "reason counts", "quota report", "canonical CONTENT_LEDGER.csv rows", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py", "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/owner_controls.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/tests/test_owner_controls.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json", "arxiv-daily-push/tests/test_stage1_queue.py", "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"]
-  - model_id: "MOD-ADP-040"
+    inputs:
+      - "explicit item signals"
+      - "config/owner_controls.yaml"
+      - "as_of_date"
+      - "generated_at"
+      - "previous content ledger rows"
+    outputs:
+      - "research score snapshots"
+      - "queue report"
+      - "reason counts"
+      - "quota report"
+      - "canonical CONTENT_LEDGER.csv rows"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_queue.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/owner_controls.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_queue.py"
+      - "arxiv-daily-push/tests/test_owner_controls.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-06-SCORING-QUEUE-LEDGER-20260622.json"
+      - "arxiv-daily-push/tests/test_stage1_queue.py"
+      - "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"
+  -
+    model_id: "MOD-ADP-040"
     name: "Review8 Stage 1 B1/arXiv report and email text package"
     kind: "deterministic Chinese teaching report and email renderer"
     purpose: "Render the Stage 1 B1/arXiv daily teaching artifact from supported daily input claims into Markdown/HTML report, Chinese plain/HTML email preview, claim audit, candidate queue summary, and content ledger update without production side effects."
@@ -1019,8 +2263,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-b1-report-email-v1"
-    assumption_ids: ["ASM-ADP-041", "ASM-ADP-002", "ASM-ADP-040"]
-    formula_ids: ["FORM-ADP-042"]
+    assumption_ids:
+      - "ASM-ADP-041"
+      - "ASM-ADP-002"
+      - "ASM-ADP-040"
+    formula_ids:
+      - "FORM-ADP-042"
     parameter_ids:
       - "PARAM-ADP-310"
       - "PARAM-ADP-311"
@@ -1028,13 +2276,33 @@ models:
       - "PARAM-ADP-313"
       - "PARAM-ADP-314"
       - "PARAM-ADP-315"
-    inputs: ["daily input package", "supported Claim Ledger", "optional Stage 1 queue report", "generated_at", "recipient"]
-    outputs: ["B1 report Markdown", "B1 report HTML", "plain text email preview", "HTML email preview", "claim evidence audit", "content ledger update", "optional artifact files"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
-  - model_id: "MOD-ADP-041"
+    inputs:
+      - "daily input package"
+      - "supported Claim Ledger"
+      - "optional Stage 1 queue report"
+      - "generated_at"
+      - "recipient"
+    outputs:
+      - "B1 report Markdown"
+      - "B1 report HTML"
+      - "plain text email preview"
+      - "HTML email preview"
+      - "claim evidence audit"
+      - "content ledger update"
+      - "optional artifact files"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json"
+      - "arxiv-daily-push/tests/test_stage1_b1_report.py"
+  -
+    model_id: "MOD-ADP-041"
     name: "Review8 Stage 1 local runtime recovery controls"
     kind: "deterministic local runtime and recovery gate"
     purpose: "Provide low-resource tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls with explicit state/artifact paths and no production side effects."
@@ -1042,8 +2310,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-local-runtime-recovery-v1"
-    assumption_ids: ["ASM-ADP-042", "ASM-ADP-038", "ASM-ADP-041"]
-    formula_ids: ["FORM-ADP-043"]
+    assumption_ids:
+      - "ASM-ADP-042"
+      - "ASM-ADP-038"
+      - "ASM-ADP-041"
+    formula_ids:
+      - "FORM-ADP-043"
     parameter_ids:
       - "PARAM-ADP-316"
       - "PARAM-ADP-317"
@@ -1055,13 +2327,34 @@ models:
       - "PARAM-ADP-323"
       - "PARAM-ADP-324"
       - "PARAM-ADP-325"
-    inputs: ["state_dir", "generated_at", "SQLite database path", "backup manifest", "scheduler platform", "explicit artifact paths"]
-    outputs: ["heartbeat.json", "checkpoint.json", "watchdog report", "backup manifest", "restore report", "runtime audit report", "scheduler dry-run templates"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]
-  - model_id: "MOD-ADP-042"
+    inputs:
+      - "state_dir"
+      - "generated_at"
+      - "SQLite database path"
+      - "backup manifest"
+      - "scheduler platform"
+      - "explicit artifact paths"
+    outputs:
+      - "heartbeat.json"
+      - "checkpoint.json"
+      - "watchdog report"
+      - "backup manifest"
+      - "restore report"
+      - "runtime audit report"
+      - "scheduler dry-run templates"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_runtime.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-08-LOCAL-RUNTIME-RECOVERY-20260622.json"
+      - "arxiv-daily-push/tests/test_stage1_runtime.py"
+  -
+    model_id: "MOD-ADP-042"
     name: "Review8 Stage 1 migration package and transfer checklist"
     kind: "deterministic migration package and verification gate"
     purpose: "Export and verify a low-resource Stage 1 migration package with source-file hashes, SQLite/runtime smoke evidence, restore instructions, and secret-name-only checklist while preserving disabled production side effects."
@@ -1069,8 +2362,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-migration-package-v1"
-    assumption_ids: ["ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
-    formula_ids: ["FORM-ADP-044"]
+    assumption_ids:
+      - "ASM-ADP-043"
+      - "ASM-ADP-042"
+      - "ASM-ADP-038"
+    formula_ids:
+      - "FORM-ADP-044"
     parameter_ids:
       - "PARAM-ADP-326"
       - "PARAM-ADP-327"
@@ -1078,13 +2375,36 @@ models:
       - "PARAM-ADP-329"
       - "PARAM-ADP-330"
       - "PARAM-ADP-331"
-    inputs: ["project_root", "output_dir", "SQLite database path", "generated_at", "required source file list", "explicit include paths"]
-    outputs: ["migration_manifest.json", "LOW_RESOURCE_SMOKE.json", "NEW_MACHINE_BOOTSTRAP_CHECKLIST.md", "SECRET_NAMES_CHECKLIST.md", "RESTORE_DRILL.md", "backup manifest", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json", "arxiv-daily-push/tests/test_stage1_migration.py", "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"]
-  - model_id: "MOD-ADP-043"
+    inputs:
+      - "project_root"
+      - "output_dir"
+      - "SQLite database path"
+      - "generated_at"
+      - "required source file list"
+      - "explicit include paths"
+    outputs:
+      - "migration_manifest.json"
+      - "LOW_RESOURCE_SMOKE.json"
+      - "NEW_MACHINE_BOOTSTRAP_CHECKLIST.md"
+      - "SECRET_NAMES_CHECKLIST.md"
+      - "RESTORE_DRILL.md"
+      - "backup manifest"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_migration.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_migration.py"
+      - "arxiv-daily-push/tests/test_stage1_runtime.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-09-MIGRATION-PACKAGE-20260622.json"
+      - "arxiv-daily-push/tests/test_stage1_migration.py"
+      - "arxiv-daily-push/docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md"
+  -
+    model_id: "MOD-ADP-043"
     name: "Review8 Stage 1 post-migration bootstrap gate"
     kind: "deterministic target-runner bootstrap and migration verification gate"
     purpose: "Verify the post-migration target machine or GitHub-hosted cloud runner boundary before historical B1 previews and live-day evidence, while preserving no-production-side-effect constraints."
@@ -1092,8 +2412,13 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-post-migration-bootstrap-v1"
-    assumption_ids: ["ASM-ADP-044", "ASM-ADP-043", "ASM-ADP-042", "ASM-ADP-038"]
-    formula_ids: ["FORM-ADP-045"]
+    assumption_ids:
+      - "ASM-ADP-044"
+      - "ASM-ADP-043"
+      - "ASM-ADP-042"
+      - "ASM-ADP-038"
+    formula_ids:
+      - "FORM-ADP-045"
     parameter_ids:
       - "PARAM-ADP-332"
       - "PARAM-ADP-333"
@@ -1103,13 +2428,37 @@ models:
       - "PARAM-ADP-337"
       - "PARAM-ADP-338"
       - "PARAM-ADP-339"
-    inputs: ["project_root", "migration_manifest", "state_dir", "SQLite database path", "workflow_path", "generated_at", "target_environment", "explicit requirement flags", "environment variables"]
-    outputs: ["bootstrap report", "migration verification report", "runtime smoke reports", "workflow/GitHub runner evidence", "secret-name readiness report", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_bootstrap.py", "arxiv-daily-push/tests/test_stage1_migration.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md", "arxiv-daily-push/tests/test_stage1_bootstrap.py"]
-  - model_id: "MOD-ADP-044"
+    inputs:
+      - "project_root"
+      - "migration_manifest"
+      - "state_dir"
+      - "SQLite database path"
+      - "workflow_path"
+      - "generated_at"
+      - "target_environment"
+      - "explicit requirement flags"
+      - "environment variables"
+    outputs:
+      - "bootstrap report"
+      - "migration verification report"
+      - "runtime smoke reports"
+      - "workflow/GitHub runner evidence"
+      - "secret-name readiness report"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_bootstrap.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_bootstrap.py"
+      - "arxiv-daily-push/tests/test_stage1_migration.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-10-POST-MIGRATION-BOOTSTRAP-20260623.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S1_10_POST_MIGRATION_BOOTSTRAP.md"
+      - "arxiv-daily-push/tests/test_stage1_bootstrap.py"
+  -
+    model_id: "MOD-ADP-044"
     name: "Review8 Stage 1 historical B1 preview batch"
     kind: "deterministic offline B1 report and email preview evidence generator"
     purpose: "Generate 30 independent B1/arXiv historical report/email preview packages before live-day delivery, while preserving all no-production-side-effect constraints."
@@ -1117,8 +2466,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-historical-b1-previews-v1"
-    assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
-    formula_ids: ["FORM-ADP-046"]
+    assumption_ids:
+      - "ASM-ADP-041"
+      - "ASM-ADP-042"
+      - "ASM-ADP-044"
+    formula_ids:
+      - "FORM-ADP-046"
     parameter_ids:
       - "PARAM-ADP-340"
       - "PARAM-ADP-341"
@@ -1129,13 +2482,36 @@ models:
       - "PARAM-ADP-346"
       - "PARAM-ADP-347"
       - "PARAM-ADP-348"
-    inputs: ["historical_inputs", "generated_at", "start_date", "preview_count", "recipient", "artifact_dir", "write"]
-    outputs: ["historical preview report", "30 B1 report/email preview packages", "content ledger rows", "artifact manifest", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md", "arxiv-daily-push/tests/test_stage1_historical_previews.py"]
-  - model_id: "MOD-ADP-045"
+    inputs:
+      - "historical_inputs"
+      - "generated_at"
+      - "start_date"
+      - "preview_count"
+      - "recipient"
+      - "artifact_dir"
+      - "write"
+    outputs:
+      - "historical preview report"
+      - "30 B1 report/email preview packages"
+      - "content ledger rows"
+      - "artifact manifest"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_historical_previews.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_historical_previews.py"
+      - "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1-11-HISTORICAL-B1-PREVIEWS-20260623.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md"
+      - "arxiv-daily-push/tests/test_stage1_historical_previews.py"
+  -
+    model_id: "MOD-ADP-045"
     name: "S1P5T04 accelerated real arXiv acceptance evidence"
     kind: "deterministic accelerated acceptance evidence builder"
     purpose: "Build Stage 1 ARXIV_PRODUCTION_ACCEPTED readiness evidence from a passing live all-arXiv cloud dry-run, at least 30 real arXiv candidates, and controlled Gmail SMTP refs while keeping production scheduling disabled."
@@ -1143,16 +2519,38 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-accelerated-acceptance-v1"
-    assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
-    formula_ids: ["FORM-ADP-047"]
+    assumption_ids:
+      - "ASM-ADP-041"
+      - "ASM-ADP-042"
+      - "ASM-ADP-044"
+    formula_ids:
+      - "FORM-ADP-047"
     parameter_ids: []
-    inputs: ["live all-arXiv dry-run report", "controlled SMTP evidence manifest", "generated_at", "expected_samples", "durable evidence refs"]
-    outputs: ["accelerated acceptance report", "trial evidence input", "trial evidence report", "operational_evidence", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py", "arxiv-daily-push/src/arxiv_daily_push/trial.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: [".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py", "arxiv-daily-push/tests/test_trial.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json"]
-  - model_id: "MOD-ADP-046"
+    inputs:
+      - "live all-arXiv dry-run report"
+      - "controlled SMTP evidence manifest"
+      - "generated_at"
+      - "expected_samples"
+      - "durable evidence refs"
+    outputs:
+      - "accelerated acceptance report"
+      - "trial evidence input"
+      - "trial evidence report"
+      - "operational_evidence"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_accelerated_acceptance.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/trial.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_accelerated_acceptance.py"
+      - "arxiv-daily-push/tests/test_trial.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1P5T04-CONTROLLED-SMTP-EVIDENCE-20260623.json"
+  -
+    model_id: "MOD-ADP-046"
     name: "S1P5T03-R real arXiv 30 as-of-date replay"
     kind: "deterministic real arXiv historical backfill and ledger reconciler"
     purpose: "Reopen the strict Stage 1 historical evidence gate by replaying 30 past as-of dates from real arXiv Atom submittedDate windows, generating daily inputs, B1 teaching reports, Chinese email previews, queue ledgers, and persistent CONTENT_LEDGER rows without production side effects."
@@ -1160,8 +2558,12 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage1-real-arxiv-30-asof-replay-v1"
-    assumption_ids: ["ASM-ADP-041", "ASM-ADP-042", "ASM-ADP-044"]
-    formula_ids: ["FORM-ADP-048"]
+    assumption_ids:
+      - "ASM-ADP-041"
+      - "ASM-ADP-042"
+      - "ASM-ADP-044"
+    formula_ids:
+      - "FORM-ADP-048"
     parameter_ids:
       - "PARAM-ADP-352"
       - "PARAM-ADP-353"
@@ -1171,13 +2573,40 @@ models:
       - "PARAM-ADP-357"
       - "PARAM-ADP-358"
       - "PARAM-ADP-359"
-    inputs: ["generated_at", "start_date", "end_date", "count", "lookback_days", "max_results", "recipient", "artifact_dir", "fetcher"]
-    outputs: ["real historical replay report", "daily_inputs.jsonl", "reports.md", "email_previews.txt", "queue_ledgers.jsonl", "run_records.jsonl", "CONTENT_LEDGER.csv"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: [".github/workflows/arxiv-daily-push-real-backfill.yml"]
-    test_refs: ["arxiv-daily-push/tests/test_stage1_real_replay.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_global_scan.py"]
-    evidence_refs: ["governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md"]
-  - model_id: "MOD-ADP-047"
+    inputs:
+      - "generated_at"
+      - "start_date"
+      - "end_date"
+      - "count"
+      - "lookback_days"
+      - "max_results"
+      - "recipient"
+      - "artifact_dir"
+      - "fetcher"
+    outputs:
+      - "real historical replay report"
+      - "daily_inputs.jsonl"
+      - "reports.md"
+      - "email_previews.txt"
+      - "queue_ledgers.jsonl"
+      - "run_records.jsonl"
+      - "CONTENT_LEDGER.csv"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - ".github/workflows/arxiv-daily-push-real-backfill.yml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage1_real_replay.py"
+      - "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md"
+  -
+    model_id: "MOD-ADP-047"
     name: "Stage 2 bioRxiv/medRxiv preprint metadata ingest"
     kind: "deterministic metadata-only source adapter"
     purpose: "Fetch small public bioRxiv/medRxiv details API windows and map metadata into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects."
@@ -1185,20 +2614,44 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage2-preprint-ingest-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
-    formula_ids: ["FORM-ADP-049"]
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-049"
     parameter_ids:
       - "PARAM-ADP-360"
       - "PARAM-ADP-361"
       - "PARAM-ADP-362"
       - "PARAM-ADP-363"
-    inputs: ["server", "interval", "cursor", "max_records", "seen_source_ids", "public details API JSON"]
-    outputs: ["preprint SourceBatch", "SourceItem records", "terminal_status", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/preprint_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/source_batch.schema.json", "arxiv-daily-push/schemas/source_item.schema.json"]
-    test_refs: ["arxiv-daily-push/tests/test_preprint_adapter.py", "arxiv-daily-push/tests/fixtures/biorxiv_details_sample.json", "arxiv-daily-push/tests/fixtures/medrxiv_details_sample.json"]
-    evidence_refs: ["https://api.biorxiv.org/", "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
-  - model_id: "MOD-ADP-048"
+    inputs:
+      - "server"
+      - "interval"
+      - "cursor"
+      - "max_records"
+      - "seen_source_ids"
+      - "public details API JSON"
+    outputs:
+      - "preprint SourceBatch"
+      - "SourceItem records"
+      - "terminal_status"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/preprint_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/schemas/source_batch.schema.json"
+      - "arxiv-daily-push/schemas/source_item.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_preprint_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/biorxiv_details_sample.json"
+      - "arxiv-daily-push/tests/fixtures/medrxiv_details_sample.json"
+    evidence_refs:
+      - "https://api.biorxiv.org/"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"
+  -
+    model_id: "MOD-ADP-048"
     name: "S2P1T01 preprint source promotion gate"
     kind: "deterministic source promotion validator"
     purpose: "Require bioRxiv and medRxiv identity/version/license gates plus 30-date replay evidence and 48-hour shadow evidence before any formal production inclusion."
@@ -1206,21 +2659,39 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-s2p1-preprint-source-promotion-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
-    formula_ids: ["FORM-ADP-050"]
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-050"
     parameter_ids:
       - "PARAM-ADP-364"
       - "PARAM-ADP-366"
       - "PARAM-ADP-367"
       - "PARAM-ADP-368"
       - "PARAM-ADP-369"
-    inputs: ["bioRxiv SourceBatch", "medRxiv SourceBatch", "terminal replay report", "shadow report"]
-    outputs: ["S2P1T01 promotion report", "source_gate_ready", "replay_gate_ready", "shadow_gate_ready", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["arxiv-daily-push/config/owner_controls.yaml"]
-    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
-  - model_id: "MOD-ADP-049"
+    inputs:
+      - "bioRxiv SourceBatch"
+      - "medRxiv SourceBatch"
+      - "terminal replay report"
+      - "shadow report"
+    outputs:
+      - "S2P1T01 promotion report"
+      - "source_gate_ready"
+      - "replay_gate_ready"
+      - "shadow_gate_ready"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"
+  -
+    model_id: "MOD-ADP-049"
     name: "S2P1 preprint shadow daily path"
     kind: "deterministic no-send shadow daily runner"
     purpose: "Build a separate bioRxiv/medRxiv daily input, queue, ledger, report, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner."
@@ -1228,19 +2699,40 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-s2p1-preprint-shadow-daily-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
-    formula_ids: ["FORM-ADP-051"]
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-051"
     parameter_ids:
       - "PARAM-ADP-365"
       - "PARAM-ADP-370"
       - "PARAM-ADP-371"
-    inputs: ["preprint SourceBatches", "date", "generated_at", "shadow queue", "state_dir"]
-    outputs: ["shadow daily input report", "dry-run report", "delivery package preview", "preprint queue", "preprint ledger"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_global_scan.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
-  - model_id: "MOD-ADP-050"
+    inputs:
+      - "preprint SourceBatches"
+      - "date"
+      - "generated_at"
+      - "shadow queue"
+      - "state_dir"
+    outputs:
+      - "shadow daily input report"
+      - "dry-run report"
+      - "delivery package preview"
+      - "preprint queue"
+      - "preprint ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"
+  -
+    model_id: "MOD-ADP-050"
     name: "S2P1T01 preprint replay and 48h shadow evidence"
     kind: "deterministic historical replay and shadow evidence builder"
     purpose: "Run 30 historical bioRxiv/medRxiv preprint as-of dates through the no-send shadow daily path, persist local queue/ledger/report/email preview artifacts, build a 48h shadow aggregate, and feed the S2P1T01 promotion gate without claiming full Stage 2 production acceptance."
@@ -1248,21 +2740,47 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-s2p1-preprint-replay-shadow-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
-    formula_ids: ["FORM-ADP-052"]
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-052"
     parameter_ids:
       - "PARAM-ADP-372"
       - "PARAM-ADP-373"
       - "PARAM-ADP-374"
       - "PARAM-ADP-375"
       - "PARAM-ADP-376"
-    inputs: ["state_dir", "generated_at", "start_date", "end_date", "count", "lookback_days", "max_records", "source_batches_by_date", "fetcher"]
-    outputs: ["S2P1 replay-shadow aggregate report", "replay report", "48h shadow report", "promotion report", "preprint queue", "preprint ledger", "daily reports", "email previews"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
-  - model_id: "MOD-ADP-051"
+    inputs:
+      - "state_dir"
+      - "generated_at"
+      - "start_date"
+      - "end_date"
+      - "count"
+      - "lookback_days"
+      - "max_records"
+      - "source_batches_by_date"
+      - "fetcher"
+    outputs:
+      - "S2P1 replay-shadow aggregate report"
+      - "replay report"
+      - "48h shadow report"
+      - "promotion report"
+      - "preprint queue"
+      - "preprint ledger"
+      - "daily reports"
+      - "email previews"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"
+  -
+    model_id: "MOD-ADP-051"
     name: "S2PCT01 Nature/top-journal metadata ingest"
     kind: "deterministic metadata-only public RSS source adapter"
     purpose: "Fetch a small official public Nature RSS metadata window, filter to main-journal s41586 research article URLs, map records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects."
@@ -1270,19 +2788,39 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-stage2-top-journal-ingest-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
-    formula_ids: ["FORM-ADP-053"]
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-053"
     parameter_ids:
       - "PARAM-ADP-377"
       - "PARAM-ADP-378"
       - "PARAM-ADP-379"
-    inputs: ["journal", "generated_at", "max_records", "seen_source_ids", "official public RSS XML"]
-    outputs: ["top-journal SourceBatch", "Nature SourceItem records", "terminal_status", "blocking_reasons"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "https://www.nature.com/nature.rss"]
-  - model_id: "MOD-ADP-052"
+    inputs:
+      - "journal"
+      - "generated_at"
+      - "max_records"
+      - "seen_source_ids"
+      - "official public RSS XML"
+    outputs:
+      - "top-journal SourceBatch"
+      - "Nature SourceItem records"
+      - "terminal_status"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md"
+      - "https://www.nature.com/nature.rss"
+  -
+    model_id: "MOD-ADP-052"
     name: "S2PCT01 top-journal shadow daily path"
     kind: "deterministic no-send shadow daily runner"
     purpose: "Build a separate Nature/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2 production acceptance."
@@ -1290,15 +2828,589 @@ models:
     status: "active"
     fact_level: "EXTRACTED"
     model_version: "adp-s2pct01-top-journal-shadow-daily-v1"
-    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
-    formula_ids: ["FORM-ADP-054"]
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-054"
     parameter_ids:
       - "PARAM-ADP-379"
       - "PARAM-ADP-380"
       - "PARAM-ADP-381"
-    inputs: ["Nature SourceBatch", "date", "generated_at", "shadow queue", "state_dir"]
-    outputs: ["shadow daily input report", "dry-run report", "delivery package preview", "top-journal queue", "top-journal ledger"]
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
-    config_refs: ["NOT_APPLICABLE"]
-    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_global_scan.py"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"]
+    inputs:
+      - "Nature SourceBatch"
+      - "date"
+      - "generated_at"
+      - "shadow queue"
+      - "state_dir"
+    outputs:
+      - "shadow daily input report"
+      - "dry-run report"
+      - "delivery package preview"
+      - "top-journal queue"
+      - "top-journal ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md"
+      - "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
+  -
+    model_id: "MOD-ADP-053"
+    name: "S2PCT02 Science metadata ingest"
+    kind: "deterministic metadata-only public RSS source adapter"
+    purpose: "Fetch a small official public Science RSS metadata window, classify Research Article, Report, Review, and Perspective records, map eligible records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage2-top-journal-ingest-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-055"
+    parameter_ids:
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-382"
+      - "PARAM-ADP-383"
+    inputs:
+      - "journal=science"
+      - "generated_at"
+      - "max_records"
+      - "seen_source_ids"
+      - "official public Science RSS XML"
+    outputs:
+      - "Science SourceBatch"
+      - "Science SourceItem records"
+      - "article_type classifications"
+      - "terminal_status"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/science_rss_sample.xml"
+    evidence_refs:
+      - "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+      - "governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json"
+  -
+    model_id: "MOD-ADP-054"
+    name: "S2PCT02 Science shadow daily path"
+    kind: "deterministic no-send shadow daily runner"
+    purpose: "Build a separate Science/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2/integrated production acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct02-science-shadow-daily-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-056"
+    parameter_ids:
+      - "PARAM-ADP-384"
+      - "PARAM-ADP-385"
+      - "PARAM-ADP-386"
+    inputs:
+      - "Science SourceBatch"
+      - "date"
+      - "generated_at"
+      - "shadow queue"
+      - "state_dir"
+    outputs:
+      - "Science shadow daily input report"
+      - "dry-run report"
+      - "delivery package preview"
+      - "Science queue"
+      - "Science ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json"
+  -
+    model_id: "MOD-ADP-055"
+    name: "S2PCT03 The Lancet metadata ingest"
+    kind: "deterministic metadata-only public RSS source adapter"
+    purpose: "Fetch a small official public Lancet Online First RSS metadata window, classify medical article types, map eligible records into generic SourceItems, record DOI-query-ready PubMed relation metadata, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage2-top-journal-ingest-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-057"
+    parameter_ids:
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-387"
+      - "PARAM-ADP-388"
+      - "PARAM-ADP-389"
+      - "PARAM-ADP-390"
+    inputs:
+      - "journal=lancet"
+      - "generated_at"
+      - "max_records"
+      - "seen_source_ids"
+      - "official public Lancet RSS XML"
+    outputs:
+      - "Lancet SourceBatch"
+      - "Lancet SourceItem records"
+      - "medical article_type classifications"
+      - "PubMed DOI query relation metadata"
+      - "terminal_status"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/lancet_rss_sample.xml"
+    evidence_refs:
+      - "https://www.thelancet.com/rssfeed/lancet_online.xml"
+      - "https://www.thelancet.com/rssfeed/lancet_current.xml"
+      - "governance/run_manifests/ADP-S2PCT03-LANCET-SHADOW-EVIDENCE-20260624.json"
+  -
+    model_id: "MOD-ADP-056"
+    name: "S2PCT03 The Lancet shadow daily path"
+    kind: "deterministic no-send shadow daily runner"
+    purpose: "Build a separate Lancet/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2/integrated production acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct03-lancet-shadow-daily-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-058"
+    parameter_ids:
+      - "PARAM-ADP-391"
+      - "PARAM-ADP-392"
+      - "PARAM-ADP-393"
+    inputs:
+      - "Lancet SourceBatch"
+      - "date"
+      - "generated_at"
+      - "shadow queue"
+      - "state_dir"
+    outputs:
+      - "Lancet shadow daily input report"
+      - "dry-run report"
+      - "delivery package preview"
+      - "Lancet queue"
+      - "Lancet ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT03-LANCET-SHADOW-EVIDENCE-20260624.json"
+  -
+    model_id: "MOD-ADP-057"
+    name: "S2PCT04 top-journal profile and publication relation shadow"
+    kind: "deterministic metadata-only profile and relation model"
+    purpose: "Classify completed Nature, Science, and The Lancet metadata-only SourceItems into top-journal profile kinds, build publication relation edges, and force correction/retraction updates to prior conclusions without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct04-top-journal-profile-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-059"
+    parameter_ids:
+      - "PARAM-ADP-394"
+      - "PARAM-ADP-395"
+      - "PARAM-ADP-396"
+      - "PARAM-ADP-397"
+      - "PARAM-ADP-398"
+      - "PARAM-ADP-399"
+    inputs:
+      - "Nature SourceBatch"
+      - "Science SourceBatch"
+      - "The Lancet SourceBatch"
+      - "publication relation events"
+      - "prior profile state"
+    outputs:
+      - "top-journal source profiles"
+      - "publication relation edges"
+      - "correction forced-update rows"
+      - "retraction forced-update rows"
+      - "profile report"
+      - "profile ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_publication_events.json"
+      - "arxiv-daily-push/tests/fixtures/top_journal_prior_profile_state.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT04_JOURNAL_PROFILE_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-058"
+    name: "S2PCT05 engineering public-signal shadow"
+    kind: "deterministic metadata-only engineering signal model"
+    purpose: "Validate paper-linked official code repositories, releases, model cards, benchmark results, and standards/specifications against top-journal profile evidence without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct05-engineering-signals-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-060"
+    parameter_ids:
+      - "PARAM-ADP-400"
+      - "PARAM-ADP-401"
+      - "PARAM-ADP-402"
+      - "PARAM-ADP-403"
+      - "PARAM-ADP-404"
+      - "PARAM-ADP-405"
+      - "PARAM-ADP-406"
+    inputs:
+      - "passing S2PCT04 top-journal profile report"
+      - "engineering signal metadata"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "engineering signal report"
+      - "officiality gate"
+      - "version traceability gate"
+      - "paper relation gate"
+      - "reproducibility state gate"
+      - "engineering signal ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-059"
+    name: "S2PCT06 authoritative report source shadow"
+    kind: "deterministic metadata-only authoritative report model"
+    purpose: "Validate authoritative research institution, laboratory, industry technical report, and product technical note metadata against S2PCT05 engineering public-signal evidence without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct06-authoritative-reports-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-061"
+    parameter_ids:
+      - "PARAM-ADP-407"
+      - "PARAM-ADP-408"
+      - "PARAM-ADP-409"
+      - "PARAM-ADP-410"
+      - "PARAM-ADP-411"
+      - "PARAM-ADP-412"
+      - "PARAM-ADP-413"
+      - "PARAM-ADP-414"
+      - "PARAM-ADP-415"
+    inputs:
+      - "passing S2PCT05 engineering signal report"
+      - "authoritative technical report metadata"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "authoritative report source report"
+      - "report taxonomy gate"
+      - "publisher identity gate"
+      - "interest relation gate"
+      - "evidence level gate"
+      - "traceability gate"
+      - "authoritative report ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/authoritative_technical_reports.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT06_AUTHORITATIVE_REPORTS_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-060"
+    name: "S2PCT07 D2 source-domain qualification and cross-type calibration"
+    kind: "deterministic source-domain qualification model"
+    purpose: "Calibrate D2 source-domain readiness across top-journal, engineering public-signal, and authoritative report shadow evidence while preserving production acceptance and transport gates as false."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct07-d2-source-domain-qualification-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-062"
+    parameter_ids:
+      - "PARAM-ADP-416"
+      - "PARAM-ADP-417"
+      - "PARAM-ADP-418"
+      - "PARAM-ADP-419"
+      - "PARAM-ADP-420"
+      - "PARAM-ADP-421"
+      - "PARAM-ADP-422"
+      - "PARAM-ADP-423"
+    inputs:
+      - "passing S2PCT04 profile report"
+      - "passing S2PCT05 engineering signal report"
+      - "passing S2PCT06 authoritative report"
+      - "D2 replay records"
+      - "D2 shadow records"
+      - "forced-event records"
+      - "queue explanation records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "D2 source-domain qualification report"
+      - "domain coverage matrix"
+      - "type calibration gate"
+      - "replay gate"
+      - "shadow gate"
+      - "forced-event gate"
+      - "queue explanation gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-061"
+    name: "S2PDT01 China C0 national authority source foundation"
+    kind: "deterministic official-source foundation model"
+    purpose: "Validate China C0 national authority metadata-only source taxonomy, official identity, document traceability, and no-production boundaries after S2PCT07 D2 qualification readiness."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt01-china-c0-source-foundation-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-063"
+    parameter_ids:
+      - "PARAM-ADP-424"
+      - "PARAM-ADP-425"
+      - "PARAM-ADP-426"
+      - "PARAM-ADP-427"
+      - "PARAM-ADP-428"
+      - "PARAM-ADP-429"
+      - "PARAM-ADP-430"
+      - "PARAM-ADP-431"
+    inputs:
+      - "passing S2PCT07 D2 qualification report"
+      - "China C0 authority metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China C0 source foundation report"
+      - "authority taxonomy gate"
+      - "official identity gate"
+      - "document traceability gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-062"
+    name: "S2PDT02 China C1 central department source map"
+    kind: "deterministic official-department source-map model"
+    purpose: "Validate China C1 central department metadata-only source map, aliases, industry and board routes, official identity, and no-production boundaries after S2PDT01 C0 source foundation."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt02-china-c1-department-source-map-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-064"
+    parameter_ids:
+      - "PARAM-ADP-432"
+      - "PARAM-ADP-433"
+      - "PARAM-ADP-434"
+      - "PARAM-ADP-435"
+      - "PARAM-ADP-436"
+      - "PARAM-ADP-437"
+      - "PARAM-ADP-438"
+      - "PARAM-ADP-439"
+    inputs:
+      - "passing S2PDT01 C0 source foundation report"
+      - "China C1 department metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China C1 department source-map report"
+      - "sector coverage gate"
+      - "official identity gate"
+      - "alias gate"
+      - "industry route gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-063"
+    name: "S2PDT03 China legal metadata relation shadow"
+    kind: "deterministic legal-metadata relation shadow model"
+    purpose: "Validate China legal metadata status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore and old-conclusion update, and no-production boundaries after S2PDT02 C1 department source map."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt03-china-legal-metadata-relation-shadow-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-065"
+    parameter_ids:
+      - "PARAM-ADP-440"
+      - "PARAM-ADP-441"
+      - "PARAM-ADP-442"
+      - "PARAM-ADP-443"
+      - "PARAM-ADP-444"
+      - "PARAM-ADP-445"
+      - "PARAM-ADP-446"
+      - "PARAM-ADP-447"
+      - "PARAM-ADP-448"
+      - "PARAM-ADP-449"
+    inputs:
+      - "passing S2PDT02 C1 department source-map report"
+      - "China legal metadata records"
+      - "China legal relation records"
+      - "prior conclusion update records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China legal metadata relation shadow report"
+      - "legal status taxonomy gate"
+      - "version effectivity gate"
+      - "reprint relation gate"
+      - "forced update gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-064"
+    name: "S2PDT04 China D3 readiness review"
+    kind: "deterministic D3 readiness review model"
+    purpose: "Validate China official D3 core replay, shadow, authority, board routing, and metadata-only no-production readiness after S2PDT01 C0, S2PDT02 C1, and S2PDT03 legal metadata evidence."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt04-china-d3-readiness-review-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-066"
+    parameter_ids:
+      - "PARAM-ADP-450"
+      - "PARAM-ADP-451"
+      - "PARAM-ADP-452"
+      - "PARAM-ADP-453"
+      - "PARAM-ADP-454"
+      - "PARAM-ADP-455"
+      - "PARAM-ADP-456"
+      - "PARAM-ADP-457"
+      - "PARAM-ADP-458"
+    inputs:
+      - "passing S2PDT01 C0 source foundation report"
+      - "passing S2PDT02 C1 department source-map report"
+      - "passing S2PDT03 legal metadata relation shadow report"
+      - "China D3 replay records"
+      - "China D3 shadow records"
+      - "China D3 board route records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China D3 readiness review report"
+      - "30-date replay gate"
+      - "2-day shadow gate"
+      - "authority gate"
+      - "board routing gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT04-CHINA-D3-READINESS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT04_CHINA_D3_READINESS_EVIDENCE.md"

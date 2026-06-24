@@ -1198,15 +1198,207 @@ tasks:
     objective: "Add Science main-journal metadata-only no-send shadow evidence using the stabilized S2PCT01 top-journal framework before any formal D2 source-domain or Stage 2 production inclusion."
     scope: "Science official/public discovery adapter design, article type classification for Research/Report/Review/Perspective, metadata-only SourceItems, duplicate DOI/source identity gates, no-send shadow queue/ledger/email preview, focused tests, and governance registration."
     non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
-    status: "planned"
+    status: "completed"
     dependencies: ["S2PCT01"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv"]
     acceptance_ids: ["ACC-S2PCT02-SCIENCE"]
-    test_commands: ["planned: focused Science/top-journal adapter and Stage2 source tests", "planned: no-send Science shadow daily with separate queue/ledger/email preview", "planned: semantic governance and changed-only project governance"]
-    test_results: ["PENDING"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct02_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q", "stage2 Science live RSS no-send canary", "scripts/validate_project_governance.py --project arxiv-daily-push"]
+    test_results: ["focused top-journal and Stage2 source tests: 21 OK", "Science RSS fixture and live no-send canary passed with real_smtp_sent=false, formal_production_inclusion=false, d2_source_domain_accepted=false", "S2PCT02 metadata-only no-send shadow evidence complete; D2 source-domain acceptance not claimed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT02_SCIENCE_SHADOW_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json", "arxiv-daily-push/tests/fixtures/science_rss_sample.xml"]
     risk: "Science article type misclassification, duplicate DOI/canonical identity, full-text/paywall boundary errors, or shadow contamination of accepted arXiv mail must block this task; P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
     rollback: "Remove S2PCT02 adapter/shadow code, fixtures/tests, governance registrations, task record, and event if the Science source path is deferred or superseded."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT03"
+    legacy_alias: "S2P2T03"
+    phase: "S2PC"
+    objective: "Add The Lancet metadata-only no-send shadow evidence after completed Nature and Science shadow evidence."
+    scope: "Lancet Online First/current RSS metadata, medical article type gate, PubMed DOI relation metadata, duplicate DOI/source identity gate, no-send queue/ledger/email preview, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, video, PDF/full-text download, paid API use, or paywall bypass."
+    status: "completed"
+    dependencies: ["S2PCT02"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/lancet_rss_sample.xml"]
+    acceptance_ids: ["ACC-S2PCT03-LANCET"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct03_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q", "stage2 Lancet live RSS no-send canary", "scripts/validate_project_governance.py --project arxiv-daily-push"]
+    test_results: ["focused top-journal/stage2 tests: 28 OK", "live Lancet RSS canary passed with PubMed DOI relation gate doi_query_ready and all production flags false", "semantic extractor checked 58 formulas / 376 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT03_LANCET_SHADOW_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT03-LANCET-SHADOW-EVIDENCE-20260624.json", "arxiv-daily-push/tests/fixtures/lancet_rss_sample.xml"]
+    risk: "Medical article type misclassification, PubMed relation error, duplicate DOI, or any production side effect blocks the task."
+    rollback: "Revert Lancet adapter/shadow code, fixture/tests, governance registrations, phase record, event, and manifest."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT04"
+    phase: "S2PC"
+    objective: "Add top-journal profile, publication relation, correction, and retraction metadata-only evidence."
+    scope: "Profile taxonomy, publication relation graph, correction/retraction forced events, prior-state updates, no-send ledger/report, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, PDF/full-text access, or paywall bypass."
+    status: "completed"
+    dependencies: ["S2PCT03"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/top_journal_publication_events.json", "arxiv-daily-push/tests/fixtures/top_journal_prior_profile_state.json"]
+    acceptance_ids: ["ACC-S2PCT04-JOURNAL-PROFILE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct04_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_top_journal_adapter.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push", "scripts/lean_governance.py check-render --project arxiv-daily-push"]
+    test_results: ["focused Stage2/top-journal tests: 32 OK", "profile taxonomy, publication relation, correction and retraction forced-event gates passed", "semantic extractor checked 59 formulas / 382 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT04_JOURNAL_PROFILE_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"]
+    risk: "Correction/retraction updates must not leave stale conclusions active; profile evidence remains no-production shadow evidence only."
+    rollback: "Revert S2PCT04 stage2 source code, fixtures/tests, governance registrations, phase record, event, and manifest."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT05"
+    phase: "S2PC"
+    objective: "Add engineering public-signal metadata-only evidence for code, releases, model cards, benchmarks, and standards."
+    scope: "Engineering signal taxonomy, officiality/version checks, repository-paper relation metadata, reproducibility state, no-send ledger/report, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, paid API use, or marketing-only acceptance."
+    status: "completed"
+    dependencies: ["S2PCT04"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"]
+    acceptance_ids: ["ACC-S2PCT05-ENGINEERING-SIGNALS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_top_journal_adapter.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push", "scripts/validate_project_governance.py --project arxiv-daily-push"]
+    test_results: ["focused Stage2/top-journal tests: 36 OK", "engineering taxonomy, officiality, version traceability, paper relation, and reproducibility gates passed", "semantic extractor checked 60 formulas / 389 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"]
+    risk: "Non-official mirrors, untraceable versions, or marketing material must not be treated as engineering evidence."
+    rollback: "Revert S2PCT05 stage2 source code, fixture/tests, governance registrations, phase record, event, and manifest."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT06"
+    phase: "S2PC"
+    objective: "Add authoritative research institution, lab, industry technical report, and product technical note metadata-only no-send shadow evidence."
+    scope: "Report type taxonomy, publisher identity, interest relation, evidence level, traceability, no-send ledger/report, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, paid API use, or marketing-only acceptance."
+    status: "completed"
+    dependencies: ["S2PCT05"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/authoritative_technical_reports.json"]
+    acceptance_ids: ["ACC-S2PCT06-REPORTS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct06_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push", "scripts/validate_project_governance.py --project arxiv-daily-push"]
+    test_results: ["focused Stage2 source tests: 27 OK", "authoritative report taxonomy, publisher identity, interest relation, evidence level, and traceability gates passed", "semantic extractor checked 61 formulas / 398 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT06_AUTHORITATIVE_REPORTS_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"]
+    risk: "Publisher identity errors, hidden interest relations, marketing-only material, or any production side effect block the task."
+    rollback: "Revert S2PCT06 stage2 source code, fixture/tests, governance registrations, phase record, event, manifest, and rendered governance sync."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT07"
+    phase: "S2PC"
+    objective: "Add D2 source-domain qualification and cross-type calibration evidence while keeping D2 source-domain acceptance false."
+    scope: "D2 30-date replay, 48h no-production shadow, top-journal/engineering/report coverage, forced events, queue explanations, type calibration, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, production queue/schema mutation, PDF/full-text access, or paywall bypass."
+    status: "completed"
+    dependencies: ["S2PCT06"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PCT07-D2"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct07_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push"]
+    test_results: ["focused Stage2 source tests: 31 OK", "D2 qualification gates passed for upstream coverage, 30-date replay, 48h shadow, forced events, queue explanations, and type calibration", "semantic extractor checked 62 formulas / 406 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"]
+    risk: "This grants readiness/qualification evidence only; D2 production acceptance remains false until inherited blockers and S2PMT07 are resolved."
+    rollback: "Revert S2PCT07 stage2 source code, tests, governance registrations, phase record, event, manifest, and rendered governance sync."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "V7_2_AGENT_REVALIDATION_RECEIPT"
+    phase: "S2PA"
+    objective: "Record V7.2 revalidation receipt for completed Stage2 metadata-only/no-send shadow and qualification work before continuing S2PDT04."
+    scope: "Re-review S2PCT02-S2PCT07 and S2PDT01-S2PDT03 against merged V7.2, confirm V7.1 remains read-only, and keep production/schema/mail/scheduler boundaries false."
+    non_scope: "No V7.2 contract edit, CURRENT switch, mail production code, public schema, SMTP, Release, scheduler, production restore, or queue/DB state-machine change."
+    status: "completed"
+    dependencies: ["S2PAT06", "S2PCT07"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_V7_2_REVALIDATION_S2PD_COMPLETED_WORK_RECEIPT.md", "governance/run_manifests/ADP-V7-2-REVALIDATION-S2PD-COMPLETED-WORK-20260624.json"]
+    acceptance_ids: ["ACC-S2PAT06-V7-2-CURRENT"]
+    test_commands: ["python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_revalidation_stage2_pycache PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["V7.2 contract validator: PASS", "Stage2 source focused tests: 43 OK before S2PDT04 and 47 OK after S2PDT04 implementation", "Completed Stage2 work remains V7.2-compatible; all production and shared-schema flags remain false"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_V7_2_REVALIDATION_S2PD_COMPLETED_WORK_RECEIPT.md", "governance/run_manifests/ADP-V7-2-REVALIDATION-S2PD-COMPLETED-WORK-20260624.json"]
+    risk: "Future agents must keep recording V7.2 revalidation before new tasks; inherited V7.1 P0/P1 still block production."
+    rollback: "Remove this revalidation receipt phase record, manifest, and task entry; no runtime or production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PDT01"
+    legacy_alias: "S2P3T01"
+    phase: "S2PD"
+    objective: "Add China C0 national authoritative backbone metadata-only source foundation evidence."
+    scope: "Law/regulation, NPC, State Council, gazette, and Supreme Court/Procuratorate authority taxonomy; official identity; document number/date/attachment traceability; metadata-only gates; focused tests; and governance registration."
+    non_scope: "No D3_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, production queue/schema mutation, PDF/full-text access, paid API, or paywall bypass."
+    status: "completed"
+    dependencies: ["V7_2_AGENT_REVALIDATION_RECEIPT", "S2PCT07"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PDT01-C0"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt01_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["S2PDT01 China C0 national authority metadata-only source foundation passed focused tests", "All D3 acceptance and production side-effect flags remain false"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md", "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"]
+    risk: "转载冒充原始源、机关/文号/日期/附件不可追溯、官方域名误判、或 shadow 数据影响正式 arXiv 邮件必须阻断。"
+    rollback: "Revert S2PDT01 China C0 code, tests, governance registrations, phase record, manifest, events, and rendered governance sync."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PDT02"
+    legacy_alias: "S2P3T02"
+    phase: "S2PD"
+    objective: "Add China C1 central department source map metadata-only evidence."
+    scope: "Central department templates, aliases, official domains, sector and industry routes, board routes, metadata-only gates, focused tests, and governance registration."
+    non_scope: "No D3_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, production queue/schema mutation, bulk scraping, PDF/full-text access, or paywall bypass."
+    status: "completed"
+    dependencies: ["S2PDT01"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PDT02-C1"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt02_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push"]
+    test_results: ["focused Stage2 source tests: 39 OK", "semantic extractor checked 64 formulas / 422 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md", "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"]
+    risk: "部门清单缩水、人工逐源硬编码、别名映射错误、非官方域名污染 source map、或 shadow 数据影响正式邮件必须阻断。"
+    rollback: "Revert S2PDT02 China C1 code, tests, governance registrations, phase record, manifest, events, and rendered governance sync."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PDT03"
+    legacy_alias: "S2P3T03"
+    phase: "S2PD"
+    objective: "Add China legal metadata, version/effectivity, reprint/original-source relation, and old-conclusion update evidence."
+    scope: "Legal status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore, old-conclusion update, metadata-only gates, focused tests, and governance registration."
+    non_scope: "No D3_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, production queue/schema mutation, bulk scraping, PDF/full-text access, or paywall bypass."
+    status: "completed"
+    dependencies: ["S2PDT02"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PDT03-LEGAL"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt03_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push"]
+    test_results: ["focused Stage2 source tests: 43 OK", "semantic extractor checked 65 formulas / 432 parameters"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md", "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"]
+    risk: "转载冒充原始源、法律状态误判、旧结论未更新、或 shadow 数据影响正式邮件必须阻断。"
+    rollback: "Revert S2PDT03 China legal relation code, tests, governance registrations, phase record, manifest, events, and rendered governance sync."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PDT04"
+    legacy_alias: "S2P3T04"
+    phase: "S2PD"
+    objective: "Add China official D3 readiness review evidence with replay, shadow, authority, and B2-B6 board-routing explanations."
+    scope: "C0/C1/legal upstream checks, 30-date replay, 2-day shadow, authority evidence, B2-B6 board routing, metadata-only gates, focused/full tests, and governance registration."
+    non_scope: "No D3_SOURCE_DOMAIN_ACCEPTED production acceptance, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, production queue/schema mutation, bulk scraping, PDF/full-text access, paid API, paywall bypass, V7.2 contract edit, mail production code, or public schema pre-run."
+    status: "completed"
+    dependencies: ["S2PDT03"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PDT04_CHINA_D3_READINESS_EVIDENCE.md"]
+    acceptance_ids: ["ACC-S2PDT04-D3-CORE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt04_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "python3 -m unittest discover -s arxiv-daily-push/tests -q", "scripts/validate_semantic_extractors.py arxiv-daily-push", "scripts/validate_project_governance.py --project arxiv-daily-push", "scripts/lean_governance.py check-render --project arxiv-daily-push"]
+    test_results: ["focused Stage2 source tests: 47 OK", "full arxiv-daily-push unittest: 274 OK", "semantic extractor checked 66 formulas / 441 parameters", "V7.2 contract validator PASS", "ADP project governance errors 0 warnings 0", "lean check-render drift 0 reference_issue_count 0", "JSON/JSONL/CSV/YAML parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PDT04_CHINA_D3_READINESS_EVIDENCE.md", "governance/run_manifests/ADP-S2PDT04-CHINA-D3-READINESS-EVIDENCE-20260624.json", "governance/run_manifests/ADP-V7-2-REVALIDATION-S2PD-COMPLETED-WORK-20260624.json"]
+    risk: "Readiness evidence must not be misread as D3 production acceptance or integrated production acceptance; inherited V7.1 blockers and S2PMT07 still block production."
+    rollback: "Revert S2PDT04 China D3 readiness review code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PHT01V1.1-T01"
+    phase: "S2PH"
+    objective: "Run the EMAIL_LEARNING_V1 read-only exact H/M repository path audit required by V7.2 before any mail production implementation work."
+    scope: "Read-only path audit for product contract, feature registry, roadmap/task registry, H/M dual-plane governance, receipt targets, owners, rollback paths, and no-write boundaries."
+    non_scope: "No mail production code, no public schema, no connectors, no queue/DB/scheduler/SMTP/Release/3+1 implementation, and no CURRENT/V7.2 shared contract edits."
+    status: "planned"
+    dependencies: ["V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml"]
+    acceptance_ids: ["ACC-S2PHT01V1.1-T01-PATH-AUDIT"]
+    test_commands: ["planned: read-only repository path audit; no implementation writes"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md"]
+    risk: "Starting EMAIL_LEARNING_V1 implementation before exact H/M path audit would violate V7.2."
+    rollback: "Remove this planned task entry if V7.2 task routing is superseded by a later product contract."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

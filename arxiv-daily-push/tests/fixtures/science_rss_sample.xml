@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns="http://purl.org/rss/1.0/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:content="http://purl.org/rss/1.0/modules/content/"
+         xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/">
+  <channel rdf:about="https://www.science.org/loi/science?af=R">
+    <title>AAAS: Science: Table of Contents</title>
+    <description>Table of Contents for Science.</description>
+    <link>https://www.science.org/loi/science?af=R</link>
+    <dc:publisher>AAAS</dc:publisher>
+    <dc:language>en-US</dc:language>
+    <prism:publicationName>Science</prism:publicationName>
+  </channel>
+  <item rdf:about="https://www.science.org/doi/abs/10.1126/science.aeh4754?af=R">
+    <title>Making the most of your time at work</title>
+    <link>https://www.science.org/doi/abs/10.1126/science.aeh4754?af=R</link>
+    <content:encoded>Science, Volume 392, Issue 6804, Page 1248-1248, June 2026.</content:encoded>
+    <description>Science, Volume 392, Issue 6804, Page 1248-1248, June 2026.</description>
+    <dc:identifier>doi:10.1126/science.aeh4754</dc:identifier>
+    <dc:date>2026-06-18T06:00:17Z</dc:date>
+    <dc:type>Books et al.</dc:type>
+    <dc:creator>Jonathan Wai</dc:creator>
+    <prism:publicationName>Science</prism:publicationName>
+  </item>
+  <item rdf:about="https://www.science.org/doi/abs/10.1126/science.ads7910?af=R">
+    <title>AI agents benchmark immune risk control in clinical markets</title>
+    <link>https://www.science.org/doi/abs/10.1126/science.ads7910?af=R</link>
+    <content:encoded>Science, Volume 392, Issue 6804, June 2026.</content:encoded>
+    <description>This Research Article evaluates artificial intelligence agents, benchmark datasets, risk controls, privacy, health economics, market simulation, and operational decision systems.</description>
+    <dc:identifier>doi:10.1126/science.ads7910</dc:identifier>
+    <dc:date>2026-06-18T06:00:17Z</dc:date>
+    <dc:type>Research Article</dc:type>
+    <dc:creator>Ada Researcher</dc:creator>
+    <dc:creator>Lin Science</dc:creator>
+    <prism:publicationName>Science</prism:publicationName>
+  </item>
+  <item rdf:about="https://www.science.org/doi/abs/10.1126/science.adx1369?af=R">
+    <title>Report on robust market simulation for language model evaluation</title>
+    <link>https://www.science.org/doi/abs/10.1126/science.adx1369?af=R</link>
+    <description>This Report studies benchmark evaluation, optimization, robustness, portfolio risk, and reproducible simulation for decision models.</description>
+    <dc:identifier>doi:10.1126/science.adx1369</dc:identifier>
+    <dc:date>2026-06-18T06:00:17Z</dc:date>
+    <dc:type>Report</dc:type>
+    <dc:creator>Bea Analyst</dc:creator>
+    <prism:publicationName>Science</prism:publicationName>
+  </item>
+  <item rdf:about="https://www.science.org/doi/abs/10.1126/science.aei4111?af=R">
+    <title>A review of AI supply-chain security benchmarks</title>
+    <link>https://www.science.org/doi/abs/10.1126/science.aei4111?af=R</link>
+    <description>This Review compares datasets, evaluation methods, privacy controls, security risk, market incentives, and cost optimization in AI systems.</description>
+    <dc:identifier>doi:10.1126/science.aei4111</dc:identifier>
+    <dc:date>2026-06-18T06:00:17Z</dc:date>
+    <dc:type>Review</dc:type>
+    <dc:creator>Casey Reviewer</dc:creator>
+    <prism:publicationName>Science</prism:publicationName>
+  </item>
+  <item rdf:about="https://www.science.org/doi/abs/10.1126/science.aef0941?af=R">
+    <title>Perspective on AI regulation and market risk</title>
+    <link>https://www.science.org/doi/abs/10.1126/science.aef0941?af=R</link>
+    <description>This Perspective links policy, artificial intelligence, risk controls, portfolio decisions, and operational governance for high-ROI research triage.</description>
+    <dc:identifier>doi:10.1126/science.aef0941</dc:identifier>
+    <dc:date>2026-06-18T06:00:17Z</dc:date>
+    <dc:type>Perspective</dc:type>
+    <dc:creator>Drew Policy</dc:creator>
+    <prism:publicationName>Science</prism:publicationName>
+  </item>
+  <item rdf:about="https://www.science.org/doi/abs/10.1126/science.aej7948?af=R">
+    <title>AI finds legal loopholes</title>
+    <link>https://www.science.org/doi/abs/10.1126/science.aej7948?af=R</link>
+    <description>News article that must not enter S2PCT02 Science article-type gate.</description>
+    <dc:identifier>doi:10.1126/science.aej7948</dc:identifier>
+    <dc:date>2026-06-18T06:00:17Z</dc:date>
+    <dc:type>In Depth</dc:type>
+    <dc:creator>News Writer</dc:creator>
+    <prism:publicationName>Science</prism:publicationName>
+  </item>
+</rdf:RDF>

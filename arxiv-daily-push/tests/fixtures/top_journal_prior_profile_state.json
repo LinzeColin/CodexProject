@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "canonical_document_id": "lancet:10.1016/s0140-6736(26)01256-0",
+      "conclusion_state": "active",
+      "publication_status": "active"
+    },
+    {
+      "canonical_document_id": "science:10.1126/science.adx1369",
+      "conclusion_state": "active",
+      "publication_status": "active"
+    }
+  ]
+}

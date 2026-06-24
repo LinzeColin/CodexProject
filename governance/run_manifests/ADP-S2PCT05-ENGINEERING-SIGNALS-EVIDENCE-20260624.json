@@ -1,0 +1,115 @@
+{
+  "manifest_id": "ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PCT05",
+  "task_aliases": [],
+  "phase": "S2PC",
+  "generated_at": "2026-06-24T17:30:00+10:00",
+  "actor": "Codex",
+  "status": "completed_shadow_evidence",
+  "acceptance_id": "ACC-S2PCT05-ENGINEERING-SIGNALS",
+  "acceptance_ids": [
+    "ACC-S2PCT05-ENGINEERING-SIGNALS"
+  ],
+  "acceptance_claimed": false,
+  "shadow_evidence_completed": true,
+  "source_domain_acceptance_claimed": false,
+  "stage2_production_accepted": false,
+  "d2_source_domain_accepted": false,
+  "integrated_production_accepted": false,
+  "formal_production_inclusion": false,
+  "github_cloud_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "video_generated": false,
+  "source_scope": {
+    "board": "B2",
+    "source_family": "engineering_public_signal",
+    "required_signal_types": [
+      "official_code_repository",
+      "official_release",
+      "model_card",
+      "benchmark_result",
+      "standard_or_spec"
+    ],
+    "allowed_relation_types": [
+      "implements_paper",
+      "version_of",
+      "documents_model",
+      "evaluates",
+      "standardizes"
+    ],
+    "allowed_officiality_states": [
+      "official",
+      "publisher_linked",
+      "standards_body"
+    ],
+    "allowed_reproducibility_states": [
+      "reproducible",
+      "partial",
+      "claimed",
+      "not_applicable"
+    ],
+    "v7_source_domain": "D2_engineering_public_signal",
+    "canonical_task_id": "S2PCT05",
+    "legacy_task_id": null
+  },
+  "side_effect_policy": {
+    "metadata_only": true,
+    "repository_clone_enabled": false,
+    "pdf_download_enabled": false,
+    "full_text_download_enabled": false,
+    "bulk_harvest_enabled": false,
+    "paid_api_used": false,
+    "paywall_bypass_allowed": false,
+    "smtp_send_enabled": false,
+    "release_upload_enabled": false,
+    "scheduler_enabled": false
+  },
+  "implementation_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json",
+    "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_top_journal_adapter.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_cli_run PYTHONPATH=arxiv-daily-push/src python3 -c 'from arxiv_daily_push.cli import main; raise SystemExit(main())' -- stage2-engineering-signals-shadow --state-dir /tmp/adp_s2pct05_cli/state --date 2026-06-24 --generated-at 2026-06-24T09:30:00+10:00 --profile-report /tmp/adp_s2pct05_cli/profile_report.json --engineering-signals arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json --no-write --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_semantic PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_lean_check PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_1/tools/validate_task_pack.py --root arxiv-daily-push/docs/pursuing_goal/v7_1",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_root PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused Stage2/top-journal tests: 36 OK",
+    "CLI fixture canary: status pass, validation_errors empty, engineering_signal_count 5, known_document_count 13, all production flags false",
+    "engineering_signal_taxonomy_gate: pass with official_code_repository, official_release, model_card, benchmark_result, standard_or_spec",
+    "officiality_gate: pass; version_traceability_gate: pass; paper_relation_gate: pass; reproducibility_state_gate: pass",
+    "semantic extractor: semantic_formulas_checked 60, semantic_parameters_checked 389",
+    "project governance validator: errors 0 warnings 0",
+    "changed-only governance semantic sync: errors 0 warnings 0",
+    "Lean check-render: drift_count 0 reference_issue_count 0",
+    "V7.1 task-pack validator: PASS task_count 98 finding_count 53 errors 0 warnings 0",
+    "root governance tests: 238 OK",
+    "manifest JSON and events/development_events JSONL parse: OK",
+    "git diff --check: PASS"
+  ],
+  "blocking_gates": [
+    "formal source production inclusion gate",
+    "Stage2 Stop Gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION",
+    "V7.1 P0/P1 audit findings must be cleared",
+    "S2PMT07 independent review gate"
+  ],
+  "rollback": "Revert S2PCT05 additions in stage2_sources.py, CLI, fixture/tests, governance registrations, phase record, event, and this manifest.",
+  "canonical_task_id": "S2PCT05",
+  "legacy_task_id": null,
+  "next_task_id": "S2PCT06"
+}

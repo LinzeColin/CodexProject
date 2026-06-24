@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PDT01",
+  "legacy_task_id": "S2P3T01",
+  "acceptance_id": "ACC-S2PDT01-C0",
+  "phase": "S2PD",
+  "generated_at": "2026-06-24T20:10:00+10:00",
+  "model_id": "adp-s2pdt01-china-c0-source-foundation-v1",
+  "status": "PASS_NO_FORMAL_PRODUCTION",
+  "summary": "S2PDT01 China C0 national authority metadata-only source foundation passed focused tests while keeping all D3 acceptance and production side-effect flags false.",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt01_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+      "result": "35 tests OK"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt01_semantic1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+      "result": "semantic_formulas_checked 63; semantic_parameters_checked 414"
+    }
+  ],
+  "authority_types_required": [
+    "law_regulation",
+    "npc_document",
+    "state_council_document",
+    "gazette",
+    "supreme_court_procuratorate_document"
+  ],
+  "d3_c0_source_foundation_ready": true,
+  "d3_core_source_domain_accepted": false,
+  "formal_production_inclusion": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_schedule_enabled": false,
+  "queue_mutation_allowed": false,
+  "schema_migration_allowed": false,
+  "bulk_scraping_allowed": false,
+  "pdf_download_enabled": false,
+  "full_text_download_enabled": false,
+  "paid_api_used": false,
+  "paywall_bypass_allowed": false,
+  "next_task_id": "S2PDT02",
+  "next_legacy_task_id": "S2P3T02"
+}
