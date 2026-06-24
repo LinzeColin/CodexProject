@@ -1,6 +1,11 @@
+import json
+import threading
+import urllib.request
 from datetime import datetime
+from http.server import ThreadingHTTPServer
 from zoneinfo import ZoneInfo
 
+import app.core.application_server as app_server
 from app.core.application_server import (
     ApplicationAutoScheduler,
     RefreshHolding,
@@ -231,6 +236,69 @@ def test_manual_review_http_mode_returns_before_background_refresh(monkeypatch, 
     assert "正在重新运行" in record["refreshMessage"]
     records = fetch_manual_review_decisions(settings)
     assert records["67"]["refreshStatus"] == "running"
+
+
+def test_manual_review_http_save_does_not_wait_for_full_refresh_lock(monkeypatch, tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+                id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                68,
+                "sda_test_r10",
+                None,
+                "完整刷新正在运行时也必须先写入复核结果",
+                "No-New-Order",
+                "open",
+                "2026-06-13T00:00:00Z",
+            ),
+        )
+
+    def fake_refresh(settings_arg):
+        return {
+            "status": "pass",
+            "message": "目前更新到最新时间 20260614 - 16:52 AEST 保持当前持仓",
+            "run_id": "sda_manual_refresh_r10",
+        }
+
+    monkeypatch.setattr("app.core.application_server.refresh_application", fake_refresh)
+    handler = app_server.make_handler(settings)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    port = server.server_address[1]
+    try:
+        payload = json.dumps(
+            {
+                "review_id": 68,
+                "outcome": "observe_pool",
+                "savedAt": "20260614 - 16:52 AEST",
+            }
+        ).encode("utf-8")
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{port}/api/manual-review",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with app_server._APPLICATION_WRITE_LOCK:
+            with urllib.request.urlopen(request, timeout=2) as response:
+                result = json.loads(response.read().decode("utf-8"))
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
+
+    assert result["status"] == "pass"
+    assert result["record"]["refreshStatus"] == "running"
+    records = fetch_manual_review_decisions(settings)
+    assert records["68"]["decision"] == "放入观察池继续观察"
 
 
 def test_refresh_application_runs_manual_serenity_flow(monkeypatch, tmp_path):

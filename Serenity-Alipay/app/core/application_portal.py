@@ -3496,8 +3496,8 @@ def render_application_portal(
     document.querySelectorAll("[data-close-review]").forEach((button) => {{
       button.addEventListener("click", closeReview);
     }});
-    document.querySelectorAll("[data-save-review]").forEach((button) => {{
-      button.addEventListener("click", async () => {{
+    const handleSaveReviewClick = async (button) => {{
+        if (button.disabled) return;
         const item = button.closest("[data-review-item]");
         if (!item) return;
         const originalText = button.textContent;
@@ -3551,7 +3551,12 @@ def render_application_portal(
           button.textContent = originalText;
           showToast(message);
         }}
-      }});
+    }};
+    document.addEventListener("click", (event) => {{
+      const button = event.target.closest("[data-save-review]");
+      if (!button) return;
+      event.preventDefault();
+      void handleSaveReviewClick(button);
     }});
     document.querySelectorAll("[data-copy-review-log]").forEach((button) => {{
       button.addEventListener("click", async () => {{
