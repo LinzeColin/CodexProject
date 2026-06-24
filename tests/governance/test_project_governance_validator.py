@@ -4822,6 +4822,81 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s3pdt03_s3_gate_report_and_manifest(self) -> None:
+        report_path = ROOT / "governance" / "stage_gates" / "s3pd" / "s3_gate_report.md"
+        self.assertTrue(report_path.is_file())
+        report = report_path.read_text(encoding="utf-8")
+        for required in {
+            "S3PDT03",
+            "ACC-S3PDT03",
+            "S3-GATE: PASSED_FOCUSED_REGRESSION_FOR_S4_ENTRY",
+            "product_delivery_readiness: NOT_PROMOTED",
+            "forbidden_project_diff: PASS",
+            "TECHNICAL_CODE_POLICY_VERIFIED_NOT_PRODUCT_POLICY_APPROVED",
+            "No Stage 4 or Stage 5 structure migration has started",
+            "S4PAT01 may start as the next unique task",
+        }:
+            self.assertIn(required, report)
+        for task_id in {
+            "S3PAT03",
+            "S3PBT03",
+            "S3PCT01",
+            "S3PCT02",
+            "S3PCT03",
+            "S3PDT01",
+            "S3PDT02",
+        }:
+            self.assertIn(task_id, report)
+
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S3PDT03-S3-GATE-20260625.json"
+        )
+        self.assertTrue(manifest_path.is_file())
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "CodexProject")
+        self.assertEqual(manifest["task_id"], "S3PDT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PDT03"])
+        self.assertEqual(manifest["stage_gate_status"]["S3-GATE"], "PASSED_FOCUSED_REGRESSION_FOR_S4_ENTRY")
+        self.assertEqual(manifest["stage_gate_status"]["product_delivery_readiness"], "NOT_PROMOTED")
+        self.assertEqual(manifest["next_allowed_task"], "S4PAT01")
+        self.assertEqual(len(manifest["dependency_task_ids"]), 7)
+        self.assertEqual(len(manifest["dependency_manifests"]), 7)
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "governance/stage_gates/s3pd/s3_gate_report.md",
+                "governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertEqual(manifest["scope_guard"]["tracked_diff_result"], "PASS_NO_OUTPUT")
+        self.assertIn("tools/scope_guard.py does not exist", manifest["scope_guard"]["roadmap_scope_guard_note"])
+        self.assertIn(
+            "whkmSalary payroll/tax/statutory policy source and historical reconciliation remain not owner-approved.",
+            manifest["unresolved_risks"],
+        )
+        for dependency in manifest["dependency_manifests"]:
+            path = ROOT / dependency
+            self.assertTrue(path.is_file(), dependency)
+            data = json.loads(path.read_text(encoding="utf-8"))
+            self.assertIn(data["task_id"], manifest["dependency_task_ids"])
+            self.assertFalse(
+                any(
+                    str(changed_path).startswith(("EEI/", "arxiv-daily-push/"))
+                    for changed_path in data.get("changed_files_actual", [])
+                ),
+                dependency,
+            )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
