@@ -88,6 +88,58 @@ def test_manual_review_items_hide_already_processed_same_asset_reason(tmp_path):
     ]
 
 
+def test_manual_review_items_hide_saved_running_decision_immediately(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    reason = "fee/redemption/subscription status missing or closed"
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO asset_master (
+              asset_id, asset_code, asset_name, asset_type, market, fund_company,
+              risk_level, is_excluded, exclusion_reason
+            )
+            VALUES ('270042', '270042', '广发纳指100ETF联接(QDII)人民币A', 'fund', 'CN', NULL, NULL, 0, NULL)
+            """
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (30, 'sda_old', '270042', ?, 'No-New-Order', 'open', '2026-06-14T10:00:00+00:00')
+            """,
+            (reason,),
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_decision (
+              review_id, run_id, decision, outcome, outcome_label, system_disposition,
+              refresh_triggered, refresh_status, refresh_message, refresh_run_id,
+              note, saved_at, created_at, updated_at
+            )
+            VALUES (
+              30, 'sda_old', '放入观察池继续观察', 'observe_pool', '放入观察池继续观察', '',
+              1, 'running', '已保存到数据库，正在重新运行 Serenity 全流程', '',
+              '', '20260614 - 20:22 AEST', '2026-06-14T10:22:00+00:00', '2026-06-14T10:22:00+00:00'
+            )
+            """
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (31, 'sda_new', '270042', ?, 'No-New-Order', 'open', '2026-06-14T10:23:00+00:00')
+            """,
+            (reason,),
+        )
+
+        items = _manual_review_items(conn, "sda_new")
+
+    assert items == []
+
+
 def test_manual_review_items_do_not_fallback_to_old_open_queue(tmp_path):
     settings = temp_settings(tmp_path)
     init_db(settings.db_path)
@@ -270,12 +322,18 @@ def test_application_bundle_has_custom_icon(tmp_path: Path):
     assert "<string>SerenityIcon</string>" in info
     assert "local.serenity.daily-analysis." in info
     assert pkginfo.read_text(encoding="ascii") == "APPL????"
-    assert 'SERVER_PID="$!"' in launcher
-    assert 'wait "$SERVER_PID"' in launcher
+    assert "SERVER_PID" not in launcher
+    assert 'wait "$SERVER_PID"' not in launcher
+    assert "nohup" in launcher
+    assert "exit 0" in launcher
     assert "seq 8765 8795" in launcher
     assert "seq 1 60" in launcher
-    assert 'open "$BOOTSTRAP"' in launcher
-    assert 'open "$URL"' in launcher
+    assert "BOOTSTRAP" not in launcher
+    assert "downloads-entry.html" not in launcher
+    assert "open_serenity_home" in launcher
+    assert '/usr/bin/open "http://127.0.0.1:$PORT/"' in launcher
+    assert "-m app.core.application_server" in launcher
+    assert "-m app.cli application-server" not in launcher
     assert "--connect-timeout 0.2 --max-time 0.5" in launcher
     assert f'open "{portal_path.resolve()}"' not in launcher
     assert icon.exists()
@@ -679,11 +737,14 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "保存复核必须写入本机 SQLite 数据库" in html
     assert "正在写入数据库" in html
     assert "保存中" in html
-    assert "刷新中" in html
+    assert "后台刷新中，可继续处理其他复核" in html
+    assert "已从待处理列表移除" in html
+    assert "待处理项已移除" in html
     assert "waitForReviewRefresh" in html
     assert 'document.addEventListener("click", (event)' in html
     assert 'document.querySelectorAll("[data-save-review]").forEach' not in html
     assert "后台刷新仍在运行" in html
+    assert "页面会继续保留记录" not in html
     assert "本地服务未启动。请重新打开 Serenity 每日分析.app" in html
     assert "初始持仓权重" in html
     assert "上轮对比权重" in html

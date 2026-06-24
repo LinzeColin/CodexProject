@@ -558,8 +558,11 @@ def _manual_review_decision_rows(conn) -> list:
 
 
 def _decision_is_successful(decision) -> bool:
-    refresh_status = str(decision["refresh_status"] or "")
-    return not refresh_status or refresh_status == "pass"
+    return str(decision["outcome"] or "") in {
+        "observe_pool",
+        "exclude_current_observation",
+        "promote_top5_candidate_pool",
+    }
 
 
 def _decision_suppresses_created_at(decision, created_at: str | None) -> bool:
@@ -3422,12 +3425,12 @@ def render_application_portal(
       const savedAt = record.savedAt || record.saved_at || "";
       const label = record.outcomeLabel || record.decision || "";
       if (record.refreshStatus === "running") {{
-        return `已写入数据库 ${{savedAt}} · 正在重新运行 Serenity 全流程`;
+        return `已写入数据库 ${{savedAt}} · 后台刷新中，可继续处理其他复核`;
       }}
       return `已保存到数据库 ${{savedAt}}${{label ? ` · ${{label}}` : ""}}`;
     }};
     const waitForReviewRefresh = async (reviewId, state, button, originalText) => {{
-      for (let attempt = 0; attempt < 30; attempt += 1) {{
+      for (let attempt = 0; attempt < 90; attempt += 1) {{
         await new Promise((resolve) => window.setTimeout(resolve, 2000));
         let log = {{}};
         try {{
@@ -3437,14 +3440,14 @@ def render_application_portal(
         }}
         const record = log[reviewId];
         if (!record || record.refreshStatus === "running") {{
-          if (state) state.textContent = "已写入数据库，正在重新运行 Serenity 全流程";
+          if (state) state.textContent = "已写入数据库，后台刷新中，可继续处理其他复核";
           continue;
         }}
         if (state) state.textContent = reviewStateText(record);
         if (record.refreshStatus === "error") {{
           if (button) {{
             button.disabled = false;
-            button.textContent = originalText || "保存复核";
+            button.textContent = "重新保存";
           }}
           showToast(record.refreshMessage || "已保存到数据库，但同步刷新失败");
           return;
@@ -3458,9 +3461,24 @@ def render_application_portal(
       }}
       if (button) {{
         button.disabled = false;
-        button.textContent = originalText || "保存复核";
+        button.textContent = "已保存";
       }}
-      showToast("已写入数据库，后台刷新仍在运行；稍后请点击刷新查看最新结果");
+      if (state) state.textContent = "已写入数据库，后台刷新仍在运行；待处理项已移除";
+      showToast("已写入数据库，后台刷新仍在运行；稍后可点击刷新查看最新结果");
+    }};
+    const reviewRecordHandled = (record) => {{
+      return Boolean(record && (record.outcome || record.outcomeLabel || record.decision));
+    }};
+    const refreshReviewEmptyState = () => {{
+      const list = reviewModal ? reviewModal.querySelector(".review-list") : null;
+      if (!list) return;
+      if (list.querySelector("[data-review-item]")) return;
+      list.innerHTML = '<div class="review-empty">当前没有待处理复核项；已处理记录保留在 SQLite 数据库和历史运行中。</div>';
+    }};
+    const removeReviewItem = (item) => {{
+      if (!item) return;
+      item.remove();
+      refreshReviewEmptyState();
     }};
     const applyReviewLog = async () => {{
       let log = {{}};
@@ -3476,6 +3494,10 @@ def render_application_portal(
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         if (record) {{
+          if (reviewRecordHandled(record)) {{
+            removeReviewItem(item);
+            return;
+          }}
           if (decision) decision.value = normalizeReviewOutcome(record.outcome || record.decision || decision.value);
           if (note) note.value = record.note || "";
           if (state) state.textContent = reviewStateText(record);
@@ -3518,13 +3540,18 @@ def render_application_portal(
           note: note ? note.value : "",
           savedAt,
         }};
+        let slowSaveTimer = window.setTimeout(() => {{
+          if (state) state.textContent = "仍在写入数据库，等待当前全流程写入完成...";
+          showToast("仍在写入数据库，请等待当前全流程写入完成");
+        }}, 4000);
         try {{
           const saved = await saveReviewRecord(record);
+          window.clearTimeout(slowSaveTimer);
           if (state) state.textContent = reviewStateText(saved);
+          removeReviewItem(item);
           if (saved.refreshStatus === "running") {{
-            button.textContent = "刷新中";
-            showToast("已写入数据库，正在重新运行 Serenity 全流程");
-            void waitForReviewRefresh(String(saved.review_id || record.review_id), state, button, originalText);
+            showToast("复核已写入数据库，已从待处理列表移除；后台正在刷新首页数据");
+            void waitForReviewRefresh(String(saved.review_id || record.review_id), null, null, originalText);
             return;
           }}
           if (saved.refreshTriggered) {{
@@ -3545,6 +3572,7 @@ def render_application_portal(
             showToast(`人工复核已保存到数据库：${{saved.outcomeLabel || saved.decision || "已保存"}}`);
           }}
         }} catch (error) {{
+          window.clearTimeout(slowSaveTimer);
           const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
           if (state) state.textContent = "保存失败，未写入数据库";
           button.disabled = false;
@@ -4110,7 +4138,6 @@ def _write_app_bundle(app_path: Path, portal_path: Path, root_dir: Path) -> None
     )
     (contents_dir / "PkgInfo").write_text("APPL????", encoding="ascii")
     _write_app_icon(contents_dir, app_path.parent)
-    bootstrap_target = str((portal_path.parent / "downloads-entry.html").resolve()).replace('"', '\\"')
     root_target = str(root_dir.resolve()).replace('"', '\\"')
     python_target = sys.executable.replace('"', '\\"')
     executable = macos_dir / "open-serenity"
@@ -4118,19 +4145,22 @@ def _write_app_bundle(app_path: Path, portal_path: Path, root_dir: Path) -> None
         f"""#!/bin/sh
 ROOT="{root_target}"
 PYTHON="{python_target}"
-BOOTSTRAP="{bootstrap_target}"
 PORT="${{SERENITY_APP_PORT:-8765}}"
-URL="http://127.0.0.1:$PORT/"
 HEALTH="http://127.0.0.1:$PORT/api/health"
 LOG_DIR="$HOME/Library/Logs/SerenityDailyAnalysis"
 LOG_FILE="$LOG_DIR/application-server.log"
-SERVER_PID=""
 mkdir -p "$LOG_DIR"
 cd "$ROOT" || exit 1
-open "$BOOTSTRAP" >/dev/null 2>&1 || true
 is_serenity_health() {{
   /usr/bin/curl --connect-timeout 0.2 --max-time 0.5 -fsS "$1" 2>/dev/null | /usr/bin/grep -q '"status": "ok"'
 }}
+open_serenity_home() {{
+  /usr/bin/open "http://127.0.0.1:$PORT/" >/dev/null 2>&1 || true
+}}
+if is_serenity_health "$HEALTH"; then
+  open_serenity_home
+  exit 0
+fi
 if ! is_serenity_health "$HEALTH"; then
   for CANDIDATE in "$PORT" $(seq 8765 8795); do
     CANDIDATE_HEALTH="http://127.0.0.1:$CANDIDATE/api/health"
@@ -4143,25 +4173,21 @@ if ! is_serenity_health "$HEALTH"; then
       break
     fi
   done
-  URL="http://127.0.0.1:$PORT/"
   HEALTH="http://127.0.0.1:$PORT/api/health"
 fi
 if ! is_serenity_health "$HEALTH"; then
-  "$PYTHON" -m app.cli application-server --host 127.0.0.1 --port "$PORT" --disable-autoscheduler >> "$LOG_FILE" 2>&1 </dev/null &
-  SERVER_PID="$!"
+  nohup "$PYTHON" -m app.core.application_server --host 127.0.0.1 --port "$PORT" --disable-autoscheduler >> "$LOG_FILE" 2>&1 </dev/null &
   for _ in $(seq 1 60); do
     is_serenity_health "$HEALTH" && break
     sleep 0.5
   done
 fi
 if is_serenity_health "$HEALTH"; then
-  open "$URL" >/dev/null 2>&1 || true
+  open_serenity_home
 else
   /usr/bin/osascript -e 'display notification "本地服务启动失败，请查看 ~/Library/Logs/SerenityDailyAnalysis/application-server.log" with title "Serenity 每日分析"' >/dev/null 2>&1 || true
 fi
-if [ -n "$SERVER_PID" ]; then
-  wait "$SERVER_PID"
-fi
+exit 0
 """,
         encoding="utf-8",
     )

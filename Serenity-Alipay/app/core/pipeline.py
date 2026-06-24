@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import uuid4
@@ -11,12 +12,16 @@ from app.adapters.alipay_importer import read_positions_csv
 from app.adapters.mail_notifier import send_with_apple_mail, write_mail_ready_draft
 from app.adapters.manual_sources import Candidate, load_candidates, load_fund_rules, load_price_history
 from app.config import Settings
+from app.core.candidate_universe_expander import expand_candidate_universe
 from app.core.comparison import persist_comparisons
 from app.core.discipline import (
     deviation_events,
     persist_rebalance_events,
     single_position_overexpansion_events,
 )
+from app.core.fund_rule_autofill import autofill_fund_rules
+from app.core.fund_nav_history_collector import collect_fund_nav_history
+from app.core.indicator_discipline import calculate_indicator_days, evaluate_exclusion_rule
 from app.core.metrics import calculate_metrics
 from app.core.mail_policy import should_send_mail_for_run, suppressed_no_material_change_message
 from app.core.reporting import (
@@ -309,14 +314,48 @@ def run_slot(
     run_time_bj = times.beijing.isoformat(timespec="seconds")
     run_time_au = times.secondary.isoformat(timespec="seconds")
 
-    candidates_path = settings.manual_dir / "candidates.csv"
+    if dry_run or not settings.candidate_universe_nav_backfill_enabled:
+        fund_nav_history_collection: dict[str, object] = {
+            "generated_at": created_at,
+            "status": "skipped",
+            "message": "dry_run or runtime NAV refresh disabled",
+            "applied": False,
+            "apply_mode": "none",
+        }
+    else:
+        try:
+            fund_nav_history_collection = collect_fund_nav_history(
+                settings,
+                timeout_seconds=settings.candidate_universe_fetch_timeout_seconds,
+                workers=4,
+                write_output=True,
+                apply=True,
+                allow_partial_apply=True,
+                incremental=True,
+            )
+        except Exception as exc:
+            fund_nav_history_collection = {
+                "generated_at": created_at,
+                "status": "warn",
+                "message": f"runtime NAV refresh failed: {exc}",
+                "applied": False,
+                "apply_mode": "none",
+            }
+
+    base_candidates_path = settings.manual_dir / "candidates.csv"
+    candidate_universe_expansion = expand_candidate_universe(
+        settings,
+        base_candidates_path=base_candidates_path,
+    )
+    candidates_path = Path(str(candidate_universe_expansion.get("expanded_candidates_path") or base_candidates_path))
     rules_path = settings.manual_dir / "fund_rules.csv"
-    prices_path = settings.manual_dir / "price_history.csv"
+    prices_path = Path(str(candidate_universe_expansion.get("expanded_price_history_path") or settings.manual_dir / "price_history.csv"))
     benchmark_prices_path = settings.manual_dir / "benchmark_price_history.csv"
     candidates = load_candidates(candidates_path)
     fund_rules = load_fund_rules(rules_path)
     price_history = load_price_history(prices_path)
     benchmark_history = load_price_history(benchmark_prices_path) if benchmark_prices_path.exists() else price_history
+    fund_rules, fund_rule_autofill = autofill_fund_rules(settings, candidates, fund_rules)
     shanghai_returns = calculate_metrics(benchmark_history.get("000001.SH", [])).returns
     sp500_returns = calculate_metrics(benchmark_history.get("SPX", [])).returns
     moomoo = moomoo_adapter.healthcheck(
@@ -367,6 +406,53 @@ def run_slot(
                 "created_at": created_at,
             },
         )
+        insert_row(
+            conn,
+            "audit_log",
+            {
+                "run_id": run_id,
+                "event_type": "fund_nav_history_collection",
+                "severity": (
+                    "info"
+                    if fund_nav_history_collection.get("status") in {"pass", "skipped"}
+                    else "warn"
+                ),
+                "message": (
+                    f"applied={fund_nav_history_collection.get('applied')}; "
+                    f"mode={fund_nav_history_collection.get('apply_mode')}; "
+                    f"assets={len(fund_nav_history_collection.get('applied_asset_codes') or [])}"
+                ),
+                "context_json": json.dumps(fund_nav_history_collection, ensure_ascii=False, default=str),
+                "created_at": created_at,
+            },
+        )
+        insert_row(
+            conn,
+            "audit_log",
+            {
+                "run_id": run_id,
+                "event_type": "candidate_universe_expansion",
+                "severity": "info" if candidate_universe_expansion.get("status") == "pass" else "warn",
+                "message": str(candidate_universe_expansion.get("message") or ""),
+                "context_json": json.dumps(candidate_universe_expansion, ensure_ascii=False, default=str),
+                "created_at": created_at,
+            },
+        )
+        insert_row(
+            conn,
+            "audit_log",
+            {
+                "run_id": run_id,
+                "event_type": "fund_rule_autofill",
+                "severity": "info" if fund_rule_autofill.get("status") == "pass" else "warn",
+                "message": (
+                    f"filled={fund_rule_autofill.get('filled_count', 0)}; "
+                    f"attempted={fund_rule_autofill.get('attempted_count', 0)}"
+                ),
+                "context_json": json.dumps(fund_rule_autofill, ensure_ascii=False, default=str),
+                "created_at": created_at,
+            },
+        )
         baseline_reference, baseline_reference_run_id = _latest_baseline_reference(conn)
         if baseline_reference_run_id:
             reference_weights = baseline_reference
@@ -392,6 +478,7 @@ def run_slot(
                 "created_at": created_at,
             },
         )
+        conn.commit()
 
         for candidate_index, candidate in enumerate(candidates):
             upsert_asset(conn, _asset_row(candidate))
@@ -506,7 +593,58 @@ def run_slot(
                         "freshness_status": "fresh" if candidate.missing_nav_days <= 2 else "stale",
                     },
                 )
+            indicator_days = calculate_indicator_days(candidate, points, benchmark_history)
+            for indicator in indicator_days:
+                insert_row(
+                    conn,
+                    "asset_indicator_snapshot",
+                    {
+                        "run_id": run_id,
+                        "asset_id": candidate.asset_id,
+                        "metric_date": indicator.metric_date.isoformat(),
+                        "alpha": indicator.alpha,
+                        "beta": indicator.beta,
+                        "gamma": indicator.gamma,
+                        "theta": indicator.theta,
+                        "vega": indicator.vega,
+                        "sharpe": indicator.sharpe,
+                        "sortino": indicator.sortino,
+                        "calmar": indicator.calmar,
+                        "treynor": indicator.treynor,
+                        "negative_indicator_count": indicator.negative_indicator_count,
+                        "total_indicator_count": indicator.total_indicator_count,
+                        "benchmark_code": indicator.benchmark_code,
+                        "benchmark_label": indicator.benchmark_label,
+                        "created_at": created_at,
+                    },
+                )
+            exclusion_decision = evaluate_exclusion_rule(indicator_days)
             score = score_candidate(candidate, rule, metrics, shanghai_returns, sp500_returns, settings)
+            if exclusion_decision.should_exclude:
+                score = replace(
+                    score,
+                    total_score=min(score.total_score, 54.0),
+                    grade="Block",
+                    hard_block_reason=exclusion_decision.reason,
+                    action_label="Clear",
+                    trigger_reason=exclusion_decision.reason or "indicator exclusion discipline",
+                    manual_review_required=True,
+                )
+                insert_row(
+                    conn,
+                    "asset_exclusion_event",
+                    {
+                        "run_id": run_id,
+                        "asset_id": candidate.asset_id,
+                        "rule_window_days": exclusion_decision.rule_window_days or 0,
+                        "negative_count": exclusion_decision.negative_count,
+                        "threshold_count": exclusion_decision.threshold_count,
+                        "total_count": exclusion_decision.total_count,
+                        "action": "Block/Clear",
+                        "reason": exclusion_decision.reason or "indicator exclusion discipline",
+                        "created_at": created_at,
+                    },
+                )
             scored_rows.append(
                 {
                     "candidate_index": candidate_index,
@@ -572,6 +710,7 @@ def run_slot(
                         "created_at": created_at,
                     },
                 )
+            conn.commit()
 
         target_weights = _target_weights(scored_rows)
         ranked = _ranked_recommendation_rows(scored_rows, limit=10)
@@ -648,6 +787,7 @@ def run_slot(
                     "created_at": created_at,
                 },
             )
+        conn.commit()
 
         comparison_summaries, comparison_events = persist_comparisons(conn, run_id, created_at, settings)
         rebalance_events = (
@@ -657,6 +797,7 @@ def run_slot(
         if baseline_reference_run_id:
             rebalance_events += single_position_overexpansion_events(conn, run_id, settings)
         persist_rebalance_events(conn, run_id, created_at, rebalance_events)
+        conn.commit()
 
         action_pool = _action_pool_rows(recommendations)
         data_quality_status = "degraded" if not moomoo.available else "pass"
@@ -802,6 +943,7 @@ def run_slot(
                 run_id,
             ),
         )
+        conn.commit()
         offline_index_path = _write_offline_index(conn, settings)
 
     moomoo_cleanup = None

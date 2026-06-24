@@ -22,6 +22,16 @@ def _float_env(name: str, default: float) -> float:
         return default
 
 
+def _int_env(name: str, default: int) -> int:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
+
+
 @dataclass(frozen=True)
 class Settings:
     root_dir: Path
@@ -51,6 +61,15 @@ class Settings:
     opend_auto_start_enabled: bool = True
     opend_keep_auto_started: bool = False
     opend_wait_seconds: float = 45.0
+    candidate_universe_auto_expand_enabled: bool = True
+    candidate_universe_live_fetch_enabled: bool = False
+    candidate_universe_max_additions: int = 25
+    candidate_universe_min_theme_score: int = 3
+    candidate_universe_fetch_timeout_seconds: float = 8.0
+    candidate_universe_nav_backfill_enabled: bool = False
+    candidate_universe_max_nav_backfills: int = 8
+    candidate_universe_rule_autofill_enabled: bool = True
+    candidate_universe_max_rule_autofills: int = 8
 
     @classmethod
     def load(cls, root_dir: Path | None = None) -> "Settings":
@@ -73,6 +92,15 @@ class Settings:
             opend_auto_start_enabled=_bool_env("SERENITY_OPEND_AUTO_START", True),
             opend_keep_auto_started=_bool_env("SERENITY_OPEND_KEEP_AUTO_STARTED", False),
             opend_wait_seconds=_float_env("SERENITY_OPEND_WAIT_SECONDS", 45.0),
+            candidate_universe_auto_expand_enabled=_bool_env("SERENITY_CANDIDATE_UNIVERSE_AUTO_EXPAND", True),
+            candidate_universe_live_fetch_enabled=_bool_env("SERENITY_FUND_UNIVERSE_LIVE_FETCH", True),
+            candidate_universe_max_additions=_int_env("SERENITY_FUND_UNIVERSE_MAX_ADDITIONS", 25),
+            candidate_universe_min_theme_score=_int_env("SERENITY_FUND_UNIVERSE_MIN_THEME_SCORE", 3),
+            candidate_universe_fetch_timeout_seconds=_float_env("SERENITY_FUND_UNIVERSE_FETCH_TIMEOUT_SECONDS", 8.0),
+            candidate_universe_nav_backfill_enabled=_bool_env("SERENITY_FUND_UNIVERSE_NAV_BACKFILL", True),
+            candidate_universe_max_nav_backfills=_int_env("SERENITY_FUND_UNIVERSE_MAX_NAV_BACKFILLS", 8),
+            candidate_universe_rule_autofill_enabled=_bool_env("SERENITY_FUND_RULE_AUTOFILL", True),
+            candidate_universe_max_rule_autofills=_int_env("SERENITY_FUND_RULE_AUTOFILLS", 8),
         )
 
     def ensure_dirs(self) -> None:
