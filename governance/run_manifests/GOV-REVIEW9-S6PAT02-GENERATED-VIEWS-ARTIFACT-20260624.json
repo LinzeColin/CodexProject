@@ -62,6 +62,7 @@
     "governance/binding_backlog.yaml",
     "governance/projects.yaml",
     "governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json",
     "scripts/generate_governance_dashboard.py",
     "scripts/governance_setup_doctor.py",
     "scripts/validate_ci_attestation.py",
