@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `17`
+- evidence_ref_count: `19`
 - roadmap_test_command_count: `1`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -58,12 +58,12 @@
 
 ### MOD-005 Paper trading loop
 
-- purpose: `Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic queue storage, fill persisted paper orders through a locked broker transaction, and emit audit payloads.`
+- purpose: `Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic queue storage, fill persisted paper orders through a locked broker transaction, emit audit payloads, and report app-runtime stop/drain/timeout lifecycle truth.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-005`
 - parameter_refs: `PARAM-031, PARAM-032, PARAM-033, PARAM-034, PARAM-035, PARAM-036, PARAM-037`
-- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG, EVID-ALPHA-S3PBT02-SHUTDOWN-LOG`
 
 ### MOD-006 Paper broker accounting
 

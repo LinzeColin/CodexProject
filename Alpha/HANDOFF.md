@@ -25,6 +25,8 @@ Build Alpha as a GitHub-backed personal quant agent workspace with automatic pap
 - `scripts/start_alpha_dashboard.sh` now performs a startup health check and removes stale pid files on failure.
 - Approval queue now derives ticket freshness from `expires_at`; only fresh `pending_owner_approval` tickets count as owner-actionable.
 - S3PBT01 now serializes ApprovalQueue and PaperBroker persisted JSON writes through locked atomic storage so concurrent local paper-loop runs do not overwrite queue or portfolio state.
+- S3PBT02 now makes `AutoPaperAgentRuntime.stop()` drain the current cycle before reporting stopped, report `stop_timeout` truthfully when a cycle does not drain, and expose `stopping`, `last_stopped_at`, and `stop_timeout_count` in runtime status.
+- Dashboard lifecycle scripts now validate/archived stale PID files, write PID files atomically, escalate TERM to KILL on shutdown timeout, preserve PID files while a process remains active, and keep `Alpha/scripts/*.sh` pinned to LF.
 - AppleScript `Alpha.app` is installed at `/Users/linzezhang/Downloads/Alpha.app`, `/Users/linzezhang/Applications/Alpha.app`, and `/Applications/Alpha.app`.
 - GitHub connector backup now contains the core runtime/dashboard/code/test changes from this run.
 - Repo launcher exists at `outputs/applications/Alpha.command`; an older external copy was observed at `/Users/linzezhang/Downloads/applicatioins/Alpha.command`.
@@ -37,6 +39,8 @@ Build Alpha as a GitHub-backed personal quant agent workspace with automatic pap
 - Refresh cadence target is 300 seconds by default.
 - Use one app-managed paper loop; do not start a second external agent process beside the dashboard.
 - Persisted queue/broker JSON writes must use `atomic_json_store`; do not reintroduce direct file read-modify-write for these state files.
+- Stopping the app-managed loop must not claim stopped while the current cycle is still running; timeout is reported as `stop_timeout` until the task drains.
+- Dashboard PID files are process-lifecycle evidence; scripts delete them only after confirming process exit.
 
 ## Files To Read First
 
@@ -86,6 +90,10 @@ Repo launcher -> outputs/applications/Alpha.command exists and is executable
 External app launchers -> /Users/linzezhang/Downloads/Alpha.app, /Users/linzezhang/Applications/Alpha.app, and /Applications/Alpha.app exist and pass plist validation
 S3PBT01 atomic storage smoke -> threaded queue/broker concurrency passed and Windows cross-process queue/broker concurrency passed
 S3PBT01 pytest target -> not run locally because pytest is unavailable: No module named pytest
+S3PBT02 py_compile -> agent_runtime and runtime/lifecycle tests compile
+S3PBT02 bash syntax -> start_alpha_dashboard.sh and stop_alpha_dashboard.sh parse with /bin/bash -n after LF enforcement
+S3PBT02 runtime lifecycle smoke -> graceful drain, stop_timeout truthfulness, no second cycle after stopped, PID atomic-write assertions, TERM-to-KILL assertions, and PID-preservation assertions passed
+S3PBT02 pytest target -> not run locally because pytest is unavailable: No module named pytest
 ```
 
 ## Unresolved Risks
@@ -94,10 +102,11 @@ S3PBT01 pytest target -> not run locally because pytest is unavailable: No modul
 - Broker paper integration is not connected yet.
 - Dashboard is local MVP only.
 - Approval queue and paper broker JSON writes are atomic for local file use, but they are still not a durable production database.
+- S3PBT02 is lifecycle hardening evidence only; S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.
 - Real broker live order submission remains intentionally out of scope.
 - Strategy tournament is still fixture-level; it now has simple walk-forward/OOS metrics, but not multi-year OOS, cost-model, slippage-model, or walk-forward portfolio validation.
 - Local `git push -u origin main` is blocked by missing HTTPS credentials (`could not read Username`); GitHub connector synced core runtime files, but older `docs/seed_pack/**` and `docs/task_pack_seed/**` still need a normal authenticated push or follow-up connector sync.
 
 ## Next Step
 
-Continue S3PB with stop/cancel/PID cleanup and no-write-after-stop evidence before any broker paper integration design; real-money live submission remains out of scope.
+Continue S3PB with S3PBT03 shutdown/fault injection evidence before any broker paper integration design; real-money live submission remains out of scope.

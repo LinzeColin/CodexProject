@@ -1,0 +1,259 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624",
+  "project_id": "Alpha",
+  "task_id": "S3PBT02",
+  "acceptance_ids": [
+    "ACC-S3PBT02"
+  ],
+  "iteration_id": "ITER-20260624-ALPHA-S3PBT02",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "2a91489b",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:be8749216adbf911f0bae2415137116e3724afc40df947f20dd68f11b19c33be",
+  "changed_files_declared": [
+    ".gitattributes",
+    "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/CHANGELOG.md",
+    "Alpha/HANDOFF.md",
+    "Alpha/backend/app/services/agent_runtime.py",
+    "Alpha/docs/decision_log.md",
+    "Alpha/docs/governance/DELIVERY_PLAN.md",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/MODEL_SPEC.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/docs/governance/model_registry.yaml",
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/scripts/start_alpha_dashboard.sh",
+    "Alpha/scripts/stop_alpha_dashboard.sh",
+    "Alpha/tests/test_agent_runtime.py",
+    "Alpha/tests/test_lifecycle_scripts.py",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件"
+  ],
+  "changed_files_actual": [
+    ".gitattributes",
+    "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/CHANGELOG.md",
+    "Alpha/HANDOFF.md",
+    "Alpha/backend/app/services/agent_runtime.py",
+    "Alpha/docs/decision_log.md",
+    "Alpha/docs/governance/DELIVERY_PLAN.md",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/MODEL_SPEC.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/docs/governance/model_registry.yaml",
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/scripts/start_alpha_dashboard.sh",
+    "Alpha/scripts/stop_alpha_dashboard.sh",
+    "Alpha/tests/test_agent_runtime.py",
+    "Alpha/tests/test_lifecycle_scripts.py",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/CHANGELOG.md",
+    "Alpha/HANDOFF.md",
+    "Alpha/docs/decision_log.md",
+    "Alpha/docs/governance/DELIVERY_PLAN.md",
+    "Alpha/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Alpha/docs/governance/MODEL_SPEC.md",
+    "Alpha/docs/governance/OWNER_STATUS.md",
+    "Alpha/docs/governance/STATUS.md",
+    "Alpha/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Alpha/docs/governance/VERSION_MATRIX.yaml",
+    "Alpha/docs/governance/delivery_tasks.yaml",
+    "Alpha/docs/governance/development_events.jsonl",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/docs/governance/model_registry.yaml",
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件"
+  ],
+  "change_classification": [
+    "runtime_lifecycle_hardening",
+    "single_project_scope",
+    "Alpha_only_scope",
+    "stop_truthfulness",
+    "dashboard_pid_lifecycle",
+    "shell_lf_enforcement",
+    "live_trading_unchanged_false",
+    "owner_truth_preserved"
+  ],
+  "model_delta": "MOD-005 now records app-runtime lifecycle truth for drained stops, stop_timeout status, and PID cleanup controls.",
+  "formula_delta": "No trading formula active value changed; FORM-005 paper-cycle formula remains unchanged.",
+  "parameter_delta": "No active parameter value changed.",
+  "version_delta": "Product version remains 0.1.0; MOD-005 moves to paper-loop-v0.0.2-lifecycle and agent_loop profile moves to agent-loop-v0.0.1-lifecycle.",
+  "test_commands": [
+    "python -B -m py_compile Alpha\\backend\\app\\services\\agent_runtime.py Alpha\\tests\\test_agent_runtime.py Alpha\\tests\\test_lifecycle_scripts.py",
+    "/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh",
+    "/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh",
+    "set PYTHONPATH=Alpha && python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt02_alpha_lifecycle_smoke.py",
+    "python -B -m pytest Alpha\\tests -k \"runtime or lifecycle\" -q",
+    "python -B scripts\\lean_governance.py render --project Alpha --write",
+    "python -B scripts\\lean_governance.py check-render --project Alpha",
+    "node_repl JSONL line parser for Alpha/docs/governance/events.jsonl and development_events.jsonl",
+    "python -B scripts\\validate_semantic_extractors.py Alpha",
+    "python -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python -B scripts\\lean_governance.py validate --all",
+    "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check",
+    "git diff --name-only HEAD -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m py_compile Alpha\\backend\\app\\services\\agent_runtime.py Alpha\\tests\\test_agent_runtime.py Alpha\\tests\\test_lifecycle_scripts.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0 after Alpha/scripts/*.sh LF enforcement."
+    },
+    {
+      "command": "/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0 after Alpha/scripts/*.sh LF enforcement."
+    },
+    {
+      "command": "set PYTHONPATH=Alpha && python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt02_alpha_lifecycle_smoke.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "S3PBT02 runtime lifecycle smoke: PASS."
+    },
+    {
+      "command": "python -B -m pytest Alpha\\tests -k \"runtime or lifecycle\" -q",
+      "exit_code": null,
+      "result": "NOT_RUN_LOCAL_TOOL_UNAVAILABLE",
+      "observed": "No module named pytest."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py render --project Alpha --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "updated_count=3."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py check-render --project Alpha",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "node_repl JSONL line parser for Alpha docs governance events",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "events.jsonl 7 lines ok; development_events.jsonl 8 lines ok."
+    },
+    {
+      "command": "python -B scripts\\validate_semantic_extractors.py Alpha",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_parameters_checked=42 semantic_formulas_checked=9."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only sync errors=0 warnings=0; Alpha validation errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pbt02_alpha_runtime_lifecycle_manifest_and_gate_evidence",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 test; OK."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted core.autocrlf line-ending warnings for text files."
+    },
+    {
+      "command": "git diff --name-only HEAD -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI passed; selected_project_count=8; validation errors=0 warnings=0; zero_diff.clean=true."
+    }
+  ],
+  "evidence_refs": [
+    "Alpha/backend/app/services/agent_runtime.py",
+    "Alpha/scripts/start_alpha_dashboard.sh",
+    "Alpha/scripts/stop_alpha_dashboard.sh",
+    "Alpha/tests/test_agent_runtime.py",
+    "Alpha/tests/test_lifecycle_scripts.py",
+    "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json",
+    "Alpha/docs/governance/project.yaml",
+    "Alpha/docs/governance/events.jsonl",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S3PBT02 Alpha AutoPaperAgent runtime lifecycle and dashboard PID cleanup",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_HEAD_TILDE_1",
+  "summary": "Make Alpha AutoPaperAgent stop lifecycle truthful, preserve PID evidence until process exit in dashboard scripts, and keep live trading disabled.",
+  "rollback": "Revert S3PBT02 runtime script tests governance metadata rendered human files LF attributes stage-gate evidence and this manifest; keep S3PBT01 atomic storage unless rolling back all S3PB work.",
+  "unresolved_risks": [
+    "Real uvicorn process termination was not exercised in this Windows workspace.",
+    "S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.",
+    "No real broker path or live trading readiness is approved.",
+    "pytest is unavailable in this local environment and must run in CI or a dependency-prepared environment."
+  ],
+  "self_reference_policy": "Manifest is commit-bound through the non-manifest content_tree_hash and local committed-tree CI evidence."
+}

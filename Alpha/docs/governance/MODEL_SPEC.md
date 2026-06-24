@@ -53,7 +53,7 @@ Formula details live in `formula_registry.yaml`. The active rules include:
 - `FORM-002`: risk score starts at 100 and subtracts penalties for drawdown, low trade count, and high turnover.
 - `FORM-003`: pre-trade gate rejects kill-switch, missing idempotency, invalid side, non-positive quantity/price/notional, missing max notional, and excessive notional.
 - `FORM-004`: live policy rejects unless every required live safety gate passes; `FailClosedLiveBroker` still rejects rather than submitting.
-- `FORM-005`: paper loop composes tournament, order intent, risk check, locked ticket queue enqueue, optional locked persisted paper fill, portfolio snapshot, and audit event.
+- `FORM-005`: paper loop composes tournament, order intent, risk check, locked ticket queue enqueue, optional locked persisted paper fill, portfolio snapshot, and audit event. S3PBT02 records app-runtime lifecycle truth under MOD-005 without changing trading formula values.
 - `FORM-006`: paper broker updates cash and positions deterministically, rejects duplicate or invalid paper orders, and serializes persisted submit/save through locked atomic JSON writes.
 - `FORM-007`: approval freshness maps expiry timestamps to fresh/expired/unknown actionability.
 - `FORM-008`: strategy DSL validates payload ranges and MVP prohibitions.
@@ -81,7 +81,7 @@ Current methodology is deterministic and fixture-based:
 - Current validation is unit/fixture testing, not production broker or real-market validation.
 
 Alternative methods such as multi-year walk-forward, cost/slippage calibration, broker paper API integration, or live execution policy remain `UNKNOWN` and are linked to `TASK-ALPHA-B-001`.
-S3PBT01 does not cover AutoPaperAgent cancellation, stop scripts, PID cleanup, force termination, or writes after stop; those remain S3PB follow-up evidence.
+S3PBT01 covers persisted queue/broker atomicity; S3PBT02 covers AutoPaperAgent stop truthfulness and dashboard PID cleanup. Disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection remain S3PBT03 evidence.
 
 ## F. Strategy And Safety Logic
 

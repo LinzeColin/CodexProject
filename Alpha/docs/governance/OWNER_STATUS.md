@@ -7,7 +7,7 @@ Alpha 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVE
 ## 2. 本次运行改变了什么
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
-S3PBT01 只证明 ApprovalQueue 与 PaperBroker 的本地 JSON 持久化现在通过锁和原子替换避免并发覆盖；它不证明停止/取消流程，也不启用真实 broker 或实盘交易。
+S3PBT01 只证明 ApprovalQueue 与 PaperBroker 的本地 JSON 持久化现在通过锁和原子替换避免并发覆盖；S3PBT02 只证明停止状态不再虚报、PID 文件清理更保守。二者都不启用真实 broker 或实盘交易。
 
 ## 3. 为什么重要
 
@@ -106,5 +106,5 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 
 ## 17. Next Unique Task
 
-- task_id: `S3PBT02`
-- reason: S3PBT01 completed atomic queue/broker persistence, but stop/cancel/PID cleanup and no-write-after-stop evidence remains pending before S3PB can pass.
+- task_id: `S3PBT03`
+- reason: S3PBT01/S3PBT02 completed atomic storage and lifecycle/PID cleanup hardening, but disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection remain pending before S3PB can pass.
