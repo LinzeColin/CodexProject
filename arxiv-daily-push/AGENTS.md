@@ -12,8 +12,11 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   current execution contract. V5/V6/V7.0 files remain historical evidence and
   alias references; they no longer override V7.1.
 - Every implementation closeout must state the current V7.1 Task ID and any
-  legacy alias. Current development entry is `S2PCT01` (`S2P2T01` legacy alias)
-  Nature/top-journal metadata-only no-send shadow evidence. `S2PBT01`
+  legacy alias. Current development entry is `S2PCT02` (`S2P2T02` legacy alias)
+  Science/top-journal metadata-only no-send shadow evidence. `S2PCT01`
+  (`S2P2T01` legacy alias) Nature/top-journal metadata-only no-send shadow
+  foundation has merged to main and remains a completed D2 shadow foundation
+  record, not a D2 source-domain acceptance claim. `S2PBT01`
   (`S2P1T01` legacy alias) bioRxiv/medRxiv no-send replay and shadow evidence
   has passed and remains a D1 alias/history record, not the current task.
   Formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and
@@ -29,9 +32,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   boards only after the V7 contract is readable, hashes match, and source-level
   gates pass, and P0/P1 audit findings are zero. Stage 2 is not complete until
   `S2PMT07 -> INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
-- Legacy `S2P2T01` maps to V7.1 `S2PCT01`; legacy `S2P1T01` maps to V7
-  `S2PBT01`. Preserve both canonical and legacy IDs in events, PR summaries,
-  and closeouts until the Stage2 branch has reconciled aliases.
+- Legacy `S2P2T02` maps to V7.1 `S2PCT02`; legacy `S2P2T01` maps to V7.1
+  `S2PCT01`; legacy `S2P1T01` maps to V7 `S2PBT01`. Preserve both canonical
+  and legacy IDs in events, PR summaries, and closeouts until the Stage2 branch
+  has reconciled aliases.
 - Do not use OpenAI Platform API keys or paid API fallbacks.
 - Do not read, print, or commit Codex auth, GitHub tokens, SMTP secrets, cookies,
   voice samples, model weights, or release media.

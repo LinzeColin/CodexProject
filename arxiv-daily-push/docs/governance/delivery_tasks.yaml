@@ -1163,15 +1163,33 @@ tasks:
     objective: "Add the first V7.1 D2 top-journal/Nature metadata-only shadow foundation using official public Nature RSS before any formal Stage 2 production inclusion."
     scope: "Nature official RSS adapter, s41586 main-journal research article filter, metadata-only SourceItems, ROI candidate queue integration, no-send shadow daily runner, separate local queue/ledger/email preview persistence, CLI commands, and focused tests."
     non_scope: "No STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
-    status: "in_progress"
-    dependencies: ["S2P1T01"]
+    status: "completed"
+    dependencies: ["S2PBT01"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml", "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"]
     acceptance_ids: ["ACC-S2PCT01-NATURE"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_pycache_s2p2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q", "fetch-top-journal-latest --journal nature --max-records 3 --fetcher curl", "stage2-top-journal-shadow-daily using the live Nature batch under /tmp/adp_s2p2_nature_live_20260624"]
-    test_results: ["focused S2P2/top-journal and Stage2 tests: 14 tests OK", "Nature RSS fixture filters d41586 news items and admits only s41586 main-journal research articles", "S2P2 shadow daily persists separate queue, ledger, dry-run package, and email preview with real_smtp_sent=false and formal_production_inclusion=false", "live Nature RSS no-send canary: batch pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, queue/ledger/email preview paths exist, real_smtp_sent=false, formal_production_inclusion=false"]
-    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "https://www.nature.com/nature.rss", "https://www.nature.com/nature/research-articles"]
+    test_results: ["focused S2P2/top-journal and Stage2 tests: 14 tests OK", "Nature RSS fixture filters d41586 news items and admits only s41586 main-journal research articles", "S2P2 shadow daily persists separate queue, ledger, dry-run package, and email preview with real_smtp_sent=false and formal_production_inclusion=false", "live Nature RSS no-send canary: batch pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, queue/ledger/email preview paths exist, real_smtp_sent=false, formal_production_inclusion=false", "PR #119 merged to main@047f45382fe1d0c259c87d60971295cb030f3c1b with governance, stage1-bootstrap, live-all-arxiv-dry-run, real-arxiv-30-day-backfill, and classify checks success"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "https://www.nature.com/nature.rss", "https://www.nature.com/nature/research-articles", "https://github.com/LinzeColin/CodexProject/pull/119"]
     risk: "This is S2PC/D2 Nature shadow evidence only; V7.1 P0/P1 and S2PMT07 gates still block any formal Stage 2 production inclusion, and Nature metadata must not be treated as full-text review."
     rollback: "Revert top_journal_adapter.py, S2PC stage2_sources/CLI/lesson/global_scan changes, Nature fixture/tests, S2P2 legacy phase record, manifest, and event."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT02"
+    legacy_alias: "S2P2T02"
+    phase: "S2PC"
+    objective: "Add Science main-journal metadata-only no-send shadow evidence using the stabilized S2PCT01 top-journal framework before any formal D2 source-domain or Stage 2 production inclusion."
+    scope: "Science official/public discovery adapter design, article type classification for Research/Report/Review/Perspective, metadata-only SourceItems, duplicate DOI/source identity gates, no-send shadow queue/ledger/email preview, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
+    status: "planned"
+    dependencies: ["S2PCT01"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv"]
+    acceptance_ids: ["ACC-S2PCT02-SCIENCE"]
+    test_commands: ["planned: focused Science/top-journal adapter and Stage2 source tests", "planned: no-send Science shadow daily with separate queue/ledger/email preview", "planned: semantic governance and changed-only project governance"]
+    test_results: ["PENDING"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"]
+    risk: "Science article type misclassification, duplicate DOI/canonical identity, full-text/paywall boundary errors, or shadow contamination of accepted arXiv mail must block this task; P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Remove S2PCT02 adapter/shadow code, fixtures/tests, governance registrations, task record, and event if the Science source path is deferred or superseded."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

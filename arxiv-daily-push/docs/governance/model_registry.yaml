@@ -1262,3 +1262,43 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
+  - model_id: "MOD-ADP-051"
+    name: "S2PCT01 Nature/top-journal metadata ingest"
+    kind: "deterministic metadata-only public RSS source adapter"
+    purpose: "Fetch a small official public Nature RSS metadata window, filter to main-journal s41586 research article URLs, map records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage2-top-journal-ingest-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
+    formula_ids: ["FORM-ADP-053"]
+    parameter_ids:
+      - "PARAM-ADP-377"
+      - "PARAM-ADP-378"
+      - "PARAM-ADP-379"
+    inputs: ["journal", "generated_at", "max_records", "seen_source_ids", "official public RSS XML"]
+    outputs: ["top-journal SourceBatch", "Nature SourceItem records", "terminal_status", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "https://www.nature.com/nature.rss"]
+  - model_id: "MOD-ADP-052"
+    name: "S2PCT01 top-journal shadow daily path"
+    kind: "deterministic no-send shadow daily runner"
+    purpose: "Build a separate Nature/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2 production acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct01-top-journal-shadow-daily-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
+    formula_ids: ["FORM-ADP-054"]
+    parameter_ids:
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-380"
+      - "PARAM-ADP-381"
+    inputs: ["Nature SourceBatch", "date", "generated_at", "shadow queue", "state_dir"]
+    outputs: ["shadow daily input report", "dry-run report", "delivery package preview", "top-journal queue", "top-journal ledger"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_global_scan.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"]

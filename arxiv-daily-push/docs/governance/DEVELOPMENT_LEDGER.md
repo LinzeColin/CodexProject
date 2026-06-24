@@ -11,9 +11,9 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S2PC
 - Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED
-- Confirmed iteration count: 92
+- Confirmed iteration count: 94
 - Reconstructed event count: 0
-- Current task: `S2PCT01` keeps legacy alias `S2P2T01` for Nature/top-journal metadata-only no-send shadow evidence. `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
+- Current task: `S2PCT02` keeps legacy alias `S2P2T02` for the next Science/top-journal metadata-only no-send shadow evidence. `S2PCT01 -> S2P2T01` is completed Nature shadow foundation on `main@047f453`; `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.1 parallel audit records open P0=8 and P1=37; therefore real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -28,6 +28,7 @@ The append-only machine record is `development_events.jsonl`.
 | S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, accelerated real-arXiv acceptance artifact, test10 SMTP proof, and local production/migration prep within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`; `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
 | S2PA | V7.1 product contract, Chinese governance, parallel audit, and compatibility lock | completed_pending_ci | V7.1 root lock, contract/roadmap/audit hash checks, AGENTS updates, three-base visibility, P0/P1 production-forbidden policy, and validator/test enforcement without Stage 2 production acceptance | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt`; `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml` |
 | S2PB | V7.1 D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
+| S2PC | V7.1 D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature metadata-only shadow foundation to S2PCT02 Science without D2 source-domain acceptance or production inclusion | `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119`; next `S2PCT02` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
@@ -1962,3 +1963,23 @@ None for this new project baseline.
 - Remaining risks: If all bounded arXiv API probe attempts fail, the Stage1 bootstrap workflow still blocks as designed; P0/P1 V7.1 audit findings still prevent production restore and integrated production acceptance.
 - Rollback: Revert bootstrap retry code, CLI/workflow flags, tests, EVENT-20260624-ADP-093, and compatibility manifest/status updates.
 - Next step: Re-run ADP tests, root governance tests, changed-only governance, then push PR #119 for GitHub CI.
+
+### `ITER-20260624-ADP-S2PCT01-POST-MERGE-STATUS`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from merged PR #119, main merge commit `047f45382fe1d0c259c87d60971295cb030f3c1b`, GitHub check-run status, model/formula/parameter registry diff, and local post-merge project governance validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 047f45382fe1d0c259c87d60971295cb030f3c1b
+- Result commit: PENDING
+- Task IDs: `S2PCT01`, legacy alias `S2P2T01`; next task `S2PCT02`, legacy alias `S2P2T02`
+- Goal: Close the S2PCT01 Nature/top-journal metadata-only no-send shadow foundation after PR #119 merged to main, register its missing model/formula/parameter governance entries, and route the next S2PC task to S2PCT02 without claiming D2 or Stage2 production acceptance.
+- Files changed: three owner-facing base files, project and roadmap canonical governance, assurance/status/owner/version views, delivery tasks, model/formula/parameter registries, S2PCT01 manifest, and this event/ledger.
+- Model changes: Added governance registration for `MOD-ADP-051` Nature/top-journal metadata ingest and `MOD-ADP-052` top-journal shadow daily path; implementation code was already merged in PR #119.
+- Formula changes: Added `FORM-ADP-053` and `FORM-ADP-054` with machine-verified AST fingerprints bound to the merged S2PCT01 implementation.
+- Parameter changes: Added `PARAM-ADP-377` through `PARAM-ADP-381` for top-journal ingest/shadow model IDs, canary limit, supported journal, queue filename, and ledger filename.
+- Test results: pending post-edit semantic governance, project governance, focused ADP tests, JSON/YAML parse, and diff check.
+- Decisions: `ACC-S2PCT01-NATURE` is accepted only as metadata-only no-send shadow foundation evidence. `D2_SOURCE_DOMAIN_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, Release upload, GitHub production schedule, video, PDF/full-text download, and paywall bypass all remain false/disabled.
+- Remaining risks: S2PCT02 Science adapter and article-type gates are not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal source-domain or integrated production acceptance.
+- Rollback: Revert this post-merge status/registry sync and restore current task pointers to S2PCT01 if PR #119 is reverted.
+- Next step: Implement S2PCT02 Science metadata-only no-send shadow evidence with focused source tests and governance validation.
