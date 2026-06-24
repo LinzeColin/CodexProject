@@ -30,7 +30,70 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  runtime-change-scope:
+    name: classify-arxiv-runtime-change
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.scope.outputs.should_run }}
+      reason: ${{ steps.scope.outputs.reason }}
+    steps:
+      - name: Check out repository for path diff
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Classify changed paths
+        id: scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          event_name="${{ github.event_name }}"
+          should_run="false"
+          reason="governance-only change"
+          changed_files=""
+
+          if [ "$event_name" = "workflow_dispatch" ]; then
+            should_run="true"
+            reason="manual dispatch"
+          else
+            if [ "$event_name" = "pull_request" ]; then
+              base="${{ github.event.pull_request.base.sha }}"
+              head="${{ github.event.pull_request.head.sha }}"
+            else
+              base=""
+              head=""
+              should_run="true"
+              reason="non-PR event"
+            fi
+
+            if [ "$should_run" != "true" ]; then
+              changed_files="$(git diff --name-only "$base" "$head")"
+              runtime_regex='^(arxiv-daily-push/(src|tests|config|schemas)/|arxiv-daily-push/(pyproject\.toml|VERSION|\.gitignore))'
+              if printf '%s\n' "$changed_files" | grep -E "$runtime_regex" >/dev/null; then
+                should_run="true"
+                reason="runtime-relevant arxiv-daily-push change"
+              fi
+            fi
+          fi
+
+          printf 'should_run=%s\n' "$should_run" >> "$GITHUB_OUTPUT"
+          printf 'reason=%s\n' "$reason" >> "$GITHUB_OUTPUT"
+          {
+            echo "## arXiv Daily Push runtime change scope"
+            echo "- should_run: $should_run"
+            echo "- reason: $reason"
+            echo "- runtime_paths: src, tests, config, schemas, pyproject.toml, VERSION, .gitignore"
+            echo "- governance-only paths do not run this external/runtime check"
+            if [ -n "$changed_files" ]; then
+              echo ""
+              echo "Changed files:"
+              printf '%s\n' "$changed_files" | sed 's/^/- /'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
   live-all-arxiv-dry-run:
+    needs: runtime-change-scope
+    if: needs.runtime-change-scope.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
