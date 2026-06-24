@@ -3266,7 +3266,7 @@ if ! is_serenity_health "$HEALTH"; then
   done
 fi
 if is_serenity_health "$HEALTH"; then
-  true
+  open "$URL" >/dev/null 2>&1 || true
 else
   /usr/bin/osascript -e 'display notification "本地服务启动失败，请查看 ~/Library/Logs/SerenityDailyAnalysis/application-server.log" with title "Serenity 每日分析"' >/dev/null 2>&1 || true
 fi
