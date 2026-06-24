@@ -1,0 +1,180 @@
+{
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PHT01V1.1-T01",
+  "acceptance_ids": ["ACC-S2PHT01V1.1-T01-PATH-AUDIT"],
+  "contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "base_commit": "1566ab6c67742267b6b0f010993732adbc61a128",
+  "generated_at": "2026-06-25T07:01:22+10:00",
+  "binding_status": "local_validation_passed_pending_pr_ci",
+  "result": "PASS_WITH_NO_IMPLEMENTATION",
+  "change_classification": [
+    "email_learning_v1_read_only_path_audit",
+    "h_m_dual_plane_path_receipt",
+    "governance_record_only",
+    "no_runtime_behavior_change",
+    "no_production_side_effect"
+  ],
+  "v7_2_revalidation": {
+    "current_pointer": "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+    "root_lock": "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+    "v7_1_read_only_baseline": "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml",
+    "agent_revalidation_required": true,
+    "completed_work_compliant_with_v7_2_for_this_scope": true
+  },
+  "mail_products": {
+    "M1": {
+      "task_id": "S2PKT02",
+      "name": "科学与理论前沿邮件",
+      "acceptance_id": "ACC-S2PKT02-M1"
+    },
+    "M2": {
+      "task_id": "S2PKT03",
+      "name": "工程、产品与产业前沿邮件",
+      "acceptance_id": "ACC-S2PKT03-M2"
+    },
+    "M3": {
+      "task_id": "S2PKT04",
+      "name": "政策、资本与地缘前沿邮件",
+      "acceptance_id": "ACC-S2PKT04-M3"
+    },
+    "M4": {
+      "task_id": "S2PKT05",
+      "name": "跨板块总览、错峰编排与水位线",
+      "acceptance_id": "ACC-S2PKT05-M4"
+    }
+  },
+  "current_runtime_paths": [
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+      "owner": "Stage1 B1 report/email",
+      "mode": "read_only",
+      "functions": ["build_b1_report_email_package", "_render_email_plain", "_render_email_html", "_email_subject"]
+    },
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+      "owner": "daily delivery package",
+      "mode": "read_only",
+      "functions": ["build_daily_delivery_package", "_daily_email", "_daily_email_text", "_daily_email_html", "_frontstage_from_lesson", "_daily_email_subject"]
+    },
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/lesson.py",
+      "owner": "lesson/frontstage model",
+      "mode": "read_only",
+      "functions": ["generate_lesson", "_build_frontstage"]
+    },
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/notifications.py",
+      "owner": "generic notification object",
+      "mode": "read_only",
+      "functions": ["EmailNotification", "render_email"]
+    },
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py",
+      "owner": "SMTP transport boundary",
+      "mode": "locked_read_only",
+      "functions": ["deliver_notification", "_email_message", "validate_smtp_delivery_report"]
+    },
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+      "owner": "scheduler/control plane",
+      "mode": "locked_read_only",
+      "functions": ["run_scheduled_execution", "_notification", "_daily_production_blockers"]
+    },
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+      "owner": "CLI entrypoints",
+      "mode": "read_only",
+      "functions": ["build-b1-report-email", "render-email", "send-notification", "generate-lesson", "run-scheduled-production"]
+    }
+  ],
+  "absent_candidate_paths": [
+    {
+      "path": "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+      "status": "ABSENT_ON_MAIN",
+      "rule": "cannot be treated as current implementation until a future implementation task creates and tests it"
+    },
+    {
+      "path": "arxiv-daily-push/tests/test_mail_templates.py",
+      "status": "ABSENT_ON_MAIN",
+      "rule": "no current test owner exists for a mail_templates module"
+    }
+  ],
+  "h_plane_paths": [
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md",
+    "governance/run_manifests/ADP-S2PHT01V1-1-T01-EMAIL-PATH-AUDIT-20260625.json"
+  ],
+  "m_plane_paths": [
+    "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/dual_plane_governance_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/current_pointer_registry_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml"
+  ],
+  "test_and_schema_paths": [
+    "arxiv-daily-push/tests/test_stage1_b1_report.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_lesson.py",
+    "arxiv-daily-push/tests/test_notifications.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "arxiv-daily-push/tests/test_manual_delivery_workflow.py",
+    "arxiv-daily-push/schemas/lesson.schema.json",
+    "arxiv-daily-push/schemas/smtp_delivery.schema.json",
+    "arxiv-daily-push/schemas/scheduled_execution.schema.json",
+    "arxiv-daily-push/schemas/daily_input.schema.json"
+  ],
+  "forbidden_changes_confirmed": {
+    "runtime_mail_code_changed": false,
+    "public_schema_changed": false,
+    "source_adapter_changed": false,
+    "ranking_roi_changed": false,
+    "queue_or_db_schema_changed": false,
+    "smtp_changed": false,
+    "scheduler_changed": false,
+    "release_changed": false,
+    "production_flags_changed": false,
+    "current_pointer_changed": false,
+    "v7_2_contract_changed": false,
+    "v7_1_baseline_changed": false
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_t01_v722 PYTHONPATH=scripts:arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_t01_project2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_t01_validate_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_t01_render2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_t01_mail_tests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_lesson.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_t01_semantic PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "JSON/JSONL parse with python3 json and YAML parse with ruby yaml",
+    "git diff --check"
+  ],
+  "test_results": [
+    "V7.2 contract validator PASS",
+    "ADP project governance errors 0 warnings 0",
+    "changed-only governance validate errors 0 warnings 0",
+    "lean check-render drift_count 0 reference_issue_count 0",
+    "focused mail-chain unittest: 32 tests OK",
+    "semantic extractor checked 66 formulas / 441 parameters",
+    "JSON/JSONL/YAML parse OK",
+    "git diff --check PASS"
+  ],
+  "unresolved_risks": [
+    "EMAIL_LEARNING_V1 implementation remains blocked until a later implementation task explicitly owns runtime changes.",
+    "V7.1 inherited P0=8/P1=37 and S2PMT07 continue blocking real restore, real SMTP, scheduler installation, Release/final production claims, and INTEGRATED_PRODUCTION_ACCEPTED.",
+    "mail_templates.py is absent on main and must not be assumed as current runtime."
+  ],
+  "rollback": "Revert PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md, this manifest, the S2PHT01V1.1-T01 delivery_tasks status update, generated governance views, and the appended development event. Runtime code, schemas, SMTP, scheduler, CURRENT, V7.2, and V7.1 files were not changed."
+}
