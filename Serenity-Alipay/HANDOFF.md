@@ -1,5 +1,30 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260624 - 12:22 CST / 20260624 - 14:22 AEST
+
+## 最新交接摘要
+
+- 本轮目标：补齐专项基准数据源，并让持仓池表现指标里的 Alpha/Beta 不再依赖沪指/标普500通用降级基准；使用说明增加数据源区，并把入口链接指向 GitHub 上 `LinzeColin/CodexProject/Serenity-Alipay` 的可审计 CSV 数据库文件。
+- 已补专项基准：`data/manual/benchmark_price_history.csv` 当前包含沪指、标普500、纳指100、创业板指、国证芯片、中证全指半导体、中证半导、中证人工智能、恒生科技ETF代理。采集命令使用 `benchmark-smoke --no-auto-start-opend --keep-auto-started-opend`，未启动或关闭 OpenD/MooMoo。
+- 已改 Alpha/Beta 口径：`app/core/application_portal.py` 的主题基准选择器去掉沪指/标普500静默降级；若专项或主题代理基准不可用，Alpha/Beta 留空并显示 `主题基准：待补齐`，不再用通用基准凑数。
+- 已改使用说明：新增“数据源与可审计文件”区，链接到 GitHub 的 `data/manual/candidates.csv`、`price_history.csv`、`fund_rules.csv`、`benchmark_price_history.csv`；SQLite 历史事实仍作为本地不可覆盖审计库，不暴露成公共链接。
+- 当前生成页验证：`outputs/application/index.html` 已显示专项基准标签：国证芯片、中证人工智能、创业板指、中证全指半导体、纳指100、恒生科技ETF代理；未再出现 `专项基准缺失` 或通用降级基准标签。
+- 验证：`py_compile app/core/benchmark_smoke.py app/core/application_portal.py tests/test_reporting_ui.py tests/test_benchmark_smoke.py` 通过；`pytest -q tests/test_reporting_ui.py tests/test_benchmark_smoke.py` 为 15 passed；`python -m app.cli application-portal --json` 通过并更新 `~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app`；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
+- 剩余风险：恒生科技指数精确历史源本轮仍未从 Yahoo/Eastmoney 稳定取得，当前使用 `3033.HK` 恒生科技 ETF 代理基准并在 UI 明示为 `恒生科技ETF代理`。后续若 MooMoo/官方/恒生指数源可稳定取得，应替换代理但不得改写历史快照。
+- 边界：本轮未处理“全市场实时自动扩容场外基金”，不新增真实 run，不触发刷新/复核，不发邮件，不改基金候选扩容逻辑，不改 OpenD/MooMoo lifecycle，不覆盖旧报告、旧快照或 SQLite 受保护历史行。
+
+Timestamp: 20260624 - 12:04 CST / 20260624 - 14:04 AEST
+
+## 最新交接摘要
+
+- 本轮目标：按用户要求调整首页顺序为 `当前持仓建议` -> `持仓建议` -> `持仓池表现指标`，并把原“持仓池 / 观察池排序”表融合进表现指标表。
+- 已改 UI：删除首页单独排序表；`持仓池表现指标` 表新增等级、证据置信度、策略份额、动作/复核、排序原因，并保留收益/风险指标；基金列改为代码和名称分行，横向滚动时冻结排序、池、基金三列。
+- 已改指标口径：`入池后涨跌幅` 只有在入池时间后存在新净值点时才计算；否则显示 `-`，避免把“无后续净值可算”误展示为 `0.00%`。
+- 已改 Alpha/Beta 基准：不再使用固定“沪指/标普500等权”；按基金主题选择专项基准，当前若专项基准缺失则显示实际降级基准，例如半导体/人工智能/创业板使用沪指降级，纳指/恒生科技使用标普500降级。
+- 已重建入口：`python -m app.cli application-portal --json` 通过，已更新 `~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app`。
+- 验证：`python -m py_compile app/core/application_portal.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_reporting_ui.py` 为 10 passed；浏览器只读验证 `http://127.0.0.1:8765/` 显示新顺序、旧排序表移除、`110026` 代码/名称分行、主题基准分流通过；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
+- 注意：本轮未新增真实 run，未触发刷新/复核，未触碰 OpenD/MooMoo lifecycle，未发送邮件，未改写任何历史报告或 SQLite 受保护历史行。
+
 Timestamp: 20260623 - 15:29 CST / 20260623 - 17:29 AEST
 
 ## 最新交接摘要

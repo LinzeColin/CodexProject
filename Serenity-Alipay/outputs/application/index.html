@@ -314,6 +314,24 @@
       box-shadow: none;
     }
     .fund-link:hover, .fund-link:focus-visible { box-shadow: none; color: #064e59; }
+    .fund-cell {
+      display: grid;
+      gap: 4px;
+      min-width: 220px;
+      align-items: start;
+    }
+    .fund-code {
+      display: block;
+      color: var(--ink);
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .fund-cell .fund-link {
+      display: block;
+      width: fit-content;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
     .timeline { display: grid; gap: 10px; }
     .time-card {
       border: 1px solid var(--line);
@@ -337,8 +355,45 @@
     .pool-ranking-panel { margin-bottom: 16px; }
     .pool-ranking-note { margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }
     .pool-table { min-width: 1040px; }
+    .pool-metric-panel { margin-bottom: 16px; }
+    .pool-metric-table { min-width: 2140px; }
+    .pool-metric-table th, .pool-metric-table td { font-size: 12px; }
+    .pool-metric-table th:nth-child(1),
+    .pool-metric-table td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 92px;
+      background: inherit;
+    }
+    .pool-metric-table th:nth-child(2),
+    .pool-metric-table td:nth-child(2) {
+      position: sticky;
+      left: 92px;
+      z-index: 2;
+      min-width: 92px;
+      background: inherit;
+    }
+    .pool-metric-table th:nth-child(3),
+    .pool-metric-table td:nth-child(3) {
+      position: sticky;
+      left: 184px;
+      z-index: 2;
+      min-width: 280px;
+      background: inherit;
+      box-shadow: 1px 0 0 var(--line);
+    }
+    .pool-metric-table thead th:nth-child(1),
+    .pool-metric-table thead th:nth-child(2),
+    .pool-metric-table thead th:nth-child(3) { z-index: 3; background: var(--surface-2); }
     .pool-row.holding td { background: #f8fbff; }
     .pool-row.observe td { background: #fbfcfb; }
+    .pool-metric-table .pool-row.holding td:nth-child(1),
+    .pool-metric-table .pool-row.holding td:nth-child(2),
+    .pool-metric-table .pool-row.holding td:nth-child(3) { background: #f8fbff; }
+    .pool-metric-table .pool-row.observe td:nth-child(1),
+    .pool-metric-table .pool-row.observe td:nth-child(2),
+    .pool-metric-table .pool-row.observe td:nth-child(3) { background: #fbfcfb; }
     .pool-badge {
       display: inline-flex;
       align-items: center;
@@ -806,8 +861,8 @@
     </header>
 
     <section class="metrics" aria-label="关键状态">
-      <div class="metric"><span>当前运行</span><strong>20260624 - 10:47 CST · 通过</strong></div>
-      <div class="metric"><span>当前持仓及时间</span><strong>20260624 - 10:47 CST</strong></div>
+      <div class="metric"><span>当前运行</span><strong>20260624 - 11:30 CST · 通过</strong></div>
+      <div class="metric"><span>当前持仓及时间</span><strong>20260624 - 11:30 CST</strong></div>
       <div class="metric"><span>需操作行为</span><strong data-action-level data-initial-value="保持当前持仓" data-previous-value="保持当前持仓">保持当前持仓</strong></div>
       <div class="metric"><span>候选池</span><strong>Top5 持仓 / Top6-10 观察</strong></div>
     </section>
@@ -835,7 +890,7 @@
         </article>
         <article class="action-card">
           <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>
-          <a class="action" href="../../data/reports/sda_20260624T024751Z_r3_1ad9c8e1_report.html">查看快照</a>
+          <a class="action" href="../../data/reports/sda_20260624T032910Z_r4_22a74198_report.html">查看快照</a>
         </article>
       </div>
     </section>
@@ -843,39 +898,11 @@
     <section class="panel" style="margin-bottom:16px;">
       <h2>当前持仓建议</h2>
       <div class="legend"><span class="change up">增加/买入</span><span class="change down">减少/卖出</span><span class="change flat">维持</span></div>
-      <div class="discipline-list"><article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#1</span><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div><strong class="change flat">28.71%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#2</span><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div><strong class="change flat">23.39%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#3</span><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div><strong class="change flat">19.16%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#4</span><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div><strong class="change flat">15.84%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#5</span><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div><strong class="change flat">12.91%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 12:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:27 AEST</span></div></article></div>
-    </section>
-
-    <section class="panel pool-ranking-panel" aria-label="持仓池与观察池排序">
-      <h2>持仓池 / 观察池排序</h2>
-      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池。观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。</p>
-      <div class="table-wrap">
-        <table class="pool-table">
-          <thead>
-            <tr>
-              <th>基金分析排序</th>
-              <th>池</th>
-              <th>基金</th>
-              <th>等级</th>
-              <th>证据置信度</th>
-              <th>策略份额</th>
-              <th>动作/复核</th>
-              <th>排序原因</th>
-            </tr>
-          </thead>
-          <tbody><tr class="pool-row holding"><td><strong>#1</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.08</td><td>28.71%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
-<tr class="pool-row holding"><td><strong>#2</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></td><td><span class="badge">可执行</span></td><td>87.75</td><td>23.39%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
-<tr class="pool-row holding"><td><strong>#3</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></td><td><span class="badge">可执行</span></td><td>87.02</td><td>19.16%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
-<tr class="pool-row holding"><td><strong>#4</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.45</td><td>15.84%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td></tr>
-<tr class="pool-row holding"><td><strong>#5</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><strong>270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></td><td><span class="badge">观察</span></td><td>88.75</td><td>12.91%</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td></tr>
-<tr class="pool-row observe"><td><strong>#6</strong></td><td><span class="pool-badge observe">观察池</span></td><td><strong>018043</strong><button type="button" class="fund-link" data-fund-code="018043">天弘纳斯达克100指数发起(QDII)A</button></td><td><span class="badge">观察</span></td><td>88.98</td><td>0.00% · 观察</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td></tr>
-<tr class="pool-row observe"><td><strong>#7</strong></td><td><span class="pool-badge observe">观察池</span></td><td><strong>013171</strong><button type="button" class="fund-link" data-fund-code="013171">华夏恒生互联网科技业ETF联接(QDII)A</button></td><td><span class="badge">观察</span></td><td>77.82</td><td>0.00% · 观察</td><td>维持</td><td>underperformed Shanghai Composite and S&amp;P 500 across windows</td></tr></tbody>
-        </table>
-      </div>
+      <div class="discipline-list"><article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#1</span><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div><strong class="change flat">28.71%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 13:29 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:47 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#2</span><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div><strong class="change flat">23.39%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 13:29 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:47 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#3</span><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div><strong class="change flat">19.16%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 13:29 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:47 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#4</span><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div><strong class="change flat">15.84%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 13:29 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:47 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#5</span><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div><strong class="change flat">12.91%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 13:29 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 12:47 AEST</span></div></article></div>
     </section>
 
     <section class="home-grid">
@@ -894,18 +921,18 @@
                 <th>基金</th>
                 <th>等级</th>
                 <th>证据置信度</th>
-                <th>目标权重<span>20260624 - 10:47 CST</span></th>
-                <th>基准权重<span data-reference-head-time data-initial-value="20260624 - 10:30 CST" data-previous-value="20260624 - 10:30 CST">20260624 - 10:30 CST</span></th>
+                <th>目标权重<span>20260624 - 11:30 CST</span></th>
+                <th>基准权重<span data-reference-head-time data-initial-value="20260624 - 10:47 CST" data-previous-value="20260624 - 10:47 CST">20260624 - 10:47 CST</span></th>
                 <th>相对比例</th>
                 <th>动作</th>
                 <th>操作口径</th>
               </tr>
             </thead>
-            <tbody><tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>1</td><td><strong>008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.08</td><td><strong>28.71%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="28.71%" data-previous-value="28.71%">28.71%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>2</td><td><strong>011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></td><td><span class="badge">可执行</span></td><td>87.75</td><td><strong>23.39%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="23.39%" data-previous-value="23.39%">23.39%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>3</td><td><strong>110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></td><td><span class="badge">可执行</span></td><td>87.02</td><td><strong>19.16%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="19.16%" data-previous-value="19.16%">19.16%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>4</td><td><strong>007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></td><td><span class="badge">可执行</span></td><td>92.45</td><td><strong>15.84%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="15.84%" data-previous-value="15.84%">15.84%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>5</td><td><strong>270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></td><td><span class="badge">观察</span></td><td>88.75</td><td><strong>12.91%</strong><span>目标时间：20260624 - 10:47 CST</span></td><td><strong data-reference-weight data-initial-value="12.91%" data-previous-value="12.91%">12.91%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:30 CST" data-previous-value="上轮对比权重时间：20260624 - 10:30 CST">初始持仓权重时间：20260624 - 10:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr></tbody>
+            <tbody><tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>1</td><td><div class="fund-cell"><strong class="fund-code">008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.08</td><td><strong>28.71%</strong><span>目标时间：20260624 - 11:30 CST</span></td><td><strong data-reference-weight data-initial-value="28.71%" data-previous-value="28.71%">28.71%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:47 CST" data-previous-value="上轮对比权重时间：20260624 - 10:47 CST">初始持仓权重时间：20260624 - 10:47 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>2</td><td><div class="fund-cell"><strong class="fund-code">011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div></td><td><span class="badge">可执行</span></td><td>87.75</td><td><strong>23.39%</strong><span>目标时间：20260624 - 11:30 CST</span></td><td><strong data-reference-weight data-initial-value="23.39%" data-previous-value="23.39%">23.39%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:47 CST" data-previous-value="上轮对比权重时间：20260624 - 10:47 CST">初始持仓权重时间：20260624 - 10:47 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>3</td><td><div class="fund-cell"><strong class="fund-code">110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>87.02</td><td><strong>19.16%</strong><span>目标时间：20260624 - 11:30 CST</span></td><td><strong data-reference-weight data-initial-value="19.16%" data-previous-value="19.16%">19.16%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:47 CST" data-previous-value="上轮对比权重时间：20260624 - 10:47 CST">初始持仓权重时间：20260624 - 10:47 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>4</td><td><div class="fund-cell"><strong class="fund-code">007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.45</td><td><strong>15.84%</strong><span>目标时间：20260624 - 11:30 CST</span></td><td><strong data-reference-weight data-initial-value="15.84%" data-previous-value="15.84%">15.84%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:47 CST" data-previous-value="上轮对比权重时间：20260624 - 10:47 CST">初始持仓权重时间：20260624 - 10:47 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>5</td><td><div class="fund-cell"><strong class="fund-code">270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div></td><td><span class="badge">观察</span></td><td>88.75</td><td><strong>12.91%</strong><span>目标时间：20260624 - 11:30 CST</span></td><td><strong data-reference-weight data-initial-value="12.91%" data-previous-value="12.91%">12.91%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260624 - 10:47 CST" data-previous-value="上轮对比权重时间：20260624 - 10:47 CST">初始持仓权重时间：20260624 - 10:47 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr></tbody>
           </table>
         </div>
 
@@ -931,17 +958,17 @@
         <div class="timeline">
           <div class="time-card">
             <div class="label">当前持仓及时间</div>
+            <strong>20260624 - 11:30 CST</strong>
+            <small>澳洲：20260624 - 13:30 AEST<br>生成：20260624 - 11:29 CST</small>
+          </div>
+          <div class="time-card">
+            <div class="label">上轮持仓及时间</div>
             <strong>20260624 - 10:47 CST</strong>
             <small>澳洲：20260624 - 12:47 AEST<br>生成：20260624 - 10:47 CST</small>
           </div>
           <div class="time-card">
-            <div class="label">上轮持仓及时间</div>
-            <strong>20260624 - 10:30 CST</strong>
-            <small>澳洲：20260624 - 12:30 AEST<br>生成：20260624 - 10:27 CST</small>
-          </div>
-          <div class="time-card">
             <div class="label">基准权重时间</div>
-            <strong>20260624 - 10:30 CST</strong>
+            <strong>20260624 - 10:47 CST</strong>
             <small>基准来自 Serenity baseline reference，不是支付宝真实账户持仓。</small>
           </div>
           <div class="time-card">
@@ -951,6 +978,47 @@
           </div>
         </div>
       </aside>
+    </section>
+
+    <section class="panel pool-metric-panel" aria-label="持仓池与观察池表现指标">
+      <h2>持仓池表现指标</h2>
+      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池；观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。表内同时展示等级、证据置信度、策略份额、动作/复核、排序原因和收益/风险指标。每次全局数据刷新后按最新净值历史重新计算；入池后涨跌幅使用不可覆盖的首次入池时间，若入池后暂无新净值则显示为空值。Alpha/Beta 按基金主题选择专项或主题代理基准；主题源不可用时留空，不再用沪指/标普500通用降级基准凑数。Theta 为本表定义的近20个净值点日均超额收益，不是期权定价 Theta。</p>
+      <div class="table-wrap">
+        <table class="pool-metric-table">
+          <thead>
+            <tr>
+              <th>基金分析排序</th>
+              <th>池</th>
+              <th>基金</th>
+              <th>等级</th>
+              <th>证据置信度</th>
+              <th>策略份额</th>
+              <th>动作/复核</th>
+              <th>排序原因</th>
+              <th>入池时间</th>
+              <th>净值截至</th>
+              <th>指标更新时间</th>
+              <th>入池后涨跌幅</th>
+              <th>近1个月</th>
+              <th>近3个月</th>
+              <th>近6个月</th>
+              <th>Alpha/Beta基准</th>
+              <th>Alpha（年化）</th>
+              <th>Beta</th>
+              <th>Theta（日均超额）</th>
+              <th>Sharpe</th>
+              <th>Sortino</th>
+            </tr>
+          </thead>
+          <tbody><tr class="pool-row holding"><td><strong>#1</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.08</td><td>28.71%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 11:30 CST</td><td>-</td><td>1.92%</td><td>27.84%</td><td>37.97%</td><td>主题基准：国证芯片</td><td>-0.86%</td><td>0.96</td><td>-0.02%</td><td>1.92</td><td>2.98</td></tr>
+<tr class="pool-row holding"><td><strong>#2</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div></td><td><span class="badge">可执行</span></td><td>87.75</td><td>23.39%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 11:30 CST</td><td>-</td><td>-5.40%</td><td>18.37%</td><td>23.19%</td><td>主题基准：中证人工智能</td><td>0.77%</td><td>0.95</td><td>0.02%</td><td>2.19</td><td>3.59</td></tr>
+<tr class="pool-row holding"><td><strong>#3</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>87.02</td><td>19.16%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 11:30 CST</td><td>-</td><td>-2.39%</td><td>14.35%</td><td>20.99%</td><td>主题基准：创业板指</td><td>1.49%</td><td>0.95</td><td>0.01%</td><td>2.45</td><td>4.33</td></tr>
+<tr class="pool-row holding"><td><strong>#4</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.45</td><td>15.84%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 11:30 CST</td><td>-</td><td>3.54%</td><td>31.52%</td><td>45.58%</td><td>主题基准：中证全指半导体</td><td>-1.10%</td><td>0.95</td><td>-0.01%</td><td>2.07</td><td>3.13</td></tr>
+<tr class="pool-row holding"><td><strong>#5</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div></td><td><span class="badge">观察</span></td><td>88.75</td><td>12.91%</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td><td>20260612 - 17:30 CST</td><td>20260611</td><td>20260624 - 11:30 CST</td><td>-</td><td>-0.11%</td><td>16.27%</td><td>9.70%</td><td>主题基准：纳指100</td><td>-1.66%</td><td>1.00</td><td>-0.02%</td><td>1.56</td><td>2.19</td></tr>
+<tr class="pool-row observe"><td><strong>#6</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">018043</strong><button type="button" class="fund-link" data-fund-code="018043">天弘纳斯达克100指数发起(QDII)A</button></div></td><td><span class="badge">观察</span></td><td>88.98</td><td>0.00% · 观察</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td><td>20260614 - 14:58 CST</td><td>20260611</td><td>20260624 - 11:30 CST</td><td>-</td><td>-0.01%</td><td>15.64%</td><td>9.40%</td><td>主题基准：纳指100</td><td>-0.91%</td><td>0.96</td><td>-0.02%</td><td>1.60</td><td>2.26</td></tr>
+<tr class="pool-row observe"><td><strong>#7</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">013171</strong><button type="button" class="fund-link" data-fund-code="013171">华夏恒生互联网科技业ETF联接(QDII)A</button></div></td><td><span class="badge">观察</span></td><td>77.82</td><td>0.00% · 观察</td><td>维持</td><td>underperformed Shanghai Composite and S&amp;P 500 across windows</td><td>20260615 - 16:42 CST</td><td>20260612</td><td>20260624 - 11:30 CST</td><td>-</td><td>-9.82%</td><td>-13.71%</td><td>-24.53%</td><td>主题基准：恒生科技ETF代理</td><td>-3.72%</td><td>0.98</td><td>-0.19%</td><td>-0.53</td><td>-1.00</td></tr></tbody>
+        </table>
+      </div>
     </section>
 
     
@@ -977,54 +1045,38 @@
                 <th>证据摘要</th>
               </tr>
             </thead>
-            <tbody><tr class="timeline-row-flat"><td><strong>20260624 - 10:47 CST</strong><span>澳洲：20260624 - 12:47 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-mixed"><td><strong>20260624 - 10:30 CST</strong><span>澳洲：20260624 - 12:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 1 / 卖 4</span></td><td><span class="timeline-count buy">买 1</span></td><td><span class="timeline-count sell">卖 4</span></td><td><div class="timeline-detail-lines"><span>广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；</span><span>华夏国证半导体芯片ETF联接A 减少 -0.01%；</span><span>天弘中证人工智能A 减少 -0.01%；</span><span>易方达创业板ETF联接A 减少 -0.01%</span></div></td></tr>
+            <tbody><tr class="timeline-row-flat"><td><strong>20260624 - 11:30 CST</strong><span>澳洲：20260624 - 13:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260624 - 10:47 CST</strong><span>澳洲：20260624 - 12:47 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260624 - 10:30 CST</strong><span>澳洲：20260624 - 12:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260624 - 09:30 CST</strong><span>澳洲：20260624 - 11:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-mixed"><td><strong>20260624 - 08:30 CST</strong><span>澳洲：20260624 - 10:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 1 / 卖 4</span></td><td><span class="timeline-count buy">买 1</span></td><td><span class="timeline-count sell">卖 4</span></td><td><div class="timeline-detail-lines"><span>易方达创业板ETF联接A 增加 +0.04%；</span><span>华夏国证半导体芯片ETF联接A 减少 -0.02%；</span><span>天弘中证人工智能A 减少 -0.01%；</span><span>国联安中证半导体ETF联接A 减少 -0.01%</span></div></td></tr>
+<tr class="timeline-row-mixed"><td><strong>20260624 - 08:30 CST</strong><span>澳洲：20260624 - 10:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 2 / 卖 3</span></td><td><span class="timeline-count buy">买 2</span></td><td><span class="timeline-count sell">卖 3</span></td><td><div class="timeline-detail-lines"><span>易方达创业板ETF联接A 增加 +0.04%；</span><span>广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；</span><span>华夏国证半导体芯片ETF联接A 减少 -0.03%；</span><span>天弘中证人工智能A 减少 -0.02%</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260623 - 17:30 CST</strong><span>澳洲：20260623 - 19:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260623 - 16:30 CST</strong><span>澳洲：20260623 - 18:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-mixed"><td><strong>20260623 - 15:30 CST</strong><span>澳洲：20260623 - 17:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 4 / 卖 1</span></td><td><span class="timeline-count buy">买 4</span></td><td><span class="timeline-count sell">卖 1</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 增加 +0.02%；</span><span>天弘中证人工智能A 增加 +0.01%；</span><span>国联安中证半导体ETF联接A 增加 +0.01%；</span><span>广发纳指100ETF联接(QDII)人民币A 增加 +0.01%</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260623 - 13:19 CST</strong><span>澳洲：20260623 - 15:19 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260619 - 17:30 CST</strong><span>澳洲：20260619 - 19:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260619 - 16:30 CST</strong><span>澳洲：20260619 - 18:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-flat"><td><strong>20260619 - 15:30 CST</strong><span>澳洲：20260619 - 17:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-buy"><td><strong>20260619 - 14:30 CST</strong><span>澳洲：20260619 - 16:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge buy">买入/增加 5</span></td><td><span class="timeline-count buy">买 5</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 新增 28.72%；</span><span>天弘中证人工智能A 新增 23.39%；</span><span>易方达创业板ETF联接A 新增 19.16%；</span><span>国联安中证半导体ETF联接A 新增 15.84%</span></div></td></tr></tbody>
+<tr class="timeline-row-buy"><td><strong>20260619 - 15:30 CST</strong><span>澳洲：20260619 - 17:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge buy">买入/增加 5</span></td><td><span class="timeline-count buy">买 5</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 新增 28.72%；</span><span>天弘中证人工智能A 新增 23.39%；</span><span>易方达创业板ETF联接A 新增 19.16%；</span><span>国联安中证半导体ETF联接A 新增 15.84%</span></div></td></tr></tbody>
           </table>
         </div>
       </div>
       <div class="timeline-visual" data-timeline-view="visual" hidden>
         <div class="timeline-axis" aria-hidden="true"></div>
-        <div class="timeline-nodes"><article class="timeline-node buy"><div class="timeline-dot buy" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 14:30 CST</strong><span><span class="timeline-badge buy">买入/增加 5</span></span><small>华夏国证半导体芯片ETF联接A 新增 28.72%；天弘中证人工智能A 新增 23.39%；易方达创业板ETF联接A 新增 19.16%；国联安中证半导体ETF联接A 新增 15.84%</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 15:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+        <div class="timeline-nodes"><article class="timeline-node buy"><div class="timeline-dot buy" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 15:30 CST</strong><span><span class="timeline-badge buy">买入/增加 5</span></span><small>华夏国证半导体芯片ETF联接A 新增 28.72%；天弘中证人工智能A 新增 23.39%；易方达创业板ETF联接A 新增 19.16%；国联安中证半导体ETF联接A 新增 15.84%</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 16:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260619 - 17:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 13:19 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 15:30 CST</strong><span><span class="timeline-badge mixed">买 4 / 卖 1</span></span><small>华夏国证半导体芯片ETF联接A 增加 +0.02%；天弘中证人工智能A 增加 +0.01%；国联安中证半导体ETF联接A 增加 +0.01%；广发纳指100ETF联接(QDII)人民币A 增加 +0.01%</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 16:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 17:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
-<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 08:30 CST</strong><span><span class="timeline-badge mixed">买 1 / 卖 4</span></span><small>易方达创业板ETF联接A 增加 +0.04%；华夏国证半导体芯片ETF联接A 减少 -0.02%；天弘中证人工智能A 减少 -0.01%；国联安中证半导体ETF联接A 减少 -0.01%</small></div></article>
+<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 08:30 CST</strong><span><span class="timeline-badge mixed">买 2 / 卖 3</span></span><small>易方达创业板ETF联接A 增加 +0.04%；广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；华夏国证半导体芯片ETF联接A 减少 -0.03%；天弘中证人工智能A 减少 -0.02%</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 09:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
-<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:30 CST</strong><span><span class="timeline-badge mixed">买 1 / 卖 4</span></span><small>广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；华夏国证半导体芯片ETF联接A 减少 -0.01%；天弘中证人工智能A 减少 -0.01%；易方达创业板ETF联接A 减少 -0.01%</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:47 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article></div>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:47 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 11:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article></div>
       </div>
     </section>
     
-
-    <section class="panel" style="margin-top:16px;">
-      <h2>执行边界</h2>
-      <div class="table-wrap compact">
-        <table>
-          <thead><tr><th>范围</th><th>规则</th></tr></thead>
-          <tbody>
-            <tr><td>交易</td><td>无自动交易、无自动下单、无自动基金申购或赎回。</td></tr>
-            <tr><td>基准</td><td>Serenity baseline 是纪律审计参考；当前支付宝仓位不是 baseline。</td></tr>
-            <tr><td>风险</td><td>最大回撤达到 40.00% 或回撤修复时间达到 365 天会触发硬降级。</td></tr>
-            <tr><td>邮件</td><td>Apple Mail 提醒必须在生产门禁通过且显式启用后发送。</td></tr>
-            <tr><td>交付</td><td><a href="../package/serenity_daily_analysis_delivery.zip">打开交付包</a></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
   </main>
 
   <div class="modal" id="fund-modal" hidden>
@@ -1106,7 +1158,10 @@
         <nav class="guide-nav" aria-label="使用说明目录">
           <button type="button" class="active" data-guide-target="guide-overview">阅读顺序</button>
           <button type="button" data-guide-target="guide-selection">Skill 选股逻辑</button>
+          <button type="button" data-guide-target="guide-admission">准入规则</button>
+          <button type="button" data-guide-target="guide-exit">剔除规则</button>
           <button type="button" data-guide-target="guide-confidence">证据置信度</button>
+          <button type="button" data-guide-target="guide-sources">数据源</button>
           <button type="button" data-guide-target="guide-weight">权重配置</button>
           <button type="button" data-guide-target="guide-discipline">调仓纪律</button>
           <button type="button" data-guide-target="guide-review">复核与边界</button>
@@ -1121,6 +1176,7 @@
             <div class="guide-summary">
               <span><strong>持有期</strong>1个月-1年</span>
               <span><strong>排序口径</strong>Serenity 优先</span>
+              <span><strong>候选来源</strong>全市场自动扩容</span>
               <span><strong>Score 角色</strong>置信度/说服力</span>
               <span><strong>执行边界</strong>人工确认</span>
             </div>
@@ -1141,6 +1197,38 @@
             <div class="guide-callout">页面公开证据置信度、等级、目标权重、基准权重、相对比例、费用状态、基金库证据和运行时间线，方便追溯每一次建议。</div>
           </section>
 
+          <section class="guide-section" id="guide-admission" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">准入</span>
+              <h3>进入候选池的规则</h3>
+            </div>
+            <p class="guide-lead">准入不是 Score 排名赛，而是 Serenity 先判断哪些高成长方向值得研究，再用数据闸门决定能否进入持仓池或观察池。</p>
+            <div class="guide-steps">
+              <p><strong>全市场扩容</strong>每次正式运行前扫描公开全市场基金列表，优先补充 AI、半导体、科技、QDII、创业板、科创、互联网、通信、机器人、软件、云计算、数字经济、信息技术等高成长主题。</p>
+              <p><strong>硬排除</strong>债券、货币、现金、余额宝、固收、短债、同业存单等保守类对象在扩容阶段直接排除；不因支付宝或 MooMoo 暂不支持交易而单独排除，只作为交易路径建议。</p>
+              <p><strong>历史要求</strong>所有进入筛选范围和候选池的基金必须有至少 24 个月净值历史；不足 24 个月不能进入可执行持仓建议。</p>
+              <p><strong>风险要求</strong>MDD 达到或超过 40.00% 直接 Block/清仓标签；回撤修复时间达到或超过 365 天时强制降级复核。</p>
+              <p><strong>证据要求</strong>申购状态、赎回状态、申购费、赎回费、管理费、托管费和费率分档必须可追溯；官方级来源少于 2 个或来源冲突时只能观察或复核。</p>
+              <p><strong>排序要求</strong>通过硬闸门后，Top5 持仓池按 Serenity 优先级排序；Score 只修正置信度和权重，不允许单独压过 Serenity 的主题判断。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-exit" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">剔除</span>
+              <h3>入池后的纪律规则</h3>
+            </div>
+            <p class="guide-lead">剔除规则只约束已经进入持仓池或观察池的对象，不作为 Serenity 初始准入规则。</p>
+            <div class="guide-steps">
+              <p><strong>六项跟踪</strong>每个交易日跟踪近 3 月收益、近 6 月收益、Alpha、Theta、Sharpe、Sortino 六项。Theta 在基金语境下按时间衰减/趋势退化指标解释，具体以系统计算字段为准。</p>
+              <p><strong>5 日剔除</strong>连续 5 个交易日共 30 个结果中，任意 20 项小于 0，则剔除或给出降权/清仓标签。</p>
+              <p><strong>10 日剔除</strong>连续 10 个交易日共 60 个结果中，任意 40 项小于 0，则剔除或给出降权/清仓标签。</p>
+              <p><strong>硬风险剔除</strong>MDD 达到 40.00%、7 日回撤恶化超过 5.00%、或单标过度放大连续 2 次，会触发风险纪律，优先输出减少、暂停新增、Block 或清仓标签。</p>
+              <p><strong>数据异常剔除</strong>连续缺失净值/持仓超过 2 天、费率/赎回状态缺失、官方级来源少于 2 个或来源冲突时，不硬下买入结论，进入 Manual Review 或观察池。</p>
+              <p><strong>重新进入</strong>被剔除对象解决当前问题后，或 14 天后重新满足 Serenity 标准和证据条件，才允许重新进入观察池；进入 Top5 仍由 Serenity 优先判断。</p>
+            </div>
+          </section>
+
           <section class="guide-section" id="guide-confidence" data-guide-section>
             <div class="guide-section-title">
               <span class="guide-kicker">第二层</span>
@@ -1156,6 +1244,21 @@
               <p><strong>Risk</strong>MDD 小于 40.00% 才可继续；回撤修复时间达到 365 天会强制压低风险分。</p>
               <p><strong>Executable</strong>申购/赎回开放且费率分档完整才完整得分。</p>
             </div>
+          </section>
+
+          <section class="guide-section" id="guide-sources" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">数据层</span>
+              <h3>数据源与可审计文件</h3>
+            </div>
+            <p class="guide-lead">首页结论来自本地 SQLite 历史归档和 GitHub 可审计 CSV。SQLite 负责保护历史事实，不作为公开外链；GitHub 链接指向可复核的数据源文件。</p>
+            <div class="guide-steps">
+              <p><strong>候选基金主数据</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/candidates.csv" target="_blank" rel="noreferrer">data/manual/candidates.csv</a>：基金代码、基金名称、市场、主题、来源等级、是否排除。</p>
+              <p><strong>基金净值历史</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/price_history.csv" target="_blank" rel="noreferrer">data/manual/price_history.csv</a>：候选基金至少 24 个月净值历史，用于收益、回撤、Sharpe、Sortino 等指标。</p>
+              <p><strong>基金申赎与费用</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/fund_rules.csv" target="_blank" rel="noreferrer">data/manual/fund_rules.csv</a>：申购、赎回、确认周期、申购费、赎回费、管理费、托管费和费用分档。</p>
+              <p><strong>基准与专项基准</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/benchmark_price_history.csv" target="_blank" rel="noreferrer">data/manual/benchmark_price_history.csv</a>：沪指、标普500、纳指100、创业板指、国证芯片、中证半导、中证人工智能和港股科技主题代理基准。</p>
+            </div>
+            <div class="guide-callout">数据源优先级仍按 MooMoo/OpenD、支付宝、官方平台、交易快照、公开财经聚合排序；当前专项基准若来自 Yahoo 或东方财富，会在 CSV 的 source_name、source_type、url_or_path、as_of 中保留来源证据。</div>
           </section>
 
           <section class="guide-section" id="guide-weight" data-guide-section>
@@ -1205,7 +1308,7 @@
               <p><strong>剔除这一轮观察池</strong>保存复核后立即新增一次真实 Serenity run；对象从本轮观察池移除，当前问题解决后，或 14 天后再次满足 Serenity 标准和条件时，才允许重新进入观察池。</p>
               <p><strong>进入 Top 5 候选操作池</strong>保存复核后立即运行一次 Serenity 全流程，同步刷新首页持仓建议、报告、数据库和全局展示数据。</p>
               <p><strong>保存处置</strong>保存复核必须写入本机 SQLite 数据库；页面不会把复核保存在浏览器端。</p>
-              <p><strong>执行边界</strong>执行锁开启时，只输出研究排序和纪律标签；所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</p>
+              <p><strong>执行边界</strong>无自动交易；执行锁开启时，只输出研究排序和纪律标签；所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</p>
               <p><strong>使用顺序</strong>先看“当前持仓建议”，再看“持仓建议”表里的基准权重口径；需要追溯费用和申赎状态时进入“基金库”。</p>
             </div>
           </section>
@@ -1250,7 +1353,7 @@
   <div class="toast" role="status" aria-live="polite" id="toast">完成</div>
   <script>
     const toast = document.getElementById("toast");
-    const fundLibrary = {"007300": {"code": "007300", "name": "国联安中证半导体ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "0.80%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 0.80%；100万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<365天 0.50%；N≥365天 0.00%", "feeScheduleAsOf": "2026-05-15", "feeScheduleNote": "A类前端法定费率；销售渠道可能有申购费折扣；执行前以支付宝交易确认页和国联安最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Guolianan product summary PDF + Eastmoney status + public sales disclosure", "sourceUrl": "https://pdf.dfcfw.com/pdf/H2_AN202605151822335541_1.pdf"}, "008887": {"code": "008887", "name": "华夏国证半导体芯片ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<50万元 1.20%；50万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；N≥7日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；销售渠道可能给申购费折扣；赎回按持有期限和先进先出口径匹配；执行前以支付宝交易确认页为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official fund page + CCB rule snapshot + Eastmoney NAV/status", "sourceUrl": "https://www.chinaamc.com/fund/008887/jijinfeilv.shtml?source=click"}, "011839": {"code": "011839", "name": "天弘中证人工智能A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<30天 0.30%；N≥30天 0.05%", "feeScheduleAsOf": "2025-06-27", "feeScheduleNote": "A类前端法定费率；同一交易日多笔申购按单笔申请分别适用分档；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong/CNInfo product document + Eastmoney NAV/status", "sourceUrl": "https://static.cninfo.com.cn/finalpage/2025-06-27/1224007185.PDF"}, "013171": {"code": "013171", "name": "华夏恒生互联网科技业ETF联接(QDII)A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<30日 0.50%；N≥30日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；申购可能受单日额度/港股节假日限制；执行前以支付宝交易确认页和华夏基金公告为准", "managementFee": "0.50%", "custodyFee": "0.15%", "salesServiceFee": "0.00%", "operatingFee": "0.65%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official page + AMC Fortune official page + public fee/status", "sourceUrl": "https://www.chinaamc.com/fund/013171/jijinfeilv.shtml?source=click"}, "018043": {"code": "018043", "name": "天弘纳斯达克100指数发起(QDII)A", "firstTop5Time": "20260615 - 12:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<180天 0.50%；180天≤N<365天 0.25%；N≥365天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；当前申购状态可能受额度/暂停影响；多源交叉验证含天弘官网、东方财富/天天基金、新浪和代销平台；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong official page + Eastmoney/Tiantian fee page + Sina fee/status + CCB/TTFund status + MooMoo QQQ proxy", "sourceUrl": "https://www.thfund.com.cn/fundinfo/018043"}, "110026": {"code": "110026", "name": "易方达创业板ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<500万元 0.50%；500万元≤M<1000万元 0.10%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "0天≤N≤6天 1.50%；7天≤N≤29天 0.50%；30天≤N≤179天 0.10%；N≥180天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；多次申购按单笔申购金额适用费率；执行前以支付宝交易确认页为准", "managementFee": "0.15%", "custodyFee": "0.05%", "salesServiceFee": "0.00%", "operatingFee": "0.20%", "minPurchaseAmount": "10.00", "sourceName": "E Fund official fund page + Eastmoney NAV/status", "sourceUrl": "https://www.efunds.com.cn/Mobile/fund/110026.shtml"}, "270042": {"code": "270042", "name": "广发纳指100ETF联接(QDII)人民币A", "firstTop5Time": "20260612 - 17:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 10:47 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.30%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.30%；100万元≤M<500万元 0.70%；500万元≤M<1000万元 0.20%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<365日 0.50%；1年≤N<2年 0.30%；N≥2年 0.00%", "feeScheduleAsOf": "2026-06-05", "feeScheduleNote": "QDII人民币A前端法定费率；申购可能受大额/额度限制；多源交叉验证含广发官网/产品概要、东方财富/天天基金、新浪和银行代销页；执行前以支付宝交易确认页和广发最新公告为准", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "GF official fund page/product summary + Eastmoney/Tiantian fee page + Sina fee page + CCB/ABC agency status + MooMoo QQQ proxy", "sourceUrl": "https://www.gffunds.com.cn/jjgg/flwj/202606/P020260605334092544639.pdf"}};
+    const fundLibrary = {"007300": {"code": "007300", "name": "国联安中证半导体ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "0.80%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 0.80%；100万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<365天 0.50%；N≥365天 0.00%", "feeScheduleAsOf": "2026-05-15", "feeScheduleNote": "A类前端法定费率；销售渠道可能有申购费折扣；执行前以支付宝交易确认页和国联安最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Guolianan product summary PDF + Eastmoney status + public sales disclosure", "sourceUrl": "https://pdf.dfcfw.com/pdf/H2_AN202605151822335541_1.pdf"}, "008887": {"code": "008887", "name": "华夏国证半导体芯片ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<50万元 1.20%；50万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；N≥7日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；销售渠道可能给申购费折扣；赎回按持有期限和先进先出口径匹配；执行前以支付宝交易确认页为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official fund page + CCB rule snapshot + Eastmoney NAV/status", "sourceUrl": "https://www.chinaamc.com/fund/008887/jijinfeilv.shtml?source=click"}, "011839": {"code": "011839", "name": "天弘中证人工智能A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<30天 0.30%；N≥30天 0.05%", "feeScheduleAsOf": "2025-06-27", "feeScheduleNote": "A类前端法定费率；同一交易日多笔申购按单笔申请分别适用分档；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong/CNInfo product document + Eastmoney NAV/status", "sourceUrl": "https://static.cninfo.com.cn/finalpage/2025-06-27/1224007185.PDF"}, "013171": {"code": "013171", "name": "华夏恒生互联网科技业ETF联接(QDII)A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<30日 0.50%；N≥30日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；申购可能受单日额度/港股节假日限制；执行前以支付宝交易确认页和华夏基金公告为准", "managementFee": "0.50%", "custodyFee": "0.15%", "salesServiceFee": "0.00%", "operatingFee": "0.65%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official page + AMC Fortune official page + public fee/status", "sourceUrl": "https://www.chinaamc.com/fund/013171/jijinfeilv.shtml?source=click"}, "018043": {"code": "018043", "name": "天弘纳斯达克100指数发起(QDII)A", "firstTop5Time": "20260615 - 12:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<180天 0.50%；180天≤N<365天 0.25%；N≥365天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；当前申购状态可能受额度/暂停影响；多源交叉验证含天弘官网、东方财富/天天基金、新浪和代销平台；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong official page + Eastmoney/Tiantian fee page + Sina fee/status + CCB/TTFund status + MooMoo QQQ proxy", "sourceUrl": "https://www.thfund.com.cn/fundinfo/018043"}, "110026": {"code": "110026", "name": "易方达创业板ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<500万元 0.50%；500万元≤M<1000万元 0.10%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "0天≤N≤6天 1.50%；7天≤N≤29天 0.50%；30天≤N≤179天 0.10%；N≥180天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；多次申购按单笔申购金额适用费率；执行前以支付宝交易确认页为准", "managementFee": "0.15%", "custodyFee": "0.05%", "salesServiceFee": "0.00%", "operatingFee": "0.20%", "minPurchaseAmount": "10.00", "sourceName": "E Fund official fund page + Eastmoney NAV/status", "sourceUrl": "https://www.efunds.com.cn/Mobile/fund/110026.shtml"}, "270042": {"code": "270042", "name": "广发纳指100ETF联接(QDII)人民币A", "firstTop5Time": "20260612 - 17:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 11:30 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.30%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.30%；100万元≤M<500万元 0.70%；500万元≤M<1000万元 0.20%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<365日 0.50%；1年≤N<2年 0.30%；N≥2年 0.00%", "feeScheduleAsOf": "2026-06-05", "feeScheduleNote": "QDII人民币A前端法定费率；申购可能受大额/额度限制；多源交叉验证含广发官网/产品概要、东方财富/天天基金、新浪和银行代销页；执行前以支付宝交易确认页和广发最新公告为准", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "GF official fund page/product summary + Eastmoney/Tiantian fee page + Sina fee page + CCB/ABC agency status + MooMoo QQQ proxy", "sourceUrl": "https://www.gffunds.com.cn/jjgg/flwj/202606/P020260605334092544639.pdf"}};
     const showToast = (message) => {
       toast.textContent = message;
       toast.classList.add("show");
