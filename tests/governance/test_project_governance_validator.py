@@ -3792,7 +3792,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]["status"], "completed")
         self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "completed")
         self.assertEqual(task_by_id["ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP"]["status"], "completed")
-        self.assertEqual(task_by_id["S2P1T01"]["status"], "ready")
+        self.assertEqual(task_by_id["S2P1T01"]["status"], "in_progress")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "planned")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "planned")
 
@@ -3817,8 +3817,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-084")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-084")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-086")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-086")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -3826,7 +3826,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json",
+            "governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
@@ -3837,7 +3837,6 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
-        self.assertIn("ADP-S1P5T05", rendered)
         self.assertIn("S2P1T01", rendered)
         self.assertIn("GitHub 只保留代码、PR/CI、证据、状态和备份角色", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)

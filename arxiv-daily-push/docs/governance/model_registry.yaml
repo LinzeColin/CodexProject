@@ -1177,3 +1177,66 @@ models:
     config_refs: [".github/workflows/arxiv-daily-push-real-backfill.yml"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_real_replay.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_global_scan.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json", "arxiv-daily-push/docs/phase_records/PHASE_S1P5T03_REAL_ARXIV_30_ASOF_REPLAY.md"]
+  - model_id: "MOD-ADP-047"
+    name: "Stage 2 bioRxiv/medRxiv preprint metadata ingest"
+    kind: "deterministic metadata-only source adapter"
+    purpose: "Fetch small public bioRxiv/medRxiv details API windows and map metadata into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-stage2-preprint-ingest-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
+    formula_ids: ["FORM-ADP-049"]
+    parameter_ids:
+      - "PARAM-ADP-360"
+      - "PARAM-ADP-361"
+      - "PARAM-ADP-362"
+      - "PARAM-ADP-363"
+    inputs: ["server", "interval", "cursor", "max_records", "seen_source_ids", "public details API JSON"]
+    outputs: ["preprint SourceBatch", "SourceItem records", "terminal_status", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/preprint_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/owner_controls.yaml", "arxiv-daily-push/schemas/source_batch.schema.json", "arxiv-daily-push/schemas/source_item.schema.json"]
+    test_refs: ["arxiv-daily-push/tests/test_preprint_adapter.py", "arxiv-daily-push/tests/fixtures/biorxiv_details_sample.json", "arxiv-daily-push/tests/fixtures/medrxiv_details_sample.json"]
+    evidence_refs: ["https://api.biorxiv.org/", "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
+  - model_id: "MOD-ADP-048"
+    name: "S2P1T01 preprint source promotion gate"
+    kind: "deterministic source promotion validator"
+    purpose: "Require bioRxiv and medRxiv identity/version/license gates plus 30-date replay evidence and 48-hour shadow evidence before any formal production inclusion."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2p1-preprint-source-promotion-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
+    formula_ids: ["FORM-ADP-050"]
+    parameter_ids:
+      - "PARAM-ADP-364"
+      - "PARAM-ADP-366"
+      - "PARAM-ADP-367"
+      - "PARAM-ADP-368"
+      - "PARAM-ADP-369"
+    inputs: ["bioRxiv SourceBatch", "medRxiv SourceBatch", "terminal replay report", "shadow report"]
+    outputs: ["S2P1T01 promotion report", "source_gate_ready", "replay_gate_ready", "shadow_gate_ready", "blocking_reasons"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["arxiv-daily-push/config/owner_controls.yaml"]
+    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
+  - model_id: "MOD-ADP-049"
+    name: "S2P1 preprint shadow daily path"
+    kind: "deterministic no-send shadow daily runner"
+    purpose: "Build a separate bioRxiv/medRxiv daily input, queue, ledger, report, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2p1-preprint-shadow-daily-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
+    formula_ids: ["FORM-ADP-051"]
+    parameter_ids:
+      - "PARAM-ADP-365"
+      - "PARAM-ADP-370"
+      - "PARAM-ADP-371"
+    inputs: ["preprint SourceBatches", "date", "generated_at", "shadow queue", "state_dir"]
+    outputs: ["shadow daily input report", "dry-run report", "delivery package preview", "preprint queue", "preprint ledger"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_global_scan.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]

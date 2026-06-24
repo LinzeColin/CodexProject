@@ -1,0 +1,130 @@
+{
+  "run_id": "ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2P1T01",
+  "iteration_id": "ITER-20260624-ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION",
+  "event_id": "EVENT-20260624-ADP-085",
+  "created_at": "2026-06-24T09:46:05+10:00",
+  "status": "in_progress",
+  "scope": [
+    "Add metadata-only bioRxiv and medRxiv SourceAdapters for Stage 2 source promotion.",
+    "Add preprint SourceBatch validation, identity/version/license gates, and duplicate canonical DOI blocking.",
+    "Add a no-send S2P1 shadow daily path with separate queue, ledger, report, and email preview artifacts."
+  ],
+  "non_scope": [
+    "No formal production inclusion of bioRxiv or medRxiv.",
+    "No production schedule enablement.",
+    "No GitHub cloud scheduled production runner.",
+    "No real SMTP send.",
+    "No GitHub Release upload.",
+    "No PDF or full-text download.",
+    "No video requirement.",
+    "No secret reads or logging."
+  ],
+  "implemented_files": [
+    "arxiv-daily-push/src/arxiv_daily_push/preprint_adapter.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/src/arxiv_daily_push/lesson.py",
+    "arxiv-daily-push/src/arxiv_daily_push/source_registry.py",
+    "arxiv-daily-push/config/owner_controls.yaml",
+    "arxiv-daily-push/tests/test_preprint_adapter.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "models_added": [
+    "adp-stage2-preprint-ingest-v1",
+    "adp-s2p1-preprint-source-promotion-v1",
+    "adp-s2p1-preprint-shadow-daily-v1"
+  ],
+  "parameters_added": [
+    "PREPRINT_INGEST_MODEL_ID",
+    "SUPPORTED_PREPRINT_SERVERS",
+    "PREPRINT_MAX_CANARY_RECORDS",
+    "PREPRINT_DETAILS_BASE_URL",
+    "S2P1_PREPRINT_PROMOTION_MODEL_ID",
+    "S2P1_PREPRINT_SHADOW_MODEL_ID",
+    "S2P1_ACCEPTANCE_ID",
+    "S2P1_REQUIRED_SERVERS",
+    "S2P1_REPLAY_REQUIRED_DATES",
+    "S2P1_SHADOW_REQUIRED_HOURS",
+    "S2P1_QUEUE_FILENAME",
+    "S2P1_LEDGER_FILENAME"
+  ],
+  "live_canary": {
+    "source": "official bioRxiv/medRxiv details API",
+    "api_docs": "https://api.biorxiv.org/",
+    "fetcher": "curl",
+    "local_python_tls_note": "Python urllib canary was blocked by local CA trust, so the controlled live canary used the curl fallback.",
+    "biorxiv": {
+      "status": "pass",
+      "interval": "2024-01-01/2024-01-02",
+      "source_id": "biorxiv:10.1101-2023.12.30.573731",
+      "source_adapter": "biorxiv.details.v1"
+    },
+    "medrxiv": {
+      "status": "pass",
+      "interval": "2024-01-01/2024-01-02",
+      "source_id": "medrxiv:10.1101-2023.10.21.23297352",
+      "source_adapter": "medrxiv.details.v1"
+    }
+  },
+  "shadow_canary": {
+    "status": "pass",
+    "state_dir": "/tmp/adp_s2p1_live_20260624/state",
+    "selected_source_id": "medrxiv:10.1101-2023.10.21.23297352",
+    "daily_run_status": "succeeded",
+    "email_contains_chinese_lesson": true,
+    "email_contains_candidate_queue_summary": true,
+    "candidate_queue_path": "/tmp/adp_s2p1_live_20260624/state/stage2_s2p1_preprint_queue.json",
+    "content_ledger_path": "/tmp/adp_s2p1_live_20260624/state/stage2_s2p1_preprint_ledger.jsonl"
+  },
+  "acceptance_gates": {
+    "source_gate_ready_for_test": true,
+    "terminal_replay_30_dates_ready": false,
+    "shadow_48h_ready": false,
+    "formal_production_inclusion": false,
+    "stage2_source_promotion_complete": false
+  },
+  "safety_gates": {
+    "secret_values_logged": false,
+    "secret_values_committed": false,
+    "github_cloud_schedule_enabled": false,
+    "production_schedule_enabled": false,
+    "real_smtp_sent": false,
+    "release_upload_enabled": false,
+    "real_release_uploaded": false,
+    "video_generated": false,
+    "pdf_downloaded": false,
+    "full_text_downloaded": false,
+    "stage1_arxiv_local_runner_modified_for_production": false
+  },
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2p1_focus4 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_source_registry.py arxiv-daily-push/tests/test_owner_controls.py arxiv-daily-push/tests/test_contracts.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2p1_all1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "for f in arxiv-daily-push/schemas/*.schema.json; do python3 -m json.tool \"$f\" >/dev/null || exit 1; done",
+    "fetch-preprint-latest --server biorxiv --interval 2024-01-01/2024-01-02 --max-records 1 --fetcher curl",
+    "fetch-preprint-latest --server medrxiv --interval 2024-01-01/2024-01-02 --max-records 1 --fetcher curl",
+    "stage2-preprint-shadow-daily using live biorxiv and medrxiv canary batches"
+  ],
+  "test_results": [
+    "focused S2P1/source/global/lesson/registry/contract tests: 39 tests OK",
+    "full arxiv-daily-push unit tests: 216 tests OK",
+    "schema JSON parse: PASS",
+    "live bioRxiv fixed-interval canary: PASS",
+    "live medRxiv fixed-interval canary: PASS",
+    "single shadow daily canary: PASS",
+    "promotion gate remains blocked pending 30-date replay and 48h shadow evidence"
+  ],
+  "production_acceptance_claimed": false,
+  "stage2_completion_claimed": false,
+  "stage1_arxiv_acceptance_preserved": "ARXIV_PRODUCTION_ACCEPTED",
+  "next_task": "S2P1T01_REPLAY_AND_48H_SHADOW_EVIDENCE",
+  "rollback": "Revert preprint_adapter.py, stage2_sources.py, CLI preprint commands, source registry and owner_controls Stage 2 preprint entries, S2P1 tests and fixtures, this manifest, EVENT-20260624-ADP-085, and generated governance status files.",
+  "risks": [
+    "The 30-date terminal replay has not been executed yet.",
+    "The 48-hour shadow evidence has not been executed yet.",
+    "Local Python urllib currently has CA trust failure for the live canary path; curl fallback is proven for the canary.",
+    "bioRxiv and medRxiv remain excluded from formal production until promotion gates pass."
+  ]
+}

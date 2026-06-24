@@ -83,6 +83,24 @@ sources:
     frequency: "daily"
     weight: 100
     health_status: "active"
+  - source_id: "SRC-BIORXIV"
+    board_id: "B1"
+    enabled: false
+    name: "bioRxiv public metadata API"
+    access_method: "official_biorxiv_details_api"
+    tier: "required"
+    frequency: "daily"
+    weight: 0
+    health_status: "stage2_test"
+  - source_id: "SRC-MEDRXIV"
+    board_id: "B1"
+    enabled: false
+    name: "medRxiv public metadata API"
+    access_method: "official_medrxiv_details_api"
+    tier: "required"
+    frequency: "daily"
+    weight: 0
+    health_status: "stage2_test"
   - source_id: "SRC-TOP-JOURNALS"
     board_id: "B2"
     enabled: false
