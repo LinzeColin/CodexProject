@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 87
-- acceptance_count: 81
+- task_count: 88
+- acceptance_count: 82
 
 ## Delivery Tasks
 
@@ -103,6 +103,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.2-inherited D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
 | S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.2 Science/main-journal metadata-only no-send shadow task; agent must record V7.2 revalidation before new work; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
 | S2PFT01 | S2PF | completed | ACC-S2PFT01-PROVINCES | China mainland provincial template coverage passed for 31 provincial-level IDs, locality types, core department roles, health tiers, official identity, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, HK/MO, city, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md`; `governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json` |
+| S2PFT02 | S2PF | completed | ACC-S2PFT02-HK-MO | Hong Kong and Macau independent profiles passed for jurisdiction identity, language profiles, legal-system states, government structures, authority evidence, mainland-template reuse blockers, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, city, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT02_HK_MO_INDEPENDENT_PROFILE.md`; `governance/run_manifests/ADP-S2PFT02-HK-MO-INDEPENDENT-PROFILE-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |

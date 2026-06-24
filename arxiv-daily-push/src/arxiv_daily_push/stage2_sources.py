@@ -241,6 +241,25 @@ S2PFT01_REQUIRED_CORE_DEPARTMENT_ROLES = (
 S2PFT01_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
 S2PFT01_ALLOWED_IDENTITY_STATES = ("official_domain", "official_publication_portal")
 S2PFT01_REPORT_FILENAME = "stage2_s2pft01_china_provincial_template_coverage_report.json"
+S2PFT02_HK_MO_PROFILE_MODEL_ID = "adp-s2pft02-hk-mo-independent-profile-v1"
+S2PFT02_ACCEPTANCE_ID = "ACC-S2PFT02-HK-MO"
+S2PFT02_TASK_ID = "S2PFT02"
+S2PFT02_LEGACY_TASK_ID = "S2P5T02"
+S2PFT02_REQUIRED_JURISDICTION_IDS = ("hong_kong", "macau")
+S2PFT02_REQUIRED_LANGUAGE_PROFILES = ("zh_hant", "en", "pt")
+S2PFT02_ALLOWED_LEGAL_SYSTEM_STATES = ("common_law", "civil_law_portuguese_heritage")
+S2PFT02_REQUIRED_PROFILE_FIELDS = (
+    "jurisdiction_id",
+    "jurisdiction_name",
+    "legal_system_state",
+    "government_structure_model",
+    "official_domain",
+    "source_url",
+    "authority_gate",
+    "metadata_only",
+)
+S2PFT02_FORBIDDEN_TEMPLATE_STATES = ("mainland_province_template", "mainland_city_template")
+S2PFT02_REPORT_FILENAME = "stage2_s2pft02_hk_mo_independent_profile_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -3371,6 +3390,251 @@ def validate_s2pft01_china_provincial_template_coverage_report(report: Mapping[s
     return errors
 
 
+def build_s2pft02_hk_mo_independent_profile_report(
+    *,
+    generated_at: str,
+    provincial_template_coverage_report: Mapping[str, Any],
+    jurisdiction_profiles: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build Hong Kong and Macau independent profile evidence without production inclusion."""
+
+    upstream_errors = validate_s2pft01_china_provincial_template_coverage_report(provincial_template_coverage_report)
+    upstream_gate = (
+        "pass"
+        if not upstream_errors
+        and provincial_template_coverage_report.get("status") == "pass"
+        and provincial_template_coverage_report.get("s2pf_provincial_template_coverage_ready") is True
+        else "blocked"
+    )
+    profiles, profile_errors = _s2pft02_jurisdiction_profiles(jurisdiction_profiles)
+    jurisdiction_gate = _s2pft02_jurisdiction_coverage_gate(profiles)
+    language_gate = _s2pft02_language_gate(profiles)
+    legal_gate = _s2pft02_legal_status_gate(profiles)
+    independence_gate = _s2pft02_template_independence_gate(profiles)
+    authority_gate = _s2pft02_authority_gate(profiles)
+    metadata_gate = _s2pft02_metadata_gate(profiles)
+    blocking_reasons = [
+        *upstream_errors,
+        *profile_errors,
+        *jurisdiction_gate["blocking_reasons"],
+        *language_gate["blocking_reasons"],
+        *legal_gate["blocking_reasons"],
+        *independence_gate["blocking_reasons"],
+        *authority_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if upstream_gate != "pass":
+        blocking_reasons.append("S2PFT02 requires passing S2PFT01 provincial template coverage evidence")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == jurisdiction_gate["status"]
+        == language_gate["status"]
+        == legal_gate["status"]
+        == independence_gate["status"]
+        == authority_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PFT02_HK_MO_PROFILE_MODEL_ID,
+        "acceptance_id": S2PFT02_ACCEPTANCE_ID,
+        "task_id": S2PFT02_TASK_ID,
+        "legacy_task_id": S2PFT02_LEGACY_TASK_ID,
+        "phase": "S2PF",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_provincial_template_gate": upstream_gate,
+        "jurisdiction_coverage_gate": jurisdiction_gate["status"],
+        "language_profile_gate": language_gate["status"],
+        "legal_status_gate": legal_gate["status"],
+        "template_independence_gate": independence_gate["status"],
+        "authority_gate": authority_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_jurisdiction_ids": list(S2PFT02_REQUIRED_JURISDICTION_IDS),
+        "jurisdiction_ids_observed": jurisdiction_gate["jurisdiction_ids_observed"],
+        "jurisdiction_profile_count": len(profiles),
+        "required_language_profiles": list(S2PFT02_REQUIRED_LANGUAGE_PROFILES),
+        "language_profiles_observed": language_gate["language_profiles_observed"],
+        "required_profile_fields": list(S2PFT02_REQUIRED_PROFILE_FIELDS),
+        "allowed_legal_system_states": list(S2PFT02_ALLOWED_LEGAL_SYSTEM_STATES),
+        "legal_system_states_observed": legal_gate["legal_system_states_observed"],
+        "jurisdiction_profiles": profiles,
+        "jurisdiction_coverage_summary": jurisdiction_gate,
+        "language_profile_summary": language_gate,
+        "legal_status_summary": legal_gate,
+        "template_independence_summary": independence_gate,
+        "authority_summary": authority_gate,
+        "metadata_summary": metadata_gate,
+        "s2pf_hk_mo_profile_ready": status == "pass",
+        "d3_full_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "hk_mo_profile_modeled": status == "pass",
+        "mainland_template_applied_to_hk_mo": False,
+        "city_coverage_modeled": False,
+        "special_zone_discovery_enabled": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pft02_hk_mo_independent_profile(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    provincial_template_coverage_report: Mapping[str, Any],
+    jurisdiction_profiles: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PFT02 Hong Kong/Macau profile evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pft02-hk-mo-independent-profile"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pft02_hk_mo_independent_profile_report(
+        generated_at=generated_at,
+        provincial_template_coverage_report=provincial_template_coverage_report,
+        jurisdiction_profiles=jurisdiction_profiles,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "hk_mo_profile_report_path": str(run_dir / "adp-s2pft02-hk-mo-independent-profile-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pft02-hk-mo-independent-profile-report.json", report)
+        _write_json(state / S2PFT02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pft02_hk_mo_independent_profile_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PFT02_HK_MO_PROFILE_MODEL_ID:
+        errors.append("S2PFT02 HK/MO model_id must be adp-s2pft02-hk-mo-independent-profile-v1")
+    if report.get("task_id") != S2PFT02_TASK_ID:
+        errors.append("S2PFT02 HK/MO task_id must be S2PFT02")
+    if report.get("legacy_task_id") != S2PFT02_LEGACY_TASK_ID:
+        errors.append("S2PFT02 HK/MO legacy_task_id must be S2P5T02")
+    if report.get("acceptance_id") != S2PFT02_ACCEPTANCE_ID:
+        errors.append("S2PFT02 HK/MO acceptance_id must be ACC-S2PFT02-HK-MO")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PFT02 HK/MO status must be pass or blocked")
+    for key in (
+        "d3_full_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+        "v7_2_mail_or_schema_prerun",
+        "mainland_template_applied_to_hk_mo",
+        "city_coverage_modeled",
+        "special_zone_discovery_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PFT02 HK/MO profile evidence")
+    profiles = report.get("jurisdiction_profiles")
+    if not isinstance(profiles, list):
+        errors.append("S2PFT02 jurisdiction_profiles must be a list")
+        profiles = []
+    observed_ids = set(report.get("jurisdiction_ids_observed") or [])
+    missing_ids = [jurisdiction_id for jurisdiction_id in S2PFT02_REQUIRED_JURISDICTION_IDS if jurisdiction_id not in observed_ids]
+    if missing_ids:
+        errors.append("S2PFT02 missing jurisdiction ids: " + ", ".join(missing_ids))
+    observed_languages = set(report.get("language_profiles_observed") or [])
+    missing_languages = [
+        language_profile for language_profile in S2PFT02_REQUIRED_LANGUAGE_PROFILES if language_profile not in observed_languages
+    ]
+    if missing_languages:
+        errors.append("S2PFT02 missing language profiles: " + ", ".join(missing_languages))
+    observed_legal_states = set(report.get("legal_system_states_observed") or [])
+    for state in S2PFT02_ALLOWED_LEGAL_SYSTEM_STATES:
+        if state not in observed_legal_states:
+            errors.append(f"S2PFT02 missing legal system state: {state}")
+    for index, profile in enumerate(profiles):
+        if not isinstance(profile, Mapping):
+            errors.append(f"jurisdiction_profiles[{index}] must be an object")
+            continue
+        if profile.get("jurisdiction_id") not in S2PFT02_REQUIRED_JURISDICTION_IDS:
+            errors.append(f"jurisdiction_profiles[{index}].jurisdiction_id is not supported")
+        for field in S2PFT02_REQUIRED_PROFILE_FIELDS:
+            if profile.get(field) in (None, "", []):
+                errors.append(f"jurisdiction_profiles[{index}].{field} is required")
+        if profile.get("legal_system_state") not in S2PFT02_ALLOWED_LEGAL_SYSTEM_STATES:
+            errors.append(f"jurisdiction_profiles[{index}].legal_system_state is not supported")
+        if profile.get("template_source") in S2PFT02_FORBIDDEN_TEMPLATE_STATES:
+            errors.append(f"jurisdiction_profiles[{index}].template_source must not be mainland template")
+        if profile.get("mainland_template_applied") is not False:
+            errors.append(f"jurisdiction_profiles[{index}].mainland_template_applied must be false")
+        if profile.get("authority_gate") != "pass":
+            errors.append(f"jurisdiction_profiles[{index}].authority_gate must be pass")
+        if profile.get("metadata_only") is not True:
+            errors.append(f"jurisdiction_profiles[{index}].metadata_only must be true")
+        for field in ("pdf_downloaded", "full_text_extracted", "production_affected", "real_smtp_sent"):
+            if profile.get(field) is not False:
+                errors.append(f"jurisdiction_profiles[{index}].{field} must be false")
+        if not profile.get("language_profiles"):
+            errors.append(f"jurisdiction_profiles[{index}].language_profiles is required")
+        if not profile.get("evidence_refs"):
+            errors.append(f"jurisdiction_profiles[{index}].evidence_refs is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PFT02 HK/MO report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_provincial_template_gate",
+            "jurisdiction_coverage_gate",
+            "language_profile_gate",
+            "legal_status_gate",
+            "template_independence_gate",
+            "authority_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PFT02 HK/MO report requires {key}=pass")
+        if report.get("s2pf_hk_mo_profile_ready") is not True:
+            errors.append("passing S2PFT02 HK/MO report requires s2pf_hk_mo_profile_ready=true")
+        if report.get("hk_mo_profile_modeled") is not True:
+            errors.append("passing S2PFT02 HK/MO report requires hk_mo_profile_modeled=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -5754,6 +6018,190 @@ def _s2pft01_provincial_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict
         "status": "pass" if not reasons else "blocked",
         "metadata_only_record_count": len(rows) - len(violations),
         "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft02_jurisdiction_profiles(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    profiles: list[dict[str, Any]] = []
+    errors: list[str] = []
+    jurisdiction_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"jurisdiction_profiles[{index}] must be an object")
+            continue
+        jurisdiction_id = str(record.get("jurisdiction_id") or "").strip()
+        profile = {
+            "jurisdiction_id": jurisdiction_id,
+            "jurisdiction_name": str(record.get("jurisdiction_name") or "").strip(),
+            "legal_system_state": str(record.get("legal_system_state") or "").strip(),
+            "government_structure_model": str(record.get("government_structure_model") or "").strip(),
+            "language_profiles": list(record.get("language_profiles") or []),
+            "official_domain": str(record.get("official_domain") or "").strip(),
+            "source_url": str(record.get("source_url") or "").strip(),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "template_source": str(record.get("template_source") or "").strip(),
+            "mainland_template_applied": record.get("mainland_template_applied") is True,
+            "autonomy_basis": str(record.get("autonomy_basis") or "").strip(),
+            "legal_status_reference": str(record.get("legal_status_reference") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not jurisdiction_id:
+            errors.append(f"jurisdiction_profiles[{index}].jurisdiction_id is required")
+        if jurisdiction_id in jurisdiction_ids:
+            errors.append(f"duplicate S2PFT02 jurisdiction_id: {jurisdiction_id}")
+        jurisdiction_ids.add(jurisdiction_id)
+        profiles.append(profile)
+    if not profiles:
+        errors.append("S2PFT02 requires at least one jurisdiction profile")
+    return profiles, errors
+
+
+def _s2pft02_jurisdiction_coverage_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(profile.get("jurisdiction_id") or "") for profile in profiles if isinstance(profile, Mapping)}
+    missing = [jurisdiction_id for jurisdiction_id in S2PFT02_REQUIRED_JURISDICTION_IDS if jurisdiction_id not in observed]
+    unsupported = sorted(observed - set(S2PFT02_REQUIRED_JURISDICTION_IDS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PFT02 HK/MO profile missing jurisdiction ids: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PFT02 HK/MO profile has unsupported jurisdiction ids: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_jurisdiction_ids": list(S2PFT02_REQUIRED_JURISDICTION_IDS),
+        "jurisdiction_ids_observed": sorted(jurisdiction_id for jurisdiction_id in observed if jurisdiction_id),
+        "missing_jurisdiction_ids": missing,
+        "unsupported_jurisdiction_ids": unsupported,
+        "record_count": len(profiles),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft02_language_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted(
+        {
+            str(language)
+            for profile in profiles
+            if isinstance(profile, Mapping)
+            for language in list(profile.get("language_profiles") or [])
+            if str(language)
+        }
+    )
+    missing = [language for language in S2PFT02_REQUIRED_LANGUAGE_PROFILES if language not in set(observed)]
+    missing_per_profile = [
+        profile
+        for profile in profiles
+        if not isinstance(profile, Mapping) or not profile.get("language_profiles")
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PFT02 HK/MO profile missing language profiles: " + ", ".join(missing))
+    if missing_per_profile:
+        reasons.append("S2PFT02 each jurisdiction profile requires language_profiles")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_language_profiles": list(S2PFT02_REQUIRED_LANGUAGE_PROFILES),
+        "language_profiles_observed": observed,
+        "complete_language_profile_count": len(profiles) - len(missing_per_profile),
+        "record_count": len(profiles),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft02_legal_status_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted(
+        {
+            str(profile.get("legal_system_state") or "")
+            for profile in profiles
+            if isinstance(profile, Mapping) and str(profile.get("legal_system_state") or "")
+        }
+    )
+    invalid = [
+        profile
+        for profile in profiles
+        if not isinstance(profile, Mapping)
+        or profile.get("legal_system_state") not in S2PFT02_ALLOWED_LEGAL_SYSTEM_STATES
+        or not profile.get("government_structure_model")
+        or not profile.get("autonomy_basis")
+        or not profile.get("legal_status_reference")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT02 legal status requires allowed legal system, government structure, autonomy basis, and legal status reference")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_legal_system_states": list(S2PFT02_ALLOWED_LEGAL_SYSTEM_STATES),
+        "legal_system_states_observed": observed,
+        "legal_status_checked_record_count": len(profiles) - len(invalid),
+        "record_count": len(profiles),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft02_template_independence_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        profile
+        for profile in profiles
+        if not isinstance(profile, Mapping)
+        or profile.get("mainland_template_applied") is not False
+        or profile.get("template_source") in S2PFT02_FORBIDDEN_TEMPLATE_STATES
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT02 HK/MO profiles must not reuse mainland province or city templates")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "forbidden_template_states": list(S2PFT02_FORBIDDEN_TEMPLATE_STATES),
+        "independent_profile_count": len(profiles) - len(invalid),
+        "record_count": len(profiles),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft02_authority_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        profile
+        for profile in profiles
+        if not isinstance(profile, Mapping)
+        or profile.get("authority_gate") != "pass"
+        or not profile.get("official_domain")
+        or not profile.get("source_url")
+        or not profile.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT02 authority gate requires official_domain, source_url, authority_gate=pass, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "authority_checked_record_count": len(profiles) - len(invalid),
+        "record_count": len(profiles),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft02_metadata_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        profile
+        for profile in profiles
+        if not isinstance(profile, Mapping)
+        or profile.get("metadata_only") is not True
+        or profile.get("pdf_downloaded") is not False
+        or profile.get("full_text_extracted") is not False
+        or profile.get("production_affected") is not False
+        or profile.get("real_smtp_sent") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PFT02 HK/MO profiles must stay metadata-only with no PDF/full-text, production, or SMTP side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(profiles) - len(violations),
+        "record_count": len(profiles),
         "blocking_reasons": reasons,
     }
 
