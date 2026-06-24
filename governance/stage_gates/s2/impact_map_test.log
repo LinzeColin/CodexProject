@@ -1,0 +1,35 @@
+S2-GATE impact_map_test.log
+status=PASS
+kind=只读证据快照，不是新的事实源
+recorded_at=2026-06-24T16:20:00+10:00
+
+command:
+  python -B scripts\lean_governance.py changed-scope --base-ref HEAD~1
+
+exit_code:
+  0
+
+observed:
+  root_governance_changed=true
+  all_projects_required=false
+  total_project_count=10
+  selected_project_count=8
+  root_scope_excluded_projects=["EEI","arxiv-daily-push"]
+  selected_projects=["Alpha","EVA_OS","FIFA","OpMe_System","OpenAIDatabase","PFI_BIG_DATA_SIMULATOR","Serenity-Alipay","whkmSalary"]
+
+command:
+  python -B scripts\lean_governance.py ci --changed-only --base-ref HEAD~1
+
+exit_code:
+  0
+
+observed:
+  validation.exit_code=0
+  check_render.checked_count=8
+  budget_telemetry.full_project_scan_avoided_count=2
+  zero_diff.clean=true
+
+related_commits:
+  650b1175 S2PCT01-changed-scope-impact-map
+  44dc559f S2PCT02-hook-ci-budget
+

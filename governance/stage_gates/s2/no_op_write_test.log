@@ -1,0 +1,27 @@
+S2-GATE no_op_write_test.log
+status=PASS
+kind=只读证据快照，不是新的事实源
+recorded_at=2026-06-24T16:20:00+10:00
+
+command:
+  python -B scripts\lean_governance.py render --project Alpha --view development-record --write
+
+exit_code:
+  0
+
+observed:
+  {"command":"render","path":"Alpha","project_id":"Alpha","updated_count":0,"unchanged_count":1,"view":"开发记录","write":true}
+
+command:
+  git diff --exit-code
+
+exit_code:
+  0
+
+conclusion:
+  A second render of the selected Alpha development-record view was content-identical.
+  The renderer reported updated_count=0 and git diff stayed empty.
+
+related_commit:
+  ffb60236 S2PBT03-noop-write-single-view
+

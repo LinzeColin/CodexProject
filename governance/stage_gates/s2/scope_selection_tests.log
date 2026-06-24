@@ -1,0 +1,40 @@
+S2PC-GATE scope_selection_tests.log
+status=PASS
+kind=只读证据快照，不是新的事实源
+recorded_at=2026-06-24T16:20:00+10:00
+
+command:
+  python -B scripts\lean_governance.py changed-scope --base-ref HEAD~1
+
+exit_code:
+  0
+
+observed:
+  changed_files=[
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/budget_guard.py"
+  ]
+  root_governance_changed=true
+  all_projects_required=false
+  root_scope_excluded_projects=["EEI","arxiv-daily-push"]
+  selected_project_count=8
+  total_project_count=10
+
+command:
+  git diff --name-only HEAD -- EEI arxiv-daily-push
+
+exit_code:
+  0
+
+observed:
+  no output
+
+conclusion:
+  Root governance changes do not automatically select all 10 projects.
+  EEI and arxiv-daily-push remain excluded for this Other8 remediation baseline.
+

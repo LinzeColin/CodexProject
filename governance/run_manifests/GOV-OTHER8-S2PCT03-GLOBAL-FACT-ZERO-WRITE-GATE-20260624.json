@@ -1,0 +1,158 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PCT03",
+  "acceptance_ids": [
+    "ACC-S2PCT03",
+    "S2-GATE",
+    "S2PC-GATE"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PCT03",
+  "generated_at": "2026-06-24T16:25:00+10:00",
+  "implementation_base_sha": "44dc559f399a70b8fc23b16f9b4a41fa375c2bba",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:0dcaa8dbf4d7f59d76fa0e708534b180ca1b6f386a2cdbb296ffb483d468d9bd",
+  "changed_files_declared": [
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/workflow_matrix.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "governance/stage_gates/s2/budget_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json"
+  ],
+  "changed_files_actual": [
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/workflow_matrix.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "governance/stage_gates/s2/budget_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/workflow_matrix.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "governance/stage_gates/s2/budget_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json"
+  ],
+  "updated_governance_files": [
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/workflow_matrix.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "governance/stage_gates/s2/budget_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json"
+  ],
+  "change_classification": [
+    "s2_gate_evidence_snapshot",
+    "s2pc_gate_evidence_snapshot",
+    "zero_write_gate",
+    "other8_s2pct03"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Added read-only S2/S2PC gate evidence snapshots for root contract alignment, renderer field coverage, no-op write proof, impact-map selection, workflow matrix, scope selection tests, and budget telemetry. These files explicitly declare they are not new fact sources.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pct03_stage_gate_evidence_snapshots_exist tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pct02_budget_guard_contract_passes -q",
+    "python -m json.tool governance/stage_gates/s2/budget_report.json",
+    "python -B tools/budget_guard.py --self-test",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "python -m json.tool governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json",
+    "git diff --name-only HEAD -- EEI arxiv-daily-push",
+    "git diff --check",
+    "git diff --exit-code"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S2PCT02/S2PCT03 focused gate tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "2 tests OK; S2/S2PC evidence files exist, declare read-only snapshot/not fact source, budget_report parses, and budget gate contract remains PASS."
+    },
+    {
+      "command": "python -m json.tool governance/stage_gates/s2/budget_report.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "budget_report.json parsed successfully with status=PASS and changed-only selected_project_count=8 total_project_count=10."
+    },
+    {
+      "command": "python -B tools/budget_guard.py --self-test",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS; all 10 local workflow, hook, budget telemetry, and zero-write checks true."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 10 registered projects validated with errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0; selected_project_count=8 total_project_count=10 full_project_scan_avoided_count=2; check_render.checked_count=8; zero_diff.clean=true."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --name-only HEAD -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No diff under EEI or arxiv-daily-push."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    },
+    {
+      "command": "git diff --exit-code",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree zero-write gate passed with no tracked diff."
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/workflow_matrix.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "governance/stage_gates/s2/budget_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-GLOBAL-FACT-ZERO-WRITE-GATE-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PCT03 closes S2/S2PC evidence snapshots and zero-write gate without adding a new editable fact source.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PCT03 preserves governance truth in read-only S2/S2PC gate evidence while keeping governance computation out of ordinary PR/Hook development paths. The final gate is a committed-tree git diff --exit-code plus changed-only CI zero_diff proof.",
+  "rollback": "Delete governance/stage_gates/s2 evidence snapshots, remove the S2PCT03 focused test, and delete this manifest.",
+  "unresolved_risks": [
+    "GitHub branch protection and Codex app hook trust remain externally UNVERIFIED without authenticated GitHub/App state.",
+    "Full governance validator tests remain scheduled/manual all only; existing Serenity-Alipay semantic extractor mismatch remains outside S2PCT03.",
+    "S3 implementation work must continue to use focused project tests and changed-only governance gates."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

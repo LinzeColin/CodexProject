@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "kind": "read_only_gate_evidence_snapshot_not_fact_source",
+  "recorded_at": "2026-06-24T16:20:00+10:00",
+  "budget_guard": {
+    "command": "python -B tools/budget_guard.py --self-test",
+    "status": "PASS",
+    "checks": {
+      "workflow_exists": true,
+      "stop_hook_exists": true,
+      "lean_governance_exists": true,
+      "pull_request_uses_changed_only_ci": true,
+      "full_validator_tests_not_on_pull_request": true,
+      "full_governance_only_schedule_or_manual_all": true,
+      "stop_hook_suggests_changed_only_only": true,
+      "stop_hook_declares_event_matrix_and_budget_policy": true,
+      "changed_only_ci_reports_budget_telemetry": true,
+      "changed_only_ci_remains_zero_write": true
+    }
+  },
+  "ci_budget_telemetry": {
+    "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "mode": "changed-only-fast-gate",
+    "unit": "project-scope-proxy",
+    "selected_project_count": 8,
+    "total_project_count": 10,
+    "full_project_scan_avoided_count": 2,
+    "semantic_scope": "changed-only",
+    "check_render_checked_count": 8,
+    "check_render_skipped_count": 0,
+    "write": false,
+    "zero_diff_clean": true,
+    "full_governance_location": "schedule_or_workflow_dispatch_all"
+  },
+  "risk_boundary": {
+    "quality_reduction_allowed": false,
+    "release_gate_kept": true,
+    "ordinary_pr_full_governance": false,
+    "manual_all_full_governance": true,
+    "schedule_full_governance": true
+  }
+}
