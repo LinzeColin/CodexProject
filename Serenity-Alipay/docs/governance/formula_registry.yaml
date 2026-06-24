@@ -5,7 +5,7 @@ formulas:
     model_id: "MOD-003"
     assumption_ids: ["ASM-003"]
     status: "active"
-    expression: "For window w, return_w = close_last / close_start(w) - 1.0. 1m uses latest date minus 31 calendar days, 3m uses latest date minus 93 calendar days, and 10d uses the point at len(points)-11. If the start point is missing or start close is 0, output None."
+    expression: "For window w, return_w = close_last / close_start(w) - 1.0. 1m uses latest date minus 31 calendar days, 3m uses latest date minus 93 calendar days, 12m uses latest date minus 365 calendar days, and 10d uses the point at len(points)-11. If the start point is missing or start close is 0, output None."
     variables:
       - name: "points"
         data_type: "list[PricePoint]"
@@ -27,10 +27,10 @@ formulas:
     evidence_refs: ["Serenity-Alipay/README.md:13"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["Serenity-Alipay/app/core/metrics.py::_return_from_start", "Serenity-Alipay/app/core/metrics.py::_index_for_days", "Serenity-Alipay/app/core/metrics.py::calculate_returns"]
-    implementation_fingerprint: "sha256:845893abbaf70e74334e3f5f2164ec76c6338c3c5eaf18f2d024b0f7ae479f87"
-    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
-    verified_at: "2026-06-21T08:57:39Z"
-    evidence_hash: "sha256:a9a7b5272574b5911b42856d61efaee7c4fab6eb1ce4c2d0edc9ce5beca14043"
+    implementation_fingerprint: "sha256:6b86f0cd84a14dcb9baa23058905aa4d50ff7eda9612af52326a718507ba5087"
+    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
+    verified_at: "2026-06-24T03:39:27Z"
+    evidence_hash: "sha256:fd42df3d1888a15428188ebdbfd04db7efaacb300d5480eb83feb72df9ef7a58"
   - formula_id: "FORM-002"
     model_id: "MOD-003"
     assumption_ids: ["ASM-003"]
@@ -57,15 +57,15 @@ formulas:
     evidence_refs: ["Serenity-Alipay/README.md:12"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["Serenity-Alipay/app/core/metrics.py::max_drawdown_and_recovery", "Serenity-Alipay/app/core/metrics.py::drawdown_over_last_n", "Serenity-Alipay/app/core/metrics.py::calculate_metrics"]
-    implementation_fingerprint: "sha256:1e99ecb424f30fc3ae2c8c88cd1c2b412d84eec9fe472a1184804a9d03079388"
-    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
-    verified_at: "2026-06-21T08:57:39Z"
-    evidence_hash: "sha256:35a8bf4feb41481e8b17c32e4662d54cea0a4853f7c73f1cc81253e125957b3e"
+    implementation_fingerprint: "sha256:8a3a432d6d7b8c98a1c51029f94ef2fbad2e89cc04c8e0d7af6f31fe5ace9085"
+    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
+    verified_at: "2026-06-24T03:39:27Z"
+    evidence_hash: "sha256:6ddf5a3bdae6d7c5c89d4fc3c680b25f1b7d529add08cf12f8474f9de8209f6a"
   - formula_id: "FORM-003"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004", "ASM-006"]
     status: "active"
-    expression: "total_score = data_score + timeliness_score + source_score + return_score + risk_score + executable_score. data_score = max(0,25 - 8*missing_count). timeliness_score = 15 if max(missing_nav_days,missing_holding_days) <= 2 else 0. source_score = 15 if official_source_count >= 2 and no conflict, 7.5 if official_source_count >= 1 and no conflict, else 0. return_score = 15*(benchmark_wins/6). risk_score starts 0, becomes max(0,20 - 20*max_drawdown) when max_drawdown < 0.40, and is capped to min(risk_score,5) when recovery_time_days >= 365. executable_score = 10 unless rule missing or subscription/redemption/fee schedule fields are unavailable or closed."
+    expression: "total_score = data_score + timeliness_score + source_score + return_score + risk_score + executable_score. data_score = max(0,25 - sum(_missing_penalty(field) for missing fields)), with return_windows and nav_history_24m penalized at 20 and other missing fields at 8. timeliness_score = 15 if max(missing_nav_days,missing_holding_days) <= 2 else 0. source_score = 15 if official_source_count >= 2 and no conflict, 7.5 if official_source_count >= 1 and no conflict, else 0. return_score = 15*(benchmark_wins/(len(WINDOWS)*2)). risk_score starts 0, becomes max(0,20 - 20*max_drawdown) when max_drawdown < 0.40, and is capped to min(risk_score,5) when recovery_time_days >= 365. executable_score maxes at 10 for open/open execution, drops to 8 or 7 for limited execution, and is 0 for missing/closed execution."
     variables:
       - name: "missing_count"
         data_type: "int"
@@ -78,7 +78,7 @@ formulas:
       - name: "benchmark_wins"
         data_type: "int"
         unit: "wins"
-        input_domain: "0..6"
+        input_domain: "0..8"
       - name: "max_drawdown"
         data_type: "float"
         unit: "ratio"
@@ -91,10 +91,10 @@ formulas:
     evidence_refs: ["Serenity-Alipay/README.md:338"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["Serenity-Alipay/app/core/scoring.py::score_candidate"]
-    implementation_fingerprint: "sha256:001d0ef5716f5fa3773344ee5c9d3752afef602d3199ed971d65d22be71032ef"
-    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
-    verified_at: "2026-06-21T08:57:39Z"
-    evidence_hash: "sha256:4d96ebfcdf326ee66179a64c5cfec08cd138713714cae3557cd2c5aff5a2967d"
+    implementation_fingerprint: "sha256:15049b7b028c33f5e5e54605cbc840805bb969008bf3329cf0eeb12e01697e2a"
+    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
+    verified_at: "2026-06-24T03:39:27Z"
+    evidence_hash: "sha256:4c167cb1e26a5d04ec402ee33651526140c23e72772e6d3cf9035218caee7ad6"
   - formula_id: "FORM-004"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004"]
@@ -121,7 +121,7 @@ formulas:
     model_id: "MOD-001"
     assumption_ids: ["ASM-004", "ASM-006"]
     status: "active"
-    expression: "Precise gate order: excluded or conservative -> Block/Block. max_drawdown >= 0.40 -> Block/Clear/manual_review. recovery_time_days >= 365 -> Block if return_score < 7.5 or any missing else Manual Review, action Manual Review. stale_days > 2 -> Manual Review. conflict_flag -> Manual Review. official_source_count < 2 -> cap Action-Ready to Watch and action Pause New. fallback_aggregated -> cap Action-Ready to Watch and action Pause New. executable_score == 0 -> cap Action-Ready to Watch and action Pause New. return_score == 0 -> Reduce. Action-Ready -> Increase. Watch -> Maintain."
+    expression: "Precise gate order: excluded or conservative -> Block/Block. max_drawdown >= 0.40 -> Block/Clear/manual_review. recovery_time_days >= 365 -> Block if return_score < 7.5 or any missing else Manual Review, action Manual Review. nav_history_24m missing -> Block/Block/manual_review. stale_days > 2 -> Manual Review. conflict_flag -> Manual Review. official_source_count < 2 -> cap Action-Ready to Watch and action Pause New. fallback_aggregated -> cap Action-Ready to Watch and action Pause New. limited execution -> cap Action-Ready to Watch and action Pause New. executable_score == 0 -> cap Action-Ready to Watch and action Pause New. return_score == 0 -> Reduce. Action-Ready -> Increase. Watch -> Maintain."
     variables:
       - name: "max_drawdown"
         data_type: "float"
@@ -147,15 +147,15 @@ formulas:
     evidence_refs: ["Serenity-Alipay/模型参数文件:9"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["Serenity-Alipay/app/core/scoring.py::_is_conservative", "Serenity-Alipay/app/core/scoring.py::score_candidate"]
-    implementation_fingerprint: "sha256:1fdf4d482080b8bad915dd6694f9bbd3fee10622c5d855827a16a63fa55afd39"
-    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
-    verified_at: "2026-06-21T08:57:39Z"
-    evidence_hash: "sha256:91ac37e9a68285da982e51332a979e7767d5b40ebe7e05c38e8a138c9084f743"
+    implementation_fingerprint: "sha256:bd6e7be0ffd8a8ad8b03a623316778380ad3f2f5abfc1e9f630709807f6f8869"
+    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
+    verified_at: "2026-06-24T03:39:27Z"
+    evidence_hash: "sha256:f4cf6911850bbd54c71683c41094cf63b94ea82f557315bfa777a0d0f31d301d"
   - formula_id: "FORM-006"
     model_id: "MOD-001"
     assumption_ids: ["ASM-004"]
     status: "active"
-    expression: "benchmark_wins counts, for each window in 1m,3m,10d, one win if candidate return > Shanghai Composite return when Shanghai value exists, and one win if candidate return > S&P 500 return when S&P value exists. Equal values are not wins. Missing candidate return skips the window. return_score = 15 * benchmark_wins / 6."
+    expression: "benchmark_wins counts, for each window in 1m,3m,12m,10d, one win if candidate return > Shanghai Composite return when Shanghai value exists, and one win if candidate return > S&P 500 return when S&P value exists. Equal values are not wins. Missing candidate return skips the window. return_score = 15 * benchmark_wins / (len(WINDOWS) * 2), currently 8."
     variables:
       - name: "candidate_return"
         data_type: "float"
@@ -168,8 +168,8 @@ formulas:
       - name: "benchmark_wins"
         data_type: "int"
         unit: "wins"
-        input_domain: "0..6"
-    constraints: "Comparison operator is strictly greater than. Denominator remains 6 even if benchmark values are missing."
+        input_domain: "0..8"
+    constraints: "Comparison operator is strictly greater than. Denominator remains len(WINDOWS) * 2 even if benchmark values are missing."
     missing_policy: "Missing candidate return skips; missing benchmark return cannot add a win."
     output_range: "0..15 points"
     code_refs: ["Serenity-Alipay/app/core/scoring.py:54", "Serenity-Alipay/app/core/scoring.py:117"]
@@ -177,10 +177,10 @@ formulas:
     evidence_refs: ["Serenity-Alipay/README.md:13"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["Serenity-Alipay/app/core/scoring.py::_benchmark_win_count", "Serenity-Alipay/app/core/scoring.py::score_candidate"]
-    implementation_fingerprint: "sha256:a62302cc272d5252a58db4a8d7fec088e0738fe81ff1cbb8b7fe37227c0ac48c"
-    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
-    verified_at: "2026-06-21T08:57:39Z"
-    evidence_hash: "sha256:d730d7036a0be039b704ecf06ad561e89bd3b5f8896760c6d78a945b90542272"
+    implementation_fingerprint: "sha256:8b94ec22446f040b2e11d5ca1ca3a2397d59a04ed4179aed0b9427042bb1b834"
+    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
+    verified_at: "2026-06-24T03:39:27Z"
+    evidence_hash: "sha256:47c37be1b2055b0c73138a5e2944da0ec2df5a440eb6bf315e6ac424cae79eb7"
   - formula_id: "FORM-007"
     model_id: "MOD-002"
     assumption_ids: ["ASM-002", "ASM-006"]
@@ -349,7 +349,7 @@ formulas:
       - name: "weekday"
         data_type: "int"
         unit: "day index"
-        input_domain: "0..6"
+        input_domain: "0..8"
     constraints: "Business day is weekday < 5. Due slot boundary is inclusive for absolute delta <= tolerance."
     missing_policy: "No due slot or weekend returns no run. Preflight blockers force dry-run and draft notification."
     output_range: "slot ID or None; ran, skipped_duplicate, no_due_slot, or non_business_day"
@@ -358,7 +358,7 @@ formulas:
     evidence_refs: ["Serenity-Alipay/README.md:300"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["Serenity-Alipay/app/scheduler.py::SCHEDULE_SLOTS", "Serenity-Alipay/app/scheduler.py::is_business_day", "Serenity-Alipay/app/scheduler.py::due_slot_at", "Serenity-Alipay/app/core/scheduler_runner.py::scheduler_tick", "Serenity-Alipay/app/core/automation_tick.py::automation_tick"]
-    implementation_fingerprint: "sha256:4515233bae8943ec273d7dfdfacacb2688ba56a13f4017270bab8ada5559132a"
-    last_verified_commit: "ef0ee041325f3c2cfb19e0e9f81c99e95a43c96b"
-    verified_at: "2026-06-21T08:57:39Z"
-    evidence_hash: "sha256:31a50dffa889affa812af5822fb5a0a16493915e27edeccf63bac6878332f1c9"
+    implementation_fingerprint: "sha256:7cb60fd066e6b4fb95b0855b03ad963313d4197e08b7aa1d2ccbd5685ba405e2"
+    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
+    verified_at: "2026-06-24T03:39:27Z"
+    evidence_hash: "sha256:8f2c5d985bf2617bc8b55805c420126bc701d3cfd787d7edbe446772563f29f4"

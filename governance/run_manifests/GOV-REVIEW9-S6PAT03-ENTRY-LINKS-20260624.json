@@ -18,7 +18,10 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "changed_files_actual": [
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
     ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    "Serenity-Alipay/docs/governance/formula_registry.yaml",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
     "arxiv-daily-push/AGENTS.md",
     "arxiv-daily-push/CHANGELOG.md",
     "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
@@ -42,6 +45,7 @@
     "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
     "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py",
     "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml",
+    "arxiv-daily-push/tests/test_cloud_dry_run_workflow.py",
     "arxiv-daily-push/tests/test_stage1_bootstrap.py",
     "arxiv-daily-push/tests/test_stage2_sources.py",
     "arxiv-daily-push/tests/test_top_journal_adapter.py",
@@ -55,12 +59,18 @@
     "scripts/generate_governance_dashboard.py",
     "scripts/lean_governance.py",
     "scripts/validate_project_governance.py",
+    "scripts/validate_semantic_extractors.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "compatibility_extension": {
     "reason": "R-CONFLICT / CONTRACT-HASH-MISMATCH compatibility coverage for PR #119 merge-base validation after arxiv-daily-push S2PCT01 / legacy S2P2T01 changes stacked on Review9 root governance.",
     "does_not_change_original_task_scope": true,
-    "does_not_claim_stage2_or_integrated_production_acceptance": true
+    "does_not_claim_stage2_or_integrated_production_acceptance": true,
+    "additional_pr119_ci_repair": {
+      "live_all_arxiv_fetcher_contract": "workflow now passes --fetcher curl to avoid Python CA-store dependence while preserving no-production-side-effect dry-run semantics",
+      "serenity_semantic_registry_sync": "Serenity registry fingerprints and selectors refreshed after latest origin/main merge so repo-wide semantic gate remains true",
+      "does_not_claim_stage2_or_integrated_production_acceptance": true
+    }
   },
   "required_governance_files": [
     "README.md",
@@ -195,6 +205,12 @@
       "exit_code": 0,
       "result": "PASS",
       "observed": "No whitespace errors."
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": "PENDING_RERUN",
+      "result": "PENDING_AFTER_PR119_COMPATIBILITY_EXTENSION",
+      "observed": "changed_files_actual extended for live all-arXiv curl workflow and Serenity semantic registry sync files."
     }
   ],
   "evidence_refs": [

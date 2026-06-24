@@ -525,7 +525,13 @@ def apply_selector_options(value: Any, options: dict[str, str]) -> Any:
             raise SemanticExtractionError(f"join transform requires sequence value, got {value!r}")
         value = options["join"].join(str(item) for item in value)
     if "subtract" not in options:
-        return value
+        if "multiply" not in options:
+            return value
+        factor = float(options["multiply"])
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise SemanticExtractionError(f"multiply transform requires numeric value, got {value!r}")
+        result = float(value) * factor
+        return int(result) if result.is_integer() else result
     amount = float(options["subtract"])
     if not isinstance(value, (int, float)) or isinstance(value, bool):
         raise SemanticExtractionError(f"subtract transform requires numeric value, got {value!r}")
