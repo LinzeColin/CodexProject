@@ -64,6 +64,24 @@ Stage -> Phase -> Task
 | S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 61.54% | S5PBT04 | ACC-S5PBT05 |
 
 
+## V7.1 当前根治理锁
+
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
+- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- contract_sha256: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
+- roadmap_version: `ADP-ROADMAP-V7.1`
+- roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
+- audit_version: `ADP-PARALLEL-AUDIT-V7.1`
+- stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
+- stage2_current_task: `S2PAT05`
+- stage2_shadow_source_task: `S2PBT01`
+- legacy_alias: `S2PBT01 -> S2P1T01`
+- stage2_final_task: `S2PMT07`
+- stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- stage2_integrated_production_accepted: `false`
+- production_forbidden_until: `P0=0; P1=0; S2PMT07 independent review passed`
+- forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
+
 ## 近期事件
 
 | 时间 | 类型 | 摘要 | 任务 | 事实等级 |

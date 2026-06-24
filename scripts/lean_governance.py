@@ -72,6 +72,46 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def load_adp_v7_1_lock(project_root: Path) -> dict[str, Any] | None:
+    lock_path = project_root / "docs" / "pursuing_goal" / "v7_1" / "V7_1_ROOT_LOCK.yaml"
+    if project_root.name != "arxiv-daily-push" or not lock_path.is_file():
+        return None
+    data = governance.load_yaml(lock_path)
+    return data if isinstance(data, dict) else None
+
+
+def v7_1_summary_lines(lock: dict[str, Any] | None) -> list[str]:
+    if not lock:
+        return []
+    contract = lock.get("current_contract") if isinstance(lock.get("current_contract"), dict) else {}
+    stage1 = lock.get("stage1_boundary") if isinstance(lock.get("stage1_boundary"), dict) else {}
+    stage2 = lock.get("stage2_boundary") if isinstance(lock.get("stage2_boundary"), dict) else {}
+    forbidden = lock.get("forbidden_actions_until_integrated_gate")
+    forbidden_items = []
+    if isinstance(forbidden, dict):
+        forbidden_items = [key for key, value in forbidden.items() if value is True]
+    return [
+        "",
+        "## V7.1 当前根治理锁",
+        "",
+        f"- contract_version: `{text_or_na(contract.get('contract_version'))}`",
+        f"- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`",
+        f"- contract_sha256: `{text_or_na(contract.get('contract_sha256'))}`",
+        f"- roadmap_version: `{text_or_na(contract.get('roadmap_version'))}`",
+        f"- roadmap_sha256: `{text_or_na(contract.get('roadmap_sha256'))}`",
+        f"- audit_version: `{text_or_na(contract.get('audit_version'))}`",
+        f"- stage1_gate: `{text_or_na(stage1.get('maintained_gate') or stage1.get('accepted_gate'))}`",
+        f"- stage2_current_task: `{text_or_na(stage2.get('current_task_id'))}`",
+        f"- stage2_shadow_source_task: `{text_or_na(stage2.get('current_shadow_source_task'))}`",
+        f"- legacy_alias: `S2PBT01 -> S2P1T01`",
+        f"- stage2_final_task: `{text_or_na(stage2.get('final_task'))}`",
+        f"- stage2_stop_gate: `{text_or_na(stage2.get('stop_gate'))}`",
+        f"- stage2_integrated_production_accepted: `{str(bool(stage2.get('production_accepted'))).lower()}`",
+        f"- production_forbidden_until: `P0=0; P1=0; S2PMT07 independent review passed`",
+        f"- forbidden_actions: `{text_or_na(forbidden_items)}`",
+    ]
+
+
 def missing_paths(states: list[dict[str, Any]]) -> list[str]:
     return [str(item["path"]) for item in states if not item["exists"]]
 
@@ -228,6 +268,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
     features = [item for item in governance.as_list(project_facts.get("features")) if isinstance(item, dict)]
     evidence = [item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)]
     totals = roadmap_totals(roadmap)
+    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
     lines = [
         "# 功能清单",
         "",
@@ -254,6 +295,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
         lines.append(
             f"| {text_or_na(feature.get('feature_id'))} | {text_or_na(feature.get('name'))} | {text_or_na(feature.get('status'))} | {text_or_na(feature.get('description'))} | {text_or_na(feature.get('fact_level'))} |"
         )
+    lines.extend(v7_1_summary_lines(lock))
     lines.extend(["", "## 证据", "", "| 证据 ID | 类型 | 引用 | 事实等级 |", "|---|---|---|---|"])
     for item in evidence:
         lines.append(
@@ -264,6 +306,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
 
 def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> str:
     totals = roadmap_totals(roadmap)
+    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
     lines = [
         "# 开发记录",
         "",
@@ -286,6 +329,7 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
         "",
     ]
     lines.extend(render_roadmap_body(roadmap))
+    lines.extend(v7_1_summary_lines(lock))
     lines.extend(["", "## 近期事件", "", "| 时间 | 类型 | 摘要 | 任务 | 事实等级 |", "|---|---|---|---|---|"])
     for event in events:
         lines.append(
@@ -298,6 +342,7 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     models = [item for item in governance.as_list(project_facts.get("models")) if isinstance(item, dict)]
     formulas = [item for item in governance.as_list(project_facts.get("formulas")) if isinstance(item, dict)]
     parameters = [item for item in governance.as_list(project_facts.get("parameters")) if isinstance(item, dict)]
+    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
     lines = [
         "# 模型参数文件",
         "",
@@ -315,9 +360,21 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
         f"- next_gate: `{text_or_na(roadmap.get('next_gate_id'))}`",
         "- next_unique_task: `NOT_APPLICABLE`",
         f"- evidence_status: `{text_or_na(project_facts.get('fact_level'))}`",
-        "",
-        "## 模型",
     ]
+    lines.extend(v7_1_summary_lines(lock))
+    if lock:
+        lines.extend(
+            [
+                "",
+                "## V7.1 根治理说明",
+                "",
+                "- V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。",
+                "- `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。",
+                "- `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。",
+                "- `S2PBT01` 是 Stage2 来源 Shadow 线程任务；当前治理修复任务是 `S2PAT05`。",
+            ]
+        )
+    lines.extend(["", "## 模型"])
     for model in models:
         lines.extend(
             [

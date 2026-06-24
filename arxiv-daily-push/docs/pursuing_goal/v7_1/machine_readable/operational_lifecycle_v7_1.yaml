@@ -1,0 +1,81 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+states:
+- STOPPED
+- STARTING
+- RECOVERING
+- LEADER
+- RUNNING
+- DRAINING
+- CHECKPOINTING
+- CLEANING
+- STOPPED
+- FAILED
+transitions:
+- - STOPPED
+  - STARTING
+- - STARTING
+  - RECOVERING
+- - STARTING
+  - LEADER
+- - RECOVERING
+  - LEADER
+- - LEADER
+  - RUNNING
+- - RUNNING
+  - DRAINING
+- - DRAINING
+  - CHECKPOINTING
+- - CHECKPOINTING
+  - CLEANING
+- - CLEANING
+  - STOPPED
+- - STARTING
+  - FAILED
+- - RECOVERING
+  - FAILED
+- - RUNNING
+  - FAILED
+- - DRAINING
+  - FAILED
+- - CHECKPOINTING
+  - FAILED
+- - FAILED
+  - RECOVERING
+lease_fields:
+- owner_id
+- host_id
+- boot_id
+- pid
+- acquired_at
+- lease_until
+- fencing_token
+- heartbeat_at
+startup_order:
+- preflight
+- acquire_lease
+- schema_check
+- reconcile_temp
+- reconcile_outbox
+- reconcile_inflight
+- run
+shutdown_order:
+- stop_new_claims
+- finish_or_requeue_inflight
+- flush_outbox_state
+- checkpoint_database
+- persist_runtime_receipt
+- safe_cache_cleanup
+- optional_backup
+- release_lease
+- exit
+cache_classes:
+  durable_evidence: never_auto_delete
+  rebuildable_cache: ttl_and_max_bytes
+  temporary: delete_after_verified_publish_or_on_startup_reconcile
+required_receipts:
+- startup_receipt
+- run_receipt
+- shutdown_receipt
+- cleanup_receipt
+- backup_receipt

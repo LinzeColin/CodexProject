@@ -927,6 +927,14 @@ def existing_assurance_tree(project_path: Path) -> str | None:
     return tree if re.fullmatch(r"[0-9a-f]{40}", tree) else None
 
 
+def existing_assurance_status(project_path: Path) -> dict[str, Any]:
+    path = project_path / "docs/governance/ASSURANCE_STATUS.yaml"
+    if not path.exists():
+        return {}
+    data = structural.load_yaml(path)
+    return data if isinstance(data, dict) else {}
+
+
 def existing_root_base() -> str | None:
     for path in (ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md", ROOT / "README.md"):
         if not path.exists():
@@ -1056,6 +1064,12 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     event_counts = event_binding_counts(events)
     evidence_freshness_status = "PARTIAL" if event_counts["legacy_unbound_events"] else "VERIFIED"
     methodological_status = "UNVERIFIED" if policy.get("empirical") in {"unknown", "partial"} else "VERIFIED"
+    existing_assurance = existing_assurance_status(project_path)
+    existing_owner_decision = (
+        existing_assurance.get("owner_decision")
+        if isinstance(existing_assurance.get("owner_decision"), dict)
+        else {}
+    )
     next_task = select_next_task(
         project_id,
         tasks,
@@ -1078,6 +1092,69 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         and str(next_task.get("task_id") or "").startswith("S1P5T03-R")
     ):
         release_gate = "STRICT_ARXIV_PRODUCTION_ACCEPTANCE_REOPENED_PENDING_S1P5T03R_CLOUD_CI"
+    owner_decision = {
+        "required": True,
+        "decision_id": str(decision_policy.get("decision_id") or f"DEC-{project_id}-REVIEW8-001"),
+        "review_id": str(decision_policy.get("review_id") or "REVIEW8"),
+        "project_id": project_id,
+        "decision_question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
+        "question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
+        "human_owner_role": str(decision_policy.get("owner_role") or "project_owner"),
+        "human_assignment_status": str(decision_policy.get("assignment") or "HUMAN_ASSIGNMENT_REQUIRED"),
+        "current_recommendation": str(decision_policy.get("recommendation") or "A: fund project-specific evidence collection"),
+        "option_a": str(decision_policy.get("option_a") or "Collect the project-specific evidence required by the current blocker."),
+        "option_b": str(decision_policy.get("option_b") or "Keep the project blocked or conditional until evidence exists."),
+        "option_c": str(decision_policy.get("option_c") or "Pause this project from delivery claims."),
+        "options": [
+            str(decision_policy.get("option_a") or "Collect the project-specific evidence required by the current blocker."),
+            str(decision_policy.get("option_b") or "Keep the project blocked or conditional until evidence exists."),
+            str(decision_policy.get("option_c") or "Pause this project from delivery claims."),
+        ],
+        "estimated_effort": str(decision_policy.get("effort") or "project_owner review required"),
+        "estimated_cost_or_resource": str(decision_policy.get("resource") or "owner time and evidence collection"),
+        "expected_benefit": str(decision_policy.get("benefit") or "close the current evidence blocker"),
+        "principal_risks": str(decision_policy.get("risks") or "evidence remains missing or unsuitable"),
+        "evidence_required": str(decision_policy.get("evidence") or "project-specific evidence manifest"),
+        "decision_deadline_or_priority": str(decision_policy.get("priority") or "P1"),
+        "consequence_of_no_decision": str(decision_policy.get("no_decision") or "readiness remains blocked"),
+        "unblock_task_id": next_task["task_id"],
+        "acceptance_ids": next_task["acceptance_ids"] or ["HUMAN-ACTION-REQUIRED"],
+        "generated_from_refs": [f"{project.get('path')}/docs/governance/ASSURANCE_STATUS.yaml", f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
+        "last_reviewed_at": max_event_time(events),
+    }
+    for key, value in existing_owner_decision.items():
+        if value not in (None, ""):
+            owner_decision[key] = value
+    if "decision_question" not in owner_decision and "question" in owner_decision:
+        owner_decision["decision_question"] = owner_decision["question"]
+    if "question" not in owner_decision and "decision_question" in owner_decision:
+        owner_decision["question"] = owner_decision["decision_question"]
+
+    delivery_readiness = {
+        "status": assurance_status(str(policy.get("readiness") or "blocked")),
+        "release_gate": release_gate,
+        "blocker_ids": unresolved[:8],
+    }
+    if project_id == "arxiv-daily-push" and "V7_1" in release_gate:
+        delivery_readiness.update(
+            {
+                "v7_contract": str(matrix.get("current_v7_contract_version") or "UNKNOWN"),
+                "v7_contract_hash": str(matrix.get("v7_product_contract_sha256") or "UNKNOWN"),
+                "v7_roadmap_hash": str(matrix.get("v7_roadmap_sha256") or "UNKNOWN"),
+                "v7_parallel_audit": str(matrix.get("v7_parallel_audit_version") or "UNKNOWN"),
+                "v7_parallel_audit_hash": str(matrix.get("v7_parallel_audit_sha256") or "UNKNOWN"),
+                "open_p0_findings": matrix.get("v7_open_p0_findings", "UNKNOWN"),
+                "open_p1_findings": matrix.get("v7_open_p1_findings", "UNKNOWN"),
+                "production_forbidden_until": str(matrix.get("stage2_production_forbidden_until") or "UNKNOWN"),
+                "stage2_stop_gate": str(matrix.get("stage2_stop_gate") or "UNKNOWN"),
+                "stage2_integrated_production_accepted": bool(
+                    matrix.get("stage2_integrated_production_accepted", False)
+                ),
+                "parallel_shadow_source_task": str(matrix.get("current_v7_shadow_source_task_id") or "UNKNOWN"),
+                "current_v7_task_id": str(matrix.get("current_v7_task_id") or "UNKNOWN"),
+            }
+        )
+
     assurance = {
         "project_id": project_id,
         "as_of_event_id": str(events[-1].get("event_id") or events[-1].get("iteration_id") or "NONE") if events else "NONE",
@@ -1152,42 +1229,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "evidence_refs": [f"{project.get('path')}/docs/governance/development_events.jsonl"],
             },
         },
-        "delivery_readiness": {
-            "status": assurance_status(str(policy.get("readiness") or "blocked")),
-            "release_gate": release_gate,
-            "blocker_ids": unresolved[:8],
-        },
+        "delivery_readiness": delivery_readiness,
         "next_executable_task": next_task,
-        "owner_decision": {
-            "required": True,
-            "decision_id": str(decision_policy.get("decision_id") or f"DEC-{project_id}-REVIEW8-001"),
-            "review_id": str(decision_policy.get("review_id") or "REVIEW8"),
-            "project_id": project_id,
-            "decision_question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
-            "question": str(decision_policy.get("question") or policy.get("decision") or "Decide the next evidence investment."),
-            "human_owner_role": str(decision_policy.get("owner_role") or "project_owner"),
-            "human_assignment_status": str(decision_policy.get("assignment") or "HUMAN_ASSIGNMENT_REQUIRED"),
-            "current_recommendation": str(decision_policy.get("recommendation") or "A: fund project-specific evidence collection"),
-            "option_a": str(decision_policy.get("option_a") or "Collect the project-specific evidence required by the current blocker."),
-            "option_b": str(decision_policy.get("option_b") or "Keep the project blocked or conditional until evidence exists."),
-            "option_c": str(decision_policy.get("option_c") or "Pause this project from delivery claims."),
-            "options": [
-                str(decision_policy.get("option_a") or "Collect the project-specific evidence required by the current blocker."),
-                str(decision_policy.get("option_b") or "Keep the project blocked or conditional until evidence exists."),
-                str(decision_policy.get("option_c") or "Pause this project from delivery claims."),
-            ],
-            "estimated_effort": str(decision_policy.get("effort") or "project_owner review required"),
-            "estimated_cost_or_resource": str(decision_policy.get("resource") or "owner time and evidence collection"),
-            "expected_benefit": str(decision_policy.get("benefit") or "close the current evidence blocker"),
-            "principal_risks": str(decision_policy.get("risks") or "evidence remains missing or unsuitable"),
-            "evidence_required": str(decision_policy.get("evidence") or "project-specific evidence manifest"),
-            "decision_deadline_or_priority": str(decision_policy.get("priority") or "P1"),
-            "consequence_of_no_decision": str(decision_policy.get("no_decision") or "readiness remains blocked"),
-            "unblock_task_id": next_task["task_id"],
-            "acceptance_ids": next_task["acceptance_ids"] or ["HUMAN-ACTION-REQUIRED"],
-            "generated_from_refs": [f"{project.get('path')}/docs/governance/ASSURANCE_STATUS.yaml", f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
-            "last_reviewed_at": max_event_time(events),
-        },
+        "owner_decision": owner_decision,
     }
     return {
         "project_id": project_id,
@@ -1465,6 +1509,23 @@ def render_status(item: dict[str, Any]) -> str:
     assurance = item["assurance"]
     dims = assurance["dimensions"]
     counts = item["counts"]
+    delivery = assurance["delivery_readiness"]
+    v7_delivery_lines = ""
+    if delivery.get("stage2_stop_gate"):
+        stage2_accepted = str(bool(delivery.get("stage2_integrated_production_accepted"))).lower()
+        v7_delivery_lines = (
+            f"- V7 contract: `{delivery.get('v7_contract', 'UNKNOWN')}`\n"
+            f"- V7 contract hash: `{delivery.get('v7_contract_hash', 'UNKNOWN')}`\n"
+            f"- V7 roadmap hash: `{delivery.get('v7_roadmap_hash', 'UNKNOWN')}`\n"
+            f"- V7.1 parallel audit: `{delivery.get('v7_parallel_audit', 'UNKNOWN')}`\n"
+            f"- V7.1 audit hash: `{delivery.get('v7_parallel_audit_hash', 'UNKNOWN')}`\n"
+            f"- Open audit blockers: `P0={delivery.get('open_p0_findings', 'UNKNOWN')} / P1={delivery.get('open_p1_findings', 'UNKNOWN')}`\n"
+            f"- Production-forbidden until: `{delivery.get('production_forbidden_until', 'UNKNOWN')}`\n"
+            f"- Stage 2 stop gate: `{delivery.get('stage2_stop_gate', 'UNKNOWN')}`\n"
+            f"- Stage 2 integrated accepted: `{stage2_accepted}`\n"
+            f"- Next governance task: `{delivery.get('current_v7_task_id', 'UNKNOWN')}`\n"
+            f"- Parallel shadow source task: `{delivery.get('parallel_shadow_source_task', 'UNKNOWN')}`\n"
+        )
     return f"""# Project Governance Status
 
 ## Snapshot Metadata
@@ -1503,7 +1564,7 @@ def render_status(item: dict[str, Any]) -> str:
 
 - Readiness: `{assurance['delivery_readiness']['status']}`
 - Release gate: `{assurance['delivery_readiness']['release_gate']}`
-- Next executable task: `{assurance['next_executable_task']['task_id']}`
+{v7_delivery_lines}- Next executable task: `{assurance['next_executable_task']['task_id']}`
 - Pending/stale events: `{item['pending_event_count']}`
 - Tree-bound events: `{item['event_binding_counts']['tree_bound_events']}`
 - Commit-bound events: `{item['event_binding_counts']['commit_bound_events']}`
