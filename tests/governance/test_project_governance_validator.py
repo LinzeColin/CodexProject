@@ -3176,8 +3176,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(counts["root_generated_or_status_view"], 3)
         self.assertGreater(sum(int(row["active_reference_count"]) for row in rows), 0)
 
+        later_changed = set()
+        s6pat02_manifest = ROOT / "governance" / "run_manifests" / "GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json"
+        if s6pat02_manifest.exists():
+            later_changed.update(json.loads(s6pat02_manifest.read_text(encoding="utf-8"))["changed_files_actual"])
+
         for row in rows:
             source = ROOT / row["source_path"]
+            if not source.exists():
+                self.assertEqual(row["category"], "root_generated_or_status_view", row["source_path"])
+                self.assertIn("s6pat02_generated_view_removal", row["archive_action"])
+                continue
+            if row["source_path"] in later_changed:
+                self.assertIn(row["category"], {"root_legacy_governance_script", "root_generated_or_status_view"})
+                continue
             self.assertTrue(source.is_file(), row["source_path"])
             blob = subprocess.run(
                 ["git", "show", f"HEAD:{row['source_path']}"],
@@ -3218,6 +3230,35 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["stage6_actions_performed"]["ci_mode_required_enabled"])
         self.assertIn("S6PAT02", manifest["next_required_tasks"])
         self.assertIn("S6PAT03", manifest["next_required_tasks"])
+
+    def test_review9_s6pat02_root_generated_views_are_artifact_only(self) -> None:
+        for rel_path in (
+            "GOVERNANCE_DASHBOARD.md",
+            "OWNER_PORTFOLIO.md",
+            "governance/binding_backlog.yaml",
+        ):
+            self.assertFalse((ROOT / rel_path).exists(), rel_path)
+
+        projects = load_validator_module().load_yaml(ROOT / "governance" / "projects.yaml")
+        required = set(projects["root_governance"]["required_files"])
+        self.assertFalse(
+            required
+            & {
+                "GOVERNANCE_DASHBOARD.md",
+                "OWNER_PORTFOLIO.md",
+                "governance/binding_backlog.yaml",
+            }
+        )
+
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        self.assertIn("--root-artifact-dir", workflow)
+        self.assertIn("governance-generated-views", workflow)
+        self.assertNotIn("GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md governance/binding_backlog.yaml", workflow)
+
+    def test_review9_s6pat02_generator_exposes_root_artifact_mode(self) -> None:
+        dashboard = load_dashboard_module()
+        self.assertIn("GOVERNANCE_DASHBOARD.md", dashboard.ROOT_OUTPUT_REL_PATHS)
+        self.assertIn("root_artifact_dir", dashboard.generate.__code__.co_varnames)
 
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
@@ -3455,7 +3496,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_review5_root_governance_change_requires_sync_markers(self) -> None:
         sync = load_sync_module()
-        changed = ["governance/projects.yaml", "GOVERNANCE_DASHBOARD.md"]
+        changed = ["governance/projects.yaml", "README.md"]
         validation = sync.SyncValidation()
 
         sync.root_sync_requirements(validation, ["governance/projects.yaml"], changed)
@@ -4185,13 +4226,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         quality = load_information_quality_module()
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
-            (tmp_path / "README.md").write_text(
+            status_path = tmp_path / "P" / "docs" / "governance" / "STATUS.md"
+            status_path.parent.mkdir(parents=True)
+            status_path.write_text(
                 "source_base_commit\nsource_snapshot_hash\ngenerator_version\nPENDING\n",
                 encoding="utf-8",
             )
             with patch.object(quality, "ROOT", tmp_path):
                 gate = quality.Gate()
-                quality.check_generated_views(gate, [])
+                quality.check_generated_views(gate, [{"path": "P"}], include_root=False)
         self.assertTrue(any(item.code == "BARE_PENDING" for item in gate.errors), gate.errors)
 
     def test_review7_binding_backlog_preserves_legacy_unbound_events(self) -> None:
@@ -4894,9 +4937,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/run_manifests/GOV-EEI-DASHBOARD-SYNC-20260622.json",
         }:
             self.assertIn(path, changed)
-        backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
-        eei_backlog = backlog_text.split('project_id: "EEI"', 1)[1].split('project_id: "EVA_OS"', 1)[0]
-        self.assertIn("precommit_pending_events: 23", eei_backlog)
+        self.assertFalse((ROOT / "governance" / "binding_backlog.yaml").exists())
 
     def test_eei_a202_dashboard_sync_manifest_binds_root_views(self) -> None:
         manifest = json.loads(
@@ -4927,11 +4968,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/run_manifests/GOV-EEI-A202-DASHBOARD-SYNC-20260623.json",
         }:
             self.assertIn(path, changed)
-        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn(
-            "source_snapshot_hash: `sha256:c7ced35444971c12ee3972e938dd0d98cf627e4afca460cc7bd97703ab91764e`",
-            dashboard_text,
-        )
+        self.assertFalse((ROOT / "GOVERNANCE_DASHBOARD.md").exists())
 
     def test_adp_s104_dashboard_sync_manifest_binds_root_views(self) -> None:
         manifest = json.loads(
@@ -4959,11 +4996,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "governance/run_manifests/ADP-S1-04-DASHBOARD-SYNC-20260622.json",
         }:
             self.assertIn(path, changed)
-        dashboard_text = (ROOT / "GOVERNANCE_DASHBOARD.md").read_text(encoding="utf-8")
-        self.assertIn("| `arxiv-daily-push` | `0.23.0` |", dashboard_text)
-        backlog_text = (ROOT / "governance" / "binding_backlog.yaml").read_text(encoding="utf-8")
-        adp_backlog = backlog_text.split('project_id: "arxiv-daily-push"', 1)[1].split("next_task:", 1)[0]
-        self.assertIn("precommit_pending_events: 30", adp_backlog)
+        self.assertFalse((ROOT / "GOVERNANCE_DASHBOARD.md").exists())
+        self.assertFalse((ROOT / "governance" / "binding_backlog.yaml").exists())
 
     def test_review5_run_manifest_supports_post_commit_binding_fields(self) -> None:
         manifest = json.loads(
@@ -5689,15 +5723,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertRegex(data["source_base_commit"], r"^[0-9a-f]{40}$")
             self.assertRegex(data["source_snapshot_hash"], r"^sha256:[0-9a-f]{64}$")
 
-    def test_review6_final_generated_views_have_real_metadata(self) -> None:
-        paths = [ROOT / "README.md", ROOT / "GOVERNANCE_DASHBOARD.md", ROOT / "OWNER_PORTFOLIO.md"]
-        for path in paths:
-            text = path.read_text(encoding="utf-8")
-            self.assertIn("source_base_commit", text)
-            self.assertIn("source_snapshot_hash", text)
-            self.assertIn("generator_version", text)
-            self.assertNotIn("DETERMINISTIC_GENERATION", text)
-            self.assertNotIn("CURRENT_CHECKOUT", text)
+    def test_review9_s6pat02_root_entry_is_human_maintained(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("AGENTS.md", readme)
+        self.assertIn("docs/governance/STANDARD.md", readme)
+        self.assertIn("功能清单", readme)
+        self.assertNotIn("GOVERNANCE_DASHBOARD.md", readme)
+        self.assertNotIn("OWNER_PORTFOLIO.md", readme)
+        self.assertNotIn("source_snapshot_hash", readme)
 
 
 if __name__ == "__main__":

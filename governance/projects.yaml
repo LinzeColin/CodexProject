@@ -3,9 +3,6 @@ root_governance:
   ci_mode: "required"
   required_files:
     - "AGENTS.md"
-    - "GOVERNANCE_DASHBOARD.md"
-    - "OWNER_PORTFOLIO.md"
-    - "governance/binding_backlog.yaml"
     - "docs/governance/STANDARD.md"
     - "docs/governance/templates/MODEL_SPEC.template.md"
     - "docs/governance/templates/DEVELOPMENT_LEDGER.template.md"
