@@ -22,6 +22,14 @@ sys.dont_write_bytecode = True
 ROOT = governance.ROOT
 PROJECTS_FILE = governance.PROJECTS_FILE
 HUMAN_ENTRY_FILES = ["功能清单", "开发记录", "模型参数文件", "VERSION", "CHANGELOG.md"]
+RENDER_VIEW_ALIASES = {
+    "feature-list": "功能清单",
+    "功能清单": "功能清单",
+    "development-record": "开发记录",
+    "开发记录": "开发记录",
+    "model-parameters": "模型参数文件",
+    "模型参数文件": "模型参数文件",
+}
 LEAN_CANONICAL_FILES = [
     "docs/governance/project.yaml",
     "docs/governance/roadmap.yaml",
@@ -554,22 +562,54 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     return "\n".join(lines).rstrip() + "\n"
 
 
-def render_project_files(project_root: Path, *, write: bool = False) -> dict[str, Any]:
-    project_facts, roadmap, events = load_project_facts(project_root)
-    rendered = {
+def rendered_project_texts(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, str]:
+    return {
         "功能清单": render_feature_list(project_facts, roadmap),
         "开发记录": render_development_record(project_facts, roadmap, events),
         "模型参数文件": render_model_parameters(project_facts, roadmap),
     }
+
+
+def selected_rendered_texts(rendered: dict[str, str], view: str | None = None) -> dict[str, str]:
+    if not view:
+        return rendered
+    selected = RENDER_VIEW_ALIASES.get(view)
+    if not selected:
+        allowed = ", ".join(sorted(RENDER_VIEW_ALIASES))
+        raise ValueError(f"Unknown render view: {view}; expected one of {allowed}")
+    return {selected: rendered[selected]}
+
+
+def render_project_files(project_root: Path, *, write: bool = False, view: str | None = None) -> dict[str, Any]:
+    project_facts, roadmap, events = load_project_facts(project_root)
+    rendered = selected_rendered_texts(rendered_project_texts(project_facts, roadmap, events), view)
+    file_results: list[dict[str, Any]] = []
     if write:
         for rel_path, text in rendered.items():
-            (project_root / rel_path).write_text(text, encoding="utf-8", newline="\n")
-    return {
-        "write": write,
-        "files": [
+            path = project_root / rel_path
+            previous = path.read_text(encoding="utf-8") if path.exists() else None
+            changed = previous != text
+            if changed:
+                path.write_text(text, encoding="utf-8", newline="\n")
+            file_results.append(
+                {
+                    "path": rel_path,
+                    "bytes": len(text.encode("utf-8")),
+                    "sha256": sha256_text(text),
+                    "changed": changed,
+                }
+            )
+    else:
+        file_results = [
             {"path": path, "bytes": len(text.encode("utf-8")), "sha256": sha256_text(text)}
             for path, text in rendered.items()
-        ],
+        ]
+    return {
+        "write": write,
+        "view": RENDER_VIEW_ALIASES.get(view, "all") if view else "all",
+        "files": file_results,
+        "updated_count": sum(1 for item in file_results if item.get("changed") is True),
+        "unchanged_count": sum(1 for item in file_results if item.get("changed") is False),
     }
 
 
@@ -601,13 +641,9 @@ def collect_reference_issues(project_facts: dict[str, Any]) -> list[dict[str, st
     return issues
 
 
-def check_render_project_files(project_root: Path) -> dict[str, Any]:
+def check_render_project_files(project_root: Path, view: str | None = None) -> dict[str, Any]:
     project_facts, roadmap, events = load_project_facts(project_root)
-    rendered = {
-        "功能清单": render_feature_list(project_facts, roadmap),
-        "开发记录": render_development_record(project_facts, roadmap, events),
-        "模型参数文件": render_model_parameters(project_facts, roadmap),
-    }
+    rendered = selected_rendered_texts(rendered_project_texts(project_facts, roadmap, events), view)
     drift: list[dict[str, Any]] = []
     for rel_path, expected in rendered.items():
         path = project_root / rel_path
@@ -624,6 +660,7 @@ def check_render_project_files(project_root: Path) -> dict[str, Any]:
     reference_issues = collect_reference_issues(project_facts)
     return {
         "write": False,
+        "view": RENDER_VIEW_ALIASES.get(view, "all") if view else "all",
         "drift": drift,
         "drift_count": len(drift),
         "reference_issues": reference_issues,
@@ -631,13 +668,20 @@ def check_render_project_files(project_root: Path) -> dict[str, Any]:
     }
 
 
-def render_registered_project(project_selector: str, *, write: bool, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
+def render_registered_project(
+    project_selector: str,
+    *,
+    write: bool,
+    view: str | None = None,
+    root: Path = ROOT,
+    projects_file: Path = PROJECTS_FILE,
+) -> dict[str, Any]:
     config = governance.load_yaml(projects_file)
     if not isinstance(config, dict):
         raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
     project = registered_project(config, project_selector)
     project_path = str(project.get("path") or "").replace("\\", "/").rstrip("/")
-    result = render_project_files(root / project_path, write=write)
+    result = render_project_files(root / project_path, write=write, view=view)
     return {
         "schema_version": 1,
         "command": "render",
@@ -647,13 +691,19 @@ def render_registered_project(project_selector: str, *, write: bool, root: Path 
     }
 
 
-def check_render_registered_project(project_selector: str, *, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
+def check_render_registered_project(
+    project_selector: str,
+    *,
+    view: str | None = None,
+    root: Path = ROOT,
+    projects_file: Path = PROJECTS_FILE,
+) -> dict[str, Any]:
     config = governance.load_yaml(projects_file)
     if not isinstance(config, dict):
         raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
     project = registered_project(config, project_selector)
     project_path = str(project.get("path") or "").replace("\\", "/").rstrip("/")
-    result = check_render_project_files(root / project_path)
+    result = check_render_project_files(root / project_path, view=view)
     return {
         "schema_version": 1,
         "command": "check-render",
@@ -860,9 +910,11 @@ def main(argv: list[str] | None = None) -> int:
     changed_scope.add_argument("--base-ref", help="Explicit base commit/ref for changed-scope diff selection.")
     render = subparsers.add_parser("render", help="Render one project's human entry files from Lean canonical facts.")
     render.add_argument("--project", required=True, help="Registered project_id or project path.")
+    render.add_argument("--view", help="Optional single view alias or human entry filename to render.")
     render.add_argument("--write", action="store_true", help="Write rendered files to the selected project root.")
     check_render = subparsers.add_parser("check-render", help="Compare rendered human files in memory without writing.")
     check_render.add_argument("--project", required=True, help="Registered project_id or project path.")
+    check_render.add_argument("--view", help="Optional single view alias or human entry filename to check.")
     ci = subparsers.add_parser("ci", help="Run the read-only changed-only CI orchestration.")
     ci_scope = ci.add_mutually_exclusive_group(required=True)
     ci_scope.add_argument("--changed-only", action="store_true", help="Run the PR/main changed-only CI gate.")
@@ -889,11 +941,17 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "render":
-        summary = render_registered_project(args.project, write=args.write, root=ROOT, projects_file=PROJECTS_FILE)
+        summary = render_registered_project(
+            args.project,
+            write=args.write,
+            view=args.view,
+            root=ROOT,
+            projects_file=PROJECTS_FILE,
+        )
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "check-render":
-        summary = check_render_registered_project(args.project, root=ROOT, projects_file=PROJECTS_FILE)
+        summary = check_render_registered_project(args.project, view=args.view, root=ROOT, projects_file=PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "ci":

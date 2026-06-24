@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PBT03-NOOP-WRITE-SINGLE-VIEW-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PBT03",
+  "acceptance_ids": [
+    "ACC-S2PBT03"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PBT03",
+  "generated_at": "2026-06-24T15:24:20+10:00",
+  "implementation_base_sha": "e05aa93e8a4283a6bd5ba8dc3de452bc14e29b7e",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f941d9a36dac4d2a3835714757097c5a5dad8b1b6595b568fdca29d904bf446f",
+  "changed_files_declared": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT03-NOOP-WRITE-SINGLE-VIEW-20260624.json"
+  ],
+  "changed_files_actual": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT03-NOOP-WRITE-SINGLE-VIEW-20260624.json"
+  ],
+  "required_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT03-NOOP-WRITE-SINGLE-VIEW-20260624.json"
+  ],
+  "updated_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT03-NOOP-WRITE-SINGLE-VIEW-20260624.json"
+  ],
+  "change_classification": [
+    "content_hash_noop_write",
+    "single_view_render_selection",
+    "other8_s2pbt03"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Render write now compares existing file content before writing and supports --view for feature-list, development-record, and model-parameters.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt03_render_write_is_noop_and_supports_single_view tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_check_render_is_read_only_and_reports_drift_and_refs -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py check-render --project Alpha --view development-record",
+    "python -B scripts/lean_governance.py render --project Alpha --view development-record --write",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --name-only HEAD",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S2PBT03 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "3 tests OK; temp project proves first single-view write updates one file, second identical write returns updated_count=0 unchanged_count=1, and unknown view is rejected."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 10 registered projects validated with errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project Alpha --view development-record",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Single-view check-render returned drift_count=0 reference_issue_count=0 for Alpha development record."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py render --project Alpha --view development-record --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Real repo no-op write returned updated_count=0 unchanged_count=1 for Alpha/开发记录."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0; selected_project_count=8; check_render.checked_count=8; zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --name-only HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "After real no-op write, diff remained limited to scripts/lean_governance.py and tests/governance/test_project_governance_validator.py before manifest addition."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors before manifest addition."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT03-NOOP-WRITE-SINGLE-VIEW-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PBT03 makes render writes content-hash no-op and supports single-view selection.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PBT03 prevents repeated render writes when content is unchanged and allows selecting one human entry view, reducing unnecessary file churn and token/CI scope expansion.",
+  "rollback": "Revert scripts/lean_governance.py and the S2PBT03 focused test, then delete this manifest.",
+  "unresolved_risks": [
+    "S2 stage still needs S2PC hook/CI/token budget tasks before the stage gate can close.",
+    "Pull-request workflow currently still runs the full governance test suite; the existing Serenity-Alipay semantic extractor mismatch remains a PR CI blocker until S2PC CI stratification or semantic registry remediation."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
