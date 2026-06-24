@@ -452,9 +452,13 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             benchmark_label="主题基准：中证全指半导体",
             alpha=0.0842,
             beta=1.23,
+            gamma=0.04,
             theta=0.0017,
+            vega=0.12,
             sharpe=1.56,
             sortino=2.34,
+            calmar=1.98,
+            treynor=0.06,
         ),
         PortalPoolMetric(
             rank=3,
@@ -478,9 +482,13 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             benchmark_label="主题基准：创业板指",
             alpha=0.052,
             beta=1.08,
+            gamma=0.02,
             theta=0.0011,
+            vega=0.09,
             sharpe=1.34,
             sortino=1.72,
+            calmar=1.21,
+            treynor=0.05,
         ),
         PortalPoolMetric(
             rank=6,
@@ -504,9 +512,13 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             benchmark_label="主题基准：纳指100",
             alpha=0.044,
             beta=0.91,
+            gamma=-0.03,
             theta=0.0008,
+            vega=0.18,
             sharpe=1.12,
             sortino=1.88,
+            calmar=0.98,
+            treynor=0.04,
         ),
     ]
 
@@ -539,28 +551,36 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "近1个月" in html
     assert "近3个月" in html
     assert "近6个月" in html
-    assert "Alpha（年化）" in html
+    assert "希腊字母（日/周）" in html
+    assert "风险调整（日/周）" in html
+    assert "Alpha" in html
     assert "Beta" in html
-    assert "Theta（日均超额）" in html
+    assert "Theta" in html
     assert "Sharpe" in html
     assert "Sortino" in html
     assert "指标更新时间" in html
     assert '<strong class="fund-code">110026</strong>' in html
     assert "易方达创业板ETF联接A" in html
-    assert "主题基准：中证全指半导体" in html
-    assert "主题基准：创业板指" in html
-    assert "主题基准：纳指100" in html
+    assert "中证全指半导体" in html
+    assert "创业板指" in html
+    assert "纳指100" in html
+    assert "主题基准：中证全指半导体" not in html
+    assert "主题基准：创业板指" not in html
+    assert "主题基准：纳指100" not in html
     assert "专项基准缺失" not in html
     assert "20260615 - 14:00 CST" in html
     assert "2.34%" in html
     assert "5.21%" in html
     assert "11.88%" in html
     assert "20.34%" in html
-    assert "8.42%" in html
+    assert "0.03%" in html
     assert "1.23" in html
     assert "0.17%" in html
+    assert "0.85%" in html
     assert "1.56" in html
-    assert "Theta 为本表定义的近20个净值点日均超额收益，不是期权定价 Theta。" in html
+    assert "Alpha/Treynor 的日均和周均由年化值折算" in html
+    assert "Theta 使用近20个净值点日均超额并折算周均，不是期权定价 Theta。" in html
+    assert "<h2>时间与口径</h2>" not in html
     assert "<h2>执行边界</h2>" not in html
     assert "#1" in html
     assert "#6" in html
@@ -575,7 +595,6 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert 'fetchApiJson("/api/refresh"' in html
     assert "持仓建议" in html
     assert "当前持仓及时间" in html
-    assert "上轮持仓及时间" in html
     assert "申购费分档规则" in html
     assert "赎回费分档规则" in html
     assert "支付宝交易可用性" not in html
@@ -642,7 +661,8 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "相对比例" in html
     assert "相对上轮" not in html
     assert "目标时间：20260615 - 14:00 CST" in html
-    assert "初始持仓权重时间：20260615 - 13:30 CST" in html
+    assert "按各基金首次入池时间" in html
+    assert "初始持仓权重时间：20260613 - 06:00 CST" in html
     assert "上轮对比权重时间：20260615 - 13:30 CST" in html
     assert 'data-previous-value="18.93%"' in html
     assert 'data-previous-value="+10.57%"' in html
@@ -747,8 +767,12 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "每次正式运行前扫描公开全市场基金列表" in html
     assert "所有进入筛选范围和候选池的基金必须有至少 24 个月净值历史" in html
     assert "入池后的纪律规则" in html
-    assert "连续 5 个交易日共 30 个结果中，任意 20 项小于 0" in html
-    assert "连续 10 个交易日共 60 个结果中，任意 40 项小于 0" in html
+    assert "Alpha、Beta、Gamma、Theta、Vega、Sharpe、Sortino、Calmar、Treynor" in html
+    assert "ceil(80.00% * 5 * x)" in html
+    assert "ceil(60.00% * 10 * x)" in html
+    assert "希腊字母与风险指标" in html
+    assert "Alpha</strong>公式：年化基金收益 - Beta x 年化基准收益" in html
+    assert "Treynor</strong>公式：(年化基金收益 - 年化基准收益) / Beta" in html
     assert "剔除规则只约束已经进入持仓池或观察池的对象" in html
     assert "不是先拿一张规则表机械筛选" in html
     assert "未来 1个月-1年最值得承担高波动" in html

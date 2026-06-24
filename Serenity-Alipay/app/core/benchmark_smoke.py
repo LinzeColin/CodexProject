@@ -530,7 +530,7 @@ def run_benchmark_smoke(
         moomoo_rows = _probe_moomoo_candidates(BENCHMARK_CANDIDATES, start=start, end=end, host=host, port=port)
     else:
         errors.append(lifecycle.detail if not lifecycle.socket_is_reachable else sdk.detail)
-    if cleanup_auto_started and lifecycle.started_by_tool:
+    if cleanup_auto_started and lifecycle.started_by_tool and lifecycle.socket_is_reachable:
         cleanup = cleanup_started_processes(lifecycle)
 
     yahoo_rows = _probe_yahoo_candidates(YAHOO_CANDIDATES, start=start, end=end)

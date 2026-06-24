@@ -9,7 +9,8 @@ from app.config import Settings
 from app.core.moomoo_smoke import WorkbenchProbe, discover_workbenches, probe_socket
 
 
-PROCESS_PATTERN = "OpenD|moomoo_OpenD|Moomoo|moomoo_Op"
+PROCESS_PATTERN = "OpenD|moomoo_OpenD|Moomoo|MooMoo|moomoo_Op"
+OPEND_PROCESS_MARKERS = ("moomoo_OpenD", "OpenD.app", "moomoo_Op", "MoomooOpenD", "MooMooOpenD")
 
 
 @dataclass(frozen=True)
@@ -101,6 +102,14 @@ def _new_processes(before: list[ProcessInfo], after: list[ProcessInfo]) -> list[
     return [process for process in after if process.pid not in before_pids]
 
 
+def _is_opend_process(process: ProcessInfo) -> bool:
+    return any(marker in process.command for marker in OPEND_PROCESS_MARKERS)
+
+
+def _opend_processes(processes: list[ProcessInfo]) -> list[ProcessInfo]:
+    return [process for process in processes if _is_opend_process(process)]
+
+
 def _start_workbench(workbench: WorkbenchProbe) -> str | None:
     if workbench.moomoo_opend_app_path:
         subprocess.run(["open", workbench.moomoo_opend_app_path], capture_output=True, text=True, check=False)
@@ -112,11 +121,7 @@ def _start_workbench(workbench: WorkbenchProbe) -> str | None:
 
 
 def _cleanup_processes(processes: list[ProcessInfo]) -> str:
-    targets = [
-        process
-        for process in processes
-        if any(marker in process.command for marker in ["moomoo_OpenD", "OpenD.app", "moomoo_Op"])
-    ]
+    targets = _opend_processes(processes)
     if not targets:
         return "no_started_processes_to_cleanup"
     for process in targets:
@@ -129,6 +134,12 @@ def cleanup_started_processes(lifecycle: OpenDLifecycle) -> dict[str, object]:
         return {
             "cleanup_attempted": False,
             "cleanup_result": "not_started_by_tool",
+            "after_processes": [asdict(process) for process in process_snapshot()],
+        }
+    if not lifecycle.socket_is_reachable:
+        return {
+            "cleanup_attempted": False,
+            "cleanup_result": "deferred_socket_not_ready",
             "after_processes": [asdict(process) for process in process_snapshot()],
         }
     result = _cleanup_processes(lifecycle.started_processes)
@@ -168,6 +179,30 @@ def ensure_opend(
             after_processes=before,
             started_processes=[],
             detail=detail,
+        )
+
+    existing_opend = _opend_processes(before)
+    if existing_opend:
+        reachable = _wait_for_socket(host, port, timeout, wait_seconds)
+        after = process_snapshot()
+        return OpenDLifecycle(
+            socket_was_reachable=False,
+            socket_is_reachable=reachable,
+            auto_start_requested=True,
+            start_attempted=False,
+            started_by_tool=False,
+            start_command=None,
+            cleanup_requested=cleanup_if_started,
+            cleanup_attempted=False,
+            cleanup_result=None,
+            before_processes=before,
+            after_processes=after,
+            started_processes=[],
+            detail=(
+                "Existing moomoo_OpenD process became socket-ready; duplicate auto-start was suppressed"
+                if reachable
+                else "Existing moomoo_OpenD process is running but socket is not ready; duplicate auto-start was suppressed to avoid launch-close loops"
+            ),
         )
 
     workbench = _primary_workbench(discover_workbenches(settings, include_user_codex=include_user_codex))

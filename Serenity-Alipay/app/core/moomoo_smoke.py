@@ -295,7 +295,7 @@ def run_moomoo_smoke(
     }
     if lifecycle is not None:
         result["opend_lifecycle"] = lifecycle_to_dict(lifecycle)
-        if not keep_auto_started_opend and lifecycle.started_by_tool:
+        if not keep_auto_started_opend and lifecycle.started_by_tool and lifecycle.socket_is_reachable:
             cleanup = cleanup_started_processes(lifecycle)
             result["cleanup"] = cleanup
     if write_output:
