@@ -26,8 +26,8 @@ stage2_boundary:
   status: "in_progress"
   production_accepted: false
   current_phase: "S2PC"
-  current_task_id: "S2PCT06"
-  next_unique_task: "S2PCT06"
+  current_task_id: "S2PCT07"
+  next_unique_task: "S2PCT07"
   current_shadow_source_task: "S2PBT01"
   legacy_aliases:
     S2PCT01: "S2P2T01"

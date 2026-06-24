@@ -101,6 +101,40 @@ S2PCT05_ALLOWED_RELATION_TYPES = (
 S2PCT05_ALLOWED_OFFICIALITY_STATES = ("official", "publisher_linked", "standards_body")
 S2PCT05_ALLOWED_REPRODUCIBILITY_STATES = ("reproducible", "partial", "claimed", "not_applicable")
 S2PCT05_LEDGER_FILENAME = "stage2_s2pct05_engineering_signal_ledger.jsonl"
+S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID = "adp-s2pct06-authoritative-reports-v1"
+S2PCT06_ACCEPTANCE_ID = "ACC-S2PCT06-REPORTS"
+S2PCT06_TASK_ID = "S2PCT06"
+S2PCT06_REQUIRED_REPORT_TYPES = (
+    "research_institution_report",
+    "lab_technical_report",
+    "industry_technical_report",
+    "product_technical_note",
+)
+S2PCT06_ALLOWED_PUBLISHER_TYPES = (
+    "research_institution",
+    "public_lab",
+    "industry_research_lab",
+    "company_product_org",
+)
+S2PCT06_ALLOWED_IDENTITY_STATES = (
+    "official_domain",
+    "institutional_repository",
+    "publisher_signed",
+    "standards_or_government_affiliated",
+)
+S2PCT06_ALLOWED_INTEREST_RELATIONS = (
+    "independent_research",
+    "sponsor_disclosed",
+    "vendor_authored",
+    "product_owner_authored",
+)
+S2PCT06_ALLOWED_EVIDENCE_LEVELS = (
+    "primary_research_report",
+    "technical_whitepaper",
+    "methodology_note",
+    "product_technical_note",
+)
+S2PCT06_LEDGER_FILENAME = "stage2_s2pct06_authoritative_report_ledger.jsonl"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -1556,6 +1590,246 @@ def validate_s2pct05_engineering_signal_report(report: Mapping[str, Any]) -> lis
     return errors
 
 
+def build_s2pct06_authoritative_report_source_report(
+    *,
+    generated_at: str,
+    engineering_signal_report: Mapping[str, Any],
+    technical_reports: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build metadata-only authoritative technical report evidence after S2PCT05."""
+
+    engineering_errors = validate_s2pct05_engineering_signal_report(engineering_signal_report)
+    engineering_gate = "pass" if not engineering_errors and engineering_signal_report.get("status") == "pass" else "blocked"
+    known_signals = _s2pct06_known_signals(engineering_signal_report)
+    known_documents = {
+        str(signal.get("canonical_document_id") or "")
+        for signal in known_signals.values()
+        if signal.get("canonical_document_id")
+    }
+    normalized_reports, source_reports, report_errors = _s2pct06_normalize_reports(
+        technical_reports,
+        known_signals=known_signals,
+        known_documents=known_documents,
+        generated_at=generated_at,
+    )
+    observed_report_types = sorted(
+        {str(report.get("report_type") or "") for report in normalized_reports if report.get("report_type")}
+    )
+    missing_report_types = [
+        report_type for report_type in S2PCT06_REQUIRED_REPORT_TYPES if report_type not in observed_report_types
+    ]
+    duplicate_report_ids = _duplicate_values(str(report.get("report_id") or "") for report in normalized_reports)
+    publisher_identity_errors = _s2pct06_publisher_identity_errors(normalized_reports) + [
+        reason
+        for reason in report_errors
+        if "publisher_identity" in reason or "publisher_type" in reason or "publisher" in reason
+    ]
+    interest_errors = _s2pct06_interest_relation_errors(normalized_reports) + [
+        reason for reason in report_errors if "interest_relation" in reason or "interest_disclosure" in reason
+    ]
+    evidence_errors = _s2pct06_evidence_level_errors(normalized_reports) + [
+        reason for reason in report_errors if "evidence_level" in reason
+    ]
+    traceability_errors = _s2pct06_traceability_errors(normalized_reports, known_signals, known_documents) + [
+        reason
+        for reason in report_errors
+        if "related_signal_ids" in reason or "canonical_document_id" in reason
+    ]
+    publisher_identity_gate = "pass" if not publisher_identity_errors else "blocked"
+    interest_relation_gate = "pass" if not interest_errors else "blocked"
+    evidence_level_gate = "pass" if not evidence_errors else "blocked"
+    traceability_gate = "pass" if not traceability_errors else "blocked"
+    blocking_reasons = list(engineering_errors) + report_errors
+    if engineering_gate != "pass":
+        blocking_reasons.append("S2PCT05 engineering signal report must pass before S2PCT06 authoritative reports")
+    if missing_report_types:
+        blocking_reasons.append("missing required authoritative report types: " + ", ".join(missing_report_types))
+    if duplicate_report_ids:
+        blocking_reasons.append("duplicate authoritative report ids: " + ", ".join(duplicate_report_ids))
+    for gate_errors in (publisher_identity_errors, interest_errors, evidence_errors, traceability_errors):
+        for reason in gate_errors:
+            if reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+    report_taxonomy_gate = "pass" if not missing_report_types and not duplicate_report_ids else "blocked"
+    status = (
+        "pass"
+        if not blocking_reasons
+        and engineering_gate
+        == report_taxonomy_gate
+        == publisher_identity_gate
+        == interest_relation_gate
+        == evidence_level_gate
+        == traceability_gate
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
+        "acceptance_id": S2PCT06_ACCEPTANCE_ID,
+        "task_id": S2PCT06_TASK_ID,
+        "phase": "S2PC",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "engineering_signal_gate": engineering_gate,
+        "report_taxonomy_gate": report_taxonomy_gate,
+        "publisher_identity_gate": publisher_identity_gate,
+        "interest_relation_gate": interest_relation_gate,
+        "evidence_level_gate": evidence_level_gate,
+        "traceability_gate": traceability_gate,
+        "required_report_types": list(S2PCT06_REQUIRED_REPORT_TYPES),
+        "report_types_observed": observed_report_types,
+        "authoritative_report_count": len(normalized_reports),
+        "known_signal_count": len(known_signals),
+        "known_document_count": len(known_documents),
+        "source_reports": source_reports,
+        "authoritative_reports": normalized_reports,
+        "formal_production_inclusion": False,
+        "d2_source_domain_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "marketing_material_accepted": False,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def run_s2pct06_authoritative_report_shadow(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    engineering_signal_report: Mapping[str, Any],
+    technical_reports: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PCT06 metadata-only authoritative report source evidence."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pct06-authoritative-reports-shadow"
+    ledger_path = state / S2PCT06_LEDGER_FILENAME
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pct06_authoritative_report_source_report(
+        generated_at=generated_at,
+        engineering_signal_report=engineering_signal_report,
+        technical_reports=technical_reports,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "authoritative_report_path": str(run_dir / "adp-s2pct06-authoritative-report-source-report.json"),
+            "authoritative_report_ledger_path": str(ledger_path),
+            "authoritative_report_ledger_row_count": len(report.get("authoritative_reports") or []),
+        }
+    )
+    if write:
+        for row in report.get("authoritative_reports") or []:
+            if isinstance(row, Mapping):
+                _append_jsonl(ledger_path, row)
+    return _write_or_return_s2pct06(report, run_dir, write=write)
+
+
+def validate_s2pct06_authoritative_report_source_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID:
+        errors.append("S2PCT06 authoritative report model_id must be adp-s2pct06-authoritative-reports-v1")
+    if report.get("task_id") != S2PCT06_TASK_ID:
+        errors.append("S2PCT06 authoritative report task_id must be S2PCT06")
+    if report.get("acceptance_id") != S2PCT06_ACCEPTANCE_ID:
+        errors.append("S2PCT06 authoritative report acceptance_id must be ACC-S2PCT06-REPORTS")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PCT06 authoritative report status must be pass or blocked")
+    for key in (
+        "formal_production_inclusion",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "marketing_material_accepted",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PCT06 authoritative report shadow")
+    reports = report.get("authoritative_reports")
+    if not isinstance(reports, list):
+        errors.append("S2PCT06 authoritative_reports must be a list")
+        reports = []
+    observed = set(report.get("report_types_observed") or [])
+    missing = [report_type for report_type in S2PCT06_REQUIRED_REPORT_TYPES if report_type not in observed]
+    if missing:
+        errors.append("S2PCT06 report taxonomy missing required types: " + ", ".join(missing))
+    report_ids: set[str] = set()
+    for index, item in enumerate(reports):
+        if not isinstance(item, Mapping):
+            errors.append(f"authoritative_reports[{index}] must be an object")
+            continue
+        report_id = str(item.get("report_id") or "")
+        if not report_id:
+            errors.append(f"authoritative_reports[{index}].report_id is required")
+        if report_id in report_ids:
+            errors.append(f"duplicate S2PCT06 report_id: {report_id}")
+        report_ids.add(report_id)
+        if item.get("report_type") not in S2PCT06_REQUIRED_REPORT_TYPES:
+            errors.append(f"authoritative_reports[{index}].report_type is not supported")
+        if item.get("publisher_type") not in S2PCT06_ALLOWED_PUBLISHER_TYPES:
+            errors.append(f"authoritative_reports[{index}].publisher_type is not supported")
+        if item.get("publisher_identity_state") not in S2PCT06_ALLOWED_IDENTITY_STATES:
+            errors.append(f"authoritative_reports[{index}].publisher_identity_state is not accepted")
+        if item.get("interest_relation") not in S2PCT06_ALLOWED_INTEREST_RELATIONS:
+            errors.append(f"authoritative_reports[{index}].interest_relation is not accepted")
+        if item.get("evidence_level") not in S2PCT06_ALLOWED_EVIDENCE_LEVELS:
+            errors.append(f"authoritative_reports[{index}].evidence_level is not accepted")
+        if item.get("metadata_only") is not True:
+            errors.append(f"authoritative_reports[{index}].metadata_only must be true")
+        if item.get("marketing_material_accepted") is not False:
+            errors.append(f"authoritative_reports[{index}].marketing_material_accepted must be false")
+        if not item.get("source_url"):
+            errors.append(f"authoritative_reports[{index}].source_url is required")
+        if not item.get("version_reference"):
+            errors.append(f"authoritative_reports[{index}].version_reference is required")
+        if not item.get("publisher_identity_evidence"):
+            errors.append(f"authoritative_reports[{index}].publisher_identity_evidence is required")
+        if not item.get("interest_disclosure"):
+            errors.append(f"authoritative_reports[{index}].interest_disclosure is required")
+        if not item.get("canonical_document_id"):
+            errors.append(f"authoritative_reports[{index}].canonical_document_id is required")
+        if not item.get("related_signal_ids"):
+            errors.append(f"authoritative_reports[{index}].related_signal_ids is required")
+        if not item.get("evidence_refs"):
+            errors.append(f"authoritative_reports[{index}].evidence_refs is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PCT06 authoritative report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "engineering_signal_gate",
+            "report_taxonomy_gate",
+            "publisher_identity_gate",
+            "interest_relation_gate",
+            "evidence_level_gate",
+            "traceability_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PCT06 authoritative report requires {key}=pass")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -2318,6 +2592,31 @@ def _write_or_return_s2pct05(report: dict[str, Any], run_dir: Path, *, write: bo
     return normalized
 
 
+def _write_or_return_s2pct06(report: dict[str, Any], run_dir: Path, *, write: bool) -> dict[str, Any]:
+    normalized = dict(report)
+    for key in (
+        "formal_production_inclusion",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "marketing_material_accepted",
+    ):
+        normalized.setdefault(key, False)
+    normalized["validation_errors"] = validate_s2pct06_authoritative_report_source_report(normalized)
+    if write:
+        report_path = Path(str(normalized.get("authoritative_report_path") or run_dir / "adp-s2pct06-authoritative-report-source-report.json"))
+        _write_json(report_path, normalized)
+    return normalized
+
+
 def _s2pct05_known_documents(profile_report: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
     documents: dict[str, Mapping[str, Any]] = {}
     for profile in profile_report.get("source_profiles") or []:
@@ -2518,6 +2817,281 @@ def _s2pct05_reproducibility_errors(signals: Sequence[Mapping[str, Any]]) -> lis
             errors.append(f"{signal.get('signal_id', 'engineering-signal')}: reproducibility_state is invalid")
         if signal.get("signal_type") == "benchmark_result" and not signal.get("metric_name"):
             errors.append(f"{signal.get('signal_id', 'engineering-signal')}: benchmark_result requires metric_name")
+    return errors
+
+
+def _s2pct06_known_signals(engineering_signal_report: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    signals: dict[str, Mapping[str, Any]] = {}
+    for signal in engineering_signal_report.get("engineering_signals") or []:
+        if not isinstance(signal, Mapping):
+            continue
+        signal_id = str(signal.get("signal_id") or "")
+        if signal_id:
+            signals[signal_id] = signal
+    return signals
+
+
+def _s2pct06_normalize_reports(
+    technical_reports: Sequence[Mapping[str, Any]],
+    *,
+    known_signals: Mapping[str, Mapping[str, Any]],
+    known_documents: set[str],
+    generated_at: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+    normalized: list[dict[str, Any]] = []
+    source_reports: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, report in enumerate(technical_reports):
+        if not isinstance(report, Mapping):
+            reason = f"technical_reports[{index}] must be an object"
+            source_reports.append({"index": index, "status": "blocked", "blocking_reasons": [reason]})
+            errors.append(reason)
+            continue
+        item = _s2pct06_normalize_report(report, generated_at=generated_at)
+        item_errors = _s2pct06_report_errors(item, known_signals=known_signals, known_documents=known_documents)
+        source_reports.append(
+            {
+                "report_id": item.get("report_id", ""),
+                "report_type": item.get("report_type", ""),
+                "publisher": item.get("publisher", ""),
+                "status": "blocked" if item_errors else "pass",
+                "blocking_reasons": item_errors,
+            }
+        )
+        errors.extend(item_errors)
+        if not item_errors:
+            normalized.append(item)
+    return normalized, source_reports, errors
+
+
+def _s2pct06_normalize_report(report: Mapping[str, Any], *, generated_at: str) -> dict[str, Any]:
+    report_type = _s2pct06_report_type(str(report.get("report_type") or report.get("type") or ""))
+    publisher_type = _s2pct06_publisher_type(str(report.get("publisher_type") or report.get("organization_type") or ""))
+    canonical_id = str(report.get("canonical_document_id") or report.get("paper_canonical_document_id") or "")
+    related_signal_ids = [str(value) for value in report.get("related_signal_ids") or report.get("signal_ids") or [] if str(value)]
+    source_url = _s2pct06_report_url(report)
+    version_reference = _s2pct06_report_version_reference(report)
+    report_id = str(report.get("report_id") or "")
+    if not report_id and report_type and source_url:
+        report_id = f"auth-report:{report_type}:{_safe_id(source_url)}"
+    return {
+        "report_id": report_id,
+        "report_type": report_type,
+        "title": str(report.get("title") or report.get("name") or ""),
+        "publisher": str(report.get("publisher") or report.get("organization") or ""),
+        "publisher_type": publisher_type,
+        "publisher_identity_state": _profile_token(str(report.get("publisher_identity_state") or report.get("identity_state") or "")),
+        "publisher_identity_evidence": str(report.get("publisher_identity_evidence") or report.get("identity_evidence") or ""),
+        "source_url": source_url,
+        "landing_page_url": str(report.get("landing_page_url") or ""),
+        "publication_date": str(report.get("publication_date") or report.get("date") or ""),
+        "version_reference": version_reference,
+        "canonical_document_id": canonical_id,
+        "related_signal_ids": related_signal_ids,
+        "interest_relation": _profile_token(str(report.get("interest_relation") or report.get("conflict_of_interest_state") or "")),
+        "interest_disclosure": str(report.get("interest_disclosure") or report.get("conflict_of_interest_statement") or ""),
+        "evidence_level": _s2pct06_evidence_level(str(report.get("evidence_level") or report.get("evidence_type") or "")),
+        "product_name": str(report.get("product_name") or ""),
+        "methodology_summary": str(report.get("methodology_summary") or ""),
+        "metadata_only": True,
+        "marketing_material_accepted": False,
+        "production_eligible": False,
+        "generated_at": generated_at,
+        "evidence_refs": list(report.get("evidence_refs") or []),
+    }
+
+
+def _s2pct06_report_errors(
+    report: Mapping[str, Any],
+    *,
+    known_signals: Mapping[str, Mapping[str, Any]],
+    known_documents: set[str],
+) -> list[str]:
+    errors: list[str] = []
+    report_id = str(report.get("report_id") or "authoritative-report")
+    report_type = str(report.get("report_type") or "")
+    canonical_id = str(report.get("canonical_document_id") or "")
+    related_signal_ids = [str(value) for value in report.get("related_signal_ids") or []]
+    if not report.get("report_id"):
+        errors.append(f"{report_id}: report_id is required")
+    if report_type not in S2PCT06_REQUIRED_REPORT_TYPES:
+        errors.append(f"{report_id}: report_type is not supported")
+    if not report.get("publisher"):
+        errors.append(f"{report_id}: publisher is required")
+    if report.get("publisher_type") not in S2PCT06_ALLOWED_PUBLISHER_TYPES:
+        errors.append(f"{report_id}: publisher_type is not supported")
+    if report.get("publisher_identity_state") not in S2PCT06_ALLOWED_IDENTITY_STATES:
+        errors.append(f"{report_id}: publisher_identity_state is not accepted")
+    if not report.get("publisher_identity_evidence"):
+        errors.append(f"{report_id}: publisher_identity_evidence is required")
+    if report.get("interest_relation") not in S2PCT06_ALLOWED_INTEREST_RELATIONS:
+        errors.append(f"{report_id}: interest_relation is not accepted")
+    if not report.get("interest_disclosure"):
+        errors.append(f"{report_id}: interest_disclosure is required")
+    if report.get("evidence_level") not in S2PCT06_ALLOWED_EVIDENCE_LEVELS:
+        errors.append(f"{report_id}: evidence_level is not accepted")
+    if not report.get("source_url"):
+        errors.append(f"{report_id}: source_url is required")
+    if not report.get("version_reference"):
+        errors.append(f"{report_id}: version_reference is required")
+    if not canonical_id:
+        errors.append(f"{report_id}: canonical_document_id is required")
+    elif canonical_id not in known_documents:
+        errors.append(f"{report_id}: canonical_document_id is unknown: {canonical_id}")
+    if not related_signal_ids:
+        errors.append(f"{report_id}: related_signal_ids are required")
+    unknown_signal_ids = [signal_id for signal_id in related_signal_ids if signal_id not in known_signals]
+    if unknown_signal_ids:
+        errors.append(f"{report_id}: related_signal_ids unknown: {', '.join(unknown_signal_ids)}")
+    if related_signal_ids and canonical_id:
+        mismatched = [
+            signal_id
+            for signal_id in related_signal_ids
+            if str(known_signals.get(signal_id, {}).get("canonical_document_id") or "") != canonical_id
+        ]
+        if mismatched:
+            errors.append(f"{report_id}: related_signal_ids do not trace to canonical_document_id: {', '.join(mismatched)}")
+    if not report.get("evidence_refs"):
+        errors.append(f"{report_id}: evidence_refs are required")
+    errors.extend(_s2pct06_type_specific_errors(report))
+    return errors
+
+
+def _s2pct06_type_specific_errors(report: Mapping[str, Any]) -> list[str]:
+    report_id = str(report.get("report_id") or "authoritative-report")
+    report_type = str(report.get("report_type") or "")
+    errors: list[str] = []
+    if report_type == "product_technical_note" and not report.get("product_name"):
+        errors.append(f"{report_id}: product_technical_note requires product_name")
+    if report_type in {"research_institution_report", "lab_technical_report"} and report.get("publisher_type") == "company_product_org":
+        errors.append(f"{report_id}: research/lab reports cannot use company_product_org publisher_type")
+    if report_type == "industry_technical_report" and report.get("interest_relation") == "independent_research":
+        errors.append(f"{report_id}: industry_technical_report requires disclosed industry interest relation")
+    if report_type in {"research_institution_report", "lab_technical_report", "industry_technical_report"} and not report.get("methodology_summary"):
+        errors.append(f"{report_id}: methodology_summary is required")
+    return errors
+
+
+def _s2pct06_report_type(raw: str) -> str:
+    token = _profile_token(raw)
+    aliases = {
+        "research_report": "research_institution_report",
+        "research_institution_report": "research_institution_report",
+        "institution_report": "research_institution_report",
+        "lab_report": "lab_technical_report",
+        "laboratory_report": "lab_technical_report",
+        "lab_technical_report": "lab_technical_report",
+        "industry_report": "industry_technical_report",
+        "industry_technical_report": "industry_technical_report",
+        "technical_report": "industry_technical_report",
+        "product_note": "product_technical_note",
+        "product_technical_note": "product_technical_note",
+        "technical_note": "product_technical_note",
+    }
+    return aliases.get(token, token)
+
+
+def _s2pct06_publisher_type(raw: str) -> str:
+    token = _profile_token(raw)
+    aliases = {
+        "institute": "research_institution",
+        "research_institute": "research_institution",
+        "research_institution": "research_institution",
+        "public_lab": "public_lab",
+        "government_lab": "public_lab",
+        "national_lab": "public_lab",
+        "industry_lab": "industry_research_lab",
+        "industry_research_lab": "industry_research_lab",
+        "corporate_research": "industry_research_lab",
+        "company": "company_product_org",
+        "company_product_org": "company_product_org",
+        "vendor": "company_product_org",
+    }
+    return aliases.get(token, token)
+
+
+def _s2pct06_evidence_level(raw: str) -> str:
+    token = _profile_token(raw)
+    aliases = {
+        "primary_report": "primary_research_report",
+        "primary_research_report": "primary_research_report",
+        "research_report": "primary_research_report",
+        "whitepaper": "technical_whitepaper",
+        "technical_whitepaper": "technical_whitepaper",
+        "methodology": "methodology_note",
+        "methodology_note": "methodology_note",
+        "product_note": "product_technical_note",
+        "product_technical_note": "product_technical_note",
+    }
+    return aliases.get(token, token)
+
+
+def _s2pct06_report_url(report: Mapping[str, Any]) -> str:
+    for key in ("source_url", "url", "landing_page_url", "report_url", "technical_note_url"):
+        value = str(report.get(key) or "")
+        if value:
+            return value
+    return ""
+
+
+def _s2pct06_report_version_reference(report: Mapping[str, Any]) -> str:
+    for key in ("version_reference", "version", "publication_date", "date", "report_number", "revision"):
+        value = str(report.get(key) or "")
+        if value:
+            return value
+    return ""
+
+
+def _s2pct06_publisher_identity_errors(reports: Sequence[Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    for report in reports:
+        report_id = str(report.get("report_id") or "authoritative-report")
+        if report.get("publisher_type") not in S2PCT06_ALLOWED_PUBLISHER_TYPES:
+            errors.append(f"{report_id}: publisher_type is not supported")
+        if report.get("publisher_identity_state") not in S2PCT06_ALLOWED_IDENTITY_STATES:
+            errors.append(f"{report_id}: publisher_identity_state is not accepted")
+        if not report.get("publisher_identity_evidence"):
+            errors.append(f"{report_id}: publisher_identity_evidence is required")
+    return errors
+
+
+def _s2pct06_interest_relation_errors(reports: Sequence[Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    for report in reports:
+        report_id = str(report.get("report_id") or "authoritative-report")
+        if report.get("interest_relation") not in S2PCT06_ALLOWED_INTEREST_RELATIONS:
+            errors.append(f"{report_id}: interest_relation is not accepted")
+        if not report.get("interest_disclosure"):
+            errors.append(f"{report_id}: interest_disclosure is required")
+    return errors
+
+
+def _s2pct06_evidence_level_errors(reports: Sequence[Mapping[str, Any]]) -> list[str]:
+    return [
+        f"{report.get('report_id', 'authoritative-report')}: evidence_level is not accepted"
+        for report in reports
+        if report.get("evidence_level") not in S2PCT06_ALLOWED_EVIDENCE_LEVELS
+    ]
+
+
+def _s2pct06_traceability_errors(
+    reports: Sequence[Mapping[str, Any]],
+    known_signals: Mapping[str, Mapping[str, Any]],
+    known_documents: set[str],
+) -> list[str]:
+    errors: list[str] = []
+    for report in reports:
+        report_id = str(report.get("report_id") or "authoritative-report")
+        canonical_id = str(report.get("canonical_document_id") or "")
+        if canonical_id not in known_documents:
+            errors.append(f"{report_id}: canonical_document_id is unknown: {canonical_id}")
+        related_signal_ids = [str(value) for value in report.get("related_signal_ids") or []]
+        if not related_signal_ids:
+            errors.append(f"{report_id}: related_signal_ids are required")
+            continue
+        unknown_signal_ids = [signal_id for signal_id in related_signal_ids if signal_id not in known_signals]
+        if unknown_signal_ids:
+            errors.append(f"{report_id}: related_signal_ids unknown: {', '.join(unknown_signal_ids)}")
     return errors
 
 
