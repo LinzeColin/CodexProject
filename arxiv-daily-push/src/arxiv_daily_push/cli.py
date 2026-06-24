@@ -501,6 +501,7 @@ def build_parser() -> argparse.ArgumentParser:
     live_all_arxiv.add_argument("--date", default="", help="Daily input date for the live-selected sample paper.")
     live_all_arxiv.add_argument("--max-results-per-category", type=int, default=1)
     live_all_arxiv.add_argument("--artifact-dir", help="Directory for the live all-arXiv dry-run report.")
+    live_all_arxiv.add_argument("--fetcher", choices=("curl", "urllib"), default="urllib", help="Live arXiv fetch implementation.")
     live_all_arxiv.add_argument("--polite-delay-seconds", type=float, default=0.0, help="Optional delay between archive fetches.")
     live_all_arxiv.add_argument("--json", action="store_true", help="Print JSON dry-run report.")
 
@@ -1526,10 +1527,12 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- {reason}")
         return 0 if report["daily_input_ready"] else 2
     if args.command == "run-live-all-arxiv-dry-run":
+        fetcher = fetch_atom_with_curl if args.fetcher == "curl" else None
         report = build_live_all_arxiv_dry_run(
             generated_at=args.generated_at,
             date=args.date or None,
             max_results_per_category=args.max_results_per_category,
+            fetcher=fetcher,
             artifact_dir=args.artifact_dir,
             polite_delay_seconds=args.polite_delay_seconds,
         )
