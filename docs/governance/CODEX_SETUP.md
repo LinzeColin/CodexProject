@@ -142,7 +142,7 @@ GITHUB_TOKEN=<repo-admin-token> python3 scripts/governance_setup_doctor.py --che
 If neither authenticated API output nor UI evidence is available, keep
 `S6PBT02`, `S6PB-GATE`, and `S6-GATE` as `IN_PROGRESS` or `UNVERIFIED`.
 
-Current 2026-06-24 probe:
+Historical 2026-06-24 pre-fix probe:
 
 - `GET /repos/LinzeColin/CodexProject/branches/main/protection` returns HTTP
   401 without authenticated GitHub credentials, so classic branch protection
@@ -153,6 +153,25 @@ Current 2026-06-24 probe:
   violations: pull request required and `2 of 2` required status checks
   expected.
 
-This does not satisfy S6PBT02. The owner must either configure the contract
-above exactly, or update the contract and attach explicit owner-approved
-emergency bypass evidence before `S6PB-GATE` or `S6-GATE` can pass.
+That historical state did not satisfy S6PBT02.
+
+Verified 2026-06-24 S6PBT02 update:
+
+- Authenticated REST update of
+  `/repos/LinzeColin/CodexProject/branches/main/protection` returned HTTP 200.
+- `main` now requires exactly one status check context: `governance`
+  (`Project Governance / governance` in the GitHub UI).
+- `required_status_checks.strict=true`, pull request review protection is
+  present, `enforce_admins=true`, `allow_force_pushes=false`, and
+  `allow_deletions=false`.
+- `python -B scripts/governance_setup_doctor.py --json --check-github --strict-github`
+  returns exit code 0 for GitHub branch protection fields. The report may still
+  show local Codex hook trust warnings because those are user-machine settings,
+  not GitHub branch protection settings.
+- A direct push probe for candidate commit
+  `4da7f1a89bcb09a1baa10814f0e5aba80af23193` to `main` was rejected with
+  `GH006: Protected branch update failed`, `Changes must be made through a pull
+  request`, and `Required status check "governance" is expected`.
+
+This satisfies S6PBT02 and closes `S6PB-GATE`. `S6-GATE` remains in progress
+until the later S6PC metrics/review closure evidence is completed.
