@@ -13,11 +13,14 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   `docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md` are legacy baselines,
   not the current execution contract.
 - Every implementation closeout must state the current V6 Task ID. Current task:
-  `S2P1T01` bioRxiv/medRxiv source promotion. `ADP-S1P5T05` completed the
-  Stage 1 local production and migration prep after `ARXIV_PRODUCTION_ACCEPTED`.
-  Final Stage 1 production strategy is local Mac + Codex/local runner; GitHub
-  is code, PR/CI, evidence, status, and backup only, not the daily production
-  runner.
+  `S2P1T01`, V7 alias `S2PBT01`. The bioRxiv/medRxiv metadata-only no-send
+  replay and shadow evidence has passed, but formal source production inclusion,
+  `STAGE2_PRODUCTION_ACCEPTED`, and `INTEGRATED_PRODUCTION_ACCEPTED` remain
+  blocked until the V7/root contract, baseline files, and CI contract hash gate
+  are merged. `ADP-S1P5T05` completed the Stage 1 local production and
+  migration prep after `ARXIV_PRODUCTION_ACCEPTED`. Final Stage 1 production
+  strategy is local Mac + Codex/local runner; GitHub is code, PR/CI, evidence,
+  status, and backup only, not the daily production runner.
 - Stage 1 starts with arXiv as the only production-acceptance source; Stage 2
   may promote additional sources and boards only after the arXiv gates pass.
 - Do not use OpenAI Platform API keys or paid API fallbacks.
