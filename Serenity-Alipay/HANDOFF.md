@@ -21,7 +21,7 @@ Timestamp: 20260624 - 12:04 CST / 20260624 - 14:04 AEST
 - 本轮目标：按用户要求调整首页顺序为 `当前持仓建议` -> `持仓建议` -> `持仓池表现指标`，并把原“持仓池 / 观察池排序”表融合进表现指标表。
 - 已改 UI：删除首页单独排序表；`持仓池表现指标` 表新增等级、证据置信度、策略份额、动作/复核、排序原因，并保留收益/风险指标；基金列改为代码和名称分行，横向滚动时冻结排序、池、基金三列。
 - 已改指标口径：`入池后涨跌幅` 只有在入池时间后存在新净值点时才计算；否则显示 `-`，避免把“无后续净值可算”误展示为 `0.00%`。
-- 已改 Alpha/Beta 基准：不再使用固定“沪指/标普500等权”；按基金主题选择专项基准，当前若专项基准缺失则显示实际降级基准，例如半导体/人工智能/创业板使用沪指降级，纳指/恒生科技使用标普500降级。
+- 已改 Alpha/Beta 基准：本条为 12:04 旧状态，已被 12:22 最新交接修正；当前实现不再用沪指/标普500作为专项基准缺失时的通用降级基准，主题源不可用时 Alpha/Beta 留空并显示 `主题基准：待补齐`。
 - 已重建入口：`python -m app.cli application-portal --json` 通过，已更新 `~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app`。
 - 验证：`python -m py_compile app/core/application_portal.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_reporting_ui.py` 为 10 passed；浏览器只读验证 `http://127.0.0.1:8765/` 显示新顺序、旧排序表移除、`110026` 代码/名称分行、主题基准分流通过；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
 - 注意：本轮未新增真实 run，未触发刷新/复核，未触碰 OpenD/MooMoo lifecycle，未发送邮件，未改写任何历史报告或 SQLite 受保护历史行。
