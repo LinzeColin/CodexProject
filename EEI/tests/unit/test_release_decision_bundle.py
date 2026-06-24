@@ -209,6 +209,49 @@ def test_signed_decision_bundle_requires_candidate_source_anchor_coverage() -> N
         bundle.validate_signed_decision_bundle(signed)
 
 
+def test_signed_decision_bundle_rejects_unknown_source_review_anchor() -> None:
+    signed = copy.deepcopy(bundle.read_json(SIGNED_FIXTURE))
+    extra = copy.deepcopy(signed["source_license_reviews"][0])
+    extra["anchor_id"] = "GV-SNAPSHOT-999"
+    extra["signature"] = "signed-source-GV-SNAPSHOT-999"
+    signed["source_license_reviews"].append(extra)
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            "source_license_reviews reference unknown candidate source anchors: "
+            "GV-SNAPSHOT-999"
+        ),
+    ):
+        bundle.validate_signed_decision_bundle(signed)
+
+
+def test_signed_decision_bundle_rejects_duplicate_passage_review() -> None:
+    signed = copy.deepcopy(bundle.read_json(SIGNED_FIXTURE))
+    signed["passage_level_relationship_reviews"].append(
+        copy.deepcopy(signed["passage_level_relationship_reviews"][0])
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="passage reviews duplicate relationship candidates: GV-FACT-001",
+    ):
+        bundle.validate_signed_decision_bundle(signed)
+
+
+def test_signed_decision_bundle_rejects_duplicate_owner_signoff() -> None:
+    signed = copy.deepcopy(bundle.read_json(SIGNED_FIXTURE))
+    signed["production_owner_signoffs"].append(
+        copy.deepcopy(signed["production_owner_signoffs"][0])
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="production_owner_signoffs duplicate relationship candidates: GV-FACT-001",
+    ):
+        bundle.validate_signed_decision_bundle(signed)
+
+
 def test_signed_decision_bundle_is_complete_but_not_release_ready(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:

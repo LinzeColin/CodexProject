@@ -45,6 +45,8 @@
 - Repaired the A209 browser runtime, preserved the failed resumed chain as incident evidence, restarted a clean 24h attempt, and refreshed point-in-time working-tree heartbeat evidence to `3/288` clean-restart windows PASS with operator PID `57281` and watchdog PID `17163`.
 - Fixed a T1302/T1308 workspace-layer hydration race in the production frontend: layer controls now stay disabled until `stateReady` and route through an explicit layer-to-lens mapping. Local G2 browser E2E regression and full 32-test Playwright suite pass; A203/A211 release blockers are unchanged and A209 continues in the background.
 
+- `EVENT-20260625-001`: Hardened A202 signed-decision/signed-intake exact coverage validation for duplicate, unknown and missing candidate/source/owner inputs; release readiness remains blocked pending real clearance, gold evidence and A209.
+
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
 - Historical EEI Task Pack and prototype governance snapshot preserved in Git history and legacy `data/*.csv` evidence inputs.

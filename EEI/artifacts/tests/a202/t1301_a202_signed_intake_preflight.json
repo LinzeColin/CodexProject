@@ -4,7 +4,7 @@
     "A202"
   ],
   "artifact_id": "t1301-a202-signed-intake-preflight",
-  "generated_at": "2026-06-23T20:59:41Z",
+  "generated_at": "2026-06-24T22:33:34Z",
   "missing_signed_inputs": [
     {
       "input_id": "A202_source_license_reviews",
@@ -81,7 +81,7 @@
     "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
     "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6",
     "signed_intake": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-    "signed_intake_sha256": "1b8c2f7f0b03a5ec27e7b5c5fa54ad5900edb33aff7fd53fc4b58fb30ec1936e"
+    "signed_intake_sha256": "b8da055a5b94c89142c2f1c917bd63d09ecfe689a7117950e2b9501f3683f35e"
   },
   "status": "A202_SIGNED_INTAKE_MISSING",
   "system_en_name": "Enterprise Ecosystem Intelligence",

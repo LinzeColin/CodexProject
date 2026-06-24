@@ -30,7 +30,7 @@
       "GV-SNAPSHOT-004"
     ]
   },
-  "generated_at": "2026-06-23T17:56:36Z",
+  "generated_at": "2026-06-24T22:33:33Z",
   "non_claims": [
     "This contract does not certify legal clearance.",
     "This contract does not certify trademark or market clearance.",
@@ -106,6 +106,10 @@
     },
     "fact_candidates": "data/golden_vertical_fact_candidates.json",
     "legal_clearance_status": "RISK_WAIVER_ACCEPTED",
+    "owner_signoff_candidate_keys": [
+      "GV-FACT-001",
+      "GV-FACT-002"
+    ],
     "owner_signoffs": 2,
     "passage_reviews": 2,
     "required_source_anchor_ids": [
@@ -120,7 +124,7 @@
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "a202_operator_review_packet_sha256": "96fbed00c1b6c4ac19fa400f6a24ac8bb4b7f689b93647f4613f3b12fc9ac6c6",
     "a202_release_decision_intake_template": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-    "a202_release_decision_intake_template_sha256": "1b8c2f7f0b03a5ec27e7b5c5fa54ad5900edb33aff7fd53fc4b58fb30ec1936e",
+    "a202_release_decision_intake_template_sha256": "b8da055a5b94c89142c2f1c917bd63d09ecfe689a7117950e2b9501f3683f35e",
     "a210_brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "a210_brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
     "decision_bundle_template": "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",

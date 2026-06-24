@@ -126,3 +126,17 @@ def test_preflight_validation_detects_signed_source_drift(tmp_path: Path) -> Non
 
     with pytest.raises(ValueError, match="A202 signed-intake preflight drift"):
         preflight.validate_preflight(payload, signed_intake_path=signed_path)
+
+
+def test_signed_intake_preflight_rejects_duplicate_owner_signoff(tmp_path: Path) -> None:
+    signed = signed_a202_intake()
+    signed["production_owner_signoffs"].append(
+        copy.deepcopy(signed["production_owner_signoffs"][0])
+    )
+    signed_path = write_json(tmp_path / "signed-a202-intake.json", signed)
+
+    with pytest.raises(
+        ValueError,
+        match="production_owner_signoffs duplicate relationship candidates: GV-FACT-001",
+    ):
+        preflight.build_preflight(signed_intake_path=signed_path)

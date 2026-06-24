@@ -72,6 +72,14 @@ SIGNED_PASSAGE_DECISIONS = {"approved_for_publication"}
 SIGNED_LEGAL_CLEARANCE_STATUSES = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
 SIGNED_BRAND_DECISIONS = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
 SIGNED_A202_INTAKE_STATUS = "SIGNED_A202_RELEASE_DECISION_INTAKE"
+EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES = (
+    "source_license_reviews duplicate candidate source anchors",
+    "source_license_reviews reference unknown candidate source anchors",
+    "passage reviews duplicate relationship candidates",
+    "production_owner_signoffs duplicate relationship candidates",
+    "production_owner_signoffs reference unknown relationship candidates",
+    "production_owner_signoffs missing relationship candidates",
+)
 
 
 def utc_now() -> str:
@@ -307,16 +315,33 @@ def validate_candidate_source_anchor_coverage(
     require_passage_anchor_coverage: bool,
 ) -> dict[str, Any]:
     requirements = candidate_source_anchor_requirements(fact_candidates_path)
-    reviewed_source_anchors = {
-        str(entry.get("anchor_id"))
-        for entry in bundle["source_license_reviews"]
-        if isinstance(entry, dict)
-    }
     required_source_anchors = {
         anchor_id
         for required_anchor_ids in requirements.values()
         for anchor_id in required_anchor_ids
     }
+    reviewed_source_anchor_list = [
+        require_text(entry, "anchor_id")
+        for entry in bundle["source_license_reviews"]
+        if isinstance(entry, dict)
+    ]
+    duplicate_source_reviews = sorted(
+        anchor_id
+        for anchor_id in set(reviewed_source_anchor_list)
+        if reviewed_source_anchor_list.count(anchor_id) > 1
+    )
+    if duplicate_source_reviews:
+        raise ValueError(
+            f"{EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES[0]}: "
+            + ", ".join(duplicate_source_reviews)
+        )
+    reviewed_source_anchors = set(reviewed_source_anchor_list)
+    unknown_source_reviews = sorted(reviewed_source_anchors - required_source_anchors)
+    if unknown_source_reviews:
+        raise ValueError(
+            f"{EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES[1]}: "
+            + ", ".join(unknown_source_reviews)
+        )
     missing_source_reviews = sorted(required_source_anchors - reviewed_source_anchors)
     if missing_source_reviews:
         raise ValueError(
@@ -324,11 +349,23 @@ def validate_candidate_source_anchor_coverage(
             + ", ".join(missing_source_reviews)
         )
 
-    passage_reviews = {
-        str(entry.get("candidate_key")): entry
+    passage_review_entries: list[tuple[str, dict[str, Any]]] = [
+        (require_text(entry, "candidate_key"), entry)
         for entry in bundle["passage_level_relationship_reviews"]
         if isinstance(entry, dict)
-    }
+    ]
+    passage_review_keys = [candidate_key for candidate_key, _ in passage_review_entries]
+    duplicate_passage_reviews = sorted(
+        candidate_key
+        for candidate_key in set(passage_review_keys)
+        if passage_review_keys.count(candidate_key) > 1
+    )
+    if duplicate_passage_reviews:
+        raise ValueError(
+            f"{EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES[2]}: "
+            + ", ".join(duplicate_passage_reviews)
+        )
+    passage_reviews = dict(passage_review_entries)
     unknown_candidates = sorted(set(passage_reviews) - set(requirements))
     missing_candidates = sorted(set(requirements) - set(passage_reviews))
     if unknown_candidates:
@@ -373,6 +410,45 @@ def validate_candidate_source_anchor_coverage(
         "fact_candidates": relative(fact_candidates_path),
         "required_source_anchor_ids": sorted(required_source_anchors),
         "candidate_source_anchor_coverage": coverage,
+    }
+
+
+def validate_candidate_owner_signoff_coverage(
+    bundle: dict[str, Any],
+    *,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+) -> dict[str, Any]:
+    requirements = candidate_source_anchor_requirements(fact_candidates_path)
+    owner_signoff_candidates = [
+        require_text(entry, "candidate_key")
+        for entry in bundle["production_owner_signoffs"]
+        if isinstance(entry, dict)
+    ]
+    duplicate_signoffs = sorted(
+        candidate_key
+        for candidate_key in set(owner_signoff_candidates)
+        if owner_signoff_candidates.count(candidate_key) > 1
+    )
+    if duplicate_signoffs:
+        raise ValueError(
+            f"{EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES[3]}: "
+            + ", ".join(duplicate_signoffs)
+        )
+    signed_candidates = set(owner_signoff_candidates)
+    unknown_signoffs = sorted(signed_candidates - set(requirements))
+    if unknown_signoffs:
+        raise ValueError(
+            f"{EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES[4]}: "
+            + ", ".join(unknown_signoffs)
+        )
+    missing_signoffs = sorted(set(requirements) - signed_candidates)
+    if missing_signoffs:
+        raise ValueError(
+            f"{EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES[5]}: "
+            + ", ".join(missing_signoffs)
+        )
+    return {
+        "owner_signoff_candidate_keys": sorted(signed_candidates),
     }
 
 
@@ -430,6 +506,10 @@ def validate_template_bundle(
         bundle,
         fact_candidates_path=fact_candidates_path,
         require_passage_anchor_coverage=False,
+    )
+    validate_candidate_owner_signoff_coverage(
+        bundle,
+        fact_candidates_path=fact_candidates_path,
     )
 
 
@@ -494,6 +574,10 @@ def validate_signed_decision_bundle(
         fact_candidates_path=fact_candidates_path,
         require_passage_anchor_coverage=True,
     )
+    owner_signoff_summary = validate_candidate_owner_signoff_coverage(
+        bundle,
+        fact_candidates_path=fact_candidates_path,
+    )
     return {
         "source_license_reviews": len(bundle["source_license_reviews"]),
         "passage_reviews": len(bundle["passage_level_relationship_reviews"]),
@@ -501,6 +585,7 @@ def validate_signed_decision_bundle(
         "legal_clearance_status": legal["clearance_status"],
         "brand_decision": brand["decision"],
         **candidate_anchor_summary,
+        **owner_signoff_summary,
     }
 
 
@@ -604,12 +689,17 @@ def validate_signed_intake_bundle(
         fact_candidates_path=fact_candidates_path,
         require_passage_anchor_coverage=True,
     )
+    owner_signoff_summary = validate_candidate_owner_signoff_coverage(
+        payload,
+        fact_candidates_path=fact_candidates_path,
+    )
     return {
         "source_license_reviews": len(payload["source_license_reviews"]),
         "passage_reviews": len(payload["passage_level_relationship_reviews"]),
         "owner_signoffs": len(payload["production_owner_signoffs"]),
         "legal_clearance_status": legal["clearance_status"],
         **coverage,
+        **owner_signoff_summary,
     }
 
 
