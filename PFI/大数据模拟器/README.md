@@ -2,7 +2,9 @@
 
 ## Governance Baseline
 
-Canonical governance entry: [`docs/governance/MODEL_SPEC.md`](docs/governance/MODEL_SPEC.md). Machine-readable sources are under `docs/governance/`; `VERSION` and `CHANGELOG.md` record the provisional product version and governance-only changes.
+Machine-readable sources are under `docs/governance/`; `VERSION` and `CHANGELOG.md` record the provisional product version and governance-only changes.
+
+中文人类入口：`功能清单`、`开发记录`、`模型参数文件`。这三份文件必须直接保留 owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、限制和下一步门禁；它们不是跳转页，也不是第二套可编辑机器事实源。机器真相仍以 `docs/governance/` 下的 Lean v2 文件为准。
 
 
 GitHub 备份路径：`LinzeColin/CodexProject/PFI/大数据模拟器`
