@@ -37,6 +37,7 @@
 - Readiness: `UNVERIFIED`
 - Release gate: `GOV-SEMANTIC-OPME-in-progress`
 - Next executable task: `TASK-OPME-B-001`
+- Latest remediation task: `S3PCT01` lifecycle contract completed; next remediation task is `S3PCT02`.
 - Pending/stale events: `6`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

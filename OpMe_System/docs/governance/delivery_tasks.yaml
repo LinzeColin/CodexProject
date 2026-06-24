@@ -97,3 +97,26 @@ tasks:
     rollback: "Revert semantic columns/fields, reset governance/projects.yaml semantic_coverage to planned, and remove GOV-SEMANTIC-OPME-EXTRACT-001 manifest if validation fails."
     target_version: "1.0.0"
     completed_version: ""
+  - task_id: "S3PCT01"
+    phase: "S3PC"
+    objective: "Verify OpMe startup/stop, dependency fallback, background cleanup, and save/recovery behavior in a safe temporary runtime."
+    scope: ["runtime entrypoint dependency fallback", "launcher PID cleanup", "temporary SQLite persistence recovery", "focused lifecycle tests"]
+    non_scope: ["production Docker runtime", "browser launch", "provider API calls", "engineering calibration", "changing diagnostic formulas"]
+    status: "completed"
+    dependencies: ["S2PCT03"]
+    required_files: ["OpMe_System/backend/tests/test_lifecycle_contract.py", "governance/stage_gates/s3pc/opme_lifecycle_matrix.log"]
+    acceptance_ids: ["ACC-S3PCT01"]
+    test_commands:
+      - "set PYTHONPATH=OpMe_System\\backend&& python -B -m unittest OpMe_System.backend.tests.test_lifecycle_contract -q"
+      - "bash -n OpMe_System/scripts/run_local_services.sh OpMe_System/scripts/stop_local_services.sh OpMe_System/scripts/smoke_test.sh OpMe_System/scripts/dev.sh"
+      - "set PYTHONPATH=OpMe_System\\backend&& python -B -m py_compile OpMe_System\\backend\\app\\core\\config.py OpMe_System\\backend\\app\\services\\db.py OpMe_System\\backend\\tests\\test_lifecycle_contract.py"
+    test_results:
+      - "exit 0; lifecycle contract 4 tests OK"
+      - "exit 0; shell scripts parse under bash"
+      - "exit 0; py_compile OK"
+      - "OpMe test_analysis remains blocked locally by missing pydantic; API tests remain blocked by missing fastapi."
+    evidence_refs: ["OpMe_System/backend/tests/test_lifecycle_contract.py", "governance/stage_gates/s3pc/opme_lifecycle_matrix.log", "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json"]
+    risk: "Lifecycle contract is locally verified without production runtime; full API tests require dependency-prepared environment."
+    rollback: "Revert S3PCT01 code, scripts, tests, stage-gate evidence, rendered governance files, and run manifest."
+    target_version: "1.0.0"
+    completed_version: "1.0.0"

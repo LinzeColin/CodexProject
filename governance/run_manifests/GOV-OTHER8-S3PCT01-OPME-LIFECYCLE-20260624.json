@@ -1,0 +1,247 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624",
+  "project_id": "OpMe_System",
+  "task_id": "S3PCT01",
+  "acceptance_ids": [
+    "ACC-S3PCT01"
+  ],
+  "iteration_id": "ITER-20260624-OPME-S3PCT01",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "e1e00541933529e54909b92ecf07cc0f9e9d015b",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:24732d8c51ded4e31d97356ca523ee69870558e59f53c827286646e60989128b",
+  "changed_files_declared": [
+    ".gitattributes",
+    "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+    "tests/governance/test_project_governance_validator.py",
+    "OpMe_System/CHANGELOG.md",
+    "OpMe_System/backend/app/core/config.py",
+    "OpMe_System/backend/app/services/db.py",
+    "OpMe_System/backend/tests/test_lifecycle_contract.py",
+    "OpMe_System/docs/governance/DELIVERY_PLAN.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/events.jsonl",
+    "OpMe_System/scripts/dev.sh",
+    "OpMe_System/scripts/run_local_services.sh",
+    "OpMe_System/scripts/smoke_test.sh",
+    "OpMe_System/scripts/stop_local_services.sh",
+    "OpMe_System/开发记录",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "OpMe_System/docs/governance/project.yaml"
+  ],
+  "changed_files_actual": [
+    ".gitattributes",
+    "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+    "tests/governance/test_project_governance_validator.py",
+    "OpMe_System/CHANGELOG.md",
+    "OpMe_System/backend/app/core/config.py",
+    "OpMe_System/backend/app/services/db.py",
+    "OpMe_System/backend/tests/test_lifecycle_contract.py",
+    "OpMe_System/docs/governance/DELIVERY_PLAN.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/events.jsonl",
+    "OpMe_System/scripts/dev.sh",
+    "OpMe_System/scripts/run_local_services.sh",
+    "OpMe_System/scripts/smoke_test.sh",
+    "OpMe_System/scripts/stop_local_services.sh",
+    "OpMe_System/开发记录",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "OpMe_System/docs/governance/project.yaml"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+    "tests/governance/test_project_governance_validator.py",
+    "OpMe_System/docs/governance/project.yaml",
+    "OpMe_System/docs/governance/events.jsonl",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/开发记录",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+    "tests/governance/test_project_governance_validator.py",
+    "OpMe_System/CHANGELOG.md",
+    "OpMe_System/docs/governance/DELIVERY_PLAN.md",
+    "OpMe_System/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpMe_System/docs/governance/OWNER_STATUS.md",
+    "OpMe_System/docs/governance/STATUS.md",
+    "OpMe_System/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpMe_System/docs/governance/VERSION_MATRIX.yaml",
+    "OpMe_System/docs/governance/delivery_tasks.yaml",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/docs/governance/events.jsonl",
+    "OpMe_System/开发记录",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "OpMe_System/docs/governance/project.yaml"
+  ],
+  "change_classification": [
+    "runtime_lifecycle_hardening",
+    "single_project_scope",
+    "OpMe_System_only_scope",
+    "dependency_fallback_no_implicit_install",
+    "temporary_runtime_data_dir",
+    "background_pid_cleanup",
+    "sqlite_persistence_recovery",
+    "production_account_unchanged_false",
+    "owner_truth_preserved",
+    "semantic_anchor_rebind_no_active_value_change"
+  ],
+  "stage_gate_status": {
+    "S3PCT01": "PASSED_FOCUSED_LOCAL",
+    "S3PC-GATE": "IN_PROGRESS",
+    "S3-GATE": "IN_PROGRESS"
+  },
+  "model_delta": "No LLM routing behavior changed; MOD-007 semantic fingerprint was refreshed after db.py lifecycle refactor changed init_db AST.",
+  "formula_delta": "No routing formula behavior changed; FORM-007 implementation_fingerprint/evidence_hash were re-bound to the moved db.py AST.",
+  "parameter_delta": "No active parameter value changed; PARAM-045..048 source refs/selectors were re-bound to moved db.py provider defaults.",
+  "version_delta": "Product version remains 0.1.0; governance iteration moves to ITER-20260624-OPME-S3PCT01.",
+  "test_commands": [
+    "set PYTHONPATH=OpMe_System\\backend&& python -B -m unittest OpMe_System.backend.tests.test_lifecycle_contract -q",
+    "bash -n OpMe_System/scripts/run_local_services.sh OpMe_System/scripts/stop_local_services.sh OpMe_System/scripts/smoke_test.sh OpMe_System/scripts/dev.sh",
+    "set PYTHONPATH=OpMe_System\\backend&& python -B -m py_compile OpMe_System\\backend\\app\\core\\config.py OpMe_System\\backend\\app\\services\\db.py OpMe_System\\backend\\tests\\test_lifecycle_contract.py",
+    "set PYTHONPATH=OpMe_System\\backend&& python -B OpMe_System\\backend\\tests\\test_analysis.py",
+    "python -B scripts\\lean_governance.py render --project OpMe_System --write",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pct01_opme_lifecycle_manifest_and_gate_evidence",
+    "python -B scripts\\validate_semantic_extractors.py OpMe_System",
+    "python -B scripts\\lean_governance.py check-render --project OpMe_System",
+    "python -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts\\lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "set PYTHONPATH=OpMe_System\\backend&& python -B -m unittest OpMe_System.backend.tests.test_lifecycle_contract -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 4 tests in 5.249s; OK."
+    },
+    {
+      "command": "bash -n OpMe_System/scripts/run_local_services.sh OpMe_System/scripts/stop_local_services.sh OpMe_System/scripts/smoke_test.sh OpMe_System/scripts/dev.sh",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0 after OpMe_System/scripts/*.sh LF enforcement."
+    },
+    {
+      "command": "set PYTHONPATH=OpMe_System\\backend&& python -B -m py_compile OpMe_System\\backend\\app\\core\\config.py OpMe_System\\backend\\app\\services\\db.py OpMe_System\\backend\\tests\\test_lifecycle_contract.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "set PYTHONPATH=OpMe_System\\backend&& python -B OpMe_System\\backend\\tests\\test_analysis.py",
+      "exit_code": 1,
+      "result": "BLOCKED_LOCAL_DEPENDENCY_MISSING",
+      "observed": "ModuleNotFoundError: No module named 'pydantic'."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py render --project OpMe_System --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "updated_count=1; changed OpMe_System/开发记录 only."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pct01_opme_lifecycle_manifest_and_gate_evidence",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 test in 0.020s; OK."
+    },
+    {
+      "command": "python -B scripts\\validate_semantic_extractors.py OpMe_System",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_parameters_checked=49 semantic_formulas_checked=7."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py check-render --project OpMe_System",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only sync errors=0 warnings=0; OpMe_System validation errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only CI passed; selected_project_count=8; validation errors=0 warnings=0; precommit zero_diff.clean=false because worktree is intentionally uncommitted."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted core.autocrlf line-ending warnings for text files."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    }
+  ],
+  "evidence_refs": [
+    "OpMe_System/backend/app/core/config.py",
+    "OpMe_System/backend/app/services/db.py",
+    "OpMe_System/backend/tests/test_lifecycle_contract.py",
+    "OpMe_System/scripts/run_local_services.sh",
+    "OpMe_System/scripts/dev.sh",
+    "OpMe_System/scripts/smoke_test.sh",
+    "OpMe_System/scripts/stop_local_services.sh",
+    "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+    "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json",
+    "OpMe_System/docs/governance/events.jsonl",
+    "OpMe_System/docs/governance/development_events.jsonl",
+    "OpMe_System/开发记录",
+    "OpMe_System/docs/governance/formula_registry.yaml",
+    "OpMe_System/docs/governance/parameter_registry.csv",
+    "OpMe_System/docs/governance/project.yaml"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S3PCT01 OpMe lifecycle, dependency fallback, cleanup, and persistence recovery",
+  "ci_run_reference": "LOCAL_PRECOMMIT_CHANGED_ONLY_CI_ORIGIN_MAIN_AND_PENDING_PR_GOVERNANCE_CI",
+  "summary": "Make OpMe local runtime scripts fail fast instead of installing dependencies during startup, add owned PID cleanup using cmdline/cwd checks, and verify SQLite persistence recovery through a temp runtime directory.",
+  "rollback": "Revert S3PCT01 OpMe runtime script changes, db/config temp-dir support, lifecycle tests, governance metadata, stage-gate evidence, and this manifest.",
+  "unresolved_risks": [
+    "Full backend API validation remains blocked until pydantic and fastapi are available in a dependency-prepared environment.",
+    "No Docker, browser, provider API, email, production database, or external account runtime was exercised in this Windows workspace.",
+    "S3PCT02, S3PCT03, and S3PD tasks remain open; this manifest does not close S3PC or S3."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
