@@ -14,7 +14,7 @@
 - Project: `whkmSalary`
 - Path: `whkmSalary`
 - Product version: `0.0.0`
-- Phase/Gate: `B / S3PA-WHKM-weight-validation-partial`
+- Phase/Gate: `B / S3PA-GATE-owner-blocked`
 - Models/Formulas/Parameters total: `2 / 10 / 80`
 - Active formulas/parameters: `10 / 80`
 - Machine checked formulas/parameters: `9 / 78`
@@ -35,8 +35,8 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S3PA-WHKM-weight-validation-partial`
-- Next executable task: `S3PA rounding owner decision evidence`
+- Release gate: `S3PA-GATE-owner-blocked`
+- Next executable task: `S3PA phase gate summary or owner policy decision evidence`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
@@ -54,3 +54,10 @@
 - `resolve_weights` now validates metric keys, finite non-negative values, and total weight 1.0 before weighted salary calculation.
 - Streamlit no longer carries a duplicate `province_weights` table; province choices and weights come from `salary_logic.projects`.
 - No weight active values were recalibrated or owner-approved in this task; weight policy source, rounding, tax basis, and payroll reconciliation remain blocked under `TASK-WHKM-B-001`.
+
+## S3PAT03 Rounding Update
+
+- Monetary outputs `perf_money`, `total_salary`, and `after_tax_salary` now use Decimal `ROUND_HALF_UP` rounding to cents through `round_money`.
+- The existing 湖北 regression fixture remains unchanged: `total_score=13.875`, `perf_money=4995.0`, `total_salary=22995.0`, `after_tax_salary=22305.15`.
+- Deployment dependencies are pinned in `requirements.txt`; local Streamlit runtime smoke is not claimed because `streamlit` and `pandas` are not installed locally.
+- Readiness remains `FAILED`; owner policy, legal/tax basis, and historical reconciliation remain blocked under `TASK-WHKM-B-001`.

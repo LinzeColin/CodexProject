@@ -2015,7 +2015,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["current_status"], "failed_delivery_readiness")
         self.assertIn("不证明工资政策", project["summary"])
         self.assertIn("权重依据", project["summary"])
-        self.assertIn("法域、税务、舍入或真实算薪合规", project["summary"])
+        self.assertIn("法域、税务、舍入法规或真实算薪合规", project["summary"])
         self.assertIn("不得声明生产 payroll readiness", project["summary"])
         self.assertEqual(len(project["features"]), 5)
         self.assertEqual(len(project["models"]), 2)
@@ -2107,6 +2107,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             not in {
                 "EVT-WHKM-S3PAT01-BOUNDARY-20260624-001",
                 "EVT-WHKM-S3PAT02-WEIGHT-20260624-001",
+                "EVT-WHKM-S3PAT03-ROUNDING-20260624-001",
             }
         ]
         self.assertFalse(any(event["runtime_behavior_changed"] for event in s5_events))
@@ -2116,6 +2117,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(by_id["EVT-WHKM-S3PAT02-WEIGHT-20260624-001"]["runtime_behavior_changed"])
         self.assertEqual(by_id["EVT-WHKM-S3PAT02-WEIGHT-20260624-001"]["fact_level"], "EXTRACTED")
         self.assertIn("no weight policy approval", by_id["EVT-WHKM-S3PAT02-WEIGHT-20260624-001"]["notes"])
+        self.assertTrue(by_id["EVT-WHKM-S3PAT03-ROUNDING-20260624-001"]["runtime_behavior_changed"])
+        self.assertEqual(by_id["EVT-WHKM-S3PAT03-ROUNDING-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("no statutory payroll/tax rounding approval", by_id["EVT-WHKM-S3PAT03-ROUNDING-20260624-001"]["notes"])
 
     def test_review9_s5pat04_whkm_human_files_render_without_drift(self) -> None:
         cli = load_lean_governance_module()
@@ -4196,6 +4200,45 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertIn(
             "Weight policy source and rationale are not owner-approved.",
+            manifest["unresolved_risks"],
+        )
+
+    def test_other8_s3pat03_whkm_rounding_manifest_and_gate_evidence(self) -> None:
+        decision = ROOT / "governance" / "stage_gates" / "s3pa" / "rounding_decision.md"
+        self.assertTrue(decision.is_file())
+        decision_text = decision.read_text(encoding="utf-8")
+        self.assertIn("S3PAT03", decision_text)
+        self.assertIn("ROUND_HALF_UP", decision_text)
+        self.assertIn("after_tax_salary=22305.15", decision_text)
+        self.assertIn("does not approve payroll policy", decision_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "whkmSalary")
+        self.assertEqual(manifest["task_id"], "S3PAT03")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "governance/stage_gates/s3pa/rounding_decision.md",
+            "whkmSalary/salary_logic.py",
+            "whkmSalary/requirements.txt",
+            "whkmSalary/tests/test_salary_logic_rounding.py",
+            "whkmSalary/docs/governance/formula_registry.yaml",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertIn(
+            "Decimal half-up cents is a technical code policy only.",
             manifest["unresolved_risks"],
         )
 

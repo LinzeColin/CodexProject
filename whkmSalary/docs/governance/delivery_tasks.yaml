@@ -129,3 +129,19 @@ tasks:
     rollback: "Revert S3PAT02 code/tests/governance files and restore Streamlit local province weights only if owner explicitly chooses duplicated UI weights."
     target_version: "0.0.0"
     completed_version: "0.0.0"
+  - task_id: "S3PAT03"
+    phase: "S3PA"
+    objective: "Make monetary rounding explicit with Decimal half-up cents, pin deployment dependencies, and preserve the existing salary regression fixture."
+    scope: ["whkmSalary/salary_logic.py", "whkmSalary/requirements.txt", "whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md", "whkmSalary governance rounding metadata"]
+    non_scope: ["payroll policy approval", "statutory tax basis", "historical payroll reconciliation", "changing score or weight formulas"]
+    status: "completed"
+    dependencies: ["S3PAT02"]
+    required_files: ["whkmSalary/salary_logic.py", "whkmSalary/requirements.txt", "whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md"]
+    acceptance_ids: ["ACC-S3PAT03-WHKM-ROUNDING-REGRESSION"]
+    test_commands: ["python -B -m unittest discover -s whkmSalary\\\\tests -q", "python -B -m py_compile whkmSalary\\\\salary_logic.py whkmSalary\\\\streamlit_app.py whkmSalary\\\\tests\\\\test_salary_logic_rounding.py", "python -B scripts\\\\validate_semantic_extractors.py whkmSalary", "python -B -m pip index versions streamlit", "python -B -m pip index versions pandas", "python -B -m pytest whkmSalary\\\\tests -q"]
+    test_results: ["unittest exit 0; 9 tests OK", "py_compile exit 0", "semantic extractor exit 0; semantic_parameters_checked=78 semantic_formulas_checked=9", "streamlit 1.58.0 available on PyPI", "pandas 3.0.3 available on PyPI", "pytest unavailable locally: No module named pytest"]
+    evidence_refs: ["whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md", "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json"]
+    risk: "Decimal half-up cents is a technical code policy; owner payroll policy, tax basis, and historical reconciliation remain blocked."
+    rollback: "Revert S3PAT03 code/tests/requirements/governance files and restore unrounded money outputs only if owner explicitly requires the prior behavior."
+    target_version: "0.0.0"
+    completed_version: "0.0.0"

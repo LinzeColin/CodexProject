@@ -186,9 +186,9 @@ def calculate(
             "累计得分": round(weighted_total, 2),
         })
 
-    perf_money = PERF_QUARTER_POOL * (weighted_total / 100.0)
-    total_salary = BASE_MONTHLY * 3 + perf_money
-    after_tax_salary = total_salary * tax_keep_rate
+    perf_money = round_money(PERF_QUARTER_POOL * (weighted_total / 100.0))
+    total_salary = round_money(BASE_MONTHLY * 3 + perf_money)
+    after_tax_salary = round_money(total_salary * tax_keep_rate)
 
     return CalcResult(
         weights=weights,
@@ -223,3 +223,9 @@ def validate_weights(weights: Mapping[str, float]) -> Dict[str, float]:
     if abs(total - WEIGHT_TOTAL) > WEIGHT_TOTAL_TOLERANCE:
         raise ValueError(f"权重合计必须等于 {WEIGHT_TOTAL:g}，当前为 {total:.12g}")
     return normalized
+
+
+def round_money(value: float) -> float:
+    from decimal import Decimal, ROUND_HALF_UP
+
+    return float(Decimal(str(value)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))

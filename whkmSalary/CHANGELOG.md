@@ -2,6 +2,8 @@
 
 ## Unreleased - 2026-06-24
 
+- S3PAT03 adds explicit Decimal half-up cent rounding for monetary outputs and keeps the existing 湖北 regression fixture unchanged.
+- Pinned deployment dependencies to `streamlit==1.58.0` and `pandas==3.0.3`; local Streamlit runtime smoke is not claimed because those packages are not installed in the local environment.
 - S3PAT02 consolidates Streamlit province weights to the `salary_logic.projects` single source.
 - Added runtime validation that weight keys exactly match the salary metrics, all values are finite and non-negative, and the total equals 1.0 before weighted salary calculation.
 - Added focused tests for configured project weights, explicit invalid weights, and UI single-source weight usage; weight policy approval remains blocked under `TASK-WHKM-B-001`.
