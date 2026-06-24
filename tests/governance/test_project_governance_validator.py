@@ -5038,15 +5038,43 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(archive_manifest["stop_conditions"]["delete_candidate_without_owner_approval"])
         self.assertIn("PRIVATE candidates require owner review", " ".join(archive_manifest["limitations"]))
 
+        alpha_archived_targets = {
+            item["source_path"]: item["proposed_target"]
+            for item in archive_manifest["candidates"]
+            if item["project_id"] == "Alpha"
+            and (item["source_path"] == "Alpha/HANDOFF.md" or item["source_path"].startswith("Alpha/outputs/"))
+        }
+        s4pbt01_manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625.json"
+        )
+        s4pbt01_reconciliations = {}
+        if s4pbt01_manifest_path.exists():
+            s4pbt01_manifest = json.loads(s4pbt01_manifest_path.read_text(encoding="utf-8"))
+            s4pbt01_reconciliations = {
+                item["source_path"]: item
+                for item in s4pbt01_manifest.get("archive_checksum_reconciliation", [])
+            }
         checksum_by_path = {}
         for line in checksum_lines:
             digest, source_path = line.split("  ", 1)
             self.assertRegex(digest, r"^[0-9a-f]{64}$")
             checksum_by_path[source_path] = digest
             self.assertFalse(source_path.startswith(("EEI/", "arxiv-daily-push/")), source_path)
-            self.assertTrue((ROOT / source_path).exists(), source_path)
-            observed = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
-            self.assertEqual(observed, digest, source_path)
+            current_path = ROOT / source_path
+            if not current_path.exists() and source_path in alpha_archived_targets:
+                current_path = ROOT / alpha_archived_targets[source_path]
+            self.assertTrue(current_path.exists(), source_path)
+            observed = hashlib.sha256(current_path.read_bytes()).hexdigest()
+            if observed != digest and source_path in alpha_archived_targets:
+                reconciliation = s4pbt01_reconciliations.get(source_path)
+                self.assertIsNotNone(reconciliation, source_path)
+                self.assertEqual(reconciliation["s4pat02_manifest_sha256"], digest)
+                self.assertEqual(reconciliation["archived_worktree_sha256"], observed)
+            else:
+                self.assertEqual(observed, digest, source_path)
         self.assertEqual(len(checksum_by_path), len(checksum_lines))
 
         for item in archive_manifest["candidates"]:
@@ -5107,6 +5135,102 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "No physical archive has been created; later tasks must use the checksum manifest before moving paths.",
             manifest["unresolved_risks"],
         )
+
+    def test_other8_s4pbt01_alpha_structure_simplification_archives_outputs_and_handoff(self) -> None:
+        s4pa_root = ROOT / "governance" / "stage_gates" / "s4pa"
+        archive_manifest = json.loads((s4pa_root / "wave1_archive_manifest.json").read_text(encoding="utf-8"))
+        migration_map = ROOT / "Alpha" / "docs" / "structure_migration_map.md"
+        project = load_validator_module().load_yaml(ROOT / "Alpha" / "docs" / "governance" / "project.yaml")
+
+        alpha_archived = [
+            item
+            for item in archive_manifest["candidates"]
+            if item["project_id"] == "Alpha"
+            and (item["source_path"] == "Alpha/HANDOFF.md" or item["source_path"].startswith("Alpha/outputs/"))
+        ]
+        self.assertEqual(len(alpha_archived), 74)
+        self.assertFalse((ROOT / "Alpha" / "HANDOFF.md").exists())
+        self.assertFalse((ROOT / "Alpha" / "outputs").exists())
+        self.assertTrue((ROOT / "Alpha" / "data" / "sample_prices.csv").is_file())
+        self.assertTrue(migration_map.is_file())
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        reconciliations = {
+            item["source_path"]: item
+            for item in manifest.get("archive_checksum_reconciliation", [])
+        }
+
+        for item in alpha_archived:
+            with self.subTest(source_path=item["source_path"]):
+                self.assertFalse((ROOT / item["source_path"]).exists(), item["source_path"])
+                target = ROOT / item["proposed_target"]
+                self.assertTrue(target.is_file(), item["proposed_target"])
+                observed = hashlib.sha256(target.read_bytes()).hexdigest()
+                if observed != item["sha256"]:
+                    reconciliation = reconciliations.get(item["source_path"])
+                    self.assertIsNotNone(reconciliation, item["source_path"])
+                    self.assertEqual(reconciliation["s4pat02_manifest_sha256"], item["sha256"])
+                    self.assertEqual(reconciliation["archived_worktree_sha256"], observed)
+                else:
+                    self.assertEqual(observed, item["sha256"])
+
+        map_text = migration_map.read_text(encoding="utf-8")
+        for required in {
+            "S4PBT01",
+            "ACC-S4PBT01",
+            "Alpha/HANDOFF.md",
+            "Alpha/outputs/**",
+            "Alpha/data/sample_prices.csv",
+            "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+            "Live-trading readiness promoted: no",
+        }:
+            self.assertIn(required, map_text)
+
+        evidence = {item["evidence_id"]: item for item in project["evidence_refs"]}
+        self.assertEqual(
+            evidence["EVID-ALPHA-HANDOFF"]["ref"],
+            "governance/archive/other8_wave1_pending/Alpha/HANDOFF.md",
+        )
+        self.assertEqual(
+            evidence["EVID-OTHER8-S4PBT01-STRUCTURE-MAP"]["ref"],
+            "Alpha/docs/structure_migration_map.md",
+        )
+        validations = {item["validation_id"]: item for item in project["validations"]}
+        self.assertEqual(validations["VAL-ALPHA-S4PBT01-STRUCTURE"]["fact_level"], "EXTRACTED")
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "Alpha")
+        self.assertEqual(manifest["task_id"], "S4PBT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PBT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S4PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["archive_actions"]["alpha_archived_path_count"], 74)
+        self.assertEqual(manifest["archive_actions"]["alpha_checksum_reconciled_path_count"], 1)
+        self.assertEqual(set(reconciliations), {"Alpha/HANDOFF.md"})
+        self.assertEqual(
+            reconciliations["Alpha/HANDOFF.md"]["proposed_target"],
+            "governance/archive/other8_wave1_pending/Alpha/HANDOFF.md",
+        )
+        self.assertFalse(manifest["stop_conditions"]["alpha_automatic_loop_behavior_changed"])
+        self.assertFalse(manifest["stop_conditions"]["alpha_import_paths_changed"])
+        self.assertFalse(manifest["stop_conditions"]["private_sample_data_moved"])
+        self.assertFalse(manifest["stop_conditions"]["live_readiness_promoted"])
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertIn("Alpha/docs/structure_migration_map.md", changed)
+        self.assertIn("governance/archive/other8_wave1_pending/Alpha/HANDOFF.md", changed)
+        self.assertTrue(
+            any(path.startswith("governance/archive/other8_wave1_pending/Alpha/outputs/") for path in changed)
+        )
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
