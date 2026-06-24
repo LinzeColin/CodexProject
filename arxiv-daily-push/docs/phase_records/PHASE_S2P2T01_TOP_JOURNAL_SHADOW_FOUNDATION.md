@@ -1,13 +1,14 @@
-# PHASE S2P2T01 - Top Journal Shadow Foundation
+# PHASE S2PCT01 - Top Journal Shadow Foundation
 
 Date: 2026-06-24
-Task: S2P2T01
+Task: S2PCT01
+Legacy alias: S2P2T01
 Status: in_progress
 Acceptance claim: not claimed
 
 ## Scope
 
-S2P2T01 adds the first Board 2 top-journal shadow foundation using official public Nature metadata only.
+S2PCT01 adds the first V7.1 D2 top-journal/Nature shadow foundation using official public Nature metadata only. Legacy V6 task ID `S2P2T01` is retained only as an alias.
 
 Implemented:
 - Nature official RSS metadata adapter.

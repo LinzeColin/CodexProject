@@ -140,6 +140,8 @@ jobs:
               --workflow-path ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml" \
               --require-github-actions \
               --require-network-probe \
+              --network-timeout-seconds 30 \
+              --network-max-attempts 3 \
               --json \
             | tee "$RUNNER_TEMP/adp-stage1-bootstrap/adp-stage1-bootstrap-report.json"
           python3 -m json.tool "$RUNNER_TEMP/adp-stage1-bootstrap/storage-migrate.json" >/dev/null

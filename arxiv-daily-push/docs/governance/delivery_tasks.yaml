@@ -560,7 +560,7 @@ tasks:
     risk: "Cannot satisfy Phase 11 production acceptance until the owner provisions the private runner, GitHub secrets/vars, private Release target, explicit launch confirmation, passing trial-start workflow evidence, and 30 unique daily production evidence entries; default_branch_ref and trial_start_workflow_ref are now recorded."
     rollback: "Remove this blocked external production trial-start tracking task; no runtime code or external state is changed by this task record."
     target_version: "0.11.19"
-    completed_version: ""
+    completed_version: "0.23.0"
     unknown_task_ids: []
   - task_id: "ADP-PHASE11-PRODUCTION-REFS-BUNDLE-023"
     phase: "E"
@@ -1128,7 +1128,7 @@ tasks:
     objective: "Promote bioRxiv and medRxiv as the first V7 D1 research/preprint source adapters after Stage 1 arXiv acceptance and local production prep."
     scope: "V7 D1 source registry extension, bioRxiv/medRxiv identity and version gates, fixture parsing, real 30-date replay, 48h shadow-mode evidence, D1-to-board routing boundaries, and no-regression checks for the existing arXiv daily path."
     non_scope: "No formal production inclusion before source gates pass, no duplicate canonical papers, no unauthorized full-text access, no video requirement, no GitHub cloud scheduled production enablement, and no INTEGRATED_PRODUCTION_ACCEPTED claim."
-    status: "in_progress"
+    status: "completed"
     dependencies: ["S2PAT05"]
     required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/src/arxiv_daily_push", "arxiv-daily-push/tests", "arxiv-daily-push/docs/governance"]
     acceptance_ids: ["ACC-S2PBT01-BIORXIV-MEDRXIV", "ADP-ACC-S2P1T01-SOURCE-PROMOTION"]
@@ -1138,7 +1138,7 @@ tasks:
     risk: "S2PBT01/S2P1T01 implementation and no-send evidence are proven, but formal source production inclusion remains blocked by V7.1 P0/P1 findings and final integrated production gates."
     rollback: "If V7 routing is reverted, keep the old S2P1T01 record as the source-promotion task and remove S2PBT01 alias references."
     target_version: "0.24.0"
-    completed_version: ""
+    completed_version: "0.23.0"
     unknown_task_ids: []
   - task_id: "S2P1T01"
     phase: "S2P1"
@@ -1157,20 +1157,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []
-  - task_id: "S2P2T01"
-    phase: "S2P2"
-    objective: "Add the first Board 2 top-journal metadata-only shadow foundation using official public Nature RSS before any formal Stage 2 production inclusion."
+  - task_id: "S2PCT01"
+    legacy_alias: "S2P2T01"
+    phase: "S2PC"
+    objective: "Add the first V7.1 D2 top-journal/Nature metadata-only shadow foundation using official public Nature RSS before any formal Stage 2 production inclusion."
     scope: "Nature official RSS adapter, s41586 main-journal research article filter, metadata-only SourceItems, ROI candidate queue integration, no-send shadow daily runner, separate local queue/ledger/email preview persistence, CLI commands, and focused tests."
     non_scope: "No STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
     status: "in_progress"
     dependencies: ["S2P1T01"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml", "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"]
-    acceptance_ids: ["ADP-ACC-S2P2T01-TOP-JOURNAL-SHADOW"]
+    acceptance_ids: ["ACC-S2PCT01-NATURE"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_pycache_s2p2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q", "fetch-top-journal-latest --journal nature --max-records 3 --fetcher curl", "stage2-top-journal-shadow-daily using the live Nature batch under /tmp/adp_s2p2_nature_live_20260624"]
     test_results: ["focused S2P2/top-journal and Stage2 tests: 14 tests OK", "Nature RSS fixture filters d41586 news items and admits only s41586 main-journal research articles", "S2P2 shadow daily persists separate queue, ledger, dry-run package, and email preview with real_smtp_sent=false and formal_production_inclusion=false", "live Nature RSS no-send canary: batch pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, queue/ledger/email preview paths exist, real_smtp_sent=false, formal_production_inclusion=false"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "https://www.nature.com/nature.rss", "https://www.nature.com/nature/research-articles"]
-    risk: "This is Board 2 shadow evidence only; V7/root contract hash gates still block any formal Stage 2 production inclusion, and Nature metadata must not be treated as full-text review."
-    rollback: "Revert top_journal_adapter.py, S2P2 stage2_sources/CLI/lesson/global_scan changes, Nature fixture/tests, S2P2 phase record, manifest, and event."
+    risk: "This is S2PC/D2 Nature shadow evidence only; V7.1 P0/P1 and S2PMT07 gates still block any formal Stage 2 production inclusion, and Nature metadata must not be treated as full-text review."
+    rollback: "Revert top_journal_adapter.py, S2PC stage2_sources/CLI/lesson/global_scan changes, Nature fixture/tests, S2P2 legacy phase record, manifest, and event."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

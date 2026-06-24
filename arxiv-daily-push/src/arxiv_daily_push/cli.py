@@ -72,7 +72,12 @@ from .source_registry import (
 )
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
-from .stage1_bootstrap import build_stage1_bootstrap_report, validate_stage1_bootstrap_report
+from .stage1_bootstrap import (
+    STAGE1_BOOTSTRAP_NETWORK_MAX_ATTEMPTS,
+    STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
+    build_stage1_bootstrap_report,
+    validate_stage1_bootstrap_report,
+)
 from .stage1_historical_previews import (
     build_historical_b1_previews,
     build_historical_b1_previews_report,
@@ -331,6 +336,18 @@ def build_parser() -> argparse.ArgumentParser:
     post_migration_bootstrap.add_argument("--workflow-path", help="Optional GitHub Actions workflow path to verify.")
     post_migration_bootstrap.add_argument("--require-github-actions", action="store_true", help="Require GitHub-hosted cloud runner evidence.")
     post_migration_bootstrap.add_argument("--require-network-probe", action="store_true", help="Run one lightweight HTTPS arXiv API probe.")
+    post_migration_bootstrap.add_argument(
+        "--network-timeout-seconds",
+        type=int,
+        default=STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
+        help="Per-attempt arXiv network probe timeout.",
+    )
+    post_migration_bootstrap.add_argument(
+        "--network-max-attempts",
+        type=int,
+        default=STAGE1_BOOTSTRAP_NETWORK_MAX_ATTEMPTS,
+        help="Maximum arXiv network probe attempts before failing closed.",
+    )
     post_migration_bootstrap.add_argument("--require-secret-presence", action="store_true", help="Require SMTP secret env names to be present without printing values.")
     post_migration_bootstrap.add_argument("--json", action="store_true", help="Print JSON bootstrap report.")
 
@@ -1176,6 +1193,8 @@ def main(argv: list[str] | None = None) -> int:
             workflow_path=args.workflow_path,
             require_github_actions=args.require_github_actions,
             require_network_probe=args.require_network_probe,
+            network_timeout_seconds=args.network_timeout_seconds,
+            network_max_attempts=args.network_max_attempts,
             require_secret_presence=args.require_secret_presence,
         )
         errors = validate_stage1_bootstrap_report(report)

@@ -50,9 +50,10 @@ S2P1_LEDGER_FILENAME = "stage2_s2p1_preprint_ledger.jsonl"
 S2P1_REPLAY_REPORT_FILENAME = "stage2_s2p1_preprint_replay_report.json"
 S2P1_SHADOW_EVIDENCE_FILENAME = "stage2_s2p1_preprint_shadow_48h_report.json"
 S2P1_PROMOTION_REPORT_FILENAME = "stage2_s2p1_preprint_promotion_report.json"
-S2P2_TOP_JOURNAL_SHADOW_MODEL_ID = "adp-s2p2-top-journal-shadow-daily-v1"
-S2P2_ACCEPTANCE_ID = "ADP-ACC-S2P2T01-TOP-JOURNAL-SHADOW"
-S2P2_TASK_ID = "S2P2T01"
+S2P2_TOP_JOURNAL_SHADOW_MODEL_ID = "adp-s2pct01-top-journal-shadow-daily-v1"
+S2P2_ACCEPTANCE_ID = "ACC-S2PCT01-NATURE"
+S2P2_TASK_ID = "S2PCT01"
+S2P2_LEGACY_TASK_ID = "S2P2T01"
 S2P2_REQUIRED_JOURNALS = ("nature",)
 S2P2_QUEUE_FILENAME = "stage2_s2p2_top_journal_queue.json"
 S2P2_LEDGER_FILENAME = "stage2_s2p2_top_journal_ledger.jsonl"
@@ -378,6 +379,8 @@ def build_s2p2_top_journal_daily_input(
     return {
         "model_id": S2P2_TOP_JOURNAL_SHADOW_MODEL_ID,
         "task_id": S2P2_TASK_ID,
+        "legacy_task_id": S2P2_LEGACY_TASK_ID,
+        "phase": "S2PC",
         "project_id": "arxiv-daily-push",
         "generated_at": generated_at,
         "date": date,
@@ -479,6 +482,7 @@ def run_s2p2_top_journal_shadow_daily(
         "date": date,
         "generated_at": generated_at,
         "task_id": S2P2_TASK_ID,
+        "legacy_task_id": S2P2_LEGACY_TASK_ID,
         "source_id": daily_input["source_item"]["source_id"],
         "canonical_document_id": _canonical_document_id(daily_input["source_item"]),
         "title": daily_input["source_item"]["title"],
@@ -531,9 +535,9 @@ def run_s2p2_top_journal_shadow_daily(
 def validate_s2p2_top_journal_shadow_report(report: Mapping[str, Any]) -> list[str]:
     errors: list[str] = []
     if report.get("model_id") != S2P2_TOP_JOURNAL_SHADOW_MODEL_ID:
-        errors.append("S2P2 shadow report model_id must be adp-s2p2-top-journal-shadow-daily-v1")
+        errors.append("S2PC shadow report model_id must be adp-s2pct01-top-journal-shadow-daily-v1")
     if report.get("task_id") != S2P2_TASK_ID:
-        errors.append("S2P2 shadow report task_id must be S2P2T01")
+        errors.append("S2PC shadow report task_id must be S2PCT01")
     if report.get("status") not in {"pass", "blocked"}:
         errors.append("S2P2 shadow report status must be pass or blocked")
     for key in ("formal_production_inclusion", "github_cloud_schedule_enabled", "real_smtp_sent", "production_affected"):

@@ -5,13 +5,13 @@
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
 - current_stage: `S2`
-- current_phase: `S2PB`
-- current_task: `S2PBT01`
+- current_phase: `S2PC`
+- current_task: `S2PCT01`
 - active_model_count: `50`
 - active_formula_count: `52`
 - active_parameter_count: `359`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
+- next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -24,9 +24,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PAT05`
+- stage2_current_task: `S2PCT01`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PBT01` 是 Stage2 来源 Shadow 线程任务；当前治理修复任务是 `S2PAT05`。
+- `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 

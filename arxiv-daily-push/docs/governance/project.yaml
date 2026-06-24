@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 adapter、gate、queue/ledger/email preview、30-date real no-send replay 和 48h shadow evidence，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence，当前入口为 S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only shadow foundation，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pbt01_evidence_passed_no_formal_production"
+current_status: "stage1_accepted_s2pct01_shadow_in_progress_no_formal_production"
 limitations:
   -
-    statement: "342/342 active parameters 与 48/48 active formulas 为 MACHINE_VERIFIED；46 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "359/359 active parameters 与 52/52 active formulas 为 MACHINE_VERIFIED；50 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -24,20 +24,20 @@ limitations:
     unknown_task_ids:
       - "LOCAL_SMTP_SMOKE"
   -
-    statement: "evidence_freshness 仍为 PARTIAL：0 tree-bound events、1 commit-bound event、54 legacy unbound events、30 precommit pending events；不能把所有历史事件写成 PR CI attested。"
+    statement: "evidence_freshness 仍为 PARTIAL：0 tree-bound events、1 commit-bound event、55 legacy unbound events、38 precommit pending events；不能把所有历史事件写成 PR CI attested。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-ASSURANCE-STATUS"
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay，但 V7/root contract gates 未完成前，不能纳入正式生产、不能启用 SMTP/Release/GitHub schedule/video，也不能宣称 STAGE2_PRODUCTION_ACCEPTED 或 INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；当前 S2PCT01 / legacy S2P2T01 Nature/top-journal 仍为 metadata-only no-send shadow，不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
-      - "S2PBT01"
+      - "S2PCT01"
 features:
   -
     feature_id: "FEAT-ADP-001"
@@ -398,7 +398,7 @@ features:
     feature_id: "FEAT-ADP-007"
     name: "Stage 2 bioRxiv/medRxiv shadow source evidence"
     description: "S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。"
-    status: "evidence_passed_no_formal_production"
+    status: "completed"
     fact_level: "EXTRACTED"
     model_ids:
       - "MOD-ADP-038"
@@ -9889,7 +9889,7 @@ strategies:
   -
     strategy_id: "STRAT-ADP-003"
     name: "Stage 2 source promotion via shadow-mode gate"
-    status: "evidence_passed_no_formal_production"
+    status: "completed"
     fact_level: "EXTRACTED"
     summary: "bioRxiv/medRxiv promotion has passed adapter tests, live canaries, fixture replay/shadow and one real no-send 30-date replay, while preserving the accepted arXiv path; formal production inclusion remains blocked by V7/root contract gates."
     evidence_refs:
@@ -9911,7 +9911,7 @@ validations:
     name: "Implementation congruence"
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    result: "342/342 active parameters and 48/48 active formulas are machine verified."
+    result: "359/359 active parameters and 52/52 active formulas are machine verified."
     evidence_refs:
       - "EVID-ADP-ASSURANCE-STATUS"
       - "EVID-SEMANTIC-ADP-MANIFEST"
@@ -9920,7 +9920,7 @@ validations:
     name: "Evidence freshness"
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    result: "0 tree-bound events, 1 commit-bound event, 54 legacy unbound events, 30 precommit pending events."
+    result: "0 tree-bound events, 1 commit-bound event, 55 legacy unbound events, 38 precommit pending events."
     evidence_refs:
       - "EVID-ADP-ASSURANCE-STATUS"
       - "EVID-ADP-DEVELOPMENT-EVENTS"
@@ -10022,8 +10022,8 @@ delivery_readiness:
   blocked_requirements: 0
   active_requirements: 9
   partial_requirements: 1
-  next_executable_task_id: "S2PBT01/S2P1T01"
-  next_executable_task_status: "evidence_passed_no_formal_production"
+  next_executable_task_id: "S2PCT01"
+  next_executable_task_status: "in_progress"
 governance_counts:
   active_models: 50
   active_formulas: 52
