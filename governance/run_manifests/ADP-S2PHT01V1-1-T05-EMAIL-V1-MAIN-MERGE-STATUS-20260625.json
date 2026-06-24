@@ -1,0 +1,93 @@
+{
+  "manifest_id": "ADP-S2PHT01V1-1-T05-EMAIL-V1-MAIN-MERGE-STATUS-20260625",
+  "project": "arxiv-daily-push",
+  "phase": "S2PH",
+  "task_id": "S2PHT01V1.1-T05",
+  "task_ids": [
+    "S2PHT01V1.1-T02",
+    "S2PHT01V1.1-T03",
+    "S2PHT01V1.1-T04",
+    "S2PHT01V1.1-T05"
+  ],
+  "timestamp": "2026-06-25T08:50:00+10:00",
+  "fact_level": "EXTRACTED",
+  "objective": "Record that PR #152 merged EMAIL_LEARNING_V1 to main for audited M1-M4 mail paths and clear stale PR-pending governance wording.",
+  "base_commit": "1cdad3d9e41f4543b06f158157f35878a30dbc93",
+  "pull_request": "https://github.com/LinzeColin/CodexProject/pull/152",
+  "pr_head_sha": "ee3cecb7891ee63214b244dbb7e8b7f8fb6c0b2a",
+  "main_merge_commit": "1cdad3d9e41f4543b06f158157f35878a30dbc93",
+  "email_template_contract": "EMAIL_LEARNING_V1",
+  "mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "audited_paths_on_main": [
+    "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+    "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+    "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+    "arxiv-daily-push/tests/test_mail_templates.py",
+    "arxiv-daily-push/tests/test_global_scan.py",
+    "arxiv-daily-push/tests/test_stage1_b1_report.py",
+    "arxiv-daily-push/tests/test_stage1_historical_previews.py",
+    "arxiv-daily-push/tests/test_scheduled_execution.py",
+    "arxiv-daily-push/tests/test_local_runner.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "github_actions": [
+    {
+      "name": "Project Governance",
+      "run_id": "28134309934",
+      "conclusion": "success"
+    },
+    {
+      "name": "arXiv Daily Push Stage 1 bootstrap",
+      "run_id": "28134309925",
+      "conclusion": "success"
+    },
+    {
+      "name": "arXiv Daily Push real 30-day backfill",
+      "run_id": "28134309930",
+      "conclusion": "success"
+    },
+    {
+      "name": "arXiv Daily Push live all-ArXiv cloud dry-run",
+      "run_id": "28134309943",
+      "conclusion": "success"
+    }
+  ],
+  "verification": [
+    "PR #152 merged to main at 1cdad3d9e41f4543b06f158157f35878a30dbc93",
+    "origin/main contains EMAIL_LEARNING_V1 bindings in runtime and tests",
+    "old V2 visible template/helper scan on origin/main has no matches",
+    "post-merge status sync changes governance only",
+    "generated governance dashboard sync PASS",
+    "V7.2 contract validator PASS",
+    "ADP project governance errors 0 warnings 0",
+    "changed-only governance semantic errors 0 warnings 0",
+    "lean check-render drift 0 reference issues 0",
+    "JSON/JSONL/YAML/manifest parse OK",
+    "git diff --check PASS"
+  ],
+  "non_scope_flags": {
+    "mail_production_code_changed_in_this_sync": false,
+    "smtp_changed": false,
+    "real_smtp_sent": false,
+    "scheduler_changed": false,
+    "production_schedule_enabled": false,
+    "release_changed": false,
+    "real_release_uploaded": false,
+    "source_adapter_changed": false,
+    "ranking_or_queue_algorithm_changed": false,
+    "public_schema_changed": false,
+    "db_or_migration_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "integrated_production_accepted": false
+  },
+  "risk": "This proves audited current M1-M4 paths on main use Email V1; future mail entrypoints must pass the same Email V1 contract/readiness gate before being treated as compliant.",
+  "rollback": "Revert only this governance/status sync. Do not revert PR #152 unless the owner explicitly abandons Email V1."
+}
