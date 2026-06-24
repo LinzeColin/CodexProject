@@ -3075,3 +3075,49 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT04_JOURNAL_PROFILE_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-058"
+    name: "S2PCT05 engineering public-signal shadow"
+    kind: "deterministic metadata-only engineering signal model"
+    purpose: "Validate paper-linked official code repositories, releases, model cards, benchmark results, and standards/specifications against top-journal profile evidence without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct05-engineering-signals-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-060"
+    parameter_ids:
+      - "PARAM-ADP-400"
+      - "PARAM-ADP-401"
+      - "PARAM-ADP-402"
+      - "PARAM-ADP-403"
+      - "PARAM-ADP-404"
+      - "PARAM-ADP-405"
+      - "PARAM-ADP-406"
+    inputs:
+      - "passing S2PCT04 top-journal profile report"
+      - "engineering signal metadata"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "engineering signal report"
+      - "officiality gate"
+      - "version traceability gate"
+      - "paper relation gate"
+      - "reproducibility state gate"
+      - "engineering signal ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md"
