@@ -26,6 +26,7 @@ from .global_scan import (
 from .handoff import HandoffError, build_handoff, validate_handoff
 from .lesson import LessonGenerationError, generate_lesson
 from .local_runner import (
+    build_operation_readiness,
     build_launchd_package,
     build_local_preflight,
     run_local_daily,
@@ -301,6 +302,15 @@ def build_parser() -> argparse.ArgumentParser:
     local_preflight.add_argument("--generated-at", required=True, help="Evidence timestamp.")
     local_preflight.add_argument("--require-smtp", action="store_true", help="Require SMTP env names for a real local send.")
     local_preflight.add_argument("--json", action="store_true", help="Print JSON local preflight report.")
+    local_readiness = local_subparsers.add_parser("readiness", help="Audit stable local daily email operation readiness.")
+    local_readiness.add_argument("--project-root", default=".", help="Repository root used for local execution.")
+    local_readiness.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    local_readiness.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    local_readiness.add_argument("--require-smtp", action="store_true", help="Require real SMTP send readiness.")
+    local_readiness.add_argument("--require-scheduler", action="store_true", help="Require local scheduler install evidence.")
+    local_readiness.add_argument("--launchd-dir", help="Optional launchd package directory to verify.")
+    local_readiness.add_argument("--max-latest-age-hours", type=float, default=26.0)
+    local_readiness.add_argument("--json", action="store_true", help="Print JSON operation readiness report.")
     local_daily = local_subparsers.add_parser("daily", help="Run one local Stage 1 daily path and persist evidence.")
     local_daily.add_argument("--project-root", default=".", help="Repository root used for local execution.")
     local_daily.add_argument("--state-dir", required=True, help="Local ADP state directory.")
@@ -1150,6 +1160,16 @@ def main(argv: list[str] | None = None) -> int:
             errors = validate_production_preflight(report)
             if errors:
                 report = {**report, "status": "blocked", "production_run_allowed": False, "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        elif args.local_runner_command == "readiness":
+            report = build_operation_readiness(
+                project_root=args.project_root,
+                state_dir=args.state_dir,
+                generated_at=args.generated_at,
+                require_smtp=args.require_smtp,
+                require_scheduler=args.require_scheduler,
+                launchd_dir=args.launchd_dir,
+                max_latest_age_hours=args.max_latest_age_hours,
+            )
         elif args.local_runner_command == "daily":
             report = run_local_daily(
                 project_root=args.project_root,

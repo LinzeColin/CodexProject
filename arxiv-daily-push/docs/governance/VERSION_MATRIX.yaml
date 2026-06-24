@@ -115,6 +115,11 @@ v7_open_p0_findings: 8
 v7_open_p1_findings: 37
 stage2_production_forbidden_until: "P0=0; P1=0; S2PMT07 independent review passed"
 stage1_acceptance_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED"
+stage1_daily_runner: "local_macos_launchd_with_codex_local_python"
+stage1_codex_automation_runner: false
+stage1_stable_daily_email_ready: false
+stage1_stable_daily_email_gate: "local-runner readiness --require-smtp --require-scheduler"
+stage1_stable_daily_email_blockers: "local SMTP env, launchd install evidence, and latest real local SMTP sent evidence are not attached in repo; V7.1 P0/P1 production-forbidden policy remains open"
 stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
 stage2_integrated_production_accepted: false
 email_subject_contract: "YYYYMMDD -- Project Name -- arXiv Group -- Theme"

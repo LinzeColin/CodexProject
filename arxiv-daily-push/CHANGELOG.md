@@ -8,6 +8,7 @@
 - Implemented the `S2P1T01` bioRxiv/medRxiv source-promotion foundation: metadata-only preprint adapter, disabled Stage 2 source registry entries, promotion gate, separate shadow daily queue/ledger/email preview path, and fixture tests.
 - Verified one live bioRxiv and one live medRxiv fixed-interval canary plus one no-send shadow daily canary; kept formal production inclusion blocked until 30-date terminal replay and 48h shadow evidence pass.
 - Added `adp local-runner preflight|daily|launchd-package` for Stage 1 local Mac + Codex/local runner operation.
+- Added `adp local-runner readiness` plus health/daily/watchdog launchd package generation so Stage 1 cannot be marked stable daily email operation until SMTP, scheduler install evidence, and latest real-send evidence all pass.
 - Added local queue, local content ledger JSONL, per-run report, and plain/HTML email preview persistence under an owner-controlled state directory.
 - Added a disabled launchd package draft and 2026-06-30 migration runbook without installing the scheduler, sending production SMTP, enabling GitHub cloud scheduled production, uploading Release artifacts, or generating video.
 - Set the next executable roadmap task to `S2P1T01` after `ADP-S1P5T05` local production and migration prep.

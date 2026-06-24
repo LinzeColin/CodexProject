@@ -14,6 +14,7 @@ from arxiv_daily_push.local_runner import (
     LOCAL_RUNNER_MODEL_ID,
     build_launchd_package,
     build_local_preflight,
+    build_operation_readiness,
     run_local_daily,
     validate_local_runner_report,
 )
@@ -256,10 +257,94 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertFalse(report["real_scheduler_installed"])
             self.assertFalse(report["github_cloud_schedule_required"])
             self.assertTrue((Path(tmp) / "launchd" / "README_LOCAL_LAUNCHD.md").is_file())
+            self.assertTrue((Path(tmp) / "launchd" / "com.linze.adp.local.health.plist").is_file())
             plist = (Path(tmp) / "launchd" / "com.linze.adp.local.daily.plist").read_text(encoding="utf-8")
             self.assertIn("ADP_LOCAL_DAILY_RUN_ENABLED=true", plist)
             self.assertIn("local-runner daily", plist)
+            self.assertIn("ADP_ALLOW_SMTP_SEND", plist)
+            self.assertIn("--allow-smtp-send", plist)
             self.assertNotIn("github-actions", plist)
+            watchdog = (Path(tmp) / "launchd" / "com.linze.adp.local.watchdog.plist").read_text(encoding="utf-8")
+            self.assertIn("local-runner readiness", watchdog)
+            install = (Path(tmp) / "launchd" / "install-local-launchd.sh").read_text(encoding="utf-8")
+            self.assertIn('script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"', install)
+            self.assertIn('cp "$script_dir/com.linze.adp.local.daily.plist"', install)
+            self.assertFalse(validate_local_runner_report(report))
+
+    def test_operation_readiness_blocks_until_real_smtp_scheduler_and_latest_run_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            state = Path(tmp) / "state"
+            state.mkdir()
+            report = build_operation_readiness(
+                project_root=Path(tmp),
+                state_dir=state,
+                generated_at=GENERATED_AT,
+                env={},
+                require_smtp=True,
+                require_scheduler=True,
+                command_resolver=command_resolver,
+                disk_free_gib=120.0,
+                memory_total_gib=16.0,
+            )
+
+            self.assertEqual(report["status"], "blocked")
+            self.assertFalse(report["stable_daily_email_ready"])
+            reasons = " ".join(report["blocking_reasons"])
+            self.assertIn("ADP_ALLOW_SMTP_SEND", reasons)
+            self.assertIn("ADP_LOCAL_SCHEDULER_INSTALLED", reasons)
+            self.assertIn("latest_local_run.json", reasons)
+            self.assertFalse(validate_local_runner_report(report))
+
+    def test_operation_readiness_passes_with_launchd_package_and_recent_real_smtp_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            state = Path(tmp) / "state"
+            state.mkdir()
+            launchd_dir = Path(tmp) / "launchd"
+            build_launchd_package(
+                project_root=root,
+                state_dir=state,
+                artifact_dir=launchd_dir,
+                generated_at=GENERATED_AT,
+            )
+            (state / "latest_local_run.json").write_text(
+                json.dumps(
+                    {
+                        "model_id": LOCAL_RUNNER_MODEL_ID,
+                        "schema_version": 1,
+                        "acceptance_id": "ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP",
+                        "action": "daily_run",
+                        "status": "pass",
+                        "generated_at": GENERATED_AT,
+                        "candidate_queue_persisted": True,
+                        "real_smtp_sent": True,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            env = smtp_env(
+                ADP_ALLOW_SMTP_SEND="true",
+                ADP_LOCAL_SCHEDULER_INSTALLED="true",
+                ADP_LOCAL_SCHEDULER_EVIDENCE_REF="local-launchctl://com.linze.adp.local.daily",
+            )
+
+            report = build_operation_readiness(
+                project_root=root,
+                state_dir=state,
+                generated_at=GENERATED_AT,
+                env=env,
+                require_smtp=True,
+                require_scheduler=True,
+                launchd_dir=launchd_dir,
+                command_resolver=command_resolver,
+                disk_free_gib=120.0,
+                memory_total_gib=16.0,
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertTrue(report["stable_daily_email_ready"])
+            self.assertFalse(report["codex_automation_runner"])
             self.assertFalse(validate_local_runner_report(report))
 
     def test_cli_local_preflight_and_launchd_package_output_json(self) -> None:
@@ -305,6 +390,32 @@ class LocalRunnerTests(unittest.TestCase):
             payload = json.loads(buffer.getvalue())
             self.assertEqual(result, 0)
             self.assertEqual(payload["model_id"], LOCAL_RUNNER_MODEL_ID)
+
+    def test_cli_local_readiness_output_json_blocks_without_owner_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            state = Path(tmp) / "state"
+            state.mkdir()
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "local-runner",
+                        "readiness",
+                        "--project-root",
+                        tmp,
+                        "--state-dir",
+                        str(state),
+                        "--generated-at",
+                        GENERATED_AT,
+                        "--require-smtp",
+                        "--require-scheduler",
+                        "--json",
+                    ]
+                )
+            payload = json.loads(buffer.getvalue())
+            self.assertEqual(result, 2)
+            self.assertEqual(payload["action"], "operation_readiness")
+            self.assertFalse(payload["stable_daily_email_ready"])
 
 
 if __name__ == "__main__":
