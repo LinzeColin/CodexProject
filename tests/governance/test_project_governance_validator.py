@@ -4033,6 +4033,49 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         report = json.loads(result.stdout)
         self.assertEqual(report["status"], "PASS", report)
 
+    def test_other8_s2pct03_stage_gate_evidence_snapshots_exist(self) -> None:
+        gate_root = ROOT / "governance" / "stage_gates" / "s2"
+        required = {
+            "root_contract_diff.md",
+            "renderer_field_matrix.md",
+            "no_op_write_test.log",
+            "impact_map_test.log",
+            "workflow_matrix.md",
+            "scope_selection_tests.log",
+            "budget_report.json",
+        }
+        for name in required:
+            self.assertTrue((gate_root / name).is_file(), name)
+
+        root_contract = (gate_root / "root_contract_diff.md").read_text(encoding="utf-8")
+        renderer_matrix = (gate_root / "renderer_field_matrix.md").read_text(encoding="utf-8")
+        no_op_log = (gate_root / "no_op_write_test.log").read_text(encoding="utf-8")
+        impact_log = (gate_root / "impact_map_test.log").read_text(encoding="utf-8")
+        workflow_matrix = (gate_root / "workflow_matrix.md").read_text(encoding="utf-8")
+        scope_log = (gate_root / "scope_selection_tests.log").read_text(encoding="utf-8")
+        budget = json.loads((gate_root / "budget_report.json").read_text(encoding="utf-8"))
+
+        for text in (root_contract, renderer_matrix, no_op_log, impact_log, workflow_matrix, scope_log):
+            self.assertIn("只读证据快照", text)
+            self.assertIn("不是新的事实源", text)
+
+        self.assertIn("根 README、AGENTS、STANDARD 与当前实际命令一致", root_contract)
+        self.assertIn("roadmap_kind: product", renderer_matrix)
+        self.assertIn("updated_count=0", no_op_log)
+        self.assertIn("git diff --exit-code", no_op_log)
+        self.assertIn("root_scope_excluded_projects=[\"EEI\",\"arxiv-daily-push\"]", impact_log)
+        self.assertIn("pull_request", workflow_matrix)
+        self.assertIn("changed-only fast gate", workflow_matrix)
+        self.assertIn("selected_project_count=8", scope_log)
+        self.assertEqual(budget["status"], "PASS")
+        self.assertEqual(budget["kind"], "read_only_gate_evidence_snapshot_not_fact_source")
+        self.assertEqual(budget["ci_budget_telemetry"]["selected_project_count"], 8)
+        self.assertEqual(budget["ci_budget_telemetry"]["total_project_count"], 10)
+        self.assertEqual(budget["ci_budget_telemetry"]["full_project_scan_avoided_count"], 2)
+        self.assertTrue(budget["ci_budget_telemetry"]["zero_diff_clean"])
+        self.assertFalse(budget["risk_boundary"]["ordinary_pr_full_governance"])
+        self.assertTrue(budget["risk_boundary"]["manual_all_full_governance"])
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
