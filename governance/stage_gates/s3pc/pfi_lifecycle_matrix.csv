@@ -1,0 +1,9 @@
+task_id,project_id,check,scope,evidence,result,notes
+S3PCT02,PFI_BIG_DATA_SIMULATOR,multiprocess_bounded,temp ProcessPoolExecutor workers=2 with synthetic paths,PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py,PASS,workers limited to 2; no live data or production account used
+S3PCT02,PFI_BIG_DATA_SIMULATOR,cache_manifest,temp CSV normalized into temp OHLCV cache and cache_index.csv,PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py,PASS,cache files are created under TemporaryDirectory only
+S3PCT02,PFI_BIG_DATA_SIMULATOR,cancel_checkpoint,run_task_manifest cancel_after_tasks=1 writes cancelled task_status rows,PFI/大数据模拟器/qbvs/tasks.py;PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py,PASS,run_control.json records selected/new/cancelled task counts
+S3PCT02,PFI_BIG_DATA_SIMULATOR,resume_idempotence,rerun same manifest and run_dir with resume enabled,PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py,PASS,first task is cached and remaining tasks complete without duplicate background workers
+S3PCT02,PFI_BIG_DATA_SIMULATOR,sqlite_persistence_recovery,temp run imported to temp SQLite warehouse then exported,PFI/大数据模拟器/qbvs/warehouse.py;PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py,PASS,sqlite connections explicitly close; temp DB unlink succeeds on Windows
+S3PCT02,PFI_BIG_DATA_SIMULATOR,background_cleanup,multiprocessing.active_children has no new live children after bounded run,PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py,PASS,background residue process count is zero in the focused lifecycle test
+S3PCT02,PFI_BIG_DATA_SIMULATOR,roadmap_pytest_command,python -B -m pytest PFI/大数据模拟器/tests -q,local command output,BLOCKED_LOCAL_TOOL_UNAVAILABLE,No module named pytest in bundled runtime; unittest lifecycle and py_compile checks pass
+S3PCT02,PFI_BIG_DATA_SIMULATOR,stop_condition_external_accounts,no real external account or production connection required,governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv,PASS,all inputs are synthetic and temporary

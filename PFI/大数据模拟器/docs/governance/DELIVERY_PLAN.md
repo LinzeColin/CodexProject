@@ -3,7 +3,7 @@
 - model_count: 15
 - formula_count: 15
 - parameter_count: 213
-- task_count: 15
+- task_count: 16
 
 Machine task source of truth: `delivery_tasks.yaml`.
 
@@ -17,6 +17,10 @@ Machine task source of truth: `delivery_tasks.yaml`.
 ## Phase B Model And Data Specification
 
 - TASK-PFI-B-001 through TASK-PFI-B-010: blocked calibration/source-rationale repairs for heuristic constants, thresholds, provider gates and score weights.
+
+## S3PC Runtime Lifecycle
+
+- S3PCT02: completed local lifecycle verification for bounded multiprocessing, temporary cache, SQLite close/unlink, cancel checkpoint and resume idempotence. This does not approve strategy validity, live accounts or production QuantLab writes.
 
 ## Acceptance
 

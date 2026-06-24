@@ -381,7 +381,7 @@ formulas:
     model_id: "MOD-009"
     status: "active"
     fact_level: "EXTRACTED"
-    expression: "task_id is first 24 hex chars of sha256 over source/window/strategy payload; run_task_manifest returns cached if result exists, skipped_quality if quality score is below minimum and skip flag is enabled, otherwise completed or failed."
+    expression: "task_id is first 24 hex chars of sha256 over source/window/strategy payload; run_task_manifest returns cached if result exists, cancelled when a bounded cancel checkpoint stops new uncached launches, skipped_quality if quality score is below minimum and skip flag is enabled, otherwise completed or failed."
     variables:
       - name: "input_payload"
         data_type: "float/string/dict/dataframe"
@@ -410,10 +410,11 @@ formulas:
       - "PFI/大数据模拟器/qbvs/tasks.py:110"
       - "PFI/大数据模拟器/qbvs/tasks.py:189"
       - "PFI/大数据模拟器/qbvs/tasks.py:209"
-      - "PFI/大数据模拟器/qbvs/tasks.py:269"
+      - "PFI/大数据模拟器/qbvs/tasks.py:297"
     test_refs:
       - "PFI/大数据模拟器/tests/test_core.py:95"
       - "PFI/大数据模拟器/tests/test_core.py:273"
+      - "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py:17"
     evidence_refs:
       - "PFI/大数据模拟器/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-005"
@@ -421,10 +422,10 @@ formulas:
       - "TASK-PFI-B-005"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["PFI/大数据模拟器/qbvs/tasks.py::build_csv_task_manifest", "PFI/大数据模拟器/qbvs/tasks.py::build_cache_task_manifest", "PFI/大数据模拟器/qbvs/tasks.py::build_cache_pair_task_manifest", "PFI/大数据模拟器/qbvs/tasks.py::_select_even_windows", "PFI/大数据模拟器/qbvs/tasks.py::task_id", "PFI/大数据模拟器/qbvs/tasks.py::run_task_manifest", "PFI/大数据模拟器/qbvs/tasks.py::quality_gate_decision", "PFI/大数据模拟器/qbvs/tasks.py::run_one_task", "PFI/大数据模拟器/qbvs/tasks.py::aggregate_task_results"]
-    implementation_fingerprint: "sha256:945103aa5c9c43e1164de4320b3f93eefee58f6fd8e83c21612a5d61db7f52a7"
-    last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
-    verified_at: "2026-06-21T12:19:34Z"
-    evidence_hash: "sha256:f249caa67badc913bf7157862fde2a19b19e234689ee3040f28f06022c58d237"
+    implementation_fingerprint: "sha256:62a960a91f479a436d9b731f48d34fe17ee913624585c7628df1c1103326738d"
+    last_verified_commit: "4cb93442724725c78a453cf18416e641c5d7463f"
+    verified_at: "2026-06-24T00:00:00Z"
+    evidence_hash: "sha256:21ea305d67946d1ea5f700aa51e80d58992eaa0d4d020b4c8f5119bf59339b69"
   - formula_id: "FORM-010"
     model_id: "MOD-010"
     status: "active"

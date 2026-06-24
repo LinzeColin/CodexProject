@@ -4559,6 +4559,70 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s3pct02_pfi_lifecycle_manifest_and_gate_evidence(self) -> None:
+        lifecycle_matrix = ROOT / "governance" / "stage_gates" / "s3pc" / "pfi_lifecycle_matrix.csv"
+        process_log = ROOT / "governance" / "stage_gates" / "s3pc" / "pfi_process_cleanup.log"
+        recovery_log = ROOT / "governance" / "stage_gates" / "s3pc" / "pfi_persistence_recovery.log"
+        self.assertTrue(lifecycle_matrix.is_file())
+        self.assertTrue(process_log.is_file())
+        self.assertTrue(recovery_log.is_file())
+
+        rows = list(csv.DictReader(lifecycle_matrix.read_text(encoding="utf-8").splitlines()))
+        checks = {row["check"]: row["result"] for row in rows}
+        self.assertEqual(checks["multiprocess_bounded"], "PASS")
+        self.assertEqual(checks["cache_manifest"], "PASS")
+        self.assertEqual(checks["cancel_checkpoint"], "PASS")
+        self.assertEqual(checks["resume_idempotence"], "PASS")
+        self.assertEqual(checks["sqlite_persistence_recovery"], "PASS")
+        self.assertEqual(checks["background_cleanup"], "PASS")
+        self.assertEqual(checks["roadmap_pytest_command"], "BLOCKED_LOCAL_TOOL_UNAVAILABLE")
+
+        process_text = process_log.read_text(encoding="utf-8")
+        self.assertIn("S3PCT02", process_text)
+        self.assertIn("background_residue_process_count: 0", process_text)
+        self.assertIn("No module named pytest", process_text)
+        recovery_text = recovery_log.read_text(encoding="utf-8")
+        self.assertIn("cancel_after_tasks=1", recovery_text)
+        self.assertIn("temp qbvs.sqlite unlink succeeds on Windows", recovery_text)
+        self.assertIn("no production SQLite/database path used", recovery_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "PFI_BIG_DATA_SIMULATOR")
+        self.assertEqual(manifest["task_id"], "S3PCT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PCT02"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "PFI/大数据模拟器/qbvs/cli.py",
+            "PFI/大数据模拟器/qbvs/tasks.py",
+            "PFI/大数据模拟器/qbvs/warehouse.py",
+            "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py",
+            "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv",
+            "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+            "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("Ran 1 test", observed)
+        self.assertIn("No module named pytest", observed)
+        self.assertIn(
+            "No real external account, live provider connection, production database, or large pressure run is approved by S3PCT02.",
+            manifest["unresolved_risks"],
+        )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
