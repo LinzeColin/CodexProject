@@ -8,7 +8,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-Stage 1 daily-operation hardening 增加了 `local-runner readiness` 和 health/daily/watchdog 三段本机 launchd 包生成；本机 Stage1-only launchd 已安装并验证三个 label 存在。本轮没有读取/写入明文 secret、没有完成真实 SMTP 发送、没有启用 GitHub cloud schedule。
+Stage 1 daily-operation hardening 增加了 `local-runner readiness` 和 health/daily/watchdog 三段本机 launchd 包生成；本机 Stage1-only launchd 已安装并验证三个 label 存在。本机 SMTP password 已写入 Keychain，但 Gmail SMTP 返回 `SMTPAuthenticationError`，因此还没有完成真实 SMTP 发送；没有启用 GitHub cloud schedule。
 
 ## 3. 为什么重要
 

@@ -46,6 +46,7 @@
 - Stage 1 daily runner: `local_macos_launchd_with_codex_local_python`
 - Stage 1 stable daily email ready: `false`
 - Stage 1 local launchd installed on this Mac: `true`
+- Stage 1 latest SMTP blocker: `SMTPAuthenticationError`
 - Stage 1 readiness gate: `local-runner readiness --require-smtp --require-scheduler`
 - Codex Automation runner: `false`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
