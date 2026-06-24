@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT01`
-- active_model_count: `50`
-- active_formula_count: `52`
-- active_parameter_count: `359`
+- current_task: `S2PCT02`
+- active_model_count: `52`
+- active_formula_count: `54`
+- active_parameter_count: `364`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -492,6 +492,24 @@
 - parameter_refs: `PARAM-ADP-372, PARAM-ADP-373, PARAM-ADP-374, PARAM-ADP-375, PARAM-ADP-376`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
 
+### MOD-ADP-051 S2PCT01 Nature/top-journal metadata ingest
+
+- purpose: `Fetch a small official public Nature RSS metadata window, filter to main-journal s41586 research article URLs, map records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-053`
+- parameter_refs: `PARAM-ADP-377, PARAM-ADP-378, PARAM-ADP-379`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+### MOD-ADP-052 S2PCT01 top-journal shadow daily path
+
+- purpose: `Build a separate Nature/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2 production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-054`
+- parameter_refs: `PARAM-ADP-379, PARAM-ADP-380, PARAM-ADP-381`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -805,6 +823,18 @@
 - model_id: `MOD-ADP-050`
 - expression_or_pseudocode: `S2P1T01 replay-shadow evidence passes only when 30 historical as-of dates produce passing no-send shadow daily runs, persisted queue/ledger/report/email artifacts, unique selected source and canonical IDs, no future leakage, no P0/P1 blockers, no queue continuity breaks, shadow_hours >= 48, and all production side effects false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
+
+### FORM-ADP-053
+
+- model_id: `MOD-ADP-051`
+- expression_or_pseudocode: `S2PCT01 Nature/top-journal ingest passes only when a supported top journal is Nature, the official public Nature RSS URL is used, max_records is within the canary limit, records are filtered to main-journal s41586 article URLs, duplicate source IDs are separated from new items, generated SourceItems validate, and PDF/full-text/bulk/paywall side effects remain disabled.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+### FORM-ADP-054
+
+- model_id: `MOD-ADP-052`
+- expression_or_pseudocode: `A S2PCT01 top-journal shadow daily run builds ROI-ranked candidates from passing Nature SourceItems, selects one shadow daily input, updates a separate top-journal queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, or mutation of the accepted Stage 1 arXiv local production path.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT01-NATURE`
 
 ## 参数
 
@@ -1169,3 +1199,8 @@
 | PARAM-ADP-374 | S2P1_REPLAY_REPORT_FILENAME | S2P1 replay report filename | stage2_s2p1_preprint_replay_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
 | PARAM-ADP-375 | S2P1_SHADOW_EVIDENCE_FILENAME | S2P1 48h shadow evidence filename | stage2_s2p1_preprint_shadow_48h_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
 | PARAM-ADP-376 | S2P1_PROMOTION_REPORT_FILENAME | S2P1 promotion report filename | stage2_s2p1_preprint_promotion_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-377 | TOP_JOURNAL_INGEST_MODEL_ID | Top-journal ingest model id | adp-stage2-top-journal-ingest-v1 | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-378 | TOP_JOURNAL_MAX_CANARY_RECORDS | Top-journal max canary records per call | 10 | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-379 | SUPPORTED_TOP_JOURNALS | S2PCT01 supported top journals | nature | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-380 | S2P2_QUEUE_FILENAME | S2PCT01 top-journal shadow queue filename | stage2_s2p2_top_journal_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-381 | S2P2_LEDGER_FILENAME | S2PCT01 top-journal shadow ledger filename | stage2_s2p2_top_journal_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |

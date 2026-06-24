@@ -2880,15 +2880,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["schema_version"], "codexproject.project.v1")
         self.assertEqual(project["project_id"], "arxiv-daily-push")
         self.assertEqual(project["fact_level"], "EXTRACTED")
-        self.assertEqual(project["current_status"], "stage1_accepted_s2pct01_shadow_in_progress_no_formal_production")
+        self.assertEqual(project["current_status"], "stage1_accepted_s2pct01_shadow_merged_s2pct02_next_no_formal_production")
         self.assertIn("Stage 1 B1/arXiv accepted", project["summary"])
         self.assertIn("S2PBT01/S2P1T01 bioRxiv/medRxiv", project["summary"])
         self.assertIn("S2PCT01 / legacy S2P2T01 Nature/top-journal", project["summary"])
         self.assertIn("不得宣称 Stage 2 或 integrated production accepted", project["summary"])
-        self.assertEqual(len(project["features"]), 8)
-        self.assertEqual(len(project["models"]), 50)
-        self.assertEqual(len(project["formulas"]), 52)
-        self.assertEqual(len(project["parameters"]), 359)
+        self.assertEqual(len(project["features"]), 9)
+        self.assertEqual(len(project["models"]), 52)
+        self.assertEqual(len(project["formulas"]), 54)
+        self.assertEqual(len(project["parameters"]), 364)
         self.assertEqual(len(project["strategies"]), 3)
         self.assertEqual(len(project["validations"]), 4)
 
@@ -2914,6 +2914,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("EVID-ADP-STAGE1-ACCEPTED", evidence_ids)
         self.assertIn("EVID-ADP-LOCAL-PRODUCTION-PREP", evidence_ids)
         self.assertIn("EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW", evidence_ids)
+        self.assertIn("EVID-ADP-S2PCT01-NATURE", evidence_ids)
         for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
             for item in project[section]:
                 for evidence_id in item["evidence_refs"]:
@@ -2922,14 +2923,14 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
         formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
         model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
-        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 359)
-        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 52)
-        self.assertEqual(model_semantic_counts["EXTRACTED"], 50)
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 364)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 54)
+        self.assertEqual(model_semantic_counts["EXTRACTED"], 52)
 
         limitations = " ".join(item["statement"] for item in project["limitations"])
-        self.assertIn("359/359 active parameters", limitations)
-        self.assertIn("52/52 active formulas", limitations)
-        self.assertIn("50 个 active models 只从 model_registry EXTRACTED", limitations)
+        self.assertIn("364/364 active parameters", limitations)
+        self.assertIn("54/54 active formulas", limitations)
+        self.assertIn("52 个 active models 只从 model_registry EXTRACTED", limitations)
         self.assertIn("delivery_readiness 对 Stage 1 arXiv 为 VERIFIED", limitations)
         self.assertIn("evidence_freshness 仍为 PARTIAL", limitations)
         self.assertIn("S2PCT01 / legacy S2P2T01 Nature/top-journal", limitations)
@@ -2939,11 +2940,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 0)
         self.assertEqual(project["delivery_readiness"]["active_requirements"], 9)
         self.assertEqual(project["delivery_readiness"]["partial_requirements"], 1)
-        self.assertEqual(project["delivery_readiness"]["next_executable_task_id"], "S2PCT01")
-        self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "in_progress")
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_id"], "S2PCT02")
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "planned")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PCT01-STAGE1-BOOTSTRAP-CI-RETRY-HARDENING")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PCT01-POST-MERGE-STATUS")
         self.assertEqual(matrix["current_phase"], "S2PC")
         self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED")
         self.assertEqual(matrix["current_v7_task_id"], "S2PCT01")
@@ -2962,10 +2963,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(roadmap["project_id"], "arxiv-daily-push")
         self.assertEqual(roadmap["current_stage_id"], "S2")
         self.assertEqual(roadmap["current_phase_id"], "S2PC")
-        self.assertEqual(roadmap["current_task_id"], "S2PCT01")
+        self.assertEqual(roadmap["current_task_id"], "S2PCT02")
         self.assertEqual(roadmap["next_gate_id"], "S2PC-GATE-V7-CONTRACT-BLOCKED")
-        self.assertEqual(roadmap["total_estimated_hours"], 8.5)
-        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+        self.assertEqual(roadmap["total_estimated_hours"], 10.5)
+        self.assertEqual(roadmap["completed_estimated_hours"], 8.5)
 
         tasks = [
             task
@@ -2973,7 +2974,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             for phase in stage["phases"]
             for task in phase["tasks"]
         ]
-        self.assertEqual([task["task_id"] for task in tasks], ["S2PBT01", "S2PCT01", "S5PBT05"])
+        self.assertEqual([task["task_id"] for task in tasks], ["S2PBT01", "S2PCT01", "S2PCT02", "S5PBT05"])
         task = tasks[0]
         self.assertEqual(task["status"], "completed")
         self.assertEqual(task["dependencies"], ["ARXIV_PRODUCTION_ACCEPTED", "ADP-S1P5T05"])
@@ -2982,12 +2983,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         nature_task = tasks[1]
         self.assertEqual(nature_task["task_id"], "S2PCT01")
         self.assertEqual(nature_task["legacy_alias"], "S2P2T01")
-        self.assertEqual(nature_task["status"], "in_progress")
+        self.assertEqual(nature_task["status"], "completed")
         self.assertEqual(nature_task["acceptance_ids"], ["ACC-S2PCT01-NATURE"])
         self.assertIn(
             "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json",
             nature_task["evidence_refs"],
         )
+        science_task = tasks[2]
+        self.assertEqual(science_task["task_id"], "S2PCT02")
+        self.assertEqual(science_task["legacy_alias"], "S2P2T02")
+        self.assertEqual(science_task["status"], "planned")
+        self.assertEqual(science_task["acceptance_ids"], ["ACC-S2PCT02-SCIENCE"])
         self.assertIn("V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED", roadmap["stages"][0]["stop_conditions"])
 
     def test_review9_s5pbt05_arxiv_events_preserve_truth_levels(self) -> None:
@@ -4920,8 +4926,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-093")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-093")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-094")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-094")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -4959,7 +4965,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S2PCT01",
+            "arxiv-daily-push": "S2PCT02",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",

@@ -2,10 +2,10 @@ schema_version: "codexproject.roadmap.v1"
 project_id: "arxiv-daily-push"
 current_stage_id: "S2"
 current_phase_id: "S2PC"
-current_task_id: "S2PCT01"
+current_task_id: "S2PCT02"
 next_gate_id: "S2PC-GATE-V7-CONTRACT-BLOCKED"
-total_estimated_hours: 8.5
-completed_estimated_hours: 4
+total_estimated_hours: 10.5
+completed_estimated_hours: 8.5
 stages:
   -
     stage_id: "S2"
@@ -53,7 +53,7 @@ stages:
             objective: "完成 metadata-only adapter、source gate、queue/ledger/email preview、30-date real replay 和 48h shadow evidence，并保持 formal production false。"
             status: "completed"
             estimated_hours: 2.5
-            total_hours_percent: "38.46%"
+            total_hours_percent: "23.81%"
             dependencies:
               - "ARXIV_PRODUCTION_ACCEPTED"
               - "ADP-S1P5T05"
@@ -71,7 +71,7 @@ stages:
       -
         phase_id: "S2PC"
         name: "D2 Nature/top-journal shadow foundation"
-        objective: "将 legacy S2P2T01 作为 V7.1 canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence。"
+        objective: "将 legacy S2P2T01 作为 V7.1 canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence，并继续到 S2PCT02 Science 主刊 metadata-only shadow。"
         status: "in_progress"
         stop_conditions:
           - "把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction"
@@ -93,9 +93,9 @@ stages:
             legacy_alias: "S2P2T01"
             name: "Nature/top-journal metadata-only no-send shadow evidence"
             objective: "完成 official Nature RSS adapter、s41586 main-journal filter、SourceItem mapping、queue/ledger/email preview 和 no-send canary evidence。"
-            status: "in_progress"
+            status: "completed"
             estimated_hours: 2
-            total_hours_percent: "23.53%"
+            total_hours_percent: "19.05%"
             dependencies:
               - "S2PBT01"
             acceptance_ids:
@@ -107,8 +107,28 @@ stages:
               - "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
               - "arxiv-daily-push/tests/test_top_journal_adapter.py"
               - "arxiv-daily-push/tests/test_stage2_sources.py"
+              - "https://github.com/LinzeColin/CodexProject/pull/119"
             risk: "V7.1 P0/P1 和 S2PMT07 未完成前不能纳入正式生产、不能启用邮件发送或 schedule，Nature metadata 不能被误读为全文抽取。"
             rollback: "Revert S2PCT01/S2P2T01 Nature adapter, shadow daily code, fixtures, tests, phase record, manifest, and rendered governance sync."
+          -
+            task_id: "S2PCT02"
+            legacy_alias: "S2P2T02"
+            name: "Science main-journal metadata-only no-send shadow evidence"
+            objective: "在 S2PCT01 Nature 框架稳定后，接入 Science 主刊 metadata-only discovery path，识别 Research/Report/Review/Perspective 等类型，并保持 D2 source-domain acceptance 与 production inclusion false。"
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "19.05%"
+            dependencies:
+              - "S2PCT01"
+            acceptance_ids:
+              - "ACC-S2PCT02-SCIENCE"
+            test_commands:
+              - "planned: Science source adapter focused tests"
+              - "planned: Science no-send shadow daily with separate queue/ledger/email preview"
+            evidence_refs:
+              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+            risk: "错误文章类型、重复 DOI、全文/订阅墙越界、或 Science shadow 污染正式 arXiv 邮件必须阻断；不得宣称 D2_SOURCE_DOMAIN_ACCEPTED 或 Stage2 production accepted。"
+            rollback: "Remove planned S2PCT02 governance entry if Science implementation is deferred or superseded."
   -
     stage_id: "S5"
     name: "项目迁移与三文件重建"
