@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624",
+  "project_id": "PFI_BIG_DATA_SIMULATOR",
+  "task_id": "S3PCT02",
+  "acceptance_ids": [
+    "ACC-S3PCT02"
+  ],
+  "iteration_id": "ITER-20260624-PFI-S3PCT02",
+  "generated_at": "2026-06-24T22:00:00+10:00",
+  "implementation_base_sha": "4cb93442724725c78a453cf18416e641c5d7463f",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5642ed9447362c0544d08f2279ffb99d1057ea612c5ef4b66cc10244381e02d2",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+    "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "PFI/大数据模拟器/CHANGELOG.md",
+    "PFI/大数据模拟器/docs/governance/DELIVERY_PLAN.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/qbvs/cli.py",
+    "PFI/大数据模拟器/qbvs/tasks.py",
+    "PFI/大数据模拟器/qbvs/warehouse.py",
+    "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py",
+    "PFI/大数据模拟器/开发记录"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+    "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "PFI/大数据模拟器/CHANGELOG.md",
+    "PFI/大数据模拟器/docs/governance/DELIVERY_PLAN.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/qbvs/cli.py",
+    "PFI/大数据模拟器/qbvs/tasks.py",
+    "PFI/大数据模拟器/qbvs/warehouse.py",
+    "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py",
+    "PFI/大数据模拟器/开发记录"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+    "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/DELIVERY_PLAN.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/开发记录"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+    "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "PFI/大数据模拟器/CHANGELOG.md",
+    "PFI/大数据模拟器/docs/governance/DELIVERY_PLAN.md",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/STATUS.md",
+    "PFI/大数据模拟器/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/开发记录"
+  ],
+  "change_classification": [
+    "runtime_lifecycle_hardening",
+    "single_project_scope",
+    "PFI_BIG_DATA_SIMULATOR_only_scope",
+    "bounded_multiprocess_validation",
+    "temporary_cache_only",
+    "sqlite_connection_cleanup",
+    "cancel_resume_idempotence",
+    "production_account_unchanged_false",
+    "owner_truth_preserved",
+    "semantic_anchor_rebind_no_active_value_change"
+  ],
+  "stage_gate_status": {
+    "S3PCT02": "PASSED_FOCUSED_LOCAL_WITH_PYTEST_BLOCKED",
+    "S3PC-GATE": "IN_PROGRESS",
+    "S3-GATE": "IN_PROGRESS"
+  },
+  "model_delta": "No strategy scoring behavior changed; MOD-009 lifecycle evidence now records bounded task-manifest cancellation and resume truth.",
+  "formula_delta": "FORM-009 implementation_fingerprint and evidence_hash were re-bound after run_task_manifest added cancel_after_tasks and run_control.json.",
+  "parameter_delta": "No active parameter value changed.",
+  "version_delta": "Product version remains 0.1.0; governance iteration moves to ITER-20260624-PFI-S3PCT02.",
+  "test_commands": [
+    "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B PFI\\大数据模拟器\\tests\\test_s3pct02_lifecycle.py",
+    "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile PFI\\大数据模拟器\\qbvs\\tasks.py PFI\\大数据模拟器\\qbvs\\cli.py PFI\\大数据模拟器\\qbvs\\warehouse.py PFI\\大数据模拟器\\tests\\test_s3pct02_lifecycle.py",
+    "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest PFI\\大数据模拟器\\tests -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py PFI\\大数据模拟器",
+    "node_repl JSONL parser for PFI events.jsonl and development_events.jsonl",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project PFI_BIG_DATA_SIMULATOR --write",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pct02_pfi_lifecycle_manifest_and_gate_evidence",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B PFI\\大数据模拟器\\tests\\test_s3pct02_lifecycle.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 test in 1.916s; OK."
+    },
+    {
+      "command": "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile PFI\\大数据模拟器\\qbvs\\tasks.py PFI\\大数据模拟器\\qbvs\\cli.py PFI\\大数据模拟器\\qbvs\\warehouse.py PFI\\大数据模拟器\\tests\\test_s3pct02_lifecycle.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest PFI\\大数据模拟器\\tests -q",
+      "exit_code": 1,
+      "result": "BLOCKED_LOCAL_TOOL_UNAVAILABLE",
+      "observed": "No module named pytest."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py PFI\\大数据模拟器",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_formulas_checked=15 semantic_parameters_checked=211 after FORM-009 rebind."
+    },
+    {
+      "command": "node_repl JSONL parser for PFI events.jsonl and development_events.jsonl",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "events.jsonl 5 lines ok; development_events.jsonl 5 lines ok."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project PFI_BIG_DATA_SIMULATOR --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "updated_count=1; changed PFI/大数据模拟器/开发记录 only."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pct02_pfi_lifecycle_manifest_and_gate_evidence",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 test in 0.018s; OK."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only sync errors=0 warnings=0; PFI_BIG_DATA_SIMULATOR validation errors=0 warnings=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "post-commit rerun passed; changed-only validation exit_code=0 and zero_diff.clean=true."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted core.autocrlf line-ending warnings for text files."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    }
+  ],
+  "evidence_refs": [
+    "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py",
+    "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+    "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+    "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml",
+    "PFI/大数据模拟器/docs/governance/DEVELOPMENT_LEDGER.md",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml"
+  ],
+  "stop_conditions_reviewed": [
+    "No real external account is required or used.",
+    "No production provider connection is started.",
+    "No user data, production database, or persistent cache is deleted.",
+    "Synthetic workloads are bounded to avoid resource blowups.",
+    "Graceful resume and cancellation truth is recorded separately from strategy validity."
+  ],
+  "unresolved_risks": [
+    "No real external account, live provider connection, production database, or large pressure run is approved by S3PCT02.",
+    "The roadmap pytest command remains blocked locally because pytest is not installed in the bundled runtime.",
+    "PFI strategy validity, OOS robustness, cost realism, multiple-testing controls, and owner signoff remain unresolved under existing B-stage tasks.",
+    "S3PC-GATE remains in progress until Serenity S3PCT03 is completed and the whole S3PC matrix is closed."
+  ],
+  "owner_truth_preserved": {
+    "operational_validation": "PARTIAL",
+    "delivery_readiness": "UNVERIFIED",
+    "strategy_validity": "UNVERIFIED",
+    "production_write_readiness": "UNVERIFIED",
+    "live_account_readiness": "UNVERIFIED"
+  },
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S3PCT02 PFI bounded multiprocess, cache, SQLite, cancel and resume lifecycle",
+  "ci_run_reference": "LOCAL_PRECOMMIT_CHANGED_ONLY_CI_ORIGIN_MAIN_AND_PENDING_PR_GOVERNANCE_CI",
+  "binding_rationale": "Manifest records focused pre-commit tree evidence; final commit and CI binding will be verified after PR merge."
+}
