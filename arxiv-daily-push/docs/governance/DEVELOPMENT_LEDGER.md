@@ -11,10 +11,10 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S2P1
 - Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 87
+- Confirmed iteration count: 90
 - Reconstructed event count: 0
-- Current task: `S2P1T01`; bioRxiv/medRxiv metadata-only preprint source promotion foundation is implemented and live-canary tested, but Stage 2 is not accepted.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. `S2P1T01` remains blocked on the separate 30-date terminal replay and 48-hour no-production shadow evidence gates for preprint sources. Real local SMTP production still requires owner-controlled local env/Keychain smoke; GitHub cloud scheduled production remains disabled and is not the daily production runner.
+- Current task: `S2PBT01/S2P1T01`; legacy `S2P1T01` is treated as V7 alias `S2PBT01`. bioRxiv/medRxiv metadata-only preprint source promotion foundation is implemented, live-canary tested, has a deterministic replay/shadow builder, and one local real no-send 30-date replay passed. Stage 2 is not accepted.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. `S2PBT01/S2P1T01` remains blocked on V7 root contract, AGENTS, three baseline files, and CI contract hash gate before any formal source production inclusion. Real local SMTP production still requires owner-controlled local env/Keychain smoke; GitHub cloud scheduled production remains disabled and is not the daily production runner. Stage 2 Stop Gate remains `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
 
 ## Phase Matrix
 
@@ -29,6 +29,76 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from local no-send real replay output, compact run manifest, and S2P1/S2PBT alias constraint.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 6f4d1124efe072ec6324c5f7cada65c7d6f44e0d
+- Result commit: PENDING
+- Task IDs: `S2PBT01`, `S2P1T01`
+- Goal: Run real historical bioRxiv/medRxiv replay through the no-send shadow path and persist compact evidence while preserving V7 production constraints.
+- Assumptions: Legacy `S2P1T01` is alias `S2PBT01`; this evidence may support source-level progression but cannot claim `INTEGRATED_PRODUCTION_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, or formal production inclusion.
+- Files changed: S2P1 phase record, task record, owner-facing files, real replay manifest, and governance event records.
+- Model changes: No new model beyond `MOD-ADP-050`.
+- Formula changes: No new formula beyond `FORM-ADP-052`.
+- Parameter changes: No new parameter beyond `PARAM-ADP-372` through `PARAM-ADP-376`.
+- Commands run: local no-send `stage2-preprint-replay-shadow` through `arxiv_daily_push.cli.main(...)` with `state_dir=/tmp/adp_s2p1_replay_real_20260624/state`, `start_date=2024-01-01`, `count=30`, `lookback_days=14`, `max_records=10`, `fetcher=curl`, and no production side-effect flags.
+- Test results: replay status pass; success_count 30/30; unique_date_count 30; real_preprint_source_id_count 30; duplicate_selected_count 0; duplicate_canonical_count 0; future_leakage_count 0; queue_continuity_break_count 0; P0/P1 0; shadow_hours 720.0.
+- Successes: The real no-send replay wrote queue, ledger, replay report, 48h shadow report, promotion report, and email previews to `/tmp`; compact Git evidence is stored at `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`.
+- Failures: None in the no-send replay evidence path.
+- Decisions: Do not commit the 46M temporary artifact tree; keep only the compact evidence manifest and hashes. Do not enable SMTP, Release, GitHub schedule, video, PDF/full-text, or formal source inclusion.
+- Remaining risks: V7 root contract and CI hash gate are still external blockers; any V6/V7 naming or contract conflict must be marked `R-CONFLICT` or `CONTRACT-HASH-MISMATCH`.
+- Rollback: Remove the real replay manifest and this governance sync; no production config or Stage 1 accepted state changes are needed.
+- Next step: Wait for or reconcile V7 route-lock governance, then decide whether the passed no-send real replay evidence can support source-level progression.
+
+### `ITER-20260624-ADP-S2P1T01-REPLAY-SHADOW-GOVERNANCE-SYNC`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from changed-only governance feedback, regenerated assurance status, and S2P1T01 PR diff coverage.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 6f4d1124efe072ec6324c5f7cada65c7d6f44e0d
+- Result commit: PENDING
+- Task IDs: `S2P1T01`
+- Goal: Synchronize the replay/shadow builder work with the full PR diff from `origin/main` so the latest event covers all S2P1T01 changed files.
+- Assumptions: This is governance sync only; it does not complete S2P1T01 or enable any production side effect.
+- Files changed: latest development event coverage, `VERSION_MATRIX.current_iteration`, regenerated assurance/status owner views, and existing S2P1T01 governance records.
+- Model changes: No new model beyond `MOD-ADP-050`.
+- Formula changes: No new formula beyond `FORM-ADP-052`.
+- Parameter changes: No new parameter beyond `PARAM-ADP-372` through `PARAM-ADP-376`.
+- Commands run: focused S2P1 tests, full ADP tests, semantic extractor, schema JSON parse, and changed-only governance validation feedback loop.
+- Test results: Focused S2P1 tests 41 OK; full ADP tests 218 OK; replay/shadow fixture tests 6 OK; semantic extractor checked 52 formulas and 359 active parameters.
+- Decisions: Keep `S2P1T01` `in_progress`; durable real 30-date preprint replay and 48h shadow evidence remain the next gate.
+- Remaining risks: Real replay/shadow evidence is not attached yet; Stage 2 production acceptance is not claimed.
+- Rollback: Revert this governance sync event and restore `VERSION_MATRIX.current_iteration` to the previous S2P1T01 iteration if the replay/shadow builder is reverted.
+- Next step: Run changed-only governance again, then run durable real replay/shadow evidence if local/API conditions permit.
+
+### `ITER-20260624-ADP-S2P1T01-REPLAY-SHADOW-BUILDER`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from S2P1 replay/shadow code, focused fixture tests, CLI wiring, semantic governance registration, and no-side-effect policy fields.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 6f4d1124efe072ec6324c5f7cada65c7d6f44e0d
+- Result commit: PENDING
+- Task IDs: `S2P1T01`
+- Goal: Add the deterministic 30-date replay plus 48-hour shadow evidence builder required before bioRxiv/medRxiv source promotion can complete.
+- Assumptions: Historical replay may be accelerated from real as-of dates rather than waiting 30 live days; S2P1 remains no-send and excluded from formal production until durable real replay/shadow evidence passes.
+- Files changed: `stage2_sources.py`, CLI replay command, S2P1 replay tests, governance registries, model spec, delivery task record, phase record, owner-facing project records, and this ledger/event record.
+- Model changes: Added `MOD-ADP-050` for S2P1T01 preprint replay and 48h shadow evidence.
+- Formula changes: Added `FORM-ADP-052`; refreshed dependent S2P1 and CLI formula fingerprints.
+- Parameter changes: Added `PARAM-ADP-372` through `PARAM-ADP-376` for replay/shadow report model IDs and output filenames.
+- Commands run: focused `test_stage2_sources.py` replay/shadow fixture tests and semantic/governance registration preparation.
+- Test results: Fixture-backed replay/shadow path passed 30 unique historical dates with queue/ledger/email persistence, no duplicate selected source/canonical IDs, no future leakage, no P0/P1 blockers, at least 48h shadow aggregate, and `stage2_production_accepted=false`.
+- Successes: S2P1 now has a single command that can generate replay report, shadow 48h report, promotion report, queue state, ledger rows, and email previews in an explicit local `state_dir` without SMTP, Release, video, PDF, full-text, or scheduler side effects.
+- Failures: Durable real 30-date replay against live bioRxiv/medRxiv historical data has not yet been attached, so `S2P1T01` remains `in_progress`.
+- Decisions: Keep Stage 1 arXiv local runner as the accepted production path; keep GitHub cloud scheduled production disabled; do not claim `STAGE2_PRODUCTION_ACCEPTED`.
+- Remaining risks: Live preprint API date windows may be sparse, drift, or select duplicate canonical DOIs; the next run must record real artifact paths and promotion-gate output before source promotion can pass.
+- Rollback: Revert replay/shadow builder code, CLI command, tests, `MOD-ADP-050`, `FORM-ADP-052`, `PARAM-ADP-372..376`, this iteration/event, and related task/phase records.
+- Next step: Run `stage2-preprint-replay-shadow` against real historical bioRxiv/medRxiv data, inspect the report, and only then decide whether `S2P1T01` can move from `in_progress` to completed.
 
 ### `ITER-20260624-ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION`
 

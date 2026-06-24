@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 49
-- formula_count: 51
-- parameter_count: 371
+- model_count: 50
+- formula_count: 52
+- parameter_count: 376
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -47,6 +47,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   small official details API windows, build separate shadow queue/ledger/email
   previews, and run no-send shadow evidence, but they cannot enter formal
   production until a 30-date terminal replay and 48-hour shadow gate both pass.
+
+- `S2P1T01` replay/shadow evidence adds `MOD-ADP-050`. It runs deterministic
+  30-date historical preprint replay through the no-send shadow daily path,
+  persists local queue/ledger/report/email-preview artifacts, builds a 48-hour
+  shadow aggregate, and feeds the source promotion gate. It still does not claim
+  full Stage 2 production acceptance.
 
 ## A. Model Overview
 
@@ -100,6 +106,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-047 | Stage 2 bioRxiv/medRxiv preprint metadata ingest | deterministic source adapter | Fetch small public bioRxiv/medRxiv details API windows and map metadata into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects | active | adp-stage2-preprint-ingest-v1 | `src/arxiv_daily_push/preprint_adapter.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-048 | S2P1T01 preprint source promotion gate | deterministic source promotion validator | Require passing bioRxiv and medRxiv SourceBatches plus 30-date terminal replay and 48-hour no-production shadow evidence before Stage 2 preprint source promotion can pass | active | adp-s2p1-preprint-source-promotion-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-049 | S2P1 preprint shadow daily path | deterministic shadow delivery pipeline | Build ROI-ranked bioRxiv/medRxiv shadow daily inputs, persist a separate preprint queue and JSONL ledger, and generate email previews without production inclusion or external side effects | active | adp-s2p1-preprint-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/lesson.py` |
+| MOD-ADP-050 | S2P1T01 preprint replay and 48h shadow evidence | deterministic historical replay and shadow evidence builder | Run 30 historical bioRxiv/medRxiv preprint as-of dates through the no-send shadow daily path, persist local queue/ledger/report/email preview artifacts, build a 48h shadow aggregate, and feed the S2P1T01 promotion gate without claiming full Stage 2 production acceptance | active | adp-s2p1-preprint-replay-shadow-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -191,6 +198,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-049 validates metadata-only preprint SourceBatches from the official bioRxiv/medRxiv details API with bounded canary size, DOI identity, abstract-level evidence, and no external side effects.
 - FORM-ADP-050 validates the S2P1T01 preprint source promotion gate across source, 30-date replay, 48-hour shadow, no-production, no-SMTP, no-Release, and no-video requirements.
 - FORM-ADP-051 validates the S2P1 shadow daily path across preprint candidate ranking, separate queue persistence, JSONL ledger persistence, email previews, and no mutation of the accepted Stage 1 arXiv local path.
+- FORM-ADP-052 validates the S2P1 replay/shadow aggregate across 30 historical preprint dates, 48h shadow coverage, unique selected source/canonical IDs, no future leakage, no P0/P1 blockers, queue/ledger/email persistence, and no production side effects.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -254,6 +262,8 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Review8 Stage 1 post-migration bootstrap parameters: PARAM-ADP-332 through PARAM-ADP-339.
 - Active Review8 Stage 1 historical B1 preview parameters: PARAM-ADP-340 through PARAM-ADP-348.
 - Active S1P5T04 accelerated acceptance parameters: PARAM-ADP-349 through PARAM-ADP-351.
+- Active S2P1T01 preprint source promotion parameters: PARAM-ADP-360 through PARAM-ADP-371.
+- Active S2P1T01 replay/shadow evidence parameters: PARAM-ADP-372 through PARAM-ADP-376.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

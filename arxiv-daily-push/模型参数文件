@@ -6,13 +6,13 @@
 - product_version: `0.23.0`
 - current_stage: `S2 - 逐来源、逐板块晋升与全系统生产验收`
 - current_phase: `S2P1`
-- current_task: `S2P1T01`
+- current_task: `S2PBT01 / S2P1T01`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- active_model_count: `49`
-- active_formula_count: `51`
-- active_parameter_count: `354`
-- next_unique_task: `S2P1T01`
-- evidence_status: `STAGE1_ACCEPTED; LOCAL_PRODUCTION_MIGRATION_PREP_VERIFIED; S2P1T01_IMPLEMENTED_PENDING_REPLAY_SHADOW`
+- active_model_count: `50`
+- active_formula_count: `52`
+- active_parameter_count: `359`
+- next_unique_task: `S2PBT01 / S2P1T01`
+- evidence_status: `STAGE1_ACCEPTED; LOCAL_PRODUCTION_MIGRATION_PREP_VERIFIED; S2PBT01_REAL_REPLAY_SHADOW_EVIDENCE_PASSED_NO_FORMAL_PRODUCTION`
 
 ## 证据
 
@@ -25,8 +25,10 @@
 | `EVID-EMAIL-HUMAN-036-001` | local_test | focused email/scheduled/notification unit tests 23 OK | `MOD-ADP-034`; `MOD-ADP-037`; `PARAM-ADP-277` | EXTRACTED |
 | `EVID-S1P5T05-001` | local_test | focused local runner/scheduled/migration unit tests 15 OK | `MOD-ADP-LOCAL-RUNNER`; `PARAM-ADP-LOCAL-001..006` | EXTRACTED |
 | `EVID-S1P5T05-002` | run_manifest | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` | local production and migration prep | EXTRACTED |
-| `EVID-S2P1T01-001` | local_test | focused S2P1/source/global/lesson/registry/contract tests 39 OK; full ADP tests 216 OK | `MOD-ADP-047..049`; `FORM-ADP-049..051`; `PARAM-ADP-360..371` | EXTRACTED |
+| `EVID-S2P1T01-001` | local_test | focused S2P1/source/global/lesson/registry/contract tests 41 OK; full ADP tests 218 OK | `MOD-ADP-047..049`; `FORM-ADP-049..051`; `PARAM-ADP-360..371` | EXTRACTED |
 | `EVID-S2P1T01-002` | live_canary | fixed-interval bioRxiv and medRxiv API canaries plus one no-send shadow daily canary | `MOD-ADP-047..049` | EXTRACTED |
+| `EVID-S2P1T01-003` | local_test | fixture-backed `stage2-preprint-replay-shadow` path; 6 tests OK | `MOD-ADP-050`; `FORM-ADP-052`; `PARAM-ADP-372..376` | EXTRACTED |
+| `EVID-S2PBT01-004` | local_real_replay | `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json` | `S2PBT01/S2P1T01`; 30/30 real no-send replay; shadow_hours 720 | EXTRACTED |
 
 ## 核心模型
 
@@ -126,6 +128,20 @@
 - evidence_refs: `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json`
 - fallback_behavior: missing eligible candidates, failed dry-run pipeline, or any production side effect blocks the shadow report.
 
+### `MOD-ADP-050` S2P1 replay and 48h shadow evidence
+
+- status: active for source-promotion evidence only; not Stage 2 production acceptance.
+- purpose: Run 30 historical bioRxiv/medRxiv preprint dates through the no-send shadow daily path, persist local queue/ledger/report/email-preview artifacts, build a 48h shadow aggregate, and feed the S2P1T01 promotion gate.
+- inputs: state_dir, generated_at, start_date/end_date or count, lookback_days, max_records, optional source_batches_by_date fixture, fetcher.
+- outputs: `stage2_s2p1_preprint_replay_report.json`, `stage2_s2p1_preprint_shadow_48h_report.json`, `stage2_s2p1_preprint_promotion_report.json`, replay-shadow aggregate report, per-day run dirs, queue file, ledger JSONL, email previews.
+- assumptions: no SMTP send, no Release upload, no production schedule, no video, no PDF/full-text download, no mutation of accepted Stage 1 arXiv local production state.
+- formula_refs: `FORM-ADP-052`
+- parameter_refs: `PARAM-ADP-372`..`PARAM-ADP-376`
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`
+- test_refs: `arxiv-daily-push/tests/test_stage2_sources.py`
+- evidence_refs: `arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`
+- fallback_behavior: missing daily artifact, duplicate selected source/canonical DOI, future leakage, P0/P1 blocker, queue/ledger/email persistence break, insufficient 48h shadow coverage, or any production side effect blocks the aggregate report.
+
 ## 关键公式
 
 ### `FORM-ADP-047` Stage 1 accelerated acceptance gate
@@ -149,6 +165,17 @@
 - code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage1_real_replay.py`
 - test_refs: `arxiv-daily-push/tests/test_stage1_real_replay.py`
 - evidence_refs: `governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json`
+
+### `FORM-ADP-052` S2P1 replay/shadow aggregate gate
+
+- model_id: `MOD-ADP-050`
+- status: active
+- expression_or_pseudocode: `pass = replay_success_count == 30 && unique_date_count == 30 && real_preprint_source_id_count == 30 && duplicate_selected_count == 0 && duplicate_canonical_count == 0 && future_leakage_count == 0 && queue_continuity_break_count == 0 && p0_p1_blocker_count == 0 && shadow_hours >= 48 && promotion_report.status == pass && formal_production_inclusion == false && stage2_production_accepted == false && real_smtp_sent == false && real_release_uploaded == false && video_generated == false`
+- output_range: `PASS` or `BLOCKED`
+- missing_value_behavior: Any missing daily report, ledger row, email preview, queue state, source id, shadow aggregate, promotion report, or no-side-effect flag blocks the report.
+- code_refs: `arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py`
+- test_refs: `arxiv-daily-push/tests/test_stage2_sources.py`
+- evidence_refs: `arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`
 
 ## 关键参数
 
@@ -179,6 +206,11 @@
 | `PARAM-ADP-369` | `S2P1_SHADOW_REQUIRED_HOURS` | source-promotion shadow hours | `48` | `48` | hours | `48` | `stage2_sources.py` | EXTRACTED |
 | `PARAM-ADP-370` | `S2P1_QUEUE_FILENAME` | preprint shadow queue file | `stage2_s2p1_preprint_queue.json` | same | filename | fixed | `stage2_sources.py` | EXTRACTED |
 | `PARAM-ADP-371` | `S2P1_LEDGER_FILENAME` | preprint shadow ledger file | `stage2_s2p1_preprint_ledger.jsonl` | same | filename | fixed | `stage2_sources.py` | EXTRACTED |
+| `PARAM-ADP-372` | `S2P1_PREPRINT_REPLAY_MODEL_ID` | preprint replay aggregate model id | `adp-s2p1-preprint-terminal-replay-v1` | same | model_id | fixed | `stage2_sources.py` | EXTRACTED |
+| `PARAM-ADP-373` | `S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID` | preprint shadow evidence model id | `adp-s2p1-preprint-shadow-evidence-v1` | same | model_id | fixed | `stage2_sources.py` | EXTRACTED |
+| `PARAM-ADP-374` | `S2P1_REPLAY_REPORT_FILENAME` | replay report filename | `stage2_s2p1_preprint_replay_report.json` | same | filename | fixed | `stage2_sources.py` | EXTRACTED |
+| `PARAM-ADP-375` | `S2P1_SHADOW_EVIDENCE_FILENAME` | 48h shadow evidence filename | `stage2_s2p1_preprint_shadow_48h_report.json` | same | filename | fixed | `stage2_sources.py` | EXTRACTED |
+| `PARAM-ADP-376` | `S2P1_PROMOTION_REPORT_FILENAME` | promotion report filename | `stage2_s2p1_preprint_promotion_report.json` | same | filename | fixed | `stage2_sources.py` | EXTRACTED |
 
 ## 限制与未知
 
@@ -187,7 +219,7 @@
 | S1P5T03-R 云端 artifact | validation | PR #94 run `28027759062` artifact `7821452823` 通过；strict accepted restored | `ARXIV_PRODUCTION_ACCEPTED` | MACHINE_VERIFIED |
 | 本地 SMTP 环境/Keychain | validation | 本轮未读取 secret 值、未发送真实生产邮件；只验证 fail-closed 和 fake SMTP path | owner-controlled local smoke before launchd install | EXTRACTED |
 | 邮件前台模板 | product_quality | 本轮已改为中文教学型并清洗 ROI/Release/video/delivery policy/后台词；全量验证和 PR CI 待跑 | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036-PR-CI` | EXTRACTED |
-| Stage 2 多来源模型 | model_scope | `S2P1T01` adapter/gate/shadow 已实现并 live-canary 通过；30-date replay 与 48h shadow evidence 未完成 | `S2P1T01_REPLAY_AND_48H_SHADOW_EVIDENCE` | EXTRACTED |
+| Stage 2 多来源模型 | model_scope | `S2PBT01/S2P1T01` adapter/gate/shadow/replay-shadow builder 已实现并 live-canary/fixture/real no-send replay 通过；V7 root contract/hash gate 未完成，不能纳入正式生产 | `S2PBT01_V7_CONTRACT_ALIAS_SYNC_OR_ROOT_V7_HASH_GATE` | EXTRACTED |
 
 ## 验证
 
@@ -197,4 +229,6 @@
 | `VAL-S1P5T04-001` | one-time live cloud chain | PR #82 GitHub Actions + artifact inspection | PASS but insufficient for strict 30-day backfill | `test_stage1_accelerated_acceptance.py` | artifact `7818287996` | EXTRACTED |
 | `VAL-EMAIL-HUMAN-036-001` | human-facing email format | focused unit tests plus full arxiv-daily-push suite | PASS 23 focused tests OK; 200 full tests OK | `test_global_scan.py`; `test_scheduled_execution.py`; `test_notifications.py`; `python3 -m unittest discover -s arxiv-daily-push/tests -q` | `/tmp/codex_adp_email_human_focus`; `/tmp/codex_adp_email_human_all`; no repo cache | EXTRACTED |
 | `VAL-S1P5T05-001` | local production and migration prep | focused local runner/scheduled/migration unit tests | PASS 15 focused tests OK | `test_local_runner.py`; `test_scheduled_execution.py`; `test_stage1_migration.py` | `/tmp/codex_adp_s1p5t05_focus_now`; no real SMTP send; no launchd install | EXTRACTED |
-| `VAL-S2P1T01-001` | bioRxiv/medRxiv preprint foundation | focused tests, full ADP suite, schema parse, live fixed-interval canaries, one shadow daily canary | IMPLEMENTED; PROMOTION GATE STILL BLOCKED | `test_preprint_adapter.py`; `test_stage2_sources.py`; `test_global_scan.py`; `test_lesson.py` | `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` | EXTRACTED |
+| `VAL-S2P1T01-001` | bioRxiv/medRxiv preprint foundation | focused tests, full ADP suite, schema parse, live fixed-interval canaries, one shadow daily canary | IMPLEMENTED; FORMAL PRODUCTION BLOCKED BY V7 GATES | `test_preprint_adapter.py`; `test_stage2_sources.py`; `test_global_scan.py`; `test_lesson.py` | `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` | EXTRACTED |
+| `VAL-S2P1T01-002` | replay/shadow builder | fixture-backed 30-date replay/shadow test | PASS 6 focused tests OK | `test_stage2_sources.py` | `MOD-ADP-050`; `FORM-ADP-052` | EXTRACTED |
+| `VAL-S2PBT01-003` | real no-send replay/shadow | local real preprint API replay through shadow path | PASS 30/30; 30 unique dates; P0/P1 0; shadow_hours 720; formal production false | `stage2-preprint-replay-shadow` | `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json` | EXTRACTED |

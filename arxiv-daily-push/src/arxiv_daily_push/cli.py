@@ -101,8 +101,10 @@ from .stage1_runtime import (
     validate_stage1_runtime_report,
 )
 from .stage2_sources import (
+    build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
     run_s2p1_preprint_shadow_daily,
+    validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
 )
 from .storage import (
@@ -416,6 +418,22 @@ def build_parser() -> argparse.ArgumentParser:
     s2p1_shadow.add_argument("--queue-path", help="Optional existing S2P1 preprint queue JSON.")
     s2p1_shadow.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2p1_shadow.add_argument("--json", action="store_true", help="Print JSON shadow report.")
+
+    s2p1_replay = subparsers.add_parser(
+        "stage2-preprint-replay-shadow",
+        help="Run S2P1T01 30-date bioRxiv/medRxiv replay plus 48h no-production shadow evidence.",
+    )
+    s2p1_replay.add_argument("--state-dir", required=True, help="Local ADP state directory for replay queue, ledger, and reports.")
+    s2p1_replay.add_argument("--generated-at", required=True, help="Replay evidence timestamp.")
+    s2p1_replay.add_argument("--start-date", help="First historical as-of date. Defaults from --end-date/--count.")
+    s2p1_replay.add_argument("--end-date", help="Last historical as-of date. Defaults to generated-at date.")
+    s2p1_replay.add_argument("--count", type=int, default=30, help="Number of historical as-of dates to replay.")
+    s2p1_replay.add_argument("--lookback-days", type=int, default=7, help="Trailing preprint date window per as-of date.")
+    s2p1_replay.add_argument("--max-records", type=int, default=3, help="Small metadata result window per server/date.")
+    s2p1_replay.add_argument("--fetcher", choices=("urllib", "curl"), default="curl", help="Real metadata fetch implementation.")
+    s2p1_replay.add_argument("--polite-delay-seconds", type=float, default=1.0, help="Delay between historical API windows.")
+    s2p1_replay.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2p1_replay.add_argument("--json", action="store_true", help="Print JSON replay/shadow report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1334,6 +1352,40 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
         else:
             print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-preprint-replay-shadow":
+        preprint_fetcher = fetch_preprint_details_with_curl if args.fetcher == "curl" else None
+        report = build_s2p1_preprint_replay_shadow_evidence(
+            state_dir=args.state_dir,
+            generated_at=args.generated_at,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            count=args.count,
+            lookback_days=args.lookback_days,
+            max_records=args.max_records,
+            fetcher=preprint_fetcher,
+            write=not args.no_write,
+            polite_delay_seconds=args.polite_delay_seconds,
+        )
+        errors = validate_s2p1_preprint_replay_shadow_report(report) if report.get("status") == "pass" else []
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            replay_report = report.get("replay_report") if isinstance(report.get("replay_report"), dict) else {}
+            shadow_report = report.get("shadow_report") if isinstance(report.get("shadow_report"), dict) else {}
+            print(report["status"])
+            print(f"- success_count: {replay_report.get('success_count')}/{replay_report.get('required_replay_count')}")
+            print(f"- unique_date_count: {replay_report.get('unique_date_count')}")
+            print(f"- duplicate_selected_count: {replay_report.get('duplicate_selected_count')}")
+            print(f"- future_leakage_count: {replay_report.get('future_leakage_count')}")
+            print(f"- p0_p1_blocker_count: {replay_report.get('p0_p1_blocker_count')}")
+            print(f"- shadow_hours: {shadow_report.get('shadow_hours')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:
