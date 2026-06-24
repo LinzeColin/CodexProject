@@ -19,6 +19,7 @@ from .global_scan import (
     build_daily_delivery_package,
     validate_all_arxiv_daily_input_report,
 )
+from .mail_templates import EMAIL_LEARNING_V1_CONTRACT_ID, M1_M4_MAIL_PRODUCTS
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import (
     MIN_PRODUCTION_FREE_DISK_GIB,
@@ -536,6 +537,8 @@ def _stage1_text_ready(delivery_package: Mapping[str, Any]) -> bool:
         and delivery_package.get("video_generation_required") is False
         and delivery_package.get("release_required") is False
         and delivery_package.get("email_contains_video_link") is False
+        and delivery_package.get("email_template_contract") == EMAIL_LEARNING_V1_CONTRACT_ID
+        and delivery_package.get("mail_product_id") in M1_M4_MAIL_PRODUCTS
     )
 
 

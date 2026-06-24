@@ -17,6 +17,7 @@ from arxiv_daily_push.stage1_b1_report import (
     build_b1_report_email_package,
     validate_b1_report_email_package,
 )
+from arxiv_daily_push.mail_templates import EMAIL_LEARNING_V1_CONTRACT_ID, EMAIL_LEARNING_V1_TEMPLATE_MARKER
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,10 +53,14 @@ class Stage1B1ReportTests(unittest.TestCase):
         self.assertEqual(package["model_id"], STAGE1_B1_REPORT_MODEL_ID)
         self.assertEqual(package["status"], "pass")
         self.assertEqual(package["board_id"], "B1")
-        self.assertRegex(package["email_subject"], r"^20260701 -- arXiv Daily Push -- arXiv cs\.AI -- .+")
-        self.assertIn("【先看结论】", package["email_plain"])
-        self.assertIn("候选队列：今日 arXiv 候选", package["email_plain"])
-        self.assertIn("一阶拆解", package["email_html"])
+        self.assertRegex(package["email_subject"], r"^20260701 -- arXiv Daily Push -- M1 -- .+")
+        self.assertEqual(package["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
+        self.assertEqual(package["mail_product_id"], "M1")
+        self.assertIn("【先把论文讲成人话】", package["email_plain"])
+        self.assertIn("【学习成果导航】", package["email_plain"])
+        self.assertIn("【真正的新知识】", package["email_plain"])
+        self.assertIn("候选队列摘要", package["email_plain"])
+        self.assertIn(EMAIL_LEARNING_V1_TEMPLATE_MARKER, package["email_html"])
         self.assertIn("claim:arxiv:2401.00001", package["report_markdown"])
         self.assertNotIn("Claim Ledger", package["email_plain"])
         self.assertNotIn("ROI", package["email_plain"])
@@ -63,6 +68,7 @@ class Stage1B1ReportTests(unittest.TestCase):
         self.assertNotIn(".mp4", package["email_plain"])
         self.assertNotIn("100.0%", package["email_plain"])
         self.assertTrue(package["quality_gates"]["key_claim_evidence_binding_100_percent"])
+        self.assertTrue(package["quality_gates"]["email_learning_v1_template"])
         self.assertTrue(package["quality_gates"]["no_video_required"])
         self.assertFalse(package["side_effect_policy"]["real_smtp_sent"])
         self.assertFalse(validate_b1_report_email_package(package))

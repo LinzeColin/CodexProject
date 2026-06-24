@@ -1,0 +1,97 @@
+{
+  "manifest_id": "ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-20260625",
+  "project_id": "arxiv-daily-push",
+  "task_ids": [
+    "S2PHT01V1.1-T02",
+    "S2PHT01V1.1-T03",
+    "S2PHT01V1.1-T04"
+  ],
+  "acceptance_ids": [
+    "ACC-S2PHT01V1.1-T02-CONTENT-OBJECT",
+    "ACC-S2PHT01V1.1-T03-HTML-RENDER",
+    "ACC-S2PHT01V1.1-T04-GOLDEN-REGRESSION"
+  ],
+  "phase": "S2PH",
+  "generated_at": "2026-06-25T08:05:00+10:00",
+  "contract_id": "EMAIL_LEARNING_V1",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "template_version": "1.0.0",
+  "status": "completed_local_validation_pending_pr_ci",
+  "scope": {
+    "runtime_files_changed": [
+      "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+      "arxiv-daily-push/src/arxiv_daily_push/global_scan.py",
+      "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+      "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+      "arxiv-daily-push/src/arxiv_daily_push/local_runner.py"
+    ],
+    "test_files_changed": [
+      "arxiv-daily-push/tests/test_mail_templates.py",
+      "arxiv-daily-push/tests/test_global_scan.py",
+      "arxiv-daily-push/tests/test_stage1_b1_report.py",
+      "arxiv-daily-push/tests/test_stage1_historical_previews.py",
+      "arxiv-daily-push/tests/test_scheduled_execution.py",
+      "arxiv-daily-push/tests/test_local_runner.py",
+      "arxiv-daily-push/tests/test_stage2_sources.py"
+    ],
+    "governance_files_changed": [
+      "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md",
+      "governance/run_manifests/ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-20260625.json",
+      "arxiv-daily-push/docs/governance/model_registry.yaml",
+      "arxiv-daily-push/docs/governance/formula_registry.yaml",
+      "arxiv-daily-push/docs/governance/parameter_registry.csv",
+      "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+      "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+      "arxiv-daily-push/docs/governance/development_events.jsonl"
+    ]
+  },
+  "mail_products_supported": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "runtime_assertions": {
+    "daily_delivery_uses_email_v1": true,
+    "stage1_b1_email_uses_email_v1": true,
+    "scheduled_gate_requires_email_v1": true,
+    "local_runner_gate_requires_email_v1": true,
+    "stage2_shadow_preview_uses_email_v1": true,
+    "smtp_transport_changed": false,
+    "scheduler_trigger_changed": false,
+    "release_upload_changed": false,
+    "source_adapter_changed": false,
+    "ranking_or_queue_algorithm_changed": false,
+    "public_schema_changed": false,
+    "db_or_migration_changed": false,
+    "v7_1_baseline_changed": false,
+    "current_pointer_changed": false
+  },
+  "validation": {
+    "py_compile": "passed",
+    "focused_email_chain_unittest": "80 tests OK",
+    "old_template_runtime_scan": "src/tests no old V2 visible template strings or old daily email helper names",
+    "full_unittest": "280 tests OK",
+    "semantic_extractors": "67 formulas / 451 parameters checked",
+    "project_governance": "errors 0 warnings 0",
+    "changed_only_governance_semantic": "errors 0 warnings 0",
+    "v7_2_contract_validator": "PASS",
+    "lean_check_render": "drift_count 0 reference_issue_count 0",
+    "structure_parse": "JSON/JSONL/YAML/CSV OK",
+    "git_diff_check": "PASS"
+  },
+  "production_claims": {
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "stage2_production_accepted": false,
+    "production_schedule_enabled": false,
+    "real_smtp_sent": false,
+    "real_release_uploaded": false
+  },
+  "rollback": "Revert Email V1 renderer runtime files, tests, this phase record, this manifest, and related governance registry/status/event updates. No data migration is needed because no public schema, DB, queue, SMTP, scheduler, Release, or production state changed.",
+  "notes": [
+    "V7.1 remains read-only history.",
+    "ArXiv messages retain arXiv abstract and PDF links plus ChatGPT new-chat continuation.",
+    "Non-arXiv Stage2 shadow previews use the same V1 structure with source/detail links and remain non-production."
+  ]
+}

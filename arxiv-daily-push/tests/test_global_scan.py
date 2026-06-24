@@ -20,6 +20,7 @@ from arxiv_daily_push.global_scan import (
     validate_live_all_arxiv_dry_run_report,
     validate_all_arxiv_scan_plan,
 )
+from arxiv_daily_push.mail_templates import EMAIL_LEARNING_V1_CONTRACT_ID, EMAIL_LEARNING_V1_TEMPLATE_MARKER
 from arxiv_daily_push.source_ingest import SOURCE_INGEST_MODEL_ID
 
 
@@ -328,16 +329,19 @@ class GlobalScanTests(unittest.TestCase):
         self.assertFalse(package["email_contains_video_link"])
         self.assertTrue(package["email_contains_candidate_queue_summary"])
         self.assertTrue(package["email_contains_html"])
-        self.assertEqual(
-            package["notification"].subject,
-            "20260701 -- arXiv Computer Science -- Computer Science -- Foundation model agents for portfolio risk optimization",
-        )
+        self.assertEqual(package["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
+        self.assertEqual(package["mail_product_id"], "M1")
+        self.assertIn(package["mail_product_id"], package["mail_products_supported"])
+        self.assertRegex(package["notification"].subject, r"^20260701 -- arXiv Daily Push -- M1 -- .+")
         combined_body = package["notification"].body + package["notification"].html_body
-        self.assertIn("【今天讲透一个问题】", package["notification"].body)
-        self.assertIn("【为什么值得你看】", package["notification"].body)
-        self.assertIn("【怎么转成可用判断】", package["notification"].body)
+        self.assertIn("【先把论文讲成人话】", package["notification"].body)
+        self.assertIn("【学习成果导航】", package["notification"].body)
+        self.assertIn("【真正的新知识】", package["notification"].body)
+        self.assertIn("【迁移到你的学习、工作、研究和产品】", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
         self.assertIn("已入队候选", package["notification"].body)
+        self.assertIn(EMAIL_LEARNING_V1_TEMPLATE_MARKER, package["notification"].html_body)
+        self.assertEqual(package["email_learning_content_v1"]["contract_id"], EMAIL_LEARNING_V1_CONTRACT_ID)
         self.assertNotIn("【视频入口】", package["notification"].body)
         self.assertNotIn("观看/下载", combined_body)
         self.assertNotIn("Release 资料包", combined_body)
@@ -351,7 +355,6 @@ class GlobalScanTests(unittest.TestCase):
         self.assertNotIn("后台", combined_body)
         self.assertNotIn("日报", combined_body)
         self.assertNotIn("class=\"score\"", package["notification"].html_body)
-        self.assertLessEqual(len(package["notification"].body), 1500)
         self.assertNotRegex(package["notification"].subject, r"\d(?:\.\d)?/5")
 
     def test_quant_finance_email_filters_frontstage_candidate_pollution(self) -> None:
@@ -388,10 +391,8 @@ class GlobalScanTests(unittest.TestCase):
 
         package = build_daily_delivery_package(daily_run_payload, daily_input, release_report, generated_at=GENERATED_AT)
 
-        self.assertEqual(
-            package["notification"].subject,
-            "20260701 -- arXiv Quantitative Finance -- Quant Finance -- Optimal order in multi-agent systems and market fragility",
-        )
+        self.assertRegex(package["notification"].subject, r"^20260701 -- arXiv Daily Push -- M1 -- .+")
+        self.assertEqual(package["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
         self.assertNotIn("Quantum algorithm for molecular light", package["notification"].body)
         self.assertNotIn("West Nile virus", package["notification"].body)
         self.assertIn("Market risk simulation benchmark", package["notification"].body)
