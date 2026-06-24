@@ -19,6 +19,7 @@
   ],
   "changed_files_actual": [
     ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/project-governance.yml",
     "arxiv-daily-push/AGENTS.md",
     "arxiv-daily-push/CHANGELOG.md",
     "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
@@ -58,7 +59,7 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "compatibility_extension": {
-    "reason": "R-CONFLICT / CONTRACT-HASH-MISMATCH compatibility coverage for PR #119 merge-base validation after arxiv-daily-push S2PCT01 / legacy S2P2T01 changes stacked on Review9 root governance.",
+    "reason": "R-CONFLICT / CONTRACT-HASH-MISMATCH compatibility coverage for PR #119 after S2PCT01 / legacy S2P2T01 changes, Stage1 bootstrap retry hardening, governance stop-hook test stabilization, and CI failure-tail annotation support.",
     "does_not_change_original_task_scope": true,
     "does_not_claim_stage2_or_integrated_production_acceptance": true
   },
