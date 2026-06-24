@@ -2,6 +2,7 @@
 
 ## Unreleased - 2026-06-24
 
+- Improved ADP M1-M4 email template layer with V1 learning-mail sections, safe arXiv/PDF/ChatGPT continuation links, M1 product labeling in current render paths, and focused renderer tests while keeping source adapters, ranking, queue, SMTP, scheduler, Release, video, schema, and production flags unchanged.
 - Completed `S2PCT05` engineering open-source, code, benchmark, model-card, release, and standards public-signal metadata-only no-send shadow evidence.
 - Added `adp stage2-engineering-signals-shadow`, engineering signal fixtures, officiality/version/paper-relation/reproducibility gates, model/formula/parameter governance registrations, and S2PCT05 manifest/phase evidence while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PDF/full-text download, paid API use, repository clone, and paywall bypass disabled.
 - Advanced V7.1 root routing to `S2PCT06` authoritative research institution and industry technical report framework.

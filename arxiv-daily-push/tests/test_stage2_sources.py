@@ -388,7 +388,10 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["candidate_queue_path"]).is_file())
             self.assertTrue(Path(report["content_ledger_path"]).is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
-            self.assertIn("【今天讲透一个问题】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
+            email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
+            self.assertIn("【M1｜科学与理论前沿邮件】", email_preview)
+            self.assertIn("【先把论文讲成人话】", email_preview)
+            self.assertIn("【继续学习入口】", email_preview)
 
     def test_top_journal_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -408,7 +411,9 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["content_ledger_path"]).is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
             email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
-            self.assertIn("【今天讲透一个问题】", email_preview)
+            self.assertIn("【M1｜科学与理论前沿邮件】", email_preview)
+            self.assertIn("【先把论文讲成人话】", email_preview)
+            self.assertIn("【继续学习入口】", email_preview)
             self.assertIn("Nature", email_preview)
 
     def test_science_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
@@ -432,7 +437,9 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["content_ledger_path"]).is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
             email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
-            self.assertIn("【今天讲透一个问题】", email_preview)
+            self.assertIn("【M1｜科学与理论前沿邮件】", email_preview)
+            self.assertIn("【先把论文讲成人话】", email_preview)
+            self.assertIn("【继续学习入口】", email_preview)
             self.assertIn("Science", email_preview)
 
     def test_lancet_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
@@ -456,7 +463,9 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["content_ledger_path"]).is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
             email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
-            self.assertIn("【今天讲透一个问题】", email_preview)
+            self.assertIn("【M1｜科学与理论前沿邮件】", email_preview)
+            self.assertIn("【先把论文讲成人话】", email_preview)
+            self.assertIn("【继续学习入口】", email_preview)
             self.assertIn("The Lancet", email_preview)
 
     def test_s2pct04_profile_shadow_persists_report_and_forced_event_ledger_without_production(self) -> None:

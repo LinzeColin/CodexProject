@@ -333,9 +333,14 @@ class GlobalScanTests(unittest.TestCase):
             "20260701 -- arXiv Computer Science -- Computer Science -- Foundation model agents for portfolio risk optimization",
         )
         combined_body = package["notification"].body + package["notification"].html_body
-        self.assertIn("【今天讲透一个问题】", package["notification"].body)
-        self.assertIn("【为什么值得你看】", package["notification"].body)
-        self.assertIn("【怎么转成可用判断】", package["notification"].body)
+        self.assertIn("【M1｜科学与理论前沿邮件】", package["notification"].body)
+        self.assertIn("【先把论文讲成人话】", package["notification"].body)
+        self.assertIn("【学习成果导航】", package["notification"].body)
+        self.assertIn("【真正值得学的新知识】", package["notification"].body)
+        self.assertIn("【继续学习入口】", package["notification"].body)
+        self.assertIn("arXiv 摘要页：https://arxiv.org/abs/2607.00001", package["notification"].body)
+        self.assertIn("PDF：https://arxiv.org/pdf/2607.00001", package["notification"].body)
+        self.assertIn("ChatGPT 新对话：https://chatgpt.com/?q=", package["notification"].body)
         self.assertIn("候选队列摘要", package["notification"].body)
         self.assertIn("已入队候选", package["notification"].body)
         self.assertNotIn("【视频入口】", package["notification"].body)
@@ -351,7 +356,7 @@ class GlobalScanTests(unittest.TestCase):
         self.assertNotIn("后台", combined_body)
         self.assertNotIn("日报", combined_body)
         self.assertNotIn("class=\"score\"", package["notification"].html_body)
-        self.assertLessEqual(len(package["notification"].body), 1500)
+        self.assertLessEqual(len(package["notification"].body), 6000)
         self.assertNotRegex(package["notification"].subject, r"\d(?:\.\d)?/5")
 
     def test_quant_finance_email_filters_frontstage_candidate_pollution(self) -> None:

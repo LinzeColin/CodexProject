@@ -162,7 +162,7 @@ features:
   -
     feature_id: "FEAT-ADP-003"
     name: "中文讲解邮件与教学型前台"
-    description: "生成中文教学简报、plain/HTML preview 和候选队列摘要；不启用视频附件或 Release/ROI 前台展示。"
+    description: "生成 M1-M4 邮件产品模板、V1 学习型中文 plain/HTML preview、arXiv/PDF/ChatGPT 继续学习入口和候选队列摘要；不启用视频附件或 Release/ROI 前台展示。"
     status: "completed"
     fact_level: "EXTRACTED"
     model_ids:
@@ -1511,7 +1511,7 @@ models:
   -
     model_id: "MOD-ADP-034"
     name: "Phase 12 manual Release and SMTP delivery test gate"
-    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, the subject follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, Release remains backend evidence/download storage, video is only an optional file link, the V2 decision-first email frontstage is consumed, backend ROI and numeric score labels are hidden from email and MP4 transcript, and scheduled production stays disabled."
+    purpose: "Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, the subject follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, Release remains backend evidence/download storage, video is only an optional file link, the M1 learning email frontstage is consumed, backend ROI and numeric score labels are hidden from email and MP4 transcript, and scheduled production stays disabled."
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "EXTRACTED"
@@ -1671,8 +1671,8 @@ models:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
   -
     model_id: "MOD-ADP-037"
-    name: "Phase 12 email decision UI V2"
-    purpose: "Render a Chinese, decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground."
+    name: "Phase 12 M1 learning email frontstage"
+    purpose: "Render a Chinese M1 learning email plus bounded plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject, V1 learning sections, safe arXiv/PDF/ChatGPT entries, and no foreground ROI, Claim Ledger, reading-time, Delta, Release, or video clutter."
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "EXTRACTED"
@@ -1686,8 +1686,8 @@ models:
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
       - "arxiv-daily-push/src/arxiv_daily_push/lesson.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py"
       - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"
-      - "arxiv-daily-push/src/arxiv_daily_push/video.py"
     config_refs:
       - "arxiv-daily-push/schemas/lesson.schema.json"
     test_refs:
@@ -1780,7 +1780,7 @@ models:
   -
     model_id: "MOD-ADP-040"
     name: "Review8 Stage 1 B1/arXiv report and email text package"
-    purpose: "Render the Stage 1 B1/arXiv daily teaching artifact from supported daily input claims into Markdown/HTML report, Chinese plain/HTML email preview, claim audit, candidate queue summary, and content ledger update without production side effects."
+    purpose: "Render the Stage 1 B1/arXiv daily teaching artifact into a B1/M1 learning report and Chinese plain/HTML email preview with supported claim evidence, V1 learning sections, safe arXiv/PDF/ChatGPT entries, candidate queue summary, claim audit, content ledger update, and no production side effects."
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "EXTRACTED"
@@ -1795,6 +1795,7 @@ models:
       - "PARAM-ADP-315"
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
     config_refs:
       - "arxiv-daily-push/docs/governance/model_registry.yaml"
@@ -2851,7 +2852,7 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "Manual delivery testing may perform real SMTP only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input and Stage 1 text artifacts, run scheduled daily-run delivery without Release/video requirements, send exactly to the configured recipient, render the decision-first Chinese email frontstage with responsive HTML plus plain-text fallback, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and frontstage numeric score labels, and avoid enabling scheduled production."
+    expression: "Manual delivery testing may perform real SMTP only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input and Stage 1 text artifacts, run scheduled daily-run delivery without Release/video requirements, send exactly to the configured recipient, render the M1 learning email frontstage with responsive HTML plus plain-text fallback, include safe arXiv/PDF/ChatGPT learning entries, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and legacy reading-time or Delta labels, and avoid enabling scheduled production."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py"
       - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
@@ -2901,7 +2902,7 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen surfaces read/skim/skip, evidence level, estimated reading time, and one-line conclusion without numeric x/5 foreground scoring; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content."
+    expression: "The Phase 12 email is acceptable only when the daily package produces a multipart learning email with a bounded Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen identifies the M1 mail product and explains the paper in plain Chinese; the body includes learning outcomes, method flow, knowledge units, reusable methods, transfer scenarios, evidence boundaries, source/PDF/ChatGPT learning entries, candidate queue summary, and feedback actions; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, legacy reading-time labels, Delta labels, and repeated English summary; SMTP evidence stores hashes only, not body content."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
       - "arxiv-daily-push/src/arxiv_daily_push/lesson.py"
@@ -2958,7 +2959,7 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is Chinese-first and follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, candidate queue summary is present, ROI/backend policy/Claim Ledger/video markers are absent from the email foreground, artifact writes are explicit dry-run files only, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
+    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is Chinese-first M1 learning mail, follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, includes plain-language explanation, learning outcomes, method flow, knowledge units, reusable methods, transfer scenarios, source/PDF/ChatGPT learning entries, and candidate queue summary, keeps ROI/backend policy/Claim Ledger/video/reading-time/Delta markers out of the email foreground, writes artifacts only as explicit dry-run files, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
@@ -8447,8 +8448,8 @@ parameters:
     formula_id: "FORM-ADP-039"
     symbol: "EMAIL_PLAIN_TEXT_MAX_CHARS"
     name: "Decision email plain text maximum length"
-    value: "1500"
-    source: "Plain text must stay high-density for mobile/email scanning"
+    value: "6000"
+    source: "V1 learning email includes bounded Chinese sections plus safe encoded ChatGPT prompt link"
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
@@ -9207,8 +9208,8 @@ parameters:
     formula_id: "FORM-ADP-042"
     symbol: "STAGE1_B1_PROHIBITED_EMAIL_MARKER_COUNT"
     name: "Stage 1 B1 prohibited email marker count"
-    value: "9"
-    source: "EXTRACTED from stage1_b1_report.py constant and tests"
+    value: "14"
+    source: "EXTRACTED from stage1_b1_report.py prohibited marker constant and V1 learning email tests"
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"

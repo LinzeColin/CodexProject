@@ -14,6 +14,7 @@ from urllib.parse import quote
 from .arxiv_adapter import ArxivQuery
 from .config import DEFAULT_RECIPIENT, DEFAULT_TIMEZONE, PROJECT_NAME
 from .contracts import stable_content_hash, validate_evidence_claim, validate_source_item
+from .mail_templates import build_chatgpt_learning_url, mail_product_for_board, safe_https_url, source_pdf_url
 from .notifications import EmailNotification
 from .source_ingest import FetchAtom, ingest_latest_arxiv, validate_source_batch
 
@@ -1009,14 +1010,20 @@ def _daily_email(
     top_queue = queue_summary.get("top_queued") if isinstance(queue_summary.get("top_queued"), list) else []
     queue_items = _email_queue_items(top_queue, selected_category=category)
     queued_count = int(queue_summary.get("queued_item_count") or len(queue_items))
-    source_url = str(source_item.get("canonical_url") or "")
+    source_url = safe_https_url(source_item.get("canonical_url"))
+    pdf_url = source_pdf_url(source_item)
+    chatgpt_url = build_chatgpt_learning_url(source_item, chinese_title=_learning_title(frontstage, title))
     feedback_links = _feedback_links(str(source_item.get("source_id") or "unknown"))
+    product = mail_product_for_board("B1")
     body = _daily_email_text(
         title=title,
         project_label=project_label,
         group_label=group_label,
         category=category,
         source_url=source_url,
+        pdf_url=pdf_url,
+        chatgpt_url=chatgpt_url,
+        product=product,
         frontstage=frontstage,
         queued_count=queued_count,
         queue_items=queue_items,
@@ -1028,6 +1035,9 @@ def _daily_email(
         group_label=group_label,
         category=category,
         source_url=source_url,
+        pdf_url=pdf_url,
+        chatgpt_url=chatgpt_url,
+        product=product,
         frontstage=frontstage,
         queued_count=queued_count,
         queue_items=queue_items,
@@ -1062,6 +1072,19 @@ def _frontstage_from_lesson(lesson: Mapping[str, Any], *, title: str) -> dict[st
         "first_principles_chain": _text_list(frontstage.get("first_principles_chain"), ["问题定义", "关键变量", "方法机制", "可观察输出", "失败条件"]),
         "domain_mappings": _mapping_list(frontstage.get("domain_mappings")),
         "key_questions": _text_list(frontstage.get("key_questions"), ["它是否提供可复验增量？", "摘要主张是否有正文证据支撑？", "失败条件是什么？"]),
+        "plain_language_explanation": _frontstage_text(
+            frontstage.get("plain_language_explanation"),
+            fallback=f"这篇论文先作为《{_truncate_text(title, max_chars=48)}》的摘要级学习入口；需要继续检查正文、图表和实验。",
+        ),
+        "learning_outcomes": _text_list(
+            frontstage.get("learning_outcomes"),
+            ["区分论文事实、解释和迁移建议。", "找到论文里的问题、方法、证据和失败条件。", "把主张转成一个可执行的最小验证动作。", "判断它能否迁移到学习、研究或产品。"],
+        ),
+        "method_flow": _text_list(frontstage.get("method_flow"), ["锁定问题", "拆出变量", "看作者怎样处理", "检查证据", "写下失败条件"]),
+        "knowledge_units": _object_list(frontstage.get("knowledge_units")),
+        "reusable_methods": _object_list(frontstage.get("reusable_methods")),
+        "transfer_scenarios": _object_list(frontstage.get("transfer_scenarios")),
+        "learning_boundary": frontstage.get("learning_boundary") if isinstance(frontstage.get("learning_boundary"), Mapping) else {},
         "evidence_gaps": _text_list(frontstage.get("evidence_gaps"), ["当前只基于 arXiv 摘要和分类元数据，不能当作同行评审或实证验证。"]),
         "default_action": _frontstage_text(
             frontstage.get("default_action"),
@@ -1077,15 +1100,23 @@ def _daily_email_text(
     group_label: str,
     category: str,
     source_url: str,
+    pdf_url: str,
+    chatgpt_url: str,
+    product: Mapping[str, Any],
     frontstage: Mapping[str, Any],
     queued_count: int,
     queue_items: Sequence[Mapping[str, str]],
     feedback_links: Sequence[Mapping[str, str]],
 ) -> str:
-    chain = " → ".join(str(item) for item in frontstage["first_principles_chain"])
-    mappings = [f"- {item['paper_variable']}：{item['decision_mapping']}" for item in frontstage["domain_mappings"][:4]]
-    questions = [f"{index}. {item}" for index, item in enumerate(frontstage["key_questions"][:3], start=1)]
-    gaps = [f"- {item}" for item in frontstage["evidence_gaps"][:3]]
+    source_label = _source_link_label(source_url)
+    chain = " → ".join(str(item) for item in frontstage["method_flow"])
+    outcomes = [f"{index}. {item}" for index, item in enumerate(frontstage["learning_outcomes"][:6], start=1)]
+    units = _knowledge_unit_lines(frontstage.get("knowledge_units"))
+    methods = _method_lines(frontstage.get("reusable_methods"))
+    transfers = _transfer_lines(frontstage.get("transfer_scenarios"))
+    boundary = frontstage.get("learning_boundary") if isinstance(frontstage.get("learning_boundary"), Mapping) else {}
+    can_determine = "；".join(str(item) for item in boundary.get("can_determine", [])[:2]) if isinstance(boundary.get("can_determine"), list) else "当前事实来自摘要级元数据和受支持 claim。"
+    cannot_determine = "；".join(str(item) for item in boundary.get("cannot_determine", [])[:2]) if isinstance(boundary.get("cannot_determine"), list) else "不能把摘要主张当成全文验证结果。"
     candidates = [
         f"- {_truncate_text(str(item['title']), max_chars=72)}（{item['primary_category']}）：{item['reason']}"
         for item in queue_items[:2]
@@ -1093,33 +1124,40 @@ def _daily_email_text(
     feedback_options = " / ".join(str(item["label"]) for item in feedback_links)
     return "\n".join(
         [
-            "【今天讲透一个问题】",
-            f"建议：{frontstage['decision']} | 证据边界：{frontstage['evidence_level']} | 预计：{frontstage['estimated_reading_time']}",
-            str(frontstage["one_line_takeaway"]),
+            f"【{product['id']}｜{product['name']}】",
+            str(product["focus"]),
             "",
-            "【主讲论文】",
+            "【先把论文讲成人话】",
             title,
             f"栏目：{project_label} / {group_label}" + (f" / {category}" if category else ""),
-            f"原文：{source_url}",
+            str(frontstage["plain_language_explanation"]),
             "",
-            "【为什么值得你看】",
-            "- 重点不是论文标题，而是它是否给出可迁移的变量、机制或验证方法。",
-            "- 你要带走的是一个可复验判断，不是把摘要结论当成事实。",
+            "【学习成果导航】",
+            *outcomes,
             "",
-            "【第一性原理链条】",
+            "【作者具体怎么做】",
             chain,
             "",
-            "【怎么转成可用判断】",
-            *mappings,
+            "【真正值得学的新知识】",
+            *units,
             "",
-            "【真正值得追问】",
-            *questions,
+            "【可以直接复用的方法】",
+            *methods,
             "",
-            "【先别相信的地方】",
-            *gaps,
+            "【连接到你的学习、研究和产品】",
+            *transfers,
+            "",
+            "【边界】",
+            f"- 可以确定：{can_determine}",
+            f"- 不能确定：{cannot_determine}",
             "",
             "【默认动作】",
             str(frontstage["default_action"]),
+            "",
+            "【继续学习入口】",
+            f"- {source_label}：{source_url}",
+            f"- PDF：{pdf_url}",
+            f"- ChatGPT 新对话：{chatgpt_url}",
             "",
             "【候选队列摘要】",
             f"- 已入队候选：{queued_count} 篇；这里只列最可能形成后续讲解的 1-2 篇。",
@@ -1138,19 +1176,23 @@ def _daily_email_html(
     group_label: str,
     category: str,
     source_url: str,
+    pdf_url: str,
+    chatgpt_url: str,
+    product: Mapping[str, Any],
     frontstage: Mapping[str, Any],
     queued_count: int,
     queue_items: Sequence[Mapping[str, str]],
     feedback_links: Sequence[Mapping[str, str]],
     date: str,
 ) -> str:
-    chain_nodes = "".join(f"<span class=\"node\">{escape(str(item))}</span>" for item in frontstage["first_principles_chain"][:5])
-    mappings = "".join(
-        f"<div class=\"kv\"><b>{escape(str(item['paper_variable']))}</b><span>{escape(str(item['decision_mapping']))}</span></div>"
-        for item in frontstage["domain_mappings"][:4]
-    )
-    questions = "".join(f"<li>{escape(str(item))}</li>" for item in frontstage["key_questions"][:3])
-    gaps = "".join(f"<li>{escape(str(item))}</li>" for item in frontstage["evidence_gaps"][:3])
+    chain_nodes = "".join(f"<span class=\"node\">{escape(str(item))}</span>" for item in frontstage["method_flow"][:6])
+    outcomes = "".join(f"<li>{escape(str(item))}</li>" for item in frontstage["learning_outcomes"][:6])
+    units = _knowledge_unit_html(frontstage.get("knowledge_units"))
+    methods = _method_html(frontstage.get("reusable_methods"))
+    transfers = _transfer_html(frontstage.get("transfer_scenarios"))
+    boundary = frontstage.get("learning_boundary") if isinstance(frontstage.get("learning_boundary"), Mapping) else {}
+    can_determine = "；".join(str(item) for item in boundary.get("can_determine", [])[:2]) if isinstance(boundary.get("can_determine"), list) else "当前事实来自摘要级元数据和受支持 claim。"
+    cannot_determine = "；".join(str(item) for item in boundary.get("cannot_determine", [])[:2]) if isinstance(boundary.get("cannot_determine"), list) else "不能把摘要主张当成全文验证结果。"
     candidate_html = "".join(
         "<li><b>"
         + escape(_truncate_text(str(item["title"]), max_chars=76))
@@ -1163,7 +1205,9 @@ def _daily_email_html(
         f"<a class=\"fb\" href=\"{escape(str(item['url']), quote=True)}\">{escape(str(item['label']))}</a>"
         for item in feedback_links
     )
-    source_button = _html_button("查看原文", source_url, primary=True) if source_url else ""
+    source_button = _html_button(_source_link_label(source_url), source_url, primary=True) if source_url else ""
+    pdf_button = _html_button("PDF", pdf_url, primary=False) if pdf_url else ""
+    chatgpt_button = _html_button("ChatGPT 新对话", chatgpt_url, primary=False) if chatgpt_url else ""
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -1182,7 +1226,6 @@ h1{{font-size:23px;line-height:1.32;margin:12px 0 8px}}
 .pill{{display:inline-block;margin:0 6px 8px 0;padding:6px 9px;border-radius:999px;background:#edf2ff;color:#293f91;font-size:12px;font-weight:700}}
 .pill.ok{{background:#e7f6ee;color:#12683f}}.pill.warn{{background:#fff4dc;color:#865800}}.pill.gray{{background:#f0f2f5;color:#596275}}
 .decision{{border:1px solid #dde5f0;background:#fbfcff;border-radius:12px;padding:15px;margin:8px 0 18px}}
-.verdict{{float:right;font-size:25px;font-weight:800;color:#1f6f55}}
 h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{{padding-left:20px}}
 .chain{{margin:10px 0}}.node{{display:inline-block;background:#f1f4f9;border-radius:9px;padding:9px 10px;margin:0 4px 6px 0;font-size:13px;font-weight:700}}
 .kv{{border:1px solid #e1e7ef;border-radius:10px;padding:11px;margin:8px 0}}.kv b{{display:block;font-size:13px}}.kv span{{display:block;font-size:13px;color:#4d5870;margin-top:3px}}
@@ -1196,17 +1239,18 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 </head>
 <body>
 <div class="wrap"><div class="card">
-<div class="head"><span class="brand">{escape(project_label)} · {escape(group_label)}</span><span class="date">{escape(date)}</span><h1>{escape(str(frontstage["one_line_takeaway"]))}</h1><p class="lead">{escape(title)}</p></div>
+<div class="head"><span class="brand">{escape(str(product["id"]))} · {escape(str(product["name"]))}</span><span class="date">{escape(date)}</span><h1>{escape(_learning_title(frontstage, title))}</h1><p class="lead">{escape(title)}</p></div>
 <div class="body">
-<span class="pill ok">建议：{escape(str(frontstage["decision"]))}</span><span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(group_label)}{(" / " + escape(category)) if category else ""}</span>
-<div class="decision"><span class="verdict">{escape(str(frontstage["decision"]))}</span><b>今天怎么读？</b><p>{escape(str(frontstage["one_line_takeaway"]))} 建议投入 {escape(str(frontstage["estimated_reading_time"]))}。</p></div>
-<h2>为什么值得你看</h2><p>重点不是论文标题，而是它是否给出可迁移的变量、机制或验证方法。今天只带走一个可复验判断，不把摘要结论当成事实。</p>
-<h2>第一性原理链条</h2><div class="chain">{chain_nodes}</div>
-<h2>怎么转成可用判断</h2>{mappings}
-<h2>真正值得追问的 3 个问题</h2><ul>{questions}</ul>
-<div class="callout"><b>先别相信的地方</b><ul>{gaps}</ul></div>
+<span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(group_label)}{(" / " + escape(category)) if category else ""}</span>
+<h2>先把论文讲成人话</h2><p>{escape(str(frontstage["plain_language_explanation"]))}</p>
+<h2>学习成果导航</h2><ol>{outcomes}</ol>
+<h2>作者具体怎么做</h2><div class="chain">{chain_nodes}</div>
+<h2>真正值得学的新知识</h2>{units}
+<h2>可以直接复用的方法</h2>{methods}
+<h2>连接到你的学习、研究和产品</h2>{transfers}
+<div class="callout"><b>边界</b><p><strong>可以确定：</strong>{escape(can_determine)}</p><p><strong>不能确定：</strong>{escape(cannot_determine)}</p></div>
 <h2>默认动作</h2><p>{escape(str(frontstage["default_action"]))}</p>
-<div>{source_button}</div>
+<div>{source_button}{pdf_button}{chatgpt_button}</div>
 <h2>候选队列摘要</h2><p class="muted">已入队候选 {int(queued_count)} 篇；这里只列最可能形成后续讲解的 1-2 篇。</p><ul class="candidates">{candidate_html}</ul>
 </div>
 <div class="feedback"><b>这封讲解如何？点击一次即可影响后续选题</b><br>{feedback_html}</div>
@@ -1263,8 +1307,21 @@ def _feedback_links(source_id: str) -> list[dict[str, str]]:
 
 
 def _html_button(label: str, url: str, *, primary: bool) -> str:
+    safe_url = safe_https_url(url)
+    if not safe_url:
+        return ""
     class_name = "btn" if primary else "btn alt"
-    return f"<a class=\"{class_name}\" href=\"{escape(url, quote=True)}\">{escape(label)}</a>"
+    return (
+        f"<a class=\"{class_name}\" href=\"{escape(safe_url, quote=True)}\" "
+        f"target=\"_blank\" rel=\"noopener noreferrer\">{escape(label)}</a>"
+    )
+
+
+def _source_link_label(source_url: str) -> str:
+    safe_url = safe_https_url(source_url)
+    if safe_url.startswith("https://arxiv.org/abs/"):
+        return "arXiv 摘要页"
+    return "原文"
 
 
 def _bounded_score(value: Any) -> float:
@@ -1295,6 +1352,98 @@ def _mapping_list(value: Any) -> list[dict[str, str]]:
         if rows:
             return rows
     return [{"paper_variable": "论文变量", "decision_mapping": "是否能转成可观测、可记录、可复验的指标"}]
+
+
+def _object_list(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    return [dict(item) for item in value if isinstance(item, Mapping)]
+
+
+def _learning_title(frontstage: Mapping[str, Any], title: str) -> str:
+    takeaway = _frontstage_text(frontstage.get("one_line_takeaway"), fallback="")
+    if takeaway and len(takeaway) <= 72:
+        return takeaway
+    return f"用普通中文读懂：{_truncate_text(title, max_chars=52)}"
+
+
+def _knowledge_unit_lines(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return ["1. 证据入口：先确认论文主张来自哪里、能支持到什么程度。"]
+    rows = []
+    for index, item in enumerate(value[:5], start=1):
+        if not isinstance(item, Mapping):
+            continue
+        rows.append(
+            f"{index}. {item.get('title')}：{item.get('what')} 为什么重要：{item.get('why')} "
+            f"迁移：{item.get('transfer')}"
+        )
+    return rows or ["1. 证据入口：先确认论文主张来自哪里、能支持到什么程度。"]
+
+
+def _method_lines(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return ["- 摘要级证据分层：先分开事实、解释和迁移建议；不能替代全文核查。"]
+    rows = []
+    for item in value[:4]:
+        if isinstance(item, Mapping):
+            rows.append(f"- {item.get('name')}：{item.get('when')} {item.get('how')} 不适用：{item.get('not_for')}")
+    return rows or ["- 摘要级证据分层：先分开事实、解释和迁移建议；不能替代全文核查。"]
+
+
+def _transfer_lines(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return ["- 学习：把论文拆成事实、解释、方法和边界。"]
+    rows = []
+    for item in value[:4]:
+        if isinstance(item, Mapping):
+            rows.append(f"- {item.get('scenario')}：{item.get('connection')}")
+    return rows or ["- 学习：把论文拆成事实、解释、方法和边界。"]
+
+
+def _knowledge_unit_html(value: Any) -> str:
+    if not isinstance(value, list):
+        return "<p>先确认论文主张来自哪里、能支持到什么程度。</p>"
+    rows = []
+    for item in value[:5]:
+        if not isinstance(item, Mapping):
+            continue
+        rows.append(
+            "<div class=\"kv\">"
+            f"<b>{escape(str(item.get('title') or '知识单元'))}</b>"
+            f"<span>{escape(str(item.get('what') or ''))}</span>"
+            f"<span>{escape(str(item.get('why') or ''))}</span>"
+            f"<span>迁移：{escape(str(item.get('transfer') or ''))}</span>"
+            "</div>"
+        )
+    return "".join(rows) or "<p>先确认论文主张来自哪里、能支持到什么程度。</p>"
+
+
+def _method_html(value: Any) -> str:
+    if not isinstance(value, list):
+        return "<p>摘要级证据分层：先分开事实、解释和迁移建议。</p>"
+    rows = []
+    for item in value[:4]:
+        if not isinstance(item, Mapping):
+            continue
+        rows.append(
+            "<div class=\"kv\">"
+            f"<b>{escape(str(item.get('name') or '可复用方法'))}</b>"
+            f"<span>{escape(str(item.get('when') or ''))} {escape(str(item.get('how') or ''))}</span>"
+            f"<span>不适用：{escape(str(item.get('not_for') or ''))}</span>"
+            "</div>"
+        )
+    return "".join(rows) or "<p>摘要级证据分层：先分开事实、解释和迁移建议。</p>"
+
+
+def _transfer_html(value: Any) -> str:
+    if not isinstance(value, list):
+        return "<ul><li>学习：把论文拆成事实、解释、方法和边界。</li></ul>"
+    rows = []
+    for item in value[:4]:
+        if isinstance(item, Mapping):
+            rows.append(f"<li><strong>{escape(str(item.get('scenario') or '迁移'))}</strong>：{escape(str(item.get('connection') or ''))}</li>")
+    return f"<ul>{''.join(rows)}</ul>" if rows else "<ul><li>学习：把论文拆成事实、解释、方法和边界。</li></ul>"
 
 
 def _frontstage_text(value: Any, *, fallback: str) -> str:
