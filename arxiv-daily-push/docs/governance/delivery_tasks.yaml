@@ -1385,6 +1385,24 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PFT01"
+    legacy_alias: "S2P5T01"
+    phase: "S2PF"
+    objective: "Add China mainland provincial-level template coverage evidence after D3 readiness."
+    scope: "31 mainland provincial-level IDs, province/autonomous-region/municipality types, core local department roles, health tiers, official identity, metadata-only gates, focused/full tests, and governance registration."
+    non_scope: "No D3_FULL_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no Hong Kong/Macau profile, no city coverage, no special-zone discovery, no SMTP, Release, scheduler, production queue/schema mutation, bulk scraping, PDF/full-text access, paid API, paywall bypass, V7.2 contract edit, mail production code, or public schema pre-run."
+    status: "completed"
+    dependencies: ["S2PDT04"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md"]
+    acceptance_ids: ["ACC-S2PFT01-PROVINCES"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pft01_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "scripts/validate_semantic_extractors.py arxiv-daily-push", "scripts/validate_project_governance.py --project arxiv-daily-push"]
+    test_results: ["focused Stage2 source tests: 51 OK", "semantic extractor checked 67 formulas / 451 parameters", "ADP project governance errors 0 warnings 0"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md", "governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json"]
+    risk: "Provincial template coverage must not be misread as D3 full source-domain production acceptance; inherited V7.1 blockers and S2PMT07 still block production."
+    rollback: "Revert S2PFT01 China provincial template code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2PHT01V1.1-T01"
     phase: "S2PH"
     objective: "Run the EMAIL_LEARNING_V1 read-only exact H/M repository path audit required by V7.2 before any mail production implementation work."
