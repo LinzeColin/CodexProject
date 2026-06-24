@@ -1,0 +1,168 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624",
+  "project_id": "PFI_BIG_DATA_SIMULATOR",
+  "task_id": "S5PBT04",
+  "acceptance_ids": [
+    "ACC-S5PBT04"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5PBT04",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "da8121adcfabbea579d4af8bdb7a014d30d563ba",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d3bbacdb3cf0fd449559f21dc80e757194dc774c56ea83dbb130e3b939dfaf86",
+  "changed_files_declared": [
+    "PFI/大数据模拟器/docs/governance/project.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+  ],
+  "changed_files_actual": [
+    "PFI/大数据模拟器/docs/governance/project.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+  ],
+  "required_governance_files": [
+    "PFI/大数据模拟器/docs/governance/project.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+  ],
+  "updated_governance_files": [
+    "PFI/大数据模拟器/docs/governance/project.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "review9_stage5_single_project_migration",
+    "pfi_big_data_simulator_only_scope",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S5PBT04 migrates existing PFI governance facts into Lean v2 canonical governance and rendered human views; it does not change strategy rules, indicators, backtest, stress simulation, fast screening, quality gate, campaign, finalists, fund rules, QuantLab adapter, provider probe, config, data, tests, scripts, publication, or runtime behavior.",
+  "formula_delta": "NOT_CHANGED: 15 active formulas are documented from existing PFI governance registries and remain MACHINE_VERIFIED.",
+  "parameter_delta": "NOT_CHANGED: 213 active parameters remain from existing registry; 211 are MACHINE_VERIFIED and PARAM-110/PARAM-111 remain HUMAN_REVIEW_REQUIRED.",
+  "version_delta": "No product, runtime, data, model, threshold, deployment, provider, adapter, publication, or release behavior change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_pfi_project_yaml_preserves_strategy_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_pfi_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_pfi_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_pfi_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_manifest_records_pfi_only_scope -q",
+    "python -B scripts/lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt04_* -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 focused S5PBT04 tests in 0.093s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0; reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed project PFI_BIG_DATA_SIMULATOR; errors=0; warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean committed tree CI passed; validation errors=0 warnings=0; check-render drift_count=0 for checked projects; zero_diff clean=true."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS; errors=0; warnings=0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 218 governance tests; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 projects checked; errors=0; warnings=0."
+    }
+  ],
+  "evidence_refs": [
+    "PFI/大数据模拟器/docs/governance/model_registry.yaml",
+    "PFI/大数据模拟器/docs/governance/formula_registry.yaml",
+    "PFI/大数据模拟器/docs/governance/parameter_registry.csv",
+    "PFI/大数据模拟器/docs/governance/TRACEABILITY_MATRIX.csv",
+    "PFI/大数据模拟器/docs/governance/ASSURANCE_STATUS.yaml",
+    "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md",
+    "PFI/大数据模拟器/docs/governance/development_events.jsonl",
+    "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json",
+    "PFI/大数据模拟器/docs/governance/project.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/events.jsonl",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PBT04 PFI canonical facts and rendered Chinese human entries",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Review9 S5PBT04 migrates PFI_BIG_DATA_SIMULATOR to Lean Governance v2 canonical project/roadmap/events and owner-readable Chinese files, preserving UNVERIFIED delivery readiness, OOS/multiple-testing owner gate, blocked TASK-PFI-B-001..B-004 and PARAM-110/111 human-review truth. Product runtime behavior is unchanged.",
+  "rollback": "Delete PFI/大数据模拟器/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; revert PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml, the three PFI human entry files, S5PBT04 focused tests, and this manifest.",
+  "unresolved_risks": [
+    "S5PB-GATE remains in_progress until PFI_BIG_DATA_SIMULATOR and arxiv-daily-push are migrated and verified on main.",
+    "S5-GATE remains open until all 10 registered projects pass structure, accuracy, and human-readable acceptance.",
+    "PFI delivery readiness remains UNVERIFIED; TASK-PFI-B-001..B-004, OOS validation, multiple-testing controls, cost realism, provider evidence, PARAM-110 and PARAM-111 remain unresolved."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
