@@ -124,26 +124,25 @@ def _build_sections(supported_claims: Sequence[Mapping[str, Any]]) -> list[dict[
 
 
 def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
-    arxiv = (source_item.get("metadata") or {}).get("arxiv", {})
-    if not isinstance(arxiv, Mapping):
-        arxiv = {}
+    profile = _source_profile(source_item)
     title = _clean_text(str(source_item.get("title") or ""))
-    summary = _clean_text(str(arxiv.get("summary") or ""))
-    category = str(arxiv.get("primary_category") or "")
+    summary = str(profile["summary"])
+    category = str(profile["primary_category"])
+    evidence_label = str(profile["evidence_label"])
     combined = f"{title} {summary} {category}".lower()
     score = _attention_score(category, combined)
     decision = "读" if score >= 4.2 else "扫读" if score >= 3.2 else "跳过"
     return {
         "decision": decision,
         "attention_score": score,
-        "evidence_level": "摘要级预印本",
+        "evidence_level": evidence_label,
         "estimated_reading_time": "8-15分钟" if decision != "跳过" else "2-3分钟",
         "one_line_takeaway": _one_line_takeaway(title, combined),
         "first_principles_chain": _first_principles_chain(combined),
         "domain_mappings": _domain_mappings(category, combined),
         "key_questions": _key_questions(category, combined),
         "evidence_gaps": [
-            "当前只基于 arXiv 摘要和分类元数据，不能当作同行评审或真实市场验证。",
+            f"当前只基于{evidence_label}，不能当作同行评审结论或真实市场验证。",
             "需要确认论文正文中的数学定义、实验设定和失败条件是否支持摘要主张。",
             "若没有数据、回测、仿真或可复现实验，应只进入观察队列，不进入结论库。",
         ],
@@ -154,6 +153,26 @@ def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
             "learning_goal": "看完能回答：这篇论文的增量在哪里，什么条件下不成立。",
         },
     }
+
+
+def _source_profile(source_item: Mapping[str, Any]) -> dict[str, str]:
+    metadata = source_item.get("metadata") if isinstance(source_item.get("metadata"), Mapping) else {}
+    arxiv = metadata.get("arxiv") if isinstance(metadata.get("arxiv"), Mapping) else {}
+    if isinstance(arxiv, Mapping) and arxiv:
+        return {
+            "summary": _clean_text(str(arxiv.get("summary") or "")),
+            "primary_category": str(arxiv.get("primary_category") or ""),
+            "evidence_label": "摘要级 arXiv 分类元数据",
+        }
+    preprint = metadata.get("preprint") if isinstance(metadata.get("preprint"), Mapping) else {}
+    if isinstance(preprint, Mapping) and preprint:
+        server = str(preprint.get("server") or "预印本").strip()
+        return {
+            "summary": _clean_text(str(preprint.get("abstract") or "")),
+            "primary_category": _clean_text(str(preprint.get("category") or server)),
+            "evidence_label": f"摘要级 {server} 来源元数据",
+        }
+    return {"summary": "", "primary_category": "", "evidence_label": "摘要级来源元数据"}
 
 
 def _attention_score(category: str, text: str) -> float:
