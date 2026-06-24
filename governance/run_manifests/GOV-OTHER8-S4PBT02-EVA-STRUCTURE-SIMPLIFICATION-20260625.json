@@ -1,0 +1,535 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625",
+  "project_id": "EVA_OS",
+  "task_id": "S4PBT02",
+  "acceptance_ids": [
+    "ACC-S4PBT02"
+  ],
+  "iteration_id": "ITER-OTHER8-S4PBT02-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "1566ab6c67742267b6b0f010993732adbc61a128",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:e379e0e13832319c190dda6c3dd0b60fdd75ece2221bdf2b219b78fe86d9e7a0",
+  "changed_files_declared": [
+    "EVA_OS/.gitignore",
+    "EVA_OS/功能清单",
+    "EVA_OS/模型参数文件",
+    "EVA_OS/AGENTS.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "EVA_OS/docs/governance/project.yaml",
+    "EVA_OS/README.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/15_OPEN_QUESTIONS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/AGENT_CONTINUITY.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/cleanup/EVA_OS_GitHub_Sync_Local_Slimming_20260613.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/CODEX_PROMPTS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/CODEX_TASK_PACK.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/docs/FeatureSpecification.pdf",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip.sha256",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/CHATGPT_REVIEW_PROMPT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/01_EXECUTIVE_PROGRESS_REPORT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/02_FUNCTION_CATALOG.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/03_DEVELOPER_HANDOFF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/04_TASK_ROADMAP.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/05_USER_GUIDE_BRIEF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/06_REVIEW_AUDIT_CHECKLIST.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_PROJECT_STATUS.json",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.pdf",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/MANIFEST.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/NEW_DEVELOPER_START_PROMPT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/README.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/15_OPEN_QUESTIONS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/AGENT_CONTINUITY.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/CODEX_TASK_PACK.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/DOCS_INDEX.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/EVA_OS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/HANDOFF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PLANS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PROJECT_README.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/TESTING.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/UPLOAD_MANIFEST.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/latest_artifacts.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/project_file_tree_maxdepth3.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/python_source_files.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/script_files.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/test_files.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/USER_README_SHORT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/PLANS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/UPLOAD_MANIFEST.md",
+    "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "EVA_OS/.gitignore",
+    "EVA_OS/功能清单",
+    "EVA_OS/模型参数文件",
+    "EVA_OS/AGENTS.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "EVA_OS/docs/governance/project.yaml",
+    "EVA_OS/README.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/15_OPEN_QUESTIONS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/AGENT_CONTINUITY.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/cleanup/EVA_OS_GitHub_Sync_Local_Slimming_20260613.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/CODEX_PROMPTS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/CODEX_TASK_PACK.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/docs/FeatureSpecification.pdf",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip.sha256",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/CHATGPT_REVIEW_PROMPT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/01_EXECUTIVE_PROGRESS_REPORT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/02_FUNCTION_CATALOG.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/03_DEVELOPER_HANDOFF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/04_TASK_ROADMAP.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/05_USER_GUIDE_BRIEF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/06_REVIEW_AUDIT_CHECKLIST.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_PROJECT_STATUS.json",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.pdf",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/MANIFEST.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/NEW_DEVELOPER_START_PROMPT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/README.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/15_OPEN_QUESTIONS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/AGENT_CONTINUITY.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/CODEX_TASK_PACK.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/DOCS_INDEX.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/EVA_OS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/HANDOFF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PLANS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PROJECT_README.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/TESTING.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/UPLOAD_MANIFEST.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/latest_artifacts.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/project_file_tree_maxdepth3.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/python_source_files.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/script_files.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/test_files.txt",
+    "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/USER_README_SHORT.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/PLANS.md",
+    "governance/archive/other8_wave1_pending/EVA_OS/UPLOAD_MANIFEST.md",
+    "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "EVA_OS/docs/governance/project.yaml",
+    "EVA_OS/功能清单",
+    "EVA_OS/模型参数文件",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "EVA_OS/.gitignore",
+    "EVA_OS/AGENTS.md",
+    "EVA_OS/README.md",
+    "EVA_OS/docs/governance/project.yaml",
+    "EVA_OS/功能清单",
+    "EVA_OS/模型参数文件",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage4_wave1_eva_structure_simplification",
+    "checksum_bound_archive_move",
+    "root_entry_noise_reduction",
+    "no_product_behavior_change"
+  ],
+  "stage_gate_status": {
+    "S4PBT01": "PASSED_AND_BOUND",
+    "S4PBT02": "LOCAL_PRECOMMIT_PASSED",
+    "S4PB-GATE": "IN_PROGRESS",
+    "project_file_movement": "EVA_OS_ARCHIVE_ONLY",
+    "private_data_owner_review": "NOT_STARTED_NO_MOVE"
+  },
+  "archive_actions": {
+    "eva_archived_path_count": 40,
+    "eva_root_merge_doc_count": 7,
+    "eva_handoff_pack_archived_count": 31,
+    "eva_cleanup_archived_count": 1,
+    "eva_generated_pdf_archived_count": 1,
+    "eva_category_counts": {
+      "ARCHIVE": 32,
+      "GENERATED": 1,
+      "MERGE": 7
+    },
+    "eva_private_candidate_count": 198,
+    "eva_private_candidate_action": "UNCHANGED_OWNER_REVIEW_REQUIRED",
+    "eva_assets_action": "UNCHANGED_OUT_OF_SCOPE",
+    "eva_macos_action": "UNCHANGED_OUT_OF_SCOPE",
+    "checksum_reconciled_path_count": 0
+  },
+  "archived_paths": [
+    {
+      "source_path": "EVA_OS/cleanup/EVA_OS_GitHub_Sync_Local_Slimming_20260613.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/cleanup/EVA_OS_GitHub_Sync_Local_Slimming_20260613.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "7ede8a87ff126ffcea1504089b47f10485ad83722c8b33b8b4fecfeafee9ce02",
+      "size_bytes": 4798
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "78a06362130eb77066727fd2e34783f6dfc8bdbf0d93ea74fac0e3c4a57756b9",
+      "size_bytes": 107173
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip.sha256",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615.zip.sha256",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "5a5366844c9c0a72167f82281f52780e2da7178b4cf7618c897a9ff1a29ed909",
+      "size_bytes": 107
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/CHATGPT_REVIEW_PROMPT.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/CHATGPT_REVIEW_PROMPT.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "150b40b6bec60387c4e6594221a658f645dc6eeaf4302ae04195e56f613b4500",
+      "size_bytes": 1116
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_PROJECT_STATUS.json",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_PROJECT_STATUS.json",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "4b70c7fab8488549c6d55b6538db2f59213fc89aabeea770d846366e2f055eb5",
+      "size_bytes": 3692
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "49b66be4863741453bdac7a9d74531beb5667f7d320e028b2faffae206736e5c",
+      "size_bytes": 24159
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/EVA_OS_Review_Report_20260615.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "ff0ab8acd3c18e8c2d2ff1988c658b4a19950789735b36e9b0782202a5bb9ea3",
+      "size_bytes": 36146
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/MANIFEST.txt",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/MANIFEST.txt",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "7afe73b5a8b6305ab289324c28da27dc7c9e6971bc496e2f6e9f7e9329c6f2b5",
+      "size_bytes": 843
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/NEW_DEVELOPER_START_PROMPT.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/NEW_DEVELOPER_START_PROMPT.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "3f24d9dafe3626284baff87a2406466c76b6d8e5b6c747da5e01c0e03ed50f19",
+      "size_bytes": 1065
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/README.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/README.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "6cab8a436b78b1c68ebddeb22f9a813b522a2d2020bc2f543ce58d00addec255",
+      "size_bytes": 1703
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/USER_README_SHORT.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/USER_README_SHORT.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "89c73b8781f2269035fe215d7640eab08cac865e919d6ec34cda55bc54605529",
+      "size_bytes": 904
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/01_EXECUTIVE_PROGRESS_REPORT.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/01_EXECUTIVE_PROGRESS_REPORT.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "47470f10c858a337b5507700f020fb983b1956ee53bef2345cf0511c36ddca26",
+      "size_bytes": 5963
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/02_FUNCTION_CATALOG.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/02_FUNCTION_CATALOG.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "a75d8c70a4c98955cd20a6cf0795307370a5415f4b0b649ba6bb748801c428cf",
+      "size_bytes": 4982
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/03_DEVELOPER_HANDOFF.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/03_DEVELOPER_HANDOFF.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "f0b13782866ec28759c6041d63af0cafcaa218261bb8f1372278b00a557b7f0d",
+      "size_bytes": 3674
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/04_TASK_ROADMAP.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/04_TASK_ROADMAP.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "b8bd3f275b3692e69359735bb142c8c2766475ec5276080002b2f9fe7b414da3",
+      "size_bytes": 3960
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/05_USER_GUIDE_BRIEF.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/05_USER_GUIDE_BRIEF.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "3fc9265bfd74f482b8d2e5d80875ed076a1a438a3bde09e728b54403278048ba",
+      "size_bytes": 2002
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/06_REVIEW_AUDIT_CHECKLIST.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/docs/06_REVIEW_AUDIT_CHECKLIST.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "ad4dcff0dd3285dba9ab70e4bb8a61e57035451a9935d77b34af16f80fbd3a77",
+      "size_bytes": 3371
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/15_OPEN_QUESTIONS.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/15_OPEN_QUESTIONS.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "c50e1b2060975940dbf85eca2e438e9cba746c3aa72343cdee179aa3e196c17b",
+      "size_bytes": 2547
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/AGENT_CONTINUITY.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/AGENT_CONTINUITY.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "e5b1de36d2000c6084745c79fe8e3048b5f07dbcf81f0320dc23b2f3be58b568",
+      "size_bytes": 5358
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/CODEX_TASK_PACK.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/CODEX_TASK_PACK.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "e474690497ef224f696a5a8055c72b781f2de4df6c1221e1fec0a39a16889591",
+      "size_bytes": 5521
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/DOCS_INDEX.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/DOCS_INDEX.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "feff3585e0319df768c6e9c8ae590af6ea1109d92d424cfc03426256710aacdd",
+      "size_bytes": 10466
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/EVA_OS.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/EVA_OS.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "dae6b6a280cc97c8084a664b3133db7ebefca05884ebd9e34ec1d5a4b91db541",
+      "size_bytes": 5998
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/HANDOFF.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/HANDOFF.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "29e319b607de3b4ae28567992cce1ed4b5e578e8a5244ceb3eb602c8323504d2",
+      "size_bytes": 8009
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PLANS.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PLANS.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "b61097200690bdbb666bbeb7791c8da66690f5a2ffcd8b142fa51393cc41003d",
+      "size_bytes": 7268
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PROJECT_README.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/PROJECT_README.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "76f722657c47d0b606cd010de55dffc2184344a1c998e21ece764e78f3f9f9e9",
+      "size_bytes": 56011
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/TESTING.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/TESTING.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "1e3901cc8c22541c6b111d1db54a4a0988640f33dbda8b4f5e7f52fd0d4a379c",
+      "size_bytes": 3469
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/UPLOAD_MANIFEST.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/reference/UPLOAD_MANIFEST.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "0c24c1e0e12d5e0862cff879825c9dceec4414d36ea9caeeb16d150fd9382002",
+      "size_bytes": 3636
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/latest_artifacts.txt",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/latest_artifacts.txt",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "cb1eefdbf4a558e7fa52953e05b1633ea41c9a615d1356fb8fa4ca3aa7d06c03",
+      "size_bytes": 1937
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/project_file_tree_maxdepth3.txt",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/project_file_tree_maxdepth3.txt",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "7b54645b310cd667b93c590ef01815a9b1f1b56445455eca675f84f2691e7727",
+      "size_bytes": 18132
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/python_source_files.txt",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/python_source_files.txt",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "92b5686e7ddc29b279426bce74530f7f4f36b319e9a451e43c3fde08679e828d",
+      "size_bytes": 5261
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/script_files.txt",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/script_files.txt",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "e475b6475e47cd5d3522c367d6465e7fdabe433d09429729371a9765952765db",
+      "size_bytes": 1172
+    },
+    {
+      "source_path": "EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/test_files.txt",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/20260615/EVA_OS_handoff_review_pack_20260615/source_snapshot/test_files.txt",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "ab1539bf86481f38a660e7da3c534f18434f609163e3d0b47577e2bea093cb0e",
+      "size_bytes": 1910
+    },
+    {
+      "source_path": "EVA_OS/docs/FeatureSpecification.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/docs/FeatureSpecification.pdf",
+      "category": "GENERATED",
+      "s4pat02_sha256": "f24b8d6b18231b7dbfcd67b4d6e6a79f7fb7c9cb7ab3ee91ee85da155c362dcd",
+      "size_bytes": 672906
+    },
+    {
+      "source_path": "EVA_OS/15_OPEN_QUESTIONS.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/15_OPEN_QUESTIONS.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "c50e1b2060975940dbf85eca2e438e9cba746c3aa72343cdee179aa3e196c17b",
+      "size_bytes": 2547
+    },
+    {
+      "source_path": "EVA_OS/AGENT_CONTINUITY.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/AGENT_CONTINUITY.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "2372e140ead646b5bc66a500d62fab10ec0337136a9d0b44c2b35cd190ae01d0",
+      "size_bytes": 53477
+    },
+    {
+      "source_path": "EVA_OS/CODEX_PROMPTS.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/CODEX_PROMPTS.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "97c963a2307a12f0dbd13100828f2892b36ac4c2422501a39aa73fb33eae5005",
+      "size_bytes": 810
+    },
+    {
+      "source_path": "EVA_OS/CODEX_TASK_PACK.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/CODEX_TASK_PACK.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "e474690497ef224f696a5a8055c72b781f2de4df6c1221e1fec0a39a16889591",
+      "size_bytes": 5521
+    },
+    {
+      "source_path": "EVA_OS/HANDOFF.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "8e1268df4903ca46efc208f337a2f08cd9a29589be34018cd078672580a734ab",
+      "size_bytes": 88598
+    },
+    {
+      "source_path": "EVA_OS/PLANS.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/PLANS.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "31649cb626ab42b42ad0ce6acbc043c4c4ccba53e07273323663ea1fbf7dd84b",
+      "size_bytes": 7236
+    },
+    {
+      "source_path": "EVA_OS/UPLOAD_MANIFEST.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/EVA_OS/UPLOAD_MANIFEST.md",
+      "category": "MERGE",
+      "s4pat02_sha256": "9aff48b59d8c77f4afef63c43050dbb22a5245bc0b2cae2db27a2da0c9cede13",
+      "size_bytes": 2490
+    }
+  ],
+  "archive_checksum_reconciliation": [],
+  "stop_conditions": {
+    "eva_import_paths_changed": false,
+    "eva_system_or_shared_module_path_changed": false,
+    "root_readme_over_250_lines_without_layering": false,
+    "private_data_moved": false,
+    "generated_assets_or_macos_app_moved": false,
+    "live_readiness_promoted": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": [],
+    "allowed_project": "EVA_OS"
+  },
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pbt02_eva_structure_simplification_archives_handoff_packs_and_cleanup -q",
+    "python -B scripts/lean_governance.py check-render --project EVA_OS",
+    "python -B -m compileall -q EVA_OS/src EVA_OS/shared EVA_OS/systems",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B scripts/lean_governance.py render --project EVA_OS --write",
+      "exit_code": 0,
+      "result": "updated_count=2 unchanged_count=1"
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
+      "exit_code": 0,
+      "result": "valid_json"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pbt02_eva_structure_simplification_archives_handoff_packs_and_cleanup -q",
+      "exit_code": 0,
+      "result": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project EVA_OS",
+      "exit_code": 0,
+      "result": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B -m compileall -q EVA_OS/src EVA_OS/shared EVA_OS/systems",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "ok; line-ending warnings only"
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "no forbidden project changes"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "errors=0 warnings=0"
+    }
+  ],
+  "evidence_refs": [
+    "EVA_OS/docs/EVA_structure_report.md",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md",
+    "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json"
+  ],
+  "unresolved_risks": [
+    "S4PB-GATE remains in progress until S4PBT02 passes PR and main CI.",
+    "EVA_OS PRIVATE data candidates remain in place and still require owner/privacy review before any archive decision.",
+    "EVA_OS generated app assets and macOS app bundle remain out of S4PBT02 scope."
+  ],
+  "next_allowed_task": "S4PCT01",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow after PR merge",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI_ATTESTED",
+  "finished_at": "2026-06-25T00:00:00+10:00"
+}

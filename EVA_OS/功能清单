@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `17`
+- evidence_ref_count: `19`
 - roadmap_test_command_count: `1`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -32,7 +32,7 @@
 | 证据 ID | 类型 | 引用 | 事实等级 |
 |---|---|---|---|
 | EVID-EVA-README | owner | EVA_OS/README.md | EXTRACTED |
-| EVID-EVA-HANDOFF | owner | EVA_OS/HANDOFF.md | RECONSTRUCTED |
+| EVID-EVA-HANDOFF | archived_owner | governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md | RECONSTRUCTED |
 | EVID-EVA-MODEL-SPEC | legacy_governance | EVA_OS/docs/governance/MODEL_SPEC.md | EXTRACTED |
 | EVID-EVA-MODEL-REGISTRY | legacy_governance | EVA_OS/docs/governance/model_registry.yaml | EXTRACTED |
 | EVID-EVA-FORMULA-REGISTRY | legacy_governance | EVA_OS/docs/governance/formula_registry.yaml | EXTRACTED |
@@ -48,3 +48,5 @@
 | EVID-EVA-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-EVA-EXTRACT-001.json | EXTRACTED |
 | EVID-REVIEW9-S5PAT01-MERGE | ci | github-actions://LinzeColin/CodexProject/actions/runs/28057939896 | VERIFIED |
 | EVID-REVIEW9-S5PAT02-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json | PROPOSED |
+| EVID-OTHER8-S4PBT02-EVA-STRUCTURE-REPORT | stage_gate_evidence | EVA_OS/docs/EVA_structure_report.md | EXTRACTED |
+| EVID-OTHER8-S4PBT02-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json | EXTRACTED |
