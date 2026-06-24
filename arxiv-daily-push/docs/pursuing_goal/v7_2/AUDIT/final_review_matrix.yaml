@@ -46,7 +46,7 @@ latest_revalidation:
   blocker_findings: []
 baseline_publication_verdict:
   status: pass
-  scope: Publish V7.2 product contract and CURRENT pointer on this branch pending PR CI.
+  scope: Publish V7.2 product contract and CURRENT pointer on main via merged PR #140.
   not_authorized:
     - email_production_code_change
     - public_schema_change

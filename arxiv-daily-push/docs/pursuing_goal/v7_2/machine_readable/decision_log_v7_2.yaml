@@ -3,7 +3,7 @@ contract_version: ADP-PRODUCT-CONTRACT-V7.2
 decisions:
   - decision_id: DEC-ADP-V7-2-CURRENT-20260624
     title: CURRENT product contract points to V7.2
-    status: accepted_on_branch_pending_pr_ci
+    status: accepted_on_main_merged_pr_140
     supersedes:
       - DEC-ADP-V7-1-AUDIT-LOCK-20260624
     scope: product_contract_pointer
