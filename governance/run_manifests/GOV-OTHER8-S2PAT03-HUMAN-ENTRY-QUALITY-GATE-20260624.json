@@ -1,0 +1,96 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PAT03-HUMAN-ENTRY-QUALITY-GATE-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PAT03",
+  "acceptance_ids": [
+    "ACC-S2PAT03"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PAT03",
+  "generated_at": "2026-06-24T14:04:19+10:00",
+  "implementation_base_sha": "42fc1d0091a2bb203d4c22ed01d1337c7d3fe083",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:59199e7d4f329f51534022616987d8729149ea33f07e579be4bca28f5b70e2ab",
+  "changed_files_declared": [
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT03-HUMAN-ENTRY-QUALITY-GATE-20260624.json"
+  ],
+  "changed_files_actual": [
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT03-HUMAN-ENTRY-QUALITY-GATE-20260624.json"
+  ],
+  "required_governance_files": [
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT03-HUMAN-ENTRY-QUALITY-GATE-20260624.json"
+  ],
+  "updated_governance_files": [
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT03-HUMAN-ENTRY-QUALITY-GATE-20260624.json"
+  ],
+  "change_classification": [
+    "human_entry_quality_gate",
+    "other8_s2pat03",
+    "validator_only",
+    "read_only_ci_contract"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Project governance validation now rejects root human-entry files that start as compatibility indexes or link pages and requires owner-readable title/summary tokens.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat03_human_entry_quality_rejects_index_pages tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat03_current_human_entries_pass_quality_contract -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py validate --changed-only --base-ref HEAD",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S2PAT03 human entry quality tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "2 focused tests OK: index/link pages are rejected and all 10 current project human-entry files pass the quality contract."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root and all 10 projects checked with errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only validation checked root governance with errors=0 warnings=0 before manifest addition."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0, check-render drift=0 across 10 selected projects, and zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors after manifest addition."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT03-HUMAN-ENTRY-QUALITY-GATE-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PAT03 validates that project human-entry files are owner-readable content and not compatibility indexes or link pages.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PAT03 adds a lightweight read-only human-entry quality gate to project governance validation, preserving human-readable truth without adding write-mode governance calculation to ordinary development actions.",
+  "rollback": "Revert scripts/validate_project_governance.py, the focused tests, and this run manifest.",
+  "unresolved_risks": [
+    "S2PCT01 still needs changed-scope impact-map tightening so ordinary non-product work does not select excluded projects."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

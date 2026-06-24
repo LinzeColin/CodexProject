@@ -6009,6 +6009,33 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 for forbidden in ("compatibility index", "compatibility indexes", "兼容索引"):
                     self.assertNotIn(forbidden, text.lower())
 
+    def test_other8_s2pat03_human_entry_quality_rejects_index_pages(self) -> None:
+        validator = load_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            project_path = Path(tmp)
+            for filename in ("功能清单", "开发记录", "模型参数文件"):
+                (project_path / filename).write_text(
+                    f"# {filename}\n\n详见 docs/governance/project.yaml\ncompatibility indexes only\n",
+                    encoding="utf-8",
+                )
+            validation = validator.Validation()
+            validator.check_human_entry_quality(validation, project_path, True, "ProjectA")
+        messages = [issue.message for issue in validation.errors]
+        self.assertTrue(any("not a compatibility index or link page" in message for message in messages))
+        self.assertTrue(any("missing owner-readable token" in message for message in messages))
+
+    def test_other8_s2pat03_current_human_entries_pass_quality_contract(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+        self.assertEqual(len(projects), 10)
+        for project in projects:
+            with self.subTest(project=project.get("project_id")):
+                validation = validator.Validation()
+                project_path = ROOT / str(project.get("path") or "")
+                validator.check_human_entry_quality(validation, project_path, True, validator.project_scope(project))
+                self.assertFalse(validation.errors, [issue.message for issue in validation.errors])
+
 
 if __name__ == "__main__":
     unittest.main()
