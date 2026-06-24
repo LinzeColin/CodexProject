@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
 - next_unique_task: `none`
-- evidence_ref_count: `17`
+- evidence_ref_count: `20`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -48,3 +48,6 @@
 | EVID-WHKM-S3PAT02-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PAT02-WHKM-WEIGHT-GATE-20260624.json | EXTRACTED |
 | EVID-WHKM-S3PAT03-ROUNDING-DECISION | stage_gate_evidence | governance/stage_gates/s3pa/rounding_decision.md | EXTRACTED |
 | EVID-WHKM-S3PAT03-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json | EXTRACTED |
+| EVID-WHKM-S4PCT02-STRUCTURE-REPORT | stage_gate_evidence | whkmSalary/docs/whkm_structure_report.md | EXTRACTED |
+| EVID-WHKM-S4PCT02-STRUCTURE-CONTRACT | structure_contract | whkmSalary/config/structure_contract.yaml | EXTRACTED |
+| EVID-WHKM-S4PCT02-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json | EXTRACTED |

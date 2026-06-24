@@ -12,7 +12,7 @@ tasks:
     acceptance_ids: ["ACC-WHKM-A-001"]
     test_commands: ["targeted rg salary/tax/formula keywords", "git log --max-count=50 -- whkmSalary"]
     test_results: ["Audit found 2 models, 10 formulas, and extracted salary constants/weights from code."]
-    evidence_refs: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py"]
+    evidence_refs: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/src/whkm_salary/streamlit_app.py"]
     risk: "Policy and jurisdiction facts are not evidenced."
     rollback: "No changes during P10 audit."
     target_version: "0.0.0"
@@ -76,7 +76,7 @@ tasks:
     acceptance_ids: ["ACC-WHKM-B-001"]
     test_commands: []
     test_results: []
-    evidence_refs: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py"]
+    evidence_refs: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/src/whkm_salary/streamlit_app.py"]
     risk: "Payroll calculations are high sensitivity and may be legally incorrect without policy evidence."
     rollback: "Keep current behavior unchanged and mark as not release-ready for payroll compliance."
     target_version: "UNKNOWN (TASK-WHKM-B-001)"
@@ -100,11 +100,11 @@ tasks:
   - task_id: "S3PAT01"
     phase: "S3PA"
     objective: "Reject settlement, invoice, and payback workday inputs below 1 before salary weighted-total calculation."
-    scope: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_boundaries.py", "whkmSalary governance boundary metadata"]
+    scope: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/src/whkm_salary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_boundaries.py", "whkmSalary governance boundary metadata"]
     non_scope: ["salary policy approval", "zero-day business meaning approval", "weight recalibration", "rounding policy", "tax basis", "real payroll data"]
     status: "completed"
     dependencies: ["TASK-WHKM-B-001"]
-    required_files: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_boundaries.py", "governance/stage_gates/s3pa/whkm_boundary_tests.log"]
+    required_files: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/src/whkm_salary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_boundaries.py", "governance/stage_gates/s3pa/whkm_boundary_tests.log"]
     acceptance_ids: ["ACC-S3PAT01-WHKM-BOUNDARY"]
     test_commands: ["python -B -m unittest discover -s whkmSalary\\tests -q", "python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\tests\\test_salary_logic_boundaries.py", "python -B scripts\\validate_semantic_extractors.py whkmSalary", "python -B -m pytest whkmSalary\\tests -q"]
     test_results: ["unittest exit 0; 3 tests OK", "py_compile exit 0", "semantic extractor exit 0; semantic_parameters_checked=78 semantic_formulas_checked=9", "pytest unavailable locally: No module named pytest"]
@@ -116,11 +116,11 @@ tasks:
   - task_id: "S3PAT02"
     phase: "S3PA"
     objective: "Use one province-weight source and reject incomplete, extra, negative, non-finite, or non-1.0-total weights before weighted salary calculation."
-    scope: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_weights.py", "whkmSalary governance weight metadata"]
+    scope: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/src/whkm_salary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_weights.py", "whkmSalary governance weight metadata"]
     non_scope: ["salary policy approval", "weight recalibration", "rounding policy", "tax basis", "real payroll data"]
     status: "completed"
     dependencies: ["S3PAT01"]
-    required_files: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_weights.py", "governance/stage_gates/s3pa/whkm_weight_tests.log"]
+    required_files: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/src/whkm_salary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_weights.py", "governance/stage_gates/s3pa/whkm_weight_tests.log"]
     acceptance_ids: ["ACC-S3PAT02-WHKM-WEIGHT-GATE"]
     test_commands: ["python -B -m unittest discover -s whkmSalary\\\\tests -q", "python -B -m py_compile whkmSalary\\\\salary_logic.py whkmSalary\\\\streamlit_app.py whkmSalary\\\\tests\\\\test_salary_logic_weights.py", "python -B scripts\\\\validate_semantic_extractors.py whkmSalary", "python -B -m pytest whkmSalary\\\\tests -q"]
     test_results: ["unittest exit 0; 6 tests OK", "py_compile exit 0", "semantic extractor exit 0; semantic_parameters_checked=78 semantic_formulas_checked=9", "pytest unavailable locally: No module named pytest"]
@@ -132,11 +132,11 @@ tasks:
   - task_id: "S3PAT03"
     phase: "S3PA"
     objective: "Make monetary rounding explicit with Decimal half-up cents, pin deployment dependencies, and preserve the existing salary regression fixture."
-    scope: ["whkmSalary/salary_logic.py", "whkmSalary/requirements.txt", "whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md", "whkmSalary governance rounding metadata"]
+    scope: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/requirements.txt", "whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md", "whkmSalary governance rounding metadata"]
     non_scope: ["payroll policy approval", "statutory tax basis", "historical payroll reconciliation", "changing score or weight formulas"]
     status: "completed"
     dependencies: ["S3PAT02"]
-    required_files: ["whkmSalary/salary_logic.py", "whkmSalary/requirements.txt", "whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md"]
+    required_files: ["whkmSalary/src/whkm_salary/salary_logic.py", "whkmSalary/requirements.txt", "whkmSalary/tests/test_salary_logic_rounding.py", "governance/stage_gates/s3pa/rounding_decision.md"]
     acceptance_ids: ["ACC-S3PAT03-WHKM-ROUNDING-REGRESSION"]
     test_commands: ["python -B -m unittest discover -s whkmSalary\\\\tests -q", "python -B -m py_compile whkmSalary\\\\salary_logic.py whkmSalary\\\\streamlit_app.py whkmSalary\\\\tests\\\\test_salary_logic_rounding.py", "python -B scripts\\\\validate_semantic_extractors.py whkmSalary", "python -B -m pip index versions streamlit", "python -B -m pip index versions pandas", "python -B -m pytest whkmSalary\\\\tests -q"]
     test_results: ["unittest exit 0; 9 tests OK", "py_compile exit 0", "semantic extractor exit 0; semantic_parameters_checked=78 semantic_formulas_checked=9", "streamlit 1.58.0 available on PyPI", "pandas 3.0.3 available on PyPI", "pytest unavailable locally: No module named pytest"]

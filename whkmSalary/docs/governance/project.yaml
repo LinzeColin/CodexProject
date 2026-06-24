@@ -50,8 +50,8 @@ features:
       - "PARAM-004"
       - "PARAM-005"
     code_refs:
-      - "whkmSalary/salary_logic.py:143"
-      - "whkmSalary/salary_logic.py:228"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:143"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:228"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -88,8 +88,8 @@ features:
       - "PARAM-021"
       - "PARAM-022"
     code_refs:
-      - "whkmSalary/salary_logic.py:52"
-      - "whkmSalary/salary_logic.py:63"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:52"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:63"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -119,9 +119,9 @@ features:
       - "PARAM-031"
       - "PARAM-032"
     code_refs:
-      - "whkmSalary/salary_logic.py:80"
-      - "whkmSalary/salary_logic.py:92"
-      - "whkmSalary/salary_logic.py:106"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:80"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:92"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:106"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
@@ -180,10 +180,10 @@ features:
       - "PARAM-070"
       - "PARAM-071"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
-      - "whkmSalary/salary_logic.py:209"
-      - "whkmSalary/salary_logic.py:109"
-      - "whkmSalary/salary_logic.py:117"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:209"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:109"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:117"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -210,8 +210,8 @@ features:
       - "PARAM-079"
       - "PARAM-080"
     code_refs:
-      - "whkmSalary/streamlit_app.py:17"
-      - "whkmSalary/streamlit_app.py:58"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:17"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:58"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -333,9 +333,9 @@ models:
       - "total_salary"
       - "after_tax_salary"
     code_refs:
-      - "whkmSalary/salary_logic.py:74"
-      - "whkmSalary/salary_logic.py:143"
-      - "whkmSalary/salary_logic.py:228"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:74"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:143"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:228"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py"
@@ -371,8 +371,8 @@ models:
     outputs:
       - "validated inputs passed to calculate or displayed exception"
     code_refs:
-      - "whkmSalary/streamlit_app.py:17"
-      - "whkmSalary/streamlit_app.py:23"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:17"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:23"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -393,18 +393,18 @@ formulas:
     output_range: "dict of metric weights."
     open_task_ids:
     implementation_refs:
-      - "whkmSalary/salary_logic.py::projects"
-      - "whkmSalary/salary_logic.py::ALIASES"
-      - "whkmSalary/salary_logic.py::WEIGHT_KEYS"
-      - "whkmSalary/salary_logic.py::WEIGHT_TOTAL"
-      - "whkmSalary/salary_logic.py::WEIGHT_TOTAL_TOLERANCE"
-      - "whkmSalary/salary_logic.py::resolve_weights"
-      - "whkmSalary/salary_logic.py::validate_weights"
-    implementation_fingerprint: "sha256:ca988c0931f1bf65e6e49a61f39245683fac9826cfcf970bf593768bb44408cc"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::projects"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::ALIASES"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::WEIGHT_KEYS"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::WEIGHT_TOTAL"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::WEIGHT_TOTAL_TOLERANCE"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::resolve_weights"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::validate_weights"
+    implementation_fingerprint: "sha256:cf95fb61c1afa5c1194207868afae1167526984b204def875284722f2880bfce"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:30"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:30"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -424,12 +424,12 @@ formulas:
     output_range: "float score; can be negative or above 200."
     open_task_ids:
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_performance"
-    implementation_fingerprint: "sha256:7c4833bb20c64e6e3ce54e2fc02c45644b1839847842005829b666a1d48f5b16"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_performance"
+    implementation_fingerprint: "sha256:dbf5fcb0f25e83bb141702d1cad22f3d9f02f0746c0eda08e064c884451a98b1"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
     code_refs:
-      - "whkmSalary/salary_logic.py:52"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:52"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -448,12 +448,12 @@ formulas:
     output_range: "float score."
     open_task_ids:
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_margin"
-    implementation_fingerprint: "sha256:6b1e8a920ec03ccab12e948be6727a1732da278972dc6e8bdde637b719562872"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_margin"
+    implementation_fingerprint: "sha256:44fe2860b2139e25a1198857838b83e9131b1bc56e6f5953d43ab787614bec2c"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
     code_refs:
-      - "whkmSalary/salary_logic.py:63"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:63"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -474,12 +474,12 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_settlement"
-    implementation_fingerprint: "sha256:5609fc84388a51349bb9f221f2904037b37502eb81c5bab211137b74e3fdd874"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_settlement"
+    implementation_fingerprint: "sha256:a1daa5dcdf8a0ac2c0574785f3e75b1a2281b579ca9fb90e6882d9cb78e62417"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:80"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:80"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
@@ -500,12 +500,12 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_invoice"
-    implementation_fingerprint: "sha256:11f8a01506eafd9647933e72ba743b2b56c03f99d22e0d6b89af31d394e3721f"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_invoice"
+    implementation_fingerprint: "sha256:ecbcfba0e0f3b87ebb57a9b4c25b2935f4fd58187754a1a9a41d1667c4f709dd"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:92"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:92"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
@@ -526,12 +526,12 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_payback"
-    implementation_fingerprint: "sha256:410390f76c7ad32f7a070be1ba32f75bc8a45f198f32fc23df4003f8d294a96b"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_payback"
+    implementation_fingerprint: "sha256:a6ec2ff62925a1e3f8ef3fa6a57379e00ad88486537a8b382b5bf5013829052a"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:106"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:106"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
@@ -550,12 +550,12 @@ formulas:
     output_range: "float score."
     open_task_ids:
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_audit_bias"
-    implementation_fingerprint: "sha256:eaf9c1f6a46903ef3f39527d47c3d147777b005f4924ae08d215a769a2d7969e"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_audit_bias"
+    implementation_fingerprint: "sha256:49581428694e72e2d00248d90527b0310bdb6953b5e843b69e85594d0109d42e"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
     code_refs:
-      - "whkmSalary/salary_logic.py:109"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:109"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -574,12 +574,12 @@ formulas:
     output_range: "float score or None for negative direct-call rates."
     open_task_ids:
     implementation_refs:
-      - "whkmSalary/salary_logic.py::score_customer_cost"
-    implementation_fingerprint: "sha256:4ff460702f0f720cb2e8a9aab1479be140e97d20b37643f57f675dbdb884f9db"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::score_customer_cost"
+    implementation_fingerprint: "sha256:c7ec059708877ab718f1170ef82750090aee8afd1b644add5ff605d04b505ae3"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
     code_refs:
-      - "whkmSalary/salary_logic.py:117"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:117"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -601,15 +601,15 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
-      - "whkmSalary/salary_logic.py::BASE_MONTHLY"
-      - "whkmSalary/salary_logic.py::PERF_QUARTER_POOL"
-      - "whkmSalary/salary_logic.py::calculate"
-      - "whkmSalary/salary_logic.py::round_money"
-    implementation_fingerprint: "sha256:cb72cd0b3f85436c62ffe4ec369e642f1a6a9c24423789ca7f5aa2ed6db2ed92"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::BASE_MONTHLY"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::PERF_QUARTER_POOL"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::calculate"
+      - "whkmSalary/src/whkm_salary/salary_logic.py::round_money"
+    implementation_fingerprint: "sha256:8dcf4168bc4b0c3caff8f77fd5c91f53dcd186e6804a7cee5c6fe626efdbe21a"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:143"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:143"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -637,8 +637,8 @@ formulas:
     last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     verified_at: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     code_refs:
-      - "whkmSalary/streamlit_app.py:17"
-      - "whkmSalary/streamlit_app.py:58"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:17"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:58"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -658,7 +658,7 @@ parameters:
     value: "6000"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_assignment:whkmSalary/salary_logic.py::BASE_MONTHLY"
+    source_selector: "python_ast_assignment:whkmSalary/src/whkm_salary/salary_logic.py::BASE_MONTHLY"
     extracted_value: "6000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -668,7 +668,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:12"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:12"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -686,7 +686,7 @@ parameters:
     value: "36000"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_assignment:whkmSalary/salary_logic.py::PERF_QUARTER_POOL"
+    source_selector: "python_ast_assignment:whkmSalary/src/whkm_salary/salary_logic.py::PERF_QUARTER_POOL"
     extracted_value: "36000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -696,7 +696,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:13"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:13"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -714,7 +714,7 @@ parameters:
     value: "0.97"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_default:whkmSalary/salary_logic.py::calculate.tax_keep_rate"
+    source_selector: "python_ast_default:whkmSalary/src/whkm_salary/salary_logic.py::calculate.tax_keep_rate"
     extracted_value: "0.97"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -724,7 +724,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:154"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:154"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -753,7 +753,7 @@ parameters:
       - "GOV-SEMANTIC-WHKM-001"
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:147"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:147"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -782,7 +782,7 @@ parameters:
       - "GOV-SEMANTIC-WHKM-001"
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:149"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:149"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -800,7 +800,7 @@ parameters:
     value: "0.6"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:53:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:53:1"
     extracted_value: "0.6"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -810,7 +810,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:53"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:53"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -828,7 +828,7 @@ parameters:
     value: "0.8"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:55:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:55:2"
     extracted_value: "0.8"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -838,7 +838,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:55"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:55"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -856,7 +856,7 @@ parameters:
     value: "1.5"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:57:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:57:2"
     extracted_value: "1.5"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -866,7 +866,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:57"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:57"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -884,7 +884,7 @@ parameters:
     value: "300"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:54:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:54:3"
     extracted_value: "300"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -894,7 +894,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:54"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:54"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -912,7 +912,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:56:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:56:1"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -922,7 +922,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:56"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:56"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -940,7 +940,7 @@ parameters:
     value: "200"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:56:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:56:2"
     extracted_value: "200"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -950,7 +950,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:56"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:56"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -968,7 +968,7 @@ parameters:
     value: "60"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:58:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:58:1"
     extracted_value: "60"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -978,7 +978,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:58"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:58"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -996,7 +996,7 @@ parameters:
     value: "200"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:60:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:60:1"
     extracted_value: "200"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1006,7 +1006,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:60"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:60"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1024,7 +1024,7 @@ parameters:
     value: "400"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:60:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:60:3"
     extracted_value: "400"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1034,7 +1034,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:60"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:60"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1052,7 +1052,7 @@ parameters:
     value: "0.1"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:64:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:64:1"
     extracted_value: "0.1"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1062,7 +1062,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:64"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:64"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1080,7 +1080,7 @@ parameters:
     value: "0.25"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:66:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:66:2"
     extracted_value: "0.25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1090,7 +1090,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:66"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:66"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1108,7 +1108,7 @@ parameters:
     value: "0.5"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:68:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:68:2"
     extracted_value: "0.5"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1118,7 +1118,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:68"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:68"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1136,7 +1136,7 @@ parameters:
     value: "1000"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:65:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:65:3"
     extracted_value: "1000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1146,7 +1146,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:65"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:65"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1164,7 +1164,7 @@ parameters:
     value: "200"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:67:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:67:1"
     extracted_value: "200"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1174,7 +1174,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:67"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:67"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1192,7 +1192,7 @@ parameters:
     value: "30"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:69:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:69:1"
     extracted_value: "30"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1202,7 +1202,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:69"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:69"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1220,7 +1220,7 @@ parameters:
     value: "80"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:71:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:71:1"
     extracted_value: "80"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1230,7 +1230,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:71"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:71"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1248,7 +1248,7 @@ parameters:
     value: "500"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:71:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:71:3"
     extracted_value: "500"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1258,7 +1258,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:71"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:71"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1276,7 +1276,7 @@ parameters:
     value: "60"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:75:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:75:1"
     extracted_value: "60"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1286,7 +1286,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:75"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:75"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1304,7 +1304,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:77:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:77:1"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1314,7 +1314,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:77"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:77"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1332,7 +1332,7 @@ parameters:
     value: "-150"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "text_regex:whkmSalary/salary_logic.py::def score_settlement\\(.*?return\\s+(-150)"
+    source_selector: "text_regex:whkmSalary/src/whkm_salary/salary_logic.py::def score_settlement\\(.*?return\\s+(-150)"
     extracted_value: "-150"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1342,7 +1342,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:76"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:76"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1360,7 +1360,7 @@ parameters:
     value: "100"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:78:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:78:1"
     extracted_value: "100"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1370,7 +1370,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:78"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:78"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1388,7 +1388,7 @@ parameters:
     value: "200"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:80:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:80:1"
     extracted_value: "200"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1398,7 +1398,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:80"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:80"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1416,7 +1416,7 @@ parameters:
     value: "-200"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "text_regex:whkmSalary/salary_logic.py::def score_invoice\\(.*?return\\s+(-200)"
+    source_selector: "text_regex:whkmSalary/src/whkm_salary/salary_logic.py::def score_invoice\\(.*?return\\s+(-200)"
     extracted_value: "-200"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1426,7 +1426,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:87"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:87"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1444,7 +1444,7 @@ parameters:
     value: "125"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:91:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:91:1"
     extracted_value: "125"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1454,7 +1454,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:91"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:91"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1472,7 +1472,7 @@ parameters:
     value: "150"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:93:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:93:1"
     extracted_value: "150"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1482,7 +1482,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:93"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:93"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1500,7 +1500,7 @@ parameters:
     value: "60"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:99:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:99:1"
     extracted_value: "60"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1510,7 +1510,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:99"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:99"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1528,7 +1528,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:101:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:101:1"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1538,7 +1538,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:101"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:101"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1556,7 +1556,7 @@ parameters:
     value: "0.02"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:110:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:110:1"
     extracted_value: "0.02"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1566,7 +1566,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:110"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:110"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1584,7 +1584,7 @@ parameters:
     value: "0.08"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:112:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:112:2"
     extracted_value: "0.08"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1594,7 +1594,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:112"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:112"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1612,7 +1612,7 @@ parameters:
     value: "-420"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "text_regex:whkmSalary/salary_logic.py::def score_audit_bias\\(.*?return\\s+(-420)"
+    source_selector: "text_regex:whkmSalary/src/whkm_salary/salary_logic.py::def score_audit_bias\\(.*?return\\s+(-420)"
     extracted_value: "-420"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1622,7 +1622,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:115"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:115"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1640,7 +1640,7 @@ parameters:
     value: "0.03"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/salary_logic.py:118:1"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/salary_logic.py:118:1"
     extracted_value: "0.03"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1650,7 +1650,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:118"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:118"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1668,7 +1668,7 @@ parameters:
     value: "0.25"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.业绩"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.业绩"
     extracted_value: "0.25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1678,7 +1678,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1696,7 +1696,7 @@ parameters:
     value: "0.325"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.毛利率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.毛利率"
     extracted_value: "0.325"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1706,7 +1706,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1724,7 +1724,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.结算率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.结算率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1734,7 +1734,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1752,7 +1752,7 @@ parameters:
     value: "0.05"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.开票率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.开票率"
     extracted_value: "0.05"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1762,7 +1762,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1780,7 +1780,7 @@ parameters:
     value: "0.2"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.回款率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.回款率"
     extracted_value: "0.2"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1790,7 +1790,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1808,7 +1808,7 @@ parameters:
     value: "0.05"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.审计偏差"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.审计偏差"
     extracted_value: "0.05"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1818,7 +1818,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1836,7 +1836,7 @@ parameters:
     value: "0.1"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::新疆.客情成本"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::新疆.客情成本"
     extracted_value: "0.1"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1846,7 +1846,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1864,7 +1864,7 @@ parameters:
     value: "0.4"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.业绩"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.业绩"
     extracted_value: "0.4"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1874,7 +1874,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1892,7 +1892,7 @@ parameters:
     value: "0.3"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.毛利率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.毛利率"
     extracted_value: "0.3"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1902,7 +1902,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1920,7 +1920,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.结算率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.结算率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1930,7 +1930,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1948,7 +1948,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.开票率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.开票率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1958,7 +1958,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -1976,7 +1976,7 @@ parameters:
     value: "0.175"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.回款率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.回款率"
     extracted_value: "0.175"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -1986,7 +1986,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2004,7 +2004,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.审计偏差"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.审计偏差"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2014,7 +2014,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2032,7 +2032,7 @@ parameters:
     value: "0.05"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::山东.客情成本"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::山东.客情成本"
     extracted_value: "0.05"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2042,7 +2042,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2060,7 +2060,7 @@ parameters:
     value: "0.45"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.业绩"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.业绩"
     extracted_value: "0.45"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2070,7 +2070,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2088,7 +2088,7 @@ parameters:
     value: "0.25"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.毛利率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.毛利率"
     extracted_value: "0.25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2098,7 +2098,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2116,7 +2116,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.结算率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.结算率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2126,7 +2126,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2144,7 +2144,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.开票率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.开票率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2154,7 +2154,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2172,7 +2172,7 @@ parameters:
     value: "0.15"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.回款率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.回款率"
     extracted_value: "0.15"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2182,7 +2182,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2200,7 +2200,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.审计偏差"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.审计偏差"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2210,7 +2210,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2228,7 +2228,7 @@ parameters:
     value: "0.075"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::青海.客情成本"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::青海.客情成本"
     extracted_value: "0.075"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2238,7 +2238,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2256,7 +2256,7 @@ parameters:
     value: "0.3"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.业绩"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.业绩"
     extracted_value: "0.3"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2266,7 +2266,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2284,7 +2284,7 @@ parameters:
     value: "0.35"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.毛利率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.毛利率"
     extracted_value: "0.35"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2294,7 +2294,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2312,7 +2312,7 @@ parameters:
     value: "0.1"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.结算率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.结算率"
     extracted_value: "0.1"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2322,7 +2322,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2340,7 +2340,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.开票率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.开票率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2350,7 +2350,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2368,7 +2368,7 @@ parameters:
     value: "0.075"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.回款率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.回款率"
     extracted_value: "0.075"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2378,7 +2378,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2396,7 +2396,7 @@ parameters:
     value: "0.05"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.审计偏差"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.审计偏差"
     extracted_value: "0.05"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2406,7 +2406,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2424,7 +2424,7 @@ parameters:
     value: "0.1"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::湖北.客情成本"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::湖北.客情成本"
     extracted_value: "0.1"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2434,7 +2434,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2452,7 +2452,7 @@ parameters:
     value: "0.4"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.业绩"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.业绩"
     extracted_value: "0.4"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2462,7 +2462,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2480,7 +2480,7 @@ parameters:
     value: "0.175"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.毛利率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.毛利率"
     extracted_value: "0.175"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2490,7 +2490,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2508,7 +2508,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.结算率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.结算率"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2518,7 +2518,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2536,7 +2536,7 @@ parameters:
     value: "0.075"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.开票率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.开票率"
     extracted_value: "0.075"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2546,7 +2546,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2564,7 +2564,7 @@ parameters:
     value: "0.175"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.回款率"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.回款率"
     extracted_value: "0.175"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2574,7 +2574,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2592,7 +2592,7 @@ parameters:
     value: "0.025"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.审计偏差"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.审计偏差"
     extracted_value: "0.025"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2602,7 +2602,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2620,7 +2620,7 @@ parameters:
     value: "0.125"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_dict_value:whkmSalary/salary_logic.py::projects::华中区域.客情成本"
+    source_selector: "python_ast_dict_value:whkmSalary/src/whkm_salary/salary_logic.py::projects::华中区域.客情成本"
     extracted_value: "0.125"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2630,7 +2630,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2648,7 +2648,7 @@ parameters:
     value: "5000000.0"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:23:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:23:3"
     extracted_value: "5000000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2658,7 +2658,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:23"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:23"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2676,7 +2676,7 @@ parameters:
     value: "250000.0"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:24:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:24:3"
     extracted_value: "250000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2686,7 +2686,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:24"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:24"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2704,7 +2704,7 @@ parameters:
     value: "0.25"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:28:2"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:28:2"
     extracted_value: "0.25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2714,7 +2714,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:28"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:28"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2732,7 +2732,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:30:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:30:3"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2742,7 +2742,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:30"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:30"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2760,7 +2760,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:34:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:34:3"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2770,7 +2770,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:34"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:34"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2788,7 +2788,7 @@ parameters:
     value: "30"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:36:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:36:3"
     extracted_value: "30"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2798,7 +2798,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:36"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:36"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2816,7 +2816,7 @@ parameters:
     value: "0.01"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:40:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:40:3"
     extracted_value: "0.01"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2826,7 +2826,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:40"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:40"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2844,7 +2844,7 @@ parameters:
     value: "0.01"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:42:3"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:42:3"
     extracted_value: "0.01"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2854,7 +2854,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:42"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:42"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2872,7 +2872,7 @@ parameters:
     value: "0.97"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:44:4"
+    source_selector: "python_ast_literal:whkmSalary/src/whkm_salary/streamlit_app.py:44:4"
     extracted_value: "0.97"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2882,7 +2882,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:44"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:44"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -3004,6 +3004,15 @@ validations:
     evidence_refs:
       - "EVID-WHKM-S3PAT03-ROUNDING-DECISION"
       - "EVID-WHKM-S3PAT03-MANIFEST"
+  -
+    validation_id: "VAL-WHKM-S4PCT02-STRUCTURE"
+    name: "Other8 S4PCT02 src/tests/config and Chinese entry structure"
+    status: "PASS_LOCAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-WHKM-S4PCT02-STRUCTURE-REPORT"
+      - "EVID-WHKM-S4PCT02-STRUCTURE-CONTRACT"
+      - "EVID-WHKM-S4PCT02-MANIFEST"
 delivery_readiness:
   status: "FAILED"
   release_gate: "S3PA-GATE-owner-blocked"
@@ -3108,4 +3117,19 @@ evidence_refs:
     evidence_id: "EVID-WHKM-S3PAT03-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S4PCT02-STRUCTURE-REPORT"
+    kind: "stage_gate_evidence"
+    ref: "whkmSalary/docs/whkm_structure_report.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S4PCT02-STRUCTURE-CONTRACT"
+    kind: "structure_contract"
+    ref: "whkmSalary/config/structure_contract.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S4PCT02-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json"
     fact_level: "EXTRACTED"

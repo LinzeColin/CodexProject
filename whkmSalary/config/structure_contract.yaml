@@ -1,0 +1,23 @@
+schema_version: "codexproject.whkm_structure_contract.v1"
+project_id: "whkmSalary"
+task_id: "S4PCT02"
+acceptance_id: "ACC-S4PCT02"
+implementation_base_sha: "9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90"
+source_layout:
+  code_package: "whkmSalary/src/whkm_salary"
+  tests: "whkmSalary/tests"
+  config: "whkmSalary/config"
+  owner_chinese_entries:
+    - "whkmSalary/功能清单"
+    - "whkmSalary/开发记录"
+    - "whkmSalary/模型参数文件"
+compatibility_entrypoints:
+  root_salary_logic_import: "whkmSalary/salary_logic.py"
+  root_streamlit_procfile_entry: "whkmSalary/streamlit_app.py"
+  railway_procfile: "whkmSalary/Procfile"
+startup_command_changed: false
+business_logic_rewritten: false
+business_parameters_moved_to_config: false
+notes:
+  - "config/ records structure ownership only; salary policy parameters remain in code/governance registries until owner policy evidence exists."
+  - "Root Python files are compatibility wrappers only; current implementation lives under src/whkm_salary."

@@ -5443,6 +5443,85 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith((("EEI/", "arxiv-daily-push/"))) for path in changed))
 
+    def test_other8_s4pct02_whkm_structure_binds_src_tests_config_and_chinese_entries(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "whkmSalary" / "docs" / "governance" / "project.yaml")
+        contract = validator.load_yaml(ROOT / "whkmSalary" / "config" / "structure_contract.yaml")
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        self.assertTrue((ROOT / "whkmSalary" / "src" / "whkm_salary" / "salary_logic.py").is_file())
+        self.assertTrue((ROOT / "whkmSalary" / "src" / "whkm_salary" / "streamlit_app.py").is_file())
+        self.assertTrue((ROOT / "whkmSalary" / "tests" / "test_salary_logic_weights.py").is_file())
+        self.assertTrue((ROOT / "whkmSalary" / "config" / "structure_contract.yaml").is_file())
+        for name in ("功能清单", "开发记录", "模型参数文件"):
+            self.assertTrue((ROOT / "whkmSalary" / name).is_file(), name)
+
+        root_logic = (ROOT / "whkmSalary" / "salary_logic.py").read_text(encoding="utf-8")
+        root_app = (ROOT / "whkmSalary" / "streamlit_app.py").read_text(encoding="utf-8")
+        package_app = (ROOT / "whkmSalary" / "src" / "whkm_salary" / "streamlit_app.py").read_text(encoding="utf-8")
+        report_text = (ROOT / "whkmSalary" / "docs" / "whkm_structure_report.md").read_text(encoding="utf-8")
+        self.assertIn("from whkm_salary.salary_logic import *", root_logic)
+        self.assertNotIn("def score_performance", root_logic)
+        self.assertIn('runpy.run_module("whkm_salary.streamlit_app"', root_app)
+        self.assertIn("from whkm_salary.salary_logic import projects, calculate", package_app)
+        self.assertIn("streamlit run streamlit_app.py", (ROOT / "whkmSalary" / "Procfile").read_text(encoding="utf-8"))
+
+        for required in {
+            "S4PCT02",
+            "ACC-S4PCT02",
+            "OLD_TO_NEW_MAP",
+            "whkmSalary/src/whkm_salary/salary_logic.py",
+            "whkmSalary/config/structure_contract.yaml",
+            "whkmSalary/功能清单",
+            "Startup command changed without README sync",
+        }:
+            self.assertIn(required, report_text)
+
+        self.assertEqual(contract["task_id"], "S4PCT02")
+        self.assertEqual(contract["source_layout"]["code_package"], "whkmSalary/src/whkm_salary")
+        self.assertFalse(contract["startup_command_changed"])
+        self.assertFalse(contract["business_logic_rewritten"])
+        self.assertFalse(contract["business_parameters_moved_to_config"])
+
+        evidence = {item["evidence_id"]: item for item in project["evidence_refs"]}
+        validations = {item["validation_id"]: item for item in project["validations"]}
+        self.assertEqual(
+            evidence["EVID-WHKM-S4PCT02-STRUCTURE-REPORT"]["ref"],
+            "whkmSalary/docs/whkm_structure_report.md",
+        )
+        self.assertEqual(
+            evidence["EVID-WHKM-S4PCT02-STRUCTURE-CONTRACT"]["ref"],
+            "whkmSalary/config/structure_contract.yaml",
+        )
+        self.assertEqual(validations["VAL-WHKM-S4PCT02-STRUCTURE"]["fact_level"], "EXTRACTED")
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "whkmSalary")
+        self.assertEqual(manifest["task_id"], "S4PCT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PCT02"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625"])
+        self.assertEqual(manifest["structure_actions"]["src_package_action"], "MOVED_IMPLEMENTATION_WITH_ROOT_COMPAT_WRAPPERS")
+        self.assertFalse(manifest["stop_conditions"]["large_calculation_rewrite_for_appearance"])
+        self.assertFalse(manifest["stop_conditions"]["startup_command_changed_without_readme_sync"])
+        self.assertFalse(manifest["stop_conditions"]["business_parameters_moved_to_config"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "whkmSalary/src/whkm_salary/salary_logic.py",
+            "whkmSalary/src/whkm_salary/streamlit_app.py",
+            "whkmSalary/config/structure_contract.yaml",
+            "whkmSalary/docs/whkm_structure_report.md",
+            "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

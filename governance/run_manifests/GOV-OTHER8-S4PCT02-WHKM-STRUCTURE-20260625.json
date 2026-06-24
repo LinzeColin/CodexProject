@@ -1,0 +1,192 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625",
+  "project_id": "whkmSalary",
+  "task_id": "S4PCT02",
+  "acceptance_ids": [
+    "ACC-S4PCT02"
+  ],
+  "iteration_id": "ITER-OTHER8-S4PCT02-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:e2fe4e6c117c95b2bdcd737dd8e559dcfdb430035a3537eddbb2aefd31ff0fa2",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/README.md",
+    "whkmSalary/config/structure_contract.yaml",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "whkmSalary/salary_logic.py",
+    "whkmSalary/src/whkm_salary/__init__.py",
+    "whkmSalary/src/whkm_salary/salary_logic.py",
+    "whkmSalary/src/whkm_salary/streamlit_app.py",
+    "whkmSalary/streamlit_app.py",
+    "whkmSalary/tests/test_salary_logic_weights.py",
+    "whkmSalary/功能清单",
+    "whkmSalary/模型参数文件"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/README.md",
+    "whkmSalary/config/structure_contract.yaml",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "whkmSalary/salary_logic.py",
+    "whkmSalary/src/whkm_salary/__init__.py",
+    "whkmSalary/src/whkm_salary/salary_logic.py",
+    "whkmSalary/src/whkm_salary/streamlit_app.py",
+    "whkmSalary/streamlit_app.py",
+    "whkmSalary/tests/test_salary_logic_weights.py",
+    "whkmSalary/功能清单",
+    "whkmSalary/模型参数文件"
+  ],
+  "required_governance_files": [
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/功能清单",
+    "whkmSalary/模型参数文件",
+    "whkmSalary/config/structure_contract.yaml",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/README.md",
+    "whkmSalary/config/structure_contract.yaml",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/功能清单",
+    "whkmSalary/模型参数文件",
+    "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage4_wave1_whkm_structure_simplification",
+    "src_tests_config_chinese_entry_boundary",
+    "root_compatibility_entrypoints_preserved",
+    "no_salary_calculation_behavior_change"
+  ],
+  "stage_gate_status": {
+    "S4PCT01": "PASSED_AND_BOUND",
+    "S4PCT02": "LOCAL_PRECOMMIT_PASSED",
+    "S4PC-GATE": "IN_PROGRESS",
+    "project_file_movement": "WHKM_SRC_PACKAGE_WITH_ROOT_COMPAT",
+    "wave_gate_task": "NOT_STARTED"
+  },
+  "structure_actions": {
+    "src_package_action": "MOVED_IMPLEMENTATION_WITH_ROOT_COMPAT_WRAPPERS",
+    "root_salary_logic_action": "COMPATIBILITY_REEXPORT_ONLY",
+    "root_streamlit_action": "COMPATIBILITY_RUN_MODULE_ONLY",
+    "tests_action": "RETAINED_AND_EXTENDED",
+    "config_action": "STRUCTURE_CONTRACT_ONLY_NO_PAYROLL_POLICY",
+    "chinese_entries_action": "RENDERED_FROM_LEAN_V2",
+    "historical_archive_action": "NONE_WHKM_CANDIDATE_COUNT_ZERO"
+  },
+  "stop_conditions": {
+    "large_calculation_rewrite_for_appearance": false,
+    "startup_command_changed_without_readme_sync": false,
+    "business_parameters_moved_to_config": false,
+    "root_compatibility_entrypoints_removed": false,
+    "payroll_readiness_promoted": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": [],
+    "allowed_project": "whkmSalary"
+  },
+  "test_commands": [
+    "python -B scripts/lean_governance.py render --project whkmSalary --write",
+    "python -B -m unittest discover -s whkmSalary/tests -q",
+    "python -B -m py_compile whkmSalary/salary_logic.py whkmSalary/streamlit_app.py whkmSalary/src/whkm_salary/__init__.py whkmSalary/src/whkm_salary/salary_logic.py whkmSalary/src/whkm_salary/streamlit_app.py whkmSalary/tests/test_salary_logic_weights.py",
+    "python -B scripts/validate_semantic_extractors.py whkmSalary",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct02_whkm_structure_binds_src_tests_config_and_chinese_entries -q",
+    "python -B scripts/lean_governance.py check-render --project whkmSalary",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B scripts/lean_governance.py render --project whkmSalary --write",
+      "exit_code": 0,
+      "result": "updated_count=2 then updated_count=0 after semantic hash sync"
+    },
+    {
+      "command": "python -B -m unittest discover -s whkmSalary/tests -q",
+      "exit_code": 0,
+      "result": "Ran 10 tests OK"
+    },
+    {
+      "command": "python -B -m py_compile whkmSalary/salary_logic.py whkmSalary/streamlit_app.py whkmSalary/src/whkm_salary/__init__.py whkmSalary/src/whkm_salary/salary_logic.py whkmSalary/src/whkm_salary/streamlit_app.py whkmSalary/tests/test_salary_logic_weights.py",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "python -B scripts/validate_semantic_extractors.py whkmSalary",
+      "exit_code": 0,
+      "result": "semantic_formulas_checked=9 semantic_parameters_checked=78"
+    }
+  ],
+  "evidence_refs": [
+    "whkmSalary/docs/whkm_structure_report.md",
+    "whkmSalary/config/structure_contract.yaml",
+    "whkmSalary/README.md",
+    "whkmSalary/tests/test_salary_logic_weights.py",
+    "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json"
+  ],
+  "unresolved_risks": [
+    "S4PC-GATE remains in progress until S4PCT03 wave gate passes PR and main CI.",
+    "whkmSalary delivery_readiness remains FAILED and payroll policy evidence remains owner-blocked under TASK-WHKM-B-001.",
+    "Root wrappers are compatibility surfaces and should remain thin until a separate startup migration task changes Procfile and README together."
+  ],
+  "next_allowed_task": "S4PCT03",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow after PR merge",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI_ATTESTED",
+  "finished_at": "2026-06-25T00:00:00+10:00"
+}

@@ -9,9 +9,9 @@ Governance spec version: `1.0.0`
 - Product version status: `provisional`
 - Current phase: `B`
 - Current gate: `S3PA-GATE-owner-blocked`
-- Confirmed iterations: 5
+- Confirmed iterations: 6
 - Reconstructed development events: 1
-- Current task: `S3PAT03`
+- Current task: `S4PCT02`
 - Blockers: `TASK-WHKM-B-001` for policy/source/effective date/rounding/zero-day business meaning evidence; `GOV-SEMANTIC-WHKM-001` retains human review for `PARAM-004`, `PARAM-005`, and `FORM-010`.
 
 ## Confirmed Iterations
@@ -104,6 +104,23 @@ Governance spec version: `1.0.0`
 - Rollback: revert S3PAT03 code, requirements, tests, governance metadata, rounding decision evidence, and run manifest; keep `TASK-WHKM-B-001` blocked.
 - Next step: S3PA phase gate summary or owner policy decision evidence.
 
+### `ITER-OTHER8-S4PCT02-20260625`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.0.0`
+- Version after: `0.0.0`
+- Base commit: `9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90`
+- Result commit: `PENDING`
+- Task IDs: `S4PCT02`
+- Goal: establish minimal `src/`, `tests/`, `config/`, and Chinese owner-entry structure without changing salary calculation behavior.
+- Model changes: implementation files moved under `src/whkm_salary/`; root `salary_logic.py` and `streamlit_app.py` are compatibility wrappers only.
+- Parameter changes: no active salary constants, province weights, UI defaults, tax keep rate, or rounding values changed.
+- Commands: `python -B -m unittest discover -s whkmSalary\\tests -q`; `python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\src\\whkm_salary\\__init__.py whkmSalary\\src\\whkm_salary\\salary_logic.py whkmSalary\\src\\whkm_salary\\streamlit_app.py`; `python -B scripts\\validate_semantic_extractors.py whkmSalary`; `python -B scripts\\lean_governance.py check-render --project whkmSalary`.
+- Test results: whkm unittest passed with 10 tests; py_compile passed; semantic extractor passed with 78 parameters and 9 formulas checked; check-render drift_count=0.
+- Rollback: revert S4PCT02 code movement, root compatibility wrappers, structure contract, structure report, governance metadata, and run manifest.
+- Next step: S4PCT03 Wave 1 readability/link/test/rollback gate.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-WHKM-20260619-001`: project import/continuity reconstructed from Git history and legacy notes; not counted as a confirmed iteration.
@@ -128,3 +145,5 @@ Governance spec version: `1.0.0`
 | `python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\tests\\test_salary_logic_weights.py` | PASS | exit 0 |
 | `python -B -m unittest discover -s whkmSalary\\tests -q` | PASS | S3PAT03 rounding tests cover Decimal half-up cents, dependency pins, and the existing 湖北 fixture |
 | `python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\tests\\test_salary_logic_rounding.py` | PASS | exit 0 |
+| `python -B -m unittest discover -s whkmSalary\\tests -q` | PASS | S4PCT02 structure compatibility included; 10 tests OK |
+| `python -B scripts\\validate_semantic_extractors.py whkmSalary` | PASS | semantic path/hash refresh checked 78 parameters and 9 formulas |
