@@ -28,6 +28,13 @@ This project is the local-first EVA_OS entry, displayed as EVA_OS. QuantLab is t
 - GitHub smoke is PR/manual only; do not wire it to every `main` push.
 - Use targeted tests, syntax checks, `git diff --check`, app-lite/lifecycle/runtime acceptance, and local health checks before escalating to heavy gates.
 
+## Structure Entry
+
+- S4PBT02 archived historical root handoff docs, `handoff_packs/`, `cleanup/`, and the generated feature PDF under `governance/archive/other8_wave1_pending/EVA_OS/`.
+- Do not recreate root `HANDOFF.md`, `AGENT_CONTINUITY.md`, `15_OPEN_QUESTIONS.md`, `PLANS.md`, `CODEX_PROMPTS.md`, `CODEX_TASK_PACK.md`, or `UPLOAD_MANIFEST.md` as tracked files.
+- Active handoff and architecture navigation lives in `README.md`, `docs/Index.md`, `docs/EVA_OS.md`, `docs/governance/project.yaml`, `docs/governance/roadmap.yaml`, `docs/governance/events.jsonl`, and `docs/EVA_structure_report.md`.
+- Historical references remain readable in the governance archive; they are not runtime or import entry points.
+
 ## Backtest Requirements
 
 Every backtest should calculate total return, annualized return, volatility, Sharpe, Sortino, Calmar, maximum drawdown, win rate, trade count, turnover, average gain/loss, equity curve, drawdown curve, and transaction cost summary.

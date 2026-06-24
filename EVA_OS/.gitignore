@@ -4,6 +4,16 @@ __pycache__/
 *.egg-info/
 .env
 HANDOFF_PRIVATE_LOCAL.md
+15_OPEN_QUESTIONS.md
+AGENT_CONTINUITY.md
+CODEX_PROMPTS.md
+CODEX_TASK_PACK.md
+HANDOFF.md
+PLANS.md
+UPLOAD_MANIFEST.md
+handoff_packs/**
+cleanup/**
+docs/FeatureSpecification.pdf
 .pytest_cache/
 .mypy_cache/
 data/raw/*

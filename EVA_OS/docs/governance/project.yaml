@@ -5805,6 +5805,15 @@ validations:
     fact_level: "PROPOSED"
     evidence_refs:
       - "EVID-REVIEW9-S5PAT02-MANIFEST"
+  -
+    validation_id: "VAL-EVA-S4PBT02-STRUCTURE"
+    scope: "EVA_OS S4PBT02 root docs, handoff_packs, cleanup, and architecture navigation integration"
+    method: "Move only S4PAT02-bound non-PRIVATE EVA_OS historical handoff, cleanup, handoff pack, and generated PDF candidates to governance archive, preserve source/import/runtime/data paths, and verify with focused tests plus import smoke."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OTHER8-S4PBT02-EVA-STRUCTURE-REPORT"
+      - "EVID-OTHER8-S4PBT02-MANIFEST"
 assurance_summary:
   structural_completeness: "VERIFIED"
   implementation_congruence: "PARTIAL"
@@ -5822,8 +5831,8 @@ evidence_refs:
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-EVA-HANDOFF"
-    kind: "owner"
-    ref: "EVA_OS/HANDOFF.md"
+    kind: "archived_owner"
+    ref: "governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md"
     fact_level: "RECONSTRUCTED"
   -
     evidence_id: "EVID-EVA-MODEL-SPEC"
@@ -5900,6 +5909,16 @@ evidence_refs:
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-OTHER8-S4PBT02-EVA-STRUCTURE-REPORT"
+    kind: "stage_gate_evidence"
+    ref: "EVA_OS/docs/EVA_structure_report.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OTHER8-S4PBT02-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json"
+    fact_level: "EXTRACTED"
 legacy_refs:
   -
     legacy_path: "EVA_OS/docs/governance/model_registry.yaml"
