@@ -2,6 +2,9 @@
 
 ## Unreleased - 2026-06-24
 
+- Completed `S2PCT07` D2 source-domain qualification and cross-type calibration as qualification-ready no-production evidence.
+- Added `adp stage2-d2-source-domain-qualification`, upstream/domain/replay/shadow/forced-event/queue/type calibration gates, model/formula/parameter governance registrations, and S2PCT07 manifest/phase evidence while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, queue mutation, schema migration, PDF/full-text download, paid API use, paywall bypass, marketing-material acceptance, and production inclusion disabled.
+- Advanced V7.1 root routing to `S2PDT01` / legacy `S2P3T01` China C0 national authoritative backbone.
 - Completed `S2PCT06` authoritative research institution, laboratory, industry technical report, and product technical note metadata-only no-send shadow evidence.
 - Added `adp stage2-authoritative-reports-shadow`, authoritative technical report fixtures, publisher identity/interest relation/evidence level/traceability gates, model/formula/parameter governance registrations, and S2PCT06 manifest/phase evidence while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PDF/full-text download, paid API use, paywall bypass, marketing-material acceptance, and production inclusion disabled.
 - Advanced V7.1 root routing to `S2PCT07` D2 source-domain qualification and cross-type calibration.

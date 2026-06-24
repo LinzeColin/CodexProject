@@ -135,6 +135,15 @@ S2PCT06_ALLOWED_EVIDENCE_LEVELS = (
     "product_technical_note",
 )
 S2PCT06_LEDGER_FILENAME = "stage2_s2pct06_authoritative_report_ledger.jsonl"
+S2PCT07_D2_QUALIFICATION_MODEL_ID = "adp-s2pct07-d2-source-domain-qualification-v1"
+S2PCT07_ACCEPTANCE_ID = "ACC-S2PCT07-D2"
+S2PCT07_TASK_ID = "S2PCT07"
+S2PCT07_REQUIRED_DOMAINS = ("top_journal", "engineering_signal", "authoritative_report")
+S2PCT07_REQUIRED_REPLAY_DATES = 30
+S2PCT07_REQUIRED_SHADOW_HOURS = 48
+S2PCT07_REQUIRED_FORCED_EVENT_TYPES = ("correction", "retraction")
+S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES = ("selected", "queued", "deferred")
+S2PCT07_QUALIFICATION_REPORT_FILENAME = "stage2_s2pct07_d2_source_domain_qualification_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -1830,6 +1839,218 @@ def validate_s2pct06_authoritative_report_source_report(report: Mapping[str, Any
     return errors
 
 
+def build_s2pct07_d2_source_domain_qualification_report(
+    *,
+    generated_at: str,
+    profile_report: Mapping[str, Any],
+    engineering_signal_report: Mapping[str, Any],
+    authoritative_report: Mapping[str, Any],
+    replay_records: Sequence[Mapping[str, Any]],
+    shadow_records: Sequence[Mapping[str, Any]],
+    forced_event_records: Sequence[Mapping[str, Any]],
+    queue_explanation_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Calibrate D2 source-domain readiness without granting production acceptance."""
+
+    profile_errors = validate_s2pct04_top_journal_profile_report(profile_report)
+    engineering_errors = validate_s2pct05_engineering_signal_report(engineering_signal_report)
+    report_errors = validate_s2pct06_authoritative_report_source_report(authoritative_report)
+    upstream_gate = (
+        "pass"
+        if not profile_errors
+        and not engineering_errors
+        and not report_errors
+        and profile_report.get("status") == engineering_signal_report.get("status") == authoritative_report.get("status") == "pass"
+        else "blocked"
+    )
+    domain_matrix, domain_errors = _s2pct07_domain_matrix(
+        profile_report=profile_report,
+        engineering_signal_report=engineering_signal_report,
+        authoritative_report=authoritative_report,
+    )
+    replay_gate = _s2pct07_replay_gate(replay_records)
+    shadow_gate = _s2pct07_shadow_gate(shadow_records)
+    forced_event_gate = _s2pct07_forced_event_gate(forced_event_records)
+    queue_explanation_gate = _s2pct07_queue_explanation_gate(queue_explanation_records)
+    type_calibration = _s2pct07_type_calibration(domain_matrix)
+    blocking_reasons = [
+        *profile_errors,
+        *engineering_errors,
+        *report_errors,
+        *domain_errors,
+        *replay_gate["blocking_reasons"],
+        *shadow_gate["blocking_reasons"],
+        *forced_event_gate["blocking_reasons"],
+        *queue_explanation_gate["blocking_reasons"],
+        *type_calibration["blocking_reasons"],
+    ]
+    if upstream_gate != "pass":
+        blocking_reasons.append("S2PCT07 requires passing S2PCT04, S2PCT05, and S2PCT06 upstream reports")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == replay_gate["status"]
+        == shadow_gate["status"]
+        == forced_event_gate["status"]
+        == queue_explanation_gate["status"]
+        == type_calibration["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PCT07_D2_QUALIFICATION_MODEL_ID,
+        "acceptance_id": S2PCT07_ACCEPTANCE_ID,
+        "task_id": S2PCT07_TASK_ID,
+        "phase": "S2PC",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_gate": upstream_gate,
+        "domain_coverage_gate": "pass" if not domain_errors else "blocked",
+        "replay_gate": replay_gate["status"],
+        "shadow_gate": shadow_gate["status"],
+        "forced_event_gate": forced_event_gate["status"],
+        "queue_explanation_gate": queue_explanation_gate["status"],
+        "type_calibration_gate": type_calibration["status"],
+        "required_domains": list(S2PCT07_REQUIRED_DOMAINS),
+        "domain_coverage_matrix": domain_matrix,
+        "type_calibration": type_calibration,
+        "replay_summary": replay_gate,
+        "shadow_summary": shadow_gate,
+        "forced_event_summary": forced_event_gate,
+        "queue_explanation_summary": queue_explanation_gate,
+        "d2_source_domain_qualification_ready": status == "pass",
+        "d2_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "marketing_material_accepted": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pct07_d2_source_domain_qualification(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    profile_report: Mapping[str, Any],
+    engineering_signal_report: Mapping[str, Any],
+    authoritative_report: Mapping[str, Any],
+    replay_records: Sequence[Mapping[str, Any]],
+    shadow_records: Sequence[Mapping[str, Any]],
+    forced_event_records: Sequence[Mapping[str, Any]],
+    queue_explanation_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PCT07 D2 qualification evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pct07-d2-source-domain-qualification"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pct07_d2_source_domain_qualification_report(
+        generated_at=generated_at,
+        profile_report=profile_report,
+        engineering_signal_report=engineering_signal_report,
+        authoritative_report=authoritative_report,
+        replay_records=replay_records,
+        shadow_records=shadow_records,
+        forced_event_records=forced_event_records,
+        queue_explanation_records=queue_explanation_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "qualification_report_path": str(run_dir / "adp-s2pct07-d2-source-domain-qualification-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pct07-d2-source-domain-qualification-report.json", report)
+        _write_json(state / S2PCT07_QUALIFICATION_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pct07_d2_source_domain_qualification_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PCT07_D2_QUALIFICATION_MODEL_ID:
+        errors.append("S2PCT07 qualification model_id must be adp-s2pct07-d2-source-domain-qualification-v1")
+    if report.get("task_id") != S2PCT07_TASK_ID:
+        errors.append("S2PCT07 qualification task_id must be S2PCT07")
+    if report.get("acceptance_id") != S2PCT07_ACCEPTANCE_ID:
+        errors.append("S2PCT07 qualification acceptance_id must be ACC-S2PCT07-D2")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PCT07 qualification status must be pass or blocked")
+    for key in (
+        "d2_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "marketing_material_accepted",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PCT07 qualification evidence")
+    matrix = report.get("domain_coverage_matrix")
+    if not isinstance(matrix, Mapping):
+        errors.append("S2PCT07 domain_coverage_matrix must be an object")
+        matrix = {}
+    missing_domains = [domain for domain in S2PCT07_REQUIRED_DOMAINS if domain not in matrix]
+    if missing_domains:
+        errors.append("S2PCT07 domain coverage missing required domains: " + ", ".join(missing_domains))
+    for domain in S2PCT07_REQUIRED_DOMAINS:
+        row = matrix.get(domain)
+        if not isinstance(row, Mapping):
+            errors.append(f"S2PCT07 domain_coverage_matrix.{domain} must be an object")
+            continue
+        if row.get("coverage_gate") != "pass":
+            errors.append(f"S2PCT07 domain_coverage_matrix.{domain}.coverage_gate must pass")
+        if int(row.get("evidence_count") or 0) < 1:
+            errors.append(f"S2PCT07 domain_coverage_matrix.{domain}.evidence_count must be positive")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PCT07 qualification report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_gate",
+            "domain_coverage_gate",
+            "replay_gate",
+            "shadow_gate",
+            "forced_event_gate",
+            "queue_explanation_gate",
+            "type_calibration_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PCT07 qualification requires {key}=pass")
+        if report.get("d2_source_domain_qualification_ready") is not True:
+            errors.append("passing S2PCT07 qualification requires d2_source_domain_qualification_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -3093,6 +3314,189 @@ def _s2pct06_traceability_errors(
         if unknown_signal_ids:
             errors.append(f"{report_id}: related_signal_ids unknown: {', '.join(unknown_signal_ids)}")
     return errors
+
+
+def _s2pct07_domain_matrix(
+    *,
+    profile_report: Mapping[str, Any],
+    engineering_signal_report: Mapping[str, Any],
+    authoritative_report: Mapping[str, Any],
+) -> tuple[dict[str, dict[str, Any]], list[str]]:
+    matrix = {
+        "top_journal": {
+            "coverage_gate": "pass" if profile_report.get("status") == "pass" else "blocked",
+            "evidence_count": len(profile_report.get("source_profiles") or []),
+            "type_count": len(set(profile_report.get("profile_kinds_observed") or [])),
+            "required_types": list(S2PCT04_REQUIRED_PROFILE_KINDS),
+            "observed_types": sorted(set(str(value) for value in profile_report.get("profile_kinds_observed") or [])),
+        },
+        "engineering_signal": {
+            "coverage_gate": "pass" if engineering_signal_report.get("status") == "pass" else "blocked",
+            "evidence_count": len(engineering_signal_report.get("engineering_signals") or []),
+            "type_count": len(set(engineering_signal_report.get("signal_types_observed") or [])),
+            "required_types": list(S2PCT05_REQUIRED_SIGNAL_TYPES),
+            "observed_types": sorted(set(str(value) for value in engineering_signal_report.get("signal_types_observed") or [])),
+        },
+        "authoritative_report": {
+            "coverage_gate": "pass" if authoritative_report.get("status") == "pass" else "blocked",
+            "evidence_count": len(authoritative_report.get("authoritative_reports") or []),
+            "type_count": len(set(authoritative_report.get("report_types_observed") or [])),
+            "required_types": list(S2PCT06_REQUIRED_REPORT_TYPES),
+            "observed_types": sorted(set(str(value) for value in authoritative_report.get("report_types_observed") or [])),
+        },
+    }
+    errors: list[str] = []
+    for domain in S2PCT07_REQUIRED_DOMAINS:
+        row = matrix[domain]
+        missing = sorted(set(row["required_types"]) - set(row["observed_types"]))
+        row["missing_types"] = missing
+        if row["coverage_gate"] != "pass":
+            errors.append(f"{domain}: upstream coverage gate is blocked")
+        if int(row["evidence_count"] or 0) < 1:
+            errors.append(f"{domain}: evidence_count must be positive")
+        if missing:
+            errors.append(f"{domain}: missing required types: {', '.join(missing)}")
+    return matrix, errors
+
+
+def _s2pct07_replay_gate(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    dates = {str(record.get("as_of_date") or record.get("date") or "")[:10] for record in records if isinstance(record, Mapping)}
+    passing = [record for record in records if isinstance(record, Mapping) and record.get("status") == "pass"]
+    future_leakage = [record for record in records if isinstance(record, Mapping) and int(record.get("future_leakage_count") or 0) > 0]
+    p0_p1 = [record for record in records if isinstance(record, Mapping) and int(record.get("p0_p1_blocker_count") or 0) > 0]
+    domains = {str(record.get("domain") or "") for record in records if isinstance(record, Mapping)}
+    reasons: list[str] = []
+    if len(dates) < S2PCT07_REQUIRED_REPLAY_DATES:
+        reasons.append("S2PCT07 D2 replay requires 30 unique dates")
+    if len(passing) < len(records) or not records:
+        reasons.append("S2PCT07 D2 replay records must all pass")
+    missing_domains = sorted(set(S2PCT07_REQUIRED_DOMAINS) - domains)
+    if missing_domains:
+        reasons.append("S2PCT07 D2 replay missing domains: " + ", ".join(missing_domains))
+    if future_leakage:
+        reasons.append("S2PCT07 D2 replay has future leakage")
+    if p0_p1:
+        reasons.append("S2PCT07 D2 replay has P0/P1 blockers")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_unique_dates": S2PCT07_REQUIRED_REPLAY_DATES,
+        "unique_date_count": len(dates),
+        "record_count": len(records),
+        "passing_record_count": len(passing),
+        "domains_observed": sorted(domain for domain in domains if domain),
+        "future_leakage_count": len(future_leakage),
+        "p0_p1_blocker_count": len(p0_p1),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pct07_shadow_gate(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    hours = max([float(record.get("shadow_hours") or 0.0) for record in records if isinstance(record, Mapping)] or [0.0])
+    passing = [record for record in records if isinstance(record, Mapping) and record.get("status") == "pass"]
+    production_affected = [record for record in records if isinstance(record, Mapping) and record.get("production_affected") is not False]
+    smtp_sent = [record for record in records if isinstance(record, Mapping) and record.get("real_smtp_sent") is not False]
+    reasons: list[str] = []
+    if hours < S2PCT07_REQUIRED_SHADOW_HOURS:
+        reasons.append("S2PCT07 D2 shadow requires at least 48 hours")
+    if len(passing) < len(records) or not records:
+        reasons.append("S2PCT07 D2 shadow records must all pass")
+    if production_affected:
+        reasons.append("S2PCT07 D2 shadow must not affect production")
+    if smtp_sent:
+        reasons.append("S2PCT07 D2 shadow must not send SMTP")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_shadow_hours": S2PCT07_REQUIRED_SHADOW_HOURS,
+        "shadow_hours": hours,
+        "record_count": len(records),
+        "passing_record_count": len(passing),
+        "production_affected_count": len(production_affected),
+        "real_smtp_sent_count": len(smtp_sent),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pct07_forced_event_gate(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    event_types = {str(record.get("event_type") or "") for record in records if isinstance(record, Mapping)}
+    passing = [record for record in records if isinstance(record, Mapping) and record.get("status") == "pass"]
+    no_updates = [
+        record
+        for record in records
+        if isinstance(record, Mapping)
+        and not (record.get("forced_review_required") is True and str(record.get("updated_conclusion_state") or ""))
+    ]
+    reasons: list[str] = []
+    missing = sorted(set(S2PCT07_REQUIRED_FORCED_EVENT_TYPES) - event_types)
+    if missing:
+        reasons.append("S2PCT07 forced-event calibration missing event types: " + ", ".join(missing))
+    if len(passing) < len(records) or not records:
+        reasons.append("S2PCT07 forced-event records must all pass")
+    if no_updates:
+        reasons.append("S2PCT07 forced-event records must force review and update conclusion state")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_event_types": list(S2PCT07_REQUIRED_FORCED_EVENT_TYPES),
+        "event_types_observed": sorted(event_type for event_type in event_types if event_type),
+        "record_count": len(records),
+        "passing_record_count": len(passing),
+        "forced_update_count": len(records) - len(no_updates),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pct07_queue_explanation_gate(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    states = {str(record.get("queue_state") or record.get("decision") or "") for record in records if isinstance(record, Mapping)}
+    missing_explanation = [
+        record
+        for record in records
+        if isinstance(record, Mapping)
+        and (not str(record.get("explanation") or "") or not str(record.get("candidate_id") or record.get("source_id") or ""))
+    ]
+    reasons: list[str] = []
+    missing_states = sorted(set(S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES) - states)
+    if missing_states:
+        reasons.append("S2PCT07 queue explanation missing states: " + ", ".join(missing_states))
+    if missing_explanation:
+        reasons.append("S2PCT07 queue explanation records require candidate_id/source_id and explanation")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_queue_states": list(S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES),
+        "queue_states_observed": sorted(state for state in states if state),
+        "record_count": len(records),
+        "explained_record_count": len(records) - len(missing_explanation),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pct07_type_calibration(matrix: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    rows = []
+    reasons: list[str] = []
+    for domain in S2PCT07_REQUIRED_DOMAINS:
+        row = matrix.get(domain) if isinstance(matrix.get(domain), Mapping) else {}
+        required = set(row.get("required_types") or [])
+        observed = set(row.get("observed_types") or [])
+        coverage = (len(observed & required) / len(required)) if required else 0.0
+        rows.append(
+            {
+                "domain": domain,
+                "required_type_count": len(required),
+                "observed_required_type_count": len(observed & required),
+                "coverage_ratio": round(coverage, 4),
+            }
+        )
+        if coverage < 1.0:
+            reasons.append(f"{domain}: type coverage ratio must be 1.0")
+    ratios = [float(row["coverage_ratio"]) for row in rows]
+    spread = max(ratios) - min(ratios) if ratios else 1.0
+    if spread > 0.0:
+        reasons.append("S2PCT07 cross-type calibration spread must be 0 after required coverage")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_coverage_ratio": 1.0,
+        "coverage_rows": rows,
+        "coverage_spread": round(spread, 4),
+        "blocking_reasons": reasons,
+    }
 
 
 def _top_journal_profiles_from_batches(

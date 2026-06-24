@@ -618,6 +618,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PCT06 authoritative report source coverage remains completed as no-send shadow evidence, but D2 source-domain acceptance remains unavailable.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PDT01":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PDT01-C0-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PDT01 / legacy S2P3T01 中国 C0 全国权威主干 metadata-only source evidence，同时保持 D3 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PDT01 China C0 national authoritative backbone after completed D2 qualification readiness",
+                "option_a": "接入法律法规、人大、国务院、公报和两高的 metadata-only 官方来源骨架，保留机关、文号、附件和日期追踪，不影响 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PCT07，只保留 D2 qualification readiness；风险更低但 D3 官方来源域不推进。",
+                "option_c": "越过 D3 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; C0 source taxonomy, official-domain identity, document-number/date/attachment traceability, fixtures, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "从 D2 科研/工程/报告来源推进到中国官方 C0 权威主干，为 B2/B3/B4/B5/B6 后续政策、法律、产业和科技金融阅读板块提供可审计来源基础。",
+                "risks": "转载冒充原始源、机关/文号/日期/附件不可追溯、官方域名误判、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "C0 source fixtures, official identity checks, document metadata traceability tests, semantic extractor, project governance validator",
+                "priority": "P1",
+                "no_decision": "S2PCT07 D2 qualification readiness remains completed as no-production evidence, but D3 China official source-domain work remains unavailable.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
