@@ -1,5 +1,88 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260624 - 14:58 CST / 20260624 - 16:58 AEST
+
+## 最新交接摘要
+
+- 本轮目标：回答并修正“这三个反复 bug 是否写进 GitHub 开发记录”的问题；结论是此前只完整写入本地 `HANDOFF.md`，GitHub 侧记录停在 13:35，未覆盖后续三类高频回归 bug。
+- 已补 GitHub 开发记录：新增 `DEVELOPMENT_BUG_REGRESSION_LOG.md`，明确记录三类不可回归问题：人工复核写库后待办仍存在、`.app` 入口打开两个 tab 或入口不可用、Dock 图标持续跳动/launcher 常驻。
+- 已补变更日志：`CHANGELOG.md` 新增 `App Entry and Manual Review Regression Hardening`，说明本轮同步的是 bug 记录、源码修复、测试覆盖和历史不可覆盖边界。
+- 已同步源码与测试：同步 `app/core/application_portal.py`、`app/core/application_server.py`、`app/core/pipeline.py`、`app/db.py`、`tests/test_application_server.py`、`tests/test_reporting_ui.py`，确保 GitHub 记录与实际修复一致。
+- 已补同步漏依赖：首次在同步仓库跑 `history-integrity` 时发现 GitHub checkout 缺少 `app/core/candidate_universe_expander.py`、`app/core/fund_rule_autofill.py` 和 `app/core/indicator_discipline.py`，导致 `pipeline/preflight/cli` import 失败；已补对应模块及 `tests/test_candidate_universe_expander.py`、`tests/test_fund_rule_autofill.py`、`tests/test_indicator_discipline.py`。
+- 必须保持的后续约束：复核 decision 写入 SQLite 且 outcome 有效即视为 todo 已处理；后台 Serenity refresh 只负责刷新首页/报告，不得决定待办是否仍打开；launcher 只能打开最终本地首页一次并退出，不得等待 server PID。
+- 历史保护：本轮未修改 SQLite 数据库、旧快照、旧报告、创建时间、首次入池时间或任何历史分析事实。
+
+Timestamp: 20260624 - 14:52 CST / 20260624 - 16:52 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复人工复核“显示已写入数据库但待办不消失、关闭重开后仍显示”的核心不可用问题。
+- 根因：复核待办屏蔽逻辑只有在 `manual_review_decision.refresh_status` 为空或 `pass` 时才认为已处理；HTTP 保存路径会先写入 `refresh_status='running'`，后台完整 Serenity refresh 完成前，同一复核项仍会被当作 open todo 显示。前端也没有在保存成功后立即移除当前卡片。
+- 已改语义：`app/core/application_portal.py::_decision_is_successful()` 现在以是否存在有效 `outcome` 为准；只要复核 decision 已写入 SQLite，`observe_pool`、`exclude_current_observation`、`promote_top5_candidate_pool` 都会立即屏蔽同一资产+同一原因的复核待办。后台刷新只负责同步首页/报告，不再决定 todo 是否处理完成。
+- 已改前端：保存复核成功后立即调用 `removeReviewItem()`，当前卡片立刻从待处理列表移除；若列表为空显示空状态。重新打开复核弹窗时，`applyReviewLog()` 会根据数据库已保存 decision 立即移除已处理卡片，不再展示“已保存但仍在待办”。
+- 已改文案：保存成功 toast 改为 `复核已写入数据库，已从待处理列表移除；后台正在刷新首页数据`；旧的 `页面会继续保留记录` 文案已删除。
+- 已补回归：新增 `test_manual_review_items_hide_saved_running_decision_immediately`，覆盖 `refresh_status='running'` 时同一资产+同一原因的后续队列项也必须被隐藏。
+- 已重建入口/首页：`python -m app.cli application-portal --json` 通过，`~/Downloads/Serenity 每日分析.app`、`/Applications/Serenity 每日分析.app` 和 `outputs/application/index.html` 已更新。
+- 验证：`py_compile` 通过；`pytest -q tests/test_reporting_ui.py tests/test_application_server.py` 为 26 passed；`history-integrity --require-pass --json` 为 `status=pass`、`violation_count=0`。
+- 浏览器级验证：用本机 Google Chrome headless 拦截 `/api/manual-review`，不真实写库、不触发真实 run；页面点击首个 `保存复核` 后，待处理卡片从 12 个立即变 11 个，控制台/pageerror 为 0。
+- 当前真实数据状态：最近已处理的 `100055` 和 `017091` 同资产同原因已被屏蔽；最新列表仍有 12 项未处理复核，均为其他基金/其他对象，不是同一个已处理项复现。
+- 边界：本轮未新增真实 run，未发邮件，未启动 MooMoo/OpenD 业务进程；只保留 Serenity 本地服务监听 8765。
+
+Timestamp: 20260624 - 14:39 CST / 20260624 - 16:39 AEST
+
+## 最新交接摘要
+
+- 本轮目标：紧急修复点击 `Serenity 每日分析.app` 后 Dock 图标持续跳动/外壳进程常驻的问题，避免反复启动或长时间占用前台应用状态。
+- 根因：launcher 为了托管本地服务，在启动 Python server 后保存 `SERVER_PID` 并执行 `wait "$SERVER_PID"`；因此 `/bin/sh .../open-serenity` 会一直存活，macOS 会把这个 `.app` 视作仍在运行，表现为 Dock 图标持续跳动或常驻。
+- 已先止血：手动结束当前 `open-serenity` 外壳进程，保留已运行的 8765 Python 本地服务，页面入口未中断。
+- 已改入口：`app/core/application_portal.py` 生成的 launcher 删除 `SERVER_PID` 和 `wait "$SERVER_PID"`；服务不存在时用 `nohup python -m app.core.application_server ... &` 后台启动；服务健康后只打开一次首页并 `exit 0`。
+- 已重建入口：`~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app` 已更新。安装后的 launcher 无 `SERVER_PID`、无 `wait`、无 `BOOTSTRAP/downloads-entry`，有 `nohup` 和 `app.core.application_server`。
+- 实测：热启动时几秒后只剩 Python 本地服务，无 `open-serenity` 常驻；冷启动从无服务到 `/api/health` 可用约 `1918.54ms`，5 秒后仍无 `open-serenity` 常驻，只剩 `/opt/anaconda3/bin/python -m app.core.application_server --host 127.0.0.1 --port 8765 --disable-autoscheduler` 监听 8765。
+- 验证：`py_compile app/core/application_portal.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_reporting_ui.py::test_application_bundle_has_custom_icon` 通过；`history-integrity --require-pass --json` 为 `status=pass`、`violation_count=0`。
+- 边界：本轮未新增真实 run，未发邮件，未启动 MooMoo/OpenD 业务进程；只重启/保留 Serenity 本地 app 服务。
+
+Timestamp: 20260624 - 14:36 CST / 20260624 - 16:36 AEST
+
+## 最新交接摘要
+
+- 本轮目标：同时修复 `.app` 入口不能稳定使用，以及点击 `.app` 会打开两个 tab 的问题。
+- 关键更正：上一条 14:22 的“只保留等待页”方案不够好，依赖 `file:// downloads-entry.html` 里的 JS 跳转，仍会被浏览器本地文件限制或服务慢启动影响；本轮已替换为只打开最终首页 URL 的方案。
+- 根因：旧 launcher 先打开 `downloads-entry.html` 等待页，服务健康后又打开 `http://127.0.0.1:$PORT/` 首页；这会导致两个 tab。慢启动根因是 launcher 用 `python -m app.cli application-server`，`app.cli` 顶层导入大量生产分析模块，冷启动约 4 秒以上。
+- 已改入口：`app/core/application_portal.py` 生成的 launcher 不再打开 `downloads-entry.html`，只在服务健康后打开一次 `http://127.0.0.1:$PORT/`；若服务已存在，直接打开首页并退出；若服务不存在，启动服务后只打开一次首页。
+- 已改服务启动：`app/core/application_server.py` 将 `automation_tick`、`run_slot`、`build_application_portal` 改为懒加载包装，新增 `python -m app.core.application_server` 轻量入口；`.app` launcher 现在走该轻量入口，不再走 `app.cli application-server`。
+- 已保留启动加速：已有 `outputs/application/index.html` 时，`serve_application()` 启动阶段不再重建首页，先监听端口；手动刷新/复核/自动运行时再更新页面。
+- 已重建入口：`~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app` 已更新。当前 launcher 中没有 `BOOTSTRAP`、没有 `downloads-entry.html`、没有 `app.cli application-server`，只有 `app.core.application_server`。
+- 实测：真实冷启动从点击 `/Applications/Serenity 每日分析.app` 到 `/api/health` 可用约 `2521.68ms`；当前服务 PID `47690`，命令为 `/opt/anaconda3/bin/python -m app.core.application_server --host 127.0.0.1 --port 8765 --disable-autoscheduler`；8765 正常监听。
+- 验证：`py_compile` 通过；`pytest -q tests/test_application_server.py tests/test_reporting_ui.py` 为 25 passed；`history-integrity --require-pass --json` 为 `status=pass`、`violation_count=0`；`/api/health` 约 37.62ms、首页约 3.17ms、`/api/manual-review` 约 11.68ms。
+- 边界：本轮未新增真实 run，未发邮件，未启动 MooMoo/OpenD 业务进程；只重启了 Serenity 本地 app 服务。
+
+Timestamp: 20260624 - 14:22 CST / 20260624 - 16:22 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复每次点击 `Serenity 每日分析.app` 会打开两个浏览器 tab，其中一个为无用 tab 的问题。
+- 根因：`.app` launcher 先 `open "$BOOTSTRAP"` 打开启动页；服务健康检查成功后又执行 `open "$URL"` 打开正式首页。启动页本身会 `window.location.replace()` 跳转到正式首页，因此第二次 `open "$URL"` 会额外制造一个 tab。
+- 已改：`app/core/application_portal.py` 的 `_write_app_bundle()` 删除第二次打开正式首页的逻辑，只保留一次 `open "$BOOTSTRAP"`；启动页继续负责等待服务并在同一个 tab 内跳转。
+- 已清理：删除 launcher 中无用的 `URL` 变量，降低后续误改回双 tab 的风险。
+- 已补回归：`tests/test_reporting_ui.py::test_application_bundle_has_custom_icon` 现在断言 launcher 必须包含 `open "$BOOTSTRAP"`，且不得包含 `open "$URL"`。
+- 已重建入口：`python -m app.cli application-portal --json` 通过，已更新 `~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app`。
+- 验证：`py_compile app/core/application_portal.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_reporting_ui.py` 为 10 passed；安装后的 Downloads/Applications 两个 `open-serenity` 均只有一条 `open "$BOOTSTRAP"`，没有 `open "$URL"` 或 `URL=`。
+- 边界：本轮没有新增真实 run，没有发邮件，没有启动 OpenD/MooMoo；未重启 Serenity 服务，只更新了 app bundle 入口脚本和页面包。
+
+Timestamp: 20260624 - 14:18 CST / 20260624 - 16:18 AEST
+
+## 最新交接摘要
+
+- 本轮目标：解决真实页面点击“保存复核”后长时间没有有效反馈的问题。
+- 根因补充：完整 Serenity run 在 `run_slot` 中使用长 SQLite 写事务，保存复核如果撞上完整刷新写库会等待；前端也把“复核已写入数据库”和“后台全流程刷新完成”绑定在同一个按钮状态里，导致用户看到长时间等待。
+- 已改后端：`app/core/application_server.py` 增加 15 分钟陈旧 `running` 状态保护，后台刷新异常或进程丢失时不再让复核记录永久停在 `running`；同一复核已有后台刷新时会把“上一轮 Serenity 后台刷新仍在运行”写回数据库。
+- 已改前端：`app/core/application_portal.py` 将保存反馈拆成两阶段。点击后先显示 `保存中`；超过 4 秒仍在等 SQLite 时显示明确等待原因；写库成功后按钮显示 `已保存`，状态显示 `后台刷新中，可继续处理其他复核`，后台完成后再自动刷新首页。
+- 已改数据库/管线：`app/db.py` 启用 SQLite WAL + NORMAL synchronous；`app/core/pipeline.py` 在完整 run 写库过程中分段 `commit()`，减少长事务对复核保存和状态读取的阻塞。
+- 已重建并重启入口：`python -m app.cli application-portal --json` 通过，已更新 `~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app`；当前 8765 服务 PID `16815`，由 `/Applications/Serenity 每日分析.app` 拉起。
+- 验证：`py_compile` 通过；`pytest -q tests/test_application_server.py tests/test_reporting_ui.py` 为 24 passed；`pytest -q tests/test_integration.py tests/test_pipeline_serenity_priority.py tests/test_pipeline_opend_lifecycle.py tests/test_automation_tick.py` 为 14 passed；`history-integrity --require-pass --json` 通过，`violation_count=0`。
+- 真实服务检查：`/api/health` 约 164ms，`/api/manual-review` 约 25ms；生成页面包含 `后台刷新中，可继续处理其他复核` 和慢写库提示；SQLite `manual_review_decision` 当前无 `running` 残留，12 条 pass、2 条 6 月 14 日历史 error。
+- 边界：本轮没有新增真实复核 run，没有真实 POST 保存复核，没有发邮件，没有启动 OpenD/MooMoo；只重启了 Serenity 本地 app 服务。
+
 Timestamp: 20260624 - 13:35 CST / 20260624 - 15:35 AEST
 
 ## 最新交接摘要

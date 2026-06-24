@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased - App Entry and Manual Review Regression Hardening
+
+- Recorded the repeated app/manual-review bug cluster in `DEVELOPMENT_BUG_REGRESSION_LOG.md` so future agents have an explicit GitHub development record and regression contract.
+- Fixed manual-review todo semantics: a saved valid decision outcome now removes the review item immediately even while the background Serenity refresh is still `running`.
+- Fixed app entry behavior: the macOS launcher opens only the final local homepage URL once and no longer relies on `downloads-entry.html` bootstrap navigation.
+- Fixed Dock bouncing behavior: the launcher no longer waits on the Python server process; it starts the local server in the background when needed, opens the homepage after health readiness, and exits.
+- Added/kept regression coverage for review save handling, launcher content, and application server routes.
+- Restored missing GitHub-sync source/test files for all-market candidate expansion, fund rule autofill, and indicator discipline so `pipeline`, `preflight`, `cli`, and `history-integrity` imports work from a fresh GitHub checkout.
+
+No historical snapshot, report, immutable creation timestamp, first pool entry timestamp, or prior analysis record was rewritten by this change.
+
 ## Unreleased - Review6 Semantic Extraction
 
 - Added machine source selectors, extracted values, verification timestamps, and evidence hashes for 49 active Serenity parameters.
