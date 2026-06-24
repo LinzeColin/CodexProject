@@ -3990,6 +3990,39 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 quality.check_owner_portfolio_buckets(gate, projects)
         self.assertTrue(any(item.code == "PORTFOLIO_BUCKET_TOTAL" for item in gate.errors), gate.errors)
 
+    def test_review9_s6pat03_information_quality_uses_artifact_portfolio_text(self) -> None:
+        quality = load_information_quality_module()
+        projects = [{"project_id": "A", "path": "A"}, {"project_id": "B", "path": "B"}]
+        portfolio_text = (
+            "\n".join(
+                [
+                    "# OWNER_PORTFOLIO",
+                    "- project_total: `2`",
+                    "- bucket_total: `2`",
+                    "- failed: `1`",
+                    "- partial: `1`",
+                    "- unverified: `0`",
+                    "- verified: `0`",
+                    "- not_applicable: `0`",
+                    "`A`",
+                    "`B`",
+                ]
+            )
+            + "\n"
+        )
+        with (
+            patch.object(quality, "project_config", return_value=projects),
+            patch.object(quality, "check_project_set"),
+            patch.object(quality, "check_generated_views"),
+            patch.object(quality, "check_hook_and_ci"),
+            patch.object(quality, "check_assurance"),
+            patch.object(quality, "check_events"),
+            patch.object(quality, "render_owner_portfolio_text", return_value=portfolio_text) as render_portfolio,
+        ):
+            result = quality.run()
+        render_portfolio.assert_called_once_with(projects)
+        self.assertEqual(result["errors"], 0, result)
+
     def test_review8_owner_decision_rejects_codex_owner_and_review6(self) -> None:
         quality = load_information_quality_module()
         assurance = {
@@ -5723,14 +5756,30 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertRegex(data["source_base_commit"], r"^[0-9a-f]{40}$")
             self.assertRegex(data["source_snapshot_hash"], r"^sha256:[0-9a-f]{64}$")
 
-    def test_review9_s6pat02_root_entry_is_human_maintained(self) -> None:
+    def test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("AGENTS.md", readme)
-        self.assertIn("docs/governance/STANDARD.md", readme)
-        self.assertIn("功能清单", readme)
-        self.assertNotIn("GOVERNANCE_DASHBOARD.md", readme)
-        self.assertNotIn("OWNER_PORTFOLIO.md", readme)
+        entry = readme.split("## Governance Entry", 1)[1].split("##", 1)[0]
+        for required in ("docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
+            self.assertIn(required, entry)
+        for forbidden in ("AGENTS.md", "governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
+            self.assertNotIn(forbidden, entry)
         self.assertNotIn("source_snapshot_hash", readme)
+
+    def test_review9_s6pat03_generated_readme_entry_matches_lean_contract(self) -> None:
+        dashboard = load_dashboard_module()
+        rendered = dashboard.render_readme(
+            [{"project_id": "Example", "path": "Example"}],
+            {
+                "source_base_commit": "a" * 40,
+                "source_tree_hash": "sha256:" + "b" * 64,
+                "source_snapshot_hash": "sha256:" + "c" * 64,
+            },
+        )
+        entry = rendered.split("## Governance Entry", 1)[1].split("##", 1)[0]
+        for required in ("docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
+            self.assertIn(required, entry)
+        for forbidden in ("governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
+            self.assertNotIn(forbidden, entry)
 
 
 if __name__ == "__main__":

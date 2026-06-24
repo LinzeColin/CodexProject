@@ -199,36 +199,63 @@ def check_generated_views(gate: Gate, projects: list[dict[str, Any]], *, include
                 gate.add("ERROR", "OWNER_TEXT", f"Generated view contains stale or non-decision text: {forbidden}", path)
 
 
-def check_owner_portfolio_buckets(gate: Gate, projects: list[dict[str, Any]]) -> None:
+def render_owner_portfolio_text(projects: list[dict[str, Any]]) -> str:
+    infos = [dashboard.load_project(project) for project in projects]
+    portfolio_hash = dashboard.source_snapshot_hash(
+        [ROOT / "governance/projects.yaml"] + [ROOT / info["path"] / "docs/governance/parameter_registry.csv" for info in infos]
+    )
+    event_times = [
+        info["assurance"]["snapshot_event_time"]
+        for info in infos
+        if info["assurance"]["snapshot_event_time"] != "UNKNOWN"
+    ]
+    meta = {
+        "source_base_commit": dashboard.current_commit(),
+        "source_tree_hash": dashboard.current_tree_hash(),
+        "source_snapshot_hash": portfolio_hash,
+        "snapshot_event_time": max(event_times) if event_times else "UNKNOWN",
+    }
+    return dashboard.render_owner_portfolio(infos, meta)
+
+
+def check_owner_portfolio_buckets(
+    gate: Gate,
+    projects: list[dict[str, Any]],
+    *,
+    text: str | None = None,
+    path_label: str | Path = "OWNER_PORTFOLIO.md",
+) -> None:
     path = ROOT / "OWNER_PORTFOLIO.md"
-    if not path.exists():
-        gate.add("ERROR", "PORTFOLIO_MISSING", "OWNER_PORTFOLIO.md missing", path)
-        return
-    text = path.read_text(encoding="utf-8")
+    if text is None:
+        if not path.exists():
+            gate.add("ERROR", "PORTFOLIO_MISSING", "OWNER_PORTFOLIO.md missing", path)
+            return
+        text = path.read_text(encoding="utf-8")
+        path_label = path
     counts: dict[str, int] = {}
     for key in ("project_total", "bucket_total", "failed", "partial", "unverified", "verified", "not_applicable"):
         match = re.search(rf"(?m)^- {key}:\s*`(\d+)`", text)
         if not match:
-            gate.add("ERROR", "PORTFOLIO_BUCKET", f"Missing {key} count", path)
+            gate.add("ERROR", "PORTFOLIO_BUCKET", f"Missing {key} count", path_label)
             continue
         counts[key] = int(match.group(1))
     if not counts:
         return
     expected = len(projects)
     if counts.get("project_total") != expected:
-        gate.add("ERROR", "PORTFOLIO_PROJECT_TOTAL", f"project_total={counts.get('project_total')}, expected {expected}", path)
+        gate.add("ERROR", "PORTFOLIO_PROJECT_TOTAL", f"project_total={counts.get('project_total')}, expected {expected}", path_label)
     status_total = sum(counts.get(key, 0) for key in ("failed", "partial", "unverified", "verified", "not_applicable"))
     if counts.get("bucket_total") != expected or status_total != expected:
         gate.add(
             "ERROR",
             "PORTFOLIO_BUCKET_TOTAL",
             f"bucket_total={counts.get('bucket_total')} status_total={status_total}, expected {expected}",
-            path,
+            path_label,
         )
     for project in projects:
         project_id = str(project.get("project_id"))
         if project_id not in text:
-            gate.add("ERROR", "PORTFOLIO_PROJECT_MISSING", "Project omitted from OWNER_PORTFOLIO", path, project_id)
+            gate.add("ERROR", "PORTFOLIO_PROJECT_MISSING", "Project omitted from OWNER_PORTFOLIO", path_label, project_id)
 
 
 def check_assurance(gate: Gate, project: dict[str, Any]) -> None:
@@ -421,7 +448,8 @@ def changed_projects(projects: list[dict[str, Any]], base_ref: str | None = None
 
 def run(project_filter: str | None = None, *, changed_only: bool = False, base_ref: str | None = None) -> dict[str, Any]:
     gate = Gate()
-    projects = project_config()
+    all_projects = project_config()
+    projects = all_projects
     include_root_generated = True
     if project_filter:
         projects = [
@@ -438,7 +466,12 @@ def run(project_filter: str | None = None, *, changed_only: bool = False, base_r
         check_project_set(gate, projects)
     check_generated_views(gate, projects, include_root=include_root_generated)
     if not project_filter and include_root_generated:
-        check_owner_portfolio_buckets(gate, project_config())
+        check_owner_portfolio_buckets(
+            gate,
+            all_projects,
+            text=render_owner_portfolio_text(all_projects),
+            path_label="governance-generated-views/OWNER_PORTFOLIO.md",
+        )
     check_hook_and_ci(gate)
     for project in projects:
         check_assurance(gate, project)
