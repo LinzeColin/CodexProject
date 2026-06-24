@@ -1,6 +1,6 @@
 # OpMe_System Delivery Plan
 
-task_count: 6
+task_count: 7
 
 | Phase | Name | Status | Tasks |
 |---|---|---|---|
@@ -11,3 +11,5 @@ task_count: 6
 | E | Delivery and operation | planned | after required promotion |
 
 Current gate: `GOV-G4-OPME-REQUIRED`.
+
+Latest remediation validation: `S3PCT01` completed lifecycle/dependency/persistence contract evidence without changing the product gate.

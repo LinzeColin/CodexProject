@@ -1,8 +1,9 @@
 import json
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, Iterator, List, Optional
 
 from app.core.config import DATABASE_PATH, ensure_runtime_dirs
 
@@ -11,15 +12,25 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def connect(db_path: Path = DATABASE_PATH) -> sqlite3.Connection:
+def connect(db_path: Path | None = None) -> sqlite3.Connection:
     ensure_runtime_dirs()
-    conn = sqlite3.connect(db_path, check_same_thread=False)
+    conn = sqlite3.connect(db_path or DATABASE_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
 
-def init_db() -> None:
-    with connect() as conn:
+@contextmanager
+def managed_connection(db_path: Path | None = None) -> Iterator[sqlite3.Connection]:
+    conn = connect(db_path)
+    try:
+        with conn:
+            yield conn
+    finally:
+        conn.close()
+
+
+def init_db(db_path: Path | None = None) -> None:
+    with managed_connection(db_path) as conn:
         conn.executescript(
             """
             CREATE TABLE IF NOT EXISTS users (
@@ -140,7 +151,7 @@ def create_case(
     result: Dict[str, Any],
 ) -> int:
     now = utc_now()
-    with connect() as conn:
+    with managed_connection() as conn:
         cur = conn.execute(
             """
             INSERT INTO cases
@@ -163,7 +174,7 @@ def create_case(
 
 
 def update_case_report(case_id: int, report_path: Optional[str], status: str) -> None:
-    with connect() as conn:
+    with managed_connection() as conn:
         conn.execute(
             "UPDATE cases SET report_path = ?, report_status = ?, updated_at = ? WHERE id = ?",
             (report_path, status, utc_now(), case_id),
@@ -171,19 +182,19 @@ def update_case_report(case_id: int, report_path: Optional[str], status: str) ->
 
 
 def get_case(case_id: int) -> Optional[Dict[str, Any]]:
-    with connect() as conn:
+    with managed_connection() as conn:
         row = conn.execute("SELECT * FROM cases WHERE id = ?", (case_id,)).fetchone()
     return row_to_case(row) if row else None
 
 
 def list_cases(limit: int = 50) -> List[Dict[str, Any]]:
-    with connect() as conn:
+    with managed_connection() as conn:
         rows = conn.execute("SELECT * FROM cases ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
     return [row_to_case(row) for row in rows]
 
 
 def add_report(case_id: int, path: str, status: str, message: str) -> None:
-    with connect() as conn:
+    with managed_connection() as conn:
         conn.execute(
             "INSERT INTO reports (case_id, path, status, message, created_at) VALUES (?, ?, ?, ?, ?)",
             (case_id, path, status, message, utc_now()),
@@ -192,7 +203,7 @@ def add_report(case_id: int, path: str, status: str, message: str) -> None:
 
 
 def get_model_configs() -> List[Dict[str, Any]]:
-    with connect() as conn:
+    with managed_connection() as conn:
         rows = conn.execute(
             "SELECT provider, base_url, model, api_key, enabled, priority, updated_at FROM model_provider_configs ORDER BY priority ASC"
         ).fetchall()
@@ -211,7 +222,7 @@ def get_model_configs() -> List[Dict[str, Any]]:
 
 
 def replace_model_configs(configs: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    with connect() as conn:
+    with managed_connection() as conn:
         for item in configs:
             conn.execute(
                 """
@@ -241,7 +252,7 @@ def replace_model_configs(configs: Iterable[Dict[str, Any]]) -> List[Dict[str, A
 
 
 def add_model_call_log(case_id: Optional[int], provider: str, model: str, status: str, latency_ms: int, error: Optional[str]) -> None:
-    with connect() as conn:
+    with managed_connection() as conn:
         conn.execute(
             """
             INSERT INTO model_call_logs (case_id, provider, model, status, latency_ms, error, created_at)
@@ -252,7 +263,7 @@ def add_model_call_log(case_id: Optional[int], provider: str, model: str, status
 
 
 def add_audit_log(actor: str, action: str, entity_type: str, entity_id: str, details: Dict[str, Any]) -> None:
-    with connect() as conn:
+    with managed_connection() as conn:
         conn.execute(
             """
             INSERT INTO audit_logs (actor, action, entity_type, entity_id, details_json, created_at)
@@ -264,7 +275,7 @@ def add_audit_log(actor: str, action: str, entity_type: str, entity_id: str, det
 
 def dashboard_summary() -> Dict[str, Any]:
     cases = list_cases(limit=8)
-    with connect() as conn:
+    with managed_connection() as conn:
         total_cases = conn.execute("SELECT COUNT(*) AS n FROM cases").fetchone()["n"]
         report_count = conn.execute("SELECT COUNT(*) AS n FROM cases WHERE report_status = 'ready'").fetchone()["n"]
         risk_rows = conn.execute("SELECT result_json FROM cases").fetchall()
