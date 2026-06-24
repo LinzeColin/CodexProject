@@ -195,8 +195,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         schema = json.loads((ROOT / "governance" / "schemas" / "roadmap.schema.json").read_text(encoding="utf-8"))
         self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
         self.assertEqual(schema["properties"]["schema_version"]["const"], "codexproject.roadmap.v1")
+        self.assertEqual(schema["properties"]["roadmap_kind"]["const"], "product")
         self.assertFalse(schema["additionalProperties"])
         for required in {
+            "roadmap_kind",
             "total_estimated_hours",
             "current_stage_id",
             "current_phase_id",
@@ -603,6 +605,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "\n".join(
                     [
                         "schema_version: codexproject.roadmap.v1",
+                        "roadmap_kind: product",
                         "project_id: ProjectA",
                         "total_estimated_hours: 999",
                         "current_stage_id: S1",
@@ -737,6 +740,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "\n".join(
                     [
                         "schema_version: codexproject.roadmap.v1",
+                        "roadmap_kind: product",
                         "project_id: ProjectA",
                         "total_estimated_hours: 1",
                         "current_stage_id: S1",
@@ -6086,6 +6090,70 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 project_path = ROOT / str(project.get("path") or "")
                 validator.check_human_entry_quality(validation, project_path, True, validator.project_scope(project))
                 self.assertFalse(validation.errors, [issue.message for issue in validation.errors])
+
+    def test_other8_s2pbt01_target_roadmaps_are_explicit_product_kind(self) -> None:
+        validator = load_validator_module()
+        target_roadmaps = [
+            ROOT / "Alpha" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "EVA_OS" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "FIFA" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "OpMe_System" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "OpenAIDatabase" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "PFI" / "大数据模拟器" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "Serenity-Alipay" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "whkmSalary" / "docs" / "governance" / "roadmap.yaml",
+        ]
+        for path in target_roadmaps:
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                roadmap = validator.load_yaml(path)
+                self.assertEqual(roadmap["roadmap_kind"], "product")
+
+    def test_other8_s2pbt01_validator_requires_product_kind_for_non_excluded_projects(self) -> None:
+        validator = load_validator_module()
+        missing = validator.Validation()
+        validator.check_product_roadmap_kind(
+            missing,
+            {"project_id": "Alpha"},
+            {"roadmap": {"schema_version": "codexproject.roadmap.v1"}},
+            True,
+            "Alpha",
+        )
+        self.assertTrue(any("roadmap_kind must be product" in issue.message for issue in missing.errors))
+
+        excluded = validator.Validation()
+        validator.check_product_roadmap_kind(
+            excluded,
+            {"project_id": "EEI"},
+            {"roadmap": {"schema_version": "codexproject.roadmap.v1"}},
+            True,
+            "EEI",
+        )
+        self.assertFalse(excluded.errors, [issue.message for issue in excluded.errors])
+
+    def test_other8_s2pbt01_renderer_rejects_portfolio_remediation_roadmap(self) -> None:
+        cli = load_lean_governance_module()
+        with self.assertRaisesRegex(ValueError, "roadmap_kind=product"):
+            cli.render_development_record(
+                {"project_id": "CodexProject", "version": "0.0.0", "fact_level": "PROPOSED"},
+                {"roadmap_kind": "portfolio_remediation", "stages": []},
+                [],
+            )
+
+    def test_other8_s2pbt01_product_development_records_do_not_embed_portfolio_roadmap(self) -> None:
+        for project_path in [
+            ROOT / "Alpha",
+            ROOT / "EVA_OS",
+            ROOT / "FIFA",
+            ROOT / "OpMe_System",
+            ROOT / "OpenAIDatabase",
+            ROOT / "PFI" / "大数据模拟器",
+            ROOT / "Serenity-Alipay",
+            ROOT / "whkmSalary",
+        ]:
+            with self.subTest(project=str(project_path.relative_to(ROOT))):
+                text = (project_path / "开发记录").read_text(encoding="utf-8")
+                self.assertNotIn("portfolio_remediation", text)
+                self.assertNotIn("CodexProject_Other8_Remediation_Roadmap", text)
 
 
 if __name__ == "__main__":

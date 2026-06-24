@@ -5,6 +5,7 @@
   "type": "object",
   "required": [
     "schema_version",
+    "roadmap_kind",
     "project_id",
     "total_estimated_hours",
     "current_stage_id",
@@ -16,6 +17,11 @@
     "schema_version": {
       "type": "string",
       "const": "codexproject.roadmap.v1"
+    },
+    "roadmap_kind": {
+      "type": "string",
+      "const": "product",
+      "description": "Product roadmaps are the only roadmap kind allowed to render into project human entries."
     },
     "project_id": {
       "type": "string",

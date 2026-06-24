@@ -1,0 +1,171 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PBT01-ROADMAP-KIND-ISOLATION-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PBT01",
+  "acceptance_ids": [
+    "ACC-S2PBT01"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PBT01",
+  "generated_at": "2026-06-24T15:10:15+10:00",
+  "implementation_base_sha": "650b1175d7ee1e4c3f7f9c1c6edd98c4f7016cc8",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:89540f935b9d85354040e76b3f927db588c89dbf099427ab0d54efc508475dba",
+  "changed_files_declared": [
+    "Alpha/docs/governance/roadmap.yaml",
+    "EVA_OS/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "OpMe_System/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "docs/governance/templates/Roadmap.template.md",
+    "governance/schemas/roadmap.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT01-ROADMAP-KIND-ISOLATION-20260624.json"
+  ],
+  "changed_files_actual": [
+    "Alpha/docs/governance/roadmap.yaml",
+    "EVA_OS/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "OpMe_System/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "docs/governance/templates/Roadmap.template.md",
+    "governance/schemas/roadmap.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT01-ROADMAP-KIND-ISOLATION-20260624.json"
+  ],
+  "required_governance_files": [
+    "governance/schemas/roadmap.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT01-ROADMAP-KIND-ISOLATION-20260624.json"
+  ],
+  "updated_governance_files": [
+    "docs/governance/templates/Roadmap.template.md",
+    "governance/schemas/roadmap.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT01-ROADMAP-KIND-ISOLATION-20260624.json"
+  ],
+  "change_classification": [
+    "roadmap_kind_isolation",
+    "product_roadmap_contract",
+    "portfolio_remediation_roadmap_not_renderable",
+    "other8_s2pbt01"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Eight target project product roadmaps now declare roadmap_kind=product; project development-record rendering rejects explicit portfolio_remediation roadmaps.",
+  "target_projects": [
+    "Alpha",
+    "EVA_OS",
+    "FIFA",
+    "OpMe_System",
+    "OpenAIDatabase",
+    "PFI_BIG_DATA_SIMULATOR",
+    "Serenity-Alipay",
+    "whkmSalary"
+  ],
+  "excluded_projects": [
+    "EEI",
+    "arxiv-daily-push"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_roadmap_schema_declares_stage_phase_task_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt01_target_roadmaps_are_explicit_product_kind tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt01_validator_requires_product_kind_for_non_excluded_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt01_renderer_rejects_portfolio_remediation_roadmap tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt01_product_development_records_do_not_embed_portfolio_roadmap -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_check_render_is_read_only_and_reports_drift_and_refs tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat03_current_human_entries_pass_quality_contract -q",
+    "python -B scripts/lean_governance.py changed-scope --base-ref HEAD",
+    "python -B scripts/lean_governance.py check-render --project <each target project>",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S2PBT01 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "5 focused tests OK: schema declares roadmap_kind=product, 8 target roadmaps are explicit product roadmaps, non-excluded projects fail missing kind, portfolio_remediation is rejected by project development-record rendering, and product development records do not embed portfolio remediation roadmap text."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 10 registered projects validated with errors=0 warnings=0; EEI and arxiv-daily-push remained excluded from the new explicit roadmap_kind requirement."
+    },
+    {
+      "command": "python -B -m unittest ...renderer/check-render/human-entry regression tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "3 regression tests OK; renderer remains explicit-write only and current human entries still pass quality contract."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root_governance_changed=true; all_projects_required=false; selected_project_count=8; root_scope_excluded_projects=[EEI, arxiv-daily-push]."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project <each target project>",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 8 target projects returned drift_count=0 and reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0; selected_project_count=8; check_render.checked_count=8; zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors before manifest addition."
+    }
+  ],
+  "diagnostic_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests -q",
+      "exit_code": 1,
+      "result": "FAIL_DIAGNOSTIC_NOT_ACCEPTANCE_EVIDENCE",
+      "observed": "One existing Serenity-Alipay semantic extractor registry test failed with parameter/formula live extraction mismatches; this path is unrelated to roadmap_kind isolation and remains a PR CI blocker for later S2PC CI stratification work."
+    }
+  ],
+  "evidence_refs": [
+    "governance/schemas/roadmap.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/docs/governance/roadmap.yaml",
+    "EVA_OS/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "OpMe_System/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml",
+    "whkmSalary/docs/governance/roadmap.yaml",
+    "governance/run_manifests/GOV-OTHER8-S2PBT01-ROADMAP-KIND-ISOLATION-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PBT01 isolates product roadmaps from portfolio remediation roadmaps before project development-record rendering.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PBT01 introduces explicit product roadmap kind for the 8 current-baseline target projects and adds renderer/validator gates so portfolio remediation roadmaps cannot be rendered into project development records.",
+  "rollback": "Remove roadmap_kind from the 8 target roadmaps, revert roadmap.schema.json, Roadmap.template.md, lean_governance.py, validate_project_governance.py, S2PBT01 tests, and delete this manifest.",
+  "unresolved_risks": [
+    "S2 stage is not complete; S2PB still needs S2PBT02 and S2PBT03.",
+    "Pull-request workflow currently still runs the full governance test suite; the existing Serenity-Alipay semantic extractor mismatch remains a PR CI blocker until S2PC CI stratification or the semantic registry mismatch is remediated.",
+    "EEI and arxiv-daily-push remain excluded from this current-baseline migration and intentionally do not receive explicit roadmap_kind in this task."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

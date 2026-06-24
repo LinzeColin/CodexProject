@@ -68,6 +68,16 @@ def pct(value: float, total: float) -> str:
     return f"{(value / total * 100):.2f}%"
 
 
+def roadmap_kind(roadmap: dict[str, Any]) -> str:
+    return str(roadmap.get("roadmap_kind") or "product").strip()
+
+
+def ensure_product_roadmap(roadmap: dict[str, Any], *, target: str) -> None:
+    kind = roadmap_kind(roadmap)
+    if kind != "product":
+        raise ValueError(f"{target} requires roadmap_kind=product; got {kind}")
+
+
 def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
@@ -307,6 +317,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
 
 
 def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> str:
+    ensure_product_roadmap(roadmap, target="project development record")
     totals = roadmap_totals(roadmap)
     lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
     lines = [

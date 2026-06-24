@@ -120,6 +120,7 @@ PROJECT_REGISTRY_MIGRATION_VERSIONS = {
     "legacy-v1-pending-lean-v2",
     "lean-v2",
 }
+PRODUCT_ROADMAP_KIND = "product"
 HUMAN_ENTRY_QUALITY_CONTRACTS = {
     "功能清单": {
         "title": "# 功能清单",
@@ -700,6 +701,7 @@ def discover_project_dirs() -> list[str]:
 def parse_project_governance(project_path: Path, validation: Validation, required: bool, scope: str) -> dict[str, Any]:
     docs = project_path / "docs" / "governance"
     parsed: dict[str, Any] = {
+        "roadmap": {},
         "models": [],
         "assumptions": [],
         "formulas": [],
@@ -712,6 +714,7 @@ def parse_project_governance(project_path: Path, validation: Validation, require
         "traceability_fields": [],
     }
     files = {
+        "roadmap": docs / "roadmap.yaml",
         "model_registry": docs / "model_registry.yaml",
         "formula_registry": docs / "formula_registry.yaml",
         "parameter_registry": docs / "parameter_registry.csv",
@@ -721,6 +724,9 @@ def parse_project_governance(project_path: Path, validation: Validation, require
         "traceability_matrix": docs / "TRACEABILITY_MATRIX.csv",
     }
     try:
+        if files["roadmap"].exists():
+            data = load_yaml(files["roadmap"])
+            parsed["roadmap"] = data if isinstance(data, dict) else {}
         if files["model_registry"].exists():
             data = load_yaml(files["model_registry"])
             if isinstance(data, dict):
@@ -751,6 +757,27 @@ def parse_project_governance(project_path: Path, validation: Validation, require
     except Exception as exc:
         validation.add(required, scope, f"Parse failure: {exc}")
     return parsed
+
+
+def root_changed_scope_excluded_project_ids() -> set[str]:
+    try:
+        config = load_yaml(PROJECTS_FILE)
+    except Exception:
+        return set()
+    if not isinstance(config, dict):
+        return set()
+    root_config = config.get("root_governance") if isinstance(config.get("root_governance"), dict) else {}
+    return {str(item) for item in as_list(root_config.get("changed_scope_excluded_projects")) if item}
+
+
+def check_product_roadmap_kind(validation: Validation, project: dict[str, Any], parsed: dict[str, Any], required: bool, scope: str) -> None:
+    project_id = str(project.get("project_id") or "")
+    if project_id in root_changed_scope_excluded_project_ids():
+        return
+    roadmap = parsed.get("roadmap") if isinstance(parsed.get("roadmap"), dict) else {}
+    kind = str(roadmap.get("roadmap_kind") or "").strip()
+    if kind != PRODUCT_ROADMAP_KIND:
+        validation.add(required, scope, "docs/governance/roadmap.yaml roadmap_kind must be product for project human-entry rendering")
 
 
 def collect_assumption_ids(models: list[dict[str, Any]], root_assumptions: list[dict[str, Any]]) -> set[str]:
@@ -1205,6 +1232,7 @@ def validate_project(
         check_file_nonempty(validation, project_path / rel_path, required, scope)
     check_human_entry_quality(validation, project_path, required, scope)
     parsed = parse_project_governance(project_path, validation, required, scope)
+    check_product_roadmap_kind(validation, project, parsed, required, scope)
     check_csv_headers(validation, parsed, required, scope)
     check_cross_references(validation, parsed, required, scope)
     check_weight_groups(validation, [p for p in parsed["parameters"] if isinstance(p, dict)], required, scope)
