@@ -1,0 +1,40 @@
+S3PBT02 Alpha runtime lifecycle and shutdown evidence
+date: 2026-06-24
+project: Alpha
+acceptance: ACC-S3PBT02
+scope:
+- AutoPaperAgentRuntime stop/cancel lifecycle truthfulness.
+- Dashboard start/stop PID file cleanup.
+- Startup failure cleanup for the dashboard process started by the script.
+- LF enforcement for Alpha shell scripts so bash syntax validation is stable on Windows worktrees.
+
+commands:
+- python -B -m py_compile Alpha\backend\app\services\agent_runtime.py Alpha\tests\test_agent_runtime.py Alpha\tests\test_lifecycle_scripts.py
+  result: PASS
+  observed: Python syntax/import bytecode compilation completed with exit 0.
+- /bin/bash -n Alpha/scripts/start_alpha_dashboard.sh
+  result: PASS
+  observed: start script parses after Alpha/scripts/*.sh LF enforcement.
+- /bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh
+  result: PASS
+  observed: stop script parses after Alpha/scripts/*.sh LF enforcement.
+- set PYTHONPATH=Alpha && python -B C:\Users\linze\Documents\Codex\2026-06-23\xian\work\s3pbt02_alpha_lifecycle_smoke.py
+  result: PASS
+  observed: runtime lifecycle smoke passed graceful drain, stop_timeout truthfulness, no second cycle after stopped, PID atomic write assertions, TERM-to-KILL escalation assertions, and PID preservation assertions.
+- python -B -m pytest Alpha\tests -k "runtime or lifecycle" -q
+  result: NOT_RUN_LOCAL_TOOL_UNAVAILABLE
+  observed: local Python reports No module named pytest.
+
+implemented_controls:
+- AutoPaperAgentRuntime.stop sets enabled=false, marks stopping, signals the stop event, and waits for the current task without asyncio.wait_for cancellation.
+- A drained current cycle can complete before stop returns stopped; no second cycle is scheduled after stop_event is set.
+- If the current cycle does not drain before the timeout, stop returns status=stop_timeout with task_running=true and stopping=true instead of claiming stopped.
+- Snapshot now exposes stopping, last_stopped_at, and stop_timeout_count for owner-visible runtime truth.
+- start_alpha_dashboard.sh validates stale or invalid PID files, archives them, writes PID files through a temp file plus mv, and cleans up failed startup by TERM then KILL before deleting the PID file.
+- stop_alpha_dashboard.sh validates PID file contents, archives stale invalid/inactive PID files, waits after TERM, escalates to KILL, and preserves the PID file if the process remains active.
+- .gitattributes pins Alpha/scripts/*.sh to LF so shell scripts do not regress to CRLF under core.autocrlf=true.
+
+not_claimed:
+- S3PBT02 does not prove POSIX live process termination against a real uvicorn process in this Windows workspace.
+- S3PBT02 does not complete disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, or full write-after-stop fault injection; those remain S3PBT03.
+- No real broker path or live trading readiness is introduced.

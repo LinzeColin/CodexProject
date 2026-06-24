@@ -12,10 +12,10 @@ Append-only machine events: `development_events.jsonl`
 - Product version status: `provisional`
 - Current phase: `S3PB`
 - Current gate: `S3PB-GATE-in-progress`
-- Confirmed iterations: 3
+- Confirmed iterations: 4
 - Reconstructed development events: 1
-- Current task: `S3PBT01`
-- Blockers: S3PBT02/S3PBT03 still must prove cancellation, stop scripts, PID cleanup, force termination, and no writes after stop; live execution policy and production validation remain blocked under `TASK-ALPHA-B-001`.
+- Current task: `S3PBT03`
+- Blockers: S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop behavior; live execution policy and production validation remain blocked under `TASK-ALPHA-B-001`.
 
 ## Phase Matrix
 
@@ -97,7 +97,29 @@ Do not infer iteration count from Git commit count.
 - Success criteria: concurrent persisted queue/broker writes do not lose updates; simulated replace failure preserves prior JSON; no real broker path or live-trading enablement is introduced.
 - Remaining risks: POSIX lock path is implemented with fcntl but not executed on this Windows machine; S3PBT02/S3PBT03 still must prove cancellation, stop, timeout, force-termination, stale PID, and write-after-stop behavior.
 - Rollback: revert S3PBT01 code/tests/governance/evidence/rendered files and block parallel local paper loops until a narrower single-process mutex fallback is implemented.
-- Next step: run changed-only governance/render gates, commit, and then proceed to S3PBT02 only after S3PBT01 is bound.
+- Next step: completed; S3PBT02 follows with runtime stop/PID lifecycle hardening.
+
+### `ITER-20260624-ALPHA-S3PBT02`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `HEAD`
+- Result commit: `PENDING`
+- Task IDs: `S3PBT02`, `ACC-S3PBT02`
+- Goal: fix AutoPaperAgent stop truthfulness and dashboard start/stop PID cleanup without enabling live trading.
+- Assumptions: S3PBT02 covers graceful drain, timeout reporting, shell PID lifecycle, and LF-safe scripts; heavier disk/crash/stale-PID/force-termination/write-after-stop fault injection remains S3PBT03.
+- Files read: Other8 S3PB roadmap, AgentRuntime, dashboard lifecycle scripts, Alpha handoff/decision logs, and S3PBT01 evidence.
+- Files changed: runtime lifecycle code, dashboard lifecycle scripts, runtime/lifecycle tests, LF attributes, S3PB shutdown evidence, governance manifest, Alpha governance status/task files, and rendered Chinese human entry files.
+- Model changes: MOD-005 now includes app-runtime lifecycle truth for stop/drain/timeout status; no live broker model is enabled.
+- Parameter changes: no active parameter value changed.
+- Commands: `python -B -m py_compile ...`; `/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh`; `/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh`; `python -B C:\Users\linze\Documents\Codex\2026-06-23\xian\work\s3pbt02_alpha_lifecycle_smoke.py`; `python -B -m pytest Alpha\tests -k "runtime or lifecycle" -q`.
+- Test results: py_compile exit 0; both bash syntax checks exit 0 after LF enforcement; lifecycle smoke passed graceful drain, stop_timeout truthfulness, no second cycle after stopped, PID atomic-write assertions, TERM-to-KILL assertions, and PID-preservation assertions; pytest blocked locally because pytest is not installed.
+- Success criteria: stopped is reported only after the current runtime task drains; timeout is reported as `stop_timeout` with task still running; PID files are not deleted while a process remains active.
+- Remaining risks: real uvicorn process termination was not exercised in this Windows workspace; S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.
+- Rollback: revert S3PBT02 runtime/script/test/governance/evidence/rendered files and restore prior stop scripts; keep S3PBT01 atomic storage in place unless explicitly rolling back S3PB.
+- Next step: run changed-only governance/render gates, commit, and continue S3PBT03.
 
 ## Reconstructed Development Events
 
@@ -125,3 +147,8 @@ Do not infer iteration count from Git commit count.
 | `python -B -m py_compile Alpha\\backend\\app\\services\\atomic_json_store.py Alpha\\backend\\app\\services\\approval_queue.py Alpha\\backend\\app\\services\\paper_broker.py Alpha\\backend\\app\\services\\paper_trading_loop.py Alpha\\tests\\test_approval_queue.py Alpha\\tests\\test_paper_broker_persistence.py Alpha\\tests\\test_paper_trading_loop.py` | PASS | S3PBT01 syntax/import check exit 0 |
 | `python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt01_alpha_atomic_smoke.py` | PASS | Thread and Windows cross-process queue/broker concurrency plus atomic replace failure cases passed |
 | `python -B -m pytest Alpha\\tests -k "queue or broker" -q` | BLOCKED | local tool unavailable: `No module named pytest` |
+| `python -B -m py_compile Alpha\\backend\\app\\services\\agent_runtime.py Alpha\\tests\\test_agent_runtime.py Alpha\\tests\\test_lifecycle_scripts.py` | PASS | S3PBT02 syntax/import check exit 0 |
+| `/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh` | PASS | S3PBT02 start script syntax passed after LF enforcement |
+| `/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh` | PASS | S3PBT02 stop script syntax passed after LF enforcement |
+| `python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt02_alpha_lifecycle_smoke.py` | PASS | Graceful drain, stop_timeout truthfulness, no second cycle after stopped, PID atomic-write assertions, TERM-to-KILL assertions, and PID-preservation assertions passed |
+| `python -B -m pytest Alpha\\tests -k "runtime or lifecycle" -q` | BLOCKED | local tool unavailable: `No module named pytest` |

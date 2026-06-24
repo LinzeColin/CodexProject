@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "Alpha"
 project_name: "Alpha"
-summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；S3PBT01 已把 ApprovalQueue/PaperBroker 本地 JSON 持久化改为锁定事务和原子替换；不声明实盘就绪。"
+summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；S3PBT01 已把 ApprovalQueue/PaperBroker 本地 JSON 持久化改为锁定事务和原子替换；S3PBT02 已把 AutoPaperAgent 停止状态和 dashboard PID 生命周期改为保守可证；不声明实盘就绪。"
 version: "0.1.0"
 fact_level: "EXTRACTED"
 owner_role: "model_owner + risk_owner"
@@ -31,13 +31,13 @@ limitations:
       - "EVID-ALPHA-PARAMETER-REGISTRY"
     unknown_task_ids: []
   -
-    statement: "S3PBT01 只证明本地 queue/broker JSON 持久化的原子性和并发序列化；停止、取消、PID 清理、强制终止和 stop 后不写入仍待 S3PBT02/S3PBT03。"
+    statement: "S3PBT01 证明本地 queue/broker JSON 持久化的原子性和并发序列化；S3PBT02 证明 AutoPaperAgent 停止状态不虚报和 dashboard PID 清理更保守；磁盘错误、崩溃恢复、陈旧 PID 进程复用、强制终止破坏和完整 stop 后不写入仍待 S3PBT03。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+      - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
     unknown_task_ids:
-      - "S3PBT02"
       - "S3PBT03"
 features:
   -
@@ -134,7 +134,7 @@ features:
   -
     feature_id: "FEAT-ALPHA-004"
     name: "paper trading loop 与 paper broker"
-    description: "生成 paper intent、risk check、locked ticket queue、locked paper fill、portfolio snapshot 和 audit payload。"
+    description: "生成 paper intent、risk check、locked ticket queue、locked paper fill、portfolio snapshot 和 audit payload，并报告 app runtime stop/drain/timeout 生命周期状态。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -168,6 +168,7 @@ features:
       - "EVID-ALPHA-PARAMETER-REGISTRY"
       - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+      - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
   -
     feature_id: "FEAT-ALPHA-005"
     name: "审批队列新鲜度与 dashboard actionability"
@@ -361,7 +362,7 @@ models:
   -
     model_id: "MOD-005"
     name: "Paper trading loop"
-    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic queue storage, fill persisted paper orders through a locked broker transaction, and emit audit payloads."
+    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic queue storage, fill persisted paper orders through a locked broker transaction, emit audit payloads, and report app-runtime stop/drain/timeout lifecycle truth."
     status: "active"
     fact_level: "EXTRACTED"
     assumption_ids:
@@ -392,16 +393,20 @@ models:
     code_refs:
       - "Alpha/backend/app/services/paper_trading_loop.py:42"
       - "Alpha/backend/app/services/paper_trading_loop.py:59"
+      - "Alpha/backend/app/services/agent_runtime.py:58"
       - "Alpha/backend/app/services/approval_queue.py:19"
       - "Alpha/backend/app/services/paper_broker.py:44"
     test_refs:
       - "Alpha/tests/test_paper_trading_loop.py:8"
       - "Alpha/tests/test_paper_trading_loop.py:75"
+      - "Alpha/tests/test_agent_runtime.py:66"
+      - "Alpha/tests/test_lifecycle_scripts.py:7"
       - "Alpha/tests/test_dashboard_state.py:8"
     evidence_refs:
       - "EVID-ALPHA-MODEL-REGISTRY"
       - "EVID-ALPHA-MODEL-SPEC"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+      - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
   -
     model_id: "MOD-006"
     name: "Paper broker accounting"
@@ -2151,7 +2156,7 @@ strategies:
   -
     strategy_id: "STRAT-ALPHA-003"
     name: "deterministic paper loop over local state"
-    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录；S3PBT01 使 queue/broker 文件持久化原子化并串行化。"
+    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录；S3PBT01 使 queue/broker 文件持久化原子化并串行化；S3PBT02 使 stop/drain/timeout 与 PID 清理状态更保守可证。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -2174,6 +2179,7 @@ strategies:
       - "EVID-ALPHA-FORMULA-REGISTRY"
       - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+      - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
   -
     strategy_id: "STRAT-ALPHA-004"
     name: "DSL constraints keep MVP scope narrow"
@@ -2221,6 +2227,15 @@ validations:
       - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
       - "EVID-ALPHA-S3PBT01-MANIFEST"
+  -
+    validation_id: "VAL-ALPHA-S3PBT02-RUNTIME-LIFECYCLE"
+    scope: "AutoPaperAgent stop truthfulness and dashboard PID cleanup"
+    method: "py_compile, bash -n for dashboard scripts after LF enforcement, no-pytest lifecycle smoke for graceful drain, stop_timeout truthfulness, no second cycle after stopped, PID atomic-write assertions, TERM-to-KILL assertions, and PID-preservation assertions."
+    status: "PASS_WITH_BLOCKED_PYTEST"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
+      - "EVID-ALPHA-S3PBT02-MANIFEST"
 assurance_summary:
   structural_completeness: "VERIFIED"
   implementation_congruence: "PARTIAL"
@@ -2315,6 +2330,16 @@ evidence_refs:
     evidence_id: "EVID-ALPHA-S3PBT01-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
+    kind: "stage_gate_evidence"
+    ref: "governance/stage_gates/s3pb/shutdown_fault_tests.log"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-S3PBT02-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json"
     fact_level: "EXTRACTED"
 legacy_refs:
   -

@@ -36,7 +36,7 @@
 
 - Readiness: `FAILED`
 - Release gate: `S3PB-GATE-in-progress`
-- Next executable task: `S3PBT02`
+- Next executable task: `S3PBT03`
 - Pending/stale events: `5`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
@@ -50,3 +50,12 @@
 - Atomicity: simulated `os.replace` failure preserves existing queue/broker JSON and removes temporary files.
 - Local pytest: blocked by missing `pytest`; repository tests were added but not executed in this environment.
 - Not covered: AutoPaperAgent cancellation, start/stop PID cleanup, force termination, write-after-stop, broker paper API, or live trading readiness.
+
+## S3PBT02 Runtime Lifecycle Update
+
+- Scope: AutoPaperAgent stop truthfulness and dashboard start/stop PID lifecycle.
+- Result: `stop()` drains the current cycle before reporting `stopped`; timeout reports `stop_timeout` with `task_running=true`.
+- Scripts: start/stop scripts validate stale PID files, write PID atomically, escalate TERM to KILL after timeout, and preserve PID files if a process remains active.
+- Shell portability: `.gitattributes` pins `Alpha/scripts/*.sh` to LF so bash syntax checks remain stable under Windows `core.autocrlf=true`.
+- Local pytest: blocked by missing `pytest`; runtime/lifecycle tests were added but not executed by pytest in this environment.
+- Not covered: S3PBT03 disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.

@@ -161,3 +161,19 @@ tasks:
     rollback: "Revert atomic_json_store.py, ApprovalQueue/PaperBroker/paper loop persistence edits, S3PBT01 tests, evidence logs, rendered governance files, and the S3PBT01 run manifest; fall back to single-process entry until S3PB resumes."
     target_version: "0.1.0"
     completed_version: "0.1.0"
+  - task_id: "S3PBT02"
+    phase: "S3PB"
+    objective: "修复 AutoPaperAgent 与启动/停止脚本的取消和进程清理。"
+    scope: ["AutoPaperAgentRuntime stop/drain/timeout truthfulness", "dashboard start/stop PID lifecycle scripts", "runtime/lifecycle tests", "LF shell script enforcement", "shutdown lifecycle evidence"]
+    non_scope: ["real broker path", "live trading activation", "disk-error injection", "crash recovery", "stale-PID process-reuse proof", "force-termination corruption proof", "full write-after-stop fault injection"]
+    status: "completed"
+    dependencies: ["S3PBT01"]
+    required_files: [".gitattributes", "Alpha/backend/app/services/agent_runtime.py", "Alpha/scripts/start_alpha_dashboard.sh", "Alpha/scripts/stop_alpha_dashboard.sh", "Alpha/tests/test_agent_runtime.py", "Alpha/tests/test_lifecycle_scripts.py", "governance/stage_gates/s3pb/shutdown_fault_tests.log", "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json"]
+    acceptance_ids: ["ACC-S3PBT02"]
+    test_commands: ["python -B -m py_compile Alpha\\backend\\app\\services\\agent_runtime.py Alpha\\tests\\test_agent_runtime.py Alpha\\tests\\test_lifecycle_scripts.py", "/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh", "/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh", "python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt02_alpha_lifecycle_smoke.py", "python -B -m pytest Alpha\\tests -k \"runtime or lifecycle\" -q"]
+    test_results: ["PASS; py_compile exit 0", "PASS; start script bash syntax exit 0", "PASS; stop script bash syntax exit 0", "PASS; runtime lifecycle smoke passed", "NOT_RUN_LOCAL_TOOL_UNAVAILABLE; No module named pytest"]
+    evidence_refs: ["governance/stage_gates/s3pb/shutdown_fault_tests.log", "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json"]
+    risk: "S3PBT02 proves lifecycle truthfulness and PID cleanup controls only; S3PBT03 still must prove disk/crash/stale-PID/force-termination/write-after-stop fault behavior."
+    rollback: "Revert S3PBT02 runtime/script/test/governance/evidence/rendered files and restore prior lifecycle scripts; keep S3PBT01 atomic storage unless the whole S3PB patch set is rolled back."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"

@@ -4293,6 +4293,53 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
         self.assertIn("No module named pytest", observed)
 
+    def test_other8_s3pbt02_alpha_runtime_lifecycle_manifest_and_gate_evidence(self) -> None:
+        shutdown_log = ROOT / "governance" / "stage_gates" / "s3pb" / "shutdown_fault_tests.log"
+        self.assertTrue(shutdown_log.is_file())
+        shutdown_text = shutdown_log.read_text(encoding="utf-8")
+        self.assertIn("S3PBT02", shutdown_text)
+        self.assertIn("stop_timeout", shutdown_text)
+        self.assertIn("preserves the PID file", shutdown_text)
+        self.assertIn("S3PBT03", shutdown_text)
+        self.assertIn("No module named pytest", shutdown_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "Alpha")
+        self.assertEqual(manifest["task_id"], "S3PBT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PBT02"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            ".gitattributes",
+            "Alpha/backend/app/services/agent_runtime.py",
+            "Alpha/scripts/start_alpha_dashboard.sh",
+            "Alpha/scripts/stop_alpha_dashboard.sh",
+            "Alpha/tests/test_agent_runtime.py",
+            "Alpha/tests/test_lifecycle_scripts.py",
+            "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertIn(
+            "S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.",
+            manifest["unresolved_risks"],
+        )
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("S3PBT02 runtime lifecycle smoke: PASS", observed)
+        self.assertIn("No module named pytest", observed)
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
