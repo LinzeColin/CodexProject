@@ -3,7 +3,7 @@ contract_version: ADP-PRODUCT-CONTRACT-V7.2
 project_id: arxiv-daily-push
 as_of: "2026-06-24"
 timezone: Australia/Sydney
-status: current_contract_on_branch_pending_pr_ci
+status: current_contract_on_main_merged_pr_140
 parent_contract:
   version: ADP-PRODUCT-CONTRACT-V7.1
   root_lock: docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml
