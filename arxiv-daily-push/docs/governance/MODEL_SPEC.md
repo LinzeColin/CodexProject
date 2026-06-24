@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 52
-- formula_count: 54
-- parameter_count: 381
+- model_count: 64
+- formula_count: 66
+- parameter_count: 458
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -59,6 +59,75 @@ Fact levels follow `docs/governance/STANDARD.md`.
   evidence after PR #119 merged to `main@047f453`; they do not claim D2
   source-domain acceptance, Stage 2 production acceptance, SMTP, Release,
   scheduler, PDF/full-text download, or paywall bypass.
+
+- `S2PCT02` / legacy `S2P2T02` adds `MOD-ADP-053` and `MOD-ADP-054`.
+  They cover Science metadata-only ingest, Research Article/Report/Review/
+  Perspective article-type gates, DOI identity, and no-send shadow daily
+  evidence. They do not claim D2 source-domain acceptance, Stage 2 production
+  acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall
+  bypass.
+
+- `S2PCT03` / legacy `S2P2T03` adds `MOD-ADP-055` and `MOD-ADP-056`.
+  They cover The Lancet metadata-only ingest, Online First/current RSS
+  alignment, medical article-type gates, DOI-query-ready PubMed relation
+  metadata, and no-send shadow daily evidence. They do not claim D2
+  source-domain acceptance, Stage 2 production acceptance, SMTP, Release,
+  scheduler, PubMed full-record harvesting, PDF/full-text download, or paywall
+  bypass.
+
+- `S2PCT04` / legacy `S2P2T04` adds `MOD-ADP-057`. It covers top-journal
+  profile taxonomy, publication relation edges, correction/retraction forced
+  events, and old-conclusion update behavior without claiming D2 source-domain
+  acceptance, Stage 2 production acceptance, SMTP, Release, scheduler,
+  PDF/full-text download, or paywall bypass.
+
+- `S2PCT05` adds `MOD-ADP-058`. It covers engineering public-signal taxonomy,
+  officiality checks, version traceability, paper relation metadata, and
+  reproducibility state gates for official code repositories, releases,
+  model cards, benchmark results, and standards/specifications. It has no
+  legacy alias and does not claim D2 source-domain acceptance, Stage 2
+  production acceptance, SMTP, Release, scheduler, repository clone, PDF/full
+  text download, paid API use, or paywall bypass.
+
+- `S2PCT06` adds `MOD-ADP-059`. It covers authoritative research institution
+  reports, public laboratory technical reports, industry technical reports, and
+  product technical notes linked to known S2PCT05 engineering public signals.
+  It validates publisher identity, interest relation, evidence level, report
+  version/source traceability, and canonical-paper traceability. It has no
+  legacy alias and does not claim D2 source-domain acceptance, Stage 2
+  production acceptance, SMTP, Release, scheduler, PDF/full-text download, paid
+  API use, paywall bypass, or marketing-material acceptance.
+
+- `S2PCT07` adds `MOD-ADP-060`. It calibrates D2 source-domain qualification
+  readiness across top-journal, engineering public-signal, and authoritative
+  report shadow evidence. It validates upstream pass gates, complete domain
+  type coverage, 30-date replay, 48h no-production shadow, forced-event
+  propagation, queue explanations, and zero type-calibration spread while
+  keeping D2 source-domain acceptance and all production flags false.
+
+- `S2PDT01` adds `MOD-ADP-061`. It validates China C0 national authority
+  metadata-only source taxonomy, official identity, document traceability, and
+  no-production boundaries after D2 qualification readiness while keeping D3
+  core source-domain acceptance and all production flags false.
+
+- `S2PDT02` adds `MOD-ADP-062`. It validates China C1 central department
+  metadata-only source maps, aliases, industry routes, board routes, official
+  domains, and no-production boundaries after S2PDT01 C0 foundation while
+  keeping D3 core source-domain acceptance, production flags, V7.1 CURRENT
+  switching, and V7.2 mail/schema pre-run false.
+
+- `S2PDT03` adds `MOD-ADP-063`. It validates China legal metadata status,
+  version/effectivity relations, reprint/original-source guard, forced rescore
+  and old-conclusion update, and no-production boundaries after S2PDT02 C1
+  source map while keeping legal advice, D3 core source-domain acceptance,
+  production flags, V7.1 CURRENT switching, and V7.2 mail/schema pre-run false.
+
+- `S2PDT04` adds `MOD-ADP-064`. It validates China official D3 readiness
+  evidence across 30-date replay, 2-day shadow, authority evidence, B2-B6 board
+  routing, and metadata-only no-production boundaries after S2PDT01/S2PDT02/
+  S2PDT03 while keeping D3 core source-domain acceptance, production flags,
+  V7.1 CURRENT switching, V7.2 contract edits, and V7.2 mail/schema pre-run
+  false.
 
 ## A. Model Overview
 
@@ -115,6 +184,18 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-050 | S2P1T01 preprint replay and 48h shadow evidence | deterministic historical replay and shadow evidence builder | Run 30 historical bioRxiv/medRxiv preprint as-of dates through the no-send shadow daily path, persist local queue/ledger/report/email preview artifacts, build a 48h shadow aggregate, and feed the S2P1T01 promotion gate without claiming full Stage 2 production acceptance | active | adp-s2p1-preprint-replay-shadow-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-051 | S2PCT01 Nature/top-journal metadata ingest | deterministic source adapter | Fetch and map bounded official Nature RSS metadata into top-journal SourceItems while filtering non-main-journal article URLs and blocking PDF/full-text/paywall/production side effects | active | adp-stage2-top-journal-ingest-v1 | `src/arxiv_daily_push/top_journal_adapter.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-052 | S2PCT01 top-journal no-send shadow daily path | deterministic shadow source runner | Persist separate top-journal queue, JSONL ledger, report, and email preview artifacts from metadata-only SourceItems while keeping Stage 1 arXiv production, SMTP, Release, video, scheduler, and formal D2 inclusion disabled | active | adp-stage2-top-journal-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-053 | S2PCT02 Science metadata ingest | deterministic source adapter | Fetch and map bounded official Science RSS metadata into top-journal SourceItems while classifying Research Article, Report, Review, and Perspective items and blocking PDF/full-text/paywall/production side effects | active | adp-stage2-top-journal-ingest-v1 | `src/arxiv_daily_push/top_journal_adapter.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-054 | S2PCT02 Science no-send shadow daily path | deterministic shadow source runner | Persist separate Science queue, JSONL ledger, report, and email preview artifacts from metadata-only SourceItems while keeping Stage 1 arXiv production, SMTP, Release, video, scheduler, and formal D2 inclusion disabled | active | adp-s2pct02-science-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-055 | S2PCT03 Lancet metadata ingest | deterministic source adapter | Fetch and map bounded official Lancet RSS metadata into top-journal SourceItems while preserving Online First/current issue and PubMed DOI-query-ready metadata boundaries | active | adp-stage2-top-journal-ingest-v1 | `src/arxiv_daily_push/top_journal_adapter.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-056 | S2PCT03 Lancet no-send shadow daily path | deterministic shadow source runner | Persist separate Lancet queue, JSONL ledger, report, and email preview artifacts from metadata-only SourceItems while keeping Stage 1 arXiv production and formal D2 inclusion disabled | active | adp-s2pct03-lancet-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-057 | S2PCT04 top-journal profile and publication relation shadow | deterministic metadata-only profile and relation model | Build a top-journal profile report across completed Nature, Science, and Lancet shadow batches with publication relation edges and correction/retraction forced updates while keeping all production flags false | active | adp-s2pct04-top-journal-profile-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-058 | S2PCT05 engineering public-signal shadow | deterministic metadata-only engineering signal model | Validate official code repositories, releases, model cards, benchmark results, and standards/specifications linked to known papers while keeping all production flags false | active | adp-s2pct05-engineering-signals-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-059 | S2PCT06 authoritative report source shadow | deterministic metadata-only authoritative report model | Validate research institution, lab, industry technical report, and product technical note metadata linked to known engineering signals while keeping all production flags false | active | adp-s2pct06-authoritative-reports-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-060 | S2PCT07 D2 source-domain qualification and cross-type calibration | deterministic source-domain qualification model | Calibrate top-journal, engineering signal, and authoritative report shadow evidence with replay, shadow, forced-event, queue explanation, and type calibration gates while keeping D2 acceptance and production flags false | active | adp-s2pct07-d2-source-domain-qualification-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-061 | S2PDT01 China C0 national authority source foundation | deterministic official-source foundation model | Validate law/regulation, NPC, State Council, gazette, and Supreme Court/Procuratorate metadata-only official-source evidence with traceability and no-production gates | active | adp-s2pdt01-china-c0-source-foundation-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-062 | S2PDT02 China C1 central department source map | deterministic official-department source-map model | Validate macro, science/technology, industry, finance, market-regulation, and key-industry department source maps with aliases, routes, official domains, and no-production gates | active | adp-s2pdt02-china-c1-department-source-map-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-063 | S2PDT03 China legal metadata relation shadow | deterministic legal-metadata relation shadow model | Validate legal status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore, old-conclusion update, and no-production gates | active | adp-s2pdt03-china-legal-metadata-relation-shadow-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-064 | S2PDT04 China D3 readiness review | deterministic D3 readiness review model | Validate 30-date replay, 2-day shadow, authority evidence, B2-B6 board routing, metadata-only gate, and disabled D3/production side-effect flags | active | adp-s2pdt04-china-d3-readiness-review-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -209,6 +290,18 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-052 validates the S2P1 replay/shadow aggregate across 30 historical preprint dates, 48h shadow coverage, unique selected source/canonical IDs, no future leakage, no P0/P1 blockers, queue/ledger/email persistence, and no production side effects.
 - FORM-ADP-053 validates Nature/top-journal metadata ingest across official RSS input, accepted `s41586` article URL identity, bounded canary size, SourceItem mapping, and no PDF/full-text/paywall/production side effects.
 - FORM-ADP-054 validates the top-journal no-send shadow daily path across separate queue persistence, JSONL ledger persistence, email preview persistence, no Stage 1 arXiv mutation, and disabled SMTP/Release/video/scheduler/formal inclusion flags.
+- FORM-ADP-055 validates Science metadata ingest across official RSS input, DOI identity, Research Article/Report/Review/Perspective classification, bounded canary size, SourceItem mapping, and no PDF/full-text/paywall/production side effects.
+- FORM-ADP-056 validates the S2PCT02 Science no-send shadow daily path across separate queue persistence, JSONL ledger persistence, email preview persistence, no Stage 1 arXiv mutation, and disabled SMTP/Release/video/scheduler/D2 acceptance flags.
+- FORM-ADP-057 validates S2PCT03 Lancet metadata ingest across official Online First/current RSS, medical article-type gates, DOI canonicalization, PubMed DOI-query-ready relation metadata, duplicate separation, and no PDF/full-text/paywall side effects.
+- FORM-ADP-058 validates S2PCT03 Lancet no-send shadow daily across separate queue/ledger/email preview persistence, dry-run only execution, and disabled SMTP/Release/video/scheduler/PubMed harvesting/D2 acceptance flags.
+- FORM-ADP-059 validates S2PCT04 top-journal profile/relation evidence across completed Nature/Science/Lancet batches, profile taxonomy coverage, publication relation edges, correction/retraction forced updates, and disabled production/D2 side-effect flags.
+- FORM-ADP-060 validates S2PCT05 engineering public-signal evidence across required signal-type coverage, officiality, version traceability, paper relation, reproducibility state, and disabled production/D2 side-effect flags.
+- FORM-ADP-061 validates S2PCT06 authoritative report source evidence across required report-type coverage, publisher type, publisher identity, interest relation, evidence level, engineering-signal traceability, canonical-paper traceability, and disabled production/D2 side-effect flags.
+- FORM-ADP-062 validates S2PCT07 D2 source-domain qualification readiness across upstream pass evidence, complete domain type coverage, 30-date replay, 48h shadow, forced-event propagation, selected/queued/deferred queue explanations, zero type-calibration spread, and disabled production/D2 acceptance flags.
+- FORM-ADP-063 validates S2PDT01 China C0 national authority metadata-only source foundation across upstream D2 qualification, required authority taxonomy, official identity, document traceability, metadata-only no-download boundaries, and disabled D3/production acceptance flags.
+- FORM-ADP-064 validates S2PDT02 China C1 central department metadata-only source map across upstream C0 foundation, required sector coverage, official identity, aliases, industry/board routes, metadata-only no-download boundaries, disabled D3/production acceptance flags, and no V7.2 mail/schema pre-run.
+- FORM-ADP-065 validates S2PDT03 China legal metadata relation shadow across upstream C1 source map, required legal statuses, required relation types, date confusion guard, reprint/original-source guard, forced rescore/old-conclusion update, metadata-only no-download boundaries, disabled legal-advice/D3/production acceptance flags, and no V7.2 mail/schema pre-run.
+- FORM-ADP-066 validates S2PDT04 China D3 readiness review across upstream S2PDT01/S2PDT02/S2PDT03 pass gates, 30-date replay, 2-day shadow, authority evidence, B2-B6 board routing, metadata-only no-production boundaries, disabled D3/production acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -275,6 +368,16 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2P1T01 preprint source promotion parameters: PARAM-ADP-360 through PARAM-ADP-371.
 - Active S2P1T01 replay/shadow evidence parameters: PARAM-ADP-372 through PARAM-ADP-376.
 - Active S2PCT01 Nature/top-journal shadow parameters: PARAM-ADP-377 through PARAM-ADP-381.
+- Active S2PCT02 Science/top-journal shadow parameters: PARAM-ADP-382 through PARAM-ADP-386.
+- Active S2PCT03 Lancet/top-journal medical shadow parameters: PARAM-ADP-387 through PARAM-ADP-393, with PARAM-ADP-379 updated to `nature;science;lancet`.
+- Active S2PCT04 top-journal profile/relation parameters: PARAM-ADP-394 through PARAM-ADP-399.
+- Active S2PCT05 engineering public-signal parameters: PARAM-ADP-400 through PARAM-ADP-406.
+- Active S2PCT06 authoritative report source parameters: PARAM-ADP-407 through PARAM-ADP-415.
+- Active S2PCT07 D2 qualification parameters: PARAM-ADP-416 through PARAM-ADP-423.
+- Active S2PDT01 China C0 source parameters: PARAM-ADP-424 through PARAM-ADP-431.
+- Active S2PDT02 China C1 department source-map parameters: PARAM-ADP-432 through PARAM-ADP-439.
+- Active S2PDT03 China legal metadata relation parameters: PARAM-ADP-440 through PARAM-ADP-449.
+- Active S2PDT04 China D3 readiness parameters: PARAM-ADP-450 through PARAM-ADP-458.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

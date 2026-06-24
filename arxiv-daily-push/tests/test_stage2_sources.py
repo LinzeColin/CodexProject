@@ -13,17 +13,57 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PDT04_D3_READINESS_MODEL_ID,
+    S2PDT03_LEGAL_METADATA_MODEL_ID,
+    S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
+    S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
+    S2PCT07_D2_QUALIFICATION_MODEL_ID,
+    S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
+    S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
+    S2PCT04_JOURNAL_PROFILE_MODEL_ID,
+    S2PCT03_LANCET_SHADOW_MODEL_ID,
+    S2PCT02_SCIENCE_SHADOW_MODEL_ID,
     S2P1_PREPRINT_REPLAY_MODEL_ID,
     S2P1_PREPRINT_PROMOTION_MODEL_ID,
     S2P2_TOP_JOURNAL_SHADOW_MODEL_ID,
+    build_s2pct05_engineering_signal_report,
+    build_s2pct06_authoritative_report_source_report,
+    build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pdt04_china_d3_readiness_review_report,
+    build_s2pdt03_china_legal_metadata_relation_shadow_report,
+    build_s2pdt02_china_c1_department_source_map_report,
+    build_s2pdt01_china_c0_source_foundation_report,
+    build_s2pct04_top_journal_profile_report,
+    build_s2pct03_lancet_daily_input,
+    build_s2pct02_science_daily_input,
     build_s2p2_top_journal_daily_input,
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_daily_input,
     build_s2p1_preprint_promotion_report,
+    run_s2pct05_engineering_signal_shadow,
+    run_s2pct06_authoritative_report_shadow,
+    run_s2pct07_d2_source_domain_qualification,
+    run_s2pdt04_china_d3_readiness_review,
+    run_s2pdt03_china_legal_metadata_relation_shadow,
+    run_s2pdt02_china_c1_department_source_map,
+    run_s2pdt01_china_c0_source_foundation,
+    run_s2pct04_top_journal_profile_shadow,
+    run_s2pct03_lancet_shadow_daily,
+    run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pct05_engineering_signal_report,
+    validate_s2pct06_authoritative_report_source_report,
+    validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pdt04_china_d3_readiness_review_report,
+    validate_s2pdt03_china_legal_metadata_relation_shadow_report,
+    validate_s2pdt02_china_c1_department_source_map_report,
+    validate_s2pdt01_china_c0_source_foundation_report,
+    validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
+    validate_s2pct03_lancet_shadow_report,
+    validate_s2pct02_science_shadow_report,
     validate_s2p2_top_journal_shadow_report,
 )
 
@@ -32,6 +72,12 @@ FIXTURES = Path(__file__).parent / "fixtures"
 BIORXIV = FIXTURES / "biorxiv_details_sample.json"
 MEDRXIV = FIXTURES / "medrxiv_details_sample.json"
 NATURE_RSS = FIXTURES / "nature_rss_sample.xml"
+SCIENCE_RSS = FIXTURES / "science_rss_sample.xml"
+LANCET_RSS = FIXTURES / "lancet_rss_sample.xml"
+TOP_JOURNAL_EVENTS = FIXTURES / "top_journal_publication_events.json"
+TOP_JOURNAL_PRIOR_PROFILE_STATE = FIXTURES / "top_journal_prior_profile_state.json"
+TOP_JOURNAL_ENGINEERING_SIGNALS = FIXTURES / "top_journal_engineering_signals.json"
+AUTHORITATIVE_TECHNICAL_REPORTS = FIXTURES / "authoritative_technical_reports.json"
 GENERATED_AT = "2026-06-24T09:30:00+10:00"
 
 
@@ -58,6 +104,664 @@ def top_journal_batches() -> dict:
             fetcher=lambda _query: NATURE_RSS.read_text(encoding="utf-8"),
         )
     }
+
+
+def science_batches() -> dict:
+    return {
+        "science": ingest_latest_top_journal(
+            journal="science",
+            generated_at=GENERATED_AT,
+            fetcher=lambda _query: SCIENCE_RSS.read_text(encoding="utf-8"),
+        )
+    }
+
+
+def lancet_batches() -> dict:
+    return {
+        "lancet": ingest_latest_top_journal(
+            journal="lancet",
+            generated_at=GENERATED_AT,
+            fetcher=lambda _query: LANCET_RSS.read_text(encoding="utf-8"),
+        )
+    }
+
+
+def all_top_journal_batches() -> dict:
+    combined = {}
+    combined.update(top_journal_batches())
+    combined.update(science_batches())
+    combined.update(lancet_batches())
+    return combined
+
+
+def top_journal_publication_events() -> list:
+    return json.loads(TOP_JOURNAL_EVENTS.read_text(encoding="utf-8"))["events"]
+
+
+def top_journal_prior_profile_state() -> dict:
+    return json.loads(TOP_JOURNAL_PRIOR_PROFILE_STATE.read_text(encoding="utf-8"))
+
+
+def top_journal_profile_report() -> dict:
+    return build_s2pct04_top_journal_profile_report(
+        generated_at=GENERATED_AT,
+        source_batches=all_top_journal_batches(),
+        publication_events=top_journal_publication_events(),
+        prior_profile_state=top_journal_prior_profile_state(),
+    )
+
+
+def top_journal_engineering_signals() -> list:
+    return json.loads(TOP_JOURNAL_ENGINEERING_SIGNALS.read_text(encoding="utf-8"))["signals"]
+
+
+def engineering_signal_report() -> dict:
+    return build_s2pct05_engineering_signal_report(
+        generated_at=GENERATED_AT,
+        profile_report=top_journal_profile_report(),
+        engineering_signals=top_journal_engineering_signals(),
+    )
+
+
+def authoritative_technical_reports() -> list:
+    return json.loads(AUTHORITATIVE_TECHNICAL_REPORTS.read_text(encoding="utf-8"))["reports"]
+
+
+def authoritative_report() -> dict:
+    return build_s2pct06_authoritative_report_source_report(
+        generated_at=GENERATED_AT,
+        engineering_signal_report=engineering_signal_report(),
+        technical_reports=authoritative_technical_reports(),
+    )
+
+
+def d2_replay_records(start: date = date(2026, 5, 1), count: int = 30) -> list[dict]:
+    domains = ("top_journal", "engineering_signal", "authoritative_report")
+    return [
+        {
+            "as_of_date": (start + timedelta(days=offset)).isoformat(),
+            "domain": domains[offset % len(domains)],
+            "status": "pass",
+            "future_leakage_count": 0,
+            "p0_p1_blocker_count": 0,
+        }
+        for offset in range(count)
+    ]
+
+
+def d2_shadow_records() -> list[dict]:
+    return [
+        {
+            "domain": "top_journal",
+            "status": "pass",
+            "shadow_hours": 48,
+            "production_affected": False,
+            "real_smtp_sent": False,
+        },
+        {
+            "domain": "engineering_signal",
+            "status": "pass",
+            "shadow_hours": 48,
+            "production_affected": False,
+            "real_smtp_sent": False,
+        },
+        {
+            "domain": "authoritative_report",
+            "status": "pass",
+            "shadow_hours": 48,
+            "production_affected": False,
+            "real_smtp_sent": False,
+        },
+    ]
+
+
+def d2_forced_event_records() -> list[dict]:
+    return [
+        {
+            "event_type": "correction",
+            "status": "pass",
+            "forced_review_required": True,
+            "updated_conclusion_state": "requires_revision",
+        },
+        {
+            "event_type": "retraction",
+            "status": "pass",
+            "forced_review_required": True,
+            "updated_conclusion_state": "invalidated",
+        },
+    ]
+
+
+def d2_queue_explanation_records() -> list[dict]:
+    return [
+        {
+            "candidate_id": "candidate:selected",
+            "queue_state": "selected",
+            "explanation": "highest evidence quality and current decision value",
+        },
+        {
+            "candidate_id": "candidate:queued",
+            "queue_state": "queued",
+            "explanation": "valuable but not the top daily decision item",
+        },
+        {
+            "candidate_id": "candidate:deferred",
+            "queue_state": "deferred",
+            "explanation": "awaits forced-event or source-domain review",
+        },
+    ]
+
+
+def d2_qualification_report() -> dict:
+    return build_s2pct07_d2_source_domain_qualification_report(
+        generated_at=GENERATED_AT,
+        profile_report=top_journal_profile_report(),
+        engineering_signal_report=engineering_signal_report(),
+        authoritative_report=authoritative_report(),
+        replay_records=d2_replay_records(),
+        shadow_records=d2_shadow_records(),
+        forced_event_records=d2_forced_event_records(),
+        queue_explanation_records=d2_queue_explanation_records(),
+    )
+
+
+def china_c0_source_foundation_report() -> dict:
+    return build_s2pdt01_china_c0_source_foundation_report(
+        generated_at=GENERATED_AT,
+        d2_qualification_report=d2_qualification_report(),
+        authority_records=china_c0_authority_records(),
+    )
+
+
+def china_c0_authority_records() -> list[dict]:
+    return [
+        {
+            "source_id": "china-c0:law:constitution-amendment",
+            "authority_type": "law_regulation",
+            "authority_name": "全国人民代表大会",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c30834/constitution-amendment.html",
+            "document_number": "全国人民代表大会公告",
+            "published_date": "2026-05-01",
+            "attachment_trace": "html-metadata-only",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-law"],
+        },
+        {
+            "source_id": "china-c0:npc:committee-report",
+            "authority_type": "npc_document",
+            "authority_name": "全国人大常委会",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c2/committee-report.html",
+            "document_number": "委员长会议纪要",
+            "published_date": "2026-05-02",
+            "attachment_trace": "official-page-metadata",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-npc"],
+        },
+        {
+            "source_id": "china-c0:state-council:policy-notice",
+            "authority_type": "state_council_document",
+            "authority_name": "国务院",
+            "official_domain": "gov.cn",
+            "source_url": "https://www.gov.cn/zhengce/content/policy-notice.html",
+            "document_number": "国发〔2026〕1号",
+            "published_date": "2026-05-03",
+            "attachment_trace": "state-council-html",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-state-council"],
+        },
+        {
+            "source_id": "china-c0:gazette:state-council-gazette",
+            "authority_type": "gazette",
+            "authority_name": "国务院公报",
+            "official_domain": "gov.cn",
+            "source_url": "https://www.gov.cn/gongbao/2026/issue.html",
+            "document_number": "国务院公报2026年第1号",
+            "published_date": "2026-05-04",
+            "attachment_trace": "gazette-index-metadata",
+            "identity_state": "official_gazette",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-gazette"],
+        },
+        {
+            "source_id": "china-c0:spc-spp:judicial-interpretation",
+            "authority_type": "supreme_court_procuratorate_document",
+            "authority_name": "最高人民法院、最高人民检察院",
+            "official_domain": "court.gov.cn",
+            "source_url": "https://www.court.gov.cn/fabu/xiangqing/judicial-interpretation.html",
+            "document_number": "法释〔2026〕1号",
+            "published_date": "2026-05-05",
+            "attachment_trace": "official-publication-page",
+            "identity_state": "official_publication_portal",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c0-spc-spp"],
+        },
+    ]
+
+
+def china_c1_department_records() -> list[dict]:
+    return [
+        {
+            "source_id": "china-c1:macro:ndrc",
+            "department_id": "ndrc",
+            "department_name": "国家发展和改革委员会",
+            "sector": "macro_policy",
+            "official_domain": "ndrc.gov.cn",
+            "source_url": "https://www.ndrc.gov.cn/xwdt/tzgg/index.html",
+            "aliases": ["国家发改委", "发改委", "NDRC"],
+            "industry_routes": ["macro", "investment", "price"],
+            "board_routes": ["B2_policy", "B5_macro"],
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c1-ndrc"],
+        },
+        {
+            "source_id": "china-c1:science:most",
+            "department_id": "most",
+            "department_name": "科学技术部",
+            "sector": "science_technology",
+            "official_domain": "most.gov.cn",
+            "source_url": "https://www.most.gov.cn/kjbgz/index.html",
+            "aliases": ["科技部", "MOST"],
+            "industry_routes": ["science", "research", "technology_transfer"],
+            "board_routes": ["B2_policy", "B3_frontier"],
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c1-most"],
+        },
+        {
+            "source_id": "china-c1:industry:miit",
+            "department_id": "miit",
+            "department_name": "工业和信息化部",
+            "sector": "industry_policy",
+            "official_domain": "miit.gov.cn",
+            "source_url": "https://www.miit.gov.cn/zwgk/zcwj/index.html",
+            "aliases": ["工信部", "MIIT"],
+            "industry_routes": ["manufacturing", "semiconductor", "telecom"],
+            "board_routes": ["B2_policy", "B4_industry"],
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c1-miit"],
+        },
+        {
+            "source_id": "china-c1:finance:pboc",
+            "department_id": "pboc",
+            "department_name": "中国人民银行",
+            "sector": "finance",
+            "official_domain": "pbc.gov.cn",
+            "source_url": "https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html",
+            "aliases": ["人民银行", "央行", "PBOC"],
+            "industry_routes": ["monetary_policy", "credit", "financial_market"],
+            "board_routes": ["B2_policy", "B5_finance"],
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c1-pboc"],
+        },
+        {
+            "source_id": "china-c1:market:samr",
+            "department_id": "samr",
+            "department_name": "国家市场监督管理总局",
+            "sector": "market_regulation",
+            "official_domain": "samr.gov.cn",
+            "source_url": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/index.html",
+            "aliases": ["市场监管总局", "SAMR"],
+            "industry_routes": ["market_regulation", "standards", "competition"],
+            "board_routes": ["B2_policy", "B6_risk"],
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c1-samr"],
+        },
+        {
+            "source_id": "china-c1:key-industry:nea",
+            "department_id": "nea",
+            "department_name": "国家能源局",
+            "sector": "key_industry",
+            "official_domain": "nea.gov.cn",
+            "source_url": "https://www.nea.gov.cn/2026-01/01/c_1310000000.htm",
+            "aliases": ["能源局", "NEA"],
+            "industry_routes": ["energy", "power_grid", "renewables"],
+            "board_routes": ["B2_policy", "B4_industry"],
+            "identity_state": "official_publication_portal",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "evidence_refs": ["fixture:china-c1-nea"],
+        },
+    ]
+
+
+def china_c1_department_source_map_report() -> dict:
+    return build_s2pdt02_china_c1_department_source_map_report(
+        generated_at=GENERATED_AT,
+        c0_source_foundation_report=china_c0_source_foundation_report(),
+        department_records=china_c1_department_records(),
+    )
+
+
+def china_legal_records() -> list[dict]:
+    base = {
+        "identity_state": "official_domain",
+        "metadata_only": True,
+        "pdf_downloaded": False,
+        "full_text_extracted": False,
+    }
+    return [
+        {
+            **base,
+            "legal_id": "cn-law:data-security-amendment-draft",
+            "source_id": "china-c0:npc:committee-report",
+            "title": "数据安全法修订草案",
+            "legal_status": "draft",
+            "version_label": "draft-for-comment",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c2/data-security-amendment-draft.html",
+            "published_date": "2026-05-01",
+            "effective_date": "2026-05-01",
+            "evidence_refs": ["fixture:legal-draft"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:data-security-amendment-formal",
+            "source_id": "china-c0:law:constitution-amendment",
+            "title": "数据安全法修订决定",
+            "legal_status": "formal",
+            "version_label": "promulgated",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c30834/data-security-amendment-formal.html",
+            "published_date": "2026-05-08",
+            "effective_date": "2026-06-01",
+            "evidence_refs": ["fixture:legal-formal"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:industrial-policy-amended",
+            "source_id": "china-c1:industry:miit",
+            "title": "产业政策管理办法修订条款",
+            "legal_status": "amended",
+            "version_label": "amended-version",
+            "official_domain": "miit.gov.cn",
+            "source_url": "https://www.miit.gov.cn/zwgk/zcwj/industrial-policy-amended.html",
+            "published_date": "2026-05-10",
+            "effective_date": "2026-06-10",
+            "evidence_refs": ["fixture:legal-amended"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:legacy-market-rule-repealed",
+            "source_id": "china-c1:market:samr",
+            "title": "旧市场监管规则废止公告",
+            "legal_status": "repealed",
+            "version_label": "repealed",
+            "official_domain": "samr.gov.cn",
+            "source_url": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/legacy-market-rule-repealed.html",
+            "published_date": "2026-05-12",
+            "effective_date": "2026-05-12",
+            "evidence_refs": ["fixture:legal-repealed"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:data-security-implementation-measures",
+            "source_id": "china-c1:macro:ndrc",
+            "title": "数据安全法实施办法",
+            "legal_status": "implemented",
+            "version_label": "implementation-measures",
+            "official_domain": "ndrc.gov.cn",
+            "source_url": "https://www.ndrc.gov.cn/xwdt/tzgg/data-security-implementation-measures.html",
+            "published_date": "2026-05-15",
+            "effective_date": "2026-07-01",
+            "evidence_refs": ["fixture:legal-implemented"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:data-security-judicial-interpretation",
+            "source_id": "china-c0:spc-spp:judicial-interpretation",
+            "title": "数据安全案件司法解释",
+            "legal_status": "interpreted",
+            "version_label": "judicial-interpretation",
+            "official_domain": "court.gov.cn",
+            "source_url": "https://www.court.gov.cn/fabu/xiangqing/data-security-judicial-interpretation.html",
+            "published_date": "2026-05-18",
+            "effective_date": "2026-06-18",
+            "identity_state": "official_publication_portal",
+            "evidence_refs": ["fixture:legal-interpreted"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:ndrc-reprint-data-security-amendment",
+            "source_id": "china-c1:macro:ndrc",
+            "title": "国家发展改革委转载数据安全法修订决定",
+            "legal_status": "formal",
+            "version_label": "department-reprint",
+            "official_domain": "ndrc.gov.cn",
+            "source_url": "https://www.ndrc.gov.cn/xwdt/tzgg/reprint-data-security-amendment.html",
+            "published_date": "2026-05-20",
+            "effective_date": "2026-06-01",
+            "evidence_refs": ["fixture:legal-reprint"],
+        },
+    ]
+
+
+def china_legal_relation_records() -> list[dict]:
+    base = {"metadata_only": True, "evidence_refs": ["fixture:legal-relation"]}
+    return [
+        {
+            **base,
+            "relation_id": "rel:draft-to-formal:data-security",
+            "relation_type": "draft_to_formal",
+            "source_legal_id": "cn-law:data-security-amendment-draft",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-08",
+            "forced_update_required": False,
+        },
+        {
+            **base,
+            "relation_id": "rel:amends:industrial-policy",
+            "relation_type": "amends",
+            "source_legal_id": "cn-law:data-security-amendment-formal",
+            "target_legal_id": "cn-law:industrial-policy-amended",
+            "relation_date": "2026-05-10",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:repeals:legacy-market-rule",
+            "relation_type": "repeals",
+            "source_legal_id": "cn-law:industrial-policy-amended",
+            "target_legal_id": "cn-law:legacy-market-rule-repealed",
+            "relation_date": "2026-05-12",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:implements:data-security",
+            "relation_type": "implements",
+            "source_legal_id": "cn-law:data-security-implementation-measures",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-15",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:interprets:data-security",
+            "relation_type": "interprets",
+            "source_legal_id": "cn-law:data-security-judicial-interpretation",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-18",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:reprint:ndrc-data-security",
+            "relation_type": "reprint_of",
+            "source_legal_id": "cn-law:ndrc-reprint-data-security-amendment",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-20",
+            "source_role": "reprint",
+            "target_role": "original",
+            "original_source_verified": True,
+            "forced_update_required": False,
+        },
+    ]
+
+
+def china_prior_conclusion_records() -> list[dict]:
+    return [
+        {
+            "conclusion_id": "prior:amended-policy",
+            "legal_id": "cn-law:industrial-policy-amended",
+            "previous_state": "current",
+            "updated_state": "requires_revision",
+            "update_required": True,
+            "rescore_required": True,
+            "evidence_refs": ["fixture:prior-amended"],
+        },
+        {
+            "conclusion_id": "prior:repealed-market-rule",
+            "legal_id": "cn-law:legacy-market-rule-repealed",
+            "previous_state": "current",
+            "updated_state": "invalidated",
+            "update_required": True,
+            "rescore_required": True,
+            "evidence_refs": ["fixture:prior-repealed"],
+        },
+    ]
+
+
+def china_legal_metadata_relation_report() -> dict:
+    return build_s2pdt03_china_legal_metadata_relation_shadow_report(
+        generated_at=GENERATED_AT,
+        c1_department_source_map_report=china_c1_department_source_map_report(),
+        legal_records=china_legal_records(),
+        relation_records=china_legal_relation_records(),
+        prior_conclusion_records=china_prior_conclusion_records(),
+    )
+
+
+def china_d3_replay_records(start: date = date(2026, 5, 1), count: int = 30) -> list[dict]:
+    boards = ("B2_policy", "B3_frontier", "B4_industry", "B5_macro", "B6_risk")
+    return [
+        {
+            "as_of_date": (start + timedelta(days=offset)).isoformat(),
+            "source_domain": "d3_china_official",
+            "status": "pass",
+            "future_leakage_count": 0,
+            "p0_p1_blocker_count": 0,
+            "authority_gate": "pass",
+            "board_route_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "formal_production_inclusion": False,
+            "evidence_refs": [f"fixture:d3-replay:{boards[offset % len(boards)]}:{offset + 1:02d}"],
+        }
+        for offset in range(count)
+    ]
+
+
+def china_d3_shadow_records() -> list[dict]:
+    return [
+        {
+            "shadow_date": "2026-06-23",
+            "source_domain": "d3_china_official",
+            "status": "pass",
+            "shadow_hours": 24,
+            "authority_gate": "pass",
+            "board_route_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "formal_production_inclusion": False,
+            "d3_core_source_domain_accepted": False,
+            "evidence_refs": ["fixture:d3-shadow:day-1"],
+        },
+        {
+            "shadow_date": "2026-06-24",
+            "source_domain": "d3_china_official",
+            "status": "pass",
+            "shadow_hours": 24,
+            "authority_gate": "pass",
+            "board_route_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "formal_production_inclusion": False,
+            "d3_core_source_domain_accepted": False,
+            "evidence_refs": ["fixture:d3-shadow:day-2"],
+        },
+    ]
+
+
+def china_d3_board_route_records() -> list[dict]:
+    return [
+        {
+            "board_id": "B2_policy",
+            "source_ids": ["china-c0:state-council:policy-notice", "china-c1:macro:ndrc"],
+            "route_explanation": "National policy notices and C1 policy departments route to the policy board.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b2"],
+        },
+        {
+            "board_id": "B3_frontier",
+            "source_ids": ["china-c1:science:most"],
+            "route_explanation": "Science and technology ministry updates route to frontier intelligence.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b3"],
+        },
+        {
+            "board_id": "B4_industry",
+            "source_ids": ["china-c1:industry:miit", "china-c1:key-industry:nea"],
+            "route_explanation": "Industry and key-sector official records route to industry intelligence.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b4"],
+        },
+        {
+            "board_id": "B5_macro",
+            "source_ids": ["china-c1:macro:ndrc", "china-c1:finance:pboc"],
+            "route_explanation": "Macro and finance official records route to macro-finance reading.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b5"],
+        },
+        {
+            "board_id": "B6_risk",
+            "source_ids": ["china-c1:market:samr", "cn-law:legacy-market-rule-repealed"],
+            "route_explanation": "Market regulation, repeal, and legal-change records route to risk review.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b6"],
+        },
+    ]
 
 
 def replay_batches(start: date, count: int = 30) -> dict:
@@ -163,6 +867,603 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertIn("Nature", report["daily_input"]["claims"][0]["statement"])
         self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2PCT01")
 
+    def test_science_daily_input_uses_article_type_metadata_for_claims_and_queue(self) -> None:
+        report = build_s2pct02_science_daily_input(
+            date="2026-06-24",
+            generated_at=GENERATED_AT,
+            source_batches=science_batches(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT02_SCIENCE_SHADOW_MODEL_ID)
+        self.assertEqual(report["task_id"], "S2PCT02")
+        self.assertEqual(report["legacy_task_id"], "S2P2T02")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["daily_input_ready"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        source_item = report["daily_input"]["source_item"]
+        self.assertTrue(source_item["source_id"].startswith("science:10.1126/science."))
+        self.assertEqual(source_item["source_type"], "rss")
+        self.assertIn(source_item["metadata"]["top_journal"]["article_type"], {"research_article", "report", "review", "perspective"})
+        self.assertIn("Science", report["daily_input"]["claims"][0]["statement"])
+        self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2PCT02")
+
+    def test_lancet_daily_input_uses_medical_indexing_metadata_for_claims_and_queue(self) -> None:
+        report = build_s2pct03_lancet_daily_input(
+            date="2026-06-24",
+            generated_at=GENERATED_AT,
+            source_batches=lancet_batches(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT03_LANCET_SHADOW_MODEL_ID)
+        self.assertEqual(report["task_id"], "S2PCT03")
+        self.assertEqual(report["legacy_task_id"], "S2P2T03")
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT03-LANCET")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["daily_input_ready"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        source_item = report["daily_input"]["source_item"]
+        self.assertTrue(source_item["source_id"].startswith("lancet:10.1016/s0140-6736"))
+        self.assertEqual(source_item["source_type"], "rss")
+        self.assertIn(source_item["metadata"]["top_journal"]["article_type"], {"article", "review", "series"})
+        self.assertEqual(source_item["metadata"]["top_journal"]["index_alignment_gate"], "pass")
+        self.assertEqual(source_item["metadata"]["top_journal"]["medical_indexing"]["pubmed_relation_gate"], "doi_query_ready")
+        self.assertIn("The Lancet", report["daily_input"]["claims"][0]["statement"])
+        self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2PCT03")
+
+    def test_s2pct04_profile_report_classifies_taxonomy_relations_and_forced_updates(self) -> None:
+        report = build_s2pct04_top_journal_profile_report(
+            generated_at=GENERATED_AT,
+            source_batches=all_top_journal_batches(),
+            publication_events=top_journal_publication_events(),
+            prior_profile_state=top_journal_prior_profile_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT04_JOURNAL_PROFILE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT04-JOURNAL-PROFILE")
+        self.assertEqual(report["task_id"], "S2PCT04")
+        self.assertEqual(report["legacy_task_id"], "S2P2T04")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["profile_taxonomy_gate"], "pass")
+        self.assertEqual(report["publication_relation_gate"], "pass")
+        self.assertEqual(report["forced_event_update_gate"], "pass")
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertTrue(set(report["required_profile_kinds"]).issubset(set(report["profile_kinds_observed"])))
+        relation_types = {edge["relation_type"] for edge in report["publication_relation_edges"]}
+        self.assertTrue({"original_publication", "discusses", "corrects", "retracts"}.issubset(relation_types))
+        updates = {update["event_type"]: update for update in report["forced_event_updates"]}
+        self.assertEqual(updates["correction"]["updated_conclusion_state"], "requires_revision")
+        self.assertEqual(updates["retraction"]["updated_conclusion_state"], "invalidated")
+        self.assertTrue(updates["correction"]["forced_review_required"])
+        self.assertTrue(updates["retraction"]["forced_review_required"])
+        self.assertFalse(validate_s2pct04_top_journal_profile_report(report))
+
+    def test_s2pct04_profile_report_blocks_forced_event_without_known_target(self) -> None:
+        events = top_journal_publication_events()
+        events[-1] = dict(events[-1], target_canonical_document_id="science:10.1126/science.unknown")
+
+        report = build_s2pct04_top_journal_profile_report(
+            generated_at=GENERATED_AT,
+            source_batches=all_top_journal_batches(),
+            publication_events=events,
+            prior_profile_state=top_journal_prior_profile_state(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["forced_event_update_gate"], "blocked")
+        self.assertIn("target_canonical_document_id is unknown", " ".join(report["blocking_reasons"]))
+
+    def test_s2pct05_engineering_signal_report_validates_officiality_relations_versions_and_reproducibility(self) -> None:
+        report = build_s2pct05_engineering_signal_report(
+            generated_at=GENERATED_AT,
+            profile_report=top_journal_profile_report(),
+            engineering_signals=top_journal_engineering_signals(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT05_ENGINEERING_SIGNAL_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT05-ENGINEERING-SIGNALS")
+        self.assertEqual(report["task_id"], "S2PCT05")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["profile_gate"], "pass")
+        self.assertEqual(report["engineering_signal_taxonomy_gate"], "pass")
+        self.assertEqual(report["officiality_gate"], "pass")
+        self.assertEqual(report["version_traceability_gate"], "pass")
+        self.assertEqual(report["paper_relation_gate"], "pass")
+        self.assertEqual(report["reproducibility_state_gate"], "pass")
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertTrue(set(report["required_signal_types"]).issubset(set(report["signal_types_observed"])))
+        self.assertEqual(report["engineering_signal_count"], 5)
+        self.assertFalse(validate_s2pct05_engineering_signal_report(report))
+
+    def test_s2pct05_engineering_signal_report_blocks_unofficial_unknown_relation(self) -> None:
+        signals = top_journal_engineering_signals()
+        signals[0] = dict(
+            signals[0],
+            canonical_document_id="science:10.1126/science.unknown",
+            officiality_state="mirror",
+        )
+
+        report = build_s2pct05_engineering_signal_report(
+            generated_at=GENERATED_AT,
+            profile_report=top_journal_profile_report(),
+            engineering_signals=signals,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["engineering_signal_taxonomy_gate"], "blocked")
+        self.assertEqual(report["officiality_gate"], "blocked")
+        self.assertEqual(report["paper_relation_gate"], "blocked")
+        self.assertIn("officiality_state is not accepted", " ".join(report["blocking_reasons"]))
+        self.assertIn("canonical_document_id is unknown", " ".join(report["blocking_reasons"]))
+        self.assertIn("official_code_repository", " ".join(report["blocking_reasons"]))
+
+    def test_s2pct06_authoritative_report_source_report_validates_type_identity_interest_and_evidence(self) -> None:
+        report = build_s2pct06_authoritative_report_source_report(
+            generated_at=GENERATED_AT,
+            engineering_signal_report=engineering_signal_report(),
+            technical_reports=authoritative_technical_reports(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT06-REPORTS")
+        self.assertEqual(report["task_id"], "S2PCT06")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["engineering_signal_gate"], "pass")
+        self.assertEqual(report["report_taxonomy_gate"], "pass")
+        self.assertEqual(report["publisher_identity_gate"], "pass")
+        self.assertEqual(report["interest_relation_gate"], "pass")
+        self.assertEqual(report["evidence_level_gate"], "pass")
+        self.assertEqual(report["traceability_gate"], "pass")
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["marketing_material_accepted"])
+        self.assertTrue(set(report["required_report_types"]).issubset(set(report["report_types_observed"])))
+        self.assertEqual(report["authoritative_report_count"], 4)
+        self.assertFalse(validate_s2pct06_authoritative_report_source_report(report))
+
+    def test_s2pct06_authoritative_report_source_report_blocks_unknown_signal_and_marketing_identity(self) -> None:
+        reports = authoritative_technical_reports()
+        reports[0] = dict(
+            reports[0],
+            related_signal_ids=["eng-signal:unknown"],
+            publisher_identity_state="marketing_page",
+            interest_disclosure="",
+        )
+
+        report = build_s2pct06_authoritative_report_source_report(
+            generated_at=GENERATED_AT,
+            engineering_signal_report=engineering_signal_report(),
+            technical_reports=reports,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["report_taxonomy_gate"], "blocked")
+        self.assertEqual(report["publisher_identity_gate"], "blocked")
+        self.assertEqual(report["interest_relation_gate"], "blocked")
+        self.assertEqual(report["traceability_gate"], "blocked")
+        self.assertIn("publisher_identity_state is not accepted", " ".join(report["blocking_reasons"]))
+        self.assertIn("interest_disclosure is required", " ".join(report["blocking_reasons"]))
+        self.assertIn("related_signal_ids unknown", " ".join(report["blocking_reasons"]))
+
+    def test_s2pct07_d2_qualification_calibrates_domains_without_accepting_production(self) -> None:
+        report = build_s2pct07_d2_source_domain_qualification_report(
+            generated_at=GENERATED_AT,
+            profile_report=top_journal_profile_report(),
+            engineering_signal_report=engineering_signal_report(),
+            authoritative_report=authoritative_report(),
+            replay_records=d2_replay_records(),
+            shadow_records=d2_shadow_records(),
+            forced_event_records=d2_forced_event_records(),
+            queue_explanation_records=d2_queue_explanation_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT07_D2_QUALIFICATION_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT07-D2")
+        self.assertEqual(report["task_id"], "S2PCT07")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d2_source_domain_qualification_ready"])
+        self.assertEqual(report["upstream_gate"], "pass")
+        self.assertEqual(report["domain_coverage_gate"], "pass")
+        self.assertEqual(report["replay_gate"], "pass")
+        self.assertEqual(report["shadow_gate"], "pass")
+        self.assertEqual(report["forced_event_gate"], "pass")
+        self.assertEqual(report["queue_explanation_gate"], "pass")
+        self.assertEqual(report["type_calibration_gate"], "pass")
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["smtp_transport_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(validate_s2pct07_d2_source_domain_qualification_report(report))
+
+    def test_s2pct07_d2_qualification_blocks_short_replay_and_missing_queue_explanation(self) -> None:
+        queue_records = d2_queue_explanation_records()
+        queue_records[-1] = dict(queue_records[-1], explanation="")
+
+        report = build_s2pct07_d2_source_domain_qualification_report(
+            generated_at=GENERATED_AT,
+            profile_report=top_journal_profile_report(),
+            engineering_signal_report=engineering_signal_report(),
+            authoritative_report=authoritative_report(),
+            replay_records=d2_replay_records(count=29),
+            shadow_records=d2_shadow_records(),
+            forced_event_records=d2_forced_event_records(),
+            queue_explanation_records=queue_records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["replay_gate"], "blocked")
+        self.assertEqual(report["queue_explanation_gate"], "blocked")
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertIn("30 unique dates", " ".join(report["blocking_reasons"]))
+        self.assertIn("queue explanation records require", " ".join(report["blocking_reasons"]))
+
+    def test_s2pct07_d2_qualification_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct07_d2_source_domain_qualification(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                profile_report=top_journal_profile_report(),
+                engineering_signal_report=engineering_signal_report(),
+                authoritative_report=authoritative_report(),
+                replay_records=d2_replay_records(),
+                shadow_records=d2_shadow_records(),
+                forced_event_records=d2_forced_event_records(),
+                queue_explanation_records=d2_queue_explanation_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct07_d2_source_domain_qualification_report(report))
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertTrue(Path(report["qualification_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pct07_d2_source_domain_qualification_report.json").is_file())
+
+    def test_s2pdt01_china_c0_source_foundation_validates_authority_traceability_without_production(self) -> None:
+        report = build_s2pdt01_china_c0_source_foundation_report(
+            generated_at=GENERATED_AT,
+            d2_qualification_report=d2_qualification_report(),
+            authority_records=china_c0_authority_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT01_CHINA_C0_SOURCE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT01-C0")
+        self.assertEqual(report["task_id"], "S2PDT01")
+        self.assertEqual(report["legacy_task_id"], "S2P3T01")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_c0_source_foundation_ready"])
+        self.assertEqual(report["upstream_d2_qualification_gate"], "pass")
+        self.assertEqual(report["authority_taxonomy_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["document_traceability_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_authority_types"]).issubset(set(report["authority_types_observed"])))
+        self.assertEqual(report["authority_record_count"], 5)
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["bulk_scraping_allowed"])
+        self.assertFalse(report["pdf_download_enabled"])
+        self.assertFalse(report["full_text_download_enabled"])
+        self.assertFalse(validate_s2pdt01_china_c0_source_foundation_report(report))
+
+    def test_s2pdt01_china_c0_source_foundation_blocks_unofficial_missing_trace_and_pdf_download(self) -> None:
+        records = china_c0_authority_records()
+        records[0] = dict(
+            records[0],
+            source_url="https://mirror.example.com/law.html",
+            document_number="",
+            identity_state="mirror",
+            pdf_downloaded=True,
+        )
+
+        report = build_s2pdt01_china_c0_source_foundation_report(
+            generated_at=GENERATED_AT,
+            d2_qualification_report=d2_qualification_report(),
+            authority_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["official_identity_gate"], "blocked")
+        self.assertEqual(report["document_traceability_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("traceability requires", joined)
+        self.assertIn("metadata-only", joined)
+
+    def test_s2pdt01_china_c0_source_foundation_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt01_china_c0_source_foundation(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                d2_qualification_report=d2_qualification_report(),
+                authority_records=china_c0_authority_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt01_china_c0_source_foundation_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["source_foundation_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt01_china_c0_source_foundation_report.json").is_file())
+
+    def test_s2pdt02_china_c1_department_source_map_validates_alias_routes_without_production(self) -> None:
+        report = build_s2pdt02_china_c1_department_source_map_report(
+            generated_at=GENERATED_AT,
+            c0_source_foundation_report=china_c0_source_foundation_report(),
+            department_records=china_c1_department_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT02_CHINA_C1_SOURCE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT02-C1")
+        self.assertEqual(report["task_id"], "S2PDT02")
+        self.assertEqual(report["legacy_task_id"], "S2P3T02")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_c1_department_source_map_ready"])
+        self.assertEqual(report["upstream_c0_source_foundation_gate"], "pass")
+        self.assertEqual(report["sector_coverage_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["alias_gate"], "pass")
+        self.assertEqual(report["industry_route_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_sectors"]).issubset(set(report["sectors_observed"])))
+        self.assertEqual(report["department_record_count"], 6)
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["bulk_scraping_allowed"])
+        self.assertFalse(report["pdf_download_enabled"])
+        self.assertFalse(report["full_text_download_enabled"])
+        self.assertFalse(validate_s2pdt02_china_c1_department_source_map_report(report))
+
+    def test_s2pdt02_china_c1_department_source_map_blocks_unofficial_missing_alias_and_route(self) -> None:
+        records = china_c1_department_records()
+        records[0] = dict(
+            records[0],
+            source_url="https://mirror.example.com/ndrc.html",
+            aliases=[],
+            industry_routes=[],
+            pdf_downloaded=True,
+        )
+
+        report = build_s2pdt02_china_c1_department_source_map_report(
+            generated_at=GENERATED_AT,
+            c0_source_foundation_report=china_c0_source_foundation_report(),
+            department_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["alias_gate"], "blocked")
+        self.assertEqual(report["industry_route_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("alias map", joined)
+        self.assertIn("route map", joined)
+        self.assertIn("metadata-only", joined)
+
+    def test_s2pdt02_china_c1_department_source_map_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt02_china_c1_department_source_map(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                c0_source_foundation_report=china_c0_source_foundation_report(),
+                department_records=china_c1_department_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt02_china_c1_department_source_map_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["department_source_map_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt02_china_c1_department_source_map_report.json").is_file())
+
+    def test_s2pdt03_china_legal_metadata_relation_validates_status_effectivity_reprint_and_updates_without_production(self) -> None:
+        report = build_s2pdt03_china_legal_metadata_relation_shadow_report(
+            generated_at=GENERATED_AT,
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_records=china_legal_records(),
+            relation_records=china_legal_relation_records(),
+            prior_conclusion_records=china_prior_conclusion_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT03_LEGAL_METADATA_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT03-LEGAL")
+        self.assertEqual(report["task_id"], "S2PDT03")
+        self.assertEqual(report["legacy_task_id"], "S2P3T03")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_legal_metadata_relation_shadow_ready"])
+        self.assertEqual(report["upstream_c1_department_source_map_gate"], "pass")
+        self.assertEqual(report["legal_status_taxonomy_gate"], "pass")
+        self.assertEqual(report["version_effectivity_gate"], "pass")
+        self.assertEqual(report["reprint_relation_gate"], "pass")
+        self.assertEqual(report["forced_update_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_legal_statuses"]).issubset(set(report["legal_statuses_observed"])))
+        self.assertTrue(set(report["required_relation_types"]).issubset(set(report["relation_types_observed"])))
+        self.assertEqual(report["legal_record_count"], 7)
+        self.assertEqual(report["relation_record_count"], 6)
+        self.assertFalse(report["legal_advice_provided"])
+        self.assertFalse(report["v7_1_current_switched"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["bulk_scraping_allowed"])
+        self.assertFalse(report["pdf_download_enabled"])
+        self.assertFalse(report["full_text_download_enabled"])
+        self.assertFalse(validate_s2pdt03_china_legal_metadata_relation_shadow_report(report))
+
+    def test_s2pdt03_china_legal_metadata_relation_blocks_unknown_status_date_confusion_bad_reprint_and_missing_update(self) -> None:
+        legal_records = china_legal_records()
+        legal_records[0] = dict(legal_records[0], legal_status="unknown_status", effective_date="2026/05/01")
+        relation_records = china_legal_relation_records()
+        relation_records[-1] = dict(
+            relation_records[-1],
+            source_role="original",
+            target_role="reprint",
+            original_source_verified=False,
+        )
+        prior_conclusions = [
+            dict(record, update_required=False, rescore_required=False, updated_state="")
+            for record in china_prior_conclusion_records()
+        ]
+
+        report = build_s2pdt03_china_legal_metadata_relation_shadow_report(
+            generated_at=GENERATED_AT,
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_records=legal_records,
+            relation_records=relation_records,
+            prior_conclusion_records=prior_conclusions,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["legal_status_taxonomy_gate"], "blocked")
+        self.assertEqual(report["version_effectivity_gate"], "blocked")
+        self.assertEqual(report["reprint_relation_gate"], "blocked")
+        self.assertEqual(report["forced_update_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("unsupported statuses", joined)
+        self.assertIn("date confusion", joined)
+        self.assertIn("reprint relation guard", joined)
+        self.assertIn("old conclusion update", joined)
+
+    def test_s2pdt03_china_legal_metadata_relation_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt03_china_legal_metadata_relation_shadow(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                c1_department_source_map_report=china_c1_department_source_map_report(),
+                legal_records=china_legal_records(),
+                relation_records=china_legal_relation_records(),
+                prior_conclusion_records=china_prior_conclusion_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt03_china_legal_metadata_relation_shadow_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["legal_metadata_relation_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json").is_file())
+
+    def test_s2pdt04_china_d3_readiness_validates_replay_shadow_routes_without_production(self) -> None:
+        report = build_s2pdt04_china_d3_readiness_review_report(
+            generated_at=GENERATED_AT,
+            c0_source_foundation_report=china_c0_source_foundation_report(),
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_metadata_relation_report=china_legal_metadata_relation_report(),
+            replay_records=china_d3_replay_records(),
+            shadow_records=china_d3_shadow_records(),
+            board_route_records=china_d3_board_route_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT04_D3_READINESS_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT04-D3-CORE")
+        self.assertEqual(report["task_id"], "S2PDT04")
+        self.assertEqual(report["legacy_task_id"], "S2P3T04")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_core_readiness_review_ready"])
+        self.assertEqual(report["upstream_source_evidence_gate"], "pass")
+        self.assertEqual(report["d3_replay_gate"], "pass")
+        self.assertEqual(report["d3_shadow_gate"], "pass")
+        self.assertEqual(report["authority_gate"], "pass")
+        self.assertEqual(report["board_routing_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(len(report["replay_dates_observed"]), 30)
+        self.assertEqual(len(report["shadow_dates_observed"]), 2)
+        self.assertTrue(set(report["required_board_ids"]).issubset(set(report["board_ids_observed"])))
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_1_current_switched"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(validate_s2pdt04_china_d3_readiness_review_report(report))
+
+    def test_s2pdt04_china_d3_readiness_blocks_short_replay_missing_board_and_shadow_side_effects(self) -> None:
+        shadow_records = china_d3_shadow_records()
+        shadow_records[0] = dict(shadow_records[0], production_affected=True, real_smtp_sent=True)
+        board_routes = [record for record in china_d3_board_route_records() if record["board_id"] != "B6_risk"]
+
+        report = build_s2pdt04_china_d3_readiness_review_report(
+            generated_at=GENERATED_AT,
+            c0_source_foundation_report=china_c0_source_foundation_report(),
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_metadata_relation_report=china_legal_metadata_relation_report(),
+            replay_records=china_d3_replay_records(count=29),
+            shadow_records=shadow_records,
+            board_route_records=board_routes,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["d3_replay_gate"], "blocked")
+        self.assertEqual(report["d3_shadow_gate"], "blocked")
+        self.assertEqual(report["board_routing_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("30 distinct", joined)
+        self.assertIn("send SMTP", joined)
+        self.assertIn("B6_risk", joined)
+
+    def test_s2pdt04_china_d3_readiness_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt04_china_d3_readiness_review(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                c0_source_foundation_report=china_c0_source_foundation_report(),
+                c1_department_source_map_report=china_c1_department_source_map_report(),
+                legal_metadata_relation_report=china_legal_metadata_relation_report(),
+                replay_records=china_d3_replay_records(),
+                shadow_records=china_d3_shadow_records(),
+                board_route_records=china_d3_board_route_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt04_china_d3_readiness_review_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["d3_readiness_review_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt04_china_d3_readiness_review_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -201,6 +1502,125 @@ class Stage2SourceTests(unittest.TestCase):
             email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
             self.assertIn("【今天讲透一个问题】", email_preview)
             self.assertIn("Nature", email_preview)
+
+    def test_science_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct02_science_shadow_daily(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                source_batches=science_batches(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct02_science_shadow_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertTrue(report["selected_source_id"].startswith("science:10.1126/science."))
+            self.assertTrue(Path(report["candidate_queue_path"]).is_file())
+            self.assertTrue(Path(report["content_ledger_path"]).is_file())
+            self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
+            email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
+            self.assertIn("【今天讲透一个问题】", email_preview)
+            self.assertIn("Science", email_preview)
+
+    def test_lancet_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct03_lancet_shadow_daily(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                source_batches=lancet_batches(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct03_lancet_shadow_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertTrue(report["selected_source_id"].startswith("lancet:10.1016/s0140-6736"))
+            self.assertTrue(Path(report["candidate_queue_path"]).is_file())
+            self.assertTrue(Path(report["content_ledger_path"]).is_file())
+            self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
+            email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
+            self.assertIn("【今天讲透一个问题】", email_preview)
+            self.assertIn("The Lancet", email_preview)
+
+    def test_s2pct04_profile_shadow_persists_report_and_forced_event_ledger_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct04_top_journal_profile_shadow(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                source_batches=all_top_journal_batches(),
+                publication_events=top_journal_publication_events(),
+                prior_profile_state=top_journal_prior_profile_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct04_top_journal_profile_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertTrue(Path(report["profile_report_path"]).is_file())
+            self.assertTrue(Path(report["profile_ledger_path"]).is_file())
+            ledger_lines = Path(report["profile_ledger_path"]).read_text(encoding="utf-8").strip().splitlines()
+            self.assertEqual(len(ledger_lines), 2)
+
+    def test_s2pct05_engineering_signal_shadow_persists_report_and_ledger_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct05_engineering_signal_shadow(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                profile_report=top_journal_profile_report(),
+                engineering_signals=top_journal_engineering_signals(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct05_engineering_signal_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertTrue(Path(report["engineering_signal_report_path"]).is_file())
+            self.assertTrue(Path(report["engineering_signal_ledger_path"]).is_file())
+            ledger_lines = Path(report["engineering_signal_ledger_path"]).read_text(encoding="utf-8").strip().splitlines()
+            self.assertEqual(len(ledger_lines), 5)
+
+    def test_s2pct06_authoritative_report_shadow_persists_report_and_ledger_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct06_authoritative_report_shadow(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                engineering_signal_report=engineering_signal_report(),
+                technical_reports=authoritative_technical_reports(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct06_authoritative_report_source_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["marketing_material_accepted"])
+            self.assertTrue(Path(report["authoritative_report_path"]).is_file())
+            self.assertTrue(Path(report["authoritative_report_ledger_path"]).is_file())
+            ledger_lines = Path(report["authoritative_report_ledger_path"]).read_text(encoding="utf-8").strip().splitlines()
+            self.assertEqual(len(ledger_lines), 4)
 
     def test_replay_shadow_evidence_passes_30_dates_and_persists_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -300,6 +1720,423 @@ class Stage2SourceTests(unittest.TestCase):
         payload = json.loads(buffer.getvalue())
         self.assertEqual(result, 0)
         self.assertEqual(payload["model_id"], S2P2_TOP_JOURNAL_SHADOW_MODEL_ID)
+
+    def test_cli_stage2_science_shadow_daily_outputs_json(self) -> None:
+        fake_report = {
+            "model_id": S2PCT02_SCIENCE_SHADOW_MODEL_ID,
+            "acceptance_id": "ACC-S2PCT02-SCIENCE",
+            "task_id": "S2PCT02",
+            "status": "pass",
+            "daily_input_ready": True,
+            "email_preview_written": True,
+            "selected_source_id": "science:10.1126/science.ads7910",
+            "formal_production_inclusion": False,
+            "github_cloud_schedule_enabled": False,
+            "real_smtp_sent": False,
+            "production_affected": False,
+            "d2_source_domain_accepted": False,
+            "stage2_production_accepted": False,
+            "integrated_production_accepted": False,
+            "daily_report": {
+                "daily_input": {
+                    "source_item": {
+                        "source_id": "science:10.1126/science.ads7910",
+                        "metadata": {"top_journal": {"article_type": "research_article"}},
+                    }
+                }
+            },
+            "blocking_reasons": [],
+        }
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            science_batch_path = Path(tmp) / "science.json"
+            science_batch_path.write_text(json.dumps(science_batches()["science"], ensure_ascii=False), encoding="utf-8")
+            with patch("arxiv_daily_push.cli.run_s2pct02_science_shadow_daily", return_value=fake_report):
+                with redirect_stdout(buffer):
+                    result = main([
+                        "stage2-science-shadow-daily",
+                        "--state-dir",
+                        tmp,
+                        "--date",
+                        "2026-06-24",
+                        "--generated-at",
+                        GENERATED_AT,
+                        "--science-batch",
+                        str(science_batch_path),
+                        "--no-write",
+                        "--json",
+                    ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT02_SCIENCE_SHADOW_MODEL_ID)
+
+    def test_cli_stage2_lancet_shadow_daily_outputs_json(self) -> None:
+        fake_report = {
+            "model_id": S2PCT03_LANCET_SHADOW_MODEL_ID,
+            "acceptance_id": "ACC-S2PCT03-LANCET",
+            "task_id": "S2PCT03",
+            "status": "pass",
+            "daily_input_ready": True,
+            "email_preview_written": True,
+            "selected_source_id": "lancet:10.1016/s0140-6736(26)01256-0",
+            "formal_production_inclusion": False,
+            "github_cloud_schedule_enabled": False,
+            "real_smtp_sent": False,
+            "production_affected": False,
+            "d2_source_domain_accepted": False,
+            "stage2_production_accepted": False,
+            "integrated_production_accepted": False,
+            "daily_report": {
+                "daily_input": {
+                    "source_item": {
+                        "source_id": "lancet:10.1016/s0140-6736(26)01256-0",
+                        "metadata": {
+                            "top_journal": {
+                                "article_type": "article",
+                                "index_alignment_gate": "pass",
+                                "medical_indexing": {"pubmed_relation_gate": "doi_query_ready"},
+                            }
+                        },
+                    }
+                }
+            },
+            "blocking_reasons": [],
+        }
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            lancet_batch_path = Path(tmp) / "lancet.json"
+            lancet_batch_path.write_text(json.dumps(lancet_batches()["lancet"], ensure_ascii=False), encoding="utf-8")
+            with patch("arxiv_daily_push.cli.run_s2pct03_lancet_shadow_daily", return_value=fake_report):
+                with redirect_stdout(buffer):
+                    result = main([
+                        "stage2-lancet-shadow-daily",
+                        "--state-dir",
+                        tmp,
+                        "--date",
+                        "2026-06-24",
+                        "--generated-at",
+                        GENERATED_AT,
+                        "--lancet-batch",
+                        str(lancet_batch_path),
+                        "--no-write",
+                        "--json",
+                    ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT03_LANCET_SHADOW_MODEL_ID)
+
+    def test_cli_stage2_top_journal_profile_shadow_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            nature_batch_path = Path(tmp) / "nature.json"
+            science_batch_path = Path(tmp) / "science.json"
+            lancet_batch_path = Path(tmp) / "lancet.json"
+            nature_batch_path.write_text(json.dumps(top_journal_batches()["nature"], ensure_ascii=False), encoding="utf-8")
+            science_batch_path.write_text(json.dumps(science_batches()["science"], ensure_ascii=False), encoding="utf-8")
+            lancet_batch_path.write_text(json.dumps(lancet_batches()["lancet"], ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-top-journal-profile-shadow",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--nature-batch",
+                    str(nature_batch_path),
+                    "--science-batch",
+                    str(science_batch_path),
+                    "--lancet-batch",
+                    str(lancet_batch_path),
+                    "--publication-events",
+                    str(TOP_JOURNAL_EVENTS),
+                    "--prior-profile-state",
+                    str(TOP_JOURNAL_PRIOR_PROFILE_STATE),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT04_JOURNAL_PROFILE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PCT04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["forced_event_update_count"], 2)
+
+    def test_cli_stage2_engineering_signals_shadow_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            profile_report_path = Path(tmp) / "profile-report.json"
+            profile_report_path.write_text(json.dumps(top_journal_profile_report(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-engineering-signals-shadow",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--profile-report",
+                    str(profile_report_path),
+                    "--engineering-signals",
+                    str(TOP_JOURNAL_ENGINEERING_SIGNALS),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT05_ENGINEERING_SIGNAL_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PCT05")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["engineering_signal_count"], 5)
+
+    def test_cli_stage2_authoritative_reports_shadow_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            engineering_report_path = Path(tmp) / "engineering-report.json"
+            engineering_report_path.write_text(json.dumps(engineering_signal_report(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-authoritative-reports-shadow",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--engineering-signal-report",
+                    str(engineering_report_path),
+                    "--technical-reports",
+                    str(AUTHORITATIVE_TECHNICAL_REPORTS),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PCT06")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["authoritative_report_count"], 4)
+
+    def test_cli_stage2_d2_source_domain_qualification_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            profile_report_path = Path(tmp) / "profile-report.json"
+            engineering_report_path = Path(tmp) / "engineering-report.json"
+            authoritative_report_path = Path(tmp) / "authoritative-report.json"
+            replay_records_path = Path(tmp) / "replay-records.json"
+            shadow_records_path = Path(tmp) / "shadow-records.json"
+            forced_event_records_path = Path(tmp) / "forced-event-records.json"
+            queue_records_path = Path(tmp) / "queue-records.json"
+            profile_report_path.write_text(json.dumps(top_journal_profile_report(), ensure_ascii=False), encoding="utf-8")
+            engineering_report_path.write_text(json.dumps(engineering_signal_report(), ensure_ascii=False), encoding="utf-8")
+            authoritative_report_path.write_text(json.dumps(authoritative_report(), ensure_ascii=False), encoding="utf-8")
+            replay_records_path.write_text(json.dumps({"replay_records": d2_replay_records()}, ensure_ascii=False), encoding="utf-8")
+            shadow_records_path.write_text(json.dumps({"shadow_records": d2_shadow_records()}, ensure_ascii=False), encoding="utf-8")
+            forced_event_records_path.write_text(json.dumps({"forced_event_records": d2_forced_event_records()}, ensure_ascii=False), encoding="utf-8")
+            queue_records_path.write_text(json.dumps({"queue_explanation_records": d2_queue_explanation_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-d2-source-domain-qualification",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--profile-report",
+                    str(profile_report_path),
+                    "--engineering-signal-report",
+                    str(engineering_report_path),
+                    "--authoritative-report",
+                    str(authoritative_report_path),
+                    "--replay-records",
+                    str(replay_records_path),
+                    "--shadow-records",
+                    str(shadow_records_path),
+                    "--forced-event-records",
+                    str(forced_event_records_path),
+                    "--queue-explanation-records",
+                    str(queue_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT07_D2_QUALIFICATION_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PCT07")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d2_source_domain_qualification_ready"])
+        self.assertFalse(payload["d2_source_domain_accepted"])
+
+    def test_cli_stage2_china_c0_source_foundation_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            d2_report_path = Path(tmp) / "d2-qualification-report.json"
+            authority_records_path = Path(tmp) / "authority-records.json"
+            d2_report_path.write_text(json.dumps(d2_qualification_report(), ensure_ascii=False), encoding="utf-8")
+            authority_records_path.write_text(json.dumps({"authority_records": china_c0_authority_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-c0-source-foundation",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--d2-qualification-report",
+                    str(d2_report_path),
+                    "--authority-records",
+                    str(authority_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT01_CHINA_C0_SOURCE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT01")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_c0_source_foundation_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_china_c1_department_source_map_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            c0_report_path = Path(tmp) / "c0-source-foundation-report.json"
+            department_records_path = Path(tmp) / "department-records.json"
+            c0_report_path.write_text(json.dumps(china_c0_source_foundation_report(), ensure_ascii=False), encoding="utf-8")
+            department_records_path.write_text(json.dumps({"department_records": china_c1_department_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-c1-department-source-map",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--c0-source-foundation-report",
+                    str(c0_report_path),
+                    "--department-records",
+                    str(department_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT02_CHINA_C1_SOURCE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT02")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T02")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_c1_department_source_map_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_china_legal_metadata_relation_shadow_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            c1_report_path = Path(tmp) / "c1-department-source-map-report.json"
+            legal_records_path = Path(tmp) / "legal-records.json"
+            relation_records_path = Path(tmp) / "relation-records.json"
+            prior_conclusion_records_path = Path(tmp) / "prior-conclusion-records.json"
+            c1_report_path.write_text(json.dumps(china_c1_department_source_map_report(), ensure_ascii=False), encoding="utf-8")
+            legal_records_path.write_text(json.dumps({"legal_records": china_legal_records()}, ensure_ascii=False), encoding="utf-8")
+            relation_records_path.write_text(json.dumps({"relation_records": china_legal_relation_records()}, ensure_ascii=False), encoding="utf-8")
+            prior_conclusion_records_path.write_text(
+                json.dumps({"prior_conclusion_records": china_prior_conclusion_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-legal-metadata-relation-shadow",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--c1-department-source-map-report",
+                    str(c1_report_path),
+                    "--legal-records",
+                    str(legal_records_path),
+                    "--relation-records",
+                    str(relation_records_path),
+                    "--prior-conclusion-records",
+                    str(prior_conclusion_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT03_LEGAL_METADATA_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT03")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_legal_metadata_relation_shadow_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_china_d3_readiness_review_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            c0_report_path = Path(tmp) / "c0-source-foundation-report.json"
+            c1_report_path = Path(tmp) / "c1-department-source-map-report.json"
+            legal_report_path = Path(tmp) / "legal-metadata-relation-report.json"
+            replay_records_path = Path(tmp) / "d3-replay-records.json"
+            shadow_records_path = Path(tmp) / "d3-shadow-records.json"
+            board_route_records_path = Path(tmp) / "d3-board-route-records.json"
+            c0_report_path.write_text(json.dumps(china_c0_source_foundation_report(), ensure_ascii=False), encoding="utf-8")
+            c1_report_path.write_text(json.dumps(china_c1_department_source_map_report(), ensure_ascii=False), encoding="utf-8")
+            legal_report_path.write_text(json.dumps(china_legal_metadata_relation_report(), ensure_ascii=False), encoding="utf-8")
+            replay_records_path.write_text(json.dumps({"replay_records": china_d3_replay_records()}, ensure_ascii=False), encoding="utf-8")
+            shadow_records_path.write_text(json.dumps({"shadow_records": china_d3_shadow_records()}, ensure_ascii=False), encoding="utf-8")
+            board_route_records_path.write_text(
+                json.dumps({"board_route_records": china_d3_board_route_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-d3-readiness-review",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--c0-source-foundation-report",
+                    str(c0_report_path),
+                    "--c1-department-source-map-report",
+                    str(c1_report_path),
+                    "--legal-metadata-relation-report",
+                    str(legal_report_path),
+                    "--replay-records",
+                    str(replay_records_path),
+                    "--shadow-records",
+                    str(shadow_records_path),
+                    "--board-route-records",
+                    str(board_route_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT04_D3_READINESS_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT04")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_core_readiness_review_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
 
 
 if __name__ == "__main__":
