@@ -5010,6 +5010,104 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s4pat02_wave1_archive_manifest_and_checksums(self) -> None:
+        s4pa_root = ROOT / "governance" / "stage_gates" / "s4pa"
+        archive_manifest_path = s4pa_root / "wave1_archive_manifest.json"
+        checksum_path = s4pa_root / "wave1_archive_manifest.sha256"
+        rollback_path = s4pa_root / "rollback_plan.md"
+        for path in {archive_manifest_path, checksum_path, rollback_path, ROOT / "tools" / "wave_archive_manifest.py"}:
+            self.assertTrue(path.is_file(), path)
+
+        archive_manifest = json.loads(archive_manifest_path.read_text(encoding="utf-8"))
+        checksum_lines = [line for line in checksum_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        rollback = rollback_path.read_text(encoding="utf-8")
+        expected_projects = ["Alpha", "EVA_OS", "OpMe_System", "whkmSalary"]
+
+        self.assertEqual(archive_manifest["schema_version"], "codexproject.wave_archive_manifest.v1")
+        self.assertEqual(archive_manifest["task_id"], "S4PAT02")
+        self.assertEqual(archive_manifest["acceptance_id"], "ACC-S4PAT02")
+        self.assertEqual(archive_manifest["source_structure_map"], "governance/stage_gates/s4pa/wave1_structure_map.json")
+        self.assertEqual(archive_manifest["mode"], "MANIFEST_ONLY_NO_FILE_MOVES")
+        self.assertEqual(archive_manifest["candidate_count"], len(archive_manifest["candidates"]))
+        self.assertEqual(archive_manifest["candidate_count"], len(checksum_lines))
+        self.assertEqual(archive_manifest["category_counts"]["DELETE_CANDIDATE"], 0)
+        self.assertEqual(archive_manifest["project_counts"]["whkmSalary"], 0)
+        self.assertFalse(archive_manifest["stop_conditions"]["files_moved"])
+        self.assertFalse(archive_manifest["stop_conditions"]["archive_written"])
+        self.assertFalse(archive_manifest["stop_conditions"]["checksum_missing"])
+        self.assertFalse(archive_manifest["stop_conditions"]["delete_candidate_without_owner_approval"])
+        self.assertIn("PRIVATE candidates require owner review", " ".join(archive_manifest["limitations"]))
+
+        checksum_by_path = {}
+        for line in checksum_lines:
+            digest, source_path = line.split("  ", 1)
+            self.assertRegex(digest, r"^[0-9a-f]{64}$")
+            checksum_by_path[source_path] = digest
+            self.assertFalse(source_path.startswith(("EEI/", "arxiv-daily-push/")), source_path)
+            self.assertTrue((ROOT / source_path).exists(), source_path)
+            observed = hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
+            self.assertEqual(observed, digest, source_path)
+        self.assertEqual(len(checksum_by_path), len(checksum_lines))
+
+        for item in archive_manifest["candidates"]:
+            self.assertIn(item["project_id"], expected_projects)
+            self.assertIn(item["category"], {"MERGE", "ARCHIVE", "GENERATED", "PRIVATE", "DELETE_CANDIDATE"})
+            self.assertEqual(item["sha256"], checksum_by_path[item["source_path"]])
+            self.assertTrue(item["current_path_must_remain"])
+            self.assertTrue(item["proposed_target"].startswith("governance/archive/other8_wave1_pending/"))
+            self.assertIn("restore original source_path", item["rollback_action"])
+
+        for required in {
+            "S4PAT02",
+            "ACC-S4PAT02",
+            "MANIFEST_ONLY_NO_FILE_MOVES",
+            "sha256sum -c governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+            "S4PBT01 may start Alpha structure simplification",
+        }:
+            self.assertIn(required, rollback)
+
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "CodexProject")
+        self.assertEqual(manifest["task_id"], "S4PAT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PAT02"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S4PA-GATE"], "PASSED_FOCUSED_LOCAL_FOR_WAVE1_MANIFEST")
+        self.assertEqual(manifest["stage_gate_status"]["project_file_movement"], "NOT_STARTED")
+        self.assertEqual(manifest["stage_gate_status"]["archive_write"], "NOT_STARTED")
+        self.assertEqual(manifest["next_allowed_task"], "S4PBT01")
+        self.assertEqual(manifest["archive_manifest_summary"]["candidate_count"], archive_manifest["candidate_count"])
+        self.assertEqual(manifest["archive_manifest_summary"]["checksum_count"], len(checksum_lines))
+        self.assertEqual(manifest["archive_manifest_summary"]["category_counts"]["DELETE_CANDIDATE"], 0)
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        self.assertEqual(manifest["scope_guard"]["tracked_diff_result"], "PASS_NO_OUTPUT")
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "tools/wave_archive_manifest.py",
+                "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+                "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+                "governance/stage_gates/s4pa/rollback_plan.md",
+                "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+        self.assertIn(
+            "No physical archive has been created; later tasks must use the checksum manifest before moving paths.",
+            manifest["unresolved_risks"],
+        )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

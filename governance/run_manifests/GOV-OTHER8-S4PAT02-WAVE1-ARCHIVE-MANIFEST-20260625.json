@@ -1,0 +1,194 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625",
+  "project_id": "CodexProject",
+  "task_id": "S4PAT02",
+  "acceptance_ids": [
+    "ACC-S4PAT02"
+  ],
+  "iteration_id": "ITER-20260625-OTHER8-S4PAT02",
+  "generated_at": "2026-06-25T06:38:58+10:00",
+  "implementation_base_sha": "ac64c2a5272ab2fd6d03d660777c90230c1034fc",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:d7150ba9af0072ae7261eeeb65f4da89f1a71a5ac11b632705b93be4442d56f6",
+  "changed_files_declared": [
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/stage_gates/s4pa/rollback_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/stage_gates/s4pa/rollback_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/stage_gates/s4pa/rollback_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/stage_gates/s4pa/rollback_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "other8_s4pa_archive_manifest",
+    "wave1_checksum_binding",
+    "rollback_list",
+    "no_project_file_move",
+    "no_archive_write",
+    "no_product_runtime_change",
+    "scope_guard_no_forbidden_project_diff"
+  ],
+  "depends_on": [
+    "GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625"
+  ],
+  "stage_gate_status": {
+    "S4PAT02": "PASSED_FOCUSED_LOCAL",
+    "S4PA-GATE": "PASSED_FOCUSED_LOCAL_FOR_WAVE1_MANIFEST",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "product_delivery_readiness": "NOT_PROMOTED"
+  },
+  "next_allowed_task": "S4PBT01",
+  "wave1_projects": [
+    "Alpha",
+    "EVA_OS",
+    "OpMe_System",
+    "whkmSalary"
+  ],
+  "archive_manifest_summary": {
+    "source_commit": "ac64c2a5272ab2fd6d03d660777c90230c1034fc",
+    "candidate_count": 383,
+    "checksum_count": 383,
+    "category_counts": {
+      "ARCHIVE": 125,
+      "DELETE_CANDIDATE": 0,
+      "GENERATED": 51,
+      "MERGE": 8,
+      "PRIVATE": 199
+    },
+    "project_counts": {
+      "Alpha": 75,
+      "EVA_OS": 285,
+      "OpMe_System": 23,
+      "whkmSalary": 0
+    }
+  },
+  "stop_conditions": {
+    "files_moved": false,
+    "archive_written": false,
+    "checksum_missing": false,
+    "delete_candidate_without_owner_approval": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "tracked_diff_command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT",
+    "changed_scope_command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main"
+  },
+  "model_delta": "NOT_CHANGED: S4PAT02 adds root governance archive/checksum evidence only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No project product version changes. S4PAT02 does not move, archive, delete, or rewrite project files.",
+  "test_commands": [
+    "python tools/wave_archive_manifest.py",
+    "python tools/wave_archive_manifest.py --check",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pat02_wave1_archive_manifest_and_checksums -q",
+    "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "python -m json.tool governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+    "sha256sum -c governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python tools/wave_archive_manifest.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Generated wave1_archive_manifest.json, wave1_archive_manifest.sha256, and rollback_plan.md; candidate_count=383; checksum_count=383."
+    },
+    {
+      "command": "python tools/wave_archive_manifest.py --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Checksum manifest and generated outputs are stable on disk."
+    },
+    {
+      "command": "sha256sum -c governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+      "exit_code": 1,
+      "result": "LOCAL_TOOL_UNAVAILABLE",
+      "observed": "Windows cmd returned: 'sha256sum' is not recognized as an internal or external command. The generated .sha256 file uses standard coreutils format and is locally verified by python tools/wave_archive_manifest.py --check."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pat02_wave1_archive_manifest_and_checksums -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 focused S4PAT02 governance test; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed_files=6; root_governance_changed=true; selected_project_count=8; root_scope_excluded_projects=[EEI, arxiv-daily-push]."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 1,
+      "result": "EXPECTED_PRECOMMIT_DIRTY_TREE",
+      "observed": "Must rerun after commit for zero_diff.clean=true evidence."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root checked; projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push; errors=0; warnings=0."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No output; forbidden project tracked diff is zero."
+    }
+  ],
+  "evidence_refs": [
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/stage_gates/s4pa/rollback_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S4PAT02 Wave 1 archive manifest, checksum, and rollback binding",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "summary": "S4PAT02 binds Wave 1 archive candidates to checksums and rollback metadata. It deliberately performs no file movement, no archive writes, no deletion, and no product behavior changes.",
+  "rollback": "Remove tools/wave_archive_manifest.py, wave1_archive_manifest.json, wave1_archive_manifest.sha256, rollback_plan.md, this manifest, and the focused test. No project paths need restoration because S4PAT02 does not move files.",
+  "unresolved_risks": [
+    "PRIVATE candidates require owner review before any future archive or merge action.",
+    "S4PBT01/S4PBT02/S4PC still must migrate each project independently with focused tests.",
+    "No physical archive has been created; later tasks must use the checksum manifest before moving paths.",
+    "Product delivery readiness is not promoted by S4PAT02.",
+    "EEI and arxiv-daily-push remain out of Other8 Wave 1 scope."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
