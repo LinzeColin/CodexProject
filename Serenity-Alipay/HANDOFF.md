@@ -10,6 +10,7 @@ Timestamp: 20260624 - 12:22 CST / 20260624 - 14:22 AEST
 - 已改使用说明：新增“数据源与可审计文件”区，链接到 GitHub 的 `data/manual/candidates.csv`、`price_history.csv`、`fund_rules.csv`、`benchmark_price_history.csv`；SQLite 历史事实仍作为本地不可覆盖审计库，不暴露成公共链接。
 - 当前生成页验证：`outputs/application/index.html` 已显示专项基准标签：国证芯片、中证人工智能、创业板指、中证全指半导体、纳指100、恒生科技ETF代理；未再出现 `专项基准缺失` 或通用降级基准标签。
 - 验证：`py_compile app/core/benchmark_smoke.py app/core/application_portal.py tests/test_reporting_ui.py tests/test_benchmark_smoke.py` 通过；`pytest -q tests/test_reporting_ui.py tests/test_benchmark_smoke.py` 为 15 passed；`python -m app.cli application-portal --json` 通过并更新 `~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app`；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
+- GitHub 同步：独立仓库 `LinzeColin/Serenity-Alipay` 当前不可访问；本轮使用真实可访问路径 `LinzeColin/CodexProject/Serenity-Alipay`。已推送到 `main`，commit `597c1233 Update Serenity thematic benchmarks`，GitHub 上 `Serenity-Alipay/data/manual/benchmark_price_history.csv` 可打开。
 - 剩余风险：恒生科技指数精确历史源本轮仍未从 Yahoo/Eastmoney 稳定取得，当前使用 `3033.HK` 恒生科技 ETF 代理基准并在 UI 明示为 `恒生科技ETF代理`。后续若 MooMoo/官方/恒生指数源可稳定取得，应替换代理但不得改写历史快照。
 - 边界：本轮未处理“全市场实时自动扩容场外基金”，不新增真实 run，不触发刷新/复核，不发邮件，不改基金候选扩容逻辑，不改 OpenD/MooMoo lifecycle，不覆盖旧报告、旧快照或 SQLite 受保护历史行。
 
