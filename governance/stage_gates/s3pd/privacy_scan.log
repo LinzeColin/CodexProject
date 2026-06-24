@@ -1,0 +1,45 @@
+S3PDT01 OpenAIDatabase privacy scan evidence
+generated_at: 2026-06-24T23:55:00+10:00
+task_id: S3PDT01
+acceptance_id: ACC-S3PDT01
+
+Focused unittest command:
+set PYTHONPATH=OpenAIDatabase&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B OpenAIDatabase\tests\test_s3pdt01_privacy.py
+
+Observed:
+Ran 3 tests in 0.724s
+OK
+
+Privacy guard scan command:
+C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B OpenAIDatabase\scripts\privacy_guard.py --database-dir OpenAIDatabase --scan-only
+
+Observed:
+status: PASS
+tracked_raw_private_file_count: 0
+high_risk_secret_hit_count: 0
+gitignore_contract.ok: true
+gitignore_contract.required: *.zip, data/raw/, data/raw_encrypted/, data/private_imports/
+
+Git raw/private tracked-file check:
+git ls-files -- OpenAIDatabase/data/raw OpenAIDatabase/data/raw_encrypted OpenAIDatabase/data/private_imports
+observed: no tracked files
+
+Git ignore check:
+OpenAIDatabase/.gitignore:26:data/raw/ OpenAIDatabase/data/raw/private.json
+OpenAIDatabase/.gitignore:27:data/private_imports/ OpenAIDatabase/data/private_imports/export.json
+OpenAIDatabase/.gitignore:35:data/raw_encrypted/ OpenAIDatabase/data/raw_encrypted/archive.zip
+
+S3PDT01 contract results:
+- private_import_default_no_raw_storage: PASS
+- redaction_email_phone_secret_local_path: PASS
+- delete_recovery_from_redacted_output: PASS
+- reject_raw_source_inside_tracked_derived_tree: PASS
+- git_leakage_scan: PASS
+
+Roadmap pytest command:
+set PYTHONPATH=OpenAIDatabase&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m pytest OpenAIDatabase\tests -q
+blocked_local_tool_unavailable: No module named pytest
+
+Limits:
+- This proves OpenAIDatabase S3PDT01 privacy import, redaction, Git leakage, and deletion recovery contracts using synthetic private data only.
+- It does not approve real raw exports, production secrets, browser profiles, cookies, or owner data ingestion.

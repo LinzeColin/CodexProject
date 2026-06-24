@@ -129,3 +129,38 @@ tasks:
     rollback: "Set Serenity-Alipay ci_mode back to advisory."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "S3PCT03"
+    phase: "S3PC"
+    objective: "Verify Serenity OpenD auto-wake ownership, delivery package atomicity, launchd tick wrapper behavior, and close-cleanup contracts without real external side effects."
+    scope: ["mocked OpenD auto-wake", "tool-owned process cleanup", "user-owned OpenD protection", "temporary package atomicity recovery", "launchd tick wrapper contract", "focused lifecycle unittest"]
+    non_scope: ["investment model validity", "empirical calibration", "live OpenD readiness", "real email delivery", "real trading", "production package/data paths", "owner readiness approval"]
+    status: "completed"
+    dependencies: ["S2PCT03"]
+    required_files:
+      - "Serenity-Alipay/app/core/moomoo_lifecycle.py"
+      - "Serenity-Alipay/app/core/packaging.py"
+      - "Serenity-Alipay/scripts/serenity_launchd_tick.sh"
+      - "Serenity-Alipay/tests/test_s3pct03_lifecycle.py"
+      - "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv"
+      - "governance/stage_gates/s3pc/serenity_process_cleanup.log"
+      - "governance/stage_gates/s3pc/serenity_persistence_recovery.log"
+    acceptance_ids: ["ACC-S3PCT03"]
+    test_commands:
+      - "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B Serenity-Alipay\\tests\\test_s3pct03_lifecycle.py"
+      - "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile Serenity-Alipay\\tests\\test_s3pct03_lifecycle.py"
+      - "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest Serenity-Alipay\\tests -q"
+    test_results:
+      - "exit 0; lifecycle unittest Ran 4 tests OK, covering mocked OpenD ownership, cleanup, package atomicity, and launchd wrapper contract."
+      - "exit 0; py_compile OK."
+      - "blocked locally; bundled runtime reports No module named pytest, so roadmap pytest command requires a dependency-prepared environment."
+    evidence_refs:
+      - "Serenity-Alipay/tests/test_s3pct03_lifecycle.py"
+      - "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv"
+      - "governance/stage_gates/s3pc/serenity_process_cleanup.log"
+      - "governance/stage_gates/s3pc/serenity_persistence_recovery.log"
+      - "governance/run_manifests/GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json"
+    risk: "Focused local lifecycle passes with mocked OpenD and temporary package files only; live OpenD, email, trading, empirical calibration, and production readiness remain unverified."
+    rollback: "Revert S3PCT03 lifecycle test, stage-gate evidence, Serenity governance docs, rendered human entry files, root governance manifest test, and run manifest."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    completed_commit: "PENDING"

@@ -214,19 +214,36 @@ def run_task_manifest(
     resume: bool = True,
     min_quality_score: float | None = None,
     skip_low_quality: bool = False,
+    cancel_after_tasks: int | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     config = config or ValidationConfig()
+    if cancel_after_tasks is not None and cancel_after_tasks < 0:
+        raise ValueError("cancel_after_tasks must be non-negative")
     manifest = pd.read_csv(manifest_path)
     run_dir = Path(output_dir)
     result_dir = run_dir / "task_results"
     result_dir.mkdir(parents=True, exist_ok=True)
     selected = manifest.head(max_tasks) if max_tasks else manifest
     status_rows = []
+    attempted_tasks = 0
+    cancel_reason = ""
     for _, task in selected.iterrows():
         result_path = result_dir / f"{task['task_id']}.json"
         if resume and result_path.exists():
             status_rows.append({**task.to_dict(), "status": "cached", "result_path": str(result_path)})
             continue
+        if cancel_after_tasks is not None and attempted_tasks >= cancel_after_tasks:
+            cancel_reason = f"cancel_after_tasks={cancel_after_tasks}"
+            status_rows.append(
+                {
+                    **task.to_dict(),
+                    "status": "cancelled",
+                    "result_path": "",
+                    "cancellation_reason": cancel_reason,
+                }
+            )
+            continue
+        attempted_tasks += 1
         quality_decision = quality_gate_decision(task, min_quality_score=min_quality_score, skip_low_quality=skip_low_quality)
         if quality_decision["skip"]:
             skipped = {
@@ -263,6 +280,17 @@ def run_task_manifest(
     results.to_csv(run_dir / "validation_results.csv", index=False)
     summary.to_csv(run_dir / "strategy_summary.csv", index=False)
     (run_dir / "validation_config.json").write_text(pd.Series(asdict(config)).to_json(force_ascii=False, indent=2), encoding="utf-8")
+    run_control = {
+        "manifest_path": str(Path(manifest_path)),
+        "resume": bool(resume),
+        "max_tasks": max_tasks,
+        "cancel_after_tasks": cancel_after_tasks,
+        "selected_tasks": int(len(selected)),
+        "newly_attempted_tasks": int(attempted_tasks),
+        "cancelled_tasks": int((status["status"] == "cancelled").sum()) if not status.empty else 0,
+        "cancellation_reason": cancel_reason,
+    }
+    (run_dir / "run_control.json").write_text(json.dumps(run_control, ensure_ascii=False, indent=2), encoding="utf-8")
     return status, results, summary
 
 

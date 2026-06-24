@@ -1,0 +1,31 @@
+S3PCT02 PFI process cleanup evidence
+generated_at: 2026-06-24T00:00:00+10:00
+project_id: PFI_BIG_DATA_SIMULATOR
+task_id: S3PCT02
+
+Focused local command:
+- set PYTHONPATH=PFI\大数据模拟器&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B PFI\大数据模拟器\tests\test_s3pct02_lifecycle.py
+
+Observed result:
+- Ran 1 test in 1.916s; OK.
+- multiprocess_bounded: PASS
+- background_cleanup: PASS
+- background_residue_process_count: 0
+- The test snapshots multiprocessing.active_children() before the bounded ProcessPoolExecutor run and asserts that no new child process remains afterwards.
+
+Resource boundary:
+- synthetic_random_paths: paths=2 days=90 seed=20260624
+- process_workers: 2
+- chunk_size: 1
+- production_account_used: false
+- production_database_used: false
+- live_provider_connection_used: false
+
+Blocked local roadmap command:
+- set PYTHONPATH=PFI\大数据模拟器&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m pytest PFI\大数据模拟器\tests -q
+- result: BLOCKED_LOCAL_TOOL_UNAVAILABLE
+- observed: No module named pytest.
+
+Conclusion:
+- S3PCT02 process cleanup passes in a dependency-prepared unittest path.
+- The pytest roadmap command remains blocked locally by missing pytest, not by a failing lifecycle assertion.

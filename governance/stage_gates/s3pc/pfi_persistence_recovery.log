@@ -1,0 +1,39 @@
+S3PCT02 PFI persistence and recovery evidence
+generated_at: 2026-06-24T00:00:00+10:00
+project_id: PFI_BIG_DATA_SIMULATOR
+task_id: S3PCT02
+
+Focused local command:
+- set PYTHONPATH=PFI\大数据模拟器&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B PFI\大数据模拟器\tests\test_s3pct02_lifecycle.py
+
+Observed result:
+- Ran 1 test in 1.916s; OK.
+
+Cache evidence:
+- cache_manifest: PASS
+- cache source: synthetic CSV inside TemporaryDirectory
+- cache destination: TemporaryDirectory/cache
+- cache_index.csv created and read back by build_cache_task_manifest.
+
+Cancel and resume evidence:
+- cancel_checkpoint: PASS
+- first run uses run_task_manifest(cancel_after_tasks=1).
+- first run writes task_status.csv with completed and cancelled rows.
+- first run writes run_control.json with cancel_after_tasks=1 and cancelled_tasks > 0.
+- second run reuses the same manifest and run_dir with resume=True.
+- second run reports cached for the already completed task and completed for remaining tasks.
+- second run has no cancelled rows and validation_results.csv covers the full manifest.
+
+SQLite recovery evidence:
+- sqlite_persistence_recovery: PASS
+- temp run artifacts are imported into a temp SQLite warehouse.
+- warehouse_stats validation_results equals resumed_results row count.
+- warehouse_export writes strategy_market_summary.csv.
+- qbvs.warehouse now closes sqlite3 connections explicitly with contextlib.closing.
+- temp qbvs.sqlite unlink succeeds on Windows after export, proving no open DB handle remains.
+
+Stop conditions:
+- no production SQLite/database path used
+- no user data deletion
+- no live market/provider/account connection
+- no large pressure run; synthetic workload remains bounded

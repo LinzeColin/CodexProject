@@ -23,6 +23,8 @@ browser-profile/
 # Never commit raw unencrypted OpenAI exports.
 *.zip
 !tests/fixtures/*.zip
+data/raw/
+data/private_imports/
 
 # Local run logs / temporary work
 logs/

@@ -1,0 +1,22 @@
+S3PCT03 Serenity-Alipay persistence and package recovery evidence
+generated_at: 2026-06-24T23:20:00+10:00
+task_id: S3PCT03
+acceptance_id: ACC-S3PCT03
+
+Package atomicity proof:
+- test: test_delivery_package_atomic_failure_preserves_previous_zip_and_removes_tmp
+- previous package path: temporary outputs/package/serenity_daily_analysis_delivery.zip
+- failure injected: RuntimeError("zip writer failed")
+- recovery result: previous.txt still valid after failed build
+- temp cleanup: no *.tmp or .*.tmp files remain under the temporary package directory
+- production data: no production package, private evidence, mail output, or persistent user data path used
+
+Lifecycle recovery proof:
+- test: test_opend_auto_wake_records_tool_owned_process_and_cleans_it
+- socket and workbench discovery are mocked
+- cleanup result: terminated_started_processes:200
+- after_processes: []
+
+Limits:
+- This proves local lifecycle contracts and atomic package behavior only.
+- It does not prove investment model validity, empirical calibration, live OpenD readiness, live email delivery, trading readiness, or owner approval.

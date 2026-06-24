@@ -11,9 +11,9 @@ model_versions:
 parameter_profile_versions:
   serenity-parameters: "serenity-parameters-v1"
 data_snapshot_version: "manual-csv-2026-06-12"
-current_iteration: "ITER-20260621-002"
+current_iteration: "ITER-20260624-SERENITY-S3PCT03"
 current_phase: "B"
-current_gate: "GOV-REVIEW6-B-SEMANTIC-EXTRACT"
+current_gate: "GOV-REVIEW6-B-SEMANTIC-EXTRACT; OTHER8-S3PC-LIFECYCLE-IN-PROGRESS"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "pyproject.toml 0.1.0"
