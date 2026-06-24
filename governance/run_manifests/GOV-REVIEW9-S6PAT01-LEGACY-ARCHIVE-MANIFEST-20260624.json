@@ -1,0 +1,155 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S6PAT01",
+  "acceptance_ids": [
+    "ACC-S6PAT01"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S6PAT01",
+  "generated_at": "2026-06-24T12:05:00+10:00",
+  "implementation_base_sha": "d1c1654d15bd7818a2e0915926a1ef592245ce24",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:86a114ab7b7b3956ca422c696dc5db6600fb57f62463de770925866293faa26f",
+  "changed_files_declared": [
+    "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+  ],
+  "changed_files_actual": [
+    "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+  ],
+  "required_governance_files": [
+    "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+  ],
+  "updated_governance_files": [
+    "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_stage6_start",
+    "s6pat01_archive_manifest",
+    "checksum_archive_manifest",
+    "reference_scan_blocks_physical_move",
+    "no_business_behavior_change",
+    "no_legacy_truth_deletion",
+    "no_required_mode_change"
+  ],
+  "model_delta": "NOT_CHANGED: S6PAT01 creates a checksum archive manifest for legacy governance cleanup candidates only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, project, model, formula, parameter, data, CI required-mode, or branch-protection change.",
+  "stage_gate_status": {
+    "S6PA-GATE": "IN_PROGRESS",
+    "S6-GATE": "IN_PROGRESS"
+  },
+  "legacy_archive_summary": {
+    "archive_manifest": "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    "archive_manifest_sha256": "96b6b25ab8a584b0bfb09c01a2b5bf943dece9a654f992147cbc4ae8c89210a5",
+    "candidate_files": 160,
+    "project_v1_governance_files": 150,
+    "root_legacy_governance_scripts": 7,
+    "root_generated_or_status_views": 3,
+    "source_bytes_bound_by_checksum": 4490650,
+    "checksum_basis": "Git blob bytes from the implementation base/head, not platform-specific working-tree bytes.",
+    "archive_rows": 160,
+    "retention_policy": "retain originals in place until reference scan is zero, at least one release cycle has elapsed, and owner approval is recorded"
+  },
+  "reference_scan": {
+    "status": "ACTIVE_REFERENCES_FOUND",
+    "active_reference_rows": 159,
+    "active_reference_exact_count": 3992,
+    "sample_blockers": [
+      "AGENTS.md and .agents skills still reference v1 governance filenames.",
+      ".github/workflows/project-governance.yml still references generated dashboard/status paths.",
+      "Project v1 ledgers, registries, status pages, README files, and evidence refs still point to v1 files."
+    ],
+    "physical_move_allowed": false,
+    "physical_delete_allowed": false
+  },
+  "stage6_actions_performed": {
+    "legacy_files_moved": false,
+    "legacy_files_deleted": false,
+    "legacy_files_copied": false,
+    "generated_dashboards_removed": false,
+    "ci_mode_required_enabled": false,
+    "branch_protection_changed": false
+  },
+  "next_required_tasks": [
+    "S6PAT02",
+    "S6PAT03",
+    "S6PBT01",
+    "S6PBT02"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat01_archive_manifest_records_legacy_checksums tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat01_manifest_blocks_moves_while_references_are_active -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat01_archive_manifest_records_legacy_checksums tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat01_manifest_blocks_moves_while_references_are_active -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 2 tests in 8.602s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root governance diff only; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 228 tests in 24.429s; OK."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parses as JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors; Git printed the existing LF/CRLF working-copy warnings for changed text files."
+    }
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json",
+    "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S6PAT01 legacy governance checksum archive manifest",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_PASS_REMOTE_PR_CI_REQUIRED",
+  "summary": "S6PAT01 starts Stage 6 safely by binding all legacy cleanup candidates to checksums and retention policy. It deliberately does not move, copy, delete, or replace legacy truth because active references remain. This preserves governance truth while making later cleanup measurable.",
+  "rollback": "Delete governance/archive/review9_s6pat01_legacy_archive_manifest.csv, remove the two S6PAT01 tests, and delete this run manifest. No project or legacy governance source files need rollback because none were moved or modified.",
+  "unresolved_risks": [
+    "S6PA-GATE remains in_progress because active references are not zero.",
+    "Physical archive/move/delete remains blocked until S6PAT02/S6PAT03 remove generated-view dependencies and fix references.",
+    "Project ci_mode remains advisory until S6PBT01 and branch-protection evidence satisfy the Stage 6 contract.",
+    "Branch protection and required-check configuration remain external and must be verified in S6PBT02."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
