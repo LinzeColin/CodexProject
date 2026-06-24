@@ -70,3 +70,4 @@ Task detail fields:
 | 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving FIFA delivery readiness as UNVERIFIED and operational validation as FAILED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
 | 2026-06-22T00:24:25Z | owner_decision_required | Research and risk owners must decide whether to obtain authorized odds snapshots, calibration evidence and report fact checks while keeping stake/executable amount at 0. | TASK-FIFA-C-001 | UNKNOWN |
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT02 proposes FIFA Lean v2 canonical files and rendered Chinese human entry files. | S5PBT02 | PROPOSED |
+| 2026-06-24T22:05:00+10:00 | fail_closed_validation | S3PDT02 makes FIFA default matches export fail closed on raw parse or validation/automation gate failure and suppresses recommendation/report/baseline fake-success deliverables. | S3PDT02 | EXTRACTED |

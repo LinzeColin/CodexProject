@@ -413,16 +413,45 @@ def write_outputs(
     previous_baseline_path: Optional[Path] = None,
     public_source_audit_path: Optional[Path] = None,
     event_audit_path: Optional[Path] = None,
+    allow_blocked_export: bool = False,
 ) -> Dict:
-    raw = load_raw(raw_path)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        raw = load_raw(raw_path)
+    except Exception as exc:
+        failure = failed_closed_export(
+            raw_path=raw_path,
+            version=version,
+            gate={
+                "automation_ready": False,
+                "manual_report_ready": False,
+                "blocking_reasons": [f"Raw parse failed: {type(exc).__name__}: {exc}"],
+                "quality_audit": {},
+            },
+            candidates=[],
+            failure_stage="parse",
+        )
+        atomic_write_json(output_dir / f"tab_fifa_world_cup_matches_failed_closed_{version}.json", failure)
+        return failure
     public_source_audit = load_source_audit(public_source_audit_path)
     event_audit = load_event_audit(event_audit_path)
     candidates = generate_candidates(raw)
     gate = automation_gate(raw, candidates, public_source_audit, event_audit)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    if not gate.get("automation_ready") and not allow_blocked_export:
+        failure = failed_closed_export(
+            raw_path=raw_path,
+            version=version,
+            gate=gate,
+            candidates=candidates,
+            failure_stage="validation",
+        )
+        atomic_write_json(output_dir / f"automation_gate_{version}.json", gate)
+        atomic_write_json(output_dir / f"tab_fifa_world_cup_matches_failed_closed_{version}.json", failure)
+        return failure
 
     recommendations = {
         "version": version,
+        "export_status": "ready" if gate.get("automation_ready") else "legacy_blocked_export",
         "source_raw": public_artifact_ref(raw_path),
         "bankroll_aud": 4000,
         "unit_aud": 40,
@@ -438,12 +467,37 @@ def write_outputs(
     }
     previous = load_baseline(previous_baseline_path)
     recommendations["daily_compare"] = compare_recommendations(recommendations, previous)
+    report_markdown = render_markdown(recommendations)
+    baseline = compact_baseline(recommendations)
 
     atomic_write_json(output_dir / f"tab_fifa_world_cup_matches_recommendations_{version}.json", recommendations)
     atomic_write_json(output_dir / f"automation_gate_{version}.json", gate)
-    atomic_write_text(output_dir / f"tab_fifa_world_cup_matches_{version}_pipeline_report.md", render_markdown(recommendations))
-    atomic_write_json(output_dir / f"previous_report_baseline_{version}.json", compact_baseline(recommendations))
+    atomic_write_text(output_dir / f"tab_fifa_world_cup_matches_{version}_pipeline_report.md", report_markdown)
+    atomic_write_json(output_dir / f"previous_report_baseline_{version}.json", baseline)
     return recommendations
+
+
+def failed_closed_export(
+    raw_path: Path,
+    version: str,
+    gate: Dict,
+    candidates: List[Candidate],
+    failure_stage: str,
+) -> Dict:
+    return {
+        "version": version,
+        "export_status": "failed_closed",
+        "failure_stage": failure_stage,
+        "source_raw": public_artifact_ref(raw_path),
+        "recommended_new_exposure_aud": 0,
+        "recommendations": [],
+        "watchlist": [],
+        "candidate_count": len(candidates),
+        "top_candidate_count": gate.get("top_candidate_count", 0),
+        "automation_gate": gate,
+        "blocking_reasons": gate.get("blocking_reasons", []),
+        "message": "FIFA matches export failed closed; no recommendations, report, or baseline success deliverable was published.",
+    }
 
 
 def enrich_candidate(item: Dict, event_audit: Optional[Dict]) -> Dict:

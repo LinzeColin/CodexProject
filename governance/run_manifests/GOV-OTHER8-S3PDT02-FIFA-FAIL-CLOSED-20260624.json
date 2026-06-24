@@ -1,0 +1,262 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624",
+  "project_id": "FIFA",
+  "task_id": "S3PDT02",
+  "acceptance_ids": [
+    "ACC-S3PDT02"
+  ],
+  "iteration_id": "ITER-20260624-FIFA-S3PDT02",
+  "generated_at": "2026-06-24T22:05:00+10:00",
+  "implementation_base_sha": "99a35f5eef9eca42536c22a5ba74c9122eb6879e",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3ed1a7fa93e297ade519295dcba9512d456d320641e593ff4a5af99a492196fa",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json",
+    "FIFA/CHANGELOG.md",
+    "FIFA/docs/governance/ASSURANCE_STATUS.yaml",
+    "FIFA/docs/governance/DELIVERY_PLAN.md",
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/MODEL_SPEC.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/model_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/功能清单",
+    "FIFA/tab-research-pipeline/run_pipeline.py",
+    "FIFA/tab-research-pipeline/tab_research/pipeline.py",
+    "FIFA/tab-research-pipeline/tests/test_pipeline.py",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json",
+    "FIFA/CHANGELOG.md",
+    "FIFA/docs/governance/ASSURANCE_STATUS.yaml",
+    "FIFA/docs/governance/DELIVERY_PLAN.md",
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/MODEL_SPEC.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/model_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/功能清单",
+    "FIFA/tab-research-pipeline/run_pipeline.py",
+    "FIFA/tab-research-pipeline/tab_research/pipeline.py",
+    "FIFA/tab-research-pipeline/tests/test_pipeline.py",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json",
+    "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+    "tests/governance/test_project_governance_validator.py",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/ASSURANCE_STATUS.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/DELIVERY_PLAN.md",
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/MODEL_SPEC.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/model_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json",
+    "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+    "tests/governance/test_project_governance_validator.py",
+    "FIFA/CHANGELOG.md",
+    "FIFA/docs/governance/ASSURANCE_STATUS.yaml",
+    "FIFA/docs/governance/DELIVERY_PLAN.md",
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+    "FIFA/docs/governance/MODEL_SPEC.md",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/STATUS.md",
+    "FIFA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/development_events.jsonl",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/model_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件"
+  ],
+  "change_classification": [
+    "fail_closed_export_validation",
+    "single_project_scope",
+    "FIFA_only_scope",
+    "synthetic_fixture_only",
+    "parse_failure_fail_closed",
+    "validation_failure_fail_closed",
+    "fake_success_deliverables_suppressed",
+    "legacy_blocked_export_explicit_only",
+    "owner_truth_preserved"
+  ],
+  "stage_gate_status": {
+    "S3PDT02": "PASSED_FOCUSED_LOCAL_WITH_WINDOWS_FCNTL_STUB",
+    "S3PD-GATE": "IN_PROGRESS",
+    "S3-GATE": "IN_PROGRESS"
+  },
+  "runtime_behavior_delta": "Default FIFA write_outputs now fails closed on raw parse or validation/automation gate failure and does not publish recommendation JSON, Markdown report, or previous baseline success deliverables.",
+  "model_delta": "No probability, scoring, stake, bankroll, provider KPI, live board, raw refresh, automation readiness, or legacy softmax model formula changed.",
+  "formula_delta": "No active formula implementation changed except the export contract around blocked outputs.",
+  "parameter_delta": "No active parameter value changed.",
+  "version_delta": "Product version remains 0.1.0; governance iteration moves to ITER-20260624-FIFA-S3PDT02.",
+  "test_commands": [
+    "cd FIFA\\tab-research-pipeline && set PYTHONPATH=C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\test_stubs;.&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_on_raw_parse_error tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile FIFA\\tab-research-pipeline\\tab_research\\pipeline.py FIFA\\tab-research-pipeline\\run_pipeline.py FIFA\\tab-research-pipeline\\tests\\test_pipeline.py",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_write_outputs",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project FIFA --write",
+    "node_repl JSONL and manifest parser for FIFA S3PDT02 events",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pdt02_fifa_fail_closed_manifest_and_gate_evidence",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project FIFA",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py FIFA",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "cd FIFA\\tab-research-pipeline && set PYTHONPATH=C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\test_stubs;.&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_on_raw_parse_error tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 tests in 0.166s; OK."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile FIFA\\tab-research-pipeline\\tab_research\\pipeline.py FIFA\\tab-research-pipeline\\run_pipeline.py FIFA\\tab-research-pipeline\\tests\\test_pipeline.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "py_compile exit 0 for pipeline.py, run_pipeline.py, and tests/test_pipeline.py."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_write_outputs",
+      "exit_code": 1,
+      "result": "BLOCKED_LOCAL_PLATFORM_MODULE",
+      "observed": "Windows bundled Python import is blocked without temporary test stub: No module named 'fcntl'."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project FIFA --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "final render updated_count=2; FIFA/功能清单 and FIFA/模型参数文件 were regenerated after PARAM-118/project.yaml sync."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py FIFA",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_formulas_checked=10 semantic_parameters_checked=92."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pdt02_fifa_fail_closed_manifest_and_gate_evidence tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_project_yaml_preserves_research_only_truth",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 2 tests in 0.050s; OK."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project FIFA",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "sync errors=0 warnings=0; FIFA validation errors=0 warnings=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "node_repl JSONL and manifest parser for FIFA S3PDT02 events",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "events.jsonl 5 lines ok; development_events.jsonl 9 lines ok; manifest json ok."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted core.autocrlf line-ending warnings for text files."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "post-commit rerun passed; validation exit_code=0 and zero_diff.clean=true."
+    }
+  ],
+  "evidence_refs": [
+    "FIFA/tab-research-pipeline/tab_research/pipeline.py",
+    "FIFA/tab-research-pipeline/run_pipeline.py",
+    "FIFA/tab-research-pipeline/tests/test_pipeline.py",
+    "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+    "FIFA/docs/governance/delivery_tasks.yaml",
+    "FIFA/docs/governance/DEVELOPMENT_LEDGER.md"
+  ],
+  "stop_conditions_reviewed": [
+    "Error flow no longer generates seemingly successful recommendation/report/baseline deliverables by default.",
+    "Raw parse failure returns failed_closed with recommended_new_exposure_aud 0.",
+    "Validation/automation gate failure returns failed_closed and suppresses success deliverables.",
+    "Legacy blocked export requires an explicit allow_blocked_export=True flag.",
+    "FIFA owner and delivery readiness truth remains separate from focused fail-closed evidence."
+  ],
+  "unresolved_risks": [
+    "No real TAB public raw access, private My Bets snapshot, wagering action, Bet Slip mutation, owner authorization, or production delivery readiness is approved by S3PDT02.",
+    "The focused local Windows test run requires a temporary fcntl stub outside the repository; Linux CI should use the platform fcntl module.",
+    "FIFA TAB data truth, probability calibration, private position gates, manual signature, recurring report authorization, and delivery readiness remain unresolved.",
+    "S3PD-GATE and S3-GATE remain in progress until dependent tasks and owner decisions are closed."
+  ],
+  "owner_truth_preserved": {
+    "fake_success_export_boundary": "FOCUSED_SYNTHETIC_VERIFIED",
+    "real_tab_public_raw_access": "UNAPPROVED",
+    "private_my_bets_snapshot": "UNAPPROVED",
+    "wagering_or_bet_slip_mutation": "UNAPPROVED",
+    "delivery_readiness": "UNVERIFIED",
+    "owner_authorization": "UNVERIFIED"
+  },
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S3PDT02 FIFA fail-closed parse, validation, and export contract",
+  "ci_run_reference": "LOCAL_COMMIT_CHANGED_ONLY_CI_ORIGIN_MAIN_AND_PENDING_PR_GOVERNANCE_CI",
+  "binding_rationale": "Manifest records focused local commit evidence; final GitHub PR and main CI binding will be verified after PR merge."
+}

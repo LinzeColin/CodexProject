@@ -8,7 +8,7 @@ owner_role: "research_owner + risk_owner"
 current_status: "unverified_delivery_readiness"
 limitations:
   -
-    statement: "实现一致性为 PARTIAL：91/108 active parameters 和 10/10 active formulas 有机器抽取/指纹证据；17 个 active parameters 仍为 HUMAN_REVIEW_REQUIRED。"
+    statement: "实现一致性为 PARTIAL：92/109 active parameters 和 10/10 active formulas 有机器抽取/指纹证据；17 个 active parameters 仍为 HUMAN_REVIEW_REQUIRED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-FIFA-ASSURANCE-STATUS"
@@ -30,7 +30,7 @@ limitations:
       - "TASK-FIFA-D-002"
       - "TASK-FIFA-E-001"
   -
-    statement: "本迁移不改 odds parsing、probability model、stake allocation、raw refresh、live board discovery、automation readiness、legacy softmax、配置、测试 fixture、脚本运行或发布行为。"
+    statement: "Review9 迁移不改 odds parsing、probability model、stake allocation、raw refresh、live board discovery、automation readiness、legacy softmax 或投注行为；Other8 S3PDT02 只改变 blocked export publication contract，失败时不再发布 fake-success recommendation/report/baseline。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-FIFA-DEVELOPMENT-EVENTS"
@@ -3087,6 +3087,27 @@ parameters:
     evidence_refs:
       - "EVID-FIFA-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-118"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "ALLOW_BLOCKED_EXPORT"
+    name: "Explicit legacy blocked export flag"
+    value: "false"
+    source: "EXTRACTED from S3PDT02 fail-closed output contract"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/pipeline.py:413"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1237"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+      - "EVID-OTHER8-S3PDT02-FIFA-FAIL-CLOSED"
 strategies:
   -
     strategy_id: "STRAT-FIFA-001"
@@ -3237,7 +3258,19 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
     fact_level: "EXTRACTED"
-    description: "Semantic extraction evidence for 91 active parameters and 10 active formulas."
+    description: "Semantic extraction evidence for 92 active parameters and 10 active formulas."
+  -
+    evidence_id: "EVID-OTHER8-S3PDT02-FIFA-FAIL-CLOSED"
+    kind: "stage_gate_log"
+    ref: "governance/stage_gates/s3pd/fifa_fail_closed_tests.log"
+    fact_level: "EXTRACTED"
+    description: "Other8 S3PDT02 focused local fail-closed evidence for parse, validation, and blocked export behavior."
+  -
+    evidence_id: "EVID-OTHER8-S3PDT02-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json"
+    fact_level: "EXTRACTED"
+    description: "Other8 S3PDT02 FIFA fail-closed run manifest."
   -
     evidence_id: "EVID-REVIEW9-S5PBT02-MANIFEST"
     kind: "manifest"
