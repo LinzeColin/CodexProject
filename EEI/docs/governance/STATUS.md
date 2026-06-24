@@ -15,9 +15,9 @@
 - Path: `EEI`
 - Product version: `0.1.0`
 - Phase/Gate: `C / TASK-T1307-A209-BACKGROUND-HEARTBEAT-REFRESH-IN-PROGRESS`
-- Models/Formulas/Parameters total: `12 / 12 / 81`
-- Active formulas/parameters: `11 / 81`
-- Machine checked formulas/parameters: `11 / 81`
+- Models/Formulas/Parameters total: `12 / 12 / 82`
+- Active formulas/parameters: `11 / 82`
+- Machine checked formulas/parameters: `11 / 82`
 
 ## Assurance
 
@@ -37,23 +37,25 @@
 - Readiness: `FAILED`
 - Release gate: `TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `45`
+- Pending/stale events: `46`
 - Tree-bound events: `0`
-- Commit-bound events: `13`
+- Commit-bound events: `14`
 - Legacy unbound events: `17`
 - Unresolved fact IDs: `3`
 
 ## A209 Background Soak Update
 
 - T1307/A209 24h operator soak is running as background production-stability evidence and remains non-blocking for other MVP development.
-- Latest repository heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports operator PID `12478` RUNNING, watchdog PID `62233` RUNNING, `128/288` windows PASS, `0` failed, `160` remaining, `44.44%` complete, generated at `2026-06-23T21:24:52Z`.
+- Latest working-tree heartbeat: `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` is a pre-commit point-in-time artifact from `2026-06-24T11:07:43Z` with the clean restarted run at `3/288` windows PASS, `0` failed, `285` remaining and `1.04%` complete. The previous CI-attested heartbeat from commit `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd` remains `128/288` PASS; its original operator PID `12478` and watchdog PID `62233` are no longer live and must not be reused as current-process evidence.
+- Crash-recovery audit: the prior 24h attempt reached `135/288` PASS at `2026-06-23T21:56:53Z`, paused without failed windows, then an attempted resume produced a failed window at `2026-06-24T10:43:46Z` because the fixed Playwright browser path was missing. The failed checkpoint was preserved at `/private/tmp/eei-a209-failed-20260624T104346.checkpoints.jsonl` and is not release-ready evidence.
+- Current clean 24h attempt: after reinstalling Playwright Chromium at `/private/tmp/eei-ms-playwright`, host-permission probe passed at `2026-06-24T10:51:12Z`; the clean run started at `2026-06-24T10:52:04Z`, reached `3/288` PASS at `2026-06-24T11:07:16Z`, and is running with operator PID `57281` and host-level detached watchdog PID `17163`. This is live background evidence and is not treated as release closure.
 - Monitor contract: `EEI/scripts/monitor_operator_soak.py` reports `release_gate_closed_by_monitor=false`; supervisor contract `EEI/scripts/supervise_operator_soak.py` reports `release_gate_closed_by_supervisor=false`, observes the live PID without double-starting, dry-runs recovery by default, and is included in clean-room release packaging. Watchdog contract `EEI/scripts/watch_operator_soak.py` reports `release_gate_closed_by_watchdog=false`, resumes only paused successful checkpoints when launched with `--execute --auto-resume`, and reports stale live PIDs without killing them. Heartbeat contract `EEI/scripts/record_operator_soak_heartbeat.py` reports `release_gate_closed_by_background_heartbeat=false` and keeps A209 `IN_PROGRESS`. A209 remains `IN_PROGRESS` until full 24h summary and checkpoint evidence validate.
 
 ## T1307 A209 Finalization Preflight Update
 
 - `scripts/finalize_operator_soak_evidence.py` now generates and validates `EEI/artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json`.
 - The artifact reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`, `downstream_release_gate_refresh_allowed=false`, `a209_evidence_ready_for_release_manager=false` and `release_gate_closed_by_finalizer=false` while the detached 24h soak continues.
-- Current source heartbeat is `128/288` windows PASS, `0` failed and `160` remaining; downstream A203, release-manager and MVP release-gate regeneration is allowed only after the final 24h evidence reaches `288/288` with zero failed windows and the evidence validator reports release-manager-ready evidence.
+- Current source heartbeat is `3/288` windows PASS, `0` failed and `285` remaining for the clean restarted attempt; downstream A203, release-manager and MVP release-gate regeneration is allowed only after the final 24h evidence reaches `288/288` with zero failed windows and the evidence validator reports release-manager-ready evidence.
 - Added `PARAM-079` for `soak.finalization_preflight_schema_version` and `PARAM-082` for `soak.background_heartbeat_counts_as_release_ready=false`; no scoring formula, graph traversal formula, extraction model, model weight, business threshold or runtime API behavior changed.
 
 ## T1303 External Release Evidence Bundle Update
@@ -75,7 +77,7 @@
 - `scripts/apply_model_config.py` is now a fail-closed A204/A205 operator entrypoint: `--dry-run` emits hash-bound preview evidence without writes; `--execute` requires PostgreSQL and delegates draft creation, transactional activation and score recompute enqueue to `DomainRepository`.
 - `artifacts/model_config_import_preview.json` records `release_gate_closed_by_apply_model_config=false`; A204/A205 remain `IN_PROGRESS` until final release-manager activation has real A202, A026/A027, A209 and A210 gate evidence.
 - `scripts/validate_release_manager_activation.py` now validates both blocked and ready preflight states from evidence. The committed repository preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; a READY preflight can validate only when A202 signed clearance, A026/A027 production gold labels, A209 24h soak and A210 brand clearance artifacts all report release-ready evidence.
-- The release-manager preflight now also binds `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` as source-hashed background progress context. This exposes `128/288` A209 windows and `counts_as_release_ready=false` to the activation gate without replacing final 24h validator evidence.
+- The release-manager preflight now also binds `EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json` as source-hashed background progress context. This exposes `3/288` A209 clean-restart windows and `counts_as_release_ready=false` to the activation gate without replacing final 24h validator evidence.
 
 ## T1302 A203 Production API Release Preflight Update
 
@@ -89,7 +91,7 @@
 - `scripts/validate_mvp_release_gate.py` now generates and validates `EEI/artifacts/tests/a205/t1303_mvp_release_gate_preflight.json` as the final fail-closed v0.1 release-gate aggregator.
 - The committed artifact reports `MVP_RELEASE_BLOCKED`, `release_ready=false`, `production_publication_allowed=false`, `score_publication_allowed=false` and `public_brand_launch_allowed=false`.
 - Missing gates are explicit: A202 relationship publication clearance, A203 production API release preflight, A204/A205 release-manager activation, A209 24h operator soak, A210 brand clearance or risk waiver, A026 entity-resolution production gold set and A027 relationship-extraction production gold set.
-- The A209 heartbeat is included only as background progress context: repository evidence now reports `128/288` windows PASS, `0` failed and `counts_as_release_ready=false`; live local files may advance beyond that, but no heartbeat closes A209.
+- The A209 heartbeat is included only as background progress context: working-tree evidence now reports `3/288` clean-restart windows PASS, `0` failed and `counts_as_release_ready=false`; live local files may advance beyond that, but no heartbeat closes A209.
 - Added `PARAM-078` for `mvp_release_gate.preflight_schema_version`; no scoring formula, graph traversal formula, extraction model, model weight, business threshold or runtime API behavior changed.
 
 ## T904 Gold-Label Intake Template Update
@@ -110,3 +112,9 @@
 - The template status is `TEMPLATE_ONLY`, with `release_gate_closure_allowed=false`, `relationship_publication_allowed=false` and `template_counts_as_clearance=false`; it is an operator/legal intake artifact, not source-license approval, passage approval, owner approval, legal clearance, relationship publication or A202 closure.
 - The A202 signed-intake preflight is generated from the template by default and remains `A202_SIGNED_INTAKE_MISSING`; a future operator-supplied signed intake can validate A202 clearance but still leaves A210, A026/A027, A209 and release-manager activation open.
 - A202 remains `IN_PROGRESS` until a real signed A202 intake or release-decision bundle passes validation and the release manager later sees all external gates ready. A209 24h soak continues as an independent background gate.
+
+## Latest CI Binding
+
+- `EVENT-20260624-024` is now CI-attested by commit `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd`.
+- GitHub Actions evidence: Project Governance run `28059597753` / job `83070396547` PASS; EEI validation run `28059597696` / job `83070396099` PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- The CI-attested repository heartbeat remains a point-in-time `128/288` evidence artifact; A209 is still `IN_PROGRESS` until the final 24h summary and checkpoint validation pass at `288/288`.

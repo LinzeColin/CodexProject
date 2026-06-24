@@ -42,15 +42,15 @@
       "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 44.44,
+      "completion_percent": 1.04,
       "counts_as_release_ready": false,
       "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
-      "windows_completed": 128,
+      "windows_completed": 3,
       "windows_failed": 0,
-      "windows_remaining": 160
+      "windows_remaining": 285
     },
     "release_decision": {
       "public_brand_launch_allowed": false,
@@ -75,7 +75,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-23T21:34:04Z",
+  "generated_at": "2026-06-24T11:07:49Z",
   "missing_gates": [
     {
       "gate_id": "A203_contract_status",
@@ -111,11 +111,11 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "6c9fedc4c5629b129c5c3c010555f4033042a40ca8705fea2c9b7ad901b0605f",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "880433ea90214d2e459deebc9aeb4a9a4564bfc1078d98a8337a648d12081e83",
+    "operator_soak_heartbeat_sha256": "086b2d398851800aa8480ca3edf27e1136f773f5edb39be3df05a8f8e07f3fb1",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "release_decision_contract_sha256": "f11eb17e8242edd401e51ba76af4aa63e55081472822c2d0b030c067d8844027",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "9ddde0c055921c1bfa68f28704d9d437fd60ab04efb05927c5131e1f1ec9aa99"
+    "release_manager_preflight_sha256": "6b35e1fafa6e27238cd5fac1c1a189329da2532779e2ce732291e9472d390492"
   },
   "status": "A203_PRODUCTION_API_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",
