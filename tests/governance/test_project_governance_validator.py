@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import csv
 import importlib.util
 import io
 import hashlib
@@ -2872,6 +2873,223 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
         self.assertIn("PFI delivery readiness remains UNVERIFIED", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s5pbt05_arxiv_project_yaml_preserves_stage_truth(self) -> None:
+        validator = load_validator_module()
+        arxiv_root = ROOT / "arxiv-daily-push"
+        project = validator.load_yaml(arxiv_root / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "arxiv-daily-push")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "stage1_accepted_stage2_ready")
+        self.assertIn("Stage 1 B1/arXiv accepted", project["summary"])
+        self.assertIn("Stage 2 S2P1T01 ready", project["summary"])
+        self.assertIn("evidence_freshness PARTIAL", project["summary"])
+        self.assertEqual(len(project["features"]), 8)
+        self.assertEqual(len(project["models"]), 46)
+        self.assertEqual(len(project["formulas"]), 48)
+        self.assertEqual(len(project["parameters"]), 342)
+        self.assertEqual(len(project["strategies"]), 3)
+        self.assertEqual(len(project["validations"]), 4)
+
+        source_models = validator.load_yaml(arxiv_root / "docs" / "governance" / "model_registry.yaml")["models"]
+        source_formulas = validator.load_yaml(arxiv_root / "docs" / "governance" / "formula_registry.yaml")["formulas"]
+        with (arxiv_root / "docs" / "governance" / "parameter_registry.csv").open(encoding="utf-8", newline="") as handle:
+            source_parameters = list(csv.DictReader(handle))
+        self.assertEqual(
+            {item["model_id"] for item in source_models if item.get("status") == "active"},
+            {item["model_id"] for item in project["models"]},
+        )
+        self.assertEqual(
+            {item["formula_id"] for item in source_formulas if item.get("status") == "active"},
+            {item["formula_id"] for item in project["formulas"]},
+        )
+        self.assertEqual(
+            {item["parameter_id"] for item in source_parameters if item.get("status") == "active"},
+            {item["parameter_id"] for item in project["parameters"]},
+        )
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PBT05-MANIFEST", evidence_ids)
+        self.assertIn("EVID-ADP-STAGE1-ACCEPTED", evidence_ids)
+        self.assertIn("EVID-ADP-LOCAL-PRODUCTION-PREP", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
+        model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 342)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 48)
+        self.assertEqual(model_semantic_counts["EXTRACTED"], 46)
+
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("342/342 active parameters", limitations)
+        self.assertIn("48/48 active formulas", limitations)
+        self.assertIn("46 个 active models 只从 model_registry EXTRACTED", limitations)
+        self.assertIn("delivery_readiness 对 Stage 1 arXiv 为 VERIFIED", limitations)
+        self.assertIn("evidence_freshness 仍为 PARTIAL", limitations)
+        self.assertIn("S2P1T01 bioRxiv/medRxiv source promotion 只是 ready/next task", limitations)
+        self.assertEqual(project["delivery_readiness"]["status"], "VERIFIED")
+        self.assertEqual(project["delivery_readiness"]["release_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+        self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 0)
+        self.assertEqual(project["delivery_readiness"]["active_requirements"], 9)
+        self.assertEqual(project["delivery_readiness"]["partial_requirements"], 1)
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_id"], "S2P1T01")
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "ready")
+
+        matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP")
+        self.assertEqual(matrix["current_phase"], "S2P1")
+        self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertEqual(matrix["review9_migration_iteration"], "ITER-20260624-REVIEW9-S5PBT05")
+        self.assertEqual(matrix["review9_migration_phase"], "S5PB")
+        self.assertEqual(matrix["review9_migration_gate"], "S5PB-GATE-IN-PROGRESS")
+
+    def test_review9_s5pbt05_arxiv_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "arxiv-daily-push" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "arxiv-daily-push")
+        self.assertEqual(roadmap["current_stage_id"], "S5")
+        self.assertEqual(roadmap["current_phase_id"], "S5PB")
+        self.assertEqual(roadmap["current_task_id"], "S5PBT05")
+        self.assertEqual(roadmap["next_gate_id"], "S5PB-GATE-IN-PROGRESS")
+        self.assertEqual(roadmap["total_estimated_hours"], 4)
+        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S5PBT05"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "completed")
+        self.assertEqual(task["dependencies"], ["S5PBT04"])
+        self.assertEqual(task["acceptance_ids"], ["ACC-S5PBT05"])
+        self.assertIn("arxiv-daily-push/docs/governance/project.yaml", task["evidence_refs"])
+        self.assertIn("任何项目缺少 owner-readable 三文件", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+        self.assertIn("未知事实被写成 VERIFIED", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+
+    def test_review9_s5pbt05_arxiv_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "arxiv-daily-push" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 6)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-ADP-STAGE1-ACCEPTED-20260623-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("does not imply Stage 2 sources are implemented", by_id["EVT-ADP-STAGE1-ACCEPTED-20260623-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-TEST10-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("does not mean unattended local production mail is installed", by_id["EVT-ADP-TEST10-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-S2P1T01-READY-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("Ready is not implemented", by_id["EVT-ADP-S2P1T01-READY-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-REVIEW9-S5PBT05-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pbt05_arxiv_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        arxiv_root = ROOT / "arxiv-daily-push"
+        result = cli.check_render_project_files(arxiv_root)
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (arxiv_root / "功能清单").read_text(encoding="utf-8")
+        dev_text = (arxiv_root / "开发记录").read_text(encoding="utf-8")
+        model_text = (arxiv_root / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-ADP-008", feature_text)
+        self.assertIn("bioRxiv/medRxiv", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PBT05", dev_text)
+        self.assertIn("ARXIV_PRODUCTION_ACCEPTED", dev_text)
+        self.assertIn("S2P1T01", dev_text)
+        self.assertIn("MOD-ADP-046", model_text)
+        self.assertIn("FORM-ADP-048", model_text)
+        self.assertIn("PARAM-ADP-359", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pbt05_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "arxiv-daily-push",
+            "path": "arxiv-daily-push",
+            "model_behavior_globs": ["src/**/*", "config/**/*", "schemas/**/*", "tests/**/*", ".github/workflows/arxiv-daily-push-*"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "arxiv-daily-push/docs/governance/project.yaml",
+                "arxiv-daily-push/docs/governance/roadmap.yaml",
+                "arxiv-daily-push/docs/governance/events.jsonl",
+                "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+                "arxiv-daily-push/功能清单",
+                "arxiv-daily-push/开发记录",
+                "arxiv-daily-push/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+                "docs/governance/VERSION_MATRIX.yaml",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pbt05_manifest_records_arxiv_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "S5PBT05")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT05"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("arxiv_daily_push_only_scope", manifest["change_classification"])
+        self.assertIn("arxiv_external_ci_scope_guard", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+            ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+            ".github/workflows/arxiv-daily-push-real-backfill.yml",
+            "arxiv-daily-push/docs/governance/project.yaml",
+            "arxiv-daily-push/docs/governance/roadmap.yaml",
+            "arxiv-daily-push/docs/governance/events.jsonl",
+            "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+            "arxiv-daily-push/功能清单",
+            "arxiv-daily-push/开发记录",
+            "arxiv-daily-push/模型参数文件",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "PFI/")) for path in changed))
+        self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("evidence_freshness remains PARTIAL", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("S2P1T01 is ready but not implemented", " ".join(manifest["unresolved_risks"]))
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
@@ -3537,12 +3755,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertNotIn(forbidden, text)
 
     def test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths(self) -> None:
-        workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-stage1-bootstrap.yml").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn('"arxiv-daily-push/**"', workflow)
-        for forbidden in {'"governance/**"', '"scripts/**"', '"tests/governance/**"'}:
-            self.assertNotIn(forbidden, workflow)
+        for workflow_name in {
+            "arxiv-daily-push-stage1-bootstrap.yml",
+            "arxiv-daily-push-phase12-cloud-dry-run.yml",
+            "arxiv-daily-push-real-backfill.yml",
+        }:
+            workflow = (ROOT / ".github" / "workflows" / workflow_name).read_text(encoding="utf-8")
+            self.assertIn('"arxiv-daily-push/**"', workflow)
+            self.assertIn("runtime-change-scope:", workflow)
+            self.assertIn("classify-arxiv-runtime-change", workflow)
+            self.assertIn("needs: runtime-change-scope", workflow)
+            self.assertIn("governance-only paths do not run this external/runtime check", workflow)
+            self.assertIn("arxiv-daily-push/(src|tests|config|schemas)/", workflow)
+            for forbidden in {'"governance/**"', '"scripts/**"', '"tests/governance/**"'}:
+                self.assertNotIn(forbidden, workflow)
 
     def test_review7_setup_doctor_reports_missing_hooks_unverified(self) -> None:
         doctor = load_setup_doctor_module()
