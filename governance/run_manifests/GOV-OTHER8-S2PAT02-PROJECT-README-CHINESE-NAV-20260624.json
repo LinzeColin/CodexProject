@@ -1,0 +1,141 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PAT02-PROJECT-README-CHINESE-NAV-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PAT02",
+  "acceptance_ids": [
+    "ACC-S2PAT02"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PAT02",
+  "generated_at": "2026-06-24T13:58:03+10:00",
+  "implementation_base_sha": "cb43ffe6ba7cf4dd3f81a35903e58014c6fee9e8",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:63035478c22b42b543a5cd4e99ac5db89da8d5e728f8e900550085921769643c",
+  "changed_files_declared": [
+    "Alpha/README.md",
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "whkmSalary/README.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT02-PROJECT-README-CHINESE-NAV-20260624.json"
+  ],
+  "changed_files_actual": [
+    "Alpha/README.md",
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "whkmSalary/README.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT02-PROJECT-README-CHINESE-NAV-20260624.json"
+  ],
+  "required_governance_files": [
+    "Alpha/README.md",
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "whkmSalary/README.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT02-PROJECT-README-CHINESE-NAV-20260624.json"
+  ],
+  "updated_governance_files": [
+    "Alpha/README.md",
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "whkmSalary/README.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT02-PROJECT-README-CHINESE-NAV-20260624.json"
+  ],
+  "change_classification": [
+    "project_readme_navigation",
+    "other8_s2pat02",
+    "chinese_human_entry_contract",
+    "no_duplicate_machine_fact_source"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Eight target project README files now present the Chinese human-entry files as owner-readable entry points rather than legacy compatibility indexes.",
+  "excluded_projects": [
+    "EEI",
+    "arxiv-daily-push"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat02_target_readmes_use_chinese_human_entry_navigation -q",
+    "rg 'compatibility index' <target readmes> -n",
+    "rg '兼容索引' <target readmes> -n",
+    "python -B scripts/lean_governance.py validate --changed-only --base-ref HEAD",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat02_target_readmes_use_chinese_human_entry_navigation -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Focused target README Chinese human-entry navigation test passed."
+    },
+    {
+      "command": "rg 'compatibility index' <target readmes> -n",
+      "exit_code": 1,
+      "result": "PASS_NO_MATCHES",
+      "observed": "No target README contains the English compatibility-index label."
+    },
+    {
+      "command": "rg '兼容索引' <target readmes> -n",
+      "exit_code": 1,
+      "result": "PASS_NO_MATCHES",
+      "observed": "No target README contains the Chinese compatibility-index label."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed-only validation checked root plus the eight target projects with errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0, check-render drift=0 across 10 selected projects, and zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors after manifest addition."
+    }
+  ],
+  "evidence_refs": [
+    "Alpha/README.md",
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "whkmSalary/README.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PAT02 target project README files use Chinese human-entry navigation and do not label human files as compatibility indexes.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PAT02 updates the eight target project README governance sections so agents land on the three Chinese owner-readable entry files while machine truth remains under docs/governance Lean v2 files.",
+  "rollback": "Revert the eight target project README edits, the focused governance test, and this run manifest.",
+  "unresolved_risks": [
+    "S2PCT01 still needs changed-scope impact-map tightening so ordinary non-product work does not select excluded projects."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

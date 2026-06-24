@@ -5988,6 +5988,27 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("lean_governance.py ci --changed-only --base-ref origin/main", rendered_required)
         self.assertNotIn("generate_governance_dashboard.py --write", rendered_required.split("Write-mode generators", 1)[0])
 
+    def test_other8_s2pat02_target_readmes_use_chinese_human_entry_navigation(self) -> None:
+        target_readmes = [
+            ROOT / "Alpha" / "README.md",
+            ROOT / "EVA_OS" / "README.md",
+            ROOT / "FIFA" / "README.md",
+            ROOT / "OpMe_System" / "README.md",
+            ROOT / "OpenAIDatabase" / "README.md",
+            ROOT / "PFI" / "大数据模拟器" / "README.md",
+            ROOT / "Serenity-Alipay" / "README.md",
+            ROOT / "whkmSalary" / "README.md",
+        ]
+        for readme_path in target_readmes:
+            with self.subTest(readme=str(readme_path.relative_to(ROOT))):
+                text = readme_path.read_text(encoding="utf-8")
+                self.assertIn("中文人类入口", text)
+                self.assertIn("docs/governance/", text)
+                for human_entry in ("功能清单", "开发记录", "模型参数文件"):
+                    self.assertIn(human_entry, text)
+                for forbidden in ("compatibility index", "compatibility indexes", "兼容索引"):
+                    self.assertNotIn(forbidden, text.lower())
+
 
 if __name__ == "__main__":
     unittest.main()

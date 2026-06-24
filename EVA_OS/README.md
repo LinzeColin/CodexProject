@@ -21,7 +21,9 @@ Reports and results produced by the system may support your real trading decisio
 
 ## Governance Baseline
 
-Canonical governance entry: `docs/governance/MODEL_SPEC.md`. Machine sources of truth live under `docs/governance/` for model, formula, parameter, delivery, development, version and traceability records. Legacy files `功能清单`, `开发记录` and `模型参数文件` are compatibility indexes only.
+Machine sources of truth live under `docs/governance/` for model, formula, parameter, delivery, development, version and traceability records.
+
+中文人类入口：`功能清单`、`开发记录`、`模型参数文件`。这三份文件必须直接保留 owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、限制和下一步门禁；它们不是跳转页，也不是第二套可编辑机器事实源。机器真相仍以 `docs/governance/` 下的 Lean v2 文件为准。
 
 ## Start Here
 
