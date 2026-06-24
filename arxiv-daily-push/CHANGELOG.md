@@ -2,6 +2,9 @@
 
 ## Unreleased - 2026-06-24
 
+- Added `S2PCT01` / legacy `S2P2T01` V7.1 D2 top-journal shadow foundation using official public Nature RSS metadata, filtering to `s41586-*` main-journal research article links only.
+- Added `adp fetch-top-journal-latest` and `adp stage2-top-journal-shadow-daily` with separate no-send queue, ledger, dry-run package, and email preview persistence; kept Stage 2 production acceptance, SMTP, Release, schedule, and video disabled.
+- Verified a live Nature RSS no-send canary with 3 real `s41586` source IDs and local queue/ledger/email preview artifacts under `/tmp`.
 - Implemented the `S2P1T01` bioRxiv/medRxiv source-promotion foundation: metadata-only preprint adapter, disabled Stage 2 source registry entries, promotion gate, separate shadow daily queue/ledger/email preview path, and fixture tests.
 - Verified one live bioRxiv and one live medRxiv fixed-interval canary plus one no-send shadow daily canary; kept formal production inclusion blocked until 30-date terminal replay and 48h shadow evidence pass.
 - Added `adp local-runner preflight|daily|launchd-package` for Stage 1 local Mac + Codex/local runner operation.

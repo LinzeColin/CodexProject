@@ -134,7 +134,7 @@ jobs:
           artifact_dir="$RUNNER_TEMP/adp-phase12-cloud-dry-run"
           report="$artifact_dir/adp-live-all-arxiv-dry-run.json"
           mkdir -p "$artifact_dir"
-          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_live_all_arxiv" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push run-live-all-arxiv-dry-run --date "${{ steps.params.outputs.date }}" --generated-at "${{ steps.params.outputs.generated_at }}" --max-results-per-category "${{ steps.params.outputs.max_results }}" --polite-delay-seconds "${{ steps.params.outputs.polite_delay }}" --artifact-dir "$artifact_dir" --json > "$report"
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$RUNNER_TEMP/adp_pycache_live_all_arxiv" PYTHONPATH=arxiv-daily-push/src             python3 -m arxiv_daily_push run-live-all-arxiv-dry-run --date "${{ steps.params.outputs.date }}" --generated-at "${{ steps.params.outputs.generated_at }}" --max-results-per-category "${{ steps.params.outputs.max_results }}" --fetcher curl --polite-delay-seconds "${{ steps.params.outputs.polite_delay }}" --artifact-dir "$artifact_dir" --json > "$report"
           printf 'artifact_dir=%s\n' "$artifact_dir" >> "$GITHUB_OUTPUT"
           printf 'report=%s\n' "$report" >> "$GITHUB_OUTPUT"
       - name: Build Stage 1 accelerated acceptance evidence

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns="http://purl.org/rss/1.0/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/">
+  <channel rdf:about="http://feeds.nature.com/nature/rss/current">
+    <title>Nature</title>
+    <link>https://www.nature.com/nature</link>
+    <description>Nature research articles and journal content.</description>
+  </channel>
+  <item rdf:about="https://www.nature.com/articles/d41586-026-00001-0">
+    <title>News item should not enter the research queue</title>
+    <link>https://www.nature.com/articles/d41586-026-00001-0</link>
+    <description>News content, not a Nature main-journal research article.</description>
+    <dc:creator>Nature News</dc:creator>
+    <prism:publicationDate>2026-06-24</prism:publicationDate>
+  </item>
+  <item rdf:about="https://www.nature.com/articles/s41586-026-10807-x">
+    <title>C-glycoside synthesis via radical cross-coupling of glycohydrazides</title>
+    <link>https://www.nature.com/articles/s41586-026-10807-x</link>
+    <description>This Nature research article reports a synthesis method, reaction framework, optimization constraints, mechanistic evidence, evaluation data, reproducible controls, and failure conditions that can improve research triage and interdisciplinary learning value.</description>
+    <dc:creator>A. Researcher</dc:creator>
+    <dc:creator>B. Scientist</dc:creator>
+    <prism:publicationDate>2026-06-24</prism:publicationDate>
+  </item>
+  <item rdf:about="https://www.nature.com/articles/s41586-026-10799-8">
+    <title>Quantum light discovery through structured material response</title>
+    <link>https://www.nature.com/articles/s41586-026-10799-8</link>
+    <description>This Nature research article describes quantum light experiments, material response variables, statistical measurements, benchmark evidence, limitations, and possible technology translation for careful scientific learning.</description>
+    <dc:creator>C. Physicist</dc:creator>
+    <prism:publicationDate>2026-06-23</prism:publicationDate>
+  </item>
+</rdf:RDF>

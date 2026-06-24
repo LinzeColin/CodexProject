@@ -536,13 +536,15 @@ def validate_arxiv_daily_push_v7_root_lock(
         validation.add(required, scope, "V7 lock Stage2 stop_gate mismatch")
     if stage2.get("production_accepted") is not False:
         validation.add(required, scope, "V7 lock must keep Stage2 production_accepted=false")
-    if stage2.get("current_task_id") != "S2PAT05":
-        validation.add(required, scope, "V7 lock current_task_id must be S2PAT05")
+    if stage2.get("current_task_id") != "S2PCT01":
+        validation.add(required, scope, "V7 lock current_task_id must be S2PCT01")
     if stage2.get("current_shadow_source_task") != "S2PBT01":
         validation.add(required, scope, "V7 lock current_shadow_source_task must be S2PBT01")
     if stage2.get("final_task") != "S2PMT07":
         validation.add(required, scope, "V7 lock final_task must be S2PMT07")
     aliases = stage2.get("legacy_aliases") if isinstance(stage2.get("legacy_aliases"), dict) else {}
+    if aliases.get("S2PCT01") != "S2P2T01":
+        validation.add(required, scope, "V7 lock must map S2PCT01 to legacy S2P2T01")
     if aliases.get("S2PBT01") != "S2P1T01":
         validation.add(required, scope, "V7 lock must map S2PBT01 to legacy S2P1T01")
     tasks = [task for task in parsed.get("tasks", []) if isinstance(task, dict)]
@@ -562,6 +564,15 @@ def validate_arxiv_daily_push_v7_root_lock(
         acceptance_ids = {str(item) for item in as_list(s2pbt01.get("acceptance_ids")) if item}
         if "ACC-S2PBT01-BIORXIV-MEDRXIV" not in acceptance_ids:
             validation.add(required, scope, "S2PBT01 missing ACC-S2PBT01-BIORXIV-MEDRXIV")
+    s2pct01 = next((task for task in tasks if str(task.get("task_id") or "") == "S2PCT01"), None)
+    if not s2pct01:
+        validation.add(required, scope, "delivery_tasks.yaml must contain V7.1 task S2PCT01")
+    else:
+        if str(s2pct01.get("status") or "") not in {"ready", "in_progress", "completed"}:
+            validation.add(required, scope, "S2PCT01 must be ready, in_progress, or completed")
+        acceptance_ids = {str(item) for item in as_list(s2pct01.get("acceptance_ids")) if item}
+        if "ACC-S2PCT01-NATURE" not in acceptance_ids:
+            validation.add(required, scope, "S2PCT01 missing ACC-S2PCT01-NATURE")
 
     root_agent = (ROOT / "AGENTS.md").read_text(encoding="utf-8") if (ROOT / "AGENTS.md").exists() else ""
     project_agent = (project_path / "AGENTS.md").read_text(encoding="utf-8") if (project_path / "AGENTS.md").exists() else ""
@@ -569,6 +580,8 @@ def validate_arxiv_daily_push_v7_root_lock(
         ("V*_ROOT_LOCK.yaml", root_agent, "root AGENTS.md"),
         ("docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("INTEGRATED_PRODUCTION_ACCEPTED ->", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2PCT01", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2P2T01", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2PBT01", project_agent, "arxiv-daily-push/AGENTS.md"),
     ):
         if needle not in text:
@@ -576,15 +589,15 @@ def validate_arxiv_daily_push_v7_root_lock(
 
     for rel_path in ("功能清单", "开发记录", "模型参数文件"):
         text = (project_path / rel_path).read_text(encoding="utf-8") if (project_path / rel_path).exists() else ""
-        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PBT01"):
+        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PBT01"):
             if needle not in text:
                 validation.add(required, scope, f"{rel_path} missing V7 lock reference: {needle}")
 
     matrix = parsed.get("version_matrix") if isinstance(parsed.get("version_matrix"), dict) else {}
     if matrix.get("current_v7_contract_version") != expected_contract_version:
         validation.add(required, scope, "VERSION_MATRIX.yaml missing current_v7_contract_version")
-    if matrix.get("current_v7_task_id") != "S2PAT05":
-        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PAT05")
+    if matrix.get("current_v7_task_id") != "S2PCT01":
+        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PCT01")
     if matrix.get("current_v7_shadow_source_task_id") != "S2PBT01":
         validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_shadow_source_task_id must be S2PBT01")
     if matrix.get("current_v7_final_task_id") != "S2PMT07":

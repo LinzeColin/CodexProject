@@ -12,11 +12,11 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   current execution contract. V5/V6/V7.0 files remain historical evidence and
   alias references; they no longer override V7.1.
 - Every implementation closeout must state the current V7.1 Task ID and any
-  legacy alias. Current governance task: `S2PAT05` V7.1 parallel-audit lock and
-  remediation governance. Parallel source-development task: `S2PBT01`
-  (`S2P1T01` legacy alias) bioRxiv/medRxiv source promotion. The
-  bioRxiv/medRxiv metadata-only no-send replay and shadow evidence has passed,
-  but formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and
+  legacy alias. Current development entry is `S2PCT01` (`S2P2T01` legacy alias)
+  Nature/top-journal metadata-only no-send shadow evidence. `S2PBT01`
+  (`S2P1T01` legacy alias) bioRxiv/medRxiv no-send replay and shadow evidence
+  has passed and remains a D1 alias/history record, not the current task.
+  Formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and
   `INTEGRATED_PRODUCTION_ACCEPTED` remain blocked by V7.1 P0/P1 and final gate
   rules.
   `ADP-S1P5T05` completed the Stage 1 local production and migration prep after
@@ -29,8 +29,9 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   boards only after the V7 contract is readable, hashes match, and source-level
   gates pass, and P0/P1 audit findings are zero. Stage 2 is not complete until
   `S2PMT07 -> INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
-- Legacy `S2P1T01` maps to V7 `S2PBT01`; preserve both IDs in events, PR
-  summaries, and closeouts until the Stage2 branch has reconciled aliases.
+- Legacy `S2P2T01` maps to V7.1 `S2PCT01`; legacy `S2P1T01` maps to V7
+  `S2PBT01`. Preserve both canonical and legacy IDs in events, PR summaries,
+  and closeouts until the Stage2 branch has reconciled aliases.
 - Do not use OpenAI Platform API keys or paid API fallbacks.
 - Do not read, print, or commit Codex auth, GitHub tokens, SMTP secrets, cookies,
   voice samples, model weights, or release media.

@@ -63,6 +63,7 @@ from .scheduled_execution import (
 )
 from .simulation import run_two_day_simulation, validate_two_day_simulation_report
 from .preprint_adapter import fetch_preprint_details_with_curl, ingest_latest_preprints, validate_preprint_source_batch
+from .top_journal_adapter import fetch_top_journal_rss_with_curl, ingest_latest_top_journal, validate_top_journal_source_batch
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .source_registry import (
     build_source_registry_report,
@@ -71,7 +72,12 @@ from .source_registry import (
 )
 from .smtp_delivery import deliver_notification, validate_smtp_delivery_report
 from .stage1_b1_report import build_b1_report_email_package, validate_b1_report_email_package
-from .stage1_bootstrap import build_stage1_bootstrap_report, validate_stage1_bootstrap_report
+from .stage1_bootstrap import (
+    STAGE1_BOOTSTRAP_NETWORK_MAX_ATTEMPTS,
+    STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
+    build_stage1_bootstrap_report,
+    validate_stage1_bootstrap_report,
+)
 from .stage1_historical_previews import (
     build_historical_b1_previews,
     build_historical_b1_previews_report,
@@ -103,9 +109,11 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
+    validate_s2p2_top_journal_shadow_report,
 )
 from .storage import (
     inspect_database,
@@ -328,6 +336,18 @@ def build_parser() -> argparse.ArgumentParser:
     post_migration_bootstrap.add_argument("--workflow-path", help="Optional GitHub Actions workflow path to verify.")
     post_migration_bootstrap.add_argument("--require-github-actions", action="store_true", help="Require GitHub-hosted cloud runner evidence.")
     post_migration_bootstrap.add_argument("--require-network-probe", action="store_true", help="Run one lightweight HTTPS arXiv API probe.")
+    post_migration_bootstrap.add_argument(
+        "--network-timeout-seconds",
+        type=int,
+        default=STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
+        help="Per-attempt arXiv network probe timeout.",
+    )
+    post_migration_bootstrap.add_argument(
+        "--network-max-attempts",
+        type=int,
+        default=STAGE1_BOOTSTRAP_NETWORK_MAX_ATTEMPTS,
+        help="Maximum arXiv network probe attempts before failing closed.",
+    )
     post_migration_bootstrap.add_argument("--require-secret-presence", action="store_true", help="Require SMTP secret env names to be present without printing values.")
     post_migration_bootstrap.add_argument("--json", action="store_true", help="Print JSON bootstrap report.")
 
@@ -401,6 +421,14 @@ def build_parser() -> argparse.ArgumentParser:
     fetch_preprint.add_argument("--fetcher", choices=("urllib", "curl"), default="urllib", help="Real metadata fetch implementation.")
     fetch_preprint.add_argument("--json", action="store_true", help="Print JSON source batch.")
 
+    fetch_top_journal = subparsers.add_parser("fetch-top-journal-latest", help="Fetch latest top-journal public RSS metadata SourceItems.")
+    fetch_top_journal.add_argument("--journal", choices=("nature",), default="nature", help="Top journal to query.")
+    fetch_top_journal.add_argument("--max-records", type=int, default=3, help="Small metadata result window to keep.")
+    fetch_top_journal.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
+    fetch_top_journal.add_argument("--seen-source-id", action="append", default=[], help="Previously processed source_id to exclude.")
+    fetch_top_journal.add_argument("--fetcher", choices=("urllib", "curl"), default="urllib", help="Real metadata fetch implementation.")
+    fetch_top_journal.add_argument("--json", action="store_true", help="Print JSON source batch.")
+
     s2p1_gate = subparsers.add_parser("stage2-preprint-gate", help="Evaluate S2P1T01 bioRxiv/medRxiv source promotion gates.")
     s2p1_gate.add_argument("--biorxiv-batch", required=True, help="bioRxiv preprint source batch JSON.")
     s2p1_gate.add_argument("--medrxiv-batch", required=True, help="medRxiv preprint source batch JSON.")
@@ -435,6 +463,15 @@ def build_parser() -> argparse.ArgumentParser:
     s2p1_replay.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2p1_replay.add_argument("--json", action="store_true", help="Print JSON replay/shadow report.")
 
+    s2p2_shadow = subparsers.add_parser("stage2-top-journal-shadow-daily", help="Run one no-send S2P2 Nature shadow daily preview.")
+    s2p2_shadow.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2p2_shadow.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2p2_shadow.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2p2_shadow.add_argument("--nature-batch", required=True, help="Nature RSS source batch JSON.")
+    s2p2_shadow.add_argument("--queue-path", help="Optional existing S2P2 top-journal queue JSON.")
+    s2p2_shadow.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2p2_shadow.add_argument("--json", action="store_true", help="Print JSON shadow report.")
+
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
     all_arxiv_plan.add_argument("--json", action="store_true", help="Print JSON scan plan.")
@@ -464,6 +501,7 @@ def build_parser() -> argparse.ArgumentParser:
     live_all_arxiv.add_argument("--date", default="", help="Daily input date for the live-selected sample paper.")
     live_all_arxiv.add_argument("--max-results-per-category", type=int, default=1)
     live_all_arxiv.add_argument("--artifact-dir", help="Directory for the live all-arXiv dry-run report.")
+    live_all_arxiv.add_argument("--fetcher", choices=("curl", "urllib"), default="urllib", help="Live arXiv fetch implementation.")
     live_all_arxiv.add_argument("--polite-delay-seconds", type=float, default=0.0, help="Optional delay between archive fetches.")
     live_all_arxiv.add_argument("--json", action="store_true", help="Print JSON dry-run report.")
 
@@ -1156,6 +1194,8 @@ def main(argv: list[str] | None = None) -> int:
             workflow_path=args.workflow_path,
             require_github_actions=args.require_github_actions,
             require_network_probe=args.require_network_probe,
+            network_timeout_seconds=args.network_timeout_seconds,
+            network_max_attempts=args.network_max_attempts,
             require_secret_presence=args.require_secret_presence,
         )
         errors = validate_stage1_bootstrap_report(report)
@@ -1313,6 +1353,27 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if batch["status"] == "pass" and not errors else 2
+    if args.command == "fetch-top-journal-latest":
+        top_journal_fetcher = fetch_top_journal_rss_with_curl if args.fetcher == "curl" else None
+        batch = ingest_latest_top_journal(
+            journal=args.journal,
+            max_records=args.max_records,
+            generated_at=args.generated_at,
+            seen_source_ids=args.seen_source_id,
+            fetcher=top_journal_fetcher,
+        )
+        errors = validate_top_journal_source_batch(batch)
+        if args.json:
+            print(json.dumps(batch, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(batch["status"])
+            print(f"- journal: {batch.get('journal')}")
+            print(f"- new_item_count: {batch.get('new_item_count')}")
+            for reason in batch.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if batch["status"] == "pass" and not errors else 2
     if args.command == "stage2-preprint-gate":
         source_batches = {
             "biorxiv": load_json_mapping(args.biorxiv_batch),
@@ -1391,6 +1452,27 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-top-journal-shadow-daily":
+        source_batches = {"nature": load_json_mapping(args.nature_batch)}
+        queue = load_json_mapping(args.queue_path) if args.queue_path else None
+        report = run_s2p2_top_journal_shadow_daily(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            source_batches=source_batches,
+            queue=queue,
+            write=not args.no_write,
+        )
+        errors = validate_s2p2_top_journal_shadow_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)
@@ -1445,10 +1527,12 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- {reason}")
         return 0 if report["daily_input_ready"] else 2
     if args.command == "run-live-all-arxiv-dry-run":
+        fetcher = fetch_atom_with_curl if args.fetcher == "curl" else None
         report = build_live_all_arxiv_dry_run(
             generated_at=args.generated_at,
             date=args.date or None,
             max_results_per_category=args.max_results_per_category,
+            fetcher=fetcher,
             artifact_dir=args.artifact_dir,
             polite_delay_seconds=args.polite_delay_seconds,
         )

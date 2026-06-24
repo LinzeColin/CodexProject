@@ -14,6 +14,7 @@ class CloudDryRunWorkflowTests(unittest.TestCase):
         self.assertIn("contents: read", workflow)
         self.assertNotIn("contents: write", workflow)
         self.assertIn("run-live-all-arxiv-dry-run", workflow)
+        self.assertIn("--fetcher curl", workflow)
         self.assertIn("adp-phase12-cloud-dry-run", workflow)
         self.assertIn('ADP_ALLOW_SMTP_SEND: "false"', workflow)
         self.assertNotIn("ADP_ALLOW_RELEASE", workflow)

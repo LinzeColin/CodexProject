@@ -1,10 +1,10 @@
 schema_version: "codexproject.roadmap.v1"
 project_id: "arxiv-daily-push"
 current_stage_id: "S2"
-current_phase_id: "S2PB"
-current_task_id: "S2PBT01"
-next_gate_id: "S2PB-GATE-V7-CONTRACT-BLOCKED"
-total_estimated_hours: 6.5
+current_phase_id: "S2PC"
+current_task_id: "S2PCT01"
+next_gate_id: "S2PC-GATE-V7-CONTRACT-BLOCKED"
+total_estimated_hours: 8.5
 completed_estimated_hours: 4
 stages:
   -
@@ -14,7 +14,7 @@ stages:
     status: "in_progress"
     stop_conditions:
       - "V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED"
-      - "bioRxiv/medRxiv shadow 影响正式 arXiv 邮件"
+      - "bioRxiv/medRxiv 或 Nature shadow 影响正式 arXiv 邮件"
       - "启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion"
     stop_gate:
       gate_id: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
@@ -51,7 +51,7 @@ stages:
             task_id: "S2PBT01"
             name: "bioRxiv 与 medRxiv no-send shadow source evidence"
             objective: "完成 metadata-only adapter、source gate、queue/ledger/email preview、30-date real replay 和 48h shadow evidence，并保持 formal production false。"
-            status: "evidence_passed_no_formal_production"
+            status: "completed"
             estimated_hours: 2.5
             total_hours_percent: "38.46%"
             dependencies:
@@ -68,6 +68,47 @@ stages:
               - "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json"
             risk: "V7/root contract gates 未完成前不能纳入正式生产、不能启用邮件发送或 schedule。"
             rollback: "Revert S2PBT01/S2P1T01 source adapter, shadow/replay code, registry records, manifests, and rendered governance sync."
+      -
+        phase_id: "S2PC"
+        name: "D2 Nature/top-journal shadow foundation"
+        objective: "将 legacy S2P2T01 作为 V7.1 canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence。"
+        status: "in_progress"
+        stop_conditions:
+          - "把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction"
+          - "把 S2PCT01 shadow evidence 当作 D2 source-domain acceptance"
+          - "启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion"
+        stop_gate:
+          gate_id: "S2PC-GATE-V7-CONTRACT-BLOCKED"
+          status: "in_progress"
+          pass_conditions:
+            - "S2PCT01/S2P2T01 Nature evidence persisted"
+            - "formal production flags remain false"
+            - "V7.1 P0/P1 cleared and S2PMT07 independent review passes before acceptance"
+          evidence_refs:
+            - "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
+            - "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md"
+        tasks:
+          -
+            task_id: "S2PCT01"
+            legacy_alias: "S2P2T01"
+            name: "Nature/top-journal metadata-only no-send shadow evidence"
+            objective: "完成 official Nature RSS adapter、s41586 main-journal filter、SourceItem mapping、queue/ledger/email preview 和 no-send canary evidence。"
+            status: "in_progress"
+            estimated_hours: 2
+            total_hours_percent: "23.53%"
+            dependencies:
+              - "S2PBT01"
+            acceptance_ids:
+              - "ACC-S2PCT01-NATURE"
+            test_commands:
+              - "python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q"
+              - "stage2-top-journal-shadow-daily using the live Nature batch under /tmp/adp_s2p2_nature_live_20260624"
+            evidence_refs:
+              - "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
+              - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+              - "arxiv-daily-push/tests/test_stage2_sources.py"
+            risk: "V7.1 P0/P1 和 S2PMT07 未完成前不能纳入正式生产、不能启用邮件发送或 schedule，Nature metadata 不能被误读为全文抽取。"
+            rollback: "Revert S2PCT01/S2P2T01 Nature adapter, shadow daily code, fixtures, tests, phase record, manifest, and rendered governance sync."
   -
     stage_id: "S5"
     name: "项目迁移与三文件重建"

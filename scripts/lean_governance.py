@@ -85,7 +85,9 @@ def v7_1_summary_lines(lock: dict[str, Any] | None) -> list[str]:
         return []
     contract = lock.get("current_contract") if isinstance(lock.get("current_contract"), dict) else {}
     stage1 = lock.get("stage1_boundary") if isinstance(lock.get("stage1_boundary"), dict) else {}
-    stage2 = lock.get("stage2_boundary") if isinstance(lock.get("stage2_boundary"), dict) else {}
+    stage2 = lock.get("stage2_boundary") if isinstance(lock, dict) and isinstance(lock.get("stage2_boundary"), dict) else {}
+    aliases = stage2.get("legacy_aliases") if isinstance(stage2.get("legacy_aliases"), dict) else {}
+    alias_text = "; ".join(f"{key} -> {value}" for key, value in sorted(aliases.items())) or "NOT_APPLICABLE"
     forbidden = lock.get("forbidden_actions_until_integrated_gate")
     forbidden_items = []
     if isinstance(forbidden, dict):
@@ -103,7 +105,7 @@ def v7_1_summary_lines(lock: dict[str, Any] | None) -> list[str]:
         f"- stage1_gate: `{text_or_na(stage1.get('maintained_gate') or stage1.get('accepted_gate'))}`",
         f"- stage2_current_task: `{text_or_na(stage2.get('current_task_id'))}`",
         f"- stage2_shadow_source_task: `{text_or_na(stage2.get('current_shadow_source_task'))}`",
-        f"- legacy_alias: `S2PBT01 -> S2P1T01`",
+        f"- legacy_alias: `{alias_text}`",
         f"- stage2_final_task: `{text_or_na(stage2.get('final_task'))}`",
         f"- stage2_stop_gate: `{text_or_na(stage2.get('stop_gate'))}`",
         f"- stage2_integrated_production_accepted: `{str(bool(stage2.get('production_accepted'))).lower()}`",
@@ -342,7 +344,8 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     models = [item for item in governance.as_list(project_facts.get("models")) if isinstance(item, dict)]
     formulas = [item for item in governance.as_list(project_facts.get("formulas")) if isinstance(item, dict)]
     parameters = [item for item in governance.as_list(project_facts.get("parameters")) if isinstance(item, dict)]
-    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
+    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or "")) or {}
+    stage2 = lock.get("stage2_boundary") if isinstance(lock.get("stage2_boundary"), dict) else {}
     lines = [
         "# 模型参数文件",
         "",
@@ -371,7 +374,7 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
                 "- V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。",
                 "- `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。",
                 "- `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。",
-                "- `S2PBT01` 是 Stage2 来源 Shadow 线程任务；当前治理修复任务是 `S2PAT05`。",
+                f"- `{text_or_na(stage2.get('current_task_id'))}` 是当前 Stage2 任务；`{text_or_na(stage2.get('current_shadow_source_task'))}` 保留为已通过的来源 Shadow 线程任务。",
             ]
         )
     lines.extend(["", "## 模型"])
