@@ -1123,6 +1123,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []
+  - task_id: "S2P2T01"
+    phase: "S2P2"
+    objective: "Add the first Board 2 top-journal metadata-only shadow foundation using official public Nature RSS before any formal Stage 2 production inclusion."
+    scope: "Nature official RSS adapter, s41586 main-journal research article filter, metadata-only SourceItems, ROI candidate queue integration, no-send shadow daily runner, separate local queue/ledger/email preview persistence, CLI commands, and focused tests."
+    non_scope: "No STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
+    status: "in_progress"
+    dependencies: ["S2P1T01"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml", "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"]
+    acceptance_ids: ["ADP-ACC-S2P2T01-TOP-JOURNAL-SHADOW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_pycache_s2p2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q", "fetch-top-journal-latest --journal nature --max-records 3 --fetcher curl", "stage2-top-journal-shadow-daily using the live Nature batch under /tmp/adp_s2p2_nature_live_20260624"]
+    test_results: ["focused S2P2/top-journal and Stage2 tests: 14 tests OK", "Nature RSS fixture filters d41586 news items and admits only s41586 main-journal research articles", "S2P2 shadow daily persists separate queue, ledger, dry-run package, and email preview with real_smtp_sent=false and formal_production_inclusion=false", "live Nature RSS no-send canary: batch pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, queue/ledger/email preview paths exist, real_smtp_sent=false, formal_production_inclusion=false"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md", "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "https://www.nature.com/nature.rss", "https://www.nature.com/nature/research-articles"]
+    risk: "This is Board 2 shadow evidence only; V7/root contract hash gates still block any formal Stage 2 production inclusion, and Nature metadata must not be treated as full-text review."
+    rollback: "Revert top_journal_adapter.py, S2P2 stage2_sources/CLI/lesson/global_scan changes, Nature fixture/tests, S2P2 phase record, manifest, and event."
+    target_version: "0.24.0"
+    completed_version: ""
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."

@@ -6,11 +6,11 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PBT01/S2P1T01 的 bioRxiv/medRxiv metadata-only no-send replay/shadow 证据已经通过；这只是证据推进，不是正式生产纳入。没有启用 SMTP、Release、GitHub schedule、视频或正式邮件 inclusion。
+S2PBT01/S2P1T01 的 bioRxiv/medRxiv metadata-only no-send replay/shadow 证据已经通过。当前继续推进到 `S2P2T01`，新增 Nature 官方 RSS metadata-only no-send shadow foundation；这仍只是证据推进，不是正式生产纳入。没有启用 SMTP、Release、GitHub schedule、视频或正式邮件 inclusion。
 
 ## 3. 为什么重要
 
-在保持 Stage 1 arXiv accepted 和本机 Codex/local runner 策略不变的前提下，防止 Stage 2 no-send 证据被误读为正式生产。
+在保持 Stage 1 arXiv accepted 和本机 Codex/local runner 策略不变的前提下，让板块二顶级期刊可以开始排队/解读链路验证，同时防止 Stage 2 no-send 证据被误读为正式生产。
 
 ## 4. 需要人类决定什么
 
@@ -31,7 +31,7 @@ S2PBT01/S2P1T01 remains evidence-passed but cannot be formally promoted into pro
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PBT01/S2P1T01`
+- next_task_id: `S2P2T01`
 - responsible_role: `content_owner + engineering_owner`
 - acceptance_ids: `ADP-ACC-S2P1T01-SOURCE-PROMOTION`
 - unblock_condition: Merge the V7/root contract, AGENTS, three baseline files, and CI contract hash gate; then reconcile the S2PBT01/S2P1T01 alias before any formal production inclusion or Stage 2 acceptance claim.
@@ -105,5 +105,5 @@ S2PBT01/S2P1T01 remains evidence-passed but cannot be formally promoted into pro
 
 ## 17. Next Unique Task
 
-- task_id: `S2PBT01/S2P1T01`
-- reason: bioRxiv and medRxiv metadata-only no-send replay/shadow evidence passed; V7/root contract, baseline files, and CI contract hash gate still block formal source production inclusion.
+- task_id: `S2P2T01`
+- reason: Nature official RSS metadata-only shadow foundation is now the current evidence task; V7/root contract, baseline files, and CI contract hash gate still block formal source production inclusion.

@@ -14,8 +14,8 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2P1 / ARXIV_PRODUCTION_ACCEPTED`
-- Models/Formulas/Parameters total: `50 / 52 / 376`
+- Phase/Gate: `S2P2 / ARXIV_PRODUCTION_ACCEPTED`
+- Models/Formulas/Parameters total: `52 / 52 / 376`
 - Active formulas/parameters: `52 / 359`
 - Machine checked formulas/parameters: `52 / 359`
 
@@ -36,7 +36,7 @@
 
 - Readiness: `VERIFIED`
 - Release gate: `ARXIV_PRODUCTION_ACCEPTED`
-- Next executable task: `S2P1T01`
+- Next executable task: `S2P2T01`
 - Pending/stale events: `90`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
