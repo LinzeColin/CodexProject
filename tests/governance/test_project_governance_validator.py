@@ -5232,6 +5232,119 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s4pbt02_eva_structure_simplification_archives_handoff_packs_and_cleanup(self) -> None:
+        s4pa_root = ROOT / "governance" / "stage_gates" / "s4pa"
+        archive_manifest = json.loads((s4pa_root / "wave1_archive_manifest.json").read_text(encoding="utf-8"))
+        structure_report = ROOT / "EVA_OS" / "docs" / "EVA_structure_report.md"
+        project = load_validator_module().load_yaml(ROOT / "EVA_OS" / "docs" / "governance" / "project.yaml")
+        root_merge_docs = {
+            "EVA_OS/15_OPEN_QUESTIONS.md",
+            "EVA_OS/AGENT_CONTINUITY.md",
+            "EVA_OS/CODEX_PROMPTS.md",
+            "EVA_OS/CODEX_TASK_PACK.md",
+            "EVA_OS/HANDOFF.md",
+            "EVA_OS/PLANS.md",
+            "EVA_OS/UPLOAD_MANIFEST.md",
+        }
+
+        def is_s4pbt02_eva_candidate(item: dict[str, Any]) -> bool:
+            source_path = item["source_path"]
+            return (
+                item["project_id"] == "EVA_OS"
+                and (
+                    source_path in root_merge_docs
+                    or source_path.startswith("EVA_OS/handoff_packs/")
+                    or source_path.startswith("EVA_OS/cleanup/")
+                    or source_path == "EVA_OS/docs/FeatureSpecification.pdf"
+                )
+            )
+
+        eva_archived = [item for item in archive_manifest["candidates"] if is_s4pbt02_eva_candidate(item)]
+        self.assertEqual(len(eva_archived), 40)
+        self.assertEqual(Counter(item["category"] for item in eva_archived), {"ARCHIVE": 32, "GENERATED": 1, "MERGE": 7})
+        self.assertFalse((ROOT / "EVA_OS" / "handoff_packs").exists())
+        self.assertFalse((ROOT / "EVA_OS" / "cleanup").exists())
+        self.assertFalse((ROOT / "EVA_OS" / "docs" / "FeatureSpecification.pdf").exists())
+        self.assertTrue((ROOT / "EVA_OS" / "docs" / "FeatureSpecification.md").is_file())
+        self.assertTrue((ROOT / "EVA_OS" / "src").is_dir())
+        self.assertTrue((ROOT / "EVA_OS" / "shared").is_dir())
+        self.assertTrue((ROOT / "EVA_OS" / "systems").is_dir())
+        self.assertTrue((ROOT / "EVA_OS" / "assets" / "EVA_OSAppIcon.icns").is_file())
+
+        for source_path in root_merge_docs:
+            self.assertFalse((ROOT / source_path).exists(), source_path)
+        for item in archive_manifest["candidates"]:
+            if item["project_id"] == "EVA_OS" and item["category"] == "PRIVATE":
+                self.assertTrue((ROOT / item["source_path"]).exists(), item["source_path"])
+
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        reconciliations = {
+            item["source_path"]: item
+            for item in manifest.get("archive_checksum_reconciliation", [])
+        }
+        for item in eva_archived:
+            with self.subTest(source_path=item["source_path"]):
+                self.assertFalse((ROOT / item["source_path"]).exists(), item["source_path"])
+                target = ROOT / item["proposed_target"]
+                self.assertTrue(target.is_file(), item["proposed_target"])
+                observed = hashlib.sha256(target.read_bytes()).hexdigest()
+                if observed != item["sha256"]:
+                    reconciliation = reconciliations.get(item["source_path"])
+                    self.assertIsNotNone(reconciliation, item["source_path"])
+                    self.assertEqual(reconciliation["s4pat02_manifest_sha256"], item["sha256"])
+                    self.assertEqual(reconciliation["archived_worktree_sha256"], observed)
+                else:
+                    self.assertEqual(observed, item["sha256"])
+
+        report_text = structure_report.read_text(encoding="utf-8")
+        for required in {
+            "S4PBT02",
+            "ACC-S4PBT02",
+            "OLD_TO_NEW_MAP",
+            "EVA_OS/handoff_packs/**",
+            "EVA_OS/cleanup/**",
+            "EVA_OS/docs/FeatureSpecification.pdf",
+            "PRIVATE data moved or archived: no",
+        }:
+            self.assertIn(required, report_text)
+
+        evidence = {item["evidence_id"]: item for item in project["evidence_refs"]}
+        self.assertEqual(
+            evidence["EVID-EVA-HANDOFF"]["ref"],
+            "governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md",
+        )
+        self.assertEqual(
+            evidence["EVID-OTHER8-S4PBT02-EVA-STRUCTURE-REPORT"]["ref"],
+            "EVA_OS/docs/EVA_structure_report.md",
+        )
+        validations = {item["validation_id"]: item for item in project["validations"]}
+        self.assertEqual(validations["VAL-EVA-S4PBT02-STRUCTURE"]["fact_level"], "EXTRACTED")
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "EVA_OS")
+        self.assertEqual(manifest["task_id"], "S4PBT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PBT02"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S4PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["archive_actions"]["eva_archived_path_count"], 40)
+        self.assertEqual(manifest["archive_actions"]["eva_private_candidate_action"], "UNCHANGED_OWNER_REVIEW_REQUIRED")
+        self.assertFalse(manifest["stop_conditions"]["eva_import_paths_changed"])
+        self.assertFalse(manifest["stop_conditions"]["private_data_moved"])
+        self.assertFalse(manifest["stop_conditions"]["live_readiness_promoted"])
+        changed = set(manifest["changed_files_actual"])
+        self.assertIn("EVA_OS/docs/EVA_structure_report.md", changed)
+        self.assertIn("governance/archive/other8_wave1_pending/EVA_OS/HANDOFF.md", changed)
+        self.assertTrue(
+            any(path.startswith("governance/archive/other8_wave1_pending/EVA_OS/handoff_packs/") for path in changed)
+        )
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

@@ -36,10 +36,12 @@ $EVA_OS_HOME/docs/QuickStart.md
 Agent 接手优先读：
 
 ```text
-AGENT_CONTINUITY.md
-HANDOFF.md
-15_OPEN_QUESTIONS.md
-UPLOAD_MANIFEST.md
+docs/governance/project.yaml
+docs/governance/roadmap.yaml
+docs/governance/events.jsonl
+docs/Index.md
+docs/EVA_OS.md
+docs/EVA_structure_report.md
 ```
 
 最短路径：
@@ -58,6 +60,8 @@ UPLOAD_MANIFEST.md
 | 快速使用说明 | `docs/QuickStart.md` |
 | 文档索引 | `docs/Index.md` |
 | EVA_OS 架构 | `docs/EVA_OS.md` |
+| S4PBT02 结构迁移报告 | `docs/EVA_structure_report.md` |
+| 历史 handoff 与 review packs | `governance/archive/other8_wave1_pending/EVA_OS/` |
 | 总控驾驶舱 | `docs/ExecutiveCommandCenter.md` |
 | 行情事件层 | `docs/MarketEventLayer.md` |
 | 可复现数据湖 | `docs/ReproducibleDataLake.md` |
