@@ -6,35 +6,35 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-`ADP-S1P5T05` 已把生产策略切到本机 Mac + Codex/local runner：新增 local daily CLI、local preflight、queue/ledger/report/email preview 本地持久化、launchd package 草案和 2026-06-30 迁移 runbook。没有启用 GitHub cloud schedule、没有真实 SMTP 生产发送、没有 Release 上传、没有视频要求。
+S2PBT01/S2P1T01 的 bioRxiv/medRxiv metadata-only no-send replay/shadow 证据已经通过；这只是证据推进，不是正式生产纳入。没有启用 SMTP、Release、GitHub schedule、视频或正式邮件 inclusion。
 
 ## 3. 为什么重要
 
-在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到生命科学与医学预印本。
+在保持 Stage 1 arXiv accepted 和本机 Codex/local runner 策略不变的前提下，防止 Stage 2 no-send 证据被误读为正式生产。
 
 ## 4. 需要人类决定什么
 
-- decision_id: `DEC-arxiv-daily-push-S2P1T01-001`
-- decision_question: 是否开始 Stage 2 的第一个 source promotion：bioRxiv 与 medRxiv。
+- decision_id: `DEC-arxiv-daily-push-S2PBT01-001`
+- decision_question: 是否保持 S2PBT01/S2P1T01 为 evidence-passed/no-formal-production，等待 V7/root contract hash gate。
 - human_owner_role: `content_owner + engineering_owner`
 - human_assignment_status: `CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT`
 
 ## 5. 默认建议
 
-- current_recommendation: A: start S2P1T01 after S1 local runner migration prep
-- estimated_effort: P1/P2; source adapter, fixtures, 30-day replay plan, 48h shadow contract, arXiv no-regression tests
-- estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
+- current_recommendation: A: keep S2PBT01/S2P1T01 as evidence-passed/no-formal-production until the V7/root contract hash gate is merged
+- estimated_effort: P1; V7/root contract hash gate reconciliation and alias sync only
+- estimated_cost_or_resource: local governance and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
 ## 6. 不决策后果
 
-Stage 1 local production prep remains complete, but Stage 2 does not begin.
+S2PBT01/S2P1T01 remains evidence-passed but cannot be formally promoted into production.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2P1T01`
+- next_task_id: `S2PBT01/S2P1T01`
 - responsible_role: `content_owner + engineering_owner`
 - acceptance_ids: `ADP-ACC-S2P1T01-SOURCE-PROMOTION`
-- unblock_condition: Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2p1_focus4 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_source_registry.py arxiv-daily-push/tests/test_owner_controls.py arxiv-daily-push/tests/test_contracts.py -q` and attach the listed evidence refs.
+- unblock_condition: Merge the V7/root contract, AGENTS, three baseline files, and CI contract hash gate; then reconcile the S2PBT01/S2P1T01 alias before any formal production inclusion or Stage 2 acceptance claim.
 
 ## 8. 九层 Assurance 状态
 
@@ -52,18 +52,18 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-arxiv-daily-push-S2P1T01-001` | A: start S2P1T01 after S1 local runner migration prep | 开始 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。 | 先只做 Stage 1 本地 smoke，不进入新来源；风险更低但 Stage 2 不推进。 | 越过 source gate 直接把新来源放进正式邮件；禁止。 | Stage 1 local production prep remains complete, but Stage 2 does not begin. |
+| `DEC-arxiv-daily-push-S2PBT01-001` | A: keep S2PBT01/S2P1T01 as evidence-passed/no-formal-production until the V7/root contract hash gate is merged | 保持 no-send shadow 证据状态，等待 V7/root contract hash gate，不进入正式生产。 | 暂停 Stage 2，继续只维护 Stage 1 arXiv local runner。 | 越过 V7/root contract gate 把 bioRxiv/medRxiv 放进正式邮件；禁止。 | S2PBT01/S2P1T01 remains evidence-passed but cannot be formally promoted into production. |
 
 ## 10. Current Blockers
 
-1. source adapter tests, source registry gate, fixture parse, replay/shadow reports, arXiv no-regression evidence
+1. V7/root contract hash gate, alias reconciliation, and no-formal-production flag verification
 2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: source adapter tests, source registry gate, fixture parse, replay/shadow reports, arXiv no-regression evidence
-- principal_risks: 源身份混淆、重复 canonical paper、许可/全文越权、shadow 数据影响正式 arXiv 邮件
+- evidence_required: V7/root contract hash gate, alias reconciliation, and no-formal-production flag verification
+- principal_risks: V6/V7 alias 冲突、contract hash mismatch、no-send 证据被误读为正式生产纳入
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -86,8 +86,8 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 - tree_bound_events: `0`
 - commit_bound_events: `1`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `35`
-- pending_or_stale_events: `89`
+- precommit_pending_events: `36`
+- pending_or_stale_events: `90`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:ecbb2dc6f95cea8a84a880f029ec6fa506281abbc276022f01bb9dcc35fd262d`
-- snapshot_event_time: `2026-06-24T11:12:00+10:00`
+- source_snapshot_hash: `sha256:9c03db2bc5caa050d81ca19c1b0cf2b4a27b1705ea525681919d1cd8d26e9dc4`
+- snapshot_event_time: `2026-06-24T11:45:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
 - phase/gate: `S2P1 / ARXIV_PRODUCTION_ACCEPTED`
 
 ## 17. Next Unique Task
 
-- task_id: `S2P1T01`
-- reason: Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep; V7 alias S2PBT01.
+- task_id: `S2PBT01/S2P1T01`
+- reason: bioRxiv and medRxiv metadata-only no-send replay/shadow evidence passed; V7/root contract, baseline files, and CI contract hash gate still block formal source production inclusion.
