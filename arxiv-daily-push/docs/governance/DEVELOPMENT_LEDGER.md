@@ -9,12 +9,12 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2P1
-- Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 90
+- Current phase: S2PA
+- Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED
+- Confirmed iteration count: 92
 - Reconstructed event count: 0
-- Current task: `S2PBT01/S2P1T01`; legacy `S2P1T01` is treated as V7 alias `S2PBT01`. bioRxiv/medRxiv metadata-only preprint source promotion foundation is implemented, live-canary tested, has a deterministic replay/shadow builder, and one local real no-send 30-date replay passed. Stage 2 is not accepted.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. `S2PBT01/S2P1T01` remains blocked on V7 root contract, AGENTS, three baseline files, and CI contract hash gate before any formal source production inclusion. Real local SMTP production still requires owner-controlled local env/Keychain smoke; GitHub cloud scheduled production remains disabled and is not the daily production runner. Stage 2 Stop Gate remains `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
+- Current task: `S2PAT05`; parallel source-development task `S2PBT01` keeps legacy alias `S2P1T01`. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; S2PBT01 bioRxiv/medRxiv metadata-only preprint source has real no-send replay/shadow evidence, but V7.1 root governance is the current gate before any formal production inclusion.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.1 parallel audit records open P0=8 and P1=37; therefore real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
 
@@ -26,9 +26,33 @@ The append-only machine record is `development_events.jsonl`.
 | D | TTS/video/local pipeline/GitHub automation | completed | media gates, daily pipeline, and handoff gate pass | `docs/phase_records/PHASE_07.md`; `docs/phase_records/PHASE_08.md`; `docs/phase_records/PHASE_09.md`; `docs/phase_records/PHASE_10.md` |
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, text-only teaching email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 | S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, accelerated real-arXiv acceptance artifact, test10 SMTP proof, and local production/migration prep within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`; `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
+| S2PA | V7.1 product contract, Chinese governance, parallel audit, and compatibility lock | completed_pending_ci | V7.1 root lock, contract/roadmap/audit hash checks, AGENTS updates, three-base visibility, P0/P1 production-forbidden policy, and validator/test enforcement without Stage 2 production acceptance | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt`; `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml` |
+| S2PB | V7.1 D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S2PA-V7-1-PARALLEL-AUDIT-ROOT-LOCK`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from owner-provided V7.1 package, parallel audit summary, repository `origin/main@ffa5ac76bc7b08a1ea2a4c925cf481017d10e6e0`, Stage 1 accepted-state evidence, and this branch's root-governance diff.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: ffa5ac76bc7b08a1ea2a4c925cf481017d10e6e0
+- Result commit: PENDING
+- Task IDs: `S2PAT05`, `S2PBT01`, legacy alias `S2P1T01`
+- Goal: Lock V7.1 root governance and parallel-audit production blockers while preserving `ARXIV_PRODUCTION_ACCEPTED` and preventing any accidental `INTEGRATED_PRODUCTION_ACCEPTED` claim.
+- Assumptions: The downloaded V7.1 package is the owner-approved source package; repository lock status is recorded separately in `V7_1_ROOT_LOCK.yaml` so original contract hashes remain reproducible.
+- Files changed: root `AGENTS.md`, ADP `AGENTS.md`, V7.1 pursuing-goal package files, `V7_1_ROOT_LOCK.yaml`, three base files, `VERSION_MATRIX.yaml`, `delivery_tasks.yaml`, this ledger, event record, run manifest, governance validator/tests, and dashboard generation overlay.
+- Model changes: None. V7.1 lock is a governance/product/audit contract, not a model/formula/parameter behavior change.
+- Formula changes: None.
+- Parameter changes: None.
+- Commands run: pending final validation in this PR.
+- Test results: pending final validation in this PR.
+- Decisions: `ARXIV_PRODUCTION_ACCEPTED` is maintained; Stage 2 source work may continue in shadow as `S2PBT01` with legacy alias `S2P1T01`; `S2PMT07 -> INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` remains the only final production gate; P0/P1 audit findings forbid real restore, real SMTP production, scheduler installation, and final integrated acceptance while open.
+- Remaining risks: P0/P1 remediation remains outside this root-governance task; S2PBT01 no-send evidence must not be interpreted as production SMTP or formal source inclusion.
+- Rollback: Revert V7.1 package import, lock file, AGENTS edits, three-base updates, validator/test additions, this iteration/event, and run manifest; keep Stage 1 local runner evidence unchanged.
+- Next step: Run changed-only governance, semantic validator, root governance unit tests, lean check-render, and diff checks before PR.
 
 ### `ITER-20260624-ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE`
 

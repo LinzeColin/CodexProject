@@ -1,0 +1,52 @@
+schema_version: 2
+task_id: SxPyTzz
+legacy_alias: null
+acceptance_id: ACC-...
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+contract_sha256: <actual after merge>
+severity_ceiling: P0|P1|P2|P3
+merge_block_policy: global|scope|no
+status: planned|ready|in_progress|blocked|completed|deferred
+pursuing_goal: ''
+non_goals: []
+dependencies: []
+parallel_group: null
+allowed_reads: []
+allowed_modifications: []
+forbidden_modifications: []
+file_ownership: []
+test_commands: []
+test_levels:
+- unit
+- contract
+- integration
+- concurrency
+- fault_injection
+- e2e
+resource_budget:
+  cpu: ''
+  ram: ''
+  disk: ''
+  network: ''
+  wall_clock: ''
+risks: []
+rollback: []
+stop_conditions: []
+stop_notes: []
+stop_gate: ''
+required_evidence: []
+required_human_view_updates:
+- 功能清单
+- 开发记录
+- 模型参数文件
+- 00_用户中心/相关查看面板
+closeout:
+  status: PASS|BLOCKED|FAILED|DEFERRED
+  diff_summary: []
+  commands_and_exit_codes: []
+  evidence_refs: []
+  open_findings: []
+  unresolved_risks: []
+  rollback_verified: false
+  handoff_updated: false
+  next_task_unlocked: false

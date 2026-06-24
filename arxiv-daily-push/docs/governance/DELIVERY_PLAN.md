@@ -13,14 +13,16 @@ Governance spec version: `1.0.0`
 | D | Legacy Phase 7-10 TTS, video, local daily pipeline, and GitHub automation | media, resource, runner, and release gates pass |
 | E | Legacy Phase 11-12 weekly/monthly, all-arXiv queue delivery, manual delivery tests, and production handoff | operational acceptance remains blocked until final trial evidence passes |
 | S1-A | V5 Stage 1 Window A | B1/arXiv text-first baseline, owner controls, local data model, queue/ledger, B1 teaching email, runtime recovery, migration package, and post-migration bootstrap |
-| S2 | V5 Stage 2 | additional source/board promotion only after Stage 1 arXiv production acceptance |
+| S2 | V7 multi-source integrated system | V7 contract locked; additional source/domain/board promotion only after Stage 1 arXiv production acceptance and contract hash checks |
+| S2PA | V7.1 product contract, parallel audit, Chinese governance, and production-forbidden lock | `V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED` |
+| S2PB | D1 research/preprint/medical index source domain | `D1_SOURCE_DOMAIN_ACCEPTED` |
 
 ## Task Summary
 
 machine_summary:
 
-- task_count: 68
-- acceptance_count: 61
+- task_count: 70
+- acceptance_count: 63
 
 ## Delivery Tasks
 
@@ -89,7 +91,13 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-S1P5T04-POST-MERGE-TEST10-040 | S1-A | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 28059194999 / test10 completed success from main, proved Sydney-date subject, Gmail SMTP sent state, Chinese lesson flag, candidate queue summary flag, and no production schedule enablement | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041 | S1-A | deprecated | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | Owner superseded the GitHub cloud scheduled-production path with local Mac + Codex/local runner; GitHub remains code, PR/CI, evidence, status, and backup only | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP | S1-A | completed | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | local-runner daily/preflight, queue/ledger/report/email preview persistence, launchd package draft, and 2026-06-30 migration runbook pass focused tests without real SMTP send or GitHub cloud schedule | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
-| S2P1T01 | S2P1 | ready | ADP-ACC-S2P1T01-SOURCE-PROMOTION | next executable Stage 2 task: promote bioRxiv and medRxiv through source-level gates without regressing accepted all-arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
+| S2PAT01 | S2PA | completed | ACC-S2PAT01-V7-AUDIT | V7 package integrity and V6-to-V7 conflict/alias boundary are locked without rewriting historical Stage 1 evidence | `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt` |
+| S2PAT02 | S2PA | completed | ACC-S2PAT02-CONTRACT | V7 product contract, requirements, decision log, stop codes, roadmap, and repository lock file are present and hash-bound | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
+| S2PAT03 | S2PA | completed | ACC-S2PAT03-ROADMAP | root/ADP AGENTS and roadmap references now route new work through V7 while preserving legacy `S2P1T01` alias | `AGENTS.md`; `arxiv-daily-push/AGENTS.md` |
+| S2PAT04 | S2PA | completed | ACC-S2PAT04-CN-CI | 三基文件、VERSION_MATRIX、validator 和 governance tests expose and enforce V7 contract hashes | `功能清单`; `开发记录`; `模型参数文件` |
+| S2PAT05 | S2PA | completed | ACC-S2PAT05-AUDIT-LOCK | V7.1 parallel audit findings, merge policy, lifecycle contract, and P0/P1 production-forbidden gate are locked into repository governance; repository lock remains pending PR CI attestation | `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml`; `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
+| S2PBT01 | S2PB | in_progress | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7 name for the active bioRxiv/medRxiv shadow source promotion; must still attach durable real 30-date replay and 48h shadow evidence before completion | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
+| S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
