@@ -89,6 +89,68 @@ YAHOO_CANDIDATES = (
     ),
 )
 
+THEMATIC_YAHOO_CANDIDATES = (
+    BenchmarkSourceCandidate(
+        "Nasdaq 100",
+        "NDX",
+        "^NDX",
+        "public_aggregation",
+        "thematic_index",
+        "Yahoo Finance exact Nasdaq 100 chart; used for US Nasdaq/QDII growth funds.",
+    ),
+    BenchmarkSourceCandidate(
+        "Hang Seng TECH ETF proxy",
+        "HSTECH_PROXY",
+        "3033.HK",
+        "public_aggregation",
+        "thematic_proxy",
+        "Yahoo Finance CSOP Hang Seng TECH ETF chart; used when exact HSTECH index history is unavailable.",
+    ),
+)
+
+EASTMONEY_CANDIDATES = (
+    BenchmarkSourceCandidate(
+        "ChiNext Index",
+        "399006.SZ",
+        "0.399006",
+        "public_aggregation",
+        "thematic_index",
+        "Eastmoney exact ChiNext Index daily kline.",
+    ),
+    BenchmarkSourceCandidate(
+        "CNI Chip Index",
+        "CNI_CHIP",
+        "0.980017",
+        "public_aggregation",
+        "thematic_index",
+        "Eastmoney CNI Chip Index daily kline; used for CNI semiconductor chip exposure.",
+    ),
+    BenchmarkSourceCandidate(
+        "CSI All Share Semiconductor Index",
+        "H30184.CSI",
+        "2.H30184",
+        "public_aggregation",
+        "thematic_index",
+        "Eastmoney CSI All Share Semiconductors & Semiconductor Production Equipment daily kline.",
+    ),
+    BenchmarkSourceCandidate(
+        "CSI Semiconductor Index",
+        "931865.CSI",
+        "2.931865",
+        "public_aggregation",
+        "thematic_index",
+        "Eastmoney CSI Semiconductor Industry daily kline.",
+    ),
+    BenchmarkSourceCandidate(
+        "CSI Artificial Intelligence Index",
+        "930713.CSI",
+        "2.930713",
+        "public_aggregation",
+        "thematic_index",
+        "Eastmoney CSI Artificial Intelligence daily kline.",
+    ),
+)
+
 MIN_REQUIRED_SPAN_DAYS = 365
 MIN_REQUIRED_TRADING_ROWS = 11
 DEFAULT_LOOKBACK_DAYS = 396
@@ -326,6 +388,85 @@ def _probe_yahoo_candidates(
     return rows
 
 
+def _probe_eastmoney_candidates(
+    candidates: tuple[BenchmarkSourceCandidate, ...],
+    *,
+    start: str,
+    end: str,
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    for candidate in candidates:
+        query = (
+            "https://push2his.eastmoney.com/api/qt/stock/kline/get"
+            f"?secid={quote(candidate.symbol, safe='.')}"
+            "&ut=fa5fd1943c7b386f172d6893dbfba10b"
+            "&fields1=f1,f2,f3,f4,f5,f6"
+            "&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61"
+            f"&klt=101&fqt=1&beg={start.replace('-', '')}&end={end.replace('-', '')}&lmt=1000000"
+        )
+        row = asdict(candidate)
+        row.update(
+            {
+                "status": "fail",
+                "rows": 0,
+                "latest_close": None,
+                "message": "",
+                "production_eligible": False,
+                "source_priority": 5,
+                "url": query,
+                "history": [],
+            }
+        )
+        try:
+            request = Request(query, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://quote.eastmoney.com/"})
+            with urlopen(request, timeout=12) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            data = payload.get("data") or {}
+            klines = data.get("klines") or []
+            history = []
+            source_name = f"Eastmoney index kline: {data.get('name') or candidate.benchmark}"
+            for item in klines:
+                parts = str(item).split(",")
+                if len(parts) < 3:
+                    continue
+                day, close = parts[0], parts[2]
+                if not day or close in {"", "-"}:
+                    continue
+                history.append(
+                    {
+                        "asset_code": candidate.canonical_code,
+                        "date": day,
+                        "close": float(close),
+                        "source_name": source_name,
+                        "source_type": candidate.source_type,
+                        "source_priority": 5,
+                        "url_or_path": query,
+                        "evidence_level": "Medium",
+                        "as_of": end,
+                    }
+                )
+            row["history"] = history
+            row["rows"] = len(history)
+            row["latest_close"] = history[-1]["close"] if history else None
+            row["status"] = "pass" if history else "fail"
+            row["message"] = "ok" if history else "no close rows"
+            row["sufficient_for_required_windows"] = _history_supports_required_windows(history)
+            row["production_eligible"] = bool(history) and bool(row["sufficient_for_required_windows"])
+        except Exception as exc:
+            row["message"] = f"{exc.__class__.__name__}: {exc}"
+        rows.append(row)
+    return rows
+
+
+def _dedupe_history_rows(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+    deduped: dict[tuple[str, str], dict[str, object]] = {}
+    for row in rows:
+        key = (str(row.get("asset_code") or ""), str(row.get("date") or ""))
+        if key[0] and key[1]:
+            deduped[key] = row
+    return [deduped[key] for key in sorted(deduped)]
+
+
 def _manual_history_status(settings: Settings) -> list[dict[str, object]]:
     path = settings.manual_dir / "benchmark_price_history.csv"
     if not path.exists():
@@ -381,6 +522,8 @@ def run_benchmark_smoke(
     sdk = probe_sdk()
     moomoo_rows: list[dict[str, object]] = []
     yahoo_rows: list[dict[str, object]] = []
+    thematic_yahoo_rows: list[dict[str, object]] = []
+    eastmoney_rows: list[dict[str, object]] = []
     errors: list[str] = []
     cleanup = None
     if lifecycle.socket_is_reachable and sdk.import_available:
@@ -391,6 +534,8 @@ def run_benchmark_smoke(
         cleanup = cleanup_started_processes(lifecycle)
 
     yahoo_rows = _probe_yahoo_candidates(YAHOO_CANDIDATES, start=start, end=end)
+    thematic_yahoo_rows = _probe_yahoo_candidates(THEMATIC_YAHOO_CANDIDATES, start=start, end=end)
+    eastmoney_rows = _probe_eastmoney_candidates(EASTMONEY_CANDIDATES, start=start, end=end)
     manual_rows = _manual_history_status(settings)
     benchmark_names = {candidate.benchmark for candidate in BENCHMARK_CANDIDATES}
     production_ready_by_benchmark = {
@@ -414,6 +559,7 @@ def run_benchmark_smoke(
         "proxy_available": proxy_available,
         "moomoo_candidates": moomoo_rows,
         "public_aggregation_candidates": yahoo_rows,
+        "thematic_benchmark_candidates": thematic_yahoo_rows + eastmoney_rows,
         "manual_history": manual_rows,
         "errors": errors,
         "opend_lifecycle": lifecycle_to_dict(lifecycle),
@@ -430,6 +576,13 @@ def run_benchmark_smoke(
             moomoo_rows=moomoo_rows,
             yahoo_rows=yahoo_rows,
         )
+        history_rows.extend(
+            history
+            for row in thematic_yahoo_rows + eastmoney_rows
+            if row.get("production_eligible")
+            for history in row.get("history", [])
+        )
+        history_rows = _dedupe_history_rows(history_rows)
         if history_rows:
             csv_path.parent.mkdir(parents=True, exist_ok=True)
             with csv_path.open("w", encoding="utf-8", newline="") as handle:
@@ -479,6 +632,14 @@ def run_benchmark_smoke(
                 f"{row['status']} rows={row['rows']} - {row['message']}"
             )
         if not yahoo_rows:
+            lines.append("- None")
+        lines.extend(["", "## Thematic Benchmark Sources", ""])
+        for row in thematic_yahoo_rows + eastmoney_rows:
+            lines.append(
+                f"- {row['benchmark']} `{row['canonical_code']}` via `{row['symbol']}` ({row['source_role']}): "
+                f"{row['status']} rows={row['rows']} - {row['message']}"
+            )
+        if not thematic_yahoo_rows and not eastmoney_rows:
             lines.append("- None")
         lines.extend(["", "## Manual Local History", ""])
         for row in manual_rows:

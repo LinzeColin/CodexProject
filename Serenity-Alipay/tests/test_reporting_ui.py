@@ -5,6 +5,7 @@ from app.core.application_portal import (
     PortalFundInfo,
     PortalHolding,
     PortalManualReviewItem,
+    PortalPoolMetric,
     PortalRun,
     PortalTimelineEvent,
     _manual_review_items,
@@ -428,6 +429,86 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             analysis_score=68.25,
         )
     ]
+    pool_metrics = [
+        PortalPoolMetric(
+            rank=1,
+            pool_label="持仓池",
+            pool_class="holding",
+            code="007300",
+            name="国联安中证半导体ETF联接A",
+            grade="Action-Ready",
+            score=93.6958,
+            target_weight=0.209267,
+            action_label="Maintain",
+            trigger_reason="serenity judgment supported by evidence confidence",
+            review_text="维持",
+            entry_time_bj="2026-06-13T06:00:00+08:00",
+            nav_as_of="20260614",
+            updated_at_bj="2026-06-15T14:00:00+08:00",
+            since_entry_return=0.0234,
+            return_1m=0.0521,
+            return_3m=0.1188,
+            return_6m=0.2034,
+            benchmark_label="主题基准：中证全指半导体",
+            alpha=0.0842,
+            beta=1.23,
+            theta=0.0017,
+            sharpe=1.56,
+            sortino=2.34,
+        ),
+        PortalPoolMetric(
+            rank=3,
+            pool_label="持仓池",
+            pool_class="holding",
+            code="110026",
+            name="易方达创业板ETF联接A",
+            grade="Action-Ready",
+            score=88.2,
+            target_weight=0.18,
+            action_label="Maintain",
+            trigger_reason="创业板成长弹性入选 Serenity Top5",
+            review_text="维持",
+            entry_time_bj="2026-06-13T06:00:00+08:00",
+            nav_as_of="20260614",
+            updated_at_bj="2026-06-15T14:00:00+08:00",
+            since_entry_return=0.014,
+            return_1m=0.041,
+            return_3m=0.094,
+            return_6m=0.168,
+            benchmark_label="主题基准：创业板指",
+            alpha=0.052,
+            beta=1.08,
+            theta=0.0011,
+            sharpe=1.34,
+            sortino=1.72,
+        ),
+        PortalPoolMetric(
+            rank=6,
+            pool_label="观察池",
+            pool_class="observe",
+            code="018043",
+            name="天弘纳斯达克100指数发起(QDII)A",
+            grade="Manual Review",
+            score=68.25,
+            target_weight=0.0,
+            action_label="Manual Review",
+            trigger_reason="fee/redemption/subscription status missing or closed",
+            review_text="需人工复核",
+            entry_time_bj="2026-06-14T14:58:15+08:00",
+            nav_as_of="20260614",
+            updated_at_bj="2026-06-15T14:00:00+08:00",
+            since_entry_return=None,
+            return_1m=0.031,
+            return_3m=0.077,
+            return_6m=0.155,
+            benchmark_label="主题基准：纳指100",
+            alpha=0.044,
+            beta=0.91,
+            theta=0.0008,
+            sharpe=1.12,
+            sortino=1.88,
+        ),
+    ]
 
     html = render_application_portal(
         run,
@@ -439,6 +520,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
         run_timeline=timeline_events,
         manual_review_items=review_items,
         observation_pool=[observation_holding],
+        pool_metrics=pool_metrics,
     )
 
     assert "<h1>Serenity 每日分析</h1>" in html
@@ -447,7 +529,39 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "当前持仓建议" in html
     assert "20260615 - 14:00 CST · 通过" in html
     assert "Top5 持仓 / Top6-10 观察" in html
-    assert "持仓池 / 观察池排序" in html
+    assert "持仓池 / 观察池排序" not in html
+    assert 'aria-label="持仓池与观察池排序"' not in html
+    assert "持仓池表现指标" in html
+    assert html.index("<h2>当前持仓建议</h2>") < html.index("<h2>持仓建议</h2>") < html.index("<h2>持仓池表现指标</h2>")
+    assert "动作/复核" in html
+    assert "排序原因" in html
+    assert "入池后涨跌幅" in html
+    assert "近1个月" in html
+    assert "近3个月" in html
+    assert "近6个月" in html
+    assert "Alpha（年化）" in html
+    assert "Beta" in html
+    assert "Theta（日均超额）" in html
+    assert "Sharpe" in html
+    assert "Sortino" in html
+    assert "指标更新时间" in html
+    assert '<strong class="fund-code">110026</strong>' in html
+    assert "易方达创业板ETF联接A" in html
+    assert "主题基准：中证全指半导体" in html
+    assert "主题基准：创业板指" in html
+    assert "主题基准：纳指100" in html
+    assert "专项基准缺失" not in html
+    assert "20260615 - 14:00 CST" in html
+    assert "2.34%" in html
+    assert "5.21%" in html
+    assert "11.88%" in html
+    assert "20.34%" in html
+    assert "8.42%" in html
+    assert "1.23" in html
+    assert "0.17%" in html
+    assert "1.56" in html
+    assert "Theta 为本表定义的近20个净值点日均超额收益，不是期权定价 Theta。" in html
+    assert "<h2>执行边界</h2>" not in html
     assert "#1" in html
     assert "#6" in html
     assert "持仓池" in html
@@ -615,11 +729,27 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "使用说明" in html
     assert 'data-open-usage-guide' in html
     assert 'id="usage-guide-modal" hidden' in html
+    assert 'data-guide-target="guide-sources"' in html
+    assert "数据源与可审计文件" in html
+    assert "https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/candidates.csv" in html
+    assert "https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/price_history.csv" in html
+    assert "https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/fund_rules.csv" in html
+    assert "https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/benchmark_price_history.csv" in html
     assert 'data-guide-target="guide-selection"' in html
     assert 'data-guide-section' in html
     assert "先看结论，再追溯原因" in html
     assert "持有期</strong>1个月-1年" in html
+    assert "候选来源</strong>全市场自动扩容" in html
     assert "Skill 选股逻辑" in html
+    assert 'data-guide-target="guide-admission"' in html
+    assert 'data-guide-target="guide-exit"' in html
+    assert "进入候选池的规则" in html
+    assert "每次正式运行前扫描公开全市场基金列表" in html
+    assert "所有进入筛选范围和候选池的基金必须有至少 24 个月净值历史" in html
+    assert "入池后的纪律规则" in html
+    assert "连续 5 个交易日共 30 个结果中，任意 20 项小于 0" in html
+    assert "连续 10 个交易日共 60 个结果中，任意 40 项小于 0" in html
+    assert "剔除规则只约束已经进入持仓池或观察池的对象" in html
     assert "不是先拿一张规则表机械筛选" in html
     assert "未来 1个月-1年最值得承担高波动" in html
     assert "如何挑选</strong>先看高成长主题是否仍有景气度" in html

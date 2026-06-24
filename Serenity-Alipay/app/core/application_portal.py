@@ -13,6 +13,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from app.adapters.manual_sources import Candidate, PricePoint, load_candidates, load_price_history
 from app.config import Settings
 from app.core.run_visibility import display_run_time_with_backfill_note, is_future_controlled_backfill
 from app.core.time_display import format_display_time, parse_datetime
@@ -22,6 +23,7 @@ from app.db import connect, init_db
 APP_BUNDLE_NAME = "Serenity 每日分析.app"
 APP_ICON_BASENAME = "SerenityIcon"
 RELATIVE_ACTION_THRESHOLD = 0.01
+TRADING_DAYS_PER_YEAR = 252
 
 
 @dataclass(frozen=True)
@@ -123,6 +125,34 @@ class PortalManualReviewItem:
     analysis_score: float | None = None
 
 
+@dataclass(frozen=True)
+class PortalPoolMetric:
+    rank: int
+    pool_label: str
+    pool_class: str
+    code: str
+    name: str
+    grade: str
+    score: float
+    target_weight: float
+    action_label: str
+    trigger_reason: str
+    review_text: str
+    entry_time_bj: str | None
+    nav_as_of: str | None
+    updated_at_bj: str | None
+    since_entry_return: float | None
+    return_1m: float | None
+    return_3m: float | None
+    return_6m: float | None
+    benchmark_label: str
+    alpha: float | None
+    beta: float | None
+    theta: float | None
+    sharpe: float | None
+    sortino: float | None
+
+
 def _pct(value: float | None) -> str:
     if value is None:
         return "-"
@@ -149,6 +179,12 @@ def _amount(value: float | None) -> str:
 
 
 def _score(value: float | None) -> str:
+    if value is None:
+        return "-"
+    return f"{value:.2f}"
+
+
+def _ratio(value: float | None) -> str:
     if value is None:
         return "-"
     return f"{value:.2f}"
@@ -640,6 +676,306 @@ def _fund_library_for_run(
     return fund_library
 
 
+def _point_index_on_or_before(points: list[PricePoint], target_date: date) -> int | None:
+    candidates = [idx for idx, point in enumerate(points) if point.date <= target_date]
+    return max(candidates) if candidates else None
+
+
+def _return_from_index(points: list[PricePoint], start_index: int | None) -> float | None:
+    if start_index is None or not points or start_index >= len(points):
+        return None
+    if start_index >= len(points) - 1:
+        return None
+    start = points[start_index].close
+    end = points[-1].close
+    if start == 0:
+        return None
+    return end / start - 1.0
+
+
+def _return_since_date(points: list[PricePoint], start_date: date | None) -> float | None:
+    if start_date is None:
+        return None
+    return _return_from_index(points, _point_index_on_or_before(points, start_date))
+
+
+def _return_over_days(points: list[PricePoint], days: int) -> float | None:
+    if not points:
+        return None
+    return _return_since_date(points, points[-1].date - timedelta(days=days))
+
+
+def _daily_returns_by_date(points: list[PricePoint]) -> dict[date, float]:
+    returns: dict[date, float] = {}
+    for previous, current in zip(points, points[1:]):
+        if previous.close:
+            returns[current.date] = current.close / previous.close - 1.0
+    return returns
+
+
+def _composite_benchmark_returns(benchmark_history: dict[str, list[PricePoint]]) -> dict[date, float]:
+    daily_maps = [
+        _daily_returns_by_date(points)
+        for code, points in benchmark_history.items()
+        if code in {"000001.SH", "SPX"} and len(points) >= 2
+    ]
+    if not daily_maps:
+        return {}
+    dates = sorted({day for daily_map in daily_maps for day in daily_map})
+    composite: dict[date, float] = {}
+    for day in dates:
+        values = [daily_map[day] for daily_map in daily_maps if day in daily_map]
+        if values:
+            composite[day] = sum(values) / len(values)
+    return composite
+
+
+def _benchmark_returns_by_code(benchmark_history: dict[str, list[PricePoint]]) -> dict[str, dict[date, float]]:
+    return {
+        code: _daily_returns_by_date(points)
+        for code, points in benchmark_history.items()
+        if len(points) >= 2
+    }
+
+
+def _candidate_theme_text(row: PortalHolding, candidate: Candidate | None) -> str:
+    fields = [
+        row.code,
+        row.name,
+        candidate.market if candidate else "",
+        candidate.theme if candidate else "",
+        candidate.asset_type if candidate else "",
+    ]
+    return " ".join(str(field or "") for field in fields).lower()
+
+
+def _select_theme_benchmark(
+    row: PortalHolding,
+    candidate: Candidate | None,
+    benchmark_returns: dict[str, dict[date, float]],
+) -> tuple[str, dict[date, float]]:
+    text = _candidate_theme_text(row, candidate)
+    theme_rows: list[tuple[str, str]]
+    if any(marker in text for marker in ("恒生", "港股", "hk", "互联网科技")):
+        theme_rows = [
+            ("HSIII", "恒生互联网科技业"),
+            ("HSTECH", "恒生科技"),
+            ("HSTECH_PROXY", "恒生科技ETF代理"),
+        ]
+    elif any(marker in text for marker in ("纳斯达克", "nasdaq", "美股", "us")):
+        theme_rows = [
+            ("NDX", "纳指100"),
+        ]
+    elif any(marker in text for marker in ("创业板", "chinext")):
+        theme_rows = [
+            ("399006.SZ", "创业板指"),
+        ]
+    elif any(marker in text for marker in ("人工智能", "ai", "算力", "光模块")):
+        theme_rows = [
+            ("CSI_AI", "中证人工智能"),
+            ("930713.CSI", "中证人工智能"),
+        ]
+    elif any(marker in text for marker in ("半导体", "芯片", "semiconductor")):
+        preferred_rows = (
+            [("CNI_CHIP", "国证芯片")] if row.code == "008887" or "国证" in text else []
+        )
+        theme_rows = preferred_rows + [
+            ("H30184.CSI", "中证全指半导体"),
+            ("931865.CSI", "中证半导"),
+            ("CNI_CHIP", "国证芯片"),
+        ]
+    else:
+        theme_rows = []
+
+    for code, label in theme_rows:
+        returns = benchmark_returns.get(code)
+        if returns:
+            return f"主题基准：{label}", returns
+    return "主题基准：待补齐", {}
+
+
+def _mean(values: list[float]) -> float | None:
+    if not values:
+        return None
+    return sum(values) / len(values)
+
+
+def _sample_std(values: list[float]) -> float | None:
+    if len(values) < 2:
+        return None
+    avg = sum(values) / len(values)
+    variance = sum((value - avg) ** 2 for value in values) / (len(values) - 1)
+    return math.sqrt(variance)
+
+
+def _covariance(left: list[float], right: list[float]) -> float | None:
+    if len(left) != len(right) or len(left) < 2:
+        return None
+    left_avg = sum(left) / len(left)
+    right_avg = sum(right) / len(right)
+    return sum((l - left_avg) * (r - right_avg) for l, r in zip(left, right)) / (len(left) - 1)
+
+
+def _annualized_mean_return(daily_returns: list[float]) -> float | None:
+    avg = _mean(daily_returns)
+    return None if avg is None else avg * TRADING_DAYS_PER_YEAR
+
+
+def _beta(asset_returns: list[float], benchmark_returns: list[float]) -> float | None:
+    variance = _sample_std(benchmark_returns)
+    if variance is None or variance == 0:
+        return None
+    cov = _covariance(asset_returns, benchmark_returns)
+    return None if cov is None else cov / (variance**2)
+
+
+def _sharpe(asset_returns: list[float]) -> float | None:
+    avg = _mean(asset_returns)
+    std = _sample_std(asset_returns)
+    if avg is None or std is None or std == 0:
+        return None
+    return avg / std * math.sqrt(TRADING_DAYS_PER_YEAR)
+
+
+def _sortino(asset_returns: list[float]) -> float | None:
+    avg = _mean(asset_returns)
+    downside = [value for value in asset_returns if value < 0]
+    downside_std = _sample_std(downside)
+    if avg is None or downside_std is None or downside_std == 0:
+        return None
+    return avg / downside_std * math.sqrt(TRADING_DAYS_PER_YEAR)
+
+
+def _entry_times_for_pool_rows(conn, rows: list[PortalHolding]) -> dict[tuple[str, str], str]:
+    if not rows:
+        return {}
+    codes = sorted({row.code for row in rows})
+    placeholders = ",".join("?" for _ in codes)
+    entry_rows = conn.execute(
+        f"""
+        SELECT a.asset_code, e.pool_kind, e.first_run_time_bj
+        FROM asset_pool_entry e
+        JOIN asset_master a ON a.asset_id=e.asset_id
+        WHERE a.asset_code IN ({placeholders})
+          AND e.pool_kind IN ('holding_pool', 'observation_pool')
+        """,
+        tuple(codes),
+    ).fetchall()
+    return {
+        (str(row["asset_code"]), str(row["pool_kind"])): str(row["first_run_time_bj"])
+        for row in entry_rows
+    }
+
+
+def _pool_performance_metric(
+    row: PortalHolding,
+    *,
+    entry_time_bj: str | None,
+    updated_at_bj: str | None,
+    price_history: dict[str, list[PricePoint]],
+    benchmark_returns_by_code: dict[str, dict[date, float]],
+    candidate: Candidate | None,
+    resolved_review_keys: set[tuple[str, str]],
+) -> PortalPoolMetric:
+    points = price_history.get(row.code, [])
+    entry_date = _beijing_date(entry_time_bj)
+    asset_daily_map = _daily_returns_by_date(points)
+    benchmark_label, benchmark_returns = _select_theme_benchmark(row, candidate, benchmark_returns_by_code)
+    aligned = [
+        (day, asset_daily_map[day], benchmark_returns[day])
+        for day in sorted(asset_daily_map)
+        if day in benchmark_returns
+    ]
+    asset_returns = [item[1] for item in aligned]
+    benchmark_values = [item[2] for item in aligned]
+    beta = _beta(asset_returns, benchmark_values) if len(aligned) >= 20 else None
+    asset_annualized = _annualized_mean_return(asset_returns) if len(aligned) >= 20 else None
+    benchmark_annualized = _annualized_mean_return(benchmark_values) if len(aligned) >= 20 else None
+    alpha = (
+        asset_annualized - beta * benchmark_annualized
+        if asset_annualized is not None and beta is not None and benchmark_annualized is not None
+        else None
+    )
+    recent_aligned = aligned[-20:]
+    theta = _mean([asset - benchmark for _, asset, benchmark in recent_aligned]) if len(recent_aligned) >= 5 else None
+    is_holding = row.rank <= 5
+    needs_review = row.grade == "Manual Review" or row.action_label == "Manual Review"
+    review_text = (
+        "已复核/观察中"
+        if needs_review and (row.code, row.trigger_reason) in resolved_review_keys
+        else ("需人工复核" if needs_review else _zh_action(row.action_label))
+    )
+    return PortalPoolMetric(
+        rank=row.rank,
+        pool_label="持仓池" if is_holding else "观察池",
+        pool_class="holding" if is_holding else "observe",
+        code=row.code,
+        name=row.name,
+        grade=row.grade,
+        score=row.score,
+        target_weight=row.target_weight if is_holding else 0.0,
+        action_label=row.action_label,
+        trigger_reason=row.trigger_reason,
+        review_text=review_text,
+        entry_time_bj=entry_time_bj,
+        nav_as_of=points[-1].date.strftime("%Y%m%d") if points else None,
+        updated_at_bj=updated_at_bj,
+        since_entry_return=_return_since_date(points, entry_date),
+        return_1m=_return_over_days(points, 31),
+        return_3m=_return_over_days(points, 93),
+        return_6m=_return_over_days(points, 183),
+        benchmark_label=benchmark_label,
+        alpha=alpha,
+        beta=beta,
+        theta=theta,
+        sharpe=_sharpe(asset_returns) if len(asset_returns) >= 20 else None,
+        sortino=_sortino(asset_returns) if len(asset_returns) >= 20 else None,
+    )
+
+
+def _pool_performance_metrics(
+    settings: Settings,
+    conn,
+    rows: list[PortalHolding],
+    current_run: PortalRun | None,
+    resolved_review_keys: set[tuple[str, str]] | None = None,
+) -> list[PortalPoolMetric]:
+    sorted_rows = sorted(rows, key=lambda item: item.rank)
+    if not sorted_rows:
+        return []
+    price_path = settings.manual_dir / "price_history.csv"
+    benchmark_path = settings.manual_dir / "benchmark_price_history.csv"
+    if not price_path.exists():
+        return []
+    try:
+        price_history = load_price_history(price_path)
+        benchmark_history = load_price_history(benchmark_path) if benchmark_path.exists() else {}
+        candidate_path = settings.manual_dir / "candidates.csv"
+        candidates = load_candidates(candidate_path) if candidate_path.exists() else []
+    except (OSError, ValueError):
+        return []
+    benchmark_returns_by_code = _benchmark_returns_by_code(benchmark_history)
+    candidates_by_code = {candidate.asset_code: candidate for candidate in candidates}
+    entry_times = _entry_times_for_pool_rows(conn, sorted_rows)
+    updated_at_bj = current_run.run_time_bj if current_run else None
+    resolved_review_keys = resolved_review_keys or set()
+    metrics: list[PortalPoolMetric] = []
+    for row in sorted_rows:
+        pool_kind = "holding_pool" if row.rank <= 5 else "observation_pool"
+        metrics.append(
+            _pool_performance_metric(
+                row,
+                entry_time_bj=entry_times.get((row.code, pool_kind)),
+                updated_at_bj=updated_at_bj,
+                price_history=price_history,
+                benchmark_returns_by_code=benchmark_returns_by_code,
+                candidate=candidates_by_code.get(row.code),
+                resolved_review_keys=resolved_review_keys,
+            )
+        )
+    return metrics
+
+
 def _baseline_reference_time(conn, run_id: str | None) -> str | None:
     if not run_id:
         return None
@@ -783,6 +1119,16 @@ def _fund_button(row: PortalHolding) -> str:
     )
 
 
+def _fund_table_cell(code: str, name: str) -> str:
+    return (
+        '<div class="fund-cell">'
+        f'<strong class="fund-code">{_escape(code)}</strong>'
+        f'<button type="button" class="fund-link" data-fund-code="{_escape(code)}">'
+        f"{_escape(name)}</button>"
+        "</div>"
+    )
+
+
 def _holding_rows(
     rows: list[PortalHolding],
     *,
@@ -804,7 +1150,7 @@ def _holding_rows(
         cells.append(
             f'<tr class="row-{initial_class}" data-reference-row data-initial-class="{initial_class}" data-previous-class="{previous_class}">'
             f"<td>{row.rank}</td>"
-            f"<td><strong>{_escape(row.code)}</strong>{_fund_button(row)}</td>"
+            f"<td>{_fund_table_cell(row.code, row.name)}</td>"
             f"<td><span class=\"badge\">{_escape(_zh_grade(row.grade))}</span></td>"
             f"<td>{_score(row.score)}</td>"
             f"<td><strong>{_pct(row.target_weight)}</strong><span>目标时间：{_escape(target_time)}</span></td>"
@@ -846,12 +1192,46 @@ def _pool_rows(
             f'<tr class="pool-row {pool_class}">'
             f"<td><strong>#{row.rank}</strong></td>"
             f'<td><span class="pool-badge {pool_class}">{pool_label}</span></td>'
-            f"<td><strong>{_escape(row.code)}</strong>{_fund_button(row)}</td>"
+            f"<td>{_fund_table_cell(row.code, row.name)}</td>"
             f"<td><span class=\"badge\">{_escape(_zh_grade(row.grade))}</span></td>"
             f"<td>{_score(row.score)}</td>"
             f"<td>{_escape(weight_text)}</td>"
             f"<td>{_escape(review_text)}</td>"
             f"<td>{_escape(row.trigger_reason)}</td>"
+            "</tr>"
+        )
+    return "\n".join(cells)
+
+
+def _pool_metric_rows(metrics: list[PortalPoolMetric]) -> str:
+    if not metrics:
+        return '<tr><td colspan="21">暂无可展示的持仓池/观察池表现指标；下一次全局数据刷新后会重新计算。</td></tr>'
+    cells: list[str] = []
+    for row in metrics:
+        weight_text = _pct(row.target_weight) if row.pool_class == "holding" else "0.00% · 观察"
+        cells.append(
+            f'<tr class="pool-row {row.pool_class}">'
+            f"<td><strong>#{row.rank}</strong></td>"
+            f'<td><span class="pool-badge {row.pool_class}">{_escape(row.pool_label)}</span></td>'
+            f"<td>{_fund_table_cell(row.code, row.name)}</td>"
+            f"<td><span class=\"badge\">{_escape(_zh_grade(row.grade))}</span></td>"
+            f"<td>{_score(row.score)}</td>"
+            f"<td>{_escape(weight_text)}</td>"
+            f"<td>{_escape(row.review_text)}</td>"
+            f"<td>{_escape(row.trigger_reason)}</td>"
+            f"<td>{_escape(_format_time(row.entry_time_bj, 'Asia/Shanghai'))}</td>"
+            f"<td>{_escape(row.nav_as_of or '-')}</td>"
+            f"<td>{_escape(_format_time(row.updated_at_bj, 'Asia/Shanghai'))}</td>"
+            f"<td>{_pct(row.since_entry_return)}</td>"
+            f"<td>{_pct(row.return_1m)}</td>"
+            f"<td>{_pct(row.return_3m)}</td>"
+            f"<td>{_pct(row.return_6m)}</td>"
+            f"<td>{_escape(row.benchmark_label)}</td>"
+            f"<td>{_pct(row.alpha)}</td>"
+            f"<td>{_ratio(row.beta)}</td>"
+            f"<td>{_pct(row.theta)}</td>"
+            f"<td>{_ratio(row.sharpe)}</td>"
+            f"<td>{_ratio(row.sortino)}</td>"
             "</tr>"
         )
     return "\n".join(cells)
@@ -1142,7 +1522,10 @@ def _usage_guide_modal() -> str:
         <nav class="guide-nav" aria-label="使用说明目录">
           <button type="button" class="active" data-guide-target="guide-overview">阅读顺序</button>
           <button type="button" data-guide-target="guide-selection">Skill 选股逻辑</button>
+          <button type="button" data-guide-target="guide-admission">准入规则</button>
+          <button type="button" data-guide-target="guide-exit">剔除规则</button>
           <button type="button" data-guide-target="guide-confidence">证据置信度</button>
+          <button type="button" data-guide-target="guide-sources">数据源</button>
           <button type="button" data-guide-target="guide-weight">权重配置</button>
           <button type="button" data-guide-target="guide-discipline">调仓纪律</button>
           <button type="button" data-guide-target="guide-review">复核与边界</button>
@@ -1157,6 +1540,7 @@ def _usage_guide_modal() -> str:
             <div class="guide-summary">
               <span><strong>持有期</strong>1个月-1年</span>
               <span><strong>排序口径</strong>Serenity 优先</span>
+              <span><strong>候选来源</strong>全市场自动扩容</span>
               <span><strong>Score 角色</strong>置信度/说服力</span>
               <span><strong>执行边界</strong>人工确认</span>
             </div>
@@ -1177,6 +1561,38 @@ def _usage_guide_modal() -> str:
             <div class="guide-callout">页面公开证据置信度、等级、目标权重、基准权重、相对比例、费用状态、基金库证据和运行时间线，方便追溯每一次建议。</div>
           </section>
 
+          <section class="guide-section" id="guide-admission" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">准入</span>
+              <h3>进入候选池的规则</h3>
+            </div>
+            <p class="guide-lead">准入不是 Score 排名赛，而是 Serenity 先判断哪些高成长方向值得研究，再用数据闸门决定能否进入持仓池或观察池。</p>
+            <div class="guide-steps">
+              <p><strong>全市场扩容</strong>每次正式运行前扫描公开全市场基金列表，优先补充 AI、半导体、科技、QDII、创业板、科创、互联网、通信、机器人、软件、云计算、数字经济、信息技术等高成长主题。</p>
+              <p><strong>硬排除</strong>债券、货币、现金、余额宝、固收、短债、同业存单等保守类对象在扩容阶段直接排除；不因支付宝或 MooMoo 暂不支持交易而单独排除，只作为交易路径建议。</p>
+              <p><strong>历史要求</strong>所有进入筛选范围和候选池的基金必须有至少 24 个月净值历史；不足 24 个月不能进入可执行持仓建议。</p>
+              <p><strong>风险要求</strong>MDD 达到或超过 40.00% 直接 Block/清仓标签；回撤修复时间达到或超过 365 天时强制降级复核。</p>
+              <p><strong>证据要求</strong>申购状态、赎回状态、申购费、赎回费、管理费、托管费和费率分档必须可追溯；官方级来源少于 2 个或来源冲突时只能观察或复核。</p>
+              <p><strong>排序要求</strong>通过硬闸门后，Top5 持仓池按 Serenity 优先级排序；Score 只修正置信度和权重，不允许单独压过 Serenity 的主题判断。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-exit" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">剔除</span>
+              <h3>入池后的纪律规则</h3>
+            </div>
+            <p class="guide-lead">剔除规则只约束已经进入持仓池或观察池的对象，不作为 Serenity 初始准入规则。</p>
+            <div class="guide-steps">
+              <p><strong>六项跟踪</strong>每个交易日跟踪近 3 月收益、近 6 月收益、Alpha、Theta、Sharpe、Sortino 六项。Theta 在基金语境下按时间衰减/趋势退化指标解释，具体以系统计算字段为准。</p>
+              <p><strong>5 日剔除</strong>连续 5 个交易日共 30 个结果中，任意 20 项小于 0，则剔除或给出降权/清仓标签。</p>
+              <p><strong>10 日剔除</strong>连续 10 个交易日共 60 个结果中，任意 40 项小于 0，则剔除或给出降权/清仓标签。</p>
+              <p><strong>硬风险剔除</strong>MDD 达到 40.00%、7 日回撤恶化超过 5.00%、或单标过度放大连续 2 次，会触发风险纪律，优先输出减少、暂停新增、Block 或清仓标签。</p>
+              <p><strong>数据异常剔除</strong>连续缺失净值/持仓超过 2 天、费率/赎回状态缺失、官方级来源少于 2 个或来源冲突时，不硬下买入结论，进入 Manual Review 或观察池。</p>
+              <p><strong>重新进入</strong>被剔除对象解决当前问题后，或 14 天后重新满足 Serenity 标准和证据条件，才允许重新进入观察池；进入 Top5 仍由 Serenity 优先判断。</p>
+            </div>
+          </section>
+
           <section class="guide-section" id="guide-confidence" data-guide-section>
             <div class="guide-section-title">
               <span class="guide-kicker">第二层</span>
@@ -1192,6 +1608,21 @@ def _usage_guide_modal() -> str:
               <p><strong>Risk</strong>MDD 小于 40.00% 才可继续；回撤修复时间达到 365 天会强制压低风险分。</p>
               <p><strong>Executable</strong>申购/赎回开放且费率分档完整才完整得分。</p>
             </div>
+          </section>
+
+          <section class="guide-section" id="guide-sources" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">数据层</span>
+              <h3>数据源与可审计文件</h3>
+            </div>
+            <p class="guide-lead">首页结论来自本地 SQLite 历史归档和 GitHub 可审计 CSV。SQLite 负责保护历史事实，不作为公开外链；GitHub 链接指向可复核的数据源文件。</p>
+            <div class="guide-steps">
+              <p><strong>候选基金主数据</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/candidates.csv" target="_blank" rel="noreferrer">data/manual/candidates.csv</a>：基金代码、基金名称、市场、主题、来源等级、是否排除。</p>
+              <p><strong>基金净值历史</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/price_history.csv" target="_blank" rel="noreferrer">data/manual/price_history.csv</a>：候选基金至少 24 个月净值历史，用于收益、回撤、Sharpe、Sortino 等指标。</p>
+              <p><strong>基金申赎与费用</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/fund_rules.csv" target="_blank" rel="noreferrer">data/manual/fund_rules.csv</a>：申购、赎回、确认周期、申购费、赎回费、管理费、托管费和费用分档。</p>
+              <p><strong>基准与专项基准</strong><a href="https://github.com/LinzeColin/CodexProject/blob/main/Serenity-Alipay/data/manual/benchmark_price_history.csv" target="_blank" rel="noreferrer">data/manual/benchmark_price_history.csv</a>：沪指、标普500、纳指100、创业板指、国证芯片、中证半导、中证人工智能和港股科技主题代理基准。</p>
+            </div>
+            <div class="guide-callout">数据源优先级仍按 MooMoo/OpenD、支付宝、官方平台、交易快照、公开财经聚合排序；当前专项基准若来自 Yahoo 或东方财富，会在 CSV 的 source_name、source_type、url_or_path、as_of 中保留来源证据。</div>
           </section>
 
           <section class="guide-section" id="guide-weight" data-guide-section>
@@ -1241,7 +1672,7 @@ def _usage_guide_modal() -> str:
               <p><strong>剔除这一轮观察池</strong>保存复核后立即新增一次真实 Serenity run；对象从本轮观察池移除，当前问题解决后，或 14 天后再次满足 Serenity 标准和条件时，才允许重新进入观察池。</p>
               <p><strong>进入 Top 5 候选操作池</strong>保存复核后立即运行一次 Serenity 全流程，同步刷新首页持仓建议、报告、数据库和全局展示数据。</p>
               <p><strong>保存处置</strong>保存复核必须写入本机 SQLite 数据库；页面不会把复核保存在浏览器端。</p>
-              <p><strong>执行边界</strong>执行锁开启时，只输出研究排序和纪律标签；所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</p>
+              <p><strong>执行边界</strong>无自动交易；执行锁开启时，只输出研究排序和纪律标签；所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</p>
               <p><strong>使用顺序</strong>先看“当前持仓建议”，再看“持仓建议”表里的基准权重口径；需要追溯费用和申赎状态时进入“基金库”。</p>
             </div>
           </section>
@@ -1379,6 +1810,7 @@ def render_application_portal(
     run_timeline: list[PortalTimelineEvent] | None = None,
     manual_review_items: list[PortalManualReviewItem] | None = None,
     resolved_review_keys: set[tuple[str, str]] | None = None,
+    pool_metrics: list[PortalPoolMetric] | None = None,
 ) -> str:
     current_bj = (
         display_run_time_with_backfill_note(current_run.run_time_bj, current_run.created_at)
@@ -1413,6 +1845,45 @@ def render_application_portal(
     review_items = manual_review_items or []
     resolved_review_keys = resolved_review_keys or set()
     observation_rows = observation_pool or []
+    pool_metric_rows = pool_metrics or []
+    if not pool_metric_rows:
+        fallback_pool_rows = sorted([*current_holdings, *observation_rows], key=lambda item: item.rank)
+        for row in fallback_pool_rows:
+            is_holding = row.rank <= 5
+            needs_review = row.grade == "Manual Review" or row.action_label == "Manual Review"
+            review_text = (
+                "已复核/观察中"
+                if needs_review and (row.code, row.trigger_reason) in resolved_review_keys
+                else ("需人工复核" if needs_review else _zh_action(row.action_label))
+            )
+            pool_metric_rows.append(
+                PortalPoolMetric(
+                    rank=row.rank,
+                    pool_label="持仓池" if is_holding else "观察池",
+                    pool_class="holding" if is_holding else "observe",
+                    code=row.code,
+                    name=row.name,
+                    grade=row.grade,
+                    score=row.score,
+                    target_weight=row.target_weight if is_holding else 0.0,
+                    action_label=row.action_label,
+                    trigger_reason=row.trigger_reason,
+                    review_text=review_text,
+                    entry_time_bj=None,
+                    nav_as_of=None,
+                    updated_at_bj=current_run.run_time_bj if current_run else None,
+                    since_entry_return=None,
+                    return_1m=None,
+                    return_3m=None,
+                    return_6m=None,
+                    benchmark_label="基准缺失",
+                    alpha=None,
+                    beta=None,
+                    theta=None,
+                    sharpe=None,
+                    sortino=None,
+                )
+            )
     review_count_text = f"{len(review_items)} 项待复核" if review_items else "无打开项"
     fund_count = len(fund_library or {})
     fund_count_text = f"已入库 {fund_count} 只基金" if fund_count else "暂无入库基金"
@@ -1732,6 +2203,24 @@ def render_application_portal(
       box-shadow: none;
     }}
     .fund-link:hover, .fund-link:focus-visible {{ box-shadow: none; color: #064e59; }}
+    .fund-cell {{
+      display: grid;
+      gap: 4px;
+      min-width: 220px;
+      align-items: start;
+    }}
+    .fund-code {{
+      display: block;
+      color: var(--ink);
+      font-weight: 900;
+      line-height: 1.25;
+    }}
+    .fund-cell .fund-link {{
+      display: block;
+      width: fit-content;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }}
     .timeline {{ display: grid; gap: 10px; }}
     .time-card {{
       border: 1px solid var(--line);
@@ -1755,8 +2244,45 @@ def render_application_portal(
     .pool-ranking-panel {{ margin-bottom: 16px; }}
     .pool-ranking-note {{ margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }}
     .pool-table {{ min-width: 1040px; }}
+    .pool-metric-panel {{ margin-bottom: 16px; }}
+    .pool-metric-table {{ min-width: 2140px; }}
+    .pool-metric-table th, .pool-metric-table td {{ font-size: 12px; }}
+    .pool-metric-table th:nth-child(1),
+    .pool-metric-table td:nth-child(1) {{
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 92px;
+      background: inherit;
+    }}
+    .pool-metric-table th:nth-child(2),
+    .pool-metric-table td:nth-child(2) {{
+      position: sticky;
+      left: 92px;
+      z-index: 2;
+      min-width: 92px;
+      background: inherit;
+    }}
+    .pool-metric-table th:nth-child(3),
+    .pool-metric-table td:nth-child(3) {{
+      position: sticky;
+      left: 184px;
+      z-index: 2;
+      min-width: 280px;
+      background: inherit;
+      box-shadow: 1px 0 0 var(--line);
+    }}
+    .pool-metric-table thead th:nth-child(1),
+    .pool-metric-table thead th:nth-child(2),
+    .pool-metric-table thead th:nth-child(3) {{ z-index: 3; background: var(--surface-2); }}
     .pool-row.holding td {{ background: #f8fbff; }}
     .pool-row.observe td {{ background: #fbfcfb; }}
+    .pool-metric-table .pool-row.holding td:nth-child(1),
+    .pool-metric-table .pool-row.holding td:nth-child(2),
+    .pool-metric-table .pool-row.holding td:nth-child(3) {{ background: #f8fbff; }}
+    .pool-metric-table .pool-row.observe td:nth-child(1),
+    .pool-metric-table .pool-row.observe td:nth-child(2),
+    .pool-metric-table .pool-row.observe td:nth-child(3) {{ background: #fbfcfb; }}
     .pool-badge {{
       display: inline-flex;
       align-items: center;
@@ -2264,28 +2790,6 @@ def render_application_portal(
       <div class="discipline-list">{_discipline_cards(current_holdings, previous_holdings, latest_time=current_updated_au, comparison_time=previous_updated_au)}</div>
     </section>
 
-    <section class="panel pool-ranking-panel" aria-label="持仓池与观察池排序">
-      <h2>持仓池 / 观察池排序</h2>
-      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池。观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。</p>
-      <div class="table-wrap">
-        <table class="pool-table">
-          <thead>
-            <tr>
-              <th>基金分析排序</th>
-              <th>池</th>
-              <th>基金</th>
-              <th>等级</th>
-              <th>证据置信度</th>
-              <th>策略份额</th>
-              <th>动作/复核</th>
-              <th>排序原因</th>
-            </tr>
-          </thead>
-          <tbody>{_pool_rows(current_holdings, observation_rows, resolved_review_keys)}</tbody>
-        </table>
-      </div>
-    </section>
-
     <section class="home-grid">
       <div class="panel">
         <h2>持仓建议</h2>
@@ -2357,23 +2861,42 @@ def render_application_portal(
       </aside>
     </section>
 
-    {_run_timeline_panel(timeline_events)}
-
-    <section class="panel" style="margin-top:16px;">
-      <h2>执行边界</h2>
-      <div class="table-wrap compact">
-        <table>
-          <thead><tr><th>范围</th><th>规则</th></tr></thead>
-          <tbody>
-            <tr><td>交易</td><td>无自动交易、无自动下单、无自动基金申购或赎回。</td></tr>
-            <tr><td>基准</td><td>Serenity baseline 是纪律审计参考；当前支付宝仓位不是 baseline。</td></tr>
-            <tr><td>风险</td><td>最大回撤达到 40.00% 或回撤修复时间达到 365 天会触发硬降级。</td></tr>
-            <tr><td>邮件</td><td>Apple Mail 提醒必须在生产门禁通过且显式启用后发送。</td></tr>
-            <tr><td>交付</td><td><a href="../package/serenity_daily_analysis_delivery.zip">打开交付包</a></td></tr>
-          </tbody>
+    <section class="panel pool-metric-panel" aria-label="持仓池与观察池表现指标">
+      <h2>持仓池表现指标</h2>
+      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池；观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。表内同时展示等级、证据置信度、策略份额、动作/复核、排序原因和收益/风险指标。每次全局数据刷新后按最新净值历史重新计算；入池后涨跌幅使用不可覆盖的首次入池时间，若入池后暂无新净值则显示为空值。Alpha/Beta 按基金主题选择专项或主题代理基准；主题源不可用时留空，不再用沪指/标普500通用降级基准凑数。Theta 为本表定义的近20个净值点日均超额收益，不是期权定价 Theta。</p>
+      <div class="table-wrap">
+        <table class="pool-metric-table">
+          <thead>
+            <tr>
+              <th>基金分析排序</th>
+              <th>池</th>
+              <th>基金</th>
+              <th>等级</th>
+              <th>证据置信度</th>
+              <th>策略份额</th>
+              <th>动作/复核</th>
+              <th>排序原因</th>
+              <th>入池时间</th>
+              <th>净值截至</th>
+              <th>指标更新时间</th>
+              <th>入池后涨跌幅</th>
+              <th>近1个月</th>
+              <th>近3个月</th>
+              <th>近6个月</th>
+              <th>Alpha/Beta基准</th>
+              <th>Alpha（年化）</th>
+              <th>Beta</th>
+              <th>Theta（日均超额）</th>
+              <th>Sharpe</th>
+              <th>Sortino</th>
+            </tr>
+          </thead>
+          <tbody>{_pool_metric_rows(pool_metric_rows)}</tbody>
         </table>
       </div>
     </section>
+
+    {_run_timeline_panel(timeline_events)}
   </main>
 
   <div class="modal" id="fund-modal" hidden>
@@ -3537,6 +4060,13 @@ def build_application_portal(settings: Settings, *, install_apps: bool = True) -
             current_run.run_id if current_run else None,
             current_holdings + observation_pool + previous_holdings,
         )
+        pool_metrics = _pool_performance_metrics(
+            settings,
+            conn,
+            current_holdings + observation_pool,
+            current_run,
+            resolved_review_keys,
+        )
 
     output_dir = settings.root_dir / "outputs" / "application"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -3557,6 +4087,7 @@ def build_application_portal(settings: Settings, *, install_apps: bool = True) -
             run_timeline=run_timeline,
             manual_review_items=manual_review_items,
             resolved_review_keys=resolved_review_keys,
+            pool_metrics=pool_metrics,
         ),
         encoding="utf-8",
     )
@@ -3582,4 +4113,5 @@ def build_application_portal(settings: Settings, *, install_apps: bool = True) -
         "timeline_rows": len(run_timeline),
         "manual_review_rows": len(manual_review_items),
         "fund_library_rows": len(fund_library),
+        "pool_metric_rows": len(pool_metrics),
     }

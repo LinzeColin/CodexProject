@@ -62,6 +62,7 @@ def test_benchmark_smoke_blocks_without_exact_sources(monkeypatch, tmp_path: Pat
 
     monkeypatch.setattr("app.core.benchmark_smoke.ensure_opend", fake_ensure)
     monkeypatch.setattr("app.core.benchmark_smoke._probe_yahoo_candidates", lambda *args, **kwargs: [])
+    monkeypatch.setattr("app.core.benchmark_smoke._probe_eastmoney_candidates", lambda *args, **kwargs: [])
     result = run_benchmark_smoke(settings, write_output=True)
 
     assert result["production_ready"] is False
