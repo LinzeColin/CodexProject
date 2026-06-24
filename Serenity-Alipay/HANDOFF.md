@@ -1,5 +1,21 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260624 - 13:35 CST / 20260624 - 15:35 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复真实页面点击“保存复核”后长时间无反馈/卡住的问题。
+- 根因：真实服务日志显示保存复核时出现 SQLite `database is locked` 和 `BrokenPipeError`；进一步确认 `/api/manual-review` HTTP 保存路径复用了完整 Serenity 刷新锁，后台刷新运行时新的保存请求会等待完整刷新结束；同时复核 GET/POST 每次都调用 `init_db()`，会重复执行 schema/backfill 并放大 SQLite 写锁竞争。
+- 已改后端：`app/db.py` 的 `init_db()` 增加进程内 once guard 和初始化锁；`serve_application()` 启动时先初始化数据库，避免请求热路径反复 schema/backfill。
+- 已改后端：`app/core/application_server.py` 拆分长刷新锁和短复核写入锁；`/api/manual-review` 保存/清空只用短锁，不再等待完整刷新锁；后台复核刷新增加同一 `review_id` in-flight 去重，保存响应先返回 `refreshStatus=running`。
+- 已改前端：`app/core/application_portal.py` 将“保存复核”从逐按钮一次性绑定改为 document 事件委托；点击后立即禁用按钮并显示 `保存中`，写库成功后显示 `刷新中` 和后台运行状态。
+- 已重建并重启入口：`application-portal --json` 通过，`~/Downloads/Serenity 每日分析.app` 和 `/Applications/Serenity 每日分析.app` 已更新；当前新服务由 `/Applications/Serenity 每日分析.app` 拉起，PID `25044`，健康接口 `ok`。
+- 验证：`py_compile app/db.py app/core/application_server.py app/core/application_portal.py tests/test_application_server.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_application_server.py` 为 12 passed；`pytest -q tests/test_reporting_ui.py` 为 10 passed；同步仓库同组测试为 22 passed。
+- 真实页面验证：用 Google Chrome headless 打开 `http://127.0.0.1:8765/`，拦截 `/api/manual-review` 避免写库；点击“保存复核”后 0.5 秒内按钮为 `刷新中`、状态为 `已写入数据库 ... 正在重新运行 Serenity 全流程`，console/pageerror 均为 0。
+- 性能验证：当前服务 `/api/health` 约 37.61ms，`/api/manual-review` 约 9.60ms 返回 11 条记录。
+- 历史保护：`history-integrity --require-pass --json` 通过，`violation_count=0`；本轮没有新增真实复核 run，没有真实 POST 保存复核，没有发邮件，没有启动 OpenD/MooMoo。
+- GitHub 备份：已同步到 `LinzeColin/CodexProject` 的 `Serenity-Alipay` 目录，commit `86819f58 Fix Serenity review save responsiveness` 已推送到 `main`。
+
 Timestamp: 20260624 - 13:12 CST / 20260624 - 15:12 AEST
 
 ## 最新交接摘要
