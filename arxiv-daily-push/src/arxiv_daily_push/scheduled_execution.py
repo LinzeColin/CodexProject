@@ -10,6 +10,7 @@ from typing import Any
 
 from .daily_input import DAILY_INPUT_BUILDER_MODEL_ID, validate_daily_input_report
 from .global_scan import ALL_ARXIV_SCAN_MODEL_ID, build_daily_delivery_package, validate_all_arxiv_daily_input_report
+from .mail_templates import EMAIL_LEARNING_V1_CONTRACT_ID, M1_M4_MAIL_PRODUCTS
 from .notifications import render_email
 from .pipeline import PipelineError, run_daily_dry_run
 from .production_preflight import validate_production_preflight
@@ -492,6 +493,10 @@ def _daily_production_blockers(
         reasons.append("daily email requires candidate queue summary")
     if delivery_package.get("email_contains_html") is not True:
         reasons.append("daily email requires HTML body")
+    if delivery_package.get("email_template_contract") != EMAIL_LEARNING_V1_CONTRACT_ID:
+        reasons.append("daily email must use EMAIL_LEARNING_V1 template contract")
+    if delivery_package.get("mail_product_id") not in M1_M4_MAIL_PRODUCTS:
+        reasons.append("daily email must identify one M1-M4 mail product")
     if notification_report.get("status") != "sent":
         reasons.append("daily pipeline completed but real SMTP evidence is not sent")
     return reasons or ["daily pipeline completed but production delivery evidence is incomplete"]
@@ -506,6 +511,8 @@ def _stage1_text_delivery_ready(delivery_package: Mapping[str, Any]) -> bool:
         and delivery_package.get("video_generation_required") is False
         and delivery_package.get("release_required") is False
         and delivery_package.get("email_contains_video_link") is False
+        and delivery_package.get("email_template_contract") == EMAIL_LEARNING_V1_CONTRACT_ID
+        and delivery_package.get("mail_product_id") in M1_M4_MAIL_PRODUCTS
     )
 
 

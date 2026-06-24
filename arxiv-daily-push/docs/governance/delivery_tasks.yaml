@@ -1420,20 +1420,37 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PHT01V1.1-T02-T04"
+    phase: "S2PH"
+    objective: "Implement the V7.2/V1.1 EMAIL_LEARNING_V1 renderer and route audited M1-M4 email paths through the unified content object, HTML/plain template, ChatGPT new-chat link, and fail-closed visible marker gate."
+    scope: "Private mail renderer, daily delivery package, Stage1 B1 report email, scheduled/local readiness gates, Stage2 shadow preview compatibility, M1-M4 renderer tests, and focused regression coverage."
+    non_scope: "No SMTP transport change, no scheduler trigger or production enablement, no Release upload, no source adapter, no ranking or queue algorithm, no public schema, no DB/migration, no CURRENT pointer change, and no V7.1 baseline edit."
+    status: "completed"
+    dependencies: ["S2PHT01V1.1-T01"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/mail_templates.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/tests/test_mail_templates.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_historical_previews.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_local_runner.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md", "governance/run_manifests/ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-20260625.json"]
+    acceptance_ids: ["ACC-S2PHT01V1.1-T02-CONTENT-OBJECT", "ACC-S2PHT01V1.1-T03-HTML-RENDER", "ACC-S2PHT01V1.1-T04-GOLDEN-REGRESSION"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_emailv1_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_mail_templates.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage1_historical_previews.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_local_runner.py arxiv-daily-push/tests/test_stage2_sources.py -q", "python3 -m unittest discover -s arxiv-daily-push/tests -q", "scripts/validate_semantic_extractors.py arxiv-daily-push", "scripts/validate_project_governance.py --project arxiv-daily-push", "scripts/lean_governance.py check-render --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused email-chain unittest: 80 tests OK", "full arxiv-daily-push unittest: 280 tests OK", "semantic extractor checked 67 formulas / 451 parameters", "V7.2 contract validator PASS", "ADP project governance errors 0 warnings 0", "changed-only governance semantic errors 0 warnings 0", "lean check-render drift_count 0 reference_issue_count 0", "JSON/JSONL/YAML/CSV parse OK", "old V2 template/helper scan no matches", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md", "governance/run_manifests/ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-20260625.json", "arxiv-daily-push/tests/test_mail_templates.py"]
+    risk: "Local renderer validation does not claim integrated production acceptance, scheduler enablement, Release readiness, or live M1-M4 operations; inherited V7.1/V7.2 blockers still apply."
+    rollback: "Revert the Email V1 renderer runtime files, tests, phase record, manifest, registry/status/event updates, and rendered governance views; no data migration is required."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
     scope: "Daily delivery email body ordering, Release landing-page suppression from email, optional video-file wording, MP4 transcript score suppression, Release notes positioning, focused regression tests, and governance records."
     non_scope: "No production schedule enablement, no new SMTP send, no direct Release upload, no ranking algorithm change, no candidate queue policy change, no secret logging, and no video email attachment."
-    status: "planned"
+    status: "deprecated"
     dependencies: ["ADP-PHASE12-EMAIL-HUMAN-FORMAT-036"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", "git diff --check"]
     test_results: ["focused front-stage tests: 27 tests OK", "arxiv-daily-push unit tests: 182 tests OK", "semantic extractor: 37 active formulas and 266 active parameters checked with no errors", "root governance unit tests: 126 tests OK", "changed-only governance sync with semantic checks: errors 0 warnings 0", "information quality validation: PASS errors 0 warnings 0", "manifest JSON parse: PASS", "git diff --check: PASS", "cache check: no __pycache__ or .pyc files found"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py", "https://github.com/LinzeColin/CodexProject/actions/runs/27934320671"]
-    risk: "The revised front-stage still needs PR CI, merge, and a controlled manual workflow_dispatch rerun before it can replace the latest real email."
-    rollback: "Revert version 0.13.1 front-stage quality code, tests, phase record, manifest, event, and governance records, then restore version 0.13.0."
+    risk: "Deprecated by S2PHT01V1.1-T02-T04 EMAIL_LEARNING_V1; do not resume this older front-stage path unless Email V1 is explicitly reverted."
+    rollback: "If Email V1 is reverted, restore this task to planned and re-run the original front-stage quality contract."
     target_version: "0.13.1"
     completed_version: ""
     unknown_task_ids: []
@@ -1442,15 +1459,15 @@ tasks:
     objective: "Implement the V2 daily email as a decision-first Chinese HTML/plain-text brief matching the provided mockup, owner subject contract, and frontstage requirements."
     scope: "Lesson frontstage payload, daily delivery email subject/body, exact YYYYMMDD -- Project Name -- arXiv Group -- Theme subject, responsive HTML alternative, SMTP HTML delivery boundary, q-fin frontstage candidate filtering, optional MP4 link card, feedback actions, foreground numeric-score suppression, focused regression tests, and governance records."
     non_scope: "No production schedule enablement, no new SMTP send, no direct GitHub Release upload, no ranking algorithm change, no all-arXiv scan scope reduction, no candidate queue persistence change, no secret logging, and no video email attachment."
-    status: "planned"
+    status: "deprecated"
     dependencies: ["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]
     required_files: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md", "docs/governance"]
     acceptance_ids: ["ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"]
     test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_v2_pycache_focus3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_scheduled_execution.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_v2_pycache_all2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", "git diff --check"]
     test_results: ["focused email V2 tests: 35 tests OK", "semantic extractor: 39 active formulas and 278 active parameters checked with no errors", "arxiv-daily-push unit tests: 189 tests OK", "governance dashboard regenerated: PASS", "root governance unit tests: 128 tests OK", "changed-only governance sync with semantic checks: errors 0 warnings 0", "information quality validation: PASS errors 0 warnings 0", "manifest JSON parse: PASS", "CSV width checks: PASS", "cache check: PASS"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py", "arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_video.py"]
-    risk: "The V2 renderer with corrected owner subject contract still needs PR CI, merge to main, and one controlled manual workflow_dispatch Gmail SMTP plus GitHub Release rerun before replacing the latest real email."
-    rollback: "Revert version 0.14.1 email decision UI V2 code, tests, schema updates, phase record, manifest, event, and governance records, then restore version 0.14.0."
+    risk: "Deprecated by S2PHT01V1.1-T02-T04 EMAIL_LEARNING_V1; do not resume the older V2 decision UI renderer while V7.2 Email V1 is current."
+    rollback: "If Email V1 is reverted, restore this task to planned and re-run the original V2 decision UI contract."
     target_version: "0.14.1"
     completed_version: ""
     unknown_task_ids: []
