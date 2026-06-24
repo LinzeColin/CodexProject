@@ -23,6 +23,9 @@ from app.scheduler import SCHEDULE_SLOTS
 
 
 _APPLICATION_WRITE_LOCK = threading.RLock()
+_MANUAL_REVIEW_WRITE_LOCK = threading.RLock()
+_MANUAL_REVIEW_REFRESH_LOCK = threading.RLock()
+_MANUAL_REVIEW_REFRESH_IN_FLIGHT: set[int] = set()
 DEFAULT_AUTO_SHUTDOWN_SECONDS = 0
 DEFAULT_AUTOSCHEDULER_INTERVAL_SECONDS = 60
 DEFAULT_AUTOSCHEDULER_INITIAL_DELAY_SECONDS = 3
@@ -456,21 +459,40 @@ def _update_manual_review_refresh_result(
 
 def _refresh_manual_review_async(settings: Settings, review_id: int) -> None:
     try:
-        refresh_result = refresh_application(settings)
-        refresh_status = str(refresh_result.get("status") or "pass")
-        refresh_message = str(refresh_result.get("message") or "")
-        refresh_run_id = str(refresh_result.get("run_id") or "")
-    except Exception as exc:  # pragma: no cover - production boundary
-        refresh_status = "error"
-        refresh_message = f"同步刷新失败：{exc}"
-        refresh_run_id = ""
-    _update_manual_review_refresh_result(
-        settings,
-        review_id,
-        refresh_status=refresh_status,
-        refresh_message=refresh_message,
-        refresh_run_id=refresh_run_id,
+        try:
+            refresh_result = refresh_application(settings)
+            refresh_status = str(refresh_result.get("status") or "pass")
+            refresh_message = str(refresh_result.get("message") or "")
+            refresh_run_id = str(refresh_result.get("run_id") or "")
+        except Exception as exc:  # pragma: no cover - production boundary
+            refresh_status = "error"
+            refresh_message = f"同步刷新失败：{exc}"
+            refresh_run_id = ""
+        _update_manual_review_refresh_result(
+            settings,
+            review_id,
+            refresh_status=refresh_status,
+            refresh_message=refresh_message,
+            refresh_run_id=refresh_run_id,
+        )
+    finally:
+        with _MANUAL_REVIEW_REFRESH_LOCK:
+            _MANUAL_REVIEW_REFRESH_IN_FLIGHT.discard(review_id)
+
+
+def _start_manual_review_refresh(settings: Settings, review_id: int) -> bool:
+    with _MANUAL_REVIEW_REFRESH_LOCK:
+        if review_id in _MANUAL_REVIEW_REFRESH_IN_FLIGHT:
+            return False
+        _MANUAL_REVIEW_REFRESH_IN_FLIGHT.add(review_id)
+    thread = threading.Thread(
+        target=_refresh_manual_review_async,
+        args=(settings, review_id),
+        name=f"SerenityManualReviewRefresh-{review_id}",
+        daemon=True,
     )
+    thread.start()
+    return True
 
 
 def save_manual_review_decision(
@@ -552,13 +574,8 @@ def save_manual_review_decision(
         )
 
     if refresh_async:
-        thread = threading.Thread(
-            target=_refresh_manual_review_async,
-            args=(settings, review_id),
-            name=f"SerenityManualReviewRefresh-{review_id}",
-            daemon=True,
-        )
-        thread.start()
+        if not _start_manual_review_refresh(settings, review_id):
+            refresh_message = "已保存到数据库，上一轮 Serenity 后台刷新仍在运行"
     elif refresh_triggered:
         try:
             refresh_result = refresh_application(settings)
@@ -674,7 +691,7 @@ def make_handler(settings: Settings) -> type[BaseHTTPRequestHandler]:
             path = urlparse(self.path).path
             if path == "/api/manual-review":
                 try:
-                    with _APPLICATION_WRITE_LOCK:
+                    with _MANUAL_REVIEW_WRITE_LOCK:
                         result = save_manual_review_decision(settings, self._read_json_body(), refresh_async=True)
                     self._send_bytes(_json_bytes(result), "application/json; charset=utf-8")
                 except Exception as exc:  # pragma: no cover - defensive HTTP boundary
@@ -697,7 +714,7 @@ def make_handler(settings: Settings) -> type[BaseHTTPRequestHandler]:
                 self.send_error(HTTPStatus.NOT_FOUND, "Not found")
                 return
             try:
-                with _APPLICATION_WRITE_LOCK:
+                with _MANUAL_REVIEW_WRITE_LOCK:
                     result = clear_manual_review_decisions(settings)
                 self._send_bytes(_json_bytes(result), "application/json; charset=utf-8")
             except Exception as exc:  # pragma: no cover - defensive HTTP boundary
@@ -729,6 +746,7 @@ def serve_application(
     autoscheduler_interval_seconds: int | None = None,
     autoscheduler_initial_delay_seconds: int | None = None,
 ) -> None:
+    init_db(settings.db_path)
     build_application_portal(settings, install_apps=False)
     handler = make_handler(settings)
     server = ThreadingHTTPServer((host, port), handler)

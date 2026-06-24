@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Any, Iterable
+
+
+_INIT_DB_LOCK = threading.RLock()
+_INITIALIZED_DB_PATHS: set[Path] = set()
 
 
 SCHEMA = """
@@ -368,35 +373,41 @@ def connect(db_path: Path) -> sqlite3.Connection:
 
 
 def init_db(db_path: Path) -> None:
-    with connect(db_path) as conn:
-        conn.executescript(SCHEMA)
-        _ensure_columns(
-            conn,
-            "fund_rule_snapshot",
-            {
-                "subscription_fee_schedule": "TEXT",
-                "redemption_fee_schedule": "TEXT",
-                "fee_schedule_as_of": "TEXT",
-                "fee_schedule_note": "TEXT",
-                "alipay_trade_status": "TEXT",
-                "moomoo_trade_status": "TEXT",
-                "platform_trade_note": "TEXT",
-            },
-        )
-        _ensure_columns(
-            conn,
-            "manual_review_decision",
-            {
-                "outcome": "TEXT",
-                "outcome_label": "TEXT",
-                "system_disposition": "TEXT",
-                "refresh_triggered": "INTEGER NOT NULL DEFAULT 0",
-                "refresh_status": "TEXT",
-                "refresh_message": "TEXT",
-                "refresh_run_id": "TEXT",
-            },
-        )
-        _backfill_asset_pool_entries(conn)
+    db_path = db_path.expanduser()
+    init_key = db_path.resolve(strict=False)
+    with _INIT_DB_LOCK:
+        if init_key in _INITIALIZED_DB_PATHS and db_path.exists() and db_path.stat().st_size > 0:
+            return
+        with connect(db_path) as conn:
+            conn.executescript(SCHEMA)
+            _ensure_columns(
+                conn,
+                "fund_rule_snapshot",
+                {
+                    "subscription_fee_schedule": "TEXT",
+                    "redemption_fee_schedule": "TEXT",
+                    "fee_schedule_as_of": "TEXT",
+                    "fee_schedule_note": "TEXT",
+                    "alipay_trade_status": "TEXT",
+                    "moomoo_trade_status": "TEXT",
+                    "platform_trade_note": "TEXT",
+                },
+            )
+            _ensure_columns(
+                conn,
+                "manual_review_decision",
+                {
+                    "outcome": "TEXT",
+                    "outcome_label": "TEXT",
+                    "system_disposition": "TEXT",
+                    "refresh_triggered": "INTEGER NOT NULL DEFAULT 0",
+                    "refresh_status": "TEXT",
+                    "refresh_message": "TEXT",
+                    "refresh_run_id": "TEXT",
+                },
+            )
+            _backfill_asset_pool_entries(conn)
+        _INITIALIZED_DB_PATHS.add(init_key)
 
 
 def _ensure_columns(conn: sqlite3.Connection, table: str, columns: dict[str, str]) -> None:

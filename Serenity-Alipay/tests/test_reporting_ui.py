@@ -681,6 +681,8 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "保存中" in html
     assert "刷新中" in html
     assert "waitForReviewRefresh" in html
+    assert 'document.addEventListener("click", (event)' in html
+    assert 'document.querySelectorAll("[data-save-review]").forEach' not in html
     assert "后台刷新仍在运行" in html
     assert "本地服务未启动。请重新打开 Serenity 每日分析.app" in html
     assert "初始持仓权重" in html
