@@ -1,0 +1,240 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624",
+  "project_id": "Serenity-Alipay",
+  "task_id": "S3PCT03",
+  "acceptance_ids": [
+    "ACC-S3PCT03"
+  ],
+  "iteration_id": "ITER-20260624-SERENITY-S3PCT03",
+  "generated_at": "2026-06-24T23:20:00+10:00",
+  "implementation_base_sha": "4319f9b7999e65ec955ead5f3394fa103fcef508",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f0bd0e24f1a88eb1464b0eed79fb8ec397f61b82036b690984a7a33d613b8e67",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+    "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Serenity-Alipay/CHANGELOG.md",
+    "Serenity-Alipay/docs/governance/DELIVERY_PLAN.md",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Serenity-Alipay/docs/governance/VERSION_MATRIX.yaml",
+    "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/tests/test_s3pct03_lifecycle.py",
+    "Serenity-Alipay/开发记录"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+    "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Serenity-Alipay/CHANGELOG.md",
+    "Serenity-Alipay/docs/governance/DELIVERY_PLAN.md",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Serenity-Alipay/docs/governance/VERSION_MATRIX.yaml",
+    "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/tests/test_s3pct03_lifecycle.py",
+    "Serenity-Alipay/开发记录"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+    "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/DELIVERY_PLAN.md",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Serenity-Alipay/docs/governance/VERSION_MATRIX.yaml",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/开发记录"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json",
+    "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+    "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+    "tests/governance/test_project_governance_validator.py",
+    "Serenity-Alipay/CHANGELOG.md",
+    "Serenity-Alipay/docs/governance/DELIVERY_PLAN.md",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/OWNER_STATUS.md",
+    "Serenity-Alipay/docs/governance/STATUS.md",
+    "Serenity-Alipay/docs/governance/TRACEABILITY_MATRIX.csv",
+    "Serenity-Alipay/docs/governance/VERSION_MATRIX.yaml",
+    "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/development_events.jsonl",
+    "Serenity-Alipay/docs/governance/events.jsonl",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv",
+    "Serenity-Alipay/开发记录"
+  ],
+  "change_classification": [
+    "runtime_lifecycle_validation",
+    "single_project_scope",
+    "Serenity-Alipay_only_scope",
+    "mocked_opend_auto_wake",
+    "tool_owned_process_cleanup",
+    "user_owned_process_protection",
+    "package_atomicity_recovery",
+    "launchd_wrapper_contract",
+    "parameter_selector_rebind_no_active_value_change",
+    "production_account_unchanged_false",
+    "owner_truth_preserved"
+  ],
+  "stage_gate_status": {
+    "S3PCT03": "PASSED_FOCUSED_LOCAL_WITH_PYTEST_BLOCKED",
+    "S3PC-GATE": "IN_PROGRESS",
+    "S3-GATE": "IN_PROGRESS"
+  },
+  "model_delta": "No scoring, ranking, scheduler, gate, or investment model behavior changed.",
+  "formula_delta": "No active formula implementation changed. FORM-007/FORM-008 parameter selectors were re-bound to current pipeline.py line layout only.",
+  "parameter_delta": "No active parameter value changed. PARAM-027 through PARAM-032 source_selector, extracted_value evidence hash, last_verified_commit, and verified_at were updated to match the current pipeline.py source layout.",
+  "version_delta": "Product version remains 0.1.0; governance iteration moves to ITER-20260624-SERENITY-S3PCT03.",
+  "test_commands": [
+    "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B Serenity-Alipay\\tests\\test_s3pct03_lifecycle.py",
+    "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile Serenity-Alipay\\tests\\test_s3pct03_lifecycle.py",
+    "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest Serenity-Alipay\\tests -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py Serenity-Alipay",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project Serenity-Alipay --write",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project Serenity-Alipay",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pct03_serenity_lifecycle_manifest_and_gate_evidence",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B Serenity-Alipay\\tests\\test_s3pct03_lifecycle.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 4 tests in 0.049s; OK."
+    },
+    {
+      "command": "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile Serenity-Alipay\\tests\\test_s3pct03_lifecycle.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "set PYTHONPATH=Serenity-Alipay&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest Serenity-Alipay\\tests -q",
+      "exit_code": 1,
+      "result": "BLOCKED_LOCAL_TOOL_UNAVAILABLE",
+      "observed": "No module named pytest."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py Serenity-Alipay",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_formulas_checked=12 semantic_parameters_checked=49 after PARAM-027..PARAM-032 selector rebind."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project Serenity-Alipay --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "updated_count=0 after the final event text; prior render updated Serenity-Alipay/开发记录 only."
+    },
+    {
+      "command": "node_repl JSONL and manifest parser for Serenity S3PCT03 events",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "events.jsonl 11 lines ok; development_events.jsonl 5 lines ok; manifest json ok."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pct03_serenity_lifecycle_manifest_and_gate_evidence",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 test in 0.017s; OK."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project Serenity-Alipay",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only sync errors=0 warnings=0; Serenity-Alipay validation errors=0 warnings=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "post-commit rerun passed; changed-only validation exit_code=0 and zero_diff.clean=true."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted core.autocrlf line-ending warnings for text files."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    }
+  ],
+  "evidence_refs": [
+    "Serenity-Alipay/tests/test_s3pct03_lifecycle.py",
+    "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv",
+    "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+    "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+    "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+    "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+    "Serenity-Alipay/docs/governance/parameter_registry.csv"
+  ],
+  "stop_conditions_reviewed": [
+    "No real OpenD process is started.",
+    "No real email is sent.",
+    "No trading endpoint or live account operation is used.",
+    "No production package path, production database, or persistent user data path is written by the lifecycle proof.",
+    "Package atomicity is proven with temporary files only.",
+    "Owner and production readiness truth remains separate from lifecycle-contract evidence."
+  ],
+  "unresolved_risks": [
+    "No real OpenD, email delivery, trading endpoint, production package path, production data path, or owner readiness approval is used or implied by S3PCT03.",
+    "The roadmap pytest command remains blocked locally because pytest is not installed in the bundled runtime.",
+    "Serenity empirical calibration, live OpenD readiness, real email delivery, trading readiness, and delivery readiness remain unresolved under existing owner/model tasks.",
+    "S3PC-GATE remains in progress until the whole S3PC matrix is closed by the dependent stage gate task."
+  ],
+  "owner_truth_preserved": {
+    "operational_validation": "PARTIAL",
+    "delivery_readiness": "UNVERIFIED",
+    "strategy_validity": "UNVERIFIED",
+    "production_write_readiness": "UNVERIFIED",
+    "live_account_readiness": "UNVERIFIED"
+  },
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S3PCT03 Serenity OpenD lifecycle, package atomicity and cleanup contracts",
+  "ci_run_reference": "LOCAL_COMMIT_CHANGED_ONLY_CI_ORIGIN_MAIN_AND_PENDING_PR_GOVERNANCE_CI",
+  "binding_rationale": "Manifest records focused local commit evidence; final GitHub PR and main CI binding will be verified after PR merge."
+}

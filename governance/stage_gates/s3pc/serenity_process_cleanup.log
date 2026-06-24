@@ -1,0 +1,23 @@
+S3PCT03 Serenity-Alipay process cleanup evidence
+generated_at: 2026-06-24T23:20:00+10:00
+task_id: S3PCT03
+acceptance_id: ACC-S3PCT03
+
+Focused unittest command:
+set PYTHONPATH=Serenity-Alipay&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B Serenity-Alipay\tests\test_s3pct03_lifecycle.py
+
+Observed:
+Ran 4 tests in 0.058s
+OK
+
+Cleanup proof:
+- auto_wake_opend: PASS
+- tool_owned_process_cleanup: PASS
+- user_owned_opend_protection: PASS
+- background_residue_process_count: 0
+- no real OpenD process was started
+- no real mail send, trade, account, or production provider connection was used
+
+Roadmap pytest command:
+set PYTHONPATH=Serenity-Alipay&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m pytest Serenity-Alipay\tests -q
+blocked_local_tool_unavailable: No module named pytest
