@@ -120,6 +120,28 @@ PROJECT_REGISTRY_MIGRATION_VERSIONS = {
     "legacy-v1-pending-lean-v2",
     "lean-v2",
 }
+HUMAN_ENTRY_QUALITY_CONTRACTS = {
+    "功能清单": {
+        "title": "# 功能清单",
+        "required_tokens": ("## 摘要", "project_id", "current_stage", "current_task", "evidence_status"),
+    },
+    "开发记录": {
+        "title": "# 开发记录",
+        "required_tokens": ("## 摘要", "Stage -> Phase -> Task", "stop_gate"),
+    },
+    "模型参数文件": {
+        "title": "# 模型参数文件",
+        "required_tokens": ("## 摘要", "active_model_count", "active_formula_count", "active_parameter_count"),
+    },
+}
+HUMAN_ENTRY_FORBIDDEN_MARKERS = (
+    "compatibility index",
+    "compatibility indexes",
+    "兼容索引",
+    "详见 docs/governance",
+    "see docs/governance",
+    "link page",
+)
 
 
 @dataclass
@@ -621,6 +643,24 @@ def check_file_nonempty(validation: Validation, path: Path, required: bool, scop
         validation.add(required, scope, f"Empty file: {rel(path)}")
         return False
     return True
+
+
+def check_human_entry_quality(validation: Validation, project_path: Path, required: bool, scope: str) -> None:
+    for filename, contract in HUMAN_ENTRY_QUALITY_CONTRACTS.items():
+        path = project_path / filename
+        if not path.exists() or not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        stripped = text.strip()
+        entry_head = "\n".join(stripped.splitlines()[:12]).lower()
+        if any(marker in entry_head for marker in HUMAN_ENTRY_FORBIDDEN_MARKERS):
+            validation.add(required, scope, f"{filename} must be owner-readable content, not a compatibility index or link page")
+        first_line = next((line.strip() for line in stripped.splitlines() if line.strip()), "")
+        if first_line != contract["title"]:
+            validation.add(required, scope, f"{filename} must start with {contract['title']}")
+        for token in contract["required_tokens"]:
+            if token not in text:
+                validation.add(required, scope, f"{filename} missing owner-readable token: {token}")
 
 
 def check_unique(validation: Validation, items: Iterable[dict[str, Any]], key: str, scope: str, required: bool) -> None:
@@ -1163,6 +1203,7 @@ def validate_project(
         return
     for rel_path in project_files:
         check_file_nonempty(validation, project_path / rel_path, required, scope)
+    check_human_entry_quality(validation, project_path, required, scope)
     parsed = parse_project_governance(project_path, validation, required, scope)
     check_csv_headers(validation, parsed, required, scope)
     check_cross_references(validation, parsed, required, scope)
