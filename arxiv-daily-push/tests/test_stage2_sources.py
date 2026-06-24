@@ -161,7 +161,7 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertTrue(report["daily_input"]["source_item"]["source_id"].startswith("nature:s41586-"))
         self.assertEqual(report["daily_input"]["source_item"]["source_type"], "rss")
         self.assertIn("Nature", report["daily_input"]["claims"][0]["statement"])
-        self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2P2T01")
+        self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2PCT01")
 
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -266,7 +266,7 @@ class Stage2SourceTests(unittest.TestCase):
     def test_cli_stage2_top_journal_shadow_daily_outputs_json(self) -> None:
         fake_report = {
             "model_id": S2P2_TOP_JOURNAL_SHADOW_MODEL_ID,
-            "task_id": "S2P2T01",
+            "task_id": "S2PCT01",
             "status": "pass",
             "daily_input_ready": True,
             "email_preview_written": True,

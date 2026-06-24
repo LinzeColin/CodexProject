@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 70
-- acceptance_count: 63
+- task_count: 71
+- acceptance_count: 64
 
 ## Delivery Tasks
 
@@ -96,7 +96,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PAT03 | S2PA | completed | ACC-S2PAT03-ROADMAP | root/ADP AGENTS and roadmap references now route new work through V7 while preserving legacy `S2P1T01` alias | `AGENTS.md`; `arxiv-daily-push/AGENTS.md` |
 | S2PAT04 | S2PA | completed | ACC-S2PAT04-CN-CI | 三基文件、VERSION_MATRIX、validator 和 governance tests expose and enforce V7 contract hashes | `功能清单`; `开发记录`; `模型参数文件` |
 | S2PAT05 | S2PA | completed | ACC-S2PAT05-AUDIT-LOCK | V7.1 parallel audit findings, merge policy, lifecycle contract, and P0/P1 production-forbidden gate are locked into repository governance; repository lock remains pending PR CI attestation | `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml`; `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
-| S2PBT01 | S2PB | in_progress | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7 name for the active bioRxiv/medRxiv shadow source promotion; must still attach durable real 30-date replay and 48h shadow evidence before completion | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
+| S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7 name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
+| S2PCT01 | S2PC | in_progress | ACC-S2PCT01-NATURE | Current V7.1 D2 Nature/top-journal metadata-only shadow foundation; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |

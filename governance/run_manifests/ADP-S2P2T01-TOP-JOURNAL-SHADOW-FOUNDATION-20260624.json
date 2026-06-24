@@ -1,9 +1,11 @@
 {
   "manifest_id": "ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624",
   "project_id": "arxiv-daily-push",
-  "task_id": "S2P2T01",
-  "task_aliases": [],
-  "phase": "S2P2",
+  "task_id": "S2PCT01",
+  "task_aliases": [
+    "S2P2T01"
+  ],
+  "phase": "S2PC",
   "generated_at": "2026-06-24T12:40:00+10:00",
   "actor": "Codex",
   "status": "in_progress",
@@ -24,7 +26,10 @@
       "https://www.nature.com/nature/research-articles"
     ],
     "accepted_article_url_pattern": "https://www.nature.com/articles/s41586-*",
-    "filtered_url_pattern": "https://www.nature.com/articles/d41586-*"
+    "filtered_url_pattern": "https://www.nature.com/articles/d41586-*",
+    "v7_source_domain": "D2_top_journal_nature",
+    "canonical_task_id": "S2PCT01",
+    "legacy_task_id": "S2P2T01"
   },
   "side_effect_policy": {
     "metadata_only": true,
@@ -58,12 +63,22 @@
     "focused S2P2/top-journal and Stage2 tests: 14 tests OK",
     "Nature RSS fixture filters d41586 news items and admits only s41586 main-journal research articles",
     "S2P2 shadow daily persists separate queue, ledger, dry-run package, and email preview with production flags false",
-    "live Nature RSS canary: batch_status pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, real_smtp_sent false, formal_production_inclusion false, queue/ledger/email preview paths exist under /tmp/adp_s2p2_nature_live_20260624"
+    "live Nature RSS canary: batch_status pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, real_smtp_sent false, formal_production_inclusion false, queue/ledger/email preview paths exist under /tmp/adp_s2p2_nature_live_20260624",
+    "V7.1 canonical mapping: S2PCT01 / legacy S2P2T01 / phase S2PC / acceptance ACC-S2PCT01-NATURE",
+    "D2 source-domain acceptance is not claimed; evidence remains focused tests plus live 3-record Nature canary"
   ],
   "blocking_gates": [
     "V7/root contract hash gate",
     "formal source production inclusion gate",
-    "Stage2 Stop Gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
+    "Stage2 Stop Gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION",
+    "V7.1 P0/P1 audit findings must be cleared",
+    "S2PMT07 independent review gate"
   ],
-  "rollback": "Revert top_journal_adapter.py, S2P2 stage2_sources/CLI/lesson/global_scan changes, Nature fixture/tests, S2P2 phase record, delivery task, event, and this manifest."
+  "rollback": "Revert top_journal_adapter.py, S2PC stage2_sources/CLI/lesson/global_scan changes, Nature fixture/tests, S2P2 legacy phase record, delivery task, event, and this manifest.",
+  "canonical_task_id": "S2PCT01",
+  "legacy_task_id": "S2P2T01",
+  "acceptance_ids": [
+    "ACC-S2PCT01-NATURE"
+  ],
+  "acceptance_id": "ACC-S2PCT01-NATURE"
 }
