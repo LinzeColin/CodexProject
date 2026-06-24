@@ -192,6 +192,55 @@ S2PDT04_REQUIRED_SHADOW_DAYS = 2
 S2PDT04_REQUIRED_BOARD_IDS = ("B2_policy", "B3_frontier", "B4_industry", "B5_macro", "B6_risk")
 S2PDT04_REQUIRED_ROUTE_FIELDS = ("board_id", "source_ids", "route_explanation", "authority_gate", "metadata_only")
 S2PDT04_REPORT_FILENAME = "stage2_s2pdt04_china_d3_readiness_review_report.json"
+S2PFT01_CHINA_PROVINCIAL_MODEL_ID = "adp-s2pft01-china-provincial-template-coverage-v1"
+S2PFT01_ACCEPTANCE_ID = "ACC-S2PFT01-PROVINCES"
+S2PFT01_TASK_ID = "S2PFT01"
+S2PFT01_LEGACY_TASK_ID = "S2P5T01"
+S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS = (
+    "beijing",
+    "tianjin",
+    "hebei",
+    "shanxi",
+    "inner_mongolia",
+    "liaoning",
+    "jilin",
+    "heilongjiang",
+    "shanghai",
+    "jiangsu",
+    "zhejiang",
+    "anhui",
+    "fujian",
+    "jiangxi",
+    "shandong",
+    "henan",
+    "hubei",
+    "hunan",
+    "guangdong",
+    "guangxi",
+    "hainan",
+    "chongqing",
+    "sichuan",
+    "guizhou",
+    "yunnan",
+    "tibet",
+    "shaanxi",
+    "gansu",
+    "qinghai",
+    "ningxia",
+    "xinjiang",
+)
+S2PFT01_REQUIRED_LOCALITY_TYPES = ("province", "autonomous_region", "municipality")
+S2PFT01_REQUIRED_CORE_DEPARTMENT_ROLES = (
+    "government_portal",
+    "development_reform",
+    "science_technology",
+    "industry_information",
+    "finance",
+    "market_regulation",
+)
+S2PFT01_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
+S2PFT01_ALLOWED_IDENTITY_STATES = ("official_domain", "official_publication_portal")
+S2PFT01_REPORT_FILENAME = "stage2_s2pft01_china_provincial_template_coverage_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -3085,6 +3134,243 @@ def validate_s2pdt04_china_d3_readiness_review_report(report: Mapping[str, Any])
     return errors
 
 
+def build_s2pft01_china_provincial_template_coverage_report(
+    *,
+    generated_at: str,
+    d3_readiness_review_report: Mapping[str, Any],
+    provincial_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build mainland provincial template coverage evidence without production inclusion."""
+
+    d3_errors = validate_s2pdt04_china_d3_readiness_review_report(d3_readiness_review_report)
+    d3_gate = (
+        "pass"
+        if not d3_errors
+        and d3_readiness_review_report.get("status") == "pass"
+        and d3_readiness_review_report.get("d3_core_readiness_review_ready") is True
+        else "blocked"
+    )
+    province_rows, row_errors = _s2pft01_provincial_rows(provincial_records)
+    coverage_gate = _s2pft01_provincial_coverage_gate(province_rows)
+    department_gate = _s2pft01_core_department_gate(province_rows)
+    health_gate = _s2pft01_health_tier_gate(province_rows)
+    authority_gate = _s2pft01_provincial_authority_gate(province_rows)
+    metadata_gate = _s2pft01_provincial_metadata_gate(province_rows)
+    blocking_reasons = [
+        *d3_errors,
+        *row_errors,
+        *coverage_gate["blocking_reasons"],
+        *department_gate["blocking_reasons"],
+        *health_gate["blocking_reasons"],
+        *authority_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if d3_gate != "pass":
+        blocking_reasons.append("S2PFT01 requires passing S2PDT04 China D3 readiness review evidence")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and d3_gate
+        == coverage_gate["status"]
+        == department_gate["status"]
+        == health_gate["status"]
+        == authority_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PFT01_CHINA_PROVINCIAL_MODEL_ID,
+        "acceptance_id": S2PFT01_ACCEPTANCE_ID,
+        "task_id": S2PFT01_TASK_ID,
+        "legacy_task_id": S2PFT01_LEGACY_TASK_ID,
+        "phase": "S2PF",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_d3_readiness_gate": d3_gate,
+        "provincial_coverage_gate": coverage_gate["status"],
+        "core_department_template_gate": department_gate["status"],
+        "health_tier_gate": health_gate["status"],
+        "authority_gate": authority_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_mainland_provincial_ids": list(S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS),
+        "required_mainland_provincial_count": len(S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS),
+        "provincial_ids_observed": coverage_gate["provincial_ids_observed"],
+        "provincial_record_count": len(province_rows),
+        "required_locality_types": list(S2PFT01_REQUIRED_LOCALITY_TYPES),
+        "locality_types_observed": coverage_gate["locality_types_observed"],
+        "required_core_department_roles": list(S2PFT01_REQUIRED_CORE_DEPARTMENT_ROLES),
+        "health_tiers_observed": health_gate["health_tiers_observed"],
+        "provincial_records": province_rows,
+        "provincial_coverage_summary": coverage_gate,
+        "core_department_template_summary": department_gate,
+        "health_tier_summary": health_gate,
+        "authority_summary": authority_gate,
+        "metadata_summary": metadata_gate,
+        "s2pf_provincial_template_coverage_ready": status == "pass",
+        "d3_full_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "hk_mo_profile_modeled": False,
+        "city_coverage_modeled": False,
+        "special_zone_discovery_enabled": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pft01_china_provincial_template_coverage(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    d3_readiness_review_report: Mapping[str, Any],
+    provincial_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PFT01 China provincial template coverage evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pft01-china-provincial-template-coverage"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pft01_china_provincial_template_coverage_report(
+        generated_at=generated_at,
+        d3_readiness_review_report=d3_readiness_review_report,
+        provincial_records=provincial_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "provincial_template_coverage_report_path": str(
+                run_dir / "adp-s2pft01-china-provincial-template-coverage-report.json"
+            ),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pft01-china-provincial-template-coverage-report.json", report)
+        _write_json(state / S2PFT01_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pft01_china_provincial_template_coverage_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PFT01_CHINA_PROVINCIAL_MODEL_ID:
+        errors.append("S2PFT01 provincial model_id must be adp-s2pft01-china-provincial-template-coverage-v1")
+    if report.get("task_id") != S2PFT01_TASK_ID:
+        errors.append("S2PFT01 provincial task_id must be S2PFT01")
+    if report.get("legacy_task_id") != S2PFT01_LEGACY_TASK_ID:
+        errors.append("S2PFT01 provincial legacy_task_id must be S2P5T01")
+    if report.get("acceptance_id") != S2PFT01_ACCEPTANCE_ID:
+        errors.append("S2PFT01 provincial acceptance_id must be ACC-S2PFT01-PROVINCES")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PFT01 provincial status must be pass or blocked")
+    for key in (
+        "d3_full_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+        "v7_2_mail_or_schema_prerun",
+        "hk_mo_profile_modeled",
+        "city_coverage_modeled",
+        "special_zone_discovery_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PFT01 provincial template coverage")
+    provincial_records = report.get("provincial_records")
+    if not isinstance(provincial_records, list):
+        errors.append("S2PFT01 provincial_records must be a list")
+        provincial_records = []
+    observed_ids = set(report.get("provincial_ids_observed") or [])
+    missing_ids = [province_id for province_id in S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS if province_id not in observed_ids]
+    if missing_ids:
+        errors.append("S2PFT01 missing mainland provincial ids: " + ", ".join(missing_ids))
+    observed_types = set(report.get("locality_types_observed") or [])
+    missing_types = [locality_type for locality_type in S2PFT01_REQUIRED_LOCALITY_TYPES if locality_type not in observed_types]
+    if missing_types:
+        errors.append("S2PFT01 missing locality types: " + ", ".join(missing_types))
+    for index, record in enumerate(provincial_records):
+        if not isinstance(record, Mapping):
+            errors.append(f"provincial_records[{index}] must be an object")
+            continue
+        if record.get("province_id") not in S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS:
+            errors.append(f"provincial_records[{index}].province_id is not supported")
+        if record.get("locality_type") not in S2PFT01_REQUIRED_LOCALITY_TYPES:
+            errors.append(f"provincial_records[{index}].locality_type is not supported")
+        if not record.get("province_name"):
+            errors.append(f"provincial_records[{index}].province_name is required")
+        for field in ("official_domain", "source_url", "health_explanation"):
+            if not record.get(field):
+                errors.append(f"provincial_records[{index}].{field} is required")
+        if record.get("identity_state") not in S2PFT01_ALLOWED_IDENTITY_STATES:
+            errors.append(f"provincial_records[{index}].identity_state is not supported")
+        if record.get("health_tier") not in S2PFT01_ALLOWED_HEALTH_TIERS:
+            errors.append(f"provincial_records[{index}].health_tier is not supported")
+        missing_roles = [
+            role for role in S2PFT01_REQUIRED_CORE_DEPARTMENT_ROLES if role not in set(record.get("core_department_roles") or [])
+        ]
+        if missing_roles:
+            errors.append(f"provincial_records[{index}] missing core roles: " + ", ".join(missing_roles))
+        if record.get("authority_gate") != "pass":
+            errors.append(f"provincial_records[{index}].authority_gate must be pass")
+        if record.get("metadata_only") is not True:
+            errors.append(f"provincial_records[{index}].metadata_only must be true")
+        for field in ("pdf_downloaded", "full_text_extracted", "production_affected", "real_smtp_sent"):
+            if record.get(field) is not False:
+                errors.append(f"provincial_records[{index}].{field} must be false")
+        if not record.get("evidence_refs"):
+            errors.append(f"provincial_records[{index}].evidence_refs is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PFT01 provincial report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_d3_readiness_gate",
+            "provincial_coverage_gate",
+            "core_department_template_gate",
+            "health_tier_gate",
+            "authority_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PFT01 provincial report requires {key}=pass")
+        if report.get("s2pf_provincial_template_coverage_ready") is not True:
+            errors.append("passing S2PFT01 provincial report requires s2pf_provincial_template_coverage_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -5311,6 +5597,163 @@ def _s2pdt04_metadata_gate(
         "metadata_only_record_count": len(records) - len(violations),
         "evidence_backed_record_count": len(records) - len(evidence_missing),
         "record_count": len(records),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft01_provincial_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    province_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"provincial_records[{index}] must be an object")
+            continue
+        province_id = str(record.get("province_id") or "").strip()
+        row = {
+            "province_id": province_id,
+            "province_name": str(record.get("province_name") or "").strip(),
+            "locality_type": str(record.get("locality_type") or "").strip(),
+            "official_domain": str(record.get("official_domain") or "").strip(),
+            "source_url": str(record.get("source_url") or "").strip(),
+            "core_department_roles": list(record.get("core_department_roles") or []),
+            "health_tier": str(record.get("health_tier") or "").strip(),
+            "health_explanation": str(record.get("health_explanation") or "").strip(),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not province_id:
+            errors.append(f"provincial_records[{index}].province_id is required")
+        if province_id in province_ids:
+            errors.append(f"duplicate S2PFT01 province_id: {province_id}")
+        province_ids.add(province_id)
+        rows.append(row)
+    if not rows:
+        errors.append("S2PFT01 requires at least one provincial record")
+    return rows, errors
+
+
+def _s2pft01_provincial_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("province_id") or "") for row in rows if isinstance(row, Mapping)}
+    observed_types = {
+        str(row.get("locality_type") or "") for row in rows if isinstance(row, Mapping) and str(row.get("locality_type") or "")
+    }
+    missing = [province_id for province_id in S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS if province_id not in observed]
+    unsupported = sorted(observed - set(S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS))
+    missing_types = [locality_type for locality_type in S2PFT01_REQUIRED_LOCALITY_TYPES if locality_type not in observed_types]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PFT01 provincial coverage missing mainland provincial ids: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PFT01 provincial coverage has unsupported ids: " + ", ".join(unsupported))
+    if missing_types:
+        reasons.append("S2PFT01 provincial coverage missing locality types: " + ", ".join(missing_types))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_mainland_provincial_ids": list(S2PFT01_REQUIRED_MAINLAND_PROVINCIAL_IDS),
+        "provincial_ids_observed": sorted(province_id for province_id in observed if province_id),
+        "required_locality_types": list(S2PFT01_REQUIRED_LOCALITY_TYPES),
+        "locality_types_observed": sorted(observed_types),
+        "missing_mainland_provincial_ids": missing,
+        "unsupported_provincial_ids": unsupported,
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft01_core_department_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    incomplete: list[Mapping[str, Any]] = []
+    for row in rows:
+        roles = set(row.get("core_department_roles") or []) if isinstance(row, Mapping) else set()
+        if not set(S2PFT01_REQUIRED_CORE_DEPARTMENT_ROLES).issubset(roles):
+            incomplete.append(row)
+    reasons: list[str] = []
+    if incomplete:
+        reasons.append("S2PFT01 provincial records must include all required core department roles")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_core_department_roles": list(S2PFT01_REQUIRED_CORE_DEPARTMENT_ROLES),
+        "complete_template_record_count": len(rows) - len(incomplete),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft01_health_tier_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    tiers = sorted(
+        {
+            str(row.get("health_tier") or "")
+            for row in rows
+            if isinstance(row, Mapping) and str(row.get("health_tier") or "")
+        }
+    )
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("health_tier") not in S2PFT01_ALLOWED_HEALTH_TIERS
+        or not row.get("health_explanation")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT01 health tier requires allowed tier and health_explanation on every provincial record")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_health_tiers": list(S2PFT01_ALLOWED_HEALTH_TIERS),
+        "health_tiers_observed": tiers,
+        "healthy_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft01_provincial_authority_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("authority_gate") != "pass"
+        or row.get("identity_state") not in S2PFT01_ALLOWED_IDENTITY_STATES
+        or not row.get("official_domain")
+        or not row.get("source_url")
+        or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT01 authority gate requires official identity, domain, source_url, authority_gate=pass, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_identity_states": list(S2PFT01_ALLOWED_IDENTITY_STATES),
+        "authority_checked_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft01_provincial_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PFT01 provincial records must stay metadata-only with no PDF/full-text, production, or SMTP side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(rows) - len(violations),
+        "record_count": len(rows),
         "blocking_reasons": reasons,
     }
 

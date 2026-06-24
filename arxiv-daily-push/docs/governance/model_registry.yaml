@@ -3414,3 +3414,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PDT04-CHINA-D3-READINESS-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT04_CHINA_D3_READINESS_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-065"
+    name: "S2PFT01 China provincial template coverage"
+    kind: "deterministic provincial template coverage model"
+    purpose: "Validate mainland provincial-level template coverage, core local department roles, health tiers, official identity, and metadata-only no-production boundaries after S2PDT04 D3 readiness evidence."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pft01-china-provincial-template-coverage-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-067"
+    parameter_ids:
+      - "PARAM-ADP-459"
+      - "PARAM-ADP-460"
+      - "PARAM-ADP-461"
+      - "PARAM-ADP-462"
+      - "PARAM-ADP-463"
+      - "PARAM-ADP-464"
+      - "PARAM-ADP-465"
+      - "PARAM-ADP-466"
+      - "PARAM-ADP-467"
+      - "PARAM-ADP-468"
+    inputs:
+      - "passing S2PDT04 D3 readiness review report"
+      - "mainland provincial template records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China provincial template coverage report"
+      - "provincial coverage gate"
+      - "core department template gate"
+      - "health tier gate"
+      - "authority gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md"

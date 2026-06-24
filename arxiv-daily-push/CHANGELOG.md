@@ -2,6 +2,7 @@
 
 ## Unreleased - 2026-06-24
 
+- Completed `S2PFT01` / legacy `S2P5T01` China mainland provincial template coverage evidence for 31 provincial-level IDs while keeping D3 full acceptance, Stage 2 production acceptance, SMTP, Release, scheduler, queue/schema mutation, public schema migration, HK/MO, city, special-zone, V7.2 contract, and production email side effects disabled.
 - Completed `S2PDT04` / legacy `S2P3T04` China official D3 readiness review evidence without granting D3 source-domain production acceptance.
 - Added `adp stage2-china-d3-readiness-review`, 30-date replay, 2-day shadow, authority, B2-B6 board-routing, metadata-only/no-production gates, model/formula/parameter governance registrations, V7.2 revalidation receipt, and S2PDT04 manifest/phase evidence while keeping D3 core acceptance, Stage 2 production acceptance, SMTP, Release, schedule, queue mutation, public schema migration, PDF/full-text download, paid API use, paywall bypass, V7.1 CURRENT switching, V7.2 mail/schema pre-run, and production inclusion disabled.
 - Completed `S2PDT03` / legacy `S2P3T03` China legal metadata, version/effectivity, reprint relation, and old-conclusion update shadow evidence.

@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PFT01_CHINA_PROVINCIAL_MODEL_ID,
     S2PDT04_D3_READINESS_MODEL_ID,
     S2PDT03_LEGAL_METADATA_MODEL_ID,
     S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
@@ -29,6 +30,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pft01_china_provincial_template_coverage_report,
     build_s2pdt04_china_d3_readiness_review_report,
     build_s2pdt03_china_legal_metadata_relation_shadow_report,
     build_s2pdt02_china_c1_department_source_map_report,
@@ -43,6 +45,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pft01_china_provincial_template_coverage,
     run_s2pdt04_china_d3_readiness_review,
     run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
@@ -55,6 +58,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pft01_china_provincial_template_coverage_report,
     validate_s2pdt04_china_d3_readiness_review_report,
     validate_s2pdt03_china_legal_metadata_relation_shadow_report,
     validate_s2pdt02_china_c1_department_source_map_report,
@@ -764,6 +768,86 @@ def china_d3_board_route_records() -> list[dict]:
     ]
 
 
+MAINLAND_PROVINCIAL_FIXTURE_ROWS = (
+    ("beijing", "北京市", "municipality", "beijing.gov.cn"),
+    ("tianjin", "天津市", "municipality", "tj.gov.cn"),
+    ("hebei", "河北省", "province", "hebei.gov.cn"),
+    ("shanxi", "山西省", "province", "shanxi.gov.cn"),
+    ("inner_mongolia", "内蒙古自治区", "autonomous_region", "nmg.gov.cn"),
+    ("liaoning", "辽宁省", "province", "ln.gov.cn"),
+    ("jilin", "吉林省", "province", "jl.gov.cn"),
+    ("heilongjiang", "黑龙江省", "province", "hlj.gov.cn"),
+    ("shanghai", "上海市", "municipality", "shanghai.gov.cn"),
+    ("jiangsu", "江苏省", "province", "jiangsu.gov.cn"),
+    ("zhejiang", "浙江省", "province", "zj.gov.cn"),
+    ("anhui", "安徽省", "province", "ah.gov.cn"),
+    ("fujian", "福建省", "province", "fujian.gov.cn"),
+    ("jiangxi", "江西省", "province", "jiangxi.gov.cn"),
+    ("shandong", "山东省", "province", "shandong.gov.cn"),
+    ("henan", "河南省", "province", "henan.gov.cn"),
+    ("hubei", "湖北省", "province", "hubei.gov.cn"),
+    ("hunan", "湖南省", "province", "hunan.gov.cn"),
+    ("guangdong", "广东省", "province", "gd.gov.cn"),
+    ("guangxi", "广西壮族自治区", "autonomous_region", "gxzf.gov.cn"),
+    ("hainan", "海南省", "province", "hainan.gov.cn"),
+    ("chongqing", "重庆市", "municipality", "cq.gov.cn"),
+    ("sichuan", "四川省", "province", "sc.gov.cn"),
+    ("guizhou", "贵州省", "province", "guizhou.gov.cn"),
+    ("yunnan", "云南省", "province", "yn.gov.cn"),
+    ("tibet", "西藏自治区", "autonomous_region", "xizang.gov.cn"),
+    ("shaanxi", "陕西省", "province", "shaanxi.gov.cn"),
+    ("gansu", "甘肃省", "province", "gansu.gov.cn"),
+    ("qinghai", "青海省", "province", "qinghai.gov.cn"),
+    ("ningxia", "宁夏回族自治区", "autonomous_region", "nx.gov.cn"),
+    ("xinjiang", "新疆维吾尔自治区", "autonomous_region", "xinjiang.gov.cn"),
+)
+
+
+def china_d3_readiness_report() -> dict:
+    return build_s2pdt04_china_d3_readiness_review_report(
+        generated_at=GENERATED_AT,
+        c0_source_foundation_report=china_c0_source_foundation_report(),
+        c1_department_source_map_report=china_c1_department_source_map_report(),
+        legal_metadata_relation_report=china_legal_metadata_relation_report(),
+        replay_records=china_d3_replay_records(),
+        shadow_records=china_d3_shadow_records(),
+        board_route_records=china_d3_board_route_records(),
+    )
+
+
+def china_provincial_records() -> list[dict]:
+    records: list[dict] = []
+    for index, (province_id, province_name, locality_type, domain) in enumerate(MAINLAND_PROVINCIAL_FIXTURE_ROWS):
+        records.append(
+            {
+                "province_id": province_id,
+                "province_name": province_name,
+                "locality_type": locality_type,
+                "official_domain": domain,
+                "source_url": f"https://www.{domain}/",
+                "core_department_roles": [
+                    "government_portal",
+                    "development_reform",
+                    "science_technology",
+                    "industry_information",
+                    "finance",
+                    "market_regulation",
+                ],
+                "health_tier": ("green", "yellow", "red")[index % 3],
+                "health_explanation": "fixture health tier covers freshness, official identity, and local-department template completeness",
+                "authority_gate": "pass",
+                "identity_state": "official_domain",
+                "metadata_only": True,
+                "pdf_downloaded": False,
+                "full_text_extracted": False,
+                "production_affected": False,
+                "real_smtp_sent": False,
+                "evidence_refs": [f"fixture:s2pft01:{province_id}"],
+            }
+        )
+    return records
+
+
 def replay_batches(start: date, count: int = 30) -> dict:
     batches_by_date = {}
     for offset in range(count):
@@ -1464,6 +1548,85 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["d3_readiness_review_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pdt04_china_d3_readiness_review_report.json").is_file())
 
+    def test_s2pft01_china_provincial_template_coverage_validates_without_production(self) -> None:
+        report = build_s2pft01_china_provincial_template_coverage_report(
+            generated_at=GENERATED_AT,
+            d3_readiness_review_report=china_d3_readiness_report(),
+            provincial_records=china_provincial_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PFT01_CHINA_PROVINCIAL_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PFT01-PROVINCES")
+        self.assertEqual(report["task_id"], "S2PFT01")
+        self.assertEqual(report["legacy_task_id"], "S2P5T01")
+        self.assertEqual(report["phase"], "S2PF")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["upstream_d3_readiness_gate"], "pass")
+        self.assertEqual(report["provincial_coverage_gate"], "pass")
+        self.assertEqual(report["core_department_template_gate"], "pass")
+        self.assertEqual(report["health_tier_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(report["required_mainland_provincial_count"], 31)
+        self.assertEqual(len(report["provincial_ids_observed"]), 31)
+        self.assertTrue({"province", "autonomous_region", "municipality"}.issubset(set(report["locality_types_observed"])))
+        self.assertTrue(report["s2pf_provincial_template_coverage_ready"])
+        self.assertFalse(report["d3_full_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(report["hk_mo_profile_modeled"])
+        self.assertFalse(report["city_coverage_modeled"])
+        self.assertFalse(report["special_zone_discovery_enabled"])
+        self.assertFalse(validate_s2pft01_china_provincial_template_coverage_report(report))
+
+    def test_s2pft01_china_provincial_template_coverage_blocks_missing_province_and_side_effects(self) -> None:
+        records = [record for record in china_provincial_records() if record["province_id"] != "xinjiang"]
+        records[0] = dict(
+            records[0],
+            core_department_roles=["government_portal"],
+            production_affected=True,
+            real_smtp_sent=True,
+        )
+        report = build_s2pft01_china_provincial_template_coverage_report(
+            generated_at=GENERATED_AT,
+            d3_readiness_review_report=china_d3_readiness_report(),
+            provincial_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["provincial_coverage_gate"], "blocked")
+        self.assertEqual(report["core_department_template_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["s2pf_provincial_template_coverage_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("xinjiang", joined)
+        self.assertIn("core department", joined)
+        self.assertIn("production", joined)
+
+    def test_s2pft01_china_provincial_template_coverage_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pft01_china_provincial_template_coverage(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                d3_readiness_review_report=china_d3_readiness_report(),
+                provincial_records=china_provincial_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pft01_china_provincial_template_coverage_report(report))
+            self.assertFalse(report["d3_full_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["provincial_template_coverage_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pft01_china_provincial_template_coverage_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -2137,6 +2300,42 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d3_core_readiness_review_ready"])
         self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_china_provincial_template_coverage_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            d3_report_path = Path(tmp) / "d3-readiness-review-report.json"
+            provincial_records_path = Path(tmp) / "provincial-records.json"
+            d3_report_path.write_text(json.dumps(china_d3_readiness_report(), ensure_ascii=False), encoding="utf-8")
+            provincial_records_path.write_text(
+                json.dumps({"provincial_records": china_provincial_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-provincial-template-coverage",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--d3-readiness-review-report",
+                    str(d3_report_path),
+                    "--provincial-records",
+                    str(provincial_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PFT01_CHINA_PROVINCIAL_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PFT01")
+        self.assertEqual(payload["legacy_task_id"], "S2P5T01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["s2pf_provincial_template_coverage_ready"])
+        self.assertFalse(payload["d3_full_source_domain_accepted"])
 
 
 if __name__ == "__main__":

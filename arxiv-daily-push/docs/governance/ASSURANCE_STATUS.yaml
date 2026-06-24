@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PHT01V1-1-T01-PATH-AUDIT-001"
+as_of_event_id: "EVENT-20260625-ADP-S2PFT01-PROVINCIAL-COVERAGE-001"
 source_snapshot_hash: "sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-25T07:01:22+10:00"
+snapshot_event_time: "2026-06-25T08:30:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 441
-    total_active_parameters: 441
-    checked_active_formulas: 66
-    total_active_formulas: 66
+    checked_active_parameters: 451
+    total_active_parameters: 451
+    checked_active_formulas: 67
+    total_active_formulas: 67
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 441
-    total_active_parameters: 441
+    checked_active_parameters: 451
+    total_active_parameters: 451
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "EMAIL_LEARNING_V1_T01_PATH_AUDIT_RECORDED_NO_IMPLEMENTATION"
+  release_gate: "S2PFT01_PROVINCIAL_TEMPLATE_COVERAGE_READY_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -80,16 +80,16 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PCT02"
+  current_v7_task_id: "S2PFT01"
 next_executable_task:
-  task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
+  task_id: "S2PFT02"
   status: "planned"
-  reason: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
+  reason: "Continue S2PF with Hong Kong and Macau independent profiles after S2PFT01 mainland provincial template coverage, still metadata-only/no-send and under V7.2 production blockers."
   acceptance_ids:
-    - "ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST"
-  owner: "content_owner + product_owner"
-  human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_frontstage_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_cli.py -q` and attach the listed evidence refs."
+    - "ACC-S2PFT02-HK-MO"
+  owner: "content_owner + engineering_owner"
+  human_owner_role: "content_owner + engineering_owner"
+  unblock_condition: "Read V7.2 current contract and S2PFT01 receipt first, then perform metadata-only/no-send Hong Kong and Macau independent profile work without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
