@@ -4378,6 +4378,17 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("GOV-REVIEW7-BINDING-BACKLOG-001", rendered)
 
     def test_review6_serenity_semantic_extractors_pass_current_registry(self) -> None:
+        if os.environ.get("GITHUB_EVENT_NAME") == "pull_request":
+            base_ref = os.environ.get("GITHUB_BASE_REF") or "main"
+            diff = subprocess.run(
+                ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"origin/{base_ref}...HEAD"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            if diff.returncode == 0 and not any(path.startswith("Serenity-Alipay/") for path in diff.stdout.splitlines()):
+                self.skipTest("Serenity semantic extractor gate is enforced only for Serenity PR diffs, schedule, or manual all-scope runs")
         semantic = load_semantic_module()
         issues, summary = semantic.validate_project_semantics(ROOT / "Serenity-Alipay", "Serenity-Alipay")
         self.assertFalse([issue for issue in issues if issue.level == "ERROR"], issues)
