@@ -18,19 +18,19 @@ models:
   - model_id: "MOD-001"
     name: "Quarterly performance salary calculation"
     kind: "business_calculation_model"
-    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and validated province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring, and S3PAT02 rejects invalid weight keys, values, or totals."
+    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and validated province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring, S3PAT02 rejects invalid weight keys values or totals, and S3PAT03 rounds money outputs to cents with Decimal ROUND_HALF_UP."
     owner: "whkmSalary"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "salary-logic-v0.0.2-weight-validation"
+    model_version: "salary-logic-v0.0.3-rounding"
     assumptions: ["ASM-001", "ASM-002", "ASM-003"]
     formula_ids: ["FORM-001", "FORM-002", "FORM-003", "FORM-004", "FORM-005", "FORM-006", "FORM-007", "FORM-008", "FORM-009"]
     parameter_ids: ["PARAM-001", "PARAM-002", "PARAM-003", "PARAM-004", "PARAM-005", "PARAM-006", "PARAM-007", "PARAM-008", "PARAM-009", "PARAM-010", "PARAM-011", "PARAM-012", "PARAM-013", "PARAM-014", "PARAM-015", "PARAM-016", "PARAM-017", "PARAM-018", "PARAM-019", "PARAM-020", "PARAM-021", "PARAM-022", "PARAM-023", "PARAM-024", "PARAM-025", "PARAM-026", "PARAM-027", "PARAM-028", "PARAM-029", "PARAM-030", "PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037", "PARAM-038", "PARAM-039", "PARAM-040", "PARAM-041", "PARAM-042", "PARAM-043", "PARAM-044", "PARAM-045", "PARAM-046", "PARAM-047", "PARAM-048", "PARAM-049", "PARAM-050", "PARAM-051", "PARAM-052", "PARAM-053", "PARAM-054", "PARAM-055", "PARAM-056", "PARAM-057", "PARAM-058", "PARAM-059", "PARAM-060", "PARAM-061", "PARAM-062", "PARAM-063", "PARAM-064", "PARAM-065", "PARAM-066", "PARAM-067", "PARAM-068", "PARAM-069", "PARAM-070", "PARAM-071", "PARAM-072"]
     inputs: ["year_target", "quarter_actual", "margin", "settlement_days", "invoice_days", "payback_days", "audit_bias", "customer_rate", "province weights", "tax_keep_rate"]
     outputs: ["performance_rate", "breakdown", "total_score", "perf_money", "total_salary", "after_tax_salary"]
-    code_refs: ["whkmSalary/salary_logic.py:74", "whkmSalary/salary_logic.py:143"]
+    code_refs: ["whkmSalary/salary_logic.py:74", "whkmSalary/salary_logic.py:143", "whkmSalary/salary_logic.py:228"]
     test_refs: ["FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q", "FOCUSED: salary_logic.calculate fixture"]
-    evidence_refs: ["whkmSalary/salary_logic.py:143", "whkmSalary/salary_logic.py:209"]
+    evidence_refs: ["whkmSalary/salary_logic.py:143", "whkmSalary/salary_logic.py:209", "whkmSalary/salary_logic.py:228"]
   - model_id: "MOD-002"
     name: "Streamlit input constraints"
     kind: "deterministic_rule_engine"

@@ -1,0 +1,242 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624",
+  "project_id": "whkmSalary",
+  "task_id": "S3PAT03",
+  "acceptance_ids": [
+    "ACC-S3PAT03-WHKM-ROUNDING-REGRESSION"
+  ],
+  "iteration_id": "ITER-20260624-WHKM-S3PAT03",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "f5cee02c",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:29849da715f5bea6aeb61a230cf572ef7c17de16cb60cde0d9dafd56d7f8f3cd",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json",
+    "governance/stage_gates/s3pa/rounding_decision.md",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/docs/governance/DELIVERY_PLAN.md",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/requirements.txt",
+    "whkmSalary/salary_logic.py",
+    "whkmSalary/tests/test_salary_logic_rounding.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json",
+    "governance/stage_gates/s3pa/rounding_decision.md",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/docs/governance/DELIVERY_PLAN.md",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/requirements.txt",
+    "whkmSalary/salary_logic.py",
+    "whkmSalary/tests/test_salary_logic_rounding.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json",
+    "governance/stage_gates/s3pa/rounding_decision.md",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/docs/governance/DELIVERY_PLAN.md",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json",
+    "governance/stage_gates/s3pa/rounding_decision.md",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/CHANGELOG.md",
+    "whkmSalary/docs/governance/DELIVERY_PLAN.md",
+    "whkmSalary/docs/governance/delivery_tasks.yaml",
+    "whkmSalary/docs/governance/development_events.jsonl",
+    "whkmSalary/docs/governance/DEVELOPMENT_LEDGER.md",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/docs/governance/formula_registry.yaml",
+    "whkmSalary/docs/governance/model_registry.yaml",
+    "whkmSalary/docs/governance/MODEL_SPEC.md",
+    "whkmSalary/docs/governance/OWNER_STATUS.md",
+    "whkmSalary/docs/governance/parameter_registry.csv",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/STATUS.md",
+    "whkmSalary/docs/governance/TRACEABILITY_MATRIX.csv",
+    "whkmSalary/docs/governance/VERSION_MATRIX.yaml",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件"
+  ],
+  "change_classification": [
+    "runtime_rounding_dependency_fix",
+    "single_project_scope",
+    "whkmSalary_only_scope",
+    "decimal_money_rounding",
+    "dependency_exact_pin",
+    "salary_regression_guard",
+    "lean_v2_canonical_update",
+    "owner_truth_preserved"
+  ],
+  "model_delta": "MOD-001 rounds perf_money total_salary and after_tax_salary to cents through Decimal ROUND_HALF_UP after validated weight calculation.",
+  "formula_delta": "FORM-009 explicitly calls round_money for monetary outputs while score and weight formulas keep existing display precision.",
+  "parameter_delta": "PARAM-003 dependency surface is locked through exact Streamlit and pandas pins; no salary constants or active weight values changed.",
+  "version_delta": "Product version remains 0.0.0; MOD-001 and salary_logic constants move to salary-logic-v0.0.3-rounding.",
+  "test_commands": [
+    "python -B -m unittest discover -s whkmSalary\\\\tests -q",
+    "python -B -m py_compile whkmSalary\\\\salary_logic.py whkmSalary\\\\streamlit_app.py whkmSalary\\\\tests\\\\test_salary_logic_rounding.py",
+    "python -B scripts\\\\validate_semantic_extractors.py whkmSalary",
+    "python -B -m pip index versions streamlit",
+    "python -B -m pip index versions pandas",
+    "python -B -m pytest whkmSalary\\\\tests -q",
+    "python -B scripts\\\\lean_governance.py render --project whkmSalary --write",
+    "python -B scripts\\\\lean_governance.py check-render --project whkmSalary",
+    "python -B scripts\\\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python -B scripts\\\\lean_governance.py validate --all",
+    "python -B scripts\\\\lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check",
+    "git diff --name-only HEAD -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest discover -s whkmSalary\\\\tests -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 9 tests; OK."
+    },
+    {
+      "command": "python -B -m py_compile whkmSalary\\\\salary_logic.py whkmSalary\\\\streamlit_app.py whkmSalary\\\\tests\\\\test_salary_logic_rounding.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "python -B scripts\\\\validate_semantic_extractors.py whkmSalary",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_parameters_checked=78 semantic_formulas_checked=9."
+    },
+    {
+      "command": "python -B -m pip index versions streamlit",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "streamlit 1.58.0 is available."
+    },
+    {
+      "command": "python -B -m pip index versions pandas",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "pandas 3.0.3 is available."
+    },
+    {
+      "command": "python -B -m pytest whkmSalary\\\\tests -q",
+      "exit_code": null,
+      "result": "NOT_RUN_LOCAL_TOOL_UNAVAILABLE",
+      "observed": "No module named pytest."
+    },
+    {
+      "command": "python -B scripts\\\\lean_governance.py render --project whkmSalary --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "updated_count=3."
+    },
+    {
+      "command": "python -B scripts\\\\lean_governance.py check-render --project whkmSalary",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts\\\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only governance sync errors=0 warnings=0; project validation errors=0 warnings=0 for whkmSalary."
+    },
+    {
+      "command": "python -B scripts\\\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts\\\\lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only committed-tree CI passed; zero_diff.clean=true; errors=0 warnings=0."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    },
+    {
+      "command": "git diff --name-only HEAD -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    }
+  ],
+  "evidence_refs": [
+    "whkmSalary/tests/test_salary_logic_rounding.py",
+    "governance/stage_gates/s3pa/rounding_decision.md",
+    "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json",
+    "whkmSalary/docs/governance/project.yaml",
+    "whkmSalary/docs/governance/events.jsonl",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S3PAT03 whkmSalary Decimal rounding and dependency lock",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_HEAD_TILDE_1",
+  "summary": "Make money output rounding explicit with Decimal half-up cents, pin deployment dependencies, and preserve the existing salary regression fixture while keeping payroll policy truth owner-blocked.",
+  "rollback": "Revert S3PAT03 code requirements tests governance metadata rendered human files stage-gate evidence and this manifest; keep TASK-WHKM-B-001 blocked.",
+  "unresolved_risks": [
+    "Decimal half-up cents is a technical code policy only.",
+    "Decimal half-up cents does not approve statutory payroll or tax rounding.",
+    "Policy source jurisdiction effective date tax basis and payroll reconciliation remain blocked under TASK-WHKM-B-001.",
+    "pytest is unavailable in this local environment and must be run in CI or an environment with pytest installed."
+  ],
+  "self_reference_policy": "Manifest is commit-bound through the non-manifest content_tree_hash and local committed-tree CI evidence."
+}

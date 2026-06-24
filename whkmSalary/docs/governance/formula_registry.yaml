@@ -253,7 +253,7 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     status: "active"
-    expression: "performance_rate=quarter_actual/(year_target/4); weighted_total=sum(score_k*weight_k); perf_money=36000*(weighted_total/100); total_salary=6000*3+perf_money; after_tax_salary=total_salary*tax_keep_rate."
+    expression: "performance_rate=quarter_actual/(year_target/4); weighted_total=sum(score_k*weight_k); perf_money=round_money(36000*(weighted_total/100)); total_salary=round_money(6000*3+perf_money); after_tax_salary=round_money(total_salary*tax_keep_rate)."
     variables:
       - name: "weighted_total"
         data_type: "float"
@@ -266,21 +266,24 @@ formulas:
     constraints:
       - "year_target > 0 and quarter_actual > 0."
       - "Policy source for tax_keep_rate is UNKNOWN and task-linked."
+      - "Money outputs are rounded to cents with Decimal ROUND_HALF_UP as a technical display/calculation policy pending owner approval."
     missing_policy: "Missing or invalid year_target and quarter_actual raise ValueError; weights are resolved and validated before weighted_total calculation."
     output_range: "CalcResult with salary floats; no explicit cap."
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
       - "whkmSalary/salary_logic.py:143"
+      - "whkmSalary/salary_logic.py:228"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "whkmSalary/salary_logic.py:178"
-    implementation_refs: ["whkmSalary/salary_logic.py::BASE_MONTHLY", "whkmSalary/salary_logic.py::PERF_QUARTER_POOL", "whkmSalary/salary_logic.py::calculate"]
-    implementation_fingerprint: "sha256:ac5ac264f3c3c92bfe04715ddab762d8ccb940b4a01413dfcdffde82cf088395"
+      - "whkmSalary/salary_logic.py:228"
+    implementation_refs: ["whkmSalary/salary_logic.py::BASE_MONTHLY", "whkmSalary/salary_logic.py::PERF_QUARTER_POOL", "whkmSalary/salary_logic.py::calculate", "whkmSalary/salary_logic.py::round_money"]
+    implementation_fingerprint: "sha256:cb72cd0b3f85436c62ffe4ec369e642f1a6a9c24423789ca7f5aa2ed6db2ed92"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
-    evidence_hash: "sha256:0333af3fc057a1981b3ded154066ba90f0eba1ba4ef5fe2cb7746525a5e8e3bf"
+    evidence_hash: "sha256:4b1fc6dd1e36e43791d85bdc157a4e25625aabadb6def80308ae5bea76899af8"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-010"

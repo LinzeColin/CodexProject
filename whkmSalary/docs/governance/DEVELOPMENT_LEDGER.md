@@ -8,10 +8,10 @@ Governance spec version: `1.0.0`
 - Product version: `0.0.0`
 - Product version status: `provisional`
 - Current phase: `B`
-- Current gate: `S3PA-WHKM-weight-validation-partial`
-- Confirmed iterations: 4
+- Current gate: `S3PA-GATE-owner-blocked`
+- Confirmed iterations: 5
 - Reconstructed development events: 1
-- Current task: `S3PAT02`
+- Current task: `S3PAT03`
 - Blockers: `TASK-WHKM-B-001` for policy/source/effective date/rounding/zero-day business meaning evidence; `GOV-SEMANTIC-WHKM-001` retains human review for `PARAM-004`, `PARAM-005`, and `FORM-010`.
 
 ## Confirmed Iterations
@@ -86,6 +86,24 @@ Governance spec version: `1.0.0`
 - Rollback: revert S3PAT02 code, tests, governance metadata, stage-gate evidence, and run manifest; keep `TASK-WHKM-B-001` blocked.
 - Next step: S3PA rounding policy and owner decision evidence.
 
+### `ITER-20260624-WHKM-S3PAT03`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED
+- Version before: `0.0.0`
+- Version after: `0.0.0`
+- Base commit: `HEAD`
+- Result commit: `PENDING`
+- Task IDs: `S3PAT03`
+- Goal: make monetary rounding explicit, lock deployment dependencies, and preserve the existing salary regression fixture.
+- Model changes: `calculate` now rounds `perf_money`, `total_salary`, and `after_tax_salary` to cents through `round_money` using Decimal `ROUND_HALF_UP`.
+- Parameter changes: no score or weight active values changed; `requirements.txt` now pins `streamlit==1.58.0` and `pandas==3.0.3`.
+- Commands: `python -B -m unittest discover -s whkmSalary\\tests -q`; `python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\tests\\test_salary_logic_rounding.py`; `python -B scripts\\validate_semantic_extractors.py whkmSalary`; `python -B -m pip index versions streamlit`; `python -B -m pip index versions pandas`.
+- Test results: unittest passed with 9 tests; py_compile passed; semantic extractor passed with 78 parameters and 9 formulas checked; PyPI queries confirmed selected dependency versions are available.
+- Tooling note: `python -B -m pytest whkmSalary\\tests -q` could not run locally because pytest is not installed.
+- Rollback: revert S3PAT03 code, requirements, tests, governance metadata, rounding decision evidence, and run manifest; keep `TASK-WHKM-B-001` blocked.
+- Next step: S3PA phase gate summary or owner policy decision evidence.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-WHKM-20260619-001`: project import/continuity reconstructed from Git history and legacy notes; not counted as a confirmed iteration.
@@ -108,3 +126,5 @@ Governance spec version: `1.0.0`
 | `python -B scripts\validate_semantic_extractors.py whkmSalary` | PASS | semantic_parameters_checked=78; semantic_formulas_checked=9 |
 | `python -B -m unittest discover -s whkmSalary\\tests -q` | PASS | S3PAT02 weight tests cover complete/non-negative/1.0 totals, invalid explicit weights, and Streamlit single-source weights |
 | `python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\tests\\test_salary_logic_weights.py` | PASS | exit 0 |
+| `python -B -m unittest discover -s whkmSalary\\tests -q` | PASS | S3PAT03 rounding tests cover Decimal half-up cents, dependency pins, and the existing 湖北 fixture |
+| `python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py whkmSalary\\tests\\test_salary_logic_rounding.py` | PASS | exit 0 |

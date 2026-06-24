@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
 - next_unique_task: `none`
-- evidence_ref_count: `15`
+- evidence_ref_count: `17`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -21,7 +21,7 @@
 
 | 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
 |---|---|---|---|---|
-| FEAT-WHKM-001 | 季度绩效工资总额与税后保留计算 | active | 计算 performance_rate、weighted_total、perf_money、total_salary 和 after_tax_salary；政策与税务依据仍未验证。 | EXTRACTED |
+| FEAT-WHKM-001 | 季度绩效工资总额与税后保留计算 | active | 计算 performance_rate、weighted_total、perf_money、total_salary 和 after_tax_salary；money outputs 已显式到分舍入，政策与税务依据仍未验证。 | EXTRACTED |
 | FEAT-WHKM-002 | 业绩与毛利率评分函数 | active | 覆盖 score_performance 与 score_margin 的阈值、斜率和分段输出。 | EXTRACTED |
 | FEAT-WHKM-003 | 结算、开票与回款时间评分边界 | active | 覆盖 score_settlement、score_invoice、score_payback；days<1 现由代码显式拒绝，zero-day 业务含义仍由 TASK-WHKM-B-001 跟踪。 | EXTRACTED |
 | FEAT-WHKM-004 | 审计偏差、客情成本与省份权重 | active | 覆盖 audit/customer score 函数以及新疆、山东、青海、湖北、华中区域的权重表、别名解析和 S3PAT02 权重校验。 | EXTRACTED |
@@ -46,3 +46,5 @@
 | EVID-WHKM-S3PAT01-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PAT01-WHKM-DAY-BOUNDARY-20260624.json | EXTRACTED |
 | EVID-WHKM-S3PAT02-WEIGHT-LOG | stage_gate_evidence | governance/stage_gates/s3pa/whkm_weight_tests.log | EXTRACTED |
 | EVID-WHKM-S3PAT02-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PAT02-WHKM-WEIGHT-GATE-20260624.json | EXTRACTED |
+| EVID-WHKM-S3PAT03-ROUNDING-DECISION | stage_gate_evidence | governance/stage_gates/s3pa/rounding_decision.md | EXTRACTED |
+| EVID-WHKM-S3PAT03-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json | EXTRACTED |

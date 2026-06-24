@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "whkmSalary"
 project_name: "whkmSalary"
-summary: "whkmSalary 是 Streamlit 季度销售绩效工资计算器；S3PAT01 证明 0/负工作日技术边界已改为显式拒绝，S3PAT02 证明权重单一来源和键/非负/总和技术校验已落地；二者都不证明工资政策、权重依据、法域、税务、舍入或真实算薪合规，且不得声明生产 payroll readiness。"
+summary: "whkmSalary 是 Streamlit 季度销售绩效工资计算器；S3PAT01 证明 0/负工作日技术边界已改为显式拒绝，S3PAT02 证明权重单一来源和键/非负/总和技术校验已落地，S3PAT03 证明金额输出 Decimal 到分舍入口径和依赖锁已落地；三者都不证明工资政策、权重依据、法域、税务、舍入法规或真实算薪合规，且不得声明生产 payroll readiness。"
 version: "0.0.0"
 fact_level: "EXTRACTED"
 owner_role: "payroll_owner + legal_or_policy_owner + product_owner"
@@ -36,7 +36,7 @@ features:
   -
     feature_id: "FEAT-WHKM-001"
     name: "季度绩效工资总额与税后保留计算"
-    description: "计算 performance_rate、weighted_total、perf_money、total_salary 和 after_tax_salary；政策与税务依据仍未验证。"
+    description: "计算 performance_rate、weighted_total、perf_money、total_salary 和 after_tax_salary；money outputs 已显式到分舍入，政策与税务依据仍未验证。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -51,6 +51,7 @@ features:
       - "PARAM-005"
     code_refs:
       - "whkmSalary/salary_logic.py:143"
+      - "whkmSalary/salary_logic.py:228"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -221,11 +222,11 @@ models:
     model_id: "MOD-001"
     name: "Quarterly performance salary calculation"
     kind: "business_calculation_model"
-    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and validated province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring, and S3PAT02 rejects invalid weight keys, values, or totals."
+    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and validated province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring, S3PAT02 rejects invalid weight keys values or totals, and S3PAT03 rounds money outputs to cents with Decimal ROUND_HALF_UP."
     owner: "whkmSalary"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "salary-logic-v0.0.2-weight-validation"
+    model_version: "salary-logic-v0.0.3-rounding"
     assumptions:
       - "ASM-001"
       - "ASM-002"
@@ -334,6 +335,7 @@ models:
     code_refs:
       - "whkmSalary/salary_logic.py:74"
       - "whkmSalary/salary_logic.py:143"
+      - "whkmSalary/salary_logic.py:228"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py"
@@ -589,10 +591,11 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "performance_rate=quarter_actual/(year_target/4); weighted_total=sum(score_k*weight_k); perf_money=36000*(weighted_total/100); total_salary=6000*3+perf_money; after_tax_salary=total_salary*tax_keep_rate."
+    expression: "performance_rate=quarter_actual/(year_target/4); weighted_total=sum(score_k*weight_k); perf_money=round_money(36000*(weighted_total/100)); total_salary=round_money(6000*3+perf_money); after_tax_salary=round_money(total_salary*tax_keep_rate)."
     constraints:
       - "year_target > 0 and quarter_actual > 0."
       - "Policy source for tax_keep_rate is UNKNOWN and task-linked."
+      - "Money outputs are rounded to cents with Decimal ROUND_HALF_UP as a technical display/calculation policy pending owner approval."
     missing_policy: "Missing or invalid year_target and quarter_actual raise ValueError; weights are resolved and validated before weighted_total calculation."
     output_range: "CalcResult with salary floats; no explicit cap."
     open_task_ids:
@@ -601,7 +604,8 @@ formulas:
       - "whkmSalary/salary_logic.py::BASE_MONTHLY"
       - "whkmSalary/salary_logic.py::PERF_QUARTER_POOL"
       - "whkmSalary/salary_logic.py::calculate"
-    implementation_fingerprint: "sha256:ac5ac264f3c3c92bfe04715ddab762d8ccb940b4a01413dfcdffde82cf088395"
+      - "whkmSalary/salary_logic.py::round_money"
+    implementation_fingerprint: "sha256:cb72cd0b3f85436c62ffe4ec369e642f1a6a9c24423789ca7f5aa2ed6db2ed92"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
@@ -610,6 +614,7 @@ formulas:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
+      - "EVID-WHKM-S3PAT03-ROUNDING-DECISION"
       - "EVID-WHKM-S3PAT02-WEIGHT-LOG"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
   -
@@ -2991,9 +2996,17 @@ validations:
     evidence_refs:
       - "EVID-WHKM-S3PAT02-WEIGHT-LOG"
       - "EVID-WHKM-S3PAT02-MANIFEST"
+  -
+    validation_id: "VAL-WHKM-S3PAT03-ROUNDING"
+    name: "S3PAT03 Decimal rounding and dependency lock"
+    status: "PASS"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-WHKM-S3PAT03-ROUNDING-DECISION"
+      - "EVID-WHKM-S3PAT03-MANIFEST"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "S3PA-WHKM-weight-validation-partial"
+  release_gate: "S3PA-GATE-owner-blocked"
   blocker_ids:
     - "FACT-whkmSalary-EMPIRICAL-EVIDENCE"
     - "FACT-whkmSalary-IMPLEMENTATION-FORMULA-REVIEW"
@@ -3002,7 +3015,7 @@ delivery_readiness:
     - "GOV-SEMANTIC-WHKM-001"
     - "GOV-SEMANTIC-WHKM-001;TASK-WHKM-B-001"
     - "TASK-WHKM-B-001"
-  next_executable_task: "S3PA rounding policy and owner decision evidence"
+  next_executable_task: "S3PA phase gate summary or owner policy decision evidence"
   next_task_status: "blocked"
   owner_decision_required: true
   owner_decision_id: "DEC-whkmSalary-REVIEW8-001"
@@ -3085,4 +3098,14 @@ evidence_refs:
     evidence_id: "EVID-WHKM-S3PAT02-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-OTHER8-S3PAT02-WHKM-WEIGHT-GATE-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S3PAT03-ROUNDING-DECISION"
+    kind: "stage_gate_evidence"
+    ref: "governance/stage_gates/s3pa/rounding_decision.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S3PAT03-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json"
     fact_level: "EXTRACTED"
