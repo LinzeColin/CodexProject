@@ -2,6 +2,8 @@
 
 ## Unreleased - 2026-06-24
 
+- Changed Stage 1 arXiv daily email rendering to a V7.1 M1-compatible 10-section Chinese template with B1+B4/B5/B6 framing, expected ROI, time cost, confidence, action path, review questions, and feedback; old `【今天讲透一个问题】` template markers are now regression-blocked.
+- Fixed local Python `urllib` arXiv HTTPS fetches on macOS installs with an empty OpenSSL default CA path by passing a verified SSL context that uses an available CA bundle instead of disabling certificate validation.
 - Added `S2PCT01` / legacy `S2P2T01` V7.1 D2 top-journal shadow foundation using official public Nature RSS metadata, filtering to `s41586-*` main-journal research article links only.
 - Added `adp fetch-top-journal-latest` and `adp stage2-top-journal-shadow-daily` with separate no-send queue, ledger, dry-run package, and email preview persistence; kept Stage 2 production acceptance, SMTP, Release, schedule, and video disabled.
 - Verified a live Nature RSS no-send canary with 3 real `s41586` source IDs and local queue/ledger/email preview artifacts under `/tmp`.

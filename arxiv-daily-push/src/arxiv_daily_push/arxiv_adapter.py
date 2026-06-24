@@ -7,11 +7,14 @@ SourceItem dictionaries. Tests use local fixtures and never call the network.
 
 from __future__ import annotations
 
+import os
 import re
+import ssl
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 
@@ -55,8 +58,41 @@ def build_query_url(query: ArxivQuery, base_url: str = ARXIV_API_BASE_URL) -> st
 
 def fetch_atom(query: ArxivQuery, *, timeout: float = 20.0, user_agent: str = "arXiv Daily Push/0.3") -> str:
     request = urllib.request.Request(build_query_url(query), headers={"User-Agent": user_agent})
-    with urllib.request.urlopen(request, timeout=timeout) as response:
+    with urllib.request.urlopen(request, timeout=timeout, context=_verified_https_context()) as response:
         return response.read().decode("utf-8")
+
+
+def _verified_https_context() -> ssl.SSLContext:
+    cafile = _ca_bundle_path()
+    if cafile:
+        return ssl.create_default_context(cafile=cafile)
+    return ssl.create_default_context()
+
+
+def _ca_bundle_path() -> str:
+    for candidate in _candidate_ca_bundle_paths():
+        if candidate and Path(candidate).is_file():
+            return candidate
+    return ""
+
+
+def _candidate_ca_bundle_paths() -> list[str]:
+    candidates = [
+        os.environ.get("SSL_CERT_FILE", ""),
+        _certifi_ca_bundle_path(),
+        "/etc/ssl/cert.pem",
+        "/opt/homebrew/etc/openssl@3/cert.pem",
+        "/usr/local/etc/openssl@3/cert.pem",
+    ]
+    return [str(candidate) for candidate in candidates if candidate]
+
+
+def _certifi_ca_bundle_path() -> str:
+    try:
+        import certifi  # type: ignore[import-not-found]
+    except ImportError:
+        return ""
+    return str(certifi.where())
 
 
 def parse_atom_feed(xml_text: str, *, retrieved_at: str) -> list[dict[str, Any]]:

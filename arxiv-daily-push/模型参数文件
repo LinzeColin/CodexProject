@@ -366,9 +366,9 @@
 - parameter_refs: `PARAM-ADP-268, PARAM-ADP-269, PARAM-ADP-270, PARAM-ADP-271, PARAM-ADP-272, PARAM-ADP-273, PARAM-ADP-274, PARAM-ADP-275`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
 
-### MOD-ADP-037 Phase 12 email decision UI V2
+### MOD-ADP-037 V7.1 M1-compatible email decision UI
 
-- purpose: `Render a Chinese, decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground.`
+- purpose: `Render the Stage 1 arXiv daily email as a V7.1 M1-compatible Chinese HTML/plain-text frontstage with the required 1-10 section order, expected ROI, time cost, confidence, action path, and B1+B4/B5/B6 board framing while keeping backend score, Release, video, and Claim Ledger clutter out of the foreground.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-ADP-039`
@@ -1098,8 +1098,8 @@
 | PARAM-ADP-273 | STORAGE_OBJECT_TABLE_COUNT | Storage object table count | 18 | EXTRACTED from STORAGE_OBJECT_TABLES tuple and migration tests | EXTRACTED |
 | PARAM-ADP-274 | STORAGE_RELATION_TYPE_COUNT | Storage relation type count | 25 | EXTRACTED from STORAGE_RELATION_TYPES tuple and schema CHECK constraint | EXTRACTED |
 | PARAM-ADP-275 | STORAGE_TIME_FIELD_COUNT | Storage time field count | 9 | EXTRACTED from STORAGE_TIME_FIELDS tuple and storage report tests | EXTRACTED |
-| PARAM-ADP-276 | EMAIL_HTML_ALTERNATIVE_PRESENT | Decision email HTML alternative is present | true | HTML alternative required for owner V2 UI/UX quality | EXTRACTED |
-| PARAM-ADP-277 | EMAIL_PLAIN_TEXT_MAX_CHARS | Decision email plain text maximum length | 1500 | Plain text must stay high-density for mobile/email scanning | EXTRACTED |
+| PARAM-ADP-276 | EMAIL_HTML_ALTERNATIVE_PRESENT | Decision email HTML alternative is present | true | HTML alternative required for owner V7.1 M1 UI/UX quality | EXTRACTED |
+| PARAM-ADP-277 | EMAIL_PLAIN_TEXT_MAX_CHARS | Decision email plain text maximum length | 2600 | V7.1 M1 ten-section contract needs more room while keeping mobile/email scanning bounded | EXTRACTED |
 | PARAM-ADP-278 | QFIN_FRONTSTAGE_CANDIDATE_FILTER | Quant finance email filters irrelevant cross-domain candidates | true | Owner rejected low-value candidate pollution in the human email frontstage | EXTRACTED |
 | PARAM-ADP-279 | LESSON_FRONTSTAGE_REQUIRED | Lesson includes human-frontstage payload for email rendering | true | Frontstage separates human UI from backend Claim Ledger and ROI audit details | EXTRACTED |
 | PARAM-ADP-280 | SOURCE_REGISTRY_SCHEMA_VERSION | Source registry report schema version | 1 | EXTRACTED from source_registry.py constant and source registry tests | EXTRACTED |

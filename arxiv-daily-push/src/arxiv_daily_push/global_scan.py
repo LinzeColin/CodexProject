@@ -1053,21 +1053,59 @@ def _frontstage_from_lesson(lesson: Mapping[str, Any], *, title: str) -> dict[st
         frontstage.get("one_line_takeaway"),
         fallback="先判断这篇论文是否提供新变量、新机制或新实验，而不是直接采纳摘要结论。",
     )
+    evidence_level = _frontstage_text(frontstage.get("evidence_level"), fallback="摘要级预印本")
+    estimated_reading_time = _frontstage_text(frontstage.get("estimated_reading_time"), fallback="8-15分钟")
+    default_action = _frontstage_text(
+        frontstage.get("default_action"),
+        fallback="只做一个最小验证：列出输入、输出、失败条件和复现实验，再决定是否深读全文。",
+    )
     return {
+        "mail_product": "M1 科学与理论前沿",
+        "reading_boards": "B1 科学与理论前沿 + B4/B5/B6",
         "decision": decision,
         "attention_score": score,
-        "evidence_level": _frontstage_text(frontstage.get("evidence_level"), fallback="摘要级预印本"),
-        "estimated_reading_time": _frontstage_text(frontstage.get("estimated_reading_time"), fallback="8-15分钟"),
+        "evidence_level": evidence_level,
+        "estimated_reading_time": estimated_reading_time,
+        "confidence": _frontstage_text(frontstage.get("confidence"), fallback=_m1_confidence_label(evidence_level, score)),
+        "expected_roi": _frontstage_text(
+            frontstage.get("expected_roi"),
+            fallback=_m1_expected_roi(decision=decision, estimated_reading_time=estimated_reading_time),
+        ),
+        "action_path": _frontstage_text(frontstage.get("action_path"), fallback=default_action),
+        "frontier_delta": _frontstage_text(frontstage.get("frontier_delta"), fallback=one_line),
+        "social_impact": _frontstage_text(
+            frontstage.get("social_impact"),
+            fallback=f"如果《{title}》里的机制成立，它可能改变研究判断、组织配置或知识工作流程；当前只按观察假设处理。",
+        ),
+        "personal_impact": _frontstage_text(
+            frontstage.get("personal_impact"),
+            fallback="把这篇论文先转成一个可复验问题、一个失败条件和一个下一步动作；只有验证后才进入资产或决策。",
+        ),
         "one_line_takeaway": one_line,
         "first_principles_chain": _text_list(frontstage.get("first_principles_chain"), ["问题定义", "关键变量", "方法机制", "可观察输出", "失败条件"]),
         "domain_mappings": _mapping_list(frontstage.get("domain_mappings")),
         "key_questions": _text_list(frontstage.get("key_questions"), ["它是否提供可复验增量？", "摘要主张是否有正文证据支撑？", "失败条件是什么？"]),
         "evidence_gaps": _text_list(frontstage.get("evidence_gaps"), ["当前只基于 arXiv 摘要和分类元数据，不能当作同行评审或实证验证。"]),
-        "default_action": _frontstage_text(
-            frontstage.get("default_action"),
-            fallback="只做一个最小验证：列出输入、输出、失败条件和复现实验，再决定是否深读全文。",
-        ),
+        "default_action": default_action,
     }
+
+
+def _m1_confidence_label(evidence_level: str, score: float) -> str:
+    if "摘要" in evidence_level or "预印本" in evidence_level:
+        return "中等偏低：摘要级证据，需正文、实验和引用链复核"
+    if score >= 4.2:
+        return "中等偏高：可优先深读，但关键主张仍需复核"
+    if score >= 3.2:
+        return "中等：适合先扫读方法和失败条件"
+    return "低到中等：先放入观察队列"
+
+
+def _m1_expected_roi(*, decision: str, estimated_reading_time: str) -> str:
+    if decision == "读":
+        return f"投入 {estimated_reading_time}，换取一个可复用变量、反证清单或行动假设；不承诺收益。"
+    if decision == "扫读":
+        return f"投入 {estimated_reading_time} 的上限时间，只确认是否存在可迁移机制；不承诺收益。"
+    return "不主动投入深读时间，保留标题级观察，避免注意力成本继续扩大。"
 
 
 def _daily_email_text(
@@ -1093,40 +1131,52 @@ def _daily_email_text(
     feedback_options = " / ".join(str(item["label"]) for item in feedback_links)
     return "\n".join(
         [
-            "【今天讲透一个问题】",
-            f"建议：{frontstage['decision']} | 证据边界：{frontstage['evidence_level']} | 预计：{frontstage['estimated_reading_time']}",
-            str(frontstage["one_line_takeaway"]),
+            f"【{frontstage['mail_product']}】",
+            f"阅读板块：{frontstage['reading_boards']} | Stage1 arXiv 日更按 M1 兼容结构发送",
             "",
-            "【主讲论文】",
-            title,
-            f"栏目：{project_label} / {group_label}" + (f" / {category}" if category else ""),
-            f"原文：{source_url}",
+            "【1. 今日真正变化】",
+            str(frontstage["frontier_delta"]),
             "",
-            "【为什么值得你看】",
-            "- 重点不是论文标题，而是它是否给出可迁移的变量、机制或验证方法。",
-            "- 你要带走的是一个可复验判断，不是把摘要结论当成事实。",
+            "【2. 一分钟决策卡】",
+            f"- 建议：{frontstage['decision']}",
+            f"- 时间成本：{frontstage['estimated_reading_time']}",
+            f"- 置信度：{frontstage['confidence']}",
+            f"- 预计 ROI：{frontstage['expected_roi']}",
+            f"- 行动路径：{frontstage['action_path']}",
             "",
-            "【第一性原理链条】",
-            chain,
-            "",
-            "【怎么转成可用判断】",
+            "【3. 主讲深度解释】",
+            f"- 主讲论文：{title}",
+            f"- 栏目：{project_label} / {group_label}" + (f" / {category}" if category else ""),
+            f"- 原文：{source_url}",
+            f"- 第一性原理链条：{chain}",
             *mappings,
             "",
-            "【真正值得追问】",
-            *questions,
+            "【4. 前沿 Delta】",
+            f"- {frontstage['one_line_takeaway']}",
             "",
-            "【先别相信的地方】",
+            "【5. 证据级别与不确定性】",
+            f"- 证据级别：{frontstage['evidence_level']}",
+            f"- 置信度：{frontstage['confidence']}",
             *gaps,
             "",
-            "【默认动作】",
-            str(frontstage["default_action"]),
+            "【6. B4 社会与时代影响】",
+            str(frontstage["social_impact"]),
             "",
-            "【候选队列摘要】",
-            f"- 已入队候选：{queued_count} 篇；这里只列最可能形成后续讲解的 1-2 篇。",
-            *candidates,
+            "【7. B5 风险、反证与失败条件】",
+            *gaps,
             "",
-            "【反馈】",
+            "【8. B6 个人影响、ROI 和行动】",
+            f"- 个人影响：{frontstage['personal_impact']}",
+            f"- 预计 ROI：{frontstage['expected_roi']}",
+            f"- 默认动作：{frontstage['default_action']}",
+            "",
+            "【9. 复习问题】",
+            *questions,
+            "",
+            "【10. 反馈】",
             f"- 回复本邮件，或点击 HTML 按钮：{feedback_options}",
+            f"- 候选队列摘要：已入队候选 {queued_count} 篇；这里只列最可能形成后续讲解的 1-2 篇。",
+            *candidates,
         ]
     )
 
@@ -1183,6 +1233,11 @@ h1{{font-size:23px;line-height:1.32;margin:12px 0 8px}}
 .pill.ok{{background:#e7f6ee;color:#12683f}}.pill.warn{{background:#fff4dc;color:#865800}}.pill.gray{{background:#f0f2f5;color:#596275}}
 .decision{{border:1px solid #dde5f0;background:#fbfcff;border-radius:12px;padding:15px;margin:8px 0 18px}}
 .verdict{{float:right;font-size:25px;font-weight:800;color:#1f6f55}}
+.grid{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 18px}}
+.metric{{border:1px solid #e1e7ef;border-radius:10px;padding:11px;background:#fbfcff}}
+.metric b{{display:block;font-size:12px;color:#596275;margin-bottom:3px}}.metric span{{font-size:14px;font-weight:750;color:#172033}}
+.section{{border-top:1px solid #e8edf5;padding-top:14px;margin-top:18px}}
+.tagline{{font-size:12px;color:#aebbd2;margin-top:4px}}
 h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{{padding-left:20px}}
 .chain{{margin:10px 0}}.node{{display:inline-block;background:#f1f4f9;border-radius:9px;padding:9px 10px;margin:0 4px 6px 0;font-size:13px;font-weight:700}}
 .kv{{border:1px solid #e1e7ef;border-radius:10px;padding:11px;margin:8px 0}}.kv b{{display:block;font-size:13px}}.kv span{{display:block;font-size:13px;color:#4d5870;margin-top:3px}}
@@ -1191,25 +1246,32 @@ h2{{font-size:17px;margin:24px 0 10px}}p,li{{font-size:14px;line-height:1.7}}ul{
 .btn.alt{{background:#edf1f7;color:#25344f!important}}
 .candidates li span{{display:block;color:#657187;font-size:12px}}.feedback{{background:#f7f9fc;border-top:1px solid #e4e9f1;padding:18px 24px}}.fb{{display:inline-block;text-decoration:none;border:1px solid #d5dce8;background:#fff;color:#26344f!important;padding:9px 11px;border-radius:8px;font-size:12px;font-weight:700;margin:5px 5px 0 0}}
 .muted{{color:#6b7589;font-size:13px}}
-@media(max-width:560px){{.wrap{{padding:0}}.card{{border-radius:0;border-left:0;border-right:0}}.head,.body,.feedback{{padding-left:17px;padding-right:17px}}h1{{font-size:21px}}.verdict{{float:none;display:block;margin-top:4px}}}}
+@media(max-width:560px){{.wrap{{padding:0}}.card{{border-radius:0;border-left:0;border-right:0}}.head,.body,.feedback{{padding-left:17px;padding-right:17px}}h1{{font-size:21px}}.verdict{{float:none;display:block;margin-top:4px}}.grid{{grid-template-columns:1fr}}}}
 </style>
 </head>
 <body>
 <div class="wrap"><div class="card">
-<div class="head"><span class="brand">{escape(project_label)} · {escape(group_label)}</span><span class="date">{escape(date)}</span><h1>{escape(str(frontstage["one_line_takeaway"]))}</h1><p class="lead">{escape(title)}</p></div>
+<div class="head"><span class="brand">M1 科学与理论前沿 · B1+B4/B5/B6</span><span class="date">{escape(date)}</span><h1>{escape(str(frontstage["frontier_delta"]))}</h1><p class="lead">{escape(title)}</p><div class="tagline">{escape(project_label)} · {escape(group_label)}{(" · " + escape(category)) if category else ""}</div></div>
 <div class="body">
-<span class="pill ok">建议：{escape(str(frontstage["decision"]))}</span><span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(group_label)}{(" / " + escape(category)) if category else ""}</span>
-<div class="decision"><span class="verdict">{escape(str(frontstage["decision"]))}</span><b>今天怎么读？</b><p>{escape(str(frontstage["one_line_takeaway"]))} 建议投入 {escape(str(frontstage["estimated_reading_time"]))}。</p></div>
-<h2>为什么值得你看</h2><p>重点不是论文标题，而是它是否给出可迁移的变量、机制或验证方法。今天只带走一个可复验判断，不把摘要结论当成事实。</p>
-<h2>第一性原理链条</h2><div class="chain">{chain_nodes}</div>
-<h2>怎么转成可用判断</h2>{mappings}
-<h2>真正值得追问的 3 个问题</h2><ul>{questions}</ul>
-<div class="callout"><b>先别相信的地方</b><ul>{gaps}</ul></div>
-<h2>默认动作</h2><p>{escape(str(frontstage["default_action"]))}</p>
-<div>{source_button}</div>
-<h2>候选队列摘要</h2><p class="muted">已入队候选 {int(queued_count)} 篇；这里只列最可能形成后续讲解的 1-2 篇。</p><ul class="candidates">{candidate_html}</ul>
+<span class="pill ok">建议：{escape(str(frontstage["decision"]))}</span><span class="pill warn">证据：{escape(str(frontstage["evidence_level"]))}</span><span class="pill gray">{escape(str(frontstage["reading_boards"]))}</span>
+<div class="section"><h2>1. 今日真正变化</h2><p>{escape(str(frontstage["frontier_delta"]))}</p></div>
+<div class="decision"><span class="verdict">{escape(str(frontstage["decision"]))}</span><b>2. 一分钟决策卡</b><p>{escape(str(frontstage["action_path"]))}</p></div>
+<div class="grid">
+<div class="metric"><b>时间成本</b><span>{escape(str(frontstage["estimated_reading_time"]))}</span></div>
+<div class="metric"><b>置信度</b><span>{escape(str(frontstage["confidence"]))}</span></div>
+<div class="metric"><b>预计 ROI</b><span>{escape(str(frontstage["expected_roi"]))}</span></div>
+<div class="metric"><b>行动路径</b><span>{escape(str(frontstage["action_path"]))}</span></div>
 </div>
-<div class="feedback"><b>这封讲解如何？点击一次即可影响后续选题</b><br>{feedback_html}</div>
+<div class="section"><h2>3. 主讲深度解释</h2><p><b>{escape(title)}</b></p><p class="muted">第一性原理链条</p><div class="chain">{chain_nodes}</div>{mappings}</div>
+<div class="section"><h2>4. 前沿 Delta</h2><p>{escape(str(frontstage["one_line_takeaway"]))}</p></div>
+<div class="section"><h2>5. 证据级别与不确定性</h2><p>证据级别：{escape(str(frontstage["evidence_level"]))}；置信度：{escape(str(frontstage["confidence"]))}</p><ul>{gaps}</ul></div>
+<div class="section"><h2>6. B4 社会与时代影响</h2><p>{escape(str(frontstage["social_impact"]))}</p></div>
+<div class="section"><h2>7. B5 风险、反证与失败条件</h2><ul>{gaps}</ul></div>
+<div class="section"><h2>8. B6 个人影响、ROI 和行动</h2><p>{escape(str(frontstage["personal_impact"]))}</p><div class="callout"><b>预计 ROI</b><p>{escape(str(frontstage["expected_roi"]))}</p><b>默认动作</b><p>{escape(str(frontstage["default_action"]))}</p></div></div>
+<div class="section"><h2>9. 复习问题</h2><ul>{questions}</ul></div>
+<div>{source_button}</div>
+</div>
+<div class="feedback"><b>10. 反馈</b><br><span class="muted">点击一次即可影响后续选题</span><br>{feedback_html}<p class="muted"><b>候选队列摘要</b>：已入队候选 {int(queued_count)} 篇；这里只列最可能形成后续讲解的 1-2 篇。</p><ul class="candidates">{candidate_html}</ul></div>
 </div></div>
 </body>
 </html>"""

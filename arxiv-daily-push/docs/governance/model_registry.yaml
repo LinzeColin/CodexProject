@@ -931,17 +931,17 @@ models:
     test_refs: ["arxiv-daily-push/tests/test_storage.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-04-SQLITE-DATA-MODEL-20260622.json", "arxiv-daily-push/tests/test_storage.py"]
   - model_id: "MOD-ADP-037"
-    name: "Phase 12 email decision UI V2"
+    name: "V7.1 M1-compatible email decision UI"
     kind: "deterministic human-frontstage email renderer"
-    purpose: "Render a Chinese, decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground."
+    purpose: "Render the Stage 1 arXiv daily email as a V7.1 M1-compatible Chinese HTML/plain-text frontstage with the required 1-10 section order, visible expected ROI/time cost/confidence/action path, B1+B4/B5/B6 board framing, and no foreground backend score, Release, video, or Claim Ledger clutter."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "adp-email-decision-ui-v2"
+    model_version: "adp-email-decision-ui-v7.1-m1-compatible"
     assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
     formula_ids: ["FORM-ADP-039"]
     parameter_ids: ["PARAM-ADP-276", "PARAM-ADP-277", "PARAM-ADP-278", "PARAM-ADP-279"]
-    inputs: ["Lesson frontstage payload", "daily selected SourceItem", "ROI-ranked queue snapshot", "Release-hosted .mp4 link", "recipient email"]
+    inputs: ["Lesson frontstage payload", "daily selected SourceItem", "ROI-ranked queue snapshot", "V7.1 email content contract", "recipient email"]
     outputs: ["multipart email notification", "Chinese plain-text fallback", "responsive HTML alternative", "delivery evidence with body hashes only"]
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
     config_refs: ["arxiv-daily-push/schemas/lesson.schema.json"]

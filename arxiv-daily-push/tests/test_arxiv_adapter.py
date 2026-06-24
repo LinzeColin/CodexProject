@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import io
+import ssl
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
-from arxiv_daily_push.arxiv_adapter import ArxivAdapterError, ArxivQuery, build_query_url, parse_atom_feed
+from arxiv_daily_push.arxiv_adapter import ArxivAdapterError, ArxivQuery, build_query_url, fetch_atom, parse_atom_feed
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.contracts import validate_source_item
 
@@ -44,6 +46,26 @@ class ArxivAdapterTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ArxivAdapterError, "bad query"):
             parse_atom_feed(xml, retrieved_at="2026-06-21T05:00:00+10:00")
+
+    def test_fetch_atom_uses_verified_https_context(self) -> None:
+        class FakeResponse:
+            def __enter__(self) -> "FakeResponse":
+                return self
+
+            def __exit__(self, *_args: object) -> None:
+                return None
+
+            def read(self) -> bytes:
+                return b"<feed />"
+
+        with patch("arxiv_daily_push.arxiv_adapter.urllib.request.urlopen", return_value=FakeResponse()) as urlopen:
+            body = fetch_atom(ArxivQuery(search_query="cat:cs.AI", max_results=1), timeout=3.0)
+
+        self.assertEqual(body, "<feed />")
+        self.assertEqual(urlopen.call_args.kwargs["timeout"], 3.0)
+        context = urlopen.call_args.kwargs["context"]
+        self.assertEqual(context.verify_mode, ssl.CERT_REQUIRED)
+        self.assertTrue(context.check_hostname)
 
     def test_cli_renders_arxiv_url_without_fetching(self) -> None:
         buffer = io.StringIO()

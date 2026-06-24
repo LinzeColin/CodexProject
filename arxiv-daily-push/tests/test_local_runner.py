@@ -142,7 +142,12 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertTrue((state / "candidate_queue.json").is_file())
             self.assertTrue((state / "local_content_ledger.jsonl").is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
-            self.assertIn("【今天讲透一个问题】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
+            email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
+            self.assertIn("【M1 科学与理论前沿】", email_preview)
+            self.assertIn("【1. 今日真正变化】", email_preview)
+            self.assertIn("【2. 一分钟决策卡】", email_preview)
+            self.assertIn("预计 ROI", email_preview)
+            self.assertNotIn("【今天讲透一个问题】", email_preview)
             self.assertFalse(validate_local_runner_report(report))
 
     def test_local_daily_real_smtp_requires_secret_env_names_and_does_not_log_values(self) -> None:

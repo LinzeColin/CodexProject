@@ -1342,16 +1342,16 @@ formulas:
     model_id: "MOD-ADP-037"
     assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
     status: "active"
-    expression: "The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen surfaces read/skim/skip, evidence level, estimated reading time, and one-line conclusion without numeric x/5 foreground scoring; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content."
+    expression: "The V7.1 M1-compatible Stage 1 arXiv email is acceptable only when the daily package produces a multipart Chinese email with responsive HTML and plain-text fallback; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the plain-text body starts with M1 科学与理论前沿 and presents the fixed V7.1 section order 1 今日真正变化, 2 一分钟决策卡, 3 主讲深度解释, 4 前沿 Delta, 5 证据级别与不确定性, 6 B4 社会与时代影响, 7 B5 风险、反证与失败条件, 8 B6 个人影响、ROI 和行动, 9 复习问题, and 10 反馈; the decision card visibly includes expected ROI, time cost, confidence, and action path without unsupported precise income promises; Stage 1 operational candidate queue summary remains inside the feedback section; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, video entry clutter, old 今天讲透一个问题 template markers, and repeated English summary; SMTP evidence stores hashes only, not body content."
     variables:
       - name: "lesson_frontstage"
         data_type: "object"
         unit: "email content contract"
-        input_domain: "decision, backend attention_score, evidence_level, reading time, takeaway, chain, mappings, questions, gaps, default action"
+        input_domain: "decision, backend attention_score, evidence_level, reading time, takeaway, chain, mappings, questions, gaps, default action, expected ROI, confidence, action path, B4/B5/B6 content"
       - name: "plain_text_body"
         data_type: "string"
         unit: "Chinese characters"
-        input_domain: "less than or equal to 1500 user-visible chars in deterministic render tests"
+        input_domain: "less than or equal to 2600 user-visible chars in deterministic render tests"
       - name: "html_alternative"
         data_type: "string"
         unit: "HTML email body"
@@ -1365,17 +1365,17 @@ formulas:
         unit: "SMTP delivery report"
         input_domain: "body_sha256, html_body_sha256, html_alternative_present, body_logged=false"
     constraints: "This formula does not change all-arXiv scanning, candidate queue persistence, ROI ranking, SMTP enablement flags, Release upload flags, production schedule variables, or secret handling. It changes only the human-frontstage render path and regression tests."
-    missing_policy: "Missing frontstage payload, missing HTML alternative, non-contract subject, plain text over the length cap, visible Claim Ledger/ROI/delivery policy text, visible x/5 foreground score, video attachment, Release/video clutter, polluted q-fin candidate summary, or logged email body blocks V2 email acceptance."
-    output_range: "email decision UI V2 ready or blocked; production remains disabled until a later controlled manual workflow and owner approval"
+    missing_policy: "Missing frontstage payload, missing HTML alternative, non-contract subject, plain text over the length cap, missing V7.1 1-10 section order, missing expected ROI/time cost/confidence/action path, old 今天讲透一个问题 template markers, visible Claim Ledger/backend ROI score/delivery policy text, visible x/5 foreground score, video attachment, Release/video clutter, polluted q-fin candidate summary, or logged email body blocks V7.1 M1-compatible email acceptance."
+    output_range: "V7.1 M1-compatible Stage 1 email ready or blocked; full M1-M4 orchestration remains Stage 2 S2PKT05 and is not claimed here"
     code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
     test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"]
-    implementation_fingerprint: "sha256:9fb17848bd8e4b95222a701627f63b9950c77c381063b42a541bb2db161c9412"
-    last_verified_commit: "d328d5d76ff1ea519d59c5316f7497ba6ef03e2a"
-    verified_at: "2026-06-24T09:46:05+10:00"
-    evidence_hash: "sha256:0a34ff75234c903e38b6804b30bf4cbcc32418455a5ae9a10b196510bf6b82e9"
+    implementation_fingerprint: "sha256:b2370c5086e562ceed54fb45c2692bd4e7c11a9c6c3835de0e5249c3443efdd5"
+    last_verified_commit: "6ff74ce3a1dddb93a29cf28df8bd7839245a7d84"
+    verified_at: "2026-06-24T15:40:00+10:00"
+    evidence_hash: "sha256:8180bb59dde8970eef6f5f95069b879d5509d705007f233185a1839e8bf92935"
   - formula_id: "FORM-ADP-040"
     model_id: "MOD-ADP-038"
     assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]

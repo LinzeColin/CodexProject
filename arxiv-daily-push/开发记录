@@ -15,6 +15,16 @@
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
+## 最新本轮修复：Stage1 V7.1 M1 邮件模板与本机 HTTPS 抓取
+
+- iteration_id: `ITER-20260624-ADP-STAGE1-V7-1-M1-EMAIL-TEMPLATE-SSL-FIX`
+- goal: `把 Stage1 arXiv 本机日更邮件从旧前台模板修正为 V7.1 M1-compatible 结构，并修复本机 Python arXiv HTTPS CA 路径导致的 daily-run 阻断。`
+- status: `completed_local_validation_pending_commit`
+- files_changed: `global_scan.py, arxiv_adapter.py, test_arxiv_adapter.py, test_global_scan.py, test_local_runner.py, test_scheduled_execution.py, test_stage2_sources.py, governance registries, handoff, three base files`
+- acceptance: `plain/html 邮件出现 M1 科学与理论前沿、1-10 V7.1 段落、预计 ROI、时间成本、置信度、行动路径；旧 【今天讲透一个问题】 不再出现；local-runner daily dry_run 和真实 SMTP send 均成功。`
+- validation: `42 focused tests OK; 232 full ADP tests OK; no-send local-runner daily status pass; real_smtp_sent true; readiness pass; preview marker check pass`
+- limitation: `本轮只完成 Stage1 arXiv 邮件的 M1-compatible 形态，不声明完整 S2PKT05 的 M1-M4 3+1 编排完成。`
+
 ## Roadmap
 
 Stage -> Phase -> Task

@@ -14,7 +14,7 @@ The append-only machine record is `development_events.jsonl`.
 - Confirmed iteration count: 94
 - Reconstructed event count: 0
 - Current task: `S2PCT02` keeps legacy alias `S2P2T02` for the next Science/top-journal metadata-only no-send shadow evidence. `S2PCT01 -> S2P2T01` is completed Nature shadow foundation on `main@047f453`; `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence, health/daily/watchdog launchd package generation, and `local-runner readiness`; this Mac now has Stage1-only launchd installed, SMTP password present in Keychain, latest real local daily run `real_smtp_sent=true`, and readiness pass. V7.1 parallel audit records open P0=8 and P1=37; final integrated production acceptance remains forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence, health/daily/watchdog launchd package generation, and `local-runner readiness`; this Mac now has Stage1-only launchd installed, SMTP password present in Keychain, latest real local daily run `real_smtp_sent=true`, and readiness pass. The previous real SMTP run used the old email template; current branch code now renders and sends a V7.1 M1-compatible Stage1 arXiv email, with real arXiv no-send preview and real SMTP resend both proving the new template markers while excluding `【今天讲透一个问题】`. V7.1 parallel audit records open P0=8 and P1=37; final integrated production acceptance remains forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
 
@@ -32,6 +32,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-STAGE1-V7-1-M1-EMAIL-TEMPLATE-SSL-FIX`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from V7.1 email content contract, current Stage1 renderer diff, focused/full tests, and a real arXiv no-send local-runner daily preview.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 6ff74ce3a1dddb93a29cf28df8bd7839245a7d84
+- Result commit: PENDING
+- Task IDs: `ADP-S1P5T05`, `S2PKT02`, `S2PKT05`
+- Goal: Correct the Stage1 arXiv local daily email from the old teaching template to a V7.1 M1-compatible B1+B4/B5/B6 structure, and remove the local Python CA-store blocker that prevented real arXiv dry-run verification.
+- Assumptions: This is Stage1 arXiv M1-compatible rendering only; it does not implement full S2PKT05 M1/M2/M3/M4 orchestration, does not enable GitHub cloud schedule, and does not claim `INTEGRATED_PRODUCTION_ACCEPTED`.
+- Files changed: arXiv adapter HTTPS context, daily email renderer, focused renderer/local-runner/scheduled/stage2 shadow tests, model/formula/parameter governance, handoff, changelog, and three base files.
+- Model changes: Updated `MOD-ADP-037` from `adp-email-decision-ui-v2` to `adp-email-decision-ui-v7.1-m1-compatible`.
+- Formula changes: Updated `FORM-ADP-039` to require V7.1 1-10 section order, visible expected ROI/time cost/confidence/action path, B1+B4/B5/B6 framing, feedback-contained candidate queue summary, and no old `【今天讲透一个问题】` marker.
+- Parameter changes: Updated `PARAM-ADP-277` `EMAIL_PLAIN_TEXT_MAX_CHARS` active value from 1500 to 2600 for the V7.1 ten-section plain-text contract.
+- Commands run: focused email/runner/source tests; full ADP unittest discovery; real no-send `local-runner daily` with live arXiv fetch; real `local-runner daily --allow-smtp-send` with local env; readiness with `--require-smtp --require-scheduler`; preview marker inspection.
+- Test results: Focused tests 42 OK; full ADP tests 231/232 OK across pre/post SSL validation; no-send local-runner daily status `pass`; real SMTP resend status `pass`, `notification_report.status=sent`, `real_smtp_sent=true`; readiness status `pass`, `stable_daily_email_ready=true`; preview contains all V7.1 M1 markers and old template marker is false.
+- Successes: Stage1 arXiv local daily preview and real sent email now start with `【M1 科学与理论前沿】`, include all 10 V7.1 sections, expected ROI/time cost/confidence/action path, and HTML brand `M1 科学与理论前沿 · B1+B4/B5/B6`; local arXiv HTTPS fetch works with a verified CA context.
+- Failures: None after the real SMTP resend; the prior real SMTP evidence remains transport proof only and used the old template.
+- Decisions: Do not disable TLS verification; use an available CA bundle for `urllib`. Keep candidate queue summary inside section 10 feedback so the V7.1 main section order remains 1-10.
+- Remaining risks: Main thread must merge or cherry-pick this branch before its active worktree can be assumed to contain the new template; full M1-M4 3+1 scheduling remains Stage2 S2PKT05.
+- Rollback: Revert arXiv adapter SSL context helper, `global_scan.py` email renderer, tests, governance registry updates, handoff/changelog/three-base edits, and this event.
+- Next step: Re-run governance validators, commit/push this branch, and update PR #127/main-thread handoff.
 
 ### `ITER-20260624-ADP-S2PA-V7-1-PARALLEL-AUDIT-ROOT-LOCK`
 

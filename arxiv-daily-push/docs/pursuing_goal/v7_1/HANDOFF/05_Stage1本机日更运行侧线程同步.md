@@ -1,6 +1,6 @@
 # Stage1 本机日更运行侧线程同步
 
-更新时间：2026-06-24T14:35:00+10:00
+更新时间：2026-06-24T15:40:00+10:00
 
 ## 目的
 
@@ -14,7 +14,9 @@
 - `local-runner readiness --require-smtp --require-scheduler` 已通过，证明本机 SMTP、launchd 安装证据、最近真实发送证据和 launchd package 文件齐备。
 - 当前本机日更 runner 是 macOS `launchd` + repo 内 `local-runner`，不是 Codex Automation，也不是 GitHub cloud schedule。
 - GitHub cloud scheduled production 仍保持 disabled；Stage2 `INTEGRATED_PRODUCTION_ACCEPTED` 未声明。
-- 真实发送邮件预览已核验为中文教学/反馈新前台模板，没有旧的 ROI/Release/video/backend 前台标记。
+- 更正：上一轮真实 SMTP 发送证据使用的仍是旧中文教学/反馈模板；这解释了用户实际收到旧模板。
+- 本轮已把当前分支代码实际修正为 V7.1 M1-compatible 邮件模板，并通过真实 arXiv 抓取的 no-send `local-runner daily` 和真实 `local-runner daily --allow-smtp-send` 生成/发送新 preview；旧 `【今天讲透一个问题】` 模板标记不再出现。
+- 本轮同时修复本机 Python `urllib` 抓 arXiv 时 OpenSSL 默认 CA 路径为空导致的 `CERTIFICATE_VERIFY_FAILED` 阻断；不关闭 TLS 校验。
 
 ## 当前运行边界
 
@@ -83,6 +85,77 @@ gates: local_preflight pass; local_smtp_send_enablement pass; local_scheduler_in
 
 ## 邮件模板核验
 
+### 本轮真实 SMTP resend（新模板，已通过）
+
+证据文件：
+
+- `/tmp/adp_v71_m1_real_send.json`
+- `/Users/linzezhang/.adp/arxiv-daily-push/runs/20260624/email_preview.txt`
+- `/Users/linzezhang/.adp/arxiv-daily-push/runs/20260624/email_preview.html`
+- `/tmp/adp_v71_m1_readiness.json`
+
+关键结果：
+
+```text
+local-runner daily status: pass
+daily_run_status: succeeded
+notification_report.status: sent
+real_smtp_sent: true
+selected_source_id: arxiv:2606.24817
+secret_values_logged: false
+readiness status: pass
+stable_daily_email_ready: true
+```
+
+真实发送 preview plain text 包含所有 V7.1 M1 marker，且不包含旧模板 marker。
+
+### 本轮当前代码 no-send preview（新模板，已通过）
+
+证据文件：
+
+- `/private/tmp/adp_v71_email_preview_state_ssl/runs/20260624/email_preview.txt`
+- `/private/tmp/adp_v71_email_preview_state_ssl/runs/20260624/email_preview.html`
+
+关键结果：
+
+```text
+local-runner daily status: pass
+notification_report.status: dry_run
+selected_source_id: arxiv:2606.24309
+old_template_present: false
+html_brand: M1 科学与理论前沿 · B1+B4/B5/B6
+```
+
+当前 plain text 包含：
+
+- `【M1 科学与理论前沿】`
+- `【1. 今日真正变化】`
+- `【2. 一分钟决策卡】`
+- `【3. 主讲深度解释】`
+- `【4. 前沿 Delta】`
+- `【5. 证据级别与不确定性】`
+- `【6. B4 社会与时代影响】`
+- `【7. B5 风险、反证与失败条件】`
+- `【8. B6 个人影响、ROI 和行动】`
+- `【9. 复习问题】`
+- `【10. 反馈】`
+- `预计 ROI`
+- `时间成本`
+- `置信度`
+- `行动路径`
+
+当前 plain/html 均不应出现：
+
+- `【今天讲透一个问题】`
+- `为什么值得你看`
+- `ROI score`
+- `Release 资料包`
+- `后台`
+- `日报`
+- `视频入口`
+
+### 上一轮真实 SMTP preview（旧模板，已被本轮修复取代）
+
 真实发送预览 plain text 包含：
 
 - `【今天讲透一个问题】`
@@ -99,23 +172,24 @@ gates: local_preflight pass; local_smtp_send_enablement pass; local_scheduler_in
 - `日报`
 - `视频入口`
 
-注意：HTML 邮件的 hero 区用论文价值句作为 `h1`，因此 HTML 原文不一定出现 plain text 的字面标题 `【今天讲透一个问题】`；这不是回退旧模板。
+注意：上一轮真实 SMTP 发送发生在本轮 V7.1 M1 template fix 之前，不能再作为“新模板已发送”的证明；它只能证明 SMTP transport 能发。本轮已经用同一类本机 SMTP env 重新执行 `local-runner daily --allow-smtp-send` 并发送新模板。
 
 ## 为什么用户可能看到“旧模板”
 
 已确认的事实：
 
-- side runner 分支与 `origin/main` 在 `global_scan.py` 的当前邮件前台模板标记上一致。
+- side runner 分支此前与 `origin/main` 在 `global_scan.py` 的旧邮件前台模板标记上一致，因此真实发送仍是旧模板。
+- 本轮分支已不再与旧模板一致：`global_scan.py` 的 plain/html renderer 现在按 V7.1 M1-compatible 结构生成邮件。
 - 主线程工作树包含新模板标记，但缺少 side runner 分支新增的 `readiness` 子命令。
 - 本机 launchd 指向 side runner 工作树，是为了保留 readiness/watchdog 能力。
 
 可能原因：
 
-- Gmail 展示 HTML hero，而不是 plain text 标题。
-- 用户看到的是更早的 test10/旧测试邮件。
+- 用户看到的是本轮修复前发出的真实 SMTP 邮件；本轮修复后又发送了一封新模板邮件。
 - 主线程有尚未进入当前 checkout/origin 的更晚 UI/UX 模板改动。
+- 本机 launchd 当前指向 side runner 工作树；本轮已在该工作树内验证新模板真实发送和 readiness。合并到主线程后仍建议重新生成/安装 launchd package，避免未来切换工作树后回退。
 
-主线程如有更晚模板改动，应以主线程当前文件为准，把 `local-runner readiness`、health/daily/watchdog launchd 和本机验收记录合并过去，再重新生成并安装 launchd package。
+主线程如有更晚模板改动，应以主线程当前文件为准，把本轮 V7.1 M1 renderer、`local-runner readiness`、health/daily/watchdog launchd、本机 HTTPS CA 修复和本机验收记录合并过去，再重新生成并安装 launchd package。
 
 ## 已完成的代码/治理改动
 

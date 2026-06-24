@@ -49,6 +49,7 @@
 - Stage 1 latest SMTP blocker: `none`
 - Stage 1 latest real SMTP sent: `true`
 - Stage 1 readiness gate: `local-runner readiness --require-smtp --require-scheduler`
+- Stage 1 email template status: `current_code_v7_1_m1_preview_passed; previous_real_smtp_used_old_template; real_resend_sent_new_template; readiness_passed_after_resend`
 - Codex Automation runner: `false`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
