@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:9c8180b0adea195d5aad70ed33198bdeebb2bfea42f0c6572826fcfbf26c4829`
-- snapshot_event_time: `2026-06-25T08:52:52+10:00`
+- source_snapshot_hash: `sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961`
+- snapshot_event_time: `2026-06-25T09:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PH / ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
-- Models/Formulas/Parameters total: `65 / 67 / 468`
-- Active formulas/parameters: `67 / 451`
-- Machine checked formulas/parameters: `67 / 451`
+- Phase/Gate: `S2PF / S2PFT02_HK_MO_INDEPENDENT_PROFILE_READY_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `66 / 68 / 478`
+- Active formulas/parameters: `68 / 461`
+- Machine checked formulas/parameters: `68 / 461`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
+- Release gate: `S2PFT02_HK_MO_INDEPENDENT_PROFILE_READY_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8`
 - V7 roadmap hash: `fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56`
@@ -45,9 +45,9 @@
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PCT02`
+- Next governance task: `S2PFT03`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `NONE`
+- Next executable task: `S2PFT03`
 - Pending/stale events: `104`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

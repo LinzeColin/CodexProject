@@ -2,7 +2,8 @@
 
 ## Unreleased - 2026-06-24
 
-- Recorded PR #152 as merged to `main@1cdad3d9e41f4543b06f158157f35878a30dbc93`, confirming audited M1-M4 mail paths use `EMAIL_LEARNING_V1` while SMTP, scheduler, Release, public schema, DB/migration, CURRENT, V7.1, and integrated production acceptance remain unchanged.
+- Completed `S2PFT02` / legacy `S2P5T02` Hong Kong and Macau independent profile evidence with separate jurisdiction identity, language profile, legal-system state, government-structure, authority, metadata-only, and mainland-template reuse gates while keeping D3 full acceptance, Stage 2 production acceptance, SMTP, Release, scheduler, queue/schema mutation, public schema migration, city, special-zone, V7.2 contract, and production email side effects disabled.
+- Recorded PR #152/#153 as merged to `main`, confirming audited M1-M4 mail paths use `EMAIL_LEARNING_V1` while SMTP, scheduler, Release, public schema, DB/migration, CURRENT, V7.1, and integrated production acceptance remain unchanged.
 - Completed `S2PFT01` / legacy `S2P5T01` China mainland provincial template coverage evidence for 31 provincial-level IDs while keeping D3 full acceptance, Stage 2 production acceptance, SMTP, Release, scheduler, queue/schema mutation, public schema migration, HK/MO, city, special-zone, V7.2 contract, and production email side effects disabled.
 - Implemented `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1 M1-M4 renderer: shared content object, responsive HTML/plain text template, ChatGPT new-chat links, arXiv/PDF links, candidate queue summary compatibility, and forbidden visible marker gate.
 - Routed audited daily delivery, Stage1 B1 report email, local runner previews, scheduled readiness checks, and Stage2 shadow previews through Email V1 while keeping SMTP transport, scheduler trigger/production enablement, Release upload, source adapters, ranking, queue algorithms, public schema, DB/migrations, CURRENT, and V7.1 unchanged.

@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PFT02_HK_MO_PROFILE_MODEL_ID,
     S2PFT01_CHINA_PROVINCIAL_MODEL_ID,
     S2PDT04_D3_READINESS_MODEL_ID,
     S2PDT03_LEGAL_METADATA_MODEL_ID,
@@ -30,6 +31,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pft02_hk_mo_independent_profile_report,
     build_s2pft01_china_provincial_template_coverage_report,
     build_s2pdt04_china_d3_readiness_review_report,
     build_s2pdt03_china_legal_metadata_relation_shadow_report,
@@ -45,6 +47,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pft02_hk_mo_independent_profile,
     run_s2pft01_china_provincial_template_coverage,
     run_s2pdt04_china_d3_readiness_review,
     run_s2pdt03_china_legal_metadata_relation_shadow,
@@ -58,6 +61,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pft02_hk_mo_independent_profile_report,
     validate_s2pft01_china_provincial_template_coverage_report,
     validate_s2pdt04_china_d3_readiness_review_report,
     validate_s2pdt03_china_legal_metadata_relation_shadow_report,
@@ -848,6 +852,59 @@ def china_provincial_records() -> list[dict]:
     return records
 
 
+def china_provincial_template_report() -> dict:
+    return build_s2pft01_china_provincial_template_coverage_report(
+        generated_at=GENERATED_AT,
+        d3_readiness_review_report=china_d3_readiness_report(),
+        provincial_records=china_provincial_records(),
+    )
+
+
+def hk_mo_jurisdiction_profiles() -> list[dict]:
+    return [
+        {
+            "jurisdiction_id": "hong_kong",
+            "jurisdiction_name": "Hong Kong Special Administrative Region",
+            "legal_system_state": "common_law",
+            "government_structure_model": "special_administrative_region_hksar_government",
+            "language_profiles": ["zh_hant", "en"],
+            "official_domain": "www.gov.hk",
+            "source_url": "https://www.gov.hk/",
+            "authority_gate": "pass",
+            "template_source": "hk_independent_profile",
+            "mainland_template_applied": False,
+            "autonomy_basis": "Basic Law and HKSAR government structure",
+            "legal_status_reference": "Hong Kong Basic Law",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "evidence_refs": ["fixture:s2pft02:hong_kong"],
+        },
+        {
+            "jurisdiction_id": "macau",
+            "jurisdiction_name": "Macao Special Administrative Region",
+            "legal_system_state": "civil_law_portuguese_heritage",
+            "government_structure_model": "special_administrative_region_macao_government",
+            "language_profiles": ["zh_hant", "pt"],
+            "official_domain": "www.gov.mo",
+            "source_url": "https://www.gov.mo/",
+            "authority_gate": "pass",
+            "template_source": "macao_independent_profile",
+            "mainland_template_applied": False,
+            "autonomy_basis": "Basic Law and MSAR government structure",
+            "legal_status_reference": "Macao Basic Law",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "evidence_refs": ["fixture:s2pft02:macau"],
+        },
+    ]
+
+
 def replay_batches(start: date, count: int = 30) -> dict:
     batches_by_date = {}
     for offset in range(count):
@@ -1627,6 +1684,87 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["provincial_template_coverage_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pft01_china_provincial_template_coverage_report.json").is_file())
 
+    def test_s2pft02_hk_mo_independent_profile_validates_without_production(self) -> None:
+        report = build_s2pft02_hk_mo_independent_profile_report(
+            generated_at=GENERATED_AT,
+            provincial_template_coverage_report=china_provincial_template_report(),
+            jurisdiction_profiles=hk_mo_jurisdiction_profiles(),
+        )
+
+        self.assertEqual(report["model_id"], S2PFT02_HK_MO_PROFILE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PFT02-HK-MO")
+        self.assertEqual(report["task_id"], "S2PFT02")
+        self.assertEqual(report["legacy_task_id"], "S2P5T02")
+        self.assertEqual(report["phase"], "S2PF")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["upstream_provincial_template_gate"], "pass")
+        self.assertEqual(report["jurisdiction_coverage_gate"], "pass")
+        self.assertEqual(report["language_profile_gate"], "pass")
+        self.assertEqual(report["legal_status_gate"], "pass")
+        self.assertEqual(report["template_independence_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(set(report["jurisdiction_ids_observed"]), {"hong_kong", "macau"})
+        self.assertTrue({"zh_hant", "en", "pt"}.issubset(set(report["language_profiles_observed"])))
+        self.assertTrue(report["s2pf_hk_mo_profile_ready"])
+        self.assertTrue(report["hk_mo_profile_modeled"])
+        self.assertFalse(report["mainland_template_applied_to_hk_mo"])
+        self.assertFalse(report["d3_full_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(report["city_coverage_modeled"])
+        self.assertFalse(report["special_zone_discovery_enabled"])
+        self.assertFalse(validate_s2pft02_hk_mo_independent_profile_report(report))
+
+    def test_s2pft02_hk_mo_independent_profile_blocks_missing_mo_and_mainland_template(self) -> None:
+        profiles = [profile for profile in hk_mo_jurisdiction_profiles() if profile["jurisdiction_id"] != "macau"]
+        profiles[0] = dict(
+            profiles[0],
+            template_source="mainland_province_template",
+            mainland_template_applied=True,
+            production_affected=True,
+            real_smtp_sent=True,
+        )
+        report = build_s2pft02_hk_mo_independent_profile_report(
+            generated_at=GENERATED_AT,
+            provincial_template_coverage_report=china_provincial_template_report(),
+            jurisdiction_profiles=profiles,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["jurisdiction_coverage_gate"], "blocked")
+        self.assertEqual(report["template_independence_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["s2pf_hk_mo_profile_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("macau", joined)
+        self.assertIn("mainland", joined)
+        self.assertIn("production", joined)
+
+    def test_s2pft02_hk_mo_independent_profile_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pft02_hk_mo_independent_profile(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                provincial_template_coverage_report=china_provincial_template_report(),
+                jurisdiction_profiles=hk_mo_jurisdiction_profiles(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pft02_hk_mo_independent_profile_report(report))
+            self.assertFalse(report["d3_full_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["hk_mo_profile_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pft02_hk_mo_independent_profile_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -2339,6 +2477,43 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["legacy_task_id"], "S2P5T01")
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["s2pf_provincial_template_coverage_ready"])
+        self.assertFalse(payload["d3_full_source_domain_accepted"])
+
+    def test_cli_stage2_hk_mo_independent_profile_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            provincial_report_path = Path(tmp) / "provincial-template-report.json"
+            jurisdiction_profiles_path = Path(tmp) / "jurisdiction-profiles.json"
+            provincial_report_path.write_text(json.dumps(china_provincial_template_report(), ensure_ascii=False), encoding="utf-8")
+            jurisdiction_profiles_path.write_text(
+                json.dumps({"jurisdiction_profiles": hk_mo_jurisdiction_profiles()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-hk-mo-independent-profile",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--provincial-template-coverage-report",
+                    str(provincial_report_path),
+                    "--jurisdiction-profiles",
+                    str(jurisdiction_profiles_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PFT02_HK_MO_PROFILE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PFT02")
+        self.assertEqual(payload["legacy_task_id"], "S2P5T02")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["s2pf_hk_mo_profile_ready"])
+        self.assertTrue(payload["hk_mo_profile_modeled"])
         self.assertFalse(payload["d3_full_source_domain_accepted"])
 
 

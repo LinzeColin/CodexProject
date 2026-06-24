@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 65
-- formula_count: 67
-- parameter_count: 468
+- model_count: 66
+- formula_count: 68
+- parameter_count: 478
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -136,6 +136,14 @@ Fact levels follow `docs/governance/STANDARD.md`.
   Hong Kong/Macau, city coverage, special-zone discovery, production flags,
   V7.2 contract edits, and V7.2 mail/schema pre-run false.
 
+- `S2PFT02` / legacy `S2P5T02` adds `MOD-ADP-066`. It validates Hong Kong
+  and Macau as independent metadata-only jurisdiction profiles with separate
+  legal-system states, government-structure models, language profiles,
+  authority evidence, and explicit mainland-template reuse blockers while
+  keeping D3 full source-domain acceptance, city coverage, special-zone
+  discovery, production flags, V7.2 contract edits, and V7.2 mail/schema
+  pre-run false.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -204,6 +212,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-063 | S2PDT03 China legal metadata relation shadow | deterministic legal-metadata relation shadow model | Validate legal status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore, old-conclusion update, and no-production gates | active | adp-s2pdt03-china-legal-metadata-relation-shadow-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-064 | S2PDT04 China D3 readiness review | deterministic D3 readiness review model | Validate 30-date replay, 2-day shadow, authority evidence, B2-B6 board routing, metadata-only gate, and disabled D3/production side-effect flags | active | adp-s2pdt04-china-d3-readiness-review-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-065 | S2PFT01 China provincial template coverage | deterministic provincial template coverage model | Validate 31 mainland provincial-level templates, locality types, core department roles, health tiers, official identity, and disabled full-D3/production side-effect flags | active | adp-s2pft01-china-provincial-template-coverage-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-066 | S2PFT02 Hong Kong and Macau independent profile | deterministic jurisdiction profile model | Validate Hong Kong and Macau jurisdiction profiles, legal system states, language profiles, government structures, authority evidence, metadata-only gates, and mainland-template reuse blockers | active | adp-s2pft02-hk-mo-independent-profile-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -311,6 +320,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-065 validates S2PDT03 China legal metadata relation shadow across upstream C1 source map, required legal statuses, required relation types, date confusion guard, reprint/original-source guard, forced rescore/old-conclusion update, metadata-only no-download boundaries, disabled legal-advice/D3/production acceptance flags, and no V7.2 mail/schema pre-run.
 - FORM-ADP-066 validates S2PDT04 China D3 readiness review across upstream S2PDT01/S2PDT02/S2PDT03 pass gates, 30-date replay, 2-day shadow, authority evidence, B2-B6 board routing, metadata-only no-production boundaries, disabled D3/production acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-067 validates S2PFT01 China provincial template coverage across upstream S2PDT04 pass evidence, 31 mainland provincial IDs, locality type coverage, core local department roles, health tiers, official identity, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
+- FORM-ADP-068 validates S2PFT02 Hong Kong and Macau independent profiles across upstream S2PFT01 pass evidence, required jurisdiction ids, zh_hant/en/pt language profiles, common-law and Portuguese-heritage civil-law legal states, independent government structures, authority evidence, metadata-only no-download boundaries, mainland-template reuse blockers, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -388,6 +398,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PDT03 China legal metadata relation parameters: PARAM-ADP-440 through PARAM-ADP-449.
 - Active S2PDT04 China D3 readiness parameters: PARAM-ADP-450 through PARAM-ADP-458.
 - Active S2PFT01 China provincial template parameters: PARAM-ADP-459 through PARAM-ADP-468.
+- Active S2PFT02 Hong Kong and Macau independent profile parameters: PARAM-ADP-469 through PARAM-ADP-478.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

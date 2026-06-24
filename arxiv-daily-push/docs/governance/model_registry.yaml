@@ -3466,3 +3466,52 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md"
+  -
+    model_id: "MOD-ADP-066"
+    name: "S2PFT02 Hong Kong and Macau independent profile"
+    kind: "deterministic jurisdiction profile model"
+    purpose: "Validate Hong Kong and Macau as independent jurisdiction profiles with their own legal system states, government structures, language profiles, authority evidence, and metadata-only no-production boundaries after S2PFT01."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pft02-hk-mo-independent-profile-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-068"
+    parameter_ids:
+      - "PARAM-ADP-469"
+      - "PARAM-ADP-470"
+      - "PARAM-ADP-471"
+      - "PARAM-ADP-472"
+      - "PARAM-ADP-473"
+      - "PARAM-ADP-474"
+      - "PARAM-ADP-475"
+      - "PARAM-ADP-476"
+      - "PARAM-ADP-477"
+      - "PARAM-ADP-478"
+    inputs:
+      - "passing S2PFT01 China provincial template coverage report"
+      - "Hong Kong and Macau jurisdiction profile records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "Hong Kong and Macau independent profile report"
+      - "jurisdiction coverage gate"
+      - "language profile gate"
+      - "legal status gate"
+      - "template independence gate"
+      - "authority gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PFT02-HK-MO-INDEPENDENT-PROFILE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT02_HK_MO_INDEPENDENT_PROFILE.md"

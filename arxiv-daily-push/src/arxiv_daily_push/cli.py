@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pft02_hk_mo_independent_profile,
     run_s2pft01_china_provincial_template_coverage,
     run_s2pdt04_china_d3_readiness_review,
     run_s2pdt03_china_legal_metadata_relation_shadow,
@@ -135,6 +136,7 @@ from .stage2_sources import (
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
+    validate_s2pft02_hk_mo_independent_profile_report,
     validate_s2pft01_china_provincial_template_coverage_report,
 )
 from .storage import (
@@ -642,6 +644,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pft01_china_provinces.add_argument("--provincial-records", required=True, help="Mainland provincial records JSON list or object with provincial_records.")
     s2pft01_china_provinces.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pft01_china_provinces.add_argument("--json", action="store_true", help="Print JSON provincial template coverage report.")
+
+    s2pft02_hk_mo = subparsers.add_parser(
+        "stage2-hk-mo-independent-profile",
+        help="Run S2PFT02/S2P5T02 Hong Kong and Macau independent legal/government profile evidence.",
+    )
+    s2pft02_hk_mo.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pft02_hk_mo.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pft02_hk_mo.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pft02_hk_mo.add_argument("--provincial-template-coverage-report", required=True, help="Passing S2PFT01 provincial template coverage report JSON.")
+    s2pft02_hk_mo.add_argument("--jurisdiction-profiles", required=True, help="HK/MO profile JSON list or object with jurisdiction_profiles.")
+    s2pft02_hk_mo.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pft02_hk_mo.add_argument("--json", action="store_true", help="Print JSON HK/MO profile report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1920,6 +1934,30 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- provincial_coverage_gate: {report.get('provincial_coverage_gate')}")
             print(f"- core_department_template_gate: {report.get('core_department_template_gate')}")
             print(f"- health_tier_gate: {report.get('health_tier_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-hk-mo-independent-profile":
+        report = run_s2pft02_hk_mo_independent_profile(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            provincial_template_coverage_report=load_json_mapping(args.provincial_template_coverage_report),
+            jurisdiction_profiles=load_json_records(args.jurisdiction_profiles, "jurisdiction_profiles"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pft02_hk_mo_independent_profile_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- jurisdiction_coverage_gate: {report.get('jurisdiction_coverage_gate')}")
+            print(f"- language_profile_gate: {report.get('language_profile_gate')}")
+            print(f"- legal_status_gate: {report.get('legal_status_gate')}")
+            print(f"- template_independence_gate: {report.get('template_independence_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
