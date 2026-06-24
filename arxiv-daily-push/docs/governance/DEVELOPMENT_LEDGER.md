@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PC
-- Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT
+- Current phase: S2PH
+- Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_IMPLEMENTED_LOCAL_VALIDATION_PENDING_PR_CI
 - Confirmed iteration count: 95
 - Reconstructed event count: 0
-- Current task: `S2PCT02` keeps legacy alias `S2P2T02` for the next Science/top-journal metadata-only no-send shadow evidence. `S2PCT01 -> S2P2T01` is completed Nature shadow foundation on `main@047f453`; `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PHT01V1.1-T02-T04` has implemented the EMAIL_LEARNING_V1 M1-M4 renderer locally and is pending final full gates, PR, and CI. `S2PCT02` keeps legacy alias `S2P2T02` for the next no-conflict Science/top-journal metadata-only no-send shadow evidence. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -32,6 +32,28 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260625-ADP-S2PH-EMAIL-V1-T02-T04-RENDERER`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from `mail_templates.py`, audited daily/B1/local/scheduled/shadow email paths, V7.2 Email Learning V1 overlay, model/formula/parameter registry diff, focused renderer tests, semantic extractor output, phase record, and run manifest.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 17a8a88421dbd8fef97c4286fa8563c327978b1b
+- Result commit: PENDING
+- Task IDs: `S2PHT01V1.1-T02`, `S2PHT01V1.1-T03`, `S2PHT01V1.1-T04`
+- Goal: Implement the V7.2/V1.1 EMAIL_LEARNING_V1 renderer and route audited M1-M4 email paths through the unified content object, HTML/plain template, ChatGPT new-chat link, and fail-closed visible marker gate.
+- Assumptions: This changes private mail rendering and readiness gates only; it does not claim integrated production acceptance or enable live operations.
+- Files changed: `mail_templates.py`, daily delivery and B1 email builders, local/scheduled readiness gates, Stage2 shadow preview tests, renderer tests, phase record, run manifest, model/formula/parameter registries, delivery plan/tasks, traceability, and this ledger.
+- Model changes: Updated `MOD-ADP-037` to the private EMAIL_LEARNING_V1 renderer and routed audited mail package builders/readiness gates through it.
+- Formula changes: Updated `FORM-ADP-039` to describe EMAIL_LEARNING_V1 M1-M4 rendering; refreshed affected AST fingerprints/evidence hashes for current daily/manual/B1 paths.
+- Parameter changes: Rebound `PARAM-ADP-276` through `PARAM-ADP-279` and `PARAM-ADP-313` to Email V1 contract id, template version, M1-M4 product ids, forbidden visible marker count, and V1 subject contract.
+- Commands run: py_compile; focused email-chain unittest; full ADP unittest; semantic extractor; project governance; changed-only governance with semantic checks; V7.2 contract validator; lean check-render; JSON/JSONL/YAML/CSV parse checks; old V2 template/helper scan; `git diff --check`.
+- Test results: py_compile PASS; focused email-chain unittest 80 OK; full arxiv-daily-push unittest 280 OK after rebasing onto `origin/main`; semantic extractor checked 67 formulas and 451 parameters; project governance errors 0 warnings 0; changed-only governance semantic errors 0 warnings 0; V7.2 contract validator PASS; lean check-render drift 0 reference issues 0; JSON/JSONL/YAML/CSV parse OK; old V2 template/helper scan no matches; `git diff --check` PASS. Root governance full unittest was attempted before rebase and still had unrelated cross-project Review9/Alpha/EEI historical failures, so it is not used as this ADP PR acceptance gate.
+- Decisions: Current daily delivery, B1 report email, local runner preview, scheduled readiness gate, and Stage2 shadow previews now require `EMAIL_LEARNING_V1` metadata and M1-M4 product ids. Old V2 visible markers and old daily email helper names are blocked by tests and source scan.
+- Remaining risks: PR creation, GitHub CI, review, and merge are still pending; live SMTP/scheduler/Release/integrated production acceptance remain blocked by V7.2 gates.
+- Rollback: Revert the Email V1 renderer runtime files, tests, phase record, manifest, registry/status/event updates, and rendered governance views; no data migration is required.
+- Next step: Commit, push, open PR, and notify the Stage2 main development thread.
 
 ### `ITER-20260624-ADP-S2PA-V7-2-CURRENT-CONTRACT`
 

@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 85
-- acceptance_count: 77
+- task_count: 86
+- acceptance_count: 80
 
 ## Delivery Tasks
 
@@ -97,13 +97,14 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PAT04 | S2PA | completed | ACC-S2PAT04-CN-CI | 三基文件、VERSION_MATRIX、validator 和 governance tests expose and enforce V7 contract hashes | `功能清单`; `开发记录`; `模型参数文件` |
 | S2PAT05 | S2PA | completed | ACC-S2PAT05-AUDIT-LOCK | V7.1 parallel audit findings, merge policy, lifecycle contract, and P0/P1 production-forbidden gate are locked into repository governance; repository lock remains pending PR CI attestation | `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml`; `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
 | S2PAT06 | S2PA | completed | ACC-S2PAT06-V7-2-CURRENT | V7.2 merges valid V7.1 requirements with V1.1 EMAIL_LEARNING_V1 increments, keeps V7.1 read-only, publishes CURRENT, and requires Stage2 agent revalidation before new work; PR CI remains the repository merge attestation | `docs/pursuing_goal/CURRENT.yaml`; `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml` |
+| S2PHT01V1.1-T02-T04 | S2PH | completed | ACC-S2PHT01V1.1-T02-CONTENT-OBJECT; ACC-S2PHT01V1.1-T03-HTML-RENDER; ACC-S2PHT01V1.1-T04-GOLDEN-REGRESSION | EMAIL_LEARNING_V1 renderer now binds audited M1-M4 daily/B1/local/scheduled/shadow preview paths to one content object, HTML/plain renderer, ChatGPT new-chat link, and forbidden visible marker gate without changing SMTP, scheduler, Release, source adapters, public schema, DB, CURRENT, or V7.1 | `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md`; `governance/run_manifests/ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-20260625.json`; `tests/test_mail_templates.py` |
 | S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7.2-inherited name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
 | S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.2-inherited D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
 | S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.2 Science/main-journal metadata-only no-send shadow task; agent must record V7.2 revalidation before new work; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
 | S2PFT01 | S2PF | completed | ACC-S2PFT01-PROVINCES | China mainland provincial template coverage passed for 31 provincial-level IDs, locality types, core department roles, health tiers, official identity, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, HK/MO, city, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md`; `governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
-| ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
-| ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
+| ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
+| ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 ## Release Gates

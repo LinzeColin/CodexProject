@@ -17,6 +17,7 @@ from arxiv_daily_push.local_runner import (
     run_local_daily,
     validate_local_runner_report,
 )
+from arxiv_daily_push.mail_templates import EMAIL_LEARNING_V1_CONTRACT_ID
 from arxiv_daily_push.source_ingest import SOURCE_INGEST_MODEL_ID
 
 
@@ -141,7 +142,9 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertTrue((state / "candidate_queue.json").is_file())
             self.assertTrue((state / "local_content_ledger.jsonl").is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
-            self.assertIn("【今天讲透一个问题】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
+            self.assertEqual(report["delivery_package"]["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
+            self.assertEqual(report["delivery_package"]["mail_product_id"], "M1")
+            self.assertIn("【先把论文讲成人话】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
             self.assertFalse(validate_local_runner_report(report))
 
     def test_local_daily_real_smtp_requires_secret_env_names_and_does_not_log_values(self) -> None:

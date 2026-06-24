@@ -10,6 +10,7 @@ from pathlib import Path
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.production_preflight import PRODUCTION_REQUIRED_COMMANDS, PRODUCTION_SECRET_ENV_KEYS, build_production_preflight
 from arxiv_daily_push.scheduled_execution import SCHEDULED_EXECUTION_MODEL_ID, run_scheduled_execution, validate_scheduled_execution_report
+from arxiv_daily_push.mail_templates import EMAIL_LEARNING_V1_CONTRACT_ID
 
 ROOT = Path(__file__).resolve().parents[2]
 PIPELINE_INPUT = ROOT / "arxiv-daily-push/tests/fixtures/pipeline_input.json"
@@ -76,12 +77,15 @@ class ScheduledExecutionTests(unittest.TestCase):
         self.assertTrue(report["production_evidence_ready"])
         self.assertEqual(report["notification_report"]["status"], "sent")
         self.assertTrue(report["evidence_refs"]["text_artifact_ref"])
+        self.assertEqual(report["delivery_package"]["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
+        self.assertEqual(report["delivery_package"]["mail_product_id"], "M1")
         self.assertFalse(report["delivery_package"]["video_required"])
         self.assertFalse(report["delivery_package"]["release_required"])
         self.assertFalse(report["delivery_package"]["email_contains_video_link"])
         email_body = FakeSMTP.sent_messages[0].get_body(preferencelist=("plain",)).get_content()
-        self.assertIn("【今天讲透一个问题】", email_body)
-        self.assertIn("【为什么值得你看】", email_body)
+        self.assertIn("【先把论文讲成人话】", email_body)
+        self.assertIn("【学习成果导航】", email_body)
+        self.assertIn("【真正的新知识】", email_body)
         self.assertIn("候选队列摘要", email_body)
         self.assertNotIn("视频入口", email_body)
         self.assertNotIn("Release 资料包", email_body)

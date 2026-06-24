@@ -13,13 +13,18 @@ from .config import DEFAULT_RECIPIENT, DEFAULT_TIMEZONE
 from .contracts import stable_content_hash, validate_evidence_claim, validate_source_item
 from .evidence_gate import EvidenceGateError, build_claim_ledger
 from .lesson import LessonGenerationError, generate_lesson
+from .mail_templates import (
+    EMAIL_LEARNING_V1_CONTRACT_ID,
+    EMAIL_LEARNING_V1_TEMPLATE_VERSION,
+    render_email_learning_v1,
+)
 
 
 STAGE1_B1_REPORT_MODEL_ID = "adp-stage1-b1-report-email-v1"
 STAGE1_B1_REPORT_SCHEMA_VERSION = 1
 STAGE1_B1_BOARD_ID = "B1"
 STAGE1_B1_BOARD_NAME = "研究前沿"
-STAGE1_B1_SUBJECT_CONTRACT = "YYYYMMDD -- Project Name -- arXiv Group -- Theme"
+STAGE1_B1_SUBJECT_CONTRACT = "YYYYMMDD -- Project Name -- Mail Product -- Plain Theme"
 STAGE1_B1_REQUIRED_CRITICAL_CLAIM_COVERAGE = 100.0
 STAGE1_B1_PROHIBITED_EMAIL_MARKERS = (
     "project:",
@@ -67,7 +72,6 @@ def build_b1_report_email_package(
     source_id = str(source_item["source_id"])
     report_id = f"b1-report:{date}:{_safe_id(source_id)}"
     email_id = f"b1-email:{date}:{_safe_id(source_id)}:{stable_content_hash({'report_id': report_id, 'recipient': recipient})[:10]}"
-    subject = _email_subject(date, source_item)
     evidence_audit = _evidence_audit(ledger)
     report_markdown = _render_report_markdown(
         report_id=report_id,
@@ -77,25 +81,21 @@ def build_b1_report_email_package(
         lesson=lesson,
         generated_at=generated_at,
     )
+    rendered_email = render_email_learning_v1(
+        mail_product_id="M1",
+        source_item=source_item,
+        lesson=lesson,
+        claims=claims,
+        generated_at=generated_at,
+        date=date,
+        run_id=str(daily_input["run_id"]),
+        report_id=report_id,
+        candidate_queue_summary=candidate_queue_summary,
+    )
+    subject = str(rendered_email["subject"])
     report_html = _markdown_to_simple_html(report_markdown, title=subject)
-    email_plain = _render_email_plain(
-        subject=subject,
-        report_id=report_id,
-        daily_input=daily_input,
-        source_item=source_item,
-        lesson=lesson,
-        evidence_audit=evidence_audit,
-        candidate_queue_summary=candidate_queue_summary,
-    )
-    email_html = _render_email_html(
-        subject=subject,
-        report_id=report_id,
-        daily_input=daily_input,
-        source_item=source_item,
-        lesson=lesson,
-        evidence_audit=evidence_audit,
-        candidate_queue_summary=candidate_queue_summary,
-    )
+    email_plain = str(rendered_email["plain"])
+    email_html = str(rendered_email["html"])
     content_hash = stable_content_hash(
         {
             "subject": subject,
@@ -123,11 +123,16 @@ def build_b1_report_email_package(
         "recipient": recipient,
         "subject_contract": STAGE1_B1_SUBJECT_CONTRACT,
         "email_subject": subject,
+        "email_template_contract": EMAIL_LEARNING_V1_CONTRACT_ID,
+        "email_template_version": EMAIL_LEARNING_V1_TEMPLATE_VERSION,
+        "mail_product_id": "M1",
+        "email_learning_content_v1": rendered_email["content"],
         "content_hash": content_hash,
         "quality_gates": {
             "critical_claim_coverage_percent": evidence_audit["critical_claim_coverage_percent"],
             "key_claim_evidence_binding_100_percent": evidence_audit["critical_claim_coverage_percent"]
             == STAGE1_B1_REQUIRED_CRITICAL_CLAIM_COVERAGE,
+            "email_learning_v1_template": True,
             "chinese_first_email": _contains_chinese(email_plain),
             "teaching_not_digest": True,
             "no_video_required": True,
@@ -207,7 +212,15 @@ def validate_b1_report_email_package(package: Mapping[str, Any]) -> list[str]:
         errors.append("subject_contract must match owner subject contract")
     subject = str(package.get("email_subject") or "")
     if not re.match(r"^\d{8} -- .+ -- .+ -- .+$", subject):
-        errors.append("email_subject must follow YYYYMMDD -- Project Name -- arXiv Group -- Theme")
+        errors.append("email_subject must follow YYYYMMDD -- Project Name -- Mail Product -- Plain Theme")
+    if package.get("email_template_contract") != EMAIL_LEARNING_V1_CONTRACT_ID:
+        errors.append("email_template_contract must be EMAIL_LEARNING_V1")
+    if package.get("email_template_version") != EMAIL_LEARNING_V1_TEMPLATE_VERSION:
+        errors.append("email_template_version must match Email V1")
+    if package.get("mail_product_id") != "M1":
+        errors.append("B1 report email must use M1 mail product")
+    if not isinstance(package.get("email_learning_content_v1"), Mapping):
+        errors.append("email_learning_content_v1 is required")
     email_plain = str(package.get("email_plain") or "")
     email_html = str(package.get("email_html") or "")
     report_markdown = str(package.get("report_markdown") or "")
@@ -229,7 +242,7 @@ def validate_b1_report_email_package(package: Mapping[str, Any]) -> list[str]:
             errors.append("key claim evidence binding must be 100 percent")
         if gates.get("unsupported_claims_published") is not False:
             errors.append("unsupported claims must not be published")
-        for key in ("no_video_required", "no_release_required", "no_real_smtp_send", "chinese_first_email"):
+        for key in ("email_learning_v1_template", "no_video_required", "no_release_required", "no_real_smtp_send", "chinese_first_email"):
             if gates.get(key) is not True:
                 errors.append(f"quality_gates.{key} must be true")
 
@@ -377,100 +390,6 @@ def _render_report_markdown(
     return "\n".join(lines) + "\n"
 
 
-def _render_email_plain(
-    *,
-    subject: str,
-    report_id: str,
-    daily_input: Mapping[str, Any],
-    source_item: Mapping[str, Any],
-    lesson: Mapping[str, Any],
-    evidence_audit: Mapping[str, Any],
-    candidate_queue_summary: str,
-) -> str:
-    arxiv = _arxiv_meta(source_item)
-    frontstage = lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {}
-    title = _clean_text(str(source_item.get("title") or "Untitled"))
-    url = str(source_item.get("canonical_url") or "")
-    category = str(arxiv.get("primary_category") or "unknown")
-    return "\n".join(
-        [
-            subject,
-            "",
-            "【先看结论】",
-            str(frontstage.get("one_line_takeaway") or "这篇论文目前适合作为学习线索，不能直接当作已验证结论。"),
-            "",
-            "【今天讲什么】",
-            f"论文：{title}",
-            f"分类：{category}；证据：关键事实已全部绑定 arXiv 摘要/元数据",
-            "",
-            "【一阶拆解】",
-            " → ".join(str(item) for item in frontstage.get("first_principles_chain") or ["问题", "变量", "机制", "输出", "失败条件"]),
-            "",
-            "【为什么重要】",
-            _decision_mapping_sentence(frontstage),
-            "",
-            "【证据边界】",
-            str(evidence_audit.get("evidence_boundary")),
-            "",
-            "【你今天可以做的最小动作】",
-            str(frontstage.get("default_action") or "列出输入、输出和失败条件，再决定是否深读全文。"),
-            "",
-            "【候选队列状态】",
-            candidate_queue_summary,
-            "",
-            "【入口】",
-            f"原文：{url}",
-            f"报告：{report_id}",
-            f"Run：{daily_input.get('run_id')}",
-        ]
-    )
-
-
-def _render_email_html(
-    *,
-    subject: str,
-    report_id: str,
-    daily_input: Mapping[str, Any],
-    source_item: Mapping[str, Any],
-    lesson: Mapping[str, Any],
-    evidence_audit: Mapping[str, Any],
-    candidate_queue_summary: str,
-) -> str:
-    arxiv = _arxiv_meta(source_item)
-    frontstage = lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {}
-    title = _clean_text(str(source_item.get("title") or "Untitled"))
-    url = str(source_item.get("canonical_url") or "")
-    chain = frontstage.get("first_principles_chain") or ["问题", "变量", "机制", "输出", "失败条件"]
-    questions = frontstage.get("key_questions") or []
-    return "\n".join(
-        [
-            "<!doctype html>",
-            '<html lang="zh-CN"><head><meta charset="utf-8">',
-            f"<title>{html.escape(subject)}</title>",
-            "<style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55;color:#202124;max-width:760px;margin:0 auto;padding:24px}h1{font-size:22px}h2{font-size:17px;margin-top:24px}.meta{color:#5f6368}.chain span{display:inline-block;margin:4px 6px 4px 0;padding:4px 8px;border:1px solid #dadce0;border-radius:6px}</style>",
-            "</head><body>",
-            f"<h1>{html.escape(subject)}</h1>",
-            f"<p><strong>先看结论：</strong>{html.escape(str(frontstage.get('one_line_takeaway') or '这篇论文目前适合作为学习线索。'))}</p>",
-            f"<p class=\"meta\">{html.escape(title)} | {html.escape(str(arxiv.get('primary_category') or 'unknown'))} | 关键事实已全部绑定证据</p>",
-            "<h2>一阶拆解</h2>",
-            "<p class=\"chain\">" + "".join(f"<span>{html.escape(str(item))}</span>" for item in chain) + "</p>",
-            "<h2>为什么重要</h2>",
-            f"<p>{html.escape(_decision_mapping_sentence(frontstage))}</p>",
-            "<h2>证据边界</h2>",
-            f"<p>{html.escape(str(evidence_audit.get('evidence_boundary')))}</p>",
-            "<h2>今天的最小动作</h2>",
-            f"<p>{html.escape(str(frontstage.get('default_action') or '列出输入、输出和失败条件，再决定是否深读全文。'))}</p>",
-            "<h2>候选队列</h2>",
-            f"<p>{html.escape(candidate_queue_summary)}</p>",
-            "<h2>三个追问</h2>",
-            "<ul>" + "".join(f"<li>{html.escape(str(question))}</li>" for question in questions[:3]) + "</ul>",
-            "<h2>入口</h2>",
-            f"<p><a href=\"{html.escape(url)}\">打开 arXiv 原文</a><br>报告：{html.escape(report_id)}<br>Run：{html.escape(str(daily_input.get('run_id')))}</p>",
-            "</body></html>",
-        ]
-    )
-
-
 def _markdown_to_simple_html(markdown: str, *, title: str) -> str:
     lines = [f"<!doctype html><html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><title>{html.escape(title)}</title></head><body>"]
     for line in markdown.splitlines():
@@ -592,29 +511,6 @@ def _blocked_package(*, generated_at: str, reasons: Sequence[str]) -> dict[str, 
             "secret_values_logged": False,
         },
     }
-
-
-def _email_subject(date: str, source_item: Mapping[str, Any]) -> str:
-    yyyymmdd = date.replace("-", "")
-    arxiv = _arxiv_meta(source_item)
-    group = f"arXiv {arxiv.get('primary_category') or 'B1'}"
-    theme = _theme(source_item)
-    return f"{yyyymmdd} -- arXiv Daily Push -- {group} -- {theme}"
-
-
-def _theme(source_item: Mapping[str, Any]) -> str:
-    title = _clean_text(str(source_item.get("title") or "Research frontier"))
-    words = re.findall(r"[A-Za-z0-9]+|[\u4e00-\u9fff]+", title)
-    text = " ".join(words[:8]) if words else title
-    return _truncate(text, 64)
-
-
-def _decision_mapping_sentence(frontstage: Mapping[str, Any]) -> str:
-    mappings = [item for item in frontstage.get("domain_mappings") or [] if isinstance(item, Mapping)]
-    if not mappings:
-        return "把论文主张拆成变量、机制、输出和失败条件，判断它是否降低学习、研究或验证成本。"
-    first = mappings[0]
-    return f"先看 {first.get('paper_variable')} 是否能映射到：{first.get('decision_mapping')}。"
 
 
 def _arxiv_meta(source_item: Mapping[str, Any]) -> Mapping[str, Any]:

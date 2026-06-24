@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PFT01-PROVINCIAL-COVERAGE-001"
-source_snapshot_hash: "sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961"
+as_of_event_id: "EVENT-20260625-ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-001"
+source_snapshot_hash: "sha256:e8d740875a98f04a8b4c80a6433a320de53c9a3d20c56d340cf54f7a929431de"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-25T08:30:00+10:00"
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 61
+    legacy_unbound_events: 63
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PFT01_PROVINCIAL_TEMPLATE_COVERAGE_READY_NO_PRODUCTION"
+  release_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_IMPLEMENTED_LOCAL_VALIDATION_PENDING_PR_CI"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -80,16 +80,15 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PFT01"
+  current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PFT02"
-  status: "planned"
-  reason: "Continue S2PF with Hong Kong and Macau independent profiles after S2PFT01 mainland provincial template coverage, still metadata-only/no-send and under V7.2 production blockers."
-  acceptance_ids:
-    - "ACC-S2PFT02-HK-MO"
-  owner: "content_owner + engineering_owner"
-  human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Read V7.2 current contract and S2PFT01 receipt first, then perform metadata-only/no-send Hong Kong and Macau independent profile work without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT."
+  task_id: "NONE"
+  status: "not_applicable"
+  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
+  acceptance_ids: []
+  owner: "project owner"
+  human_owner_role: "project_owner"
+  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
