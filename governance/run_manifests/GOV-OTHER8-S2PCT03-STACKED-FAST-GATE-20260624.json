@@ -1,0 +1,116 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PCT03-STACKED-FAST-GATE-20260624",
+  "project_id": "root",
+  "task_id": "S2PCT03",
+  "acceptance_ids": [
+    "ACC-S2PCT03"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PCT03-STACKED-FAST-GATE",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "f199f75f",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:8540363cf5589e0858d75c56ec2826c4d5346fe750f2eb10cab3f951e6f2a351",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-STACKED-FAST-GATE-20260624.json",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-STACKED-FAST-GATE-20260624.json",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/scope_selection_tests.log",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-STACKED-FAST-GATE-20260624.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S2PCT03-STACKED-FAST-GATE-20260624.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "root_governance_fast_gate",
+    "changed_only_stack_coverage",
+    "no_write_ci_path",
+    "stage_gate_format_cleanup"
+  ],
+  "test_commands": [
+    "python -B -m py_compile scripts\\validate_governance_sync.py tests\\governance\\test_project_governance_validator.py",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review5_event_files_changed_must_cover_actual_diff tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_changed_only_event_union_covers_stacked_project_diff tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review7_v2_manifest_changed_files_actual_must_cover_diff tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_changed_only_run_manifest_union_covers_stacked_task_diff -q",
+    "python -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts\\lean_governance.py validate --all",
+    "git diff --check origin/main..HEAD"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m py_compile scripts\\validate_governance_sync.py tests\\governance\\test_project_governance_validator.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review5_event_files_changed_must_cover_actual_diff tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_changed_only_event_union_covers_stacked_project_diff tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review7_v2_manifest_changed_files_actual_must_cover_diff tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_changed_only_run_manifest_union_covers_stacked_task_diff -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 4 tests; OK."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 for root and selected changed projects."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0; LF/CRLF warnings only."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed-only committed-tree CI passed; zero_diff.clean=true; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/stage_gates/s2/impact_map_test.log",
+    "governance/stage_gates/s2/no_op_write_test.log",
+    "governance/stage_gates/s2/renderer_field_matrix.md",
+    "governance/stage_gates/s2/root_contract_diff.md",
+    "governance/stage_gates/s2/scope_selection_tests.log"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PCT03 stacked changed-only fast gate repair",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_ORIGIN_MAIN",
+  "summary": "Changed-only validation now allows newly changed development events and run manifests to jointly cover stacked stage diffs, while preserving single-event and single-manifest strict checks outside the changed-only PR fast gate.",
+  "rollback": "Revert this manifest, the validate_governance_sync.py changed-only aggregation logic, the focused tests, and the stage gate EOF formatting cleanup.",
+  "unresolved_risks": [
+    "This repair validates stacked local branch diffs; final GitHub PR checks still need to run after push.",
+    "S3 product task progression remains incomplete beyond S3PAT01."
+  ]
+}

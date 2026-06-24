@@ -491,7 +491,13 @@ def binding_classification_only(old: str, new: str) -> bool:
     return True
 
 
-def validate_event_files_changed(validation: SyncValidation, project_changes: list[ProjectChange]) -> None:
+def validate_event_files_changed(
+    validation: SyncValidation,
+    project_changes: list[ProjectChange],
+    base: str | None = None,
+    *,
+    changed_only: bool = False,
+) -> None:
     for change in project_changes:
         event_path = "docs/governance/development_events.jsonl"
         if event_path not in change.updated_governance_files:
@@ -508,18 +514,36 @@ def validate_event_files_changed(validation: SyncValidation, project_changes: li
         if not events or not isinstance(events[-1], dict):
             validation.error(project_scope(change.project), "development_events.jsonl must end with a JSON object event")
             continue
-        recorded = {str(item) for item in structural.as_list(events[-1].get("files_changed"))}
-        exclusions = {str(item) for item in structural.as_list(events[-1].get("files_changed_exclusions"))}
+        event_scope = "Latest development event"
+        events_for_coverage = [events[-1]]
+        if changed_only:
+            project_prefix = str(change.project.get("path") or "").rstrip("/")
+            old = base_file_text(base, f"{project_prefix}/{event_path}") if project_prefix else None
+            old_count = len([line for line in (old or "").splitlines() if line.strip()])
+            if 0 <= old_count < len(events):
+                events_for_coverage = [event for event in events[old_count:] if isinstance(event, dict)]
+            event_scope = "Changed-only development events"
+        recorded: set[str] = set()
+        exclusions: set[str] = set()
+        for event in events_for_coverage:
+            recorded.update(str(item) for item in structural.as_list(event.get("files_changed")))
+            exclusions.update(str(item) for item in structural.as_list(event.get("files_changed_exclusions")))
         actual = set(change.files)
         ignored_suffixes = {
             f"{change.project.get('path')}/docs/governance/development_events.jsonl",
         }
         actual_for_event = {item for item in actual if item not in ignored_suffixes and item not in exclusions}
+        if changed_only:
+            actual_for_event = {
+                item
+                for item in actual_for_event
+                if classify_project_file(change.project, item) - {"governance_only_change", "trivial_change"}
+            }
         missing = sorted(actual_for_event - recorded)
         if missing:
             validation.error(
                 project_scope(change.project),
-                "Latest development event files_changed does not cover actual diff files: " + ", ".join(missing),
+                f"{event_scope} files_changed does not cover actual diff files: " + ", ".join(missing),
             )
 
 
@@ -724,6 +748,8 @@ def validate_pending_ci_bindings(validation: SyncValidation) -> None:
 
 def validate_run_manifests(validation: SyncValidation, changed: list[str], *, changed_only: bool = False) -> None:
     changed_set = set(changed)
+    changed_manifest_declared: set[str] = set()
+    changed_manifest_count = 0
     for path in sorted(RUN_MANIFESTS_DIR.glob("*.json")):
         relative = path.relative_to(ROOT).as_posix()
         if changed_only and relative not in changed_set:
@@ -747,14 +773,26 @@ def validate_run_manifests(validation: SyncValidation, changed: list[str], *, ch
                 validation.error("root", f"{path.relative_to(ROOT)} contains bare PENDING in {field}")
         declared = {str(item) for item in structural.as_list(data.get("changed_files_actual"))}
         if relative in changed_set:
-            missing_changed = sorted(changed_set - declared)
-            if missing_changed:
-                validation.error(
-                    "root",
-                    f"{path.relative_to(ROOT)} changed_files_actual does not cover actual diff files: {', '.join(missing_changed[:20])}",
-                )
+            if changed_only:
+                changed_manifest_count += 1
+                changed_manifest_declared.update(declared)
+            else:
+                missing_changed = sorted(changed_set - declared)
+                if missing_changed:
+                    validation.error(
+                        "root",
+                        f"{path.relative_to(ROOT)} changed_files_actual does not cover actual diff files: {', '.join(missing_changed[:20])}",
+                    )
         if str(data.get("content_tree_hash") or "").strip().upper() in {"", "PENDING", "UNKNOWN"}:
             validation.error("root", f"{path.relative_to(ROOT)} lacks content_tree_hash")
+    if changed_only and changed_manifest_count:
+        missing_changed = sorted(changed_set - changed_manifest_declared)
+        if missing_changed:
+            validation.error(
+                "root",
+                "Changed run manifests changed_files_actual union does not cover actual diff files: "
+                + ", ".join(missing_changed[:20]),
+            )
 
 
 def build_drift_report(config: dict[str, Any], semantic_summaries: dict[str, Any]) -> dict[str, Any]:
@@ -802,7 +840,7 @@ def validate(
     if enforce_sync:
         validate_diff_contract(validation, project_changes)
         validate_append_only(validation, changed, base)
-        validate_event_files_changed(validation, project_changes)
+        validate_event_files_changed(validation, project_changes, base, changed_only=changed_only)
         root_sync_requirements(validation, root_changes, changed)
     if semantic or all_projects or drift_report:
         if all_projects or drift_report or not changed_only:

@@ -30,4 +30,3 @@ run manifest 为准。
 - S2PAT02 项目 README 中文导航：`42fc1d00`
 - S2PAT03 人类入口质量门：`55ba4d1e`
 - S2PCT02 Hook/CI/预算：`44dc559f`
-
