@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 91
-    total_active_parameters: 108
+    checked_active_parameters: 92
+    total_active_parameters: 109
     checked_active_formulas: 10
     total_active_formulas: 10
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 91
-    total_active_parameters: 108
+    checked_active_parameters: 92
+    total_active_parameters: 109
     evidence_refs:
       - "FIFA/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -70,7 +70,7 @@ dimensions:
       - "FIFA/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "UNVERIFIED"
-  release_gate: "GOV-SEMANTIC-FIFA-in-progress"
+  release_gate: "S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress"
   blocker_ids:
     - "FACT-FIFA-EMPIRICAL-EVIDENCE"
     - "FACT-FIFA-IMPLEMENTATION-PARAMETER-REVIEW"

@@ -3,7 +3,7 @@
 fact_level: EXTRACTED
 model_count: 11
 formula_count: 11
-parameter_count: 117
+parameter_count: 118
 
 This document is the human-readable specification. Machine facts are maintained in:
 
@@ -12,7 +12,7 @@ This document is the human-readable specification. Machine facts are maintained 
 - `parameter_registry.csv`
 - `TRACEABILITY_MATRIX.csv`
 
-No runtime scoring, refresh, provider, browser, safety, or betting behavior is changed by this governance baseline.
+The original governance baseline did not change runtime behavior. Other8 S3PDT02 changes only the default output failure contract: parse or validation/automation gate failure now fails closed and does not publish recommendation, report, or baseline success deliverables. No probability scoring, stake, refresh, provider, browser, safety scan, TAB access, Bet Slip, wagering, or betting-value behavior is approved by that change.
 
 ## A. Model Overview
 
@@ -60,7 +60,7 @@ Canonical formulas are in `formula_registry.yaml`.
 | FORM-002 | MOD-002 | Estimate total goals and xG from market probabilities, build Poisson score probabilities, calculate breakeven, edge, EV, and stake gate decisions. | Invalid odds fail closed; unsupported/uncurated selections become zero-stake watch or reject. |
 | FORM-003 | MOD-003 | Calculate uncommitted budgets, current-window exposure target, EV-weighted stake allocation, rounding, rebalance, and cap. | Missing position fields fall back to 0; allocation returns zero stakes if target cannot allocate. |
 | FORM-004 | MOD-004 | Map selection to probability key, collect three model-source probabilities, compare consensus alignment, and append Chinese divergence summary. | Unmapped pairs return empty key but still report available consensus. |
-| FORM-005 | MOD-005 | Aggregate raw refresh blocker codes and access-policy diagnostics; block automated public raw refresh on `ai_controlled_access_rejected`. | Missing raw/driver or access denied adds blockers and safe recovery text. |
+| FORM-005 | MOD-005 | Aggregate raw refresh blocker codes and access-policy diagnostics; block automated public raw refresh on `ai_controlled_access_rejected`; S3PDT02 also makes blocked default exports publish explicit failed-closed evidence instead of fake success deliverables. | Missing raw/driver or access denied adds blockers and safe recovery text; parse or validation failure publishes no recommendation/report/baseline success deliverables unless explicit legacy mode is requested. |
 | FORM-006 | MOD-006 | Compare expected TAB FIFA boards with observed live navigation and route missing boards to retry/unavailable queues. | Discovery failure blocks executable current-board use. |
 | FORM-007 | MOD-007 | Scan public/private artifacts for sensitive markers, private fields, unsafe paths, missing artifacts, and permission issues. | Missing/unreadable artifacts are issues; readiness requires zero issues. |
 | FORM-008 | MOD-008 | Score provider market coverage, credit runway, alternate-market queues, and operational routing. | Missing credit ratio becomes watch; zero or low-yield Team Total routes to manual/official path. |
@@ -73,6 +73,8 @@ Variable definitions, units, input domains, constraints, output ranges, normaliz
 ## D. Parameters
 
 Canonical parameter inventory is `parameter_registry.csv`.
+
+S3PDT02 adds `PARAM-118` for the explicit legacy blocked-export flag. The active default is `false`, so blocked default exports fail closed.
 
 The baseline separates:
 
