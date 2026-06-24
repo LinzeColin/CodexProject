@@ -1,0 +1,306 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5-GATE-CLOSED-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S5-GATE",
+  "acceptance_ids": [
+    "ACC-S5-GATE",
+    "ACC-S5PB-GATE"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5-GATE",
+  "generated_at": "2026-06-24T11:35:00+10:00",
+  "implementation_base_sha": "0ec6e940bc2e2da2353a2203897b1eb16159938a",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5479b3dbd5a0e1b2b69a9c479c35dee7a6a1b5105c2e8063c0d9082335f3ae03",
+  "changed_files_declared": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
+  ],
+  "changed_files_actual": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
+  ],
+  "required_governance_files": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
+  ],
+  "updated_governance_files": [
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_stage5_gate_closure",
+    "s5pb_gate_pass",
+    "s5_gate_pass",
+    "all_projects_lean_v2_migrated",
+    "owner_readable_entries_verified",
+    "changed_scope_daily_compute_contract",
+    "no_business_behavior_change",
+    "no_stage6_required_mode_change",
+    "no_legacy_truth_deletion"
+  ],
+  "model_delta": "NOT_CHANGED: this gate manifest and focused tests close Review9 S5/S5PB migration acceptance only; no product model, runtime model, formula, parameter, data, configuration, workflow runtime behavior, or source adapter changed.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product or project version changes. This is a root governance gate closure after merged S4 pilot and S5 project migration PRs.",
+  "stage_gate_status": {
+    "S5PB-GATE": "PASSED",
+    "S5-GATE": "PASSED"
+  },
+  "next_allowed_stage": "S6",
+  "project_acceptance_totals": {
+    "accepted_projects": 10,
+    "registered_projects": 10
+  },
+  "project_acceptance_matrix": [
+    {
+      "project_id": "Alpha",
+      "task_id": "S5PAT01",
+      "acceptance_id": "ACC-S5PAT01",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 103,
+      "owner_signoff_pr": 103,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "EVA_OS",
+      "task_id": "S5PAT02",
+      "acceptance_id": "ACC-S5PAT02",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 104,
+      "owner_signoff_pr": 104,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "OpMe_System",
+      "task_id": "S5PAT03",
+      "acceptance_id": "ACC-S5PAT03",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 106,
+      "owner_signoff_pr": 106,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "whkmSalary",
+      "task_id": "S5PAT04",
+      "acceptance_id": "ACC-S5PAT04",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 108,
+      "owner_signoff_pr": 108,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "EEI",
+      "task_id": "S5PBT01",
+      "acceptance_id": "ACC-S5PBT01",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 109,
+      "owner_signoff_pr": 109,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "FIFA",
+      "task_id": "S5PBT02",
+      "acceptance_id": "ACC-S5PBT02",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 111,
+      "owner_signoff_pr": 111,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "OpenAIDatabase",
+      "task_id": "S5PBT03",
+      "acceptance_id": "ACC-S5PBT03",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 112,
+      "owner_signoff_pr": 112,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "PFI_BIG_DATA_SIMULATOR",
+      "task_id": "S5PBT04",
+      "acceptance_id": "ACC-S5PBT04",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 113,
+      "owner_signoff_pr": 113,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "Serenity-Alipay",
+      "task_id": "S4PC",
+      "acceptance_id": "ACC-S4PCT01+ACC-S4PCT02",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTED-CHINESE-GLOBAL-20260624.json",
+      "migration_pr": 98,
+      "owner_signoff_pr": 101,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    },
+    {
+      "project_id": "arxiv-daily-push",
+      "task_id": "S5PBT05",
+      "acceptance_id": "ACC-S5PBT05",
+      "migration_manifest": "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+      "migration_pr": 115,
+      "owner_signoff_pr": 115,
+      "owner_account": "LinzeColin",
+      "lean_v2_canonical_files": true,
+      "owner_readable_entries": true,
+      "render_drift_count": 0
+    }
+  ],
+  "s5_task_manifests": [
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+  ],
+  "pilot_gate_manifest": "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTED-CHINESE-GLOBAL-20260624.json",
+  "owner_signoff_evidence": {
+    "source": "GitHub merged PR metadata from LinzeColin/CodexProject",
+    "owner_account": "LinzeColin",
+    "merged_prs": [
+      98,
+      101,
+      103,
+      104,
+      106,
+      108,
+      109,
+      111,
+      112,
+      113,
+      115
+    ],
+    "scope": "Serenity-Alipay S4 pilot acceptance plus nine S5 project migration PRs"
+  },
+  "daily_compute_contract": {
+    "changed_only_ci": true,
+    "project_deep_checks_only_for_changed_projects": true,
+    "full_semantic_sweeps_manual_only": true,
+    "hook_writes_repository": false,
+    "external_runtime_ci_skipped_for_governance_only_changes": true
+  },
+  "stage6_actions_performed": {
+    "ci_mode_required_enabled": false,
+    "branch_protection_changed": false,
+    "legacy_files_archived_or_deleted": false,
+    "generated_dashboards_removed": false
+  },
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5_gate_all_projects_have_lean_v2_owner_entries tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5_gate_manifest_closes_stage5_without_promoting_required -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5_gate_all_projects_have_lean_v2_owner_entries tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5_gate_manifest_closes_stage5_without_promoting_required -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 2 tests in 0.255s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root governance diff only; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 226 tests; OK."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parses as JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors; Git printed the existing LF/CRLF working-copy warning for the test file."
+    }
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/GOV-REVIEW9-S4PC-OWNER-ACCEPTED-CHINESE-GLOBAL-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+    "https://github.com/LinzeColin/CodexProject/pull/98",
+    "https://github.com/LinzeColin/CodexProject/pull/101",
+    "https://github.com/LinzeColin/CodexProject/pull/103",
+    "https://github.com/LinzeColin/CodexProject/pull/104",
+    "https://github.com/LinzeColin/CodexProject/pull/106",
+    "https://github.com/LinzeColin/CodexProject/pull/108",
+    "https://github.com/LinzeColin/CodexProject/pull/109",
+    "https://github.com/LinzeColin/CodexProject/pull/111",
+    "https://github.com/LinzeColin/CodexProject/pull/112",
+    "https://github.com/LinzeColin/CodexProject/pull/113",
+    "https://github.com/LinzeColin/CodexProject/pull/115",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PB/S5 gate closure after 10/10 Lean v2 project migrations",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_PASS_REMOTE_PR_CI_REQUIRED",
+  "summary": "Review9 S5PB-GATE and S5-GATE are passed on local/main evidence: 10/10 registered projects now have Lean v2 canonical project/roadmap/events facts, non-index owner-readable Chinese entry files, zero render drift, and merged owner-account PR evidence. Stage 6 may start next, but this manifest deliberately does not perform Stage 6 actions.",
+  "rollback": "Revert this root governance gate-closure commit only; remove GOV-REVIEW9-S5-GATE-CLOSED-20260624.json and the two S5 gate tests. Do not revert any already merged project migration PR unless a project-specific acceptance defect is found.",
+  "unresolved_risks": [
+    "Stage 6 has not started: old v1 governance files are not archived or deleted in this manifest.",
+    "Project ci_mode remains advisory until S6PBT01 and branch-protection evidence satisfy the Stage 6 contract.",
+    "Branch protection and required-check configuration remain external and must be verified in S6PBT02.",
+    "ROI metrics for 10 real post-migration tasks remain future S6PC evidence."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
