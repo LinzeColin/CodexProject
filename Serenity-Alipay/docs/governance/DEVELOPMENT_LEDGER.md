@@ -13,17 +13,17 @@ This ledger is human-readable. The append-only machine event stream is
 - Product version status: `provisional`
 - Current phase: `B`
 - Current gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT`
-- Confirmed iteration count: 2
+- Confirmed iteration count: 3
 - Reconstructed development event count: 2
-- Current task: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`
-- Blockers: semantic extractor pilot currently covers Serenity-Alipay only; other projects need separate migration tasks.
+- Current task: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`; latest remediation task `S3PCT03` completed
+- Blockers: empirical calibration, live OpenD/email/trading readiness, and owner production-readiness approval remain unresolved; S3PCT03 is lifecycle-contract evidence only.
 
 machine_summary:
 
 - model_count: 5
 - formula_count: 12
 - parameter_count: 49
-- task_count: 8
+- task_count: 9
 
 ## Phase Matrix
 
@@ -86,6 +86,30 @@ Do not infer iteration count from Git commit count.
 - Remaining risks: semantic extractor coverage is a Serenity pilot; other projects remain structurally governed until separately migrated.
 - Rollback: revert this iteration's governance metadata, root semantic extractor, root standard/template updates, tests, and run manifest together.
 - Next step: `GOV-REVIEW6-C-OWNER-STATUS-001`.
+
+### `ITER-20260624-SERENITY-S3PCT03`
+
+- Date: 2026-06-24
+- Fact level: VERIFIED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `4319f9b7999e65ec955ead5f3394fa103fcef508`
+- Result commit: `PENDING`
+- Task IDs: `S3PCT03`, `ACC-S3PCT03`
+- Goal: verify Serenity OpenD auto-wake ownership, delivery package atomicity, launchd tick wrapper behavior, and close-cleanup contracts without real external side effects.
+- Assumptions: mocked socket/workbench/process state and temporary package directories are sufficient for lifecycle-contract proof; they do not prove live OpenD, email, trading, empirical calibration, or production readiness.
+- Files read: `app/core/moomoo_lifecycle.py`, `app/core/packaging.py`, `scripts/serenity_launchd_tick.sh`, existing OpenD/package tests, and Other8 S3PC evidence patterns.
+- Files changed: S3PCT03 lifecycle unittest, S3PC evidence files, Serenity governance docs, PARAM-027 through PARAM-032 selector evidence rebind, rendered `开发记录`, root governance manifest test, and run manifest.
+- Model changes: no scoring, ranking, gate, scheduler, or investment model behavior changed.
+- Parameter changes: no active parameter value changed; PARAM-027 through PARAM-032 source selectors/evidence hashes were re-bound to the current `pipeline.py` line layout.
+- Commands run: bundled-python S3PCT03 unittest, py_compile for the new test, roadmap pytest command, rendered governance checks, semantic extractor validation, root governance test, and changed-only governance validation.
+- Test results: lifecycle unittest exit 0 with 4 tests OK; py_compile exit 0; roadmap pytest command blocked locally by missing pytest; remaining validation recorded in the S3PCT03 manifest.
+- Successes: mocked tool-owned OpenD cleanup terminates only the recorded process, user-owned OpenD is not killed, failed package build preserves the previous zip and cleans temp files, and launchd tick wrapper records child status while exiting 0.
+- Failures: pytest is not installed in the bundled runtime, so the roadmap pytest command remains blocked locally.
+- Decisions: keep all lifecycle evidence mocked or temporary; do not start live OpenD, send mail, place trades, or touch production data/package paths.
+- Remaining risks: empirical calibration, live OpenD readiness, real email delivery, trading readiness, owner production approval, and delivery readiness remain unresolved.
+- Rollback: revert S3PCT03 test, stage-gate evidence, Serenity governance docs, rendered human entry files, root governance manifest test, and run manifest.
+- Next step: continue S3PD tasks and do not close S3PC/S3 until remaining dependent tasks are completed.
 
 ## Reconstructed Development Events
 

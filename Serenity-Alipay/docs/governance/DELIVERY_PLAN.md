@@ -20,7 +20,7 @@ Old root files are compatibility indexes only:
 
 machine_summary:
 
-- task_count: 8
+- task_count: 9
 
 No historical task is marked `completed` unless direct acceptance and evidence
 are present in the canonical registry. Current historical implementation facts
@@ -49,6 +49,7 @@ tasks.
 - `ACC-C-001`: Future model behavior changes update governance registries in the same run.
 - `ACC-D-001`: Validator and focused tests pass in the local environment.
 - `ACC-E-001`: Required CI mode blocks Serenity failures while advisory projects remain non-blocking.
+- `ACC-S3PCT03`: Serenity OpenD auto-wake ownership, package atomicity, launchd tick wrapper, and close-cleanup contracts are verified with mocked or temporary local evidence and no real external side effects.
 
 ## Release Gates
 

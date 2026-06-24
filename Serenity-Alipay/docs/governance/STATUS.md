@@ -36,9 +36,16 @@
 
 - Readiness: `UNVERIFIED`
 - Release gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT`
+- Latest remediation task: `S3PCT03` completed with mocked/temporary lifecycle evidence only
 - Next executable task: `NONE`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `3`
 - Unresolved fact IDs: `2`
+
+## Latest Other8 Evidence
+
+- `S3PCT03`: Serenity OpenD auto-wake ownership, close-cleanup, package atomicity, and launchd tick wrapper contracts passed focused local unittest evidence.
+- Evidence refs: `governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv`, `governance/stage_gates/s3pc/serenity_process_cleanup.log`, `governance/stage_gates/s3pc/serenity_persistence_recovery.log`.
+- Boundary: no real OpenD process, mail send, trade, production package path, production data path, empirical calibration, or owner readiness approval was used or implied.
