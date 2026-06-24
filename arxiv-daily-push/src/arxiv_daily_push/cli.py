@@ -109,9 +109,11 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pct03_lancet_shadow_report,
     validate_s2pct02_science_shadow_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -424,7 +426,7 @@ def build_parser() -> argparse.ArgumentParser:
     fetch_preprint.add_argument("--json", action="store_true", help="Print JSON source batch.")
 
     fetch_top_journal = subparsers.add_parser("fetch-top-journal-latest", help="Fetch latest top-journal public RSS metadata SourceItems.")
-    fetch_top_journal.add_argument("--journal", choices=("nature", "science"), default="nature", help="Top journal to query.")
+    fetch_top_journal.add_argument("--journal", choices=("nature", "science", "lancet"), default="nature", help="Top journal to query.")
     fetch_top_journal.add_argument("--max-records", type=int, default=3, help="Small metadata result window to keep.")
     fetch_top_journal.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
     fetch_top_journal.add_argument("--seen-source-id", action="append", default=[], help="Previously processed source_id to exclude.")
@@ -482,6 +484,15 @@ def build_parser() -> argparse.ArgumentParser:
     s2pct02_shadow.add_argument("--queue-path", help="Optional existing S2PCT02 Science queue JSON.")
     s2pct02_shadow.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pct02_shadow.add_argument("--json", action="store_true", help="Print JSON shadow report.")
+
+    s2pct03_shadow = subparsers.add_parser("stage2-lancet-shadow-daily", help="Run one no-send S2PCT03 The Lancet shadow daily preview.")
+    s2pct03_shadow.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pct03_shadow.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pct03_shadow.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pct03_shadow.add_argument("--lancet-batch", required=True, help="The Lancet RSS source batch JSON.")
+    s2pct03_shadow.add_argument("--queue-path", help="Optional existing S2PCT03 Lancet queue JSON.")
+    s2pct03_shadow.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pct03_shadow.add_argument("--json", action="store_true", help="Print JSON shadow report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1496,6 +1507,27 @@ def main(argv: list[str] | None = None) -> int:
             write=not args.no_write,
         )
         errors = validate_s2pct02_science_shadow_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-lancet-shadow-daily":
+        source_batches = {"lancet": load_json_mapping(args.lancet_batch)}
+        queue = load_json_mapping(args.queue_path) if args.queue_path else None
+        report = run_s2pct03_lancet_shadow_daily(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            source_batches=source_batches,
+            queue=queue,
+            write=not args.no_write,
+        )
+        errors = validate_s2pct03_lancet_shadow_report(report)
         if args.json:
             print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
         else:

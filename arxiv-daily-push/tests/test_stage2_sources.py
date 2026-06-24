@@ -13,20 +13,24 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PCT03_LANCET_SHADOW_MODEL_ID,
     S2PCT02_SCIENCE_SHADOW_MODEL_ID,
     S2P1_PREPRINT_REPLAY_MODEL_ID,
     S2P1_PREPRINT_PROMOTION_MODEL_ID,
     S2P2_TOP_JOURNAL_SHADOW_MODEL_ID,
+    build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
     build_s2p2_top_journal_daily_input,
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_daily_input,
     build_s2p1_preprint_promotion_report,
+    run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
+    validate_s2pct03_lancet_shadow_report,
     validate_s2pct02_science_shadow_report,
     validate_s2p2_top_journal_shadow_report,
 )
@@ -37,6 +41,7 @@ BIORXIV = FIXTURES / "biorxiv_details_sample.json"
 MEDRXIV = FIXTURES / "medrxiv_details_sample.json"
 NATURE_RSS = FIXTURES / "nature_rss_sample.xml"
 SCIENCE_RSS = FIXTURES / "science_rss_sample.xml"
+LANCET_RSS = FIXTURES / "lancet_rss_sample.xml"
 GENERATED_AT = "2026-06-24T09:30:00+10:00"
 
 
@@ -71,6 +76,16 @@ def science_batches() -> dict:
             journal="science",
             generated_at=GENERATED_AT,
             fetcher=lambda _query: SCIENCE_RSS.read_text(encoding="utf-8"),
+        )
+    }
+
+
+def lancet_batches() -> dict:
+    return {
+        "lancet": ingest_latest_top_journal(
+            journal="lancet",
+            generated_at=GENERATED_AT,
+            fetcher=lambda _query: LANCET_RSS.read_text(encoding="utf-8"),
         )
     }
 
@@ -200,6 +215,31 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertIn("Science", report["daily_input"]["claims"][0]["statement"])
         self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2PCT02")
 
+    def test_lancet_daily_input_uses_medical_indexing_metadata_for_claims_and_queue(self) -> None:
+        report = build_s2pct03_lancet_daily_input(
+            date="2026-06-24",
+            generated_at=GENERATED_AT,
+            source_batches=lancet_batches(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT03_LANCET_SHADOW_MODEL_ID)
+        self.assertEqual(report["task_id"], "S2PCT03")
+        self.assertEqual(report["legacy_task_id"], "S2P2T03")
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT03-LANCET")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["daily_input_ready"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        source_item = report["daily_input"]["source_item"]
+        self.assertTrue(source_item["source_id"].startswith("lancet:10.1016/s0140-6736"))
+        self.assertEqual(source_item["source_type"], "rss")
+        self.assertIn(source_item["metadata"]["top_journal"]["article_type"], {"article", "review", "series"})
+        self.assertEqual(source_item["metadata"]["top_journal"]["index_alignment_gate"], "pass")
+        self.assertEqual(source_item["metadata"]["top_journal"]["medical_indexing"]["pubmed_relation_gate"], "doi_query_ready")
+        self.assertIn("The Lancet", report["daily_input"]["claims"][0]["statement"])
+        self.assertEqual(report["daily_input"]["stage2_shadow"]["task_id"], "S2PCT03")
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -262,6 +302,30 @@ class Stage2SourceTests(unittest.TestCase):
             email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
             self.assertIn("【今天讲透一个问题】", email_preview)
             self.assertIn("Science", email_preview)
+
+    def test_lancet_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct03_lancet_shadow_daily(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                source_batches=lancet_batches(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct03_lancet_shadow_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertTrue(report["selected_source_id"].startswith("lancet:10.1016/s0140-6736"))
+            self.assertTrue(Path(report["candidate_queue_path"]).is_file())
+            self.assertTrue(Path(report["content_ledger_path"]).is_file())
+            self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
+            email_preview = Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8")
+            self.assertIn("【今天讲透一个问题】", email_preview)
+            self.assertIn("The Lancet", email_preview)
 
     def test_replay_shadow_evidence_passes_30_dates_and_persists_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -411,6 +475,62 @@ class Stage2SourceTests(unittest.TestCase):
         payload = json.loads(buffer.getvalue())
         self.assertEqual(result, 0)
         self.assertEqual(payload["model_id"], S2PCT02_SCIENCE_SHADOW_MODEL_ID)
+
+    def test_cli_stage2_lancet_shadow_daily_outputs_json(self) -> None:
+        fake_report = {
+            "model_id": S2PCT03_LANCET_SHADOW_MODEL_ID,
+            "acceptance_id": "ACC-S2PCT03-LANCET",
+            "task_id": "S2PCT03",
+            "status": "pass",
+            "daily_input_ready": True,
+            "email_preview_written": True,
+            "selected_source_id": "lancet:10.1016/s0140-6736(26)01256-0",
+            "formal_production_inclusion": False,
+            "github_cloud_schedule_enabled": False,
+            "real_smtp_sent": False,
+            "production_affected": False,
+            "d2_source_domain_accepted": False,
+            "stage2_production_accepted": False,
+            "integrated_production_accepted": False,
+            "daily_report": {
+                "daily_input": {
+                    "source_item": {
+                        "source_id": "lancet:10.1016/s0140-6736(26)01256-0",
+                        "metadata": {
+                            "top_journal": {
+                                "article_type": "article",
+                                "index_alignment_gate": "pass",
+                                "medical_indexing": {"pubmed_relation_gate": "doi_query_ready"},
+                            }
+                        },
+                    }
+                }
+            },
+            "blocking_reasons": [],
+        }
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            lancet_batch_path = Path(tmp) / "lancet.json"
+            lancet_batch_path.write_text(json.dumps(lancet_batches()["lancet"], ensure_ascii=False), encoding="utf-8")
+            with patch("arxiv_daily_push.cli.run_s2pct03_lancet_shadow_daily", return_value=fake_report):
+                with redirect_stdout(buffer):
+                    result = main([
+                        "stage2-lancet-shadow-daily",
+                        "--state-dir",
+                        tmp,
+                        "--date",
+                        "2026-06-24",
+                        "--generated-at",
+                        GENERATED_AT,
+                        "--lancet-batch",
+                        str(lancet_batch_path),
+                        "--no-write",
+                        "--json",
+                    ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT03_LANCET_SHADOW_MODEL_ID)
 
 
 if __name__ == "__main__":

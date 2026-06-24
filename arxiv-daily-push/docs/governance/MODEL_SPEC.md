@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 54
-- formula_count: 56
-- parameter_count: 386
+- model_count: 56
+- formula_count: 58
+- parameter_count: 393
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -65,6 +65,14 @@ Fact levels follow `docs/governance/STANDARD.md`.
   Perspective article-type gates, DOI identity, and no-send shadow daily
   evidence. They do not claim D2 source-domain acceptance, Stage 2 production
   acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall
+  bypass.
+
+- `S2PCT03` / legacy `S2P2T03` adds `MOD-ADP-055` and `MOD-ADP-056`.
+  They cover The Lancet metadata-only ingest, Online First/current RSS
+  alignment, medical article-type gates, DOI-query-ready PubMed relation
+  metadata, and no-send shadow daily evidence. They do not claim D2
+  source-domain acceptance, Stage 2 production acceptance, SMTP, Release,
+  scheduler, PubMed full-record harvesting, PDF/full-text download, or paywall
   bypass.
 
 ## A. Model Overview
@@ -220,6 +228,8 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-054 validates the top-journal no-send shadow daily path across separate queue persistence, JSONL ledger persistence, email preview persistence, no Stage 1 arXiv mutation, and disabled SMTP/Release/video/scheduler/formal inclusion flags.
 - FORM-ADP-055 validates Science metadata ingest across official RSS input, DOI identity, Research Article/Report/Review/Perspective classification, bounded canary size, SourceItem mapping, and no PDF/full-text/paywall/production side effects.
 - FORM-ADP-056 validates the S2PCT02 Science no-send shadow daily path across separate queue persistence, JSONL ledger persistence, email preview persistence, no Stage 1 arXiv mutation, and disabled SMTP/Release/video/scheduler/D2 acceptance flags.
+- FORM-ADP-057 validates S2PCT03 Lancet metadata ingest across official Online First/current RSS, medical article-type gates, DOI canonicalization, PubMed DOI-query-ready relation metadata, duplicate separation, and no PDF/full-text/paywall side effects.
+- FORM-ADP-058 validates S2PCT03 Lancet no-send shadow daily across separate queue/ledger/email preview persistence, dry-run only execution, and disabled SMTP/Release/video/scheduler/PubMed harvesting/D2 acceptance flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -286,7 +296,8 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2P1T01 preprint source promotion parameters: PARAM-ADP-360 through PARAM-ADP-371.
 - Active S2P1T01 replay/shadow evidence parameters: PARAM-ADP-372 through PARAM-ADP-376.
 - Active S2PCT01 Nature/top-journal shadow parameters: PARAM-ADP-377 through PARAM-ADP-381.
-- Active S2PCT02 Science/top-journal shadow parameters: PARAM-ADP-382 through PARAM-ADP-386, with PARAM-ADP-379 updated to `nature;science`.
+- Active S2PCT02 Science/top-journal shadow parameters: PARAM-ADP-382 through PARAM-ADP-386.
+- Active S2PCT03 Lancet/top-journal medical shadow parameters: PARAM-ADP-387 through PARAM-ADP-393, with PARAM-ADP-379 updated to `nature;science;lancet`.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

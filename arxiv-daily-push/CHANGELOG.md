@@ -2,6 +2,10 @@
 
 ## Unreleased - 2026-06-24
 
+- Completed `S2PCT03` / legacy `S2P2T03` The Lancet main-journal metadata-only no-send shadow evidence using official public Lancet Online First RSS and current issue RSS cross-checks.
+- Added Lancet medical article-type gates, DOI-query-ready PubMed relation metadata, duplicate DOI/source handling, separate Lancet shadow queue/ledger/email preview persistence, and `adp stage2-lancet-shadow-daily`.
+- Verified focused top-journal/stage2 tests, semantic governance preparation, and a live Lancet RSS no-send canary while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PubMed full-record harvesting, PDF/full-text download, and paywall bypass disabled.
+- Advanced V7.1 root routing to `S2PCT04` / legacy `S2P2T04` journal profile, publication relation, correction, and retraction modeling.
 - Completed `S2PCT02` / legacy `S2P2T02` Science main-journal metadata-only no-send shadow evidence using the official public Science RSS feed.
 - Added Science article-type gates for Research Article, Report, Review, and Perspective, duplicate DOI/source handling, separate Science shadow queue/ledger/email preview persistence, and `adp stage2-science-shadow-daily`.
 - Verified focused top-journal/stage2 tests, semantic governance, and a live Science RSS no-send canary while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PDF/full-text download, and paywall bypass disabled.

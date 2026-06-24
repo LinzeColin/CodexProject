@@ -30,6 +30,7 @@ from .preprint_adapter import (
     validate_preprint_source_batch,
 )
 from .top_journal_adapter import (
+    LANCET_ACCEPTED_ARTICLE_TYPES,
     SCIENCE_ACCEPTED_ARTICLE_TYPES,
     TOP_JOURNAL_INGEST_MODEL_ID,
     ingest_latest_top_journal,
@@ -65,6 +66,13 @@ S2PCT02_LEGACY_TASK_ID = "S2P2T02"
 S2PCT02_REQUIRED_JOURNALS = ("science",)
 S2PCT02_QUEUE_FILENAME = "stage2_s2pct02_science_queue.json"
 S2PCT02_LEDGER_FILENAME = "stage2_s2pct02_science_ledger.jsonl"
+S2PCT03_LANCET_SHADOW_MODEL_ID = "adp-s2pct03-lancet-shadow-daily-v1"
+S2PCT03_ACCEPTANCE_ID = "ACC-S2PCT03-LANCET"
+S2PCT03_TASK_ID = "S2PCT03"
+S2PCT03_LEGACY_TASK_ID = "S2P2T03"
+S2PCT03_REQUIRED_JOURNALS = ("lancet",)
+S2PCT03_QUEUE_FILENAME = "stage2_s2pct03_lancet_queue.json"
+S2PCT03_LEDGER_FILENAME = "stage2_s2pct03_lancet_ledger.jsonl"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -829,6 +837,279 @@ def validate_s2pct02_science_shadow_report(report: Mapping[str, Any]) -> list[st
     return errors
 
 
+def build_s2pct03_lancet_daily_input(
+    *,
+    date: str,
+    generated_at: str,
+    source_batches: Mapping[str, Mapping[str, Any]],
+    queue: Mapping[str, Any] | None = None,
+    recent_source_ids: Sequence[str] = (),
+    max_queue_items: int = CANDIDATE_QUEUE_MAX_ITEMS,
+) -> dict[str, Any]:
+    """Build a no-send S2PCT03 The Lancet shadow daily input from public metadata."""
+
+    scan = _top_journal_scan(
+        source_batches,
+        generated_at=generated_at,
+        required_journals=S2PCT03_REQUIRED_JOURNALS,
+        model_id=S2PCT03_LANCET_SHADOW_MODEL_ID,
+        scan_id="s2pct03-lancet-scan:shadow",
+        no_candidate_message="no eligible new The Lancet main-journal candidates for shadow daily input",
+    )
+    queue_state = normalize_candidate_queue(queue, generated_at=generated_at)
+    if scan["status"] == "blocked":
+        return _blocked_daily_input(
+            date,
+            generated_at,
+            queue_state,
+            scan,
+            scan["blocking_reasons"],
+            model_id=S2PCT03_LANCET_SHADOW_MODEL_ID,
+            task_id=S2PCT03_TASK_ID,
+        )
+    selection = select_roi_candidate(scan["candidates"], queue_state["items"], recent_source_ids=recent_source_ids)
+    selected = selection.get("selected")
+    if not isinstance(selected, Mapping):
+        return _blocked_daily_input(
+            date,
+            generated_at,
+            queue_state,
+            scan,
+            list(selection.get("blocking_reasons") or []),
+            selection=selection,
+            model_id=S2PCT03_LANCET_SHADOW_MODEL_ID,
+            task_id=S2PCT03_TASK_ID,
+        )
+    updated_queue = update_candidate_queue(
+        existing_items=queue_state["items"],
+        new_candidates=scan["candidates"],
+        selected_source_id=str(selected["source_id"]),
+        generated_at=generated_at,
+        max_items=max_queue_items,
+    )
+    daily_input = _daily_input_from_selection(
+        selected,
+        date=date,
+        generated_at=generated_at,
+        queue=updated_queue,
+        run_label="s2pct03-lancet",
+        scan_scope="s2pct03_lancet_shadow",
+        source_count=len(S2PCT03_REQUIRED_JOURNALS),
+        task_id=S2PCT03_TASK_ID,
+    )
+    return {
+        "model_id": S2PCT03_LANCET_SHADOW_MODEL_ID,
+        "task_id": S2PCT03_TASK_ID,
+        "legacy_task_id": S2PCT03_LEGACY_TASK_ID,
+        "phase": "S2PC",
+        "acceptance_id": S2PCT03_ACCEPTANCE_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "date": date,
+        "timezone": DEFAULT_TIMEZONE,
+        "status": "pass",
+        "daily_input_ready": True,
+        "formal_production_inclusion": False,
+        "d2_source_domain_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "shadow_mode": True,
+        "scan": scan,
+        "candidate_queue": updated_queue,
+        "selection": selection,
+        "daily_input": daily_input,
+        "blocking_reasons": [],
+    }
+
+
+def run_s2pct03_lancet_shadow_daily(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    source_batches: Mapping[str, Mapping[str, Any]],
+    queue: Mapping[str, Any] | None = None,
+    recent_source_ids: Sequence[str] = (),
+    write: bool = True,
+) -> dict[str, Any]:
+    """Run one no-send S2PCT03 The Lancet shadow daily path and persist evidence."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pct03-lancet-shadow"
+    queue_path = state / S2PCT03_QUEUE_FILENAME
+    ledger_path = state / S2PCT03_LEDGER_FILENAME
+    queue_state = queue if queue is not None else _load_json(queue_path) if queue_path.exists() else None
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+
+    daily_report = build_s2pct03_lancet_daily_input(
+        date=date,
+        generated_at=generated_at,
+        source_batches=source_batches,
+        queue=queue_state,
+        recent_source_ids=recent_source_ids,
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pct03-lancet-daily-input-report.json", daily_report)
+    if daily_report.get("daily_input_ready") is not True:
+        report = _base_shadow_report(
+            status="blocked",
+            date=date,
+            generated_at=generated_at,
+            state=state,
+            run_dir=run_dir,
+            blocking_reasons=list(daily_report.get("blocking_reasons") or ["The Lancet daily input blocked"]),
+            daily_report=daily_report,
+            model_id=S2PCT03_LANCET_SHADOW_MODEL_ID,
+            acceptance_id=S2PCT03_ACCEPTANCE_ID,
+            task_id=S2PCT03_TASK_ID,
+        )
+        report["legacy_task_id"] = S2PCT03_LEGACY_TASK_ID
+        return _write_or_return_s2pct03(report, run_dir, write=write)
+    daily_input = daily_report["daily_input"]
+    try:
+        daily_run = run_daily_dry_run(
+            daily_input["source_item"],
+            daily_input["claims"],
+            run_id=daily_input["run_id"],
+            publication_id=daily_input["publication_id"],
+            date=daily_input["date"],
+            generated_at=generated_at,
+            timezone=DEFAULT_TIMEZONE,
+        )
+    except (KeyError, PipelineError) as error:
+        report = _base_shadow_report(
+            status="blocked",
+            date=date,
+            generated_at=generated_at,
+            state=state,
+            run_dir=run_dir,
+            blocking_reasons=[f"The Lancet shadow pipeline failed: {error}"],
+            daily_report=daily_report,
+            model_id=S2PCT03_LANCET_SHADOW_MODEL_ID,
+            acceptance_id=S2PCT03_ACCEPTANCE_ID,
+            task_id=S2PCT03_TASK_ID,
+        )
+        report["legacy_task_id"] = S2PCT03_LEGACY_TASK_ID
+        return _write_or_return_s2pct03(report, run_dir, write=write)
+    delivery_package = build_daily_delivery_package(
+        daily_run,
+        daily_input,
+        {"status": "skipped", "release_ref": "", "assets": []},
+        generated_at=generated_at,
+    )
+    notification = delivery_package["notification"]
+    ledger_row = {
+        "date": date,
+        "generated_at": generated_at,
+        "task_id": S2PCT03_TASK_ID,
+        "legacy_task_id": S2PCT03_LEGACY_TASK_ID,
+        "source_id": daily_input["source_item"]["source_id"],
+        "canonical_document_id": _canonical_document_id(daily_input["source_item"]),
+        "title": daily_input["source_item"]["title"],
+        "shadow_mode": True,
+        "formal_production_inclusion": False,
+        "email_state": "preview_only",
+        "run_dir": str(run_dir),
+        "queue_item_count": len(daily_report["candidate_queue"].get("items") or []),
+    }
+    if write:
+        _write_json(run_dir / "adp-s2pct03-lancet-daily-run.json", daily_run)
+        _write_json(run_dir / "adp-s2pct03-lancet-delivery-package.json", {k: v for k, v in delivery_package.items() if k != "notification"})
+        _write_json(queue_path, daily_report["candidate_queue"])
+        (run_dir / "email_preview.txt").write_text(notification.body, encoding="utf-8")
+        (run_dir / "email_preview.html").write_text(notification.html_body, encoding="utf-8")
+        _append_jsonl(ledger_path, ledger_row)
+    report = _base_shadow_report(
+        status="pass",
+        date=date,
+        generated_at=generated_at,
+        state=state,
+        run_dir=run_dir,
+        blocking_reasons=[],
+        daily_report=daily_report,
+        model_id=S2PCT03_LANCET_SHADOW_MODEL_ID,
+        acceptance_id=S2PCT03_ACCEPTANCE_ID,
+        task_id=S2PCT03_TASK_ID,
+    )
+    report.update(
+        {
+            "legacy_task_id": S2PCT03_LEGACY_TASK_ID,
+            "daily_run_status": daily_run["status"],
+            "selected_source_id": daily_input["source_item"]["source_id"],
+            "selected_title": daily_input["source_item"]["title"],
+            "candidate_queue_path": str(queue_path),
+            "content_ledger_path": str(ledger_path),
+            "content_ledger_row": ledger_row,
+            "email_preview_written": write,
+            "email_preview_paths": {
+                "plain": str(run_dir / "email_preview.txt"),
+                "html": str(run_dir / "email_preview.html"),
+            },
+            "delivery_package": {k: v for k, v in delivery_package.items() if k != "notification"},
+            "real_smtp_sent": False,
+            "production_affected": False,
+            "d2_source_domain_accepted": False,
+            "stage2_production_accepted": False,
+            "integrated_production_accepted": False,
+        }
+    )
+    return _write_or_return_s2pct03(report, run_dir, write=write)
+
+
+def validate_s2pct03_lancet_shadow_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PCT03_LANCET_SHADOW_MODEL_ID:
+        errors.append("S2PCT03 shadow report model_id must be adp-s2pct03-lancet-shadow-daily-v1")
+    if report.get("task_id") != S2PCT03_TASK_ID:
+        errors.append("S2PCT03 shadow report task_id must be S2PCT03")
+    if report.get("acceptance_id") != S2PCT03_ACCEPTANCE_ID:
+        errors.append("S2PCT03 shadow report acceptance_id must be ACC-S2PCT03-LANCET")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PCT03 shadow report status must be pass or blocked")
+    for key in (
+        "formal_production_inclusion",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "production_affected",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PCT03 The Lancet shadow daily")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PCT03 shadow report requires blocking_reasons")
+    if report.get("status") == "pass":
+        if report.get("daily_input_ready") is not True:
+            errors.append("passing S2PCT03 shadow report requires daily_input_ready")
+        if report.get("email_preview_written") is not True:
+            errors.append("passing S2PCT03 shadow report requires email_preview_written")
+        source_item = (
+            report.get("daily_report", {}).get("daily_input", {}).get("source_item", {})
+            if isinstance(report.get("daily_report"), Mapping)
+            else {}
+        )
+        if not isinstance(source_item, Mapping):
+            source_item = {}
+        source_id = str(report.get("selected_source_id") or source_item.get("source_id") or "")
+        if not source_id.startswith("lancet:10.1016/s0140-6736"):
+            errors.append("passing S2PCT03 shadow report requires selected The Lancet main-journal DOI source_id")
+        top_journal = source_item.get("metadata", {}).get("top_journal", {}) if isinstance(source_item.get("metadata"), Mapping) else {}
+        article_type = str(top_journal.get("article_type") or "") if isinstance(top_journal, Mapping) else ""
+        if article_type not in LANCET_ACCEPTED_ARTICLE_TYPES:
+            errors.append("passing S2PCT03 shadow report requires Lancet article_type classification")
+        if isinstance(top_journal, Mapping):
+            if top_journal.get("index_alignment_gate") != "pass":
+                errors.append("passing S2PCT03 shadow report requires Lancet index_alignment_gate")
+            medical_indexing = top_journal.get("medical_indexing")
+            if not isinstance(medical_indexing, Mapping):
+                errors.append("passing S2PCT03 shadow report requires medical_indexing")
+            elif medical_indexing.get("pubmed_relation_gate") not in {"doi_query_ready", "pmid_present"}:
+                errors.append("passing S2PCT03 shadow report requires PubMed DOI relationship gate")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -848,6 +1129,17 @@ def fetch_s2pct02_science_batches(*, generated_at: str, max_records: int = 3) ->
             max_records=max_records,
         )
         for journal in S2PCT02_REQUIRED_JOURNALS
+    }
+
+
+def fetch_s2pct03_lancet_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
+    return {
+        journal: ingest_latest_top_journal(
+            journal=journal,
+            generated_at=generated_at,
+            max_records=max_records,
+        )
+        for journal in S2PCT03_REQUIRED_JOURNALS
     }
 
 
@@ -1521,6 +1813,17 @@ def _write_or_return_s2pct02(report: dict[str, Any], run_dir: Path, *, write: bo
     normalized["validation_errors"] = validate_s2pct02_science_shadow_report(normalized)
     if write:
         _write_json(run_dir / "adp-s2pct02-science-shadow-report.json", normalized)
+    return normalized
+
+
+def _write_or_return_s2pct03(report: dict[str, Any], run_dir: Path, *, write: bool) -> dict[str, Any]:
+    normalized = dict(report)
+    normalized.setdefault("d2_source_domain_accepted", False)
+    normalized.setdefault("stage2_production_accepted", False)
+    normalized.setdefault("integrated_production_accepted", False)
+    normalized["validation_errors"] = validate_s2pct03_lancet_shadow_report(normalized)
+    if write:
+        _write_json(run_dir / "adp-s2pct03-lancet-shadow-report.json", normalized)
     return normalized
 
 
