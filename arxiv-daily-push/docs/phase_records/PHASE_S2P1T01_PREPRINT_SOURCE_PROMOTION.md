@@ -7,7 +7,7 @@ Date: 2026-06-24
 
 ## Result
 
-Status: `in_progress`
+Status: `evidence_passed_no_formal_production`
 
 S2P1T01 now has a metadata-only bioRxiv/medRxiv adapter, disabled owner-control
 source entries, source-level promotion gates, and a separate shadow daily path.
@@ -122,10 +122,11 @@ Additional verification:
 
 ## Remaining Gate
 
-S2P1T01 / S2PBT01 is not complete yet. The source evidence gate has passed one
-local no-send real replay, but formal source inclusion and Stage 2 production
-acceptance remain blocked until the V7 root contract, AGENTS, three baseline
-files, and CI contract hash gate are merged and no contract mismatch exists.
+S2P1T01 / S2PBT01 has passed the no-send source evidence gate, including one
+local real 30-date replay and 48h+ shadow aggregate. This is not a formal
+production promotion. Formal source inclusion and Stage 2 production acceptance
+remain blocked until the V7 root contract, AGENTS, three baseline files, and CI
+contract hash gate are merged and no contract mismatch exists.
 
 Remaining constraints:
 

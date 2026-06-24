@@ -1,0 +1,79 @@
+{
+  "run_id": "ADP-S2PBT01-POST-MERGE-GATE-SYNC-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PBT01",
+  "task_aliases": ["S2PBT01", "S2P1T01"],
+  "iteration_id": "ITER-20260624-ADP-S2PBT01-POST-MERGE-GATE-SYNC",
+  "event_id": "EVENT-20260624-ADP-091",
+  "created_at": "2026-06-24T12:20:00+10:00",
+  "status": "evidence_passed_no_formal_production",
+  "scope": [
+    "Synchronize post-merge owner-facing governance after PR #114.",
+    "Keep legacy S2P1T01 mapped to V7 alias S2PBT01 without rewriting historical events.",
+    "Record that no-send replay/shadow evidence passed while formal production remains blocked."
+  ],
+  "non_scope": [
+    "No runtime source code change.",
+    "No SMTP send.",
+    "No Release upload.",
+    "No GitHub cloud schedule enablement.",
+    "No video generation.",
+    "No formal bioRxiv/medRxiv production inclusion.",
+    "No STAGE2_PRODUCTION_ACCEPTED or INTEGRATED_PRODUCTION_ACCEPTED claim."
+  ],
+  "changed_files_declared": [
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/ADP-S2PBT01-POST-MERGE-GATE-SYNC-20260624.json"
+  ],
+  "evidence_refs": [
+    "https://github.com/LinzeColin/CodexProject/pull/114",
+    "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "arxiv-daily-push/docs/governance/project.yaml"
+  ],
+  "model_delta": "No runtime model changed.",
+  "formula_delta": "No formula changed.",
+  "parameter_delta": "No parameter value changed.",
+  "safety_gates": {
+    "production_acceptance_claimed": false,
+    "production_schedule_enabled": false,
+    "github_cloud_schedule_enabled": false,
+    "real_smtp_sent": false,
+    "real_release_uploaded": false,
+    "release_upload_enabled": false,
+    "video_generated": false,
+    "formal_new_source_production_inclusion": false,
+    "stage2_production_accepted": false,
+    "integrated_production_accepted": false
+  },
+  "test_commands": [
+    "python3 JSONL line parser for arxiv-daily-push/docs/governance/development_events.jsonl",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2pbt01_post_gate_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_source_registry.py arxiv-daily-push/tests/test_owner_controls.py arxiv-daily-push/tests/test_contracts.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2pbt01_post_gate_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONPATH=scripts python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2pbt01_post_gate_root2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
+    "git diff --check"
+  ],
+  "test_results": [
+    "JSONL line parse passed: 92 lines.",
+    "Focused S2P1 tests passed: 41 tests OK.",
+    "Full arxiv-daily-push unit tests passed: 218 tests OK.",
+    "Lean check-render passed: drift_count=0; reference_issue_count=0.",
+    "Root governance tests passed: 226 tests OK.",
+    "git diff --check passed."
+  ],
+  "known_validation_notes": [
+    "python3 -m json.tool is not valid for JSONL and returned Extra data before line-by-line validation was used.",
+    "An initial generator run selected an old planned Phase12 email task after S2P1T01 was temporarily marked evidence_passed_no_formal_production in legacy delivery_tasks; legacy delivery_tasks now keeps S2P1T01 in_progress while Lean roadmap/project and owner text carry the evidence-passed/no-formal-production state."
+  ],
+  "stage2_stop_gate": "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION",
+  "next_task": "S2PBT01_V7_CONTRACT_ALIAS_SYNC_OR_ROOT_V7_HASH_GATE",
+  "rollback": "Revert this manifest, EVENT-20260624-ADP-091, VERSION_MATRIX current_iteration, root test expectation update, and owner-facing wording sync. No runtime or production config rollback is needed."
+}
