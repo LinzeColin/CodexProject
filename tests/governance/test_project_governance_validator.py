@@ -3422,7 +3422,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
         self.assertEqual(manifest["task_id"], "S6PBT02")
-        self.assertEqual(manifest["stage_gate_status"]["S6PBT02"], "UNVERIFIED_EXTERNAL_OWNER_ACTION_REQUIRED")
+        self.assertEqual(
+            manifest["stage_gate_status"]["S6PBT02"],
+            "EXTERNAL_CONFIG_CONTRACT_MISMATCH_OWNER_ACTION_REQUIRED",
+        )
         self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "IN_PROGRESS")
         self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
         self.assertNotIn("PASSED", set(manifest["stage_gate_status"].values()))
@@ -3436,15 +3439,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(contract["no_bypass_required"])
 
         evidence = manifest["branch_protection_evidence"]
-        self.assertEqual(evidence["status"], "UNVERIFIED")
-        self.assertEqual(evidence["required_status_checks"], "UNVERIFIED")
-        self.assertEqual(evidence["no_bypass"], "UNVERIFIED")
+        self.assertEqual(evidence["status"], "UNVERIFIED_AND_OBSERVED_CONTRACT_MISMATCH")
+        self.assertEqual(evidence["required_status_checks"], "OBSERVED_PUSH_WARNING_2_OF_2_EXPECTED_NOT_CONTRACT_1")
+        self.assertEqual(evidence["no_bypass"], "CONTRADICTED_BY_PUSH_BYPASS_WARNING")
         self.assertIn("GITHUB_TOKEN", evidence["protection_error"])
+        self.assertEqual(evidence["public_rulesets_probe"], "HTTP 200 [] for /repos/LinzeColin/CodexProject/rulesets")
+        self.assertIn("Bypassed rule violations", evidence["observed_push_bypass_probe"])
+        self.assertIn("2 of 2 required status checks", evidence["observed_push_bypass_probe"])
 
         setup = (ROOT / "docs" / "governance" / "CODEX_SETUP.md").read_text(encoding="utf-8")
         self.assertIn("Review9 S6PBT02 Owner Checklist", setup)
         self.assertIn("Project Governance / governance", setup)
         self.assertIn("--check-github --strict-github --json", setup)
+        self.assertIn("Current 2026-06-24 probe", setup)
+        self.assertIn("2 of 2", setup)
         self.assertNotIn("generate_governance_dashboard.py --write --all --root-artifact-dir", setup)
 
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:

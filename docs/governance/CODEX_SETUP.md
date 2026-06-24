@@ -141,3 +141,18 @@ GITHUB_TOKEN=<repo-admin-token> python3 scripts/governance_setup_doctor.py --che
 
 If neither authenticated API output nor UI evidence is available, keep
 `S6PBT02`, `S6PB-GATE`, and `S6-GATE` as `IN_PROGRESS` or `UNVERIFIED`.
+
+Current 2026-06-24 probe:
+
+- `GET /repos/LinzeColin/CodexProject/branches/main/protection` returns HTTP
+  401 without authenticated GitHub credentials, so classic branch protection
+  remains unreadable from this environment.
+- Public ruleset probes return `[]` for both repository rulesets and `main`
+  branch rules.
+- A direct push to `main` succeeded with GitHub reporting bypassed rule
+  violations: pull request required and `2 of 2` required status checks
+  expected.
+
+This does not satisfy S6PBT02. The owner must either configure the contract
+above exactly, or update the contract and attach explicit owner-approved
+emergency bypass evidence before `S6PB-GATE` or `S6-GATE` can pass.
