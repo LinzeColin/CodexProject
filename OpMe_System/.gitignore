@@ -7,6 +7,8 @@ frontend/node_modules/
 frontend/dist/
 app_bundle/*.app/
 app_bundle/assets/*.iconset/
+backups/generated-artifacts/**
+work/original/**
 data/*.sqlite
 data/*.sqlite-*
 data/*.log
