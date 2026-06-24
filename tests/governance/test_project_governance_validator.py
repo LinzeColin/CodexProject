@@ -5522,6 +5522,71 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback(self) -> None:
+        report_path = ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate_report.json"
+        report_md = ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json"
+        )
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        markdown = report_md.read_text(encoding="utf-8")
+
+        self.assertEqual(report["task_id"], "S4PCT03")
+        self.assertEqual(report["acceptance_id"], "ACC-S4PCT03")
+        self.assertEqual(report["status"], "PASS")
+        self.assertEqual(report["next_allowed_task"], "S5PAT01")
+        self.assertEqual(report["gate_id"], "S4-GATE")
+        self.assertEqual(
+            report["scope"]["projects"],
+            ["Alpha", "EVA_OS", "OpMe_System", "whkmSalary"],
+        )
+        self.assertEqual(report["forbidden_scope"]["touched_forbidden_projects"], [])
+        self.assertFalse(any(not check["passed"] for check in report["checks"]))
+        self.assertEqual(report["link_check"]["missing"], [])
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["candidate_count"], 383)
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["checksum_line_count"], 383)
+
+        projects = {item["project_id"]: item for item in report["project_readability"]}
+        for project_id, task_id in {
+            "Alpha": "S4PBT01",
+            "EVA_OS": "S4PBT02",
+            "OpMe_System": "S4PCT01",
+            "whkmSalary": "S4PCT02",
+        }.items():
+            self.assertIn(project_id, projects)
+            self.assertEqual(projects[project_id]["task_id"], task_id)
+            self.assertTrue(projects[project_id]["human_entries_exist"])
+            self.assertTrue(projects[project_id]["structure_report_contract"])
+
+        self.assertIn("Rollback", markdown)
+        self.assertIn("S5PAT01", markdown)
+        self.assertIn("EEI", markdown)
+        self.assertIn("arxiv-daily-push", markdown)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "ROOT")
+        self.assertEqual(manifest["task_id"], "S4PCT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PCT03"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S4-GATE"], "LOCAL_PRECOMMIT_PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["next_allowed_task"], "S5PAT01")
+        self.assertFalse(manifest["stop_conditions"]["forbidden_project_scope_touched"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "tools/wave1_gate.py",
+            "tools/structure_audit.py",
+            "governance/stage_gates/s4pc/wave1_gate_report.json",
+            "governance/stage_gates/s4pc/wave1_gate.md",
+            "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
