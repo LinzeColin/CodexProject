@@ -433,7 +433,52 @@ def fetch_manual_review_decisions(settings: Settings) -> dict[str, dict[str, obj
     }
 
 
-def save_manual_review_decision(settings: Settings, payload: dict[str, object]) -> dict[str, object]:
+def _update_manual_review_refresh_result(
+    settings: Settings,
+    review_id: int,
+    *,
+    refresh_status: str,
+    refresh_message: str,
+    refresh_run_id: str,
+) -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            UPDATE manual_review_decision
+            SET refresh_triggered=?, refresh_status=?, refresh_message=?,
+                refresh_run_id=?, updated_at=?
+            WHERE review_id=?
+            """,
+            (1, refresh_status, refresh_message, refresh_run_id, now, review_id),
+        )
+
+
+def _refresh_manual_review_async(settings: Settings, review_id: int) -> None:
+    try:
+        refresh_result = refresh_application(settings)
+        refresh_status = str(refresh_result.get("status") or "pass")
+        refresh_message = str(refresh_result.get("message") or "")
+        refresh_run_id = str(refresh_result.get("run_id") or "")
+    except Exception as exc:  # pragma: no cover - production boundary
+        refresh_status = "error"
+        refresh_message = f"同步刷新失败：{exc}"
+        refresh_run_id = ""
+    _update_manual_review_refresh_result(
+        settings,
+        review_id,
+        refresh_status=refresh_status,
+        refresh_message=refresh_message,
+        refresh_run_id=refresh_run_id,
+    )
+
+
+def save_manual_review_decision(
+    settings: Settings,
+    payload: dict[str, object],
+    *,
+    refresh_async: bool = False,
+) -> dict[str, object]:
     try:
         review_id = int(str(payload.get("review_id") or payload.get("reviewId") or "").strip())
     except ValueError as exc:
@@ -448,6 +493,10 @@ def save_manual_review_decision(settings: Settings, payload: dict[str, object]) 
 
     init_db(settings.db_path)
     now = datetime.now(timezone.utc).isoformat()
+    refresh_triggered = True
+    refresh_status = "running" if refresh_async else ""
+    refresh_message = "已保存到数据库，正在重新运行 Serenity 全流程" if refresh_async else ""
+    refresh_run_id = ""
     with connect(settings.db_path) as conn:
         queue_row = conn.execute(
             """
@@ -491,10 +540,10 @@ def save_manual_review_decision(settings: Settings, payload: dict[str, object]) 
                 outcome,
                 outcome_config["label"],
                 system_disposition,
-                0,
-                "",
-                "",
-                "",
+                int(refresh_triggered),
+                refresh_status,
+                refresh_message,
+                refresh_run_id,
                 note,
                 saved_at,
                 now,
@@ -502,11 +551,15 @@ def save_manual_review_decision(settings: Settings, payload: dict[str, object]) 
             ),
         )
 
-    refresh_triggered = True
-    refresh_status = ""
-    refresh_message = ""
-    refresh_run_id = ""
-    if refresh_triggered:
+    if refresh_async:
+        thread = threading.Thread(
+            target=_refresh_manual_review_async,
+            args=(settings, review_id),
+            name=f"SerenityManualReviewRefresh-{review_id}",
+            daemon=True,
+        )
+        thread.start()
+    elif refresh_triggered:
         try:
             refresh_result = refresh_application(settings)
             refresh_status = str(refresh_result.get("status") or "pass")
@@ -517,17 +570,13 @@ def save_manual_review_decision(settings: Settings, payload: dict[str, object]) 
             refresh_message = f"同步刷新失败：{exc}"
             refresh_run_id = ""
 
-        now = datetime.now(timezone.utc).isoformat()
-        with connect(settings.db_path) as conn:
-            conn.execute(
-                """
-                UPDATE manual_review_decision
-                SET refresh_triggered=?, refresh_status=?, refresh_message=?,
-                    refresh_run_id=?, updated_at=?
-                WHERE review_id=?
-                """,
-                (int(refresh_triggered), refresh_status, refresh_message, refresh_run_id, now, review_id),
-            )
+        _update_manual_review_refresh_result(
+            settings,
+            review_id,
+            refresh_status=refresh_status,
+            refresh_message=refresh_message,
+            refresh_run_id=refresh_run_id,
+        )
 
     reason = queue_row["reason"] if queue_row else ""
     action_blocked = queue_row["action_blocked"] if queue_row else ""
@@ -626,7 +675,7 @@ def make_handler(settings: Settings) -> type[BaseHTTPRequestHandler]:
             if path == "/api/manual-review":
                 try:
                     with _APPLICATION_WRITE_LOCK:
-                        result = save_manual_review_decision(settings, self._read_json_body())
+                        result = save_manual_review_decision(settings, self._read_json_body(), refresh_async=True)
                     self._send_bytes(_json_bytes(result), "application/json; charset=utf-8")
                 except Exception as exc:  # pragma: no cover - defensive HTTP boundary
                     body = _json_bytes({"status": "error", "message": f"保存复核失败：{exc}"})

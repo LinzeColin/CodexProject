@@ -1,5 +1,18 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260624 - 13:12 CST / 20260624 - 15:12 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复真实页面点击“保存复核”后看起来没有反应的问题。
+- 根因：`/api/manual-review` 过去在 HTTP 请求内同步执行完整 Serenity refresh；保存数据库和重新运行全流程都完成前，前端按钮不禁用、不改文案、不显示“保存中/刷新中”，用户会感觉点击无效。并发情况下还可能遇到 SQLite `database is locked`，导致反馈更慢。
+- 已改后端：`app/core/application_server.py` 的 HTTP 保存复核路径现在先写入 SQLite 并立即返回 `refreshStatus=running`；完整 Serenity refresh 放到后台线程执行，完成后回写同一条 `manual_review_decision` 的 `refresh_status/refresh_message/refresh_run_id`。直接函数调用默认仍保持同步，避免破坏既有测试和内部语义。
+- 已改数据库连接：`app/db.py` 为 SQLite 连接设置 `timeout=30` 和 `PRAGMA busy_timeout=30000`，降低短时并发写导致直接失败的概率。
+- 已改前端：点击“保存复核”立即把按钮变为 `保存中`，状态显示 `正在写入数据库...`；写库成功后按钮变为 `刷新中`，状态显示 `已写入数据库，正在重新运行 Serenity 全流程`，并轮询 `/api/manual-review`，后台刷新 pass 后显示 toast 并自动重载首页，error 时明确提示。
+- 已重建并重启入口：`application-portal --json` 通过，Downloads/Applications app 已更新；本地服务 `http://127.0.0.1:8765/api/health` 返回 `ok`。本轮没有向真实 `/api/manual-review` POST，避免额外触发真实 run 和 OpenD 自动唤醒。
+- 验证：`py_compile app/db.py app/core/application_server.py app/core/application_portal.py tests/test_application_server.py tests/test_reporting_ui.py` 通过；`pytest -q tests/test_application_server.py tests/test_reporting_ui.py` 为 21 passed；生成 HTML 包含 `保存中`、`刷新中`、`waitForReviewRefresh`、`后台刷新仍在运行`；`history-integrity --require-pass --json` 为 pass，`violation_count=0`。
+- 边界：未新增真实 run，未发邮件，未启动 OpenD/MooMoo，未改候选扩容逻辑，未覆盖旧报告、旧快照或 SQLite 受保护历史行。
+
 Timestamp: 20260624 - 12:51 CST / 20260624 - 14:51 AEST
 
 ## 最新交接摘要

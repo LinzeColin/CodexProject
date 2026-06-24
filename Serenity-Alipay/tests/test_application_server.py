@@ -177,6 +177,62 @@ def test_manual_review_promote_triggers_serenity_refresh(monkeypatch, tmp_path):
     assert records["66"]["refreshRunId"] == "sda_manual_refresh_r8"
 
 
+def test_manual_review_http_mode_returns_before_background_refresh(monkeypatch, tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+                id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                67,
+                "sda_test_r9",
+                None,
+                "需要后台刷新但不能阻塞按钮反馈",
+                "No-New-Order",
+                "open",
+                "2026-06-13T00:00:00Z",
+            ),
+        )
+
+    started = {}
+
+    class FakeThread:
+        def __init__(self, target, args, name, daemon):
+            started["target"] = target
+            started["args"] = args
+            started["name"] = name
+            started["daemon"] = daemon
+
+        def start(self):
+            started["started"] = True
+
+    monkeypatch.setattr("app.core.application_server.threading.Thread", FakeThread)
+
+    result = save_manual_review_decision(
+        settings,
+        {
+            "review_id": 67,
+            "outcome": "observe_pool",
+            "savedAt": "20260614 - 16:52 AEST",
+        },
+        refresh_async=True,
+    )
+
+    record = result["record"]
+    assert started["started"] is True
+    assert started["args"] == (settings, 67)
+    assert record["refreshTriggered"] is True
+    assert record["refreshStatus"] == "running"
+    assert "正在重新运行" in record["refreshMessage"]
+    records = fetch_manual_review_decisions(settings)
+    assert records["67"]["refreshStatus"] == "running"
+
+
 def test_refresh_application_runs_manual_serenity_flow(monkeypatch, tmp_path):
     settings = temp_settings(tmp_path)
     calls = {}
