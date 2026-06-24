@@ -16,6 +16,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 from unittest.mock import patch
 
 
@@ -3656,6 +3657,31 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(validation.errors)
         self.assertIn("files_changed does not cover", validation.errors[0].message)
 
+    def test_other8_changed_only_event_union_covers_stacked_project_diff(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            event_file = tmp_path / "P" / "docs" / "governance" / "development_events.jsonl"
+            event_file.parent.mkdir(parents=True)
+            event_file.write_text(
+                json.dumps({"event_id": "E1", "files_changed": ["P/app_a.py"]}) + "\n"
+                + json.dumps({"event_id": "E2", "files_changed": ["P/app.py"]}) + "\n",
+                encoding="utf-8",
+            )
+            project = {"project_id": "P", "path": "P"}
+            change = sync.ProjectChange(
+                project=project,
+                files=["P/app_a.py", "P/app.py", "P/docs/governance/development_events.jsonl"],
+                updated_governance_files={"docs/governance/development_events.jsonl"},
+            )
+            with (
+                patch.object(sync, "ROOT", tmp_path),
+                patch.object(sync, "base_file_text", return_value=""),
+            ):
+                validation = sync.SyncValidation()
+                sync.validate_event_files_changed(validation, [change], "BASE", changed_only=True)
+        self.assertFalse(validation.errors, validation.errors)
+
     def test_review5_root_governance_change_requires_sync_markers(self) -> None:
         sync = load_sync_module()
         changed = ["governance/projects.yaml", "README.md"]
@@ -4446,6 +4472,52 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 validation = sync.SyncValidation()
                 sync.validate_run_manifests(validation, changed)
         self.assertTrue(any("changed_files_actual does not cover" in issue.message for issue in validation.errors), validation.errors)
+
+    def test_other8_changed_only_run_manifest_union_covers_stacked_task_diff(self) -> None:
+        sync = load_sync_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            manifests = tmp_path / "governance" / "run_manifests"
+            manifests.mkdir(parents=True)
+
+            def manifest(run_id: str, changed_files: list[str]) -> dict[str, Any]:
+                return {
+                    "schema_version": 2,
+                    "run_id": run_id,
+                    "project_id": "root",
+                    "task_id": run_id,
+                    "acceptance_ids": [f"ACC-{run_id}"],
+                    "iteration_id": f"ITER-{run_id}",
+                    "generated_at": "2026-06-24T00:00:00Z",
+                    "implementation_base_sha": "a" * 40,
+                    "content_tree_hash": "sha256:" + "b" * 64,
+                    "changed_files_declared": changed_files,
+                    "changed_files_actual": changed_files,
+                    "required_governance_files": changed_files,
+                    "updated_governance_files": changed_files,
+                    "test_commands": ["python -B scripts/lean_governance.py ci --changed-only"],
+                    "test_results": [{"command": "python -B scripts/lean_governance.py ci --changed-only", "exit_code": 0}],
+                    "evidence_refs": changed_files,
+                    "binding_status": "COMMIT_BOUND",
+                    "ci_attestation_subject": run_id,
+                    "ci_run_reference": "LOCAL_TEST",
+                }
+
+            first_path = "governance/run_manifests/GOV-STACK-1.json"
+            second_path = "governance/run_manifests/GOV-STACK-2.json"
+            (manifests / "GOV-STACK-1.json").write_text(
+                json.dumps(manifest("GOV-STACK-1", ["README.md", first_path])) + "\n",
+                encoding="utf-8",
+            )
+            (manifests / "GOV-STACK-2.json").write_text(
+                json.dumps(manifest("GOV-STACK-2", ["scripts/tool.py", second_path])) + "\n",
+                encoding="utf-8",
+            )
+            changed = ["README.md", "scripts/tool.py", first_path, second_path]
+            with patch.object(sync, "ROOT", tmp_path), patch.object(sync, "RUN_MANIFESTS_DIR", manifests):
+                validation = sync.SyncValidation()
+                sync.validate_run_manifests(validation, changed, changed_only=True)
+        self.assertFalse(validation.errors, validation.errors)
 
     def test_review7_projects_yaml_stale_count_claim_fails(self) -> None:
         validator = load_validator_module()
