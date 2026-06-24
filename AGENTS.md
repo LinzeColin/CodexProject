@@ -22,6 +22,11 @@ rules in `docs/governance/STANDARD.md`.
   Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated hours,
   derived percentages, Stop Conditions, Stop Gates, required evidence, and
   failure actions.
+- If a project exposes `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml`, that lock is
+  the highest-priority project execution contract below this root file. Agents
+  must read the lock, verify the referenced contract and roadmap hashes when a
+  validator exists, and keep accepted stage gates separate from later integrated
+  production gates.
 - Canonical facts should converge to the Lean v2 minimal source set:
   `docs/governance/project.yaml`, `docs/governance/roadmap.yaml`,
   `docs/governance/events.jsonl`, `VERSION`, and `CHANGELOG.md`.
@@ -60,6 +65,9 @@ rules in `docs/governance/STANDARD.md`.
   belong to scheduled, manual, release, or root-governance gates.
 - Done means the focused tests pass and changed-scope Project Governance passes
   when governed files change.
+- Locking a new root contract is not permission to enable production side
+  effects. SMTP, schedules, Release uploads, paid APIs, and source inclusion in
+  formal delivery still require their own task gate and evidence.
 
 ## Low-Token Contract
 

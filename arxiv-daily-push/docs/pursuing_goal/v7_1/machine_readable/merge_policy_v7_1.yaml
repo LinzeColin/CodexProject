@@ -1,0 +1,39 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+severity_policy:
+  P0:
+    name: 灾难/安全/证据完整性级
+    merge: global
+    sla: 在任何生产启用、SMTP、恢复、调度安装或最终集成合并前清零
+  P1:
+    name: 高风险功能/可靠性级
+    merge: scope
+    sla: 阻塞受影响 Task/Phase 晋升；无交叉文件的来源 Shadow 开发可继续
+  P2:
+    name: 中风险质量/维护性级
+    merge: 'no'
+    sla: 必须进入 Roadmap 和负责人，不阻塞无关合并
+  P3:
+    name: 低风险改进级
+    merge: 'no'
+    sla: 进入优化 Backlog
+production_forbidden_while_open:
+- P0
+- P1
+shadow_connector_exception:
+  allowed: true
+  conditions:
+  - does_not_touch_shared_schema_without_compat_tests
+  - does_not_enable_final_email_or_real_side_effects
+  - declares_contract_hash
+  - no open P0 in changed files
+required_pr_fields:
+- contract_version
+- contract_sha256
+- finding_ids_addressed
+- files_read
+- files_modified
+- tests_and_exit_codes
+- evidence_refs
+- rollback
+- handoff_update

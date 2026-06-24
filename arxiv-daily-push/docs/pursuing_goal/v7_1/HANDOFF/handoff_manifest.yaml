@@ -1,0 +1,19 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+contract_sha256: e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad
+audit_version: ADP-PARALLEL-AUDIT-V7.1
+current_status: BLOCKED_FOR_PRODUCTION
+unique_next_task: S2PAT05
+open_counts:
+  P0: 8
+  P1: 37
+  P2: 8
+probe_summary:
+  total: 19
+  passed: 2
+  failed: 17
+required_next_reads:
+- README_先读.md
+- HANDOFF/00_下一Agent先读.md
+- 09_并行审查/并行审查汇总与合并结论.md
+- ROADMAP/ARXIV_DAILY_PUSH_ROADMAP_V7_1_CN.md

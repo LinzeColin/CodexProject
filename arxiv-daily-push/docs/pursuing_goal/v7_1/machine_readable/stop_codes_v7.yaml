@@ -1,0 +1,44 @@
+schema_version: 2
+stop_codes:
+  R-CONFLICT: Owner 需求、V7 合同、旧基线或仓库事实冲突未决。
+  G-DRIFT: 机器事实源、三基文件、用户中心或生成视图不一致。
+  TRACE-FAIL: Requirement→Feature→Task→Config→Function→Test→Artifact→Evidence 链不完整。
+  CONTRACT-HASH-MISMATCH: PR 读取的产品合同版本或哈希与当前基线不一致。
+  SRC-POLICY: 来源官方性、条款、许可、robots 或免费条件不明确。
+  SCHEMA-BREAK: 公共 Schema 不兼容且无迁移/回滚。
+  DET-FAIL: 同输入同配置结果不确定或重跑重复。
+  EVIDENCE-FAIL: 关键 Claim 无原始证据、证据级别错误或反证审查失败。
+  CONTENT-QUALITY-FAIL: 内容未通过深度、金标或模板化质量门。
+  BOARD-MAP-FAIL: 来源域与阅读板块映射不可解释或仍被直接绑定。
+  LANGUAGE-UX-FAIL: 人类界面非中文优先、三基文件退化或用户需跨多目录操作。
+  STATE-COUNT-FAIL: 队列、邮件、复习、行动、ROI 分项与总数不守恒。
+  REVIEW-FAIL: 复习到期、完成、逾期或间隔计算错误。
+  ROI-TRACE-FAIL: 预计/实际 ROI 无假设、成本、收益或证据追踪。
+  EMAIL-DUP: 同一 Run/产品重复发送或幂等状态不可追踪。
+  EMAIL-WATERLINE-FAIL: M4 未等待 M1–M3 明确终态或内容静默消失。
+  REPLAY-FAIL: 历史重放不独立、未来信息泄漏或产物缺失。
+  LIVE-FAIL: 真实自然日邮件缺失/重复、恢复失败或状态不完整。
+  OPS-FAIL: 锁、heartbeat、补跑、备份、恢复或资源保护失效。
+  DATA-LOSS: 迁移、恢复或回滚存在数据丢失/不可逆风险。
+  ACCEPTANCE-FAIL: Task 的具体验收条件未满足；详细原因必须写入 stop_notes。
+  SCOPE-BREACH: 读取或修改超出任务声明范围。
+  SEC-TRUST-FAIL: 不可信内容、工具、密钥或执行边界失效。
+  PATH-ESCAPE: 路径穿越、符号链接逃逸或越过允许根目录。
+  ATOMICITY-FAIL: 文件/数据库/状态发布非原子，可能出现半提交。
+  OUTBOX-FAIL: 外部副作用没有事务发件箱、幂等或恢复一致性。
+  LOCK-LEASE-FAIL: 锁、租约、fencing 或单实例保证失效。
+  SCHEDULER-FAIL: 调度安装、触发、漏跑、补跑、卸载或平台模板失败。
+  BACKGROUND-LIFECYCLE-FAIL: 自动启动、drain、关闭、清理或恢复生命周期失败。
+  CACHE-SAFETY-FAIL: 缓存清理越界、误删 durable data 或容量政策失败。
+  STRESS-FAIL: 负载、压力、峰值或浸泡指标未通过。
+  CHAOS-FAIL: 故障注入后无法收敛或恢复。
+  CLOCK-TIMEZONE-FAIL: 时钟漂移、DST、业务日或 misfire 计算错误。
+  UI-FLOW-FAIL: 核心用户旅程、状态反馈或安全操作不完整。
+  A11Y-FAIL: 可访问性、响应式或邮件客户端基线失败。
+  HANDOFF-FAIL: 交接包缺失当前状态、唯一下一任务、测试、证据或回滚。
+  SOURCE-DRIFT: 来源解析/页面/API 漂移未被检测或静默丢字段。
+  EVIDENCE-IMMUTABILITY-FAIL: 历史证据或已发布版本被覆盖。
+  SHADOW-LEAK: Shadow 来源影响正式队列、报告或邮件。
+  SOURCE-DUP-FAIL: 来源/文档/事件重复且无确定性合并。
+  QUALITY-REGRESSION: 已验收能力或内容质量发生回归。
+contract_version: ADP-PRODUCT-CONTRACT-V7.1

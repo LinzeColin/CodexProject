@@ -15,6 +15,31 @@
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
+## V7.1 当前根治理锁
+
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
+- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- contract_sha256: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
+- roadmap_version: `ADP-ROADMAP-V7.1`
+- roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
+- audit_version: `ADP-PARALLEL-AUDIT-V7.1`
+- stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
+- stage2_current_task: `S2PAT05`
+- stage2_shadow_source_task: `S2PBT01`
+- legacy_alias: `S2PBT01 -> S2P1T01`
+- stage2_final_task: `S2PMT07`
+- stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- stage2_integrated_production_accepted: `false`
+- production_forbidden_until: `P0=0; P1=0; S2PMT07 independent review passed`
+- forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
+
+## V7.1 根治理说明
+
+- V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
+- `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
+- `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
+- `S2PBT01` 是 Stage2 来源 Shadow 线程任务；当前治理修复任务是 `S2PAT05`。
+
 ## 模型
 
 ### MOD-ADP-001 Phase 1 readiness and notification dry-run gate

@@ -1,0 +1,260 @@
+{
+  "generated_at": "2026-06-24",
+  "scope": "targeted isolated probes; not a full repository test run",
+  "results": [
+    {
+      "probe_id": "P01",
+      "title": "tick 写入异常后锁清理",
+      "observed": {
+        "exception": "OSError",
+        "lock_remains": true
+      },
+      "expected": "异常后锁必须在 finally 中释放",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P02",
+      "title": "write=False 的锁检查声明",
+      "observed": true,
+      "expected": false,
+      "probe_passed": false,
+      "evidence": {
+        "report_status": "pass"
+      },
+      "severity": "P2"
+    },
+    {
+      "probe_id": "P03",
+      "title": "未来 heartbeat 时间戳",
+      "observed": 0,
+      "expected": "负值或明确 clock_skew 错误",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P04",
+      "title": "恢复清单路径穿越",
+      "observed": {
+        "status": "pass",
+        "copied_outside_file": true
+      },
+      "expected": "拒绝包含 ../ 或逃逸备份根目录的路径",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P0"
+    },
+    {
+      "probe_id": "P05",
+      "title": "恢复失败对现有数据库的破坏",
+      "observed": {
+        "status": "blocked",
+        "target_changed": true,
+        "target_bytes": "not-a-valid-sqlite-db"
+      },
+      "expected": "临时文件验证通过后原子替换；失败时保留原库",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P0"
+    },
+    {
+      "probe_id": "P06",
+      "title": "备份同名辅助文件冲突",
+      "observed": {
+        "manifest_paths": [
+          "files/same.txt",
+          "files/same.txt"
+        ],
+        "unique_count": 1,
+        "entry_count": 2
+      },
+      "expected": "每个来源路径必须映射到唯一、安全、可追踪的备份路径",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P07",
+      "title": "调度模板路径转义",
+      "observed": {
+        "unsafe_fragment_present": true,
+        "snippet": "[Service]\nType=oneshot\nWorkingDirectory=/tmp/Project With Space;echo injected\nExecStart=/usr/bin/env PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push tick --state-dir /tmp/state dir --generated-at \"$ADP_GENERATED_AT\" --json\n\n[Timer]\nOnBootSec=5min\nOnUnitActiveSec=30min\nPersistent=true\n"
+      },
+      "expected": "结构化参数或严格 shell escaping",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P07B",
+      "title": "macOS launchd plist 可解析性",
+      "observed": {
+        "parse_error": "ExpatError: not well-formed (invalid token): line 7, column 103",
+        "snippet": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\"><dict>\n<key>Label</key><string>com.linze.adp.stage1.tick</string>\n<key>Disabled</key><true/>\n<key>StartInterval</key><integer>1800</integer>\n<key>ProgramArguments</key><array><string>/bin/sh</string><string>-lc</string><string>cd /tmp/project && PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push tick --state-dir /tmp/state --g"
+      },
+      "expected": "plistlib 可解析的合法 XML plist",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P08",
+      "title": "64 并发 tick 单实例探针",
+      "observed": {
+        "pass": 1,
+        "blocked": 63,
+        "other": []
+      },
+      "expected": "同一瞬间仅一个成功，其他明确阻塞且最终无残锁",
+      "probe_passed": true,
+      "evidence": {},
+      "severity": "info"
+    },
+    {
+      "probe_id": "P09",
+      "title": "状态历史 from_state 防篡改",
+      "observed": {
+        "errors": []
+      },
+      "expected": "识别 from_state 与前一 to_state 不一致",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P10",
+      "title": "current_state 与历史末态一致性",
+      "observed": {
+        "errors": []
+      },
+      "expected": "识别 current_state 与 state_history 末态不一致",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P11",
+      "title": "SMTP delivery_id 内容敏感性",
+      "observed": {
+        "id_body_a": "smtp-delivery:0ef33c91776ee479",
+        "id_body_b": "smtp-delivery:0ef33c91776ee479"
+      },
+      "expected": "内容修订应有 revision/content hash，同时保持明确幂等键",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P12",
+      "title": "标准 Message-ID 头",
+      "observed": {
+        "Message-ID": null,
+        "X-ADP-Delivery-ID": "smtp-delivery:0ef33c91776ee479"
+      },
+      "expected": "提供稳定标准 Message-ID 并绑定 outbox 记录",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P2"
+    },
+    {
+      "probe_id": "P13",
+      "title": "lesson_id 对 claim 内容/证据版本敏感",
+      "observed": {
+        "lesson_id_a": "lesson:arxiv:1:64bf4c415719",
+        "lesson_id_b": "lesson:arxiv:1:64bf4c415719"
+      },
+      "expected": "Claim 内容或证据版本变化时生成可追踪的新 revision",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P14",
+      "title": "frontstage 推断的证据绑定",
+      "observed": {
+        "frontstage_keys": [
+          "attention_score",
+          "decision",
+          "default_action",
+          "domain_mappings",
+          "estimated_reading_time",
+          "evidence_gaps",
+          "evidence_level",
+          "first_principles_chain",
+          "key_questions",
+          "one_line_takeaway",
+          "video_card"
+        ],
+        "claim_ids_present": false
+      },
+      "expected": "一行结论、机制链、映射、行动均含 claim/evidence 或明确标注 inference",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P0"
+    },
+    {
+      "probe_id": "P15",
+      "title": "artifact_files.sha256 语义",
+      "observed": {
+        "claimed": "31ac110e63618c9a2fd84c2c0debb6dd6d9e1be316c7858d632145bc20a802aa",
+        "actual_file_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      },
+      "expected": "字段 sha256 必须是文件字节标准 SHA-256",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P16",
+      "title": "先写文件后质量验证",
+      "observed": {
+        "status": "blocked",
+        "file_count_after_block": 5,
+        "files": [
+          "reports/b1_2026-06-24_arxiv-1.md",
+          "reports/b1_2026-06-24_arxiv-1.html",
+          "emails/b1_2026-06-24_arxiv-1.txt",
+          "emails/b1_2026-06-24_arxiv-1.html",
+          "audit/b1_2026-06-24_arxiv-1.json"
+        ]
+      },
+      "expected": "质量验证通过后才原子发布；失败不得留下正式产物",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P17",
+      "title": "邮件链接 scheme 白名单",
+      "observed": {
+        "javascript_href_present": true
+      },
+      "expected": "仅允许 https/http 且可选来源域白名单",
+      "probe_passed": false,
+      "evidence": {},
+      "severity": "P1"
+    },
+    {
+      "probe_id": "P18",
+      "title": "SQLite 120 项/24 并发写入探针",
+      "observed": {
+        "migration_status": "pass",
+        "pass_count": 120,
+        "failure_count": 0,
+        "sample_failures": [],
+        "document_count": 120
+      },
+      "expected": "无 database locked、数据数量守恒",
+      "probe_passed": true,
+      "evidence": {},
+      "severity": "info"
+    }
+  ],
+  "summary": {
+    "total": 19,
+    "passed": 2,
+    "failed": 17
+  }
+}
