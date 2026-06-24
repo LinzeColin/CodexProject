@@ -1,0 +1,28 @@
+S3PAT02 whkmSalary weight validation gate
+timestamp: 2026-06-24T00:00:00+10:00
+scope: whkmSalary only
+
+Acceptance:
+- ACC-S3PAT02-WHKM-WEIGHT-GATE
+- Province weights use salary_logic.projects as the single code source.
+- resolve_weights rejects incomplete keys, extra keys, negative or non-finite values, and non-1.0 totals.
+- No weight active values were recalibrated or owner-approved in this task.
+
+Commands:
+- python -B -m unittest discover -s whkmSalary\tests -q
+  result: PASS
+  observed: Ran 6 tests in 0.001s; OK.
+- python -B -m py_compile whkmSalary\salary_logic.py whkmSalary\streamlit_app.py whkmSalary\tests\test_salary_logic_weights.py
+  result: PASS
+  observed: exit 0.
+- python -B scripts\validate_semantic_extractors.py whkmSalary
+  result: PASS
+  observed: semantic_parameters_checked=78; semantic_formulas_checked=9.
+- python -B -m pytest whkmSalary\tests -q
+  result: NOT_RUN_LOCAL_TOOL_UNAVAILABLE
+  observed: No module named pytest.
+
+Residual owner blockers:
+- S3PAT02 does not prove payroll policy or owner-approved weight rationale.
+- Weight policy source and rationale remain unapproved under TASK-WHKM-B-001.
+- Payroll policy, jurisdiction, effective date, tax basis, rounding, and historical reconciliation remain blocked.

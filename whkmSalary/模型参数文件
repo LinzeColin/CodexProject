@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
 - next_unique_task: `none`
-- evidence_ref_count: `13`
+- evidence_ref_count: `15`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -22,7 +22,7 @@
 
 ### MOD-001 Quarterly performance salary calculation
 
-- purpose: `Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring.`
+- purpose: `Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and validated province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring, and S3PAT02 rejects invalid weight keys, values, or totals.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-001, FORM-002, FORM-003, FORM-004, FORM-005, FORM-006, FORM-007, FORM-008, FORM-009`
@@ -31,7 +31,7 @@
 
 ### MOD-002 Streamlit input constraints
 
-- purpose: `Constrain UI inputs before invoking salary calculation; S3PAT01 sets settlement/invoice/payback UI min_value to 1 while defaults remain unchanged.`
+- purpose: `Constrain UI inputs before invoking salary calculation; S3PAT01 sets settlement/invoice/payback UI min_value to 1 while defaults remain unchanged, and S3PAT02 uses salary_logic.projects as the single province-weight source.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-010`
@@ -43,8 +43,8 @@
 ### FORM-001
 
 - model_id: `MOD-001`
-- expression_or_pseudocode: `resolve_weights uses explicit weights first; otherwise maps province through ALIASES and projects; missing province/weights raises ValueError.`
-- evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-SEMANTIC-MANIFEST`
+- expression_or_pseudocode: `resolve_weights validates explicit weights first; otherwise maps province through ALIASES and projects, then validates selected project weights; missing, incomplete, extra, negative, non-finite, or non-1.0-total weights raise ValueError.`
+- evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-S3PAT02-WEIGHT-LOG, EVID-WHKM-SEMANTIC-MANIFEST`
 
 ### FORM-002
 
@@ -92,13 +92,13 @@
 
 - model_id: `MOD-001`
 - expression_or_pseudocode: `performance_rate=quarter_actual/(year_target/4); weighted_total=sum(score_k*weight_k); perf_money=36000*(weighted_total/100); total_salary=6000*3+perf_money; after_tax_salary=total_salary*tax_keep_rate.`
-- evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-SEMANTIC-MANIFEST`
+- evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-S3PAT02-WEIGHT-LOG, EVID-WHKM-SEMANTIC-MANIFEST`
 
 ### FORM-010
 
 - model_id: `MOD-002`
 - expression_or_pseudocode: `Streamlit constrains some inputs via number_input min/max/defaults and passes selected province weights into calculate.`
-- evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-SEMANTIC-MANIFEST`
+- evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-S3PAT02-WEIGHT-LOG, EVID-WHKM-SEMANTIC-MANIFEST`
 
 ## 参数
 

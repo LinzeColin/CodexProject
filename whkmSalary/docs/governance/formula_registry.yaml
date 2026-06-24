@@ -7,15 +7,16 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     status: "active"
-    expression: "resolve_weights uses explicit weights first; otherwise maps province through ALIASES and projects; missing province/weights raises ValueError."
+    expression: "resolve_weights validates explicit weights first; otherwise maps province through ALIASES and projects, then validates the selected project weights; missing, incomplete, extra, negative, non-finite, or non-1.0-total weights raise ValueError."
     variables:
       - name: "province"
         data_type: "string"
         unit: "province label"
         input_domain: "新疆, 山东, 青海, 湖北, 华中区域, alias 华中地区"
     constraints:
-      - "Province weights must sum to 1.0 per active weight group."
-    missing_policy: "Missing weights and unrecognized province raise ValueError."
+      - "Weight keys must exactly match WEIGHT_KEYS; values must be finite and non-negative."
+      - "Province weights must sum to 1.0 within WEIGHT_TOTAL_TOLERANCE."
+    missing_policy: "Missing weights, unrecognized province, incomplete keys, extra keys, negative/non-finite weights, and non-1.0 totals raise ValueError."
     output_range: "dict of metric weights."
     code_refs:
       - "whkmSalary/salary_logic.py:30"
@@ -23,11 +24,12 @@ formulas:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "whkmSalary/salary_logic.py:15"
-    implementation_refs: ["whkmSalary/salary_logic.py::projects", "whkmSalary/salary_logic.py::ALIASES", "whkmSalary/salary_logic.py::resolve_weights"]
-    implementation_fingerprint: "sha256:e9de0af407516aa287104dc42d83c84ce1894b185e08b850a6f779b4608a4d2d"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:c66fb969763c7444f695f6110acdbfea36efdd872a0a8e0fdb79abb2ce42c103"
+      - "whkmSalary/salary_logic.py:204"
+    implementation_refs: ["whkmSalary/salary_logic.py::projects", "whkmSalary/salary_logic.py::ALIASES", "whkmSalary/salary_logic.py::WEIGHT_KEYS", "whkmSalary/salary_logic.py::WEIGHT_TOTAL", "whkmSalary/salary_logic.py::WEIGHT_TOTAL_TOLERANCE", "whkmSalary/salary_logic.py::resolve_weights", "whkmSalary/salary_logic.py::validate_weights"]
+    implementation_fingerprint: "sha256:ca988c0931f1bf65e6e49a61f39245683fac9826cfcf970bf593768bb44408cc"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:e9022addbf5d071e319625ff95306483ae5a3be63a54b8f8e3a659c14fdd7f47"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-002"
@@ -80,7 +82,7 @@ formulas:
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:37"
+      - "whkmSalary/streamlit_app.py:28"
     implementation_refs: ["whkmSalary/salary_logic.py::score_margin"]
     implementation_fingerprint: "sha256:6b1e8a920ec03ccab12e948be6727a1732da278972dc6e8bdde637b719562872"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -113,7 +115,7 @@ formulas:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:39"
+      - "whkmSalary/streamlit_app.py:30"
     implementation_refs: ["whkmSalary/salary_logic.py::score_settlement"]
     implementation_fingerprint: "sha256:5609fc84388a51349bb9f221f2904037b37502eb81c5bab211137b74e3fdd874"
     last_verified_commit: "HEAD"
@@ -146,7 +148,7 @@ formulas:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:43"
+      - "whkmSalary/streamlit_app.py:34"
     implementation_refs: ["whkmSalary/salary_logic.py::score_invoice"]
     implementation_fingerprint: "sha256:11f8a01506eafd9647933e72ba743b2b56c03f99d22e0d6b89af31d394e3721f"
     last_verified_commit: "HEAD"
@@ -179,7 +181,7 @@ formulas:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:45"
+      - "whkmSalary/streamlit_app.py:36"
     implementation_refs: ["whkmSalary/salary_logic.py::score_payback"]
     implementation_fingerprint: "sha256:410390f76c7ad32f7a070be1ba32f75bc8a45f198f32fc23df4003f8d294a96b"
     last_verified_commit: "HEAD"
@@ -208,7 +210,7 @@ formulas:
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:49"
+      - "whkmSalary/streamlit_app.py:40"
     implementation_refs: ["whkmSalary/salary_logic.py::score_audit_bias"]
     implementation_fingerprint: "sha256:eaf9c1f6a46903ef3f39527d47c3d147777b005f4924ae08d215a769a2d7969e"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -237,7 +239,7 @@ formulas:
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:51"
+      - "whkmSalary/streamlit_app.py:42"
     implementation_refs: ["whkmSalary/salary_logic.py::score_customer_cost"]
     implementation_fingerprint: "sha256:4ff460702f0f720cb2e8a9aab1479be140e97d20b37643f57f675dbdb884f9db"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -264,21 +266,21 @@ formulas:
     constraints:
       - "year_target > 0 and quarter_actual > 0."
       - "Policy source for tax_keep_rate is UNKNOWN and task-linked."
-    missing_policy: "Missing or invalid year_target and quarter_actual raise ValueError; other direct missing inputs are Python errors."
+    missing_policy: "Missing or invalid year_target and quarter_actual raise ValueError; weights are resolved and validated before weighted_total calculation."
     output_range: "CalcResult with salary floats; no explicit cap."
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:134"
+      - "whkmSalary/salary_logic.py:143"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/salary_logic.py:180"
+      - "whkmSalary/salary_logic.py:178"
     implementation_refs: ["whkmSalary/salary_logic.py::BASE_MONTHLY", "whkmSalary/salary_logic.py::PERF_QUARTER_POOL", "whkmSalary/salary_logic.py::calculate"]
-    implementation_fingerprint: "sha256:3c6886e11e49cce2975bfd505857620df64378c947af45e44c91955a64c52f4c"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:c479ac53363ec0a63c9e1a3a6cf3032422fb85215de8cb3f8244823a48b48076"
+    implementation_fingerprint: "sha256:ac5ac264f3c3c92bfe04715ddab762d8ccb940b4a01413dfcdffde82cf088395"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:0333af3fc057a1981b3ded154066ba90f0eba1ba4ef5fe2cb7746525a5e8e3bf"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-010"
@@ -296,15 +298,17 @@ formulas:
     constraints:
       - "UI constraints are not a substitute for salary_logic direct-call validation."
       - "S3PAT01 changed settlement, invoice, and payback UI min_value from 0 to 1."
+      - "S3PAT02 removed the duplicate Streamlit province_weights table and uses salary_logic.projects as the single weight source."
     missing_policy: "Streamlit supplies defaults; direct code callers may bypass UI constraints."
     output_range: "UI input values or displayed exception."
     code_refs:
-      - "whkmSalary/streamlit_app.py:32"
-      - "whkmSalary/streamlit_app.py:57"
+      - "whkmSalary/streamlit_app.py:17"
+      - "whkmSalary/streamlit_app.py:58"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:69"
+      - "whkmSalary/streamlit_app.py:17"
+      - "whkmSalary/streamlit_app.py:63"
     implementation_refs: []
     implementation_fingerprint: "HUMAN_REVIEW_REQUIRED"
     last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"

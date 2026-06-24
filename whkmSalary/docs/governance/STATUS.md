@@ -14,7 +14,7 @@
 - Project: `whkmSalary`
 - Path: `whkmSalary`
 - Product version: `0.0.0`
-- Phase/Gate: `B / S3PA-WHKM-boundary-partial`
+- Phase/Gate: `B / S3PA-WHKM-weight-validation-partial`
 - Models/Formulas/Parameters total: `2 / 10 / 80`
 - Active formulas/parameters: `10 / 80`
 - Machine checked formulas/parameters: `9 / 78`
@@ -35,8 +35,8 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S3PA-WHKM-boundary-partial`
-- Next executable task: `S3PA weight validation and rounding owner decision evidence`
+- Release gate: `S3PA-WHKM-weight-validation-partial`
+- Next executable task: `S3PA rounding owner decision evidence`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
@@ -48,3 +48,9 @@
 - `score_settlement`, `score_invoice`, and `score_payback` now reject workday inputs below 1 with `ValueError` before weighted total calculation.
 - Streamlit settlement, invoice, and payback day inputs now use `min_value=1`; defaults remain `10`, `10`, and `30`.
 - Readiness remains `FAILED`; zero-day business meaning, policy source, tax basis, rounding, and payroll reconciliation remain blocked under `TASK-WHKM-B-001`.
+
+## S3PAT02 Weight Validation Update
+
+- `resolve_weights` now validates metric keys, finite non-negative values, and total weight 1.0 before weighted salary calculation.
+- Streamlit no longer carries a duplicate `province_weights` table; province choices and weights come from `salary_logic.projects`.
+- No weight active values were recalibrated or owner-approved in this task; weight policy source, rounding, tax basis, and payroll reconciliation remain blocked under `TASK-WHKM-B-001`.
