@@ -1,5 +1,15 @@
 # TAB FIFA 盘口研究系统 Handoff
 
+## 最新追加更新（2026-06-24 AEST）
+
+- 当前任务：为迁移到新电脑做完整 GitHub 备份，并在远端验证后删除旧本地 FIFA workspace。
+- 可用 GitHub 落点：`LinzeColin/CodexProject/FIFA`。
+- 单独仓库 `LinzeColin/FIFA` 已尝试访问但当前不可用：HTTPS 需要交互式用户名/密码，SSH 返回 `Repository not found`。
+- 新增迁移交接：`docs/HANDOFF_20260624_MIGRATION.md`。
+- 新增清理审计：`ops/local_full_migration_backup_20260624.md`。
+- 新增 runtime 备份目录：`artifacts/backups/20260624/`，包含旧 workspace 的 `outputs/` 完整快照、SHA-256 manifest 和旧 root `HANDOFF.md`。
+- 删除策略：只有 GitHub commit/push 验证完成后，才删除旧 workspace `/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-fifa`；同一个 CodexProject worktree 内的 arxiv 未提交改动必须继续保留且不 stage。
+
 更新时间：2026-06-15 20:45 AEST
 
 ## 最新追加更新（2026-06-15 20:45 AEST）
