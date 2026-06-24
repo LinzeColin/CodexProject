@@ -4,8 +4,6 @@ Active Codex-related project hub for LinzeColin.
 
 ## Governance Entry
 
-- Agent contract: [AGENTS.md](AGENTS.md)
-- Project registry: [governance/projects.yaml](governance/projects.yaml)
 - Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
 - Project human-entry files: `功能清单`, `开发记录`, `模型参数文件`
 
@@ -39,9 +37,8 @@ Active Codex-related project hub for LinzeColin.
 ## Required Checks
 
 ```bash
-python3 scripts/validate_project_governance.py --all --semantic --drift-report
-python3 scripts/validate_information_quality.py --all --fast --fail-on-error
-python3 scripts/generate_governance_dashboard.py --write --all --root-artifact-dir /tmp/governance-generated-views
+python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
+python3 scripts/generate_governance_dashboard.py --write --root-artifact-dir /tmp/governance-generated-views
 ```
 
 This repository is the source-level project hub. Each project directory must keep Lean v2 canonical facts and human-entry files synchronized with implementation evidence. Root dashboards and portfolio summaries are generated on demand as CI artifacts instead of committed source files.

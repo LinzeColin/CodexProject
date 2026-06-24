@@ -1,0 +1,187 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S6PAT03",
+  "acceptance_ids": [
+    "ACC-S6PAT03"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S6PAT03",
+  "generated_at": "2026-06-24T13:35:00+10:00",
+  "implementation_base_sha": "cf8e1abceb4739d8df53ac611ee8f4343d4b66a4",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c4228a57cace2800767cdd392e9edb2ca2b9685f0fdd5864611c5b446a484f6a",
+  "changed_files_declared": [
+    "README.md",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "README.md",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_stage6_s6pat03",
+    "entry_link_cleanup",
+    "artifact_portfolio_quality_check",
+    "no_project_fact_change",
+    "no_product_runtime_change",
+    "no_ci_required_mode_change",
+    "history_preserved"
+  ],
+  "model_delta": "NOT_CHANGED: S6PAT03 changes governance entry links and quality-check source only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, formula, parameter, data, ci_mode required, or branch-protection change.",
+  "stage_gate_status": {
+    "S6PAT03": "IN_PROGRESS_PRECOMMIT",
+    "S6PA-GATE": "IN_PROGRESS",
+    "S6-GATE": "IN_PROGRESS"
+  },
+  "entry_link_cleanup_summary": {
+    "root_readme_governance_entry_targets": [
+      "docs/governance/STANDARD.md",
+      "功能清单",
+      "开发记录",
+      "模型参数文件"
+    ],
+    "generated_readme_governance_entry_targets": [
+      "docs/governance/STANDARD.md",
+      "功能清单",
+      "开发记录",
+      "模型参数文件"
+    ],
+    "removed_from_governance_entry": [
+      "AGENTS.md",
+      "governance/projects.yaml",
+      "OWNER_PORTFOLIO.md",
+      "GOVERNANCE_DASHBOARD.md"
+    ],
+    "artifact_output_names_preserved": [
+      "README.md",
+      "GOVERNANCE_DASHBOARD.md",
+      "OWNER_PORTFOLIO.md",
+      "governance/binding_backlog.yaml"
+    ],
+    "portfolio_quality_source": "rendered in memory from generate_governance_dashboard.py and labelled as governance-generated-views/OWNER_PORTFOLIO.md",
+    "tracked_root_portfolio_required": false,
+    "tracked_root_dashboard_required": false,
+    "tracked_root_backlog_required": false,
+    "historical_event_and_manifest_references_rewritten": false
+  },
+  "diagnostic_results": [
+    {
+      "command": "python -B scripts/validate_information_quality.py --all --fast --fail-on-error",
+      "exit_code": 1,
+      "result": "FAIL_EXISTING_HISTORY_OUT_OF_SCOPE",
+      "observed": "15 existing STALE_PENDING/FUTURE_EVENT findings remain in EEI/arxiv-daily-push development_events; no PORTFOLIO_MISSING or root OWNER_PORTFOLIO.md missing finding appeared after S6PAT03."
+    }
+  ],
+  "next_required_tasks": [
+    "S6PBT01",
+    "S6PBT02"
+  ],
+  "test_commands": [
+    "python -B -m py_compile scripts/generate_governance_dashboard.py scripts/validate_information_quality.py tests/governance/test_project_governance_validator.py",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat03_generated_readme_entry_matches_lean_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat03_information_quality_uses_artifact_portfolio_text tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat02_root_generated_views_are_artifact_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat02_generator_exposes_root_artifact_mode",
+    "python -B scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir C:/Users/linze/Documents/Codex/2026-06-23/xian/work/s6pat03_generated_views",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json",
+    "git diff --check origin/main...HEAD"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m py_compile scripts/generate_governance_dashboard.py scripts/validate_information_quality.py tests/governance/test_project_governance_validator.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed Python files compile."
+    },
+    {
+      "command": "python -B -m unittest ...S6PAT03/S6PAT02 focused tests...",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree post-commit run: 5 focused tests in 0.039s; OK."
+    },
+    {
+      "command": "python -B scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir C:/Users/linze/Documents/Codex/2026-06-23/xian/work/s6pat03_generated_views",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root_output_mode=artifact; emitted README.md, GOVERNANCE_DASHBOARD.md, OWNER_PORTFOLIO.md, and governance/binding_backlog.yaml under artifact directory without tracked root writes."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root governance diff only; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree post-commit run: duration_seconds=1.319; validation errors=0 warnings=0; rendered 10 selected projects with drift_count=0; zero_diff.clean=true."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree post-commit run: 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree post-commit run: Ran 232 tests in 23.403s; OK. Output includes expected fixture stderr for the missing-base scenario."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parses as JSON."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S6PAT03 governance entry links and artifact portfolio quality source",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_PASS_REMOTE_PR_CI_REQUIRED",
+  "summary": "S6PAT03 narrows active governance entries to the three human-entry files and the Lean v2 standard, and keeps root generated dashboard/portfolio/backlog calculation in artifact/in-memory paths instead of tracked source.",
+  "rollback": "Revert this task commit to restore the broader governance entry list and previous portfolio quality check source. Historical Review9 S6PAT01/S6PAT02 truth manifests are not modified.",
+  "unresolved_risks": [
+    "Information-quality --all still reports pre-existing stale/future development_events outside this entry-link cleanup scope.",
+    "S6PA-GATE remains in_progress until S6PBT tasks decide ci_mode required and branch-protection evidence.",
+    "Artifact output names remain in generator/tests as output contracts, not as source entry links."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage.",
+  "updated_governance_files": [
+    "README.md",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT03-ENTRY-LINKS-20260624.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ]
+}
