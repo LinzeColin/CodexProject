@@ -36,9 +36,16 @@
 
 - Readiness: `FAILED`
 - Release gate: `GOV-SEMANTIC-OAIDB-in-progress`
+- Latest remediation task: `S3PDT01` completed with synthetic privacy-boundary evidence only
 - Next executable task: `TASK-OAI-B-001`
 - Pending/stale events: `7`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `6`
 - Unresolved fact IDs: `6`
+
+## Latest Other8 Evidence
+
+- `S3PDT01`: private import, redaction, Git leakage, and raw-source deletion recovery contracts passed focused local evidence.
+- Evidence ref: `governance/stage_gates/s3pd/privacy_scan.log`.
+- Boundary: synthetic private data only; no real raw exports, cookies, browser profiles, plaintext secrets, production private data, owner data ingestion, or delivery-readiness approval was used or implied.

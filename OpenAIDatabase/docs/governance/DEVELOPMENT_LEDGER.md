@@ -6,15 +6,15 @@
 - product version status: provisional
 - current phase: B - semantic extractor coverage
 - current gate: GOV-SEMANTIC-OAIDB-in-progress
-- confirmed iterations: 5
+- confirmed iterations: 6
 - reconstructed development events: 15
-- current task: GOV-SEMANTIC-OAIDB-001
-- blockers: remaining complex branch rules, TypeScript writeback semantics, and heuristic calibration evidence are HUMAN_REVIEW_REQUIRED or UNKNOWN under `GOV-SEMANTIC-OAIDB-001` and `TASK-OAI-B-001`
+- current task: GOV-SEMANTIC-OAIDB-001; latest remediation task S3PDT01 completed
+- blockers: remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records five confirmed iterations: the baseline run, three TASK-OAI-C-002
-follow-up governance and personalization hardening runs, and this semantic
-extractor rollout run.
+records six confirmed iterations: the baseline run, three TASK-OAI-C-002
+follow-up governance and personalization hardening runs, the semantic
+extractor rollout run, and the S3PDT01 synthetic privacy-boundary run.
 
 ## Phase Matrix
 
@@ -147,6 +147,30 @@ extractor rollout run.
 - remaining risks: TypeScript writeback semantics, heuristic calibration evidence, and complex Python branch equivalence are not fully machine-verified
 - rollback: revert this iteration's governance metadata, root project semantic_coverage block, semantic selector additions, run manifest, and generated status pages
 - next step: complete focused project/root validation and publish through PR/main CI
+
+### ITER-20260624-OAIDB-S3PDT01
+
+- date: 2026-06-24
+- fact level: VERIFIED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- base commit: d8f818337ac022d7c88faec27356774c0c13fe2d
+- result commit: PENDING
+- task IDs: S3PDT01, ACC-S3PDT01
+- objective: verify OpenAIDatabase private import, redaction, Git leakage, and deletion-recovery contracts with synthetic private data.
+- assumptions: synthetic raw data containing email, phone, API key, and local path sent through a temporary import path is sufficient to prove default boundary behavior; it does not approve real raw export ingestion or production memory safety.
+- files read: `.gitignore`, personalization export scripts, current OpenAIDatabase tests, governance docs, and Other8 S3PD roadmap requirements.
+- files changed: `.gitignore`, `scripts/privacy_guard.py`, `tests/test_s3pdt01_privacy.py`, S3PD privacy evidence, OpenAIDatabase governance docs, rendered human entry files, root governance test, and run manifest.
+- model changes: no memory extraction, retrieval, writeback, atlas, or personalization model behavior changed.
+- parameter changes: no active parameter value changed.
+- commands: bundled-python S3PDT01 unittest, privacy guard scan, git raw/private tracked-file check, git ignore check, py_compile, roadmap pytest command, rendered governance checks, semantic extractor validation, root governance test, and changed-only governance validation.
+- test results: focused unittest exit 0 with 3 tests OK; privacy scan exit 0 with PASS; git raw/private tracked-file check found no tracked files; git ignore check confirmed raw/private paths are ignored; roadmap pytest command blocked locally by missing pytest.
+- successes: redacted derived output contains no synthetic email, phone, key, or local path; audit log contains only redacted source name and hash; raw source deletion does not break recovery from redacted output; raw source inside a tracked derived tree is rejected.
+- failures: pytest is not installed in the bundled runtime, so the roadmap pytest command remains blocked locally.
+- decisions: keep all privacy proof synthetic; do not ingest real raw exports, cookies, browser profiles, plaintext secrets, production private data, or owner data.
+- remaining risks: owner privacy signoff, adversarial leakage-rate report, gold labels, retrieval metrics, and production write approval remain unresolved.
+- rollback: revert privacy guard, focused privacy test, `.gitignore` additions, S3PD evidence, governance docs, rendered human entry files, root governance test, and run manifest.
+- next step: continue to S3PDT02 for FIFA fail-closed validation.
 
 ## Reconstructed Development Events
 

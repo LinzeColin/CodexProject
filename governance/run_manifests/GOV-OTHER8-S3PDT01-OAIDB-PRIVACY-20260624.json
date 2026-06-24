@@ -1,0 +1,253 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624",
+  "project_id": "OpenAIDatabase",
+  "task_id": "S3PDT01",
+  "acceptance_ids": [
+    "ACC-S3PDT01"
+  ],
+  "iteration_id": "ITER-20260624-OAIDB-S3PDT01",
+  "generated_at": "2026-06-24T23:55:00+10:00",
+  "implementation_base_sha": "d8f818337ac022d7c88faec27356774c0c13fe2d",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:18fbffd7fe5a9e90d73e8257fe605bfb270e94e493d533fdae525fd9e890ad7c",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json",
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/scripts/privacy_guard.py",
+    "OpenAIDatabase/tests/test_s3pdt01_privacy.py",
+    "OpenAIDatabase/开发记录",
+    "governance/stage_gates/s3pd/privacy_scan.log",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json",
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/scripts/privacy_guard.py",
+    "OpenAIDatabase/tests/test_s3pdt01_privacy.py",
+    "OpenAIDatabase/开发记录",
+    "governance/stage_gates/s3pd/privacy_scan.log",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json",
+    "governance/stage_gates/s3pd/privacy_scan.log",
+    "tests/governance/test_project_governance_validator.py",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/开发记录"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json",
+    "governance/stage_gates/s3pd/privacy_scan.log",
+    "tests/governance/test_project_governance_validator.py",
+    "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/docs/governance/DELIVERY_PLAN.md",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+    "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+    "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+    "OpenAIDatabase/docs/governance/STATUS.md",
+    "OpenAIDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/development_events.jsonl",
+    "OpenAIDatabase/docs/governance/events.jsonl",
+    "OpenAIDatabase/开发记录"
+  ],
+  "change_classification": [
+    "privacy_boundary_validation",
+    "single_project_scope",
+    "OpenAIDatabase_only_scope",
+    "synthetic_private_fixture_only",
+    "redacted_derived_output",
+    "raw_source_deletion_recovery",
+    "git_leakage_scan",
+    "gitignore_contract",
+    "owner_truth_preserved"
+  ],
+  "stage_gate_status": {
+    "S3PDT01": "PASSED_FOCUSED_LOCAL_WITH_PYTEST_BLOCKED",
+    "S3PD-GATE": "IN_PROGRESS",
+    "S3-GATE": "IN_PROGRESS"
+  },
+  "model_delta": "No retrieval, ranking, scoring, writeback, or memory model behavior changed.",
+  "formula_delta": "No active formula implementation changed.",
+  "parameter_delta": "No active parameter value changed.",
+  "version_delta": "Product version remains 0.2.0; governance iteration moves to ITER-20260624-OAIDB-S3PDT01.",
+  "test_commands": [
+    "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B OpenAIDatabase\\tests\\test_s3pdt01_privacy.py",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B OpenAIDatabase\\scripts\\privacy_guard.py --database-dir OpenAIDatabase --scan-only",
+    "git ls-files -- OpenAIDatabase/data/raw OpenAIDatabase/data/raw_encrypted OpenAIDatabase/data/private_imports",
+    "git check-ignore -v --no-index OpenAIDatabase/data/raw/private.json OpenAIDatabase/data/private_imports/export.json OpenAIDatabase/data/raw_encrypted/archive.zip",
+    "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile OpenAIDatabase\\scripts\\privacy_guard.py OpenAIDatabase\\tests\\test_s3pdt01_privacy.py",
+    "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest OpenAIDatabase\\tests -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project OpenAIDatabase --write",
+    "node_repl JSONL and manifest parser for OpenAIDatabase S3PDT01 events",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pdt01_openaidatabase_privacy_manifest_and_gate_evidence",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project OpenAIDatabase",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py OpenAIDatabase",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B OpenAIDatabase\\tests\\test_s3pdt01_privacy.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 3 tests in 0.724s; OK."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B OpenAIDatabase\\scripts\\privacy_guard.py --database-dir OpenAIDatabase --scan-only",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status PASS; tracked_raw_private_file_count 0; high_risk_secret_hit_count 0; gitignore_contract ok true."
+    },
+    {
+      "command": "git ls-files -- OpenAIDatabase/data/raw OpenAIDatabase/data/raw_encrypted OpenAIDatabase/data/private_imports",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No tracked raw/private files."
+    },
+    {
+      "command": "git check-ignore -v --no-index OpenAIDatabase/data/raw/private.json OpenAIDatabase/data/private_imports/export.json OpenAIDatabase/data/raw_encrypted/archive.zip",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "data/raw, data/private_imports, and data/raw_encrypted paths are ignored."
+    },
+    {
+      "command": "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile OpenAIDatabase\\scripts\\privacy_guard.py OpenAIDatabase\\tests\\test_s3pdt01_privacy.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "exit 0."
+    },
+    {
+      "command": "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest OpenAIDatabase\\tests -q",
+      "exit_code": 1,
+      "result": "BLOCKED_LOCAL_TOOL_UNAVAILABLE",
+      "observed": "No module named pytest."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py render --project OpenAIDatabase --write",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "updated_count=1; OpenAIDatabase/开发记录 was regenerated."
+    },
+    {
+      "command": "node_repl JSONL and manifest parser for OpenAIDatabase S3PDT01 events",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "events.jsonl 5 lines ok; development_events.jsonl 8 lines ok; manifest json ok."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pdt01_openaidatabase_privacy_manifest_and_gate_evidence",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 test in 0.023s; OK."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py check-render --project OpenAIDatabase",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\validate_semantic_extractors.py OpenAIDatabase",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "semantic_formulas_checked=10 semantic_parameters_checked=28."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "sync errors=0 warnings=0; OpenAIDatabase validation errors=0 warnings=0."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root plus 10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported; Git emitted core.autocrlf line-ending warnings for text files."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No EEI or arxiv-daily-push files changed."
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "post-commit rerun passed; validation exit_code=0 and zero_diff.clean=true."
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/scripts/privacy_guard.py",
+    "OpenAIDatabase/tests/test_s3pdt01_privacy.py",
+    "OpenAIDatabase/.gitignore",
+    "governance/stage_gates/s3pd/privacy_scan.log",
+    "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+    "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md"
+  ],
+  "stop_conditions_reviewed": [
+    "No real personal export data is committed to Git.",
+    "No real raw exports, cookies, browser profiles, plaintext secrets, or production private data are used by the proof.",
+    "Raw source inside tracked derived storage is rejected.",
+    "Derived output is redacted and remains usable after raw source deletion.",
+    "OpenAIDatabase owner and delivery readiness truth remains separate from focused privacy-boundary evidence."
+  ],
+  "unresolved_risks": [
+    "No real raw export, cookie, browser profile, plaintext secret, production private data, owner data ingestion, or delivery readiness approval is used or implied by S3PDT01.",
+    "The roadmap pytest command remains blocked locally because pytest is not installed in the bundled runtime.",
+    "OpenAIDatabase production private-data ingestion, adversarial secret leakage validation, retrieval quality, write approval logs, and delivery readiness remain unresolved.",
+    "S3PD-GATE and S3-GATE remain in progress until dependent FIFA fail-closed and stage gate tasks are closed."
+  ],
+  "owner_truth_preserved": {
+    "privacy_boundary": "SYNTHETIC_VERIFIED",
+    "real_private_data_ingestion": "UNAPPROVED",
+    "delivery_readiness": "FAILED",
+    "production_write_readiness": "UNVERIFIED",
+    "owner_privacy_signoff": "UNVERIFIED"
+  },
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S3PDT01 OpenAIDatabase privacy import, redaction, Git leakage, and deletion recovery contracts",
+  "ci_run_reference": "LOCAL_COMMIT_CHANGED_ONLY_CI_ORIGIN_MAIN_AND_PENDING_PR_GOVERNANCE_CI",
+  "binding_rationale": "Manifest records focused local commit evidence; final GitHub PR and main CI binding will be verified after PR merge."
+}

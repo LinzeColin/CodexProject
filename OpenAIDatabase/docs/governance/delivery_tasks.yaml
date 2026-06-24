@@ -161,3 +161,38 @@ tasks:
     rollback: "Restore parameter/formula semantic columns and governance/projects.yaml OpenAIDatabase semantic_coverage to the previous planned state."
     target_version: "0.2.0"
     completed_version: ""
+  - task_id: "S3PDT01"
+    phase: "S3PD"
+    objective: "Verify OpenAIDatabase private import, redaction, Git leakage, and deletion-recovery contracts with synthetic private data."
+    scope: ["privacy guard import path policy", "redacted derived output", "audit log without raw private content", "raw-source deletion recovery", "raw/private Git leakage scan", "focused privacy unittest"]
+    non_scope: ["real raw exports", "cookies", "browser profiles", "plaintext secrets", "production private data", "delivery readiness approval", "owner privacy signoff"]
+    status: "completed"
+    dependencies: ["S2PCT03"]
+    required_files:
+      - "OpenAIDatabase/scripts/privacy_guard.py"
+      - "OpenAIDatabase/tests/test_s3pdt01_privacy.py"
+      - "OpenAIDatabase/.gitignore"
+      - "governance/stage_gates/s3pd/privacy_scan.log"
+    acceptance_ids: ["ACC-S3PDT01"]
+    test_commands:
+      - "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B OpenAIDatabase\\tests\\test_s3pdt01_privacy.py"
+      - "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B OpenAIDatabase\\scripts\\privacy_guard.py --database-dir OpenAIDatabase --scan-only"
+      - "git ls-files -- OpenAIDatabase/data/raw OpenAIDatabase/data/raw_encrypted OpenAIDatabase/data/private_imports"
+      - "git check-ignore -v --no-index OpenAIDatabase/data/raw/private.json OpenAIDatabase/data/private_imports/export.json OpenAIDatabase/data/raw_encrypted/archive.zip"
+      - "set PYTHONPATH=OpenAIDatabase&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest OpenAIDatabase\\tests -q"
+    test_results:
+      - "exit 0; focused unittest Ran 3 tests OK."
+      - "exit 0; privacy scan status PASS, tracked_raw_private_file_count 0, high_risk_secret_hit_count 0, gitignore_contract ok."
+      - "exit 0; no tracked raw/private files."
+      - "exit 0; data/raw, data/private_imports, and data/raw_encrypted paths are ignored."
+      - "blocked locally; bundled runtime reports No module named pytest, so roadmap pytest command requires a dependency-prepared environment."
+    evidence_refs:
+      - "OpenAIDatabase/scripts/privacy_guard.py"
+      - "OpenAIDatabase/tests/test_s3pdt01_privacy.py"
+      - "governance/stage_gates/s3pd/privacy_scan.log"
+      - "governance/run_manifests/GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json"
+    risk: "Focused privacy proof uses synthetic private data only and does not approve real raw export ingestion or production memory safety."
+    rollback: "Revert privacy guard, focused privacy test, .gitignore additions, S3PD evidence, governance docs, rendered human entry files, root governance test, and run manifest."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    completed_commit: "PENDING"
