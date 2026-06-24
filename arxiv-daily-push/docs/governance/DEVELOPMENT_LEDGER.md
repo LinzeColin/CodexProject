@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PA
+- Current phase: S2PC
 - Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED
 - Confirmed iteration count: 92
 - Reconstructed event count: 0
-- Current task: `S2PAT05`; parallel source-development task `S2PBT01` keeps legacy alias `S2P1T01`. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; S2PBT01 bioRxiv/medRxiv metadata-only preprint source has real no-send replay/shadow evidence, but V7.1 root governance is the current gate before any formal production inclusion.
+- Current task: `S2PCT01` keeps legacy alias `S2P2T01` for Nature/top-journal metadata-only no-send shadow evidence. `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.1 parallel audit records open P0=8 and P1=37; therefore real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -1940,3 +1940,25 @@ None for this new project baseline.
 - Remaining risks: The user may still reject frontstage template quality, but that is not a Stage 1 acceptance blocker. Production schedule must not be enabled without a separate instruction and verification run.
 - Rollback: Revert EVENT-20260624-ADP-083, the test10 verified manifest, task 040 completion, task 041 boundary, and generated status files.
 - Next step: Stop Stage 1 delivery work at `S1P5T04`; wait for owner instruction on whether to enable production schedule or improve the email template.
+
+### `ITER-20260624-ADP-S2PCT01-STAGE1-BOOTSTRAP-CI-RETRY-HARDENING`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from PR #119 CI failure logs, Stage1 bootstrap code, focused tests, and governance changed-only validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: b74161397c3cda14580ad96918fa03bf64a67aee
+- Result commit: PENDING
+- Task IDs: `S2PCT01`; legacy alias `S2P2T01`
+- Goal: Keep V7.1 D2 `S2PCT01` Nature/top-journal no-send shadow evidence moving while hardening the required Stage1 bootstrap cloud network probe that failed twice on arXiv API `TimeoutError`.
+- Files changed: Stage1 bootstrap network probe, CLI retry/timeout flags, Stage1 bootstrap workflow flags, focused retry tests, V7.1-aligned governance status/event coverage, existing semantic formula fingerprints, and root compatibility manifests.
+- Model changes: No ranking, queue, email, SMTP, Release, video, or production model changed; the bootstrap network probe now records bounded attempts and still fails closed after retry exhaustion.
+- Formula changes: No formula expression changed; refreshed existing machine fingerprints/evidence hashes for CLI-linked and Stage1/Stage2 formula records after code changes.
+- Parameter changes: Added CLI controls `--network-timeout-seconds` and `--network-max-attempts`; workflow uses 30 seconds and 3 attempts.
+- Test results: project governance validator passed with errors 0 warnings 0; changed-only semantic governance passed with errors 0 warnings 0; Lean check-render drift 0; root governance tests 235 OK; focused ADP top-journal/stage2/bootstrap tests 22 OK; git diff check passed.
+- Successes: Required arXiv API probe is no longer single-attempt brittle, and failed attempts are auditable in the bootstrap report.
+- Failures: Root governance full suite and changed-only validation required follow-up synchronization after V7.1 main merge; this entry records the corrected direction, not final CI green.
+- Decisions: V7.1 root/audit lock stays active; `S2PCT01` / legacy `S2P2T01` remains Nature metadata-only no-send shadow only; no SMTP, Release, GitHub schedule, video, `STAGE2_PRODUCTION_ACCEPTED`, `D2_SOURCE_DOMAIN_ACCEPTED`, or `INTEGRATED_PRODUCTION_ACCEPTED` is enabled or claimed. `S2PBT01 -> S2P1T01` remains the already-passed D1 shadow/evidence alias, not the current Nature task.
+- Remaining risks: If all bounded arXiv API probe attempts fail, the Stage1 bootstrap workflow still blocks as designed; P0/P1 V7.1 audit findings still prevent production restore and integrated production acceptance.
+- Rollback: Revert bootstrap retry code, CLI/workflow flags, tests, EVENT-20260624-ADP-093, and compatibility manifest/status updates.
+- Next step: Re-run ADP tests, root governance tests, changed-only governance, then push PR #119 for GitHub CI.

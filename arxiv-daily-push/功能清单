@@ -5,12 +5,12 @@
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
 - current_stage: `S2`
-- current_phase: `S2PB`
-- current_task: `S2PBT01`
-- progress: `61.54%`
+- current_phase: `S2PC`
+- current_task: `S2PCT01`
+- progress: `76.47%`
 - capability_count: `8`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
+- next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -24,7 +24,7 @@
 | FEAT-ADP-004 | 本机 Codex/local runner 运行与迁移准备 | completed | 本地 preflight、daily-run、queue/ledger/report/email preview 持久化、launchd 草案和 2026-06-30 迁移 runbook 已准备。 | EXTRACTED |
 | FEAT-ADP-005 | 生产 fail-closed gate 与副作用边界 | completed | 生产变量、SMTP、Release、schedule、trial start 与 launch readiness 失败关闭；本迁移不启用真实生产发送。 | EXTRACTED |
 | FEAT-ADP-006 | Stage 1 严格验收与 Gmail SMTP test10 | completed | 30 天真实 arXiv backfill、CONTENT_LEDGER closure、test10 Gmail SMTP 证据共同支持 Stage 1 arXiv accepted。 | EXTRACTED |
-| FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | evidence_passed_no_formal_production | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
+| FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | completed | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
 | FEAT-ADP-008 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
 
 ## V7.1 当前根治理锁
@@ -36,9 +36,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PAT05`
+- stage2_current_task: `S2PCT01`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`

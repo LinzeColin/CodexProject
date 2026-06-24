@@ -51,6 +51,7 @@ STAGE1_BOOTSTRAP_GITHUB_ENV_NAMES = (
 STAGE1_BOOTSTRAP_MIN_PYTHON = (3, 11)
 STAGE1_BOOTSTRAP_NETWORK_PROBE_URL = "https://export.arxiv.org/api/query?search_query=all:electron&start=0&max_results=1"
 STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS = 15
+STAGE1_BOOTSTRAP_NETWORK_MAX_ATTEMPTS = 3
 
 
 def build_stage1_bootstrap_report(
@@ -64,6 +65,8 @@ def build_stage1_bootstrap_report(
     workflow_path: str | Path | None = None,
     require_github_actions: bool = False,
     require_network_probe: bool = False,
+    network_timeout_seconds: int = STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
+    network_max_attempts: int = STAGE1_BOOTSTRAP_NETWORK_MAX_ATTEMPTS,
     require_secret_presence: bool = False,
     environment: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
@@ -116,7 +119,11 @@ def build_stage1_bootstrap_report(
     if require_github_actions and not cloud_runner_verified:
         blocking_reasons.append("GitHub-hosted cloud runner evidence is required")
 
-    network_probe = _network_probe(require_network_probe)
+    network_probe = _network_probe(
+        require_network_probe,
+        timeout_seconds=network_timeout_seconds,
+        max_attempts=network_max_attempts,
+    )
     if require_network_probe and not network_probe["passed"]:
         blocking_reasons.append("network probe did not pass")
 
@@ -308,29 +315,85 @@ def _github_env_check(env: Mapping[str, str]) -> dict[str, Any]:
     }
 
 
-def _network_probe(required: bool) -> dict[str, Any]:
+def _network_probe(required: bool, *, timeout_seconds: int, max_attempts: int) -> dict[str, Any]:
+    timeout_seconds = max(1, int(timeout_seconds))
+    max_attempts = max(1, int(max_attempts))
     if not required:
-        return {"required": False, "passed": True, "url": "", "status_code": None}
-    request = urllib.request.Request(STAGE1_BOOTSTRAP_NETWORK_PROBE_URL, headers={"User-Agent": "arxiv-daily-push-stage1-bootstrap/1.0"})
-    try:
-        with urllib.request.urlopen(request, timeout=STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS) as response:
-            status_code = int(getattr(response, "status", 0) or 0)
-            response.read(1)
-    except Exception as exc:  # pragma: no cover - exercised in cloud workflow, not unit tests.
+        return {
+            "required": False,
+            "passed": True,
+            "url": "",
+            "timeout_seconds": timeout_seconds,
+            "max_attempts": max_attempts,
+            "attempt_count": 0,
+            "status_code": None,
+            "attempts": [],
+        }
+
+    attempts: list[dict[str, Any]] = []
+    for attempt in range(1, max_attempts + 1):
+        request = urllib.request.Request(
+            STAGE1_BOOTSTRAP_NETWORK_PROBE_URL,
+            headers={"User-Agent": "arxiv-daily-push-stage1-bootstrap/1.0"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+                status_code = int(getattr(response, "status", 0) or 0)
+                response.read(1)
+        except Exception as exc:
+            attempts.append(
+                {
+                    "attempt": attempt,
+                    "passed": False,
+                    "status_code": None,
+                    "error": exc.__class__.__name__,
+                }
+            )
+            continue
+        passed = 200 <= status_code < 500
+        attempts.append(
+            {
+                "attempt": attempt,
+                "passed": passed,
+                "status_code": status_code,
+                "error": "",
+            }
+        )
+        if passed:
+            return {
+                "required": True,
+                "passed": True,
+                "url": STAGE1_BOOTSTRAP_NETWORK_PROBE_URL,
+                "timeout_seconds": timeout_seconds,
+                "max_attempts": max_attempts,
+                "attempt_count": attempt,
+                "status_code": status_code,
+                "attempts": attempts,
+            }
+
+    last_attempt = attempts[-1] if attempts else {"status_code": None, "error": "no_attempt"}
+    if last_attempt.get("error"):
         return {
             "required": True,
             "passed": False,
             "url": STAGE1_BOOTSTRAP_NETWORK_PROBE_URL,
-            "timeout_seconds": STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
+            "timeout_seconds": timeout_seconds,
+            "max_attempts": max_attempts,
+            "attempt_count": len(attempts),
             "status_code": None,
-            "error": exc.__class__.__name__,
+            "error": last_attempt["error"],
+            "attempts": attempts,
         }
     return {
         "required": True,
-        "passed": 200 <= status_code < 500,
+        "passed": False,
         "url": STAGE1_BOOTSTRAP_NETWORK_PROBE_URL,
-        "timeout_seconds": STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS,
-        "status_code": status_code,
+        "timeout_seconds": timeout_seconds,
+        "max_attempts": max_attempts,
+        "attempt_count": len(attempts),
+        "status_code": last_attempt.get("status_code"),
+        "error": "",
+        "attempts": attempts,
     }
 
 

@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-V7-1-AUDIT-LOCK-001"
-source_snapshot_hash: "sha256:ec936fe5e8d4d4a55d861cd189063a9acb0d75fda579ce95033d003afda3f86e"
+as_of_event_id: "EVENT-20260624-ADP-093"
+source_snapshot_hash: "sha256:faae81238fdcadc99e1c57e38470b198ee99ba66291bd2c8e457bda8ae72a07d"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T12:27:40+10:00"
+snapshot_event_time: "2026-06-24T14:10:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -61,7 +61,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 55
-    precommit_pending_events: 38
+    precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -79,17 +79,16 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PAT05"
+  current_v7_task_id: "S2PCT01"
 next_executable_task:
-  task_id: "S2PBT01"
+  task_id: "S2PCT01"
   status: "in_progress"
-  reason: "Promote bioRxiv and medRxiv as the first V7 D1 research/preprint source adapters after Stage 1 arXiv acceptance and local production prep."
+  reason: "Add the first V7.1 D2 top-journal/Nature metadata-only shadow foundation using official public Nature RSS before any formal Stage 2 production inclusion."
   acceptance_ids:
-    - "ACC-S2PBT01-BIORXIV-MEDRXIV"
-    - "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
+    - "ACC-S2PCT01-NATURE"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `\"See legacy alias S2P1T01 and manifests ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` and attach the listed evidence refs."
+  unblock_condition: "Run `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_pycache_s2p2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q` and attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -99,28 +98,28 @@ owner_decision:
   decision_id: "DEC-ADP-V7-1-AUDIT-LOCK-20260624"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否接受 V7.1 根合同、并行审查和 P0/P1 禁止生产规则作为所有后续 ADP agent 的当前执行合同，并把旧 S2P1T01 作为 S2PBT01 legacy alias。"
-  question: "是否接受 V7.1 根合同、并行审查和 P0/P1 禁止生产规则作为所有后续 ADP agent 的当前执行合同，并把旧 S2P1T01 作为 S2PBT01 legacy alias。"
+  decision_question: "是否接受 V7.1 根合同、并行审查和 P0/P1 禁止生产规则作为所有后续 ADP agent 的当前执行合同，并把当前开发入口切到 S2PCT01 / legacy S2P2T01，同时保留 S2PBT01 -> S2P1T01 已通过 shadow alias。"
+  question: "是否接受 V7.1 根合同、并行审查和 P0/P1 禁止生产规则作为所有后续 ADP agent 的当前执行合同，并把当前开发入口切到 S2PCT01 / legacy S2P2T01，同时保留 S2PBT01 -> S2P1T01 已通过 shadow alias。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.1 root/audit lock, complete S2PAT05 CI proof, and allow S2PBT01 only as shadow source development while P0/P1 remain open"
-  option_a: "继续 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。"
+  current_recommendation: "A: keep V7.1 root/audit lock, continue S2PCT01 Nature metadata-only shadow evidence, and keep S2PBT01 as completed D1 shadow/evidence alias while P0/P1 remain open"
+  option_a: "继续 S2PCT01 Nature/top-journal metadata-only shadow evidence，不影响现有 arXiv 本地生产路径。"
   option_b: "退回 V6 名称；会增加跨线程漂移风险。"
   option_c: "越过 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
   options:
-    - "继续 bioRxiv/medRxiv source adapter 和 shadow-mode gate，不影响现有 arXiv 本地生产路径。"
+    - "继续 S2PCT01 Nature/top-journal metadata-only shadow evidence，不影响现有 arXiv 本地生产路径。"
     - "退回 V6 名称；会增加跨线程漂移风险。"
     - "越过 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
-  expected_benefit: "在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到生命科学与医学预印本。"
-  principal_risks: "源身份混淆、重复 canonical paper、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "V7.1 contract/audit hash checks, root lock validator, three-base render proof, source adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence"
+  expected_benefit: "在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 扩展到 Nature/top-journal metadata-only shadow 来源。"
+  principal_risks: "源身份混淆、重复 canonical paper、Nature 元数据被误读为全文/正式出版抽取、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
+  evidence_required: "V7.1 contract/audit hash checks, root lock validator, three-base render proof, Nature/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 continues with V6/V7 naming drift and unclear integrated acceptance boundary."
-  unblock_task_id: "S2PAT05"
+  unblock_task_id: "S2PCT01"
   acceptance_ids:
-    - "ACC-S2PAT05-AUDIT-LOCK"
+    - "ACC-S2PCT01-NATURE"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"

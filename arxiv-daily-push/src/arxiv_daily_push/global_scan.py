@@ -925,6 +925,11 @@ def _roi_signals(source_item: Mapping[str, Any], *, profile: Mapping[str, Any]) 
     economic = min(1.0, 0.25 + _keyword_score(text, _ECONOMIC_KEYWORDS, per_hit=0.09))
     interdisciplinary = min(1.0, 0.35 + 0.15 * max(0, len(set(_category_groups(categories + [primary]))) - 1) + 0.08 * max(0, len(set(categories)) - 1))
     explainability = min(1.0, 0.40 + _length_bonus(summary) + (0.15 if len(summary.split()) <= 260 else 0.0))
+    if profile.get("source_family") == "top_journal":
+        relevance = max(relevance, 0.62)
+        learning = max(learning, 0.64)
+        interdisciplinary = max(interdisciplinary, 0.62)
+        explainability = max(explainability, 0.62)
     roi = min(1.0, 0.45 * economic + 0.25 * relevance + 0.15 * learning + 0.15 * explainability)
     return {
         "relevance": round(relevance, 4),
@@ -1487,6 +1492,20 @@ def _source_profile(source_item: Mapping[str, Any]) -> dict[str, Any]:
             "category_section": "preprint.category",
             "server": server,
         }
+    top_journal = metadata.get("top_journal") if isinstance(metadata.get("top_journal"), Mapping) else {}
+    if isinstance(top_journal, Mapping) and top_journal:
+        journal = _clean_text(str(top_journal.get("journal") or "Top Journal"))
+        article_type = _clean_text(str(top_journal.get("article_type") or "research_article"))
+        return {
+            "source_family": "top_journal",
+            "source_label": journal,
+            "summary": _clean_text(str(top_journal.get("summary") or "")),
+            "summary_section": "top_journal.summary",
+            "primary_category": f"{journal} {article_type}".strip(),
+            "categories": [item for item in (journal, article_type, "top_journal") if item],
+            "category_section": "top_journal.article_type",
+            "server": str(top_journal.get("journal_id") or journal).lower(),
+        }
     return {
         "source_family": str(source_item.get("source_type") or "unknown"),
         "source_label": str(source_item.get("source_type") or "source"),
@@ -1517,6 +1536,8 @@ def _human_source_labels(source_item: Mapping[str, Any], primary_category: str) 
         if server == "medrxiv":
             return "arXiv Research Frontiers", "medRxiv Medicine"
         return "arXiv Research Frontiers", "Preprint"
+    if profile.get("source_family") == "top_journal":
+        return "Top Journals", str(profile.get("source_label") or "Top Journal")
     return _human_arxiv_labels(primary_category)
 
 

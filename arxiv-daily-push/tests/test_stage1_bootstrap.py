@@ -76,6 +76,19 @@ def write_workflow(root: Path, *, runs_on: str = "ubuntu-latest") -> Path:
     return workflow
 
 
+class FakeResponse:
+    status = 200
+
+    def __enter__(self) -> FakeResponse:
+        return self
+
+    def __exit__(self, exc_type: object, exc: object, traceback: object) -> None:
+        return None
+
+    def read(self, size: int) -> bytes:
+        return b"<"[:size]
+
+
 class Stage1BootstrapTests(unittest.TestCase):
     def test_bootstrap_passes_on_github_hosted_runner_contract(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -109,6 +122,72 @@ class Stage1BootstrapTests(unittest.TestCase):
             self.assertEqual(tuple(report["required_secret_names"]), STAGE1_BOOTSTRAP_REQUIRED_SECRET_NAMES)
             self.assertFalse(any(item["value_recorded"] for item in report["secret_name_report"]))
             self.assertFalse(validate_stage1_bootstrap_report(report))
+
+    def test_network_probe_retries_transient_timeout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            root = tmp_path / "project"
+            root.mkdir()
+            init_git_project(root)
+            db_path = prepare_project(root)
+            package = build_package(tmp_path, root, db_path)
+            workflow = write_workflow(root)
+            with (
+                patch("arxiv_daily_push.stage1_bootstrap._ssl_check", return_value={"passed": True, "openssl_version": "test", "ca_cert_count": 1}),
+                patch("arxiv_daily_push.stage1_bootstrap.urllib.request.urlopen", side_effect=[TimeoutError(), FakeResponse()]),
+            ):
+                report = build_stage1_bootstrap_report(
+                    project_root=root,
+                    migration_manifest=package["package_manifest_path"],
+                    state_dir=tmp_path / "state",
+                    db_path=db_path,
+                    generated_at="2026-07-01T06:00:00+10:00",
+                    workflow_path=workflow,
+                    require_github_actions=True,
+                    require_network_probe=True,
+                    network_timeout_seconds=1,
+                    network_max_attempts=2,
+                    environment=github_env(tmp_path),
+                )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertEqual(report["network_probe"]["attempt_count"], 2)
+            self.assertEqual(report["network_probe"]["attempts"][0]["error"], "TimeoutError")
+            self.assertTrue(report["network_probe"]["attempts"][1]["passed"])
+            self.assertFalse(validate_stage1_bootstrap_report(report))
+
+    def test_network_probe_fails_closed_after_retry_exhaustion(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            root = tmp_path / "project"
+            root.mkdir()
+            init_git_project(root)
+            db_path = prepare_project(root)
+            package = build_package(tmp_path, root, db_path)
+            workflow = write_workflow(root)
+            with (
+                patch("arxiv_daily_push.stage1_bootstrap._ssl_check", return_value={"passed": True, "openssl_version": "test", "ca_cert_count": 1}),
+                patch("arxiv_daily_push.stage1_bootstrap.urllib.request.urlopen", side_effect=TimeoutError()),
+            ):
+                report = build_stage1_bootstrap_report(
+                    project_root=root,
+                    migration_manifest=package["package_manifest_path"],
+                    state_dir=tmp_path / "state",
+                    db_path=db_path,
+                    generated_at="2026-07-01T06:00:00+10:00",
+                    workflow_path=workflow,
+                    require_github_actions=True,
+                    require_network_probe=True,
+                    network_timeout_seconds=1,
+                    network_max_attempts=2,
+                    environment=github_env(tmp_path),
+                )
+
+            self.assertEqual(report["status"], "blocked")
+            self.assertIn("network probe did not pass", report["blocking_reasons"])
+            self.assertEqual(report["network_probe"]["attempt_count"], 2)
+            self.assertEqual(report["network_probe"]["error"], "TimeoutError")
+            self.assertFalse(report["real_smtp_sent"])
 
     def test_bootstrap_blocks_enabled_production_flag(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
