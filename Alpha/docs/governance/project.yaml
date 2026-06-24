@@ -2246,6 +2246,15 @@ validations:
     evidence_refs:
       - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
       - "EVID-ALPHA-S3PBT03-MANIFEST"
+  -
+    validation_id: "VAL-ALPHA-S4PBT01-STRUCTURE"
+    scope: "Alpha S4PBT01 root structure simplification"
+    method: "Move only S4PAT02 checksum-bound Alpha handoff and outputs candidates to governance archive, preserve source/import/runtime paths, keep PRIVATE sample data in place, and verify with structure audit plus focused governance tests."
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OTHER8-S4PBT01-STRUCTURE-MAP"
+      - "EVID-OTHER8-S4PBT01-MANIFEST"
 assurance_summary:
   structural_completeness: "VERIFIED"
   implementation_congruence: "PARTIAL"
@@ -2263,8 +2272,8 @@ evidence_refs:
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-ALPHA-HANDOFF"
-    kind: "owner"
-    ref: "Alpha/HANDOFF.md"
+    kind: "archived_owner"
+    ref: "governance/archive/other8_wave1_pending/Alpha/HANDOFF.md"
     fact_level: "RECONSTRUCTED"
   -
     evidence_id: "EVID-ALPHA-MODEL-SPEC"
@@ -2355,6 +2364,16 @@ evidence_refs:
     evidence_id: "EVID-ALPHA-S3PBT03-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OTHER8-S4PBT01-STRUCTURE-MAP"
+    kind: "stage_gate_evidence"
+    ref: "Alpha/docs/structure_migration_map.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OTHER8-S4PBT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625.json"
     fact_level: "EXTRACTED"
 legacy_refs:
   -
