@@ -110,7 +110,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-23T20:34:26Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1307-A209-BACKGROUND-HEARTBEAT-REFRESH-IN-PROGRESS`
+- phase/gate: `C / TASK-T1307-A209-CLEAN-SOAK-RECOVERY-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

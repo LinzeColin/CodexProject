@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1307-A209-BACKGROUND-HEARTBEAT-REFRESH-IN-PROGRESS`
+- Phase/Gate: `C / TASK-T1307-A209-CLEAN-SOAK-RECOVERY-IN-PROGRESS`
 - Models/Formulas/Parameters total: `12 / 12 / 82`
 - Active formulas/parameters: `11 / 82`
 - Machine checked formulas/parameters: `11 / 82`

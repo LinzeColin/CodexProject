@@ -3712,6 +3712,8 @@ tasks:
       - "local A209 finalization preflight PASS; tests/unit/test_operator_soak_finalization.py PASS 3/3; status A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL at 128/288 windows; downstream release-gate refresh remains blocked"
       - "local A209 dependent preflight refresh PASS: A203 production API, release-manager activation, MVP release gate and external release-evidence bundle artifacts regenerated from the 128/288 heartbeat while keeping release_ready=false"
       - "local A209 heartbeat governance sync PASS; PARAM-069 through PARAM-071 plus PARAM-079 and PARAM-082 registered with heartbeat non-closure traceability"
+      - "local A209 crash-recovery audit PASS: Git and Chronicle evidence survived; prior checkpoint reached 135/288 PASS, then failed on resume at 2026-06-24T10:43:46Z due missing fixed Playwright browser path; failed chain preserved as incident evidence only"
+      - "local A209 clean-restart heartbeat PASS: Playwright Chromium reinstalled to /private/tmp/eei-ms-playwright, host probe passed, clean 24h attempt restarted, point-in-time heartbeat reports 3/288 PASS, 0 failed, operator PID 57281 and watchdog PID 17163"
       - "local clean-room package binding PASS; supervisor, watchdog, heartbeat and finalization evidence included in package boundary with package_paths=437, release manifest_paths=444 and checksum_paths=443"
       - "local elevated make verify PASS; unit tests 106/106"
     evidence_refs:
@@ -3729,7 +3731,7 @@ tasks:
       - "EEI/artifacts/tests/a200/t1215_clean_room_release.json"
       - "EEI/artifacts/release_evidence_t1211.json"
       - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
-    risk: "A209 can be falsely closed if 4h evidence, monitor/supervisor/watchdog/heartbeat/finalization progress, or a partial 24h checkpoint is treated as 24h evidence or final release-manager approval; watchdog stale-PID detection must not be used to kill or replace a live operator soak process without explicit operator action."
+    risk: "A209 can be falsely closed if 4h evidence, monitor/supervisor/watchdog/heartbeat/finalization progress, incident recovery evidence, or a partial 24h checkpoint is treated as 24h evidence or final release-manager approval; watchdog stale-PID detection must not be used to kill or replace a live operator soak process without explicit operator action."
     rollback: "Stop only the detached watchdog PID if needed, remove the monitor/supervisor/watchdog/heartbeat/finalization script/Makefile/test/governance changes or invalid 4h JSON/checkpoint, regenerate the A209 evidence-validation artifact back to missing long-duration evidence, regenerate clean-room/release artifacts, and rerun make verify."
     target_version: "0.1.0"
     completed_version: ""

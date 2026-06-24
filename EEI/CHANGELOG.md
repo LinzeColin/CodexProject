@@ -40,6 +40,8 @@
 - Added a T1303 external release-evidence bundle preflight: it consolidates A202, A210, A026, A027 and A209 gate artifacts into one fail-closed operator checklist, reports `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`, and keeps release-manager/MVP refresh disallowed until every external input is real and ready.
 - Refreshed the live T1307/A209 background heartbeat and dependent preflight artifacts to `128/288` windows PASS, `0` failed, `160` remaining and `44.44%` complete while keeping `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`, `release_gate_closed_by_finalizer=false` and all release gates blocked until 288/288 release-ready evidence exists.
 - Added `PARAM-082` and traceability coverage for the invariant A209 heartbeat policy `counts_as_release_ready=false`, so partial heartbeat evidence cannot be misread as release closure.
+- Recorded the Codex crash/local-record recovery audit: Git and Chronicle evidence survived, the old A209 run reached `135/288`, and the attempted resume failed at `2026-06-24T10:43:46Z` because the fixed Playwright browser path was missing.
+- Repaired the A209 browser runtime, preserved the failed resumed chain as incident evidence, restarted a clean 24h attempt, and refreshed point-in-time working-tree heartbeat evidence to `3/288` clean-restart windows PASS with operator PID `57281` and watchdog PID `17163`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
