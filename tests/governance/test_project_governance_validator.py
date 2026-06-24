@@ -4897,6 +4897,119 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 dependency,
             )
 
+    def test_other8_s4pat01_wave1_structure_map_and_manifest(self) -> None:
+        s4pa_root = ROOT / "governance" / "stage_gates" / "s4pa"
+        map_path = s4pa_root / "wave1_structure_map.json"
+        graph_path = s4pa_root / "reference_graph.json"
+        plan_path = s4pa_root / "archive_plan.md"
+        for path in {map_path, graph_path, plan_path, ROOT / "tools" / "structure_audit.py"}:
+            self.assertTrue(path.is_file(), path)
+
+        structure_map = json.loads(map_path.read_text(encoding="utf-8"))
+        reference_graph = json.loads(graph_path.read_text(encoding="utf-8"))
+        archive_plan = plan_path.read_text(encoding="utf-8")
+        expected_projects = ["Alpha", "EVA_OS", "OpMe_System", "whkmSalary"]
+        expected_categories = ["KEEP", "MERGE", "ARCHIVE", "GENERATED", "PRIVATE", "DELETE_CANDIDATE"]
+
+        self.assertEqual(structure_map["schema_version"], "codexproject.structure_audit.v1")
+        self.assertEqual(structure_map["task_id"], "S4PAT01")
+        self.assertEqual(structure_map["acceptance_id"], "ACC-S4PAT01")
+        self.assertEqual(structure_map["projects"], expected_projects)
+        self.assertEqual(structure_map["classification_policy"]["allowed_categories"], expected_categories)
+        self.assertIn("dynamic imports", structure_map["classification_policy"]["dynamic_reference_limit"].lower())
+        self.assertFalse(structure_map["stop_conditions"]["unknown_file_marked_delete"])
+        self.assertFalse(structure_map["stop_conditions"]["archive_location_runtime_written"])
+        self.assertFalse(structure_map["stop_conditions"]["project_files_moved"])
+
+        project_maps = {project["project_id"]: project for project in structure_map["project_maps"]}
+        self.assertEqual(set(project_maps), set(expected_projects))
+        for project_id, project in project_maps.items():
+            self.assertGreater(project["tracked_file_count"], 0, project_id)
+            self.assertGreater(project["root_noise_baseline"]["root_file_count"], 0, project_id)
+            self.assertEqual(set(project["category_counts"]), set(expected_categories))
+            self.assertEqual(project["category_counts"]["DELETE_CANDIDATE"], 0)
+            self.assertEqual(len(project["tracked_files"]), project["tracked_file_count"])
+            for item in project["tracked_files"]:
+                self.assertTrue(item["path"].startswith(f"{project_id}/"), item["path"])
+                self.assertIn(item["category"], expected_categories)
+                self.assertTrue(item["owner"], item)
+                self.assertTrue(item["reason"], item)
+                self.assertTrue((ROOT / item["path"]).exists(), item["path"])
+
+        alpha_root = {item["project_relative_path"]: item for item in project_maps["Alpha"]["root_noise_baseline"]["items"]}
+        self.assertEqual(alpha_root["HANDOFF.md"]["category"], "MERGE")
+        eva_root = {item["project_relative_path"]: item for item in project_maps["EVA_OS"]["root_noise_baseline"]["items"]}
+        self.assertEqual(eva_root["CODEX_PROMPTS.md"]["category"], "MERGE")
+        self.assertEqual(project_maps["whkmSalary"]["category_counts"]["KEEP"], project_maps["whkmSalary"]["tracked_file_count"])
+
+        self.assertEqual(reference_graph["schema_version"], "codexproject.reference_graph.v1")
+        self.assertEqual(reference_graph["task_id"], "S4PAT01")
+        self.assertEqual(reference_graph["acceptance_id"], "ACC-S4PAT01")
+        self.assertEqual(reference_graph["projects"], expected_projects)
+        self.assertEqual(reference_graph["node_count"], sum(project["tracked_file_count"] for project in project_maps.values()))
+        self.assertEqual(reference_graph["node_count"], len(reference_graph["nodes"]))
+        self.assertEqual(reference_graph["edge_count"], len(reference_graph["edges"]))
+        self.assertGreater(reference_graph["edge_count"], 0)
+        self.assertTrue(
+            all(
+                node["project_id"] in expected_projects
+                and not node["id"].startswith(("EEI/", "arxiv-daily-push/"))
+                for node in reference_graph["nodes"]
+            )
+        )
+        self.assertIn("dynamic imports", " ".join(reference_graph["limitations"]).lower())
+
+        for required in {
+            "S4PAT01",
+            "ACC-S4PAT01",
+            "STRUCTURE_BASELINE_ONLY",
+            "does not move, archive, delete, or rewrite project files",
+            "S4PAT02 may generate the Wave 1 archive manifest",
+        }:
+            self.assertIn(required, archive_plan)
+
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "CodexProject")
+        self.assertEqual(manifest["task_id"], "S4PAT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PAT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S3PDT03-S3-GATE-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S4PAT01"], "PASSED_FOCUSED_LOCAL")
+        self.assertEqual(manifest["stage_gate_status"]["project_file_movement"], "NOT_STARTED")
+        self.assertEqual(manifest["next_allowed_task"], "S4PAT02")
+        self.assertEqual(manifest["wave1_projects"], expected_projects)
+        self.assertEqual(manifest["structure_audit_summary"]["node_count"], reference_graph["node_count"])
+        self.assertEqual(manifest["structure_audit_summary"]["edge_count"], reference_graph["edge_count"])
+        self.assertEqual(manifest["structure_audit_summary"]["delete_candidate_count"], 0)
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        self.assertEqual(manifest["scope_guard"]["tracked_diff_result"], "PASS_NO_OUTPUT")
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "tools/structure_audit.py",
+                "governance/stage_gates/s4pa/wave1_structure_map.json",
+                "governance/stage_gates/s4pa/reference_graph.json",
+                "governance/stage_gates/s4pa/archive_plan.md",
+                "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+        self.assertIn(
+            "Dynamic imports, shell expansion, runtime generated paths, and external references are not proven by the static reference graph.",
+            manifest["unresolved_risks"],
+        )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

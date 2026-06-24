@@ -1,0 +1,185 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625",
+  "project_id": "CodexProject",
+  "task_id": "S4PAT01",
+  "acceptance_ids": [
+    "ACC-S4PAT01"
+  ],
+  "iteration_id": "ITER-20260625-OTHER8-S4PAT01",
+  "generated_at": "2026-06-25T06:26:18+10:00",
+  "implementation_base_sha": "0985df6c0c34507faa2b41f0af5aead76ca37c99",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:dcded01d9212a64d605d6a695806021a2fe5cb976121b4ae769fb4a72ce6ff8f",
+  "changed_files_declared": [
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pa/wave1_structure_map.json",
+    "governance/stage_gates/s4pa/reference_graph.json",
+    "governance/stage_gates/s4pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pa/wave1_structure_map.json",
+    "governance/stage_gates/s4pa/reference_graph.json",
+    "governance/stage_gates/s4pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pa/wave1_structure_map.json",
+    "governance/stage_gates/s4pa/reference_graph.json",
+    "governance/stage_gates/s4pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pa/wave1_structure_map.json",
+    "governance/stage_gates/s4pa/reference_graph.json",
+    "governance/stage_gates/s4pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "other8_s4pa_structure_baseline",
+    "wave1_tracked_file_reference_graph",
+    "root_noise_baseline",
+    "no_project_file_move",
+    "no_product_runtime_change",
+    "scope_guard_no_forbidden_project_diff"
+  ],
+  "depends_on": [
+    "GOV-OTHER8-S3PDT03-S3-GATE-20260625"
+  ],
+  "stage_gate_status": {
+    "S4PAT01": "PASSED_FOCUSED_LOCAL",
+    "S4PA-GATE": "PARTIAL_BASELINE_ONLY",
+    "project_file_movement": "NOT_STARTED",
+    "product_delivery_readiness": "NOT_PROMOTED"
+  },
+  "next_allowed_task": "S4PAT02",
+  "wave1_projects": [
+    "Alpha",
+    "EVA_OS",
+    "OpMe_System",
+    "whkmSalary"
+  ],
+  "structure_audit_summary": {
+    "source_commit": "0985df6c0c34507faa2b41f0af5aead76ca37c99",
+    "node_count": 1268,
+    "edge_count": 4474,
+    "tracked_file_counts": {
+      "Alpha": 140,
+      "EVA_OS": 1009,
+      "OpMe_System": 89,
+      "whkmSalary": 30
+    },
+    "root_file_counts": {
+      "Alpha": 10,
+      "EVA_OS": 19,
+      "OpMe_System": 8,
+      "whkmSalary": 10
+    },
+    "delete_candidate_count": 0
+  },
+  "stop_conditions": {
+    "unknown_file_marked_delete": false,
+    "archive_location_runtime_written": false,
+    "project_files_moved": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "tracked_diff_command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT",
+    "changed_scope_command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main"
+  },
+  "model_delta": "NOT_CHANGED: S4PAT01 adds root governance structure evidence only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No project product version changes. S4PAT01 does not move, archive, delete, or rewrite project files.",
+  "test_commands": [
+    "python tools/structure_audit.py --projects Alpha EVA_OS OpMe_System whkmSalary",
+    "python tools/structure_audit.py --projects Alpha EVA_OS OpMe_System whkmSalary --check",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pat01_wave1_structure_map_and_manifest -q",
+    "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/stage_gates/s4pa/wave1_structure_map.json",
+    "python -m json.tool governance/stage_gates/s4pa/reference_graph.json",
+    "python -m json.tool governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python tools/structure_audit.py --projects Alpha EVA_OS OpMe_System whkmSalary",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Generated wave1_structure_map.json, reference_graph.json, and archive_plan.md for 4 Wave 1 projects."
+    },
+    {
+      "command": "python tools/structure_audit.py --projects Alpha EVA_OS OpMe_System whkmSalary --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Generated outputs are stable on disk; node_count=1268; edge_count=4474."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pat01_wave1_structure_map_and_manifest -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 focused S4PAT01 governance test; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed_files=6; root_governance_changed=true; selected_project_count=8; root_scope_excluded_projects=[EEI, arxiv-daily-push]."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 1,
+      "result": "EXPECTED_PRECOMMIT_DIRTY_TREE",
+      "observed": "Must rerun after commit for zero_diff.clean=true evidence."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root checked; projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push; errors=0; warnings=0."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No output; forbidden project tracked diff is zero."
+    }
+  ],
+  "evidence_refs": [
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pa/wave1_structure_map.json",
+    "governance/stage_gates/s4pa/reference_graph.json",
+    "governance/stage_gates/s4pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S4PAT01 Wave 1 structure map and reference graph baseline",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "summary": "S4PAT01 establishes a Wave 1 tracked-file structure map, static reference graph, and root noise baseline for Alpha, EVA_OS, OpMe_System, and whkmSalary. It deliberately performs no file moves, no archive writes, no deletions, and no product behavior changes.",
+  "rollback": "Remove tools/structure_audit.py, governance/stage_gates/s4pa outputs, this manifest, and the focused test. No project paths need restoration because S4PAT01 does not move files.",
+  "unresolved_risks": [
+    "Dynamic imports, shell expansion, runtime generated paths, and external references are not proven by the static reference graph.",
+    "S4PAT02 still must bind checksums, archive manifest, and rollback list before any physical structure migration.",
+    "S4PB/S4PC still must migrate each project independently with focused tests.",
+    "Product delivery readiness is not promoted by S4PAT01.",
+    "EEI and arxiv-daily-push remain out of Other8 Wave 1 scope."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
