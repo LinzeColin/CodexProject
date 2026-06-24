@@ -9,9 +9,10 @@ Governance spec version: `1.0.0`
 - Product version status: `provisional`
 - Current phase: `B`
 - Current gate: `GOV-SEMANTIC-OPME-in-progress`
-- Confirmed iterations: 2
+- Confirmed iterations: 3
 - Reconstructed development events: 1
-- Current task: `GOV-SEMANTIC-OPME-001`
+- Latest remediation task: `S3PCT01`
+- Current product task: `TASK-OPME-B-001`
 - Blockers: `TASK-OPME-B-001` for calibration, prompt/provider governance, and signoff evidence.
 
 ## Confirmed Iterations
@@ -52,6 +53,25 @@ Governance spec version: `1.0.0`
 - Rollback: revert semantic registry fields, reset `governance/projects.yaml` OpMe semantic coverage to planned, and remove `governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json`.
 - Next step: run local validation and bind CI evidence after merge.
 
+### `ITER-20260624-OPME-S3PCT01`
+
+- Date: 2026-06-24
+- Fact level: VERIFIED
+- Version before: `1.0.0`
+- Version after: `1.0.0`
+- Base commit: `e1e00541933529e54909b92ecf07cc0f9e9d015b`
+- Result commit: `PENDING`
+- Task IDs: `S3PCT01`, `ACC-S3PCT01`
+- Goal: verify OpMe startup/stop dependency fallback, launcher cleanup, and SQLite save/recovery behavior without production connections.
+- Model changes: no diagnostic scoring formula or LLM routing behavior changed.
+- Parameter changes: no active parameter value changed.
+- Commands: lifecycle unittest, bash syntax checks for runtime scripts, py_compile for config/db/test, and existing OpMe analysis test.
+- Test results: lifecycle contract exit 0 with 4 tests; shell syntax exit 0; py_compile exit 0; existing `test_analysis.py` remains blocked locally by missing `pydantic`.
+- Success criteria: runtime entrypoints fail fast with explicit dependency bootstrap commands, stale/invalid launcher PID files are cleaned from a temp runtime, and SQLite persistence can recover from a temp database path.
+- Remaining risks: full API/backend tests still require a dependency-prepared environment with `pydantic` and `fastapi`; production Docker/browser/provider runtime was not started.
+- Rollback: revert S3PCT01 code, scripts, tests, stage-gate evidence, rendered governance files, and run manifest.
+- Next step: continue to `S3PCT02` for PFI lifecycle/cache/SQLite/resume stability.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-OPME-20260619-001`: project import/continuity reconstructed from Git history and legacy notes; not counted as confirmed iteration.
@@ -72,3 +92,6 @@ Governance spec version: `1.0.0`
 | `python3 -m pytest tests/governance/test_project_governance_validator.py -q` | PASS | exit 0; 50 passed |
 | `PYTHONPATH=. python3 -m pytest tests/test_analysis.py -q` | BLOCKED | exit 2; `pydantic` missing in current environment |
 | `PYTHONPATH=. python3 -m pytest tests/test_api.py -q` | BLOCKED | exit 2; `fastapi` missing in current environment |
+| `python -B -m unittest OpMe_System.backend.tests.test_lifecycle_contract -q` | PASS | exit 0; 4 lifecycle contract tests |
+| `bash -n OpMe_System/scripts/run_local_services.sh OpMe_System/scripts/stop_local_services.sh OpMe_System/scripts/smoke_test.sh OpMe_System/scripts/dev.sh` | PASS | exit 0 |
+| `python -B -m py_compile OpMe_System/backend/app/core/config.py OpMe_System/backend/app/services/db.py OpMe_System/backend/tests/test_lifecycle_contract.py` | PASS | exit 0 |
