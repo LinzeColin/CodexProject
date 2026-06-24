@@ -1,0 +1,192 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S3PDT03-S3-GATE-20260625",
+  "project_id": "CodexProject",
+  "task_id": "S3PDT03",
+  "acceptance_ids": [
+    "ACC-S3PDT03"
+  ],
+  "iteration_id": "ITER-20260625-OTHER8-S3PDT03",
+  "generated_at": "2026-06-25T06:11:53+10:00",
+  "implementation_base_sha": "f7e87c4143d4f4ab4a6be8c0247fe06dbd07fed7",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:476a6763bae626325fd69de9a2fc2a490c6dd895af1bbf6af29cadacaa51851b",
+  "changed_files_declared": [
+    "governance/stage_gates/s3pd/s3_gate_report.md",
+    "governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/stage_gates/s3pd/s3_gate_report.md",
+    "governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s3pd/s3_gate_report.md",
+    "governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "governance/stage_gates/s3pd/s3_gate_report.md",
+    "governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "other8_s3_gate_execution",
+    "focused_regression_gate",
+    "scope_guard_no_forbidden_project_diff",
+    "no_product_runtime_change",
+    "no_stage4_structure_migration",
+    "owner_truth_preserved"
+  ],
+  "stage_gate_status": {
+    "S3PDT03": "PASSED_FOCUSED_LOCAL",
+    "S3PD-GATE": "PASSED_FOCUSED_LOCAL",
+    "S3-GATE": "PASSED_FOCUSED_REGRESSION_FOR_S4_ENTRY",
+    "product_delivery_readiness": "NOT_PROMOTED"
+  },
+  "next_allowed_task": "S4PAT01",
+  "dependency_task_ids": [
+    "S3PAT03",
+    "S3PBT03",
+    "S3PCT01",
+    "S3PCT02",
+    "S3PCT03",
+    "S3PDT01",
+    "S3PDT02"
+  ],
+  "dependency_manifests": [
+    "governance/run_manifests/GOV-OTHER8-S3PAT03-WHKM-ROUNDING-REGRESSION-20260624.json",
+    "governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json",
+    "governance/run_manifests/GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json",
+    "governance/run_manifests/GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json",
+    "governance/run_manifests/GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json",
+    "governance/run_manifests/GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json",
+    "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json"
+  ],
+  "dependency_gate_summary": [
+    {
+      "task_id": "S3PAT03",
+      "project_id": "whkmSalary",
+      "result": "PASS_FOCUSED_LOCAL",
+      "residual": "Technical rounding policy only; payroll/tax policy and historical reconciliation remain unapproved."
+    },
+    {
+      "task_id": "S3PBT03",
+      "project_id": "Alpha",
+      "result": "PASS_FOCUSED_LOCAL",
+      "residual": "No real broker path, production database, or live trading readiness."
+    },
+    {
+      "task_id": "S3PCT01",
+      "project_id": "OpMe_System",
+      "result": "PASS_FOCUSED_LOCAL_WITH_DEPENDENCY_CAVEATS",
+      "residual": "Full API validation requires dependency-prepared environment."
+    },
+    {
+      "task_id": "S3PCT02",
+      "project_id": "PFI_BIG_DATA_SIMULATOR",
+      "result": "PASS_FOCUSED_LOCAL_WITH_PYTEST_BLOCKED",
+      "residual": "Synthetic bounded workload only; full pytest unavailable locally."
+    },
+    {
+      "task_id": "S3PCT03",
+      "project_id": "Serenity-Alipay",
+      "result": "PASS_FOCUSED_LOCAL_WITH_PYTEST_BLOCKED",
+      "residual": "Mocked OpenD/package paths only; full pytest unavailable locally."
+    },
+    {
+      "task_id": "S3PDT01",
+      "project_id": "OpenAIDatabase",
+      "result": "PASS_FOCUSED_LOCAL_WITH_PYTEST_BLOCKED",
+      "residual": "Synthetic private data only; no owner data ingestion or production private export approval."
+    },
+    {
+      "task_id": "S3PDT02",
+      "project_id": "FIFA",
+      "result": "PASS_FOCUSED_LOCAL_WITH_WINDOWS_FCNTL_STUB",
+      "residual": "Synthetic fixtures only; no real TAB, private My Bets, wagering, or delivery readiness."
+    }
+  ],
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "tracked_diff_command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT",
+    "changed_scope_command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "roadmap_scope_guard_note": "tools/scope_guard.py does not exist in the current repository; S3PDT03 uses current lean_governance changed-scope plus explicit forbidden-project diff checks."
+  },
+  "model_delta": "NOT_CHANGED: S3PDT03 adds root governance gate evidence only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No project product version changes. S3PDT03 is a root governance gate report.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pdt03_s3_gate_report_and_manifest -q",
+    "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-OTHER8-S3PDT03-S3-GATE-20260625.json",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s3pdt03_s3_gate_report_and_manifest -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 1 focused S3PDT03 governance test; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "changed_files=3; root_governance_changed=true; selected_project_count=8; root_scope_excluded_projects=[EEI, arxiv-daily-push]."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 1,
+      "result": "EXPECTED_PRECOMMIT_DIRTY_TREE",
+      "observed": "Precommit functional sections passed with validation.exit_code=0, but command exit_code=1 because zero_diff.clean=false while these S3PDT03 files were intentionally uncommitted. Must rerun after commit for clean=true evidence."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root checked; projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push; errors=0; warnings=0."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No output; forbidden project tracked diff is zero."
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s3pd/s3_gate_report.md",
+    "governance/stage_gates/s3pa/rounding_decision.md",
+    "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+    "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+    "governance/stage_gates/s3pc/pfi_persistence_recovery.log",
+    "governance/stage_gates/s3pc/pfi_process_cleanup.log",
+    "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+    "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+    "governance/stage_gates/s3pd/privacy_scan.log",
+    "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S3PDT03 focused S3 regression gate and forbidden-scope guard",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "summary": "S3PDT03 executes the Other8 S3 gate: all seven dependent focused regression tasks have evidence, forbidden project diff is zero, and S4PAT01 may start as a structure-only next task. Product delivery readiness and owner policy approvals are not promoted.",
+  "rollback": "Remove this S3PDT03 gate report, manifest, and focused test. Keep all prior S3 task evidence unchanged.",
+  "unresolved_risks": [
+    "Product delivery readiness is not promoted by S3PDT03.",
+    "whkmSalary payroll/tax/statutory policy source and historical reconciliation remain not owner-approved.",
+    "Full dependency-prepared pytest suites remain unproven where prior task manifests recorded missing pytest or platform modules.",
+    "PFI, Serenity, FIFA, OpenAIDatabase, Alpha, and OpMe production/external side-effect readiness remains outside S3PDT03.",
+    "S4 structure work must remain reversible and one project/task/acceptance per PR."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
