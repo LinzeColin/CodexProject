@@ -4242,6 +4242,57 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s3pbt01_alpha_atomic_storage_manifest_and_gate_evidence(self) -> None:
+        atomic_log = ROOT / "governance" / "stage_gates" / "s3pb" / "atomic_write_tests.log"
+        concurrency_log = ROOT / "governance" / "stage_gates" / "s3pb" / "concurrency_tests.log"
+        self.assertTrue(atomic_log.is_file())
+        self.assertTrue(concurrency_log.is_file())
+        atomic_text = atomic_log.read_text(encoding="utf-8")
+        concurrency_text = concurrency_log.read_text(encoding="utf-8")
+        self.assertIn("S3PBT01", atomic_text)
+        self.assertIn("os.replace", atomic_text)
+        self.assertIn("No module named pytest", atomic_text)
+        self.assertIn("Windows cross-process", concurrency_text)
+        self.assertIn("S3PBT02/S3PBT03", concurrency_text)
+        self.assertIn("does not enable or approve any live broker", concurrency_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "Alpha")
+        self.assertEqual(manifest["task_id"], "S3PBT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PBT01"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "Alpha/backend/app/services/atomic_json_store.py",
+            "Alpha/backend/app/services/approval_queue.py",
+            "Alpha/backend/app/services/paper_broker.py",
+            "Alpha/backend/app/services/paper_trading_loop.py",
+            "Alpha/tests/test_approval_queue.py",
+            "Alpha/tests/test_paper_broker_persistence.py",
+            "governance/stage_gates/s3pb/atomic_write_tests.log",
+            "governance/stage_gates/s3pb/concurrency_tests.log",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertIn(
+            "S3PBT01 does not complete shutdown, timeout, force-termination, stale-PID, or write-after-stop tests.",
+            manifest["unresolved_risks"],
+        )
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("No module named pytest", observed)
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

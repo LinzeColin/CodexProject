@@ -145,3 +145,19 @@ tasks:
     rollback: "Revert semantic columns/fields, reset governance/projects.yaml Alpha semantic_coverage to planned, and remove GOV-SEMANTIC-ALPHA-EXTRACT-001 manifest if validation fails."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "S3PBT01"
+    phase: "S3PB"
+    objective: "为 ApprovalQueue/PaperBroker 建立原子存储与锁策略。"
+    scope: ["Alpha/backend/app/services/atomic_json_store.py", "ApprovalQueue persisted enqueue/read paths", "PaperBroker persisted submit/save paths", "paper loop persisted state integration", "thread and Windows cross-process smoke evidence"]
+    non_scope: ["real broker path", "live trading activation", "AutoPaperAgent cancellation", "start/stop PID cleanup", "force termination", "writes after stop"]
+    status: "completed"
+    dependencies: ["S2PCT03"]
+    required_files: ["Alpha/backend/app/services/atomic_json_store.py", "Alpha/backend/app/services/approval_queue.py", "Alpha/backend/app/services/paper_broker.py", "Alpha/backend/app/services/paper_trading_loop.py", "Alpha/tests/test_approval_queue.py", "Alpha/tests/test_paper_broker_persistence.py", "Alpha/tests/test_paper_trading_loop.py", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log", "governance/run_manifests/GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json"]
+    acceptance_ids: ["ACC-S3PBT01"]
+    test_commands: ["python -B -m py_compile Alpha\\backend\\app\\services\\atomic_json_store.py Alpha\\backend\\app\\services\\approval_queue.py Alpha\\backend\\app\\services\\paper_broker.py Alpha\\backend\\app\\services\\paper_trading_loop.py Alpha\\tests\\test_approval_queue.py Alpha\\tests\\test_paper_broker_persistence.py Alpha\\tests\\test_paper_trading_loop.py", "python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt01_alpha_atomic_smoke.py", "python -B scripts\\validate_semantic_extractors.py Alpha", "python -B -m pytest Alpha\\tests -k \"queue or broker\" -q"]
+    test_results: ["PASS; py_compile exit 0", "PASS; thread and Windows cross-process queue/broker smoke passed", "PASS; semantic_parameters_checked=42 semantic_formulas_checked=9", "NOT_RUN_LOCAL_TOOL_UNAVAILABLE; No module named pytest"]
+    evidence_refs: ["governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log", "governance/run_manifests/GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json"]
+    risk: "S3PBT01 proves serialized atomic queue/broker persistence only; shutdown/stop and POSIX runtime CI coverage remain separate evidence."
+    rollback: "Revert atomic_json_store.py, ApprovalQueue/PaperBroker/paper loop persistence edits, S3PBT01 tests, evidence logs, rendered governance files, and the S3PBT01 run manifest; fall back to single-process entry until S3PB resumes."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"

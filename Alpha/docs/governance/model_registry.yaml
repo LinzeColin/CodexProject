@@ -86,52 +86,52 @@ models:
   - model_id: "MOD-005"
     name: "Paper trading loop"
     kind: "deterministic_workflow_model"
-    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets, fill paper orders, and emit audit payloads."
+    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic storage, fill persisted paper orders through a broker transaction, and emit audit payloads."
     owner: "Alpha"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "paper-loop-v0"
+    model_version: "paper-loop-v0.0.1-atomic-storage"
     assumptions: ["ASM-001", "ASM-002"]
     formula_ids: ["FORM-005"]
     parameter_ids: ["PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037"]
     inputs: ["GovernorPolicy", "price fixture", "approval queue", "paper broker state"]
     outputs: ["run result", "OrderIntent", "risk check", "approval queue result", "paper portfolio", "audit events"]
-    code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42"]
-    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8", "Alpha/tests/test_dashboard_state.py:8"]
-    evidence_refs: ["Alpha/configs/agent_loop.yaml:1"]
+    code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42", "Alpha/backend/app/services/paper_trading_loop.py:59", "Alpha/backend/app/services/approval_queue.py:19", "Alpha/backend/app/services/paper_broker.py:44"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8", "Alpha/tests/test_paper_trading_loop.py:75", "Alpha/tests/test_approval_queue.py:45", "Alpha/tests/test_paper_broker_persistence.py:19"]
+    evidence_refs: ["Alpha/configs/agent_loop.yaml:1", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log"]
   - model_id: "MOD-006"
     name: "Paper broker accounting"
     kind: "business_calculation_model"
-    purpose: "Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity."
+    purpose: "Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity with serialized atomic persistence for shared JSON state."
     owner: "Alpha"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "paper-broker-v0"
+    model_version: "paper-broker-v0.0.1-atomic-storage"
     assumptions: ["ASM-001"]
     formula_ids: ["FORM-006"]
     parameter_ids: ["PARAM-038", "PARAM-039", "PARAM-040", "PARAM-041"]
     inputs: ["PaperOrder", "mark prices", "previous paper state"]
     outputs: ["filled or rejected result", "portfolio snapshot"]
-    code_refs: ["Alpha/backend/app/services/paper_broker.py:43", "Alpha/backend/app/services/paper_broker.py:83"]
-    test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4", "Alpha/tests/test_paper_trading_loop.py:49"]
-    evidence_refs: ["Alpha/backend/app/services/paper_broker.py:20"]
+    code_refs: ["Alpha/backend/app/services/paper_broker.py:44", "Alpha/backend/app/services/paper_broker.py:58", "Alpha/backend/app/services/paper_broker.py:63", "Alpha/backend/app/services/atomic_json_store.py:31"]
+    test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4", "Alpha/tests/test_paper_broker_persistence.py:19", "Alpha/tests/test_paper_broker_persistence.py:42"]
+    evidence_refs: ["Alpha/backend/app/services/paper_broker.py:21", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log"]
   - model_id: "MOD-007"
     name: "Approval queue freshness"
     kind: "deterministic_rule_engine"
-    purpose: "Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability."
+    purpose: "Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability while reloading persisted queue state under lock."
     owner: "Alpha"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "approval-freshness-v0"
+    model_version: "approval-freshness-v0.0.1-atomic-storage"
     assumptions: ["ASM-001"]
     formula_ids: ["FORM-007"]
     parameter_ids: ["PARAM-042", "PARAM-043", "PARAM-044"]
     inputs: ["ticket status", "expires_at", "current UTC time"]
     outputs: ["freshness", "actionability", "queue summary counts"]
     unknown_task_ids: ["TASK-ALPHA-B-001"]
-    code_refs: ["Alpha/backend/app/services/approval_queue.py:34", "Alpha/backend/app/services/approval_queue.py:59"]
-    test_refs: ["Alpha/tests/test_approval_queue.py:17", "Alpha/tests/test_dashboard_state.py:45"]
-    evidence_refs: ["Alpha/docs/decision_log.md:31"]
+    code_refs: ["Alpha/backend/app/services/approval_queue.py:19", "Alpha/backend/app/services/approval_queue.py:36", "Alpha/backend/app/services/approval_queue.py:49", "Alpha/backend/app/services/atomic_json_store.py:31"]
+    test_refs: ["Alpha/tests/test_approval_queue.py:17", "Alpha/tests/test_approval_queue.py:45", "Alpha/tests/test_approval_queue.py:63", "Alpha/tests/test_dashboard_state.py:45"]
+    evidence_refs: ["Alpha/docs/decision_log.md:31", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log"]
   - model_id: "MOD-008"
     name: "Strategy DSL safety validation"
     kind: "deterministic_rule_engine"

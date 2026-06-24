@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
+
+from backend.app.services.atomic_json_store import json_transaction, read_json, write_json_atomic
 
 
 class ApprovalQueue:
@@ -13,9 +14,19 @@ class ApprovalQueue:
         self.path = Path(path) if path else None
         self._tickets: list[dict] = []
         if self.path and self.path.exists():
-            self._tickets = json.loads(self.path.read_text(encoding="utf-8"))
+            self._tickets = list(read_json(self.path, default=[]))
 
     def enqueue(self, ticket: dict) -> dict:
+        if self.path:
+            with json_transaction(self.path, default=[]) as transaction:
+                tickets = list(transaction.data)
+                if any(item.get("ticket_id") == ticket.get("ticket_id") for item in tickets):
+                    self._tickets = tickets
+                    return {"status": "duplicate", "ticket": ticket}
+                tickets.append(ticket)
+                transaction.write(tickets)
+                self._tickets = tickets
+                return {"status": "queued", "ticket": ticket}
         if any(item.get("ticket_id") == ticket.get("ticket_id") for item in self._tickets):
             return {"status": "duplicate", "ticket": ticket}
         self._tickets.append(ticket)
@@ -23,15 +34,21 @@ class ApprovalQueue:
         return {"status": "queued", "ticket": ticket}
 
     def list_tickets(self) -> list[dict]:
+        if self.path:
+            self._tickets = list(read_json(self.path, default=[]))
         return list(self._tickets)
 
     def latest(self, limit: int = 20) -> list[dict]:
+        if self.path:
+            self._tickets = list(read_json(self.path, default=[]))
         return self._tickets[-limit:]
 
     def latest_with_freshness(self, limit: int = 20, *, now: datetime | None = None) -> list[dict]:
         return [annotate_ticket_freshness(ticket, now=now) for ticket in self.latest(limit)]
 
     def summary(self, *, now: datetime | None = None) -> dict:
+        if self.path:
+            self._tickets = list(read_json(self.path, default=[]))
         annotated = [annotate_ticket_freshness(ticket, now=now) for ticket in self._tickets]
         fresh_pending = [ticket for ticket in annotated if ticket.get("actionability") == "fresh_pending_owner_approval"]
         expired_pending = [ticket for ticket in annotated if ticket.get("actionability") == "expired_owner_approval"]
@@ -53,7 +70,7 @@ class ApprovalQueue:
         if not self.path:
             return
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(json.dumps(self._tickets, indent=2, sort_keys=True), encoding="utf-8")
+        write_json_atomic(self.path, self._tickets)
 
 
 def annotate_ticket_freshness(ticket: dict, *, now: datetime | None = None) -> dict:

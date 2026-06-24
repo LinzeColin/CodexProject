@@ -49,17 +49,17 @@ class PaperTradingLoop:
 
         paper_result = {"status": "skipped", "reason": risk_check["reason"]}
         if risk_check.get("allowed"):
-            paper_result = self.paper_broker.submit_order(
-                PaperOrder(
-                    idempotency_key=intent.idempotency_key,
-                    symbol=intent.symbol,
-                    side=intent.side,
-                    quantity=intent.quantity,
-                    price=intent.estimated_price,
-                )
+            order = PaperOrder(
+                idempotency_key=intent.idempotency_key,
+                symbol=intent.symbol,
+                side=intent.side,
+                quantity=intent.quantity,
+                price=intent.estimated_price,
             )
             if self.paper_state_path:
-                self.paper_broker.save(self.paper_state_path)
+                paper_result, self.paper_broker = PaperBroker.submit_order_to_path(self.paper_state_path, order)
+            else:
+                paper_result = self.paper_broker.submit_order(order)
 
         mark_prices = latest_mark_prices(self.price_path)
         portfolio = self.paper_broker.portfolio_snapshot(mark_prices)

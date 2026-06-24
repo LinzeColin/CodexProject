@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `14`
+- evidence_ref_count: `17`
 - roadmap_test_command_count: `1`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -58,30 +58,30 @@
 
 ### MOD-005 Paper trading loop
 
-- purpose: `Generate paper order intents, risk-check them, enqueue broker-ready tickets, fill paper orders, and emit audit payloads.`
+- purpose: `Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic queue storage, fill persisted paper orders through a locked broker transaction, and emit audit payloads.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-005`
 - parameter_refs: `PARAM-031, PARAM-032, PARAM-033, PARAM-034, PARAM-035, PARAM-036, PARAM-037`
-- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
 
 ### MOD-006 Paper broker accounting
 
-- purpose: `Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity.`
+- purpose: `Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity with serialized atomic persistence for shared JSON state.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-006`
 - parameter_refs: `PARAM-038, PARAM-039, PARAM-040, PARAM-041`
-- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC, EVID-ALPHA-S3PBT01-ATOMIC-LOG, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
 
 ### MOD-007 Approval queue freshness
 
-- purpose: `Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability.`
+- purpose: `Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability while reloading persisted queue state under lock.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-007`
 - parameter_refs: `PARAM-042, PARAM-043, PARAM-044`
-- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC`
+- evidence_refs: `EVID-ALPHA-MODEL-REGISTRY, EVID-ALPHA-MODEL-SPEC, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
 
 ### MOD-008 Strategy DSL safety validation
 
@@ -130,20 +130,20 @@
 ### FORM-005
 
 - model_id: `MOD-005`
-- expression_or_pseudocode: `Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket; if risk.allowed submit PaperOrder; return run result and audit payload.`
-- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+- expression_or_pseudocode: `Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket through locked atomic queue storage; if risk.allowed submit PaperOrder through locked persisted broker transaction when paper_state_path exists; return run result and audit payload.`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY, EVID-ALPHA-S3PBT01-ATOMIC-LOG, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
 
 ### FORM-006
 
 - model_id: `MOD-006`
-- expression_or_pseudocode: `Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Portfolio total_equity=cash+sum(quantity*mark_price).`
-- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+- expression_or_pseudocode: `Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Persisted submit uses a locked read-submit-atomic-replace transaction. Portfolio total_equity=cash+sum(quantity*mark_price).`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY, EVID-ALPHA-S3PBT01-ATOMIC-LOG, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
 
 ### FORM-007
 
 - model_id: `MOD-007`
 - expression_or_pseudocode: `seconds_until_expiry=int(expires_at-now); freshness='fresh' if seconds_until_expiry>0 else 'expired'; pending tickets map to fresh_pending_owner_approval or expired_owner_approval; blocked tickets map to blocked_by_risk.`
-- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY`
+- evidence_refs: `EVID-ALPHA-FORMULA-REGISTRY, EVID-ALPHA-S3PBT01-ATOMIC-LOG, EVID-ALPHA-S3PBT01-CONCURRENCY-LOG`
 
 ### FORM-008
 

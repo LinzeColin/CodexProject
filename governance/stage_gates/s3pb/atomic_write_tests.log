@@ -1,0 +1,30 @@
+S3PBT01 Alpha atomic write evidence
+timestamp: 2026-06-24T00:00:00+10:00
+scope: Alpha ApprovalQueue and PaperBroker JSON persistence only
+acceptance: ACC-S3PBT01
+
+Acceptance boundary:
+- ApprovalQueue file writes use json_transaction over a lock file and atomic temp-file replace.
+- PaperBroker.save and PaperBroker.submit_order_to_path use locked atomic JSON writes.
+- Existing JSON remains intact when os.replace fails.
+- Temporary .tmp files are removed after simulated replace failure.
+- No live broker path was introduced; live_trading.enabled remains false by committed policy.
+
+Commands:
+- python -B -m py_compile Alpha\backend\app\services\atomic_json_store.py Alpha\backend\app\services\approval_queue.py Alpha\backend\app\services\paper_broker.py Alpha\backend\app\services\paper_trading_loop.py Alpha\tests\test_approval_queue.py Alpha\tests\test_paper_broker_persistence.py Alpha\tests\test_paper_trading_loop.py
+  result: PASS
+  observed: exit 0.
+- python -B C:\Users\linze\Documents\Codex\2026-06-23\xian\work\s3pbt01_alpha_atomic_smoke.py
+  result: PASS
+  observed: S3PBT01 alpha atomic storage smoke: PASS.
+- python -B -m pytest Alpha\tests -k "queue or broker" -q
+  result: NOT_RUN_LOCAL_TOOL_UNAVAILABLE
+  observed: No module named pytest.
+
+Simulated failure cases covered by the smoke:
+- ApprovalQueue os.replace failure preserves the original ticket list and leaves no .approval_queue_failure.json.*.tmp file.
+- PaperBroker os.replace failure preserves the original cash/position/seen_keys snapshot and leaves no .paper_portfolio_failure.json.*.tmp file.
+
+Not claimed:
+- Shutdown, timeout, force-termination, stale PID, or write-after-stop behavior is not covered by S3PBT01 and remains for S3PBT02/S3PBT03.
+- Broker paper API or real-money live execution readiness is not claimed.

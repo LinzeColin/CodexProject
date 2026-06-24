@@ -71,3 +71,4 @@ Task detail fields:
 | 2026-06-21T13:51:43Z | semantic_extraction | Semantic extractor checked 42 parameters and 9 formulas, while 13 branch-rule parameters remained HUMAN_REVIEW_REQUIRED. | GOV-SEMANTIC-ALPHA-001 | RECONSTRUCTED |
 | 2026-06-22T00:24:25Z | assurance_snapshot | Review6 assurance snapshot separated structural completeness from partial implementation congruence and failed delivery readiness. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | PROPOSED |
 | 2026-06-24T00:00:00+10:00 | lean_v2_migration | Review9 S5PAT01 created Alpha Lean v2 project, roadmap, and event canonical files and rendered three Chinese human entry files from canonical facts only. | S5PAT01 | PROPOSED |
+| 2026-06-24T00:00:00+10:00 | runtime_atomic_storage_hardening | S3PBT01 serializes queue and paper broker JSON persistence with file locks and atomic replace, with threaded and Windows cross-process smoke evidence. | S3PBT01 | EXTRACTED |

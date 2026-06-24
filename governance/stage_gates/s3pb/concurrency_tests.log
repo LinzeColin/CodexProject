@@ -1,0 +1,28 @@
+S3PBT01 Alpha concurrency evidence
+timestamp: 2026-06-24T00:00:00+10:00
+scope: Alpha queue and paper broker persisted JSON concurrency
+acceptance: ACC-S3PBT01
+
+Implementation under test:
+- Alpha/backend/app/services/atomic_json_store.py::locked_file
+- Alpha/backend/app/services/atomic_json_store.py::json_transaction
+- Alpha/backend/app/services/atomic_json_store.py::write_json_atomic
+- Alpha/backend/app/services/approval_queue.py::ApprovalQueue.enqueue
+- Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order_to_path
+- Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop.run_once persisted-state path
+
+Observed results:
+- Threaded ApprovalQueue smoke: 40 concurrent enqueues from separate ApprovalQueue(path) instances; result 40 queued, 40 persisted ticket IDs, no lost update.
+- Threaded PaperBroker smoke: 40 concurrent submit_order_to_path calls; result 40 filled, cash 600, TLT position 40, 40 trade_log rows, no lost update.
+- Cross-process ApprovalQueue smoke on Windows: 16 independent Python processes wrote one shared queue file; result 16 persisted ticket IDs, no lost update.
+- Cross-process PaperBroker smoke on Windows: 16 independent Python processes submitted one shared broker state file; result cash 840, TLT position 16, 16 seen_keys, 16 trade_log rows.
+- Repository pytest cases were added for threaded queue/broker concurrency and paper-loop shared persisted state. Local pytest execution was not possible because pytest is not installed.
+
+Cross-platform note:
+- The current machine proves Windows cross-process semantics through msvcrt.locking.
+- The POSIX path uses fcntl.flock but is not executed in this Windows environment.
+- If CI later runs on POSIX, the same queue/broker tests should exercise that path.
+
+Not claimed:
+- This evidence does not cover AutoPaperAgent cancellation, stop script PID cleanup, force termination, or writes after stop; those remain S3PBT02/S3PBT03.
+- This evidence does not enable or approve any live broker order submission.

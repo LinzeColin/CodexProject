@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Set
+
+from backend.app.services.atomic_json_store import json_transaction, read_json, write_json_atomic
 
 
 @dataclass
@@ -27,7 +28,11 @@ class PaperBroker:
         p = Path(path)
         if not p.exists():
             return cls(cash=initial_cash)
-        data = json.loads(p.read_text(encoding="utf-8"))
+        data = read_json(p, default={})
+        return cls.from_snapshot(data, initial_cash=initial_cash)
+
+    @classmethod
+    def from_snapshot(cls, data: dict, *, initial_cash: float = 10000.0) -> "PaperBroker":
         return cls(
             cash=float(data.get("cash", initial_cash)),
             positions={str(k): float(v) for k, v in data.get("positions", {}).items()},
@@ -35,10 +40,25 @@ class PaperBroker:
             trade_log=list(data.get("trade_log", [])),
         )
 
+    @classmethod
+    def submit_order_to_path(
+        cls,
+        path: str | Path,
+        order: PaperOrder,
+        *,
+        initial_cash: float = 10000.0,
+    ) -> tuple[dict, "PaperBroker"]:
+        with json_transaction(path, default={}) as transaction:
+            broker = cls.from_snapshot(transaction.data or {}, initial_cash=initial_cash)
+            result = broker.submit_order(order)
+            if result["status"] == "filled":
+                transaction.write(broker.snapshot())
+            return result, broker
+
     def save(self, path: str | Path) -> None:
         p = Path(path)
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(self.snapshot(), indent=2, sort_keys=True), encoding="utf-8")
+        write_json_atomic(p, self.snapshot())
 
     def submit_order(self, order: PaperOrder) -> dict:
         if order.idempotency_key in self.seen_keys:

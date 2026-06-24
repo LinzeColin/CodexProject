@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "Alpha"
 project_name: "Alpha"
-summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；不声明实盘就绪。"
+summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；S3PBT01 已把 ApprovalQueue/PaperBroker 本地 JSON 持久化改为锁定事务和原子替换；不声明实盘就绪。"
 version: "0.1.0"
 fact_level: "EXTRACTED"
 owner_role: "model_owner + risk_owner"
@@ -30,6 +30,15 @@ limitations:
       - "EVID-ALPHA-MODEL-SPEC"
       - "EVID-ALPHA-PARAMETER-REGISTRY"
     unknown_task_ids: []
+  -
+    statement: "S3PBT01 只证明本地 queue/broker JSON 持久化的原子性和并发序列化；停止、取消、PID 清理、强制终止和 stop 后不写入仍待 S3PBT02/S3PBT03。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+    unknown_task_ids:
+      - "S3PBT02"
+      - "S3PBT03"
 features:
   -
     feature_id: "FEAT-ALPHA-001"
@@ -125,7 +134,7 @@ features:
   -
     feature_id: "FEAT-ALPHA-004"
     name: "paper trading loop 与 paper broker"
-    description: "生成 paper intent、risk check、ticket queue、paper fill、portfolio snapshot 和 audit payload。"
+    description: "生成 paper intent、risk check、locked ticket queue、locked paper fill、portfolio snapshot 和 audit payload。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -145,18 +154,24 @@ features:
       - "PARAM-041"
     code_refs:
       - "Alpha/backend/app/services/paper_trading_loop.py:42"
-      - "Alpha/backend/app/services/paper_broker.py:43"
+      - "Alpha/backend/app/services/paper_trading_loop.py:59"
+      - "Alpha/backend/app/services/paper_broker.py:44"
+      - "Alpha/backend/app/services/atomic_json_store.py:31"
     test_refs:
       - "Alpha/tests/test_paper_trading_loop.py:8"
+      - "Alpha/tests/test_paper_trading_loop.py:75"
       - "Alpha/tests/test_paper_broker_persistence.py:4"
+      - "Alpha/tests/test_paper_broker_persistence.py:19"
     evidence_refs:
       - "EVID-ALPHA-MODEL-REGISTRY"
       - "EVID-ALPHA-FORMULA-REGISTRY"
       - "EVID-ALPHA-PARAMETER-REGISTRY"
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     feature_id: "FEAT-ALPHA-005"
     name: "审批队列新鲜度与 dashboard actionability"
-    description: "用 expires_at 和当前 UTC 时间区分 fresh、expired、blocked 或 unknown ticket actionability。"
+    description: "用 expires_at 和当前 UTC 时间区分 fresh、expired、blocked 或 unknown ticket actionability，并在文件队列模式下从锁定持久化状态读取。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -166,15 +181,18 @@ features:
       - "PARAM-043"
       - "PARAM-044"
     code_refs:
-      - "Alpha/backend/app/services/approval_queue.py:34"
-      - "Alpha/backend/app/services/approval_queue.py:59"
+      - "Alpha/backend/app/services/approval_queue.py:19"
+      - "Alpha/backend/app/services/approval_queue.py:36"
+      - "Alpha/backend/app/services/approval_queue.py:49"
     test_refs:
       - "Alpha/tests/test_approval_queue.py:17"
+      - "Alpha/tests/test_approval_queue.py:45"
       - "Alpha/tests/test_dashboard_state.py:45"
     evidence_refs:
       - "EVID-ALPHA-MODEL-REGISTRY"
       - "EVID-ALPHA-FORMULA-REGISTRY"
       - "EVID-ALPHA-PARAMETER-REGISTRY"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     feature_id: "FEAT-ALPHA-006"
     name: "Strategy DSL 安全边界"
@@ -343,7 +361,7 @@ models:
   -
     model_id: "MOD-005"
     name: "Paper trading loop"
-    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets, fill paper orders, and emit audit payloads."
+    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic queue storage, fill persisted paper orders through a locked broker transaction, and emit audit payloads."
     status: "active"
     fact_level: "EXTRACTED"
     assumption_ids:
@@ -373,16 +391,21 @@ models:
       - "audit events"
     code_refs:
       - "Alpha/backend/app/services/paper_trading_loop.py:42"
+      - "Alpha/backend/app/services/paper_trading_loop.py:59"
+      - "Alpha/backend/app/services/approval_queue.py:19"
+      - "Alpha/backend/app/services/paper_broker.py:44"
     test_refs:
       - "Alpha/tests/test_paper_trading_loop.py:8"
+      - "Alpha/tests/test_paper_trading_loop.py:75"
       - "Alpha/tests/test_dashboard_state.py:8"
     evidence_refs:
       - "EVID-ALPHA-MODEL-REGISTRY"
       - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     model_id: "MOD-006"
     name: "Paper broker accounting"
-    purpose: "Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity."
+    purpose: "Maintain deterministic paper cash, positions, idempotency, trade log, and portfolio equity with serialized atomic persistence for shared JSON state."
     status: "active"
     fact_level: "EXTRACTED"
     assumption_ids:
@@ -402,18 +425,24 @@ models:
       - "filled or rejected result"
       - "portfolio snapshot"
     code_refs:
-      - "Alpha/backend/app/services/paper_broker.py:43"
-      - "Alpha/backend/app/services/paper_broker.py:83"
+      - "Alpha/backend/app/services/paper_broker.py:44"
+      - "Alpha/backend/app/services/paper_broker.py:58"
+      - "Alpha/backend/app/services/paper_broker.py:63"
+      - "Alpha/backend/app/services/atomic_json_store.py:31"
     test_refs:
       - "Alpha/tests/test_paper_broker_persistence.py:4"
+      - "Alpha/tests/test_paper_broker_persistence.py:19"
+      - "Alpha/tests/test_paper_broker_persistence.py:42"
       - "Alpha/tests/test_paper_trading_loop.py:49"
     evidence_refs:
       - "EVID-ALPHA-MODEL-REGISTRY"
       - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     model_id: "MOD-007"
     name: "Approval queue freshness"
-    purpose: "Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability."
+    purpose: "Classify owner-review tickets as fresh, expired, blocked, or unknown for dashboard actionability while reloading persisted queue state under lock."
     status: "active"
     fact_level: "EXTRACTED"
     assumption_ids:
@@ -433,14 +462,19 @@ models:
       - "actionability"
       - "queue summary counts"
     code_refs:
-      - "Alpha/backend/app/services/approval_queue.py:34"
-      - "Alpha/backend/app/services/approval_queue.py:59"
+      - "Alpha/backend/app/services/approval_queue.py:19"
+      - "Alpha/backend/app/services/approval_queue.py:36"
+      - "Alpha/backend/app/services/approval_queue.py:49"
+      - "Alpha/backend/app/services/atomic_json_store.py:31"
     test_refs:
       - "Alpha/tests/test_approval_queue.py:17"
+      - "Alpha/tests/test_approval_queue.py:45"
+      - "Alpha/tests/test_approval_queue.py:63"
       - "Alpha/tests/test_dashboard_state.py:45"
     evidence_refs:
       - "EVID-ALPHA-MODEL-REGISTRY"
       - "EVID-ALPHA-MODEL-SPEC"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     model_id: "MOD-008"
     name: "Strategy DSL safety validation"
@@ -698,7 +732,7 @@ formulas:
     description: "从 Alpha formula_registry.yaml 抽取的 MOD-005 公式或精确伪代码。"
     status: "active"
     fact_level: "EXTRACTED"
-    expression: "Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket; if risk.allowed submit PaperOrder; return run result and audit payload."
+    expression: "Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket through locked atomic queue storage; if risk.allowed submit PaperOrder through locked persisted broker transaction when paper_state_path exists; return run result and audit payload."
     variables:
       -
         name: "refresh_interval_seconds"
@@ -718,31 +752,39 @@ formulas:
     constraints:
       - "Generated intent selects tradable winner whose latest close <= max_notional when available."
       - "Paper order only submits when risk.allowed is true."
+      - "S3PBT01 serializes persisted queue enqueue and persisted broker submit with process and OS file locks plus atomic replace."
     missing_policy: "If no tradable tournament winner exists, fallback uses the highest-priced eligible fixture candidate or latest sorted price."
     output_range: "status completed; paper_order filled or skipped/rejected."
     code_refs:
       - "Alpha/backend/app/services/paper_trading_loop.py:42"
+      - "Alpha/backend/app/services/paper_trading_loop.py:60"
       - "Alpha/backend/app/services/paper_trading_loop.py:104"
+      - "Alpha/backend/app/services/approval_queue.py:19"
+      - "Alpha/backend/app/services/paper_broker.py:44"
     test_refs:
       - "Alpha/tests/test_paper_trading_loop.py:8"
+      - "Alpha/tests/test_paper_trading_loop.py:75"
+      - "Alpha/tests/test_approval_queue.py:45"
+      - "Alpha/tests/test_paper_broker_persistence.py:19"
     implementation_refs:
       - "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop.run_once"
       - "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop._generate_order_intent"
       - "Alpha/backend/app/services/paper_trading_loop.py::build_default_loop"
       - "Alpha/backend/app/services/paper_trading_loop.py::_select_tradable_winner"
-      - "Alpha/backend/app/services/paper_trading_loop.py::latest_mark_prices"
-      - "Alpha/backend/app/services/order_ticket.py::OrderIntent.create"
-      - "Alpha/backend/app/services/order_ticket.py::BrokerReadyOrderTicket.from_intent"
+      - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.enqueue"
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order_to_path"
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     formula_id: "FORM-006"
     model_id: "MOD-006"
     description: "从 Alpha formula_registry.yaml 抽取的 MOD-006 公式或精确伪代码。"
     status: "active"
     fact_level: "EXTRACTED"
-    expression: "Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Portfolio total_equity=cash+sum(quantity*mark_price)."
+    expression: "Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Persisted submit uses a locked read-submit-atomic-replace transaction. Portfolio total_equity=cash+sum(quantity*mark_price)."
     variables:
       -
         name: "cash"
@@ -763,21 +805,33 @@ formulas:
       - "Idempotency keys cannot repeat."
       - "Buy cannot exceed paper cash."
       - "Sell cannot exceed paper position."
+      - "S3PBT01 persisted broker writes use atomic temp-file replace and lock file serialization."
     missing_policy: "Missing mark price defaults to 0.0 in portfolio snapshot."
     output_range: "filled or rejected; total_equity rounded to 2 decimals."
     code_refs:
-      - "Alpha/backend/app/services/paper_broker.py:43"
-      - "Alpha/backend/app/services/paper_broker.py:83"
+      - "Alpha/backend/app/services/paper_broker.py:44"
+      - "Alpha/backend/app/services/paper_broker.py:58"
+      - "Alpha/backend/app/services/paper_broker.py:63"
+      - "Alpha/backend/app/services/paper_broker.py:103"
+      - "Alpha/backend/app/services/atomic_json_store.py:31"
     test_refs:
       - "Alpha/tests/test_paper_broker_persistence.py:4"
+      - "Alpha/tests/test_paper_broker_persistence.py:19"
+      - "Alpha/tests/test_paper_broker_persistence.py:42"
     implementation_refs:
       - "Alpha/backend/app/services/paper_broker.py::PaperBroker"
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order_to_path"
+      - "Alpha/backend/app/services/paper_broker.py::PaperBroker.save"
       - "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order"
       - "Alpha/backend/app/services/paper_broker.py::PaperBroker.snapshot"
       - "Alpha/backend/app/services/paper_broker.py::PaperBroker.portfolio_snapshot"
+      - "Alpha/backend/app/services/atomic_json_store.py::json_transaction"
+      - "Alpha/backend/app/services/atomic_json_store.py::write_json_atomic"
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     formula_id: "FORM-007"
     model_id: "MOD-007"
@@ -804,22 +858,33 @@ formulas:
     constraints:
       - "Naive datetimes are treated as UTC."
       - "Invalid datetime returns freshness status invalid."
+      - "S3PBT01 queue reads and writes reload under lock so concurrent enqueue does not overwrite existing tickets."
     missing_policy: "Missing expires_at returns freshness status unknown and seconds_until_expiry None."
     output_range: "freshness status in unknown, invalid, fresh, expired; actionability string."
     code_refs:
-      - "Alpha/backend/app/services/approval_queue.py:59"
+      - "Alpha/backend/app/services/approval_queue.py:19"
+      - "Alpha/backend/app/services/approval_queue.py:36"
+      - "Alpha/backend/app/services/approval_queue.py:49"
+      - "Alpha/backend/app/services/atomic_json_store.py:31"
     test_refs:
       - "Alpha/tests/test_approval_queue.py:17"
+      - "Alpha/tests/test_approval_queue.py:45"
+      - "Alpha/tests/test_approval_queue.py:63"
     implementation_refs:
+      - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.enqueue"
       - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest"
       - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest_with_freshness"
       - "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.summary"
       - "Alpha/backend/app/services/approval_queue.py::annotate_ticket_freshness"
       - "Alpha/backend/app/services/approval_queue.py::_freshness"
       - "Alpha/backend/app/services/approval_queue.py::_parse_iso_datetime"
+      - "Alpha/backend/app/services/atomic_json_store.py::json_transaction"
+      - "Alpha/backend/app/services/atomic_json_store.py::read_json"
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     formula_id: "FORM-008"
     model_id: "MOD-008"
@@ -1708,7 +1773,7 @@ parameters:
     unit: "decimal places"
     source: "EXTRACTED from snapshot"
     code_refs:
-      - "Alpha/backend/app/services/paper_broker.py:76"
+      - "Alpha/backend/app/services/paper_broker.py:96"
     config_refs: []
     test_refs:
       - "Alpha/tests/test_paper_broker_persistence.py:12"
@@ -1728,7 +1793,7 @@ parameters:
     unit: "decimal places"
     source: "EXTRACTED from portfolio snapshot"
     code_refs:
-      - "Alpha/backend/app/services/paper_broker.py:95"
+      - "Alpha/backend/app/services/paper_broker.py:115"
     config_refs: []
     test_refs:
       - "Alpha/tests/test_dashboard_state.py:8"
@@ -2086,7 +2151,7 @@ strategies:
   -
     strategy_id: "STRAT-ALPHA-003"
     name: "deterministic paper loop over local state"
-    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录。"
+    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录；S3PBT01 使 queue/broker 文件持久化原子化并串行化。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -2107,6 +2172,8 @@ strategies:
     evidence_refs:
       - "EVID-ALPHA-MODEL-SPEC"
       - "EVID-ALPHA-FORMULA-REGISTRY"
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
   -
     strategy_id: "STRAT-ALPHA-004"
     name: "DSL constraints keep MVP scope narrow"
@@ -2144,6 +2211,16 @@ validations:
     fact_level: "PROPOSED"
     evidence_refs:
       - "EVID-REVIEW9-S5PAT01-MANIFEST"
+  -
+    validation_id: "VAL-ALPHA-S3PBT01-ATOMIC-STORAGE"
+    scope: "ApprovalQueue and PaperBroker atomic JSON persistence"
+    method: "py_compile, semantic extractor, threaded queue/broker smoke, Windows cross-process queue/broker smoke, simulated os.replace failure preservation checks, and local pytest availability probe."
+    status: "PASS_WITH_BLOCKED_PYTEST"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+      - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+      - "EVID-ALPHA-S3PBT01-MANIFEST"
 assurance_summary:
   structural_completeness: "VERIFIED"
   implementation_congruence: "PARTIAL"
@@ -2224,6 +2301,21 @@ evidence_refs:
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
+    kind: "stage_gate_evidence"
+    ref: "governance/stage_gates/s3pb/atomic_write_tests.log"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
+    kind: "stage_gate_evidence"
+    ref: "governance/stage_gates/s3pb/concurrency_tests.log"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-S3PBT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json"
+    fact_level: "EXTRACTED"
 legacy_refs:
   -
     legacy_path: "Alpha/docs/governance/model_registry.yaml"

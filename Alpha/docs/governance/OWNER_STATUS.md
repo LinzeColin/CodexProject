@@ -7,6 +7,7 @@ Alpha 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVE
 ## 2. 本次运行改变了什么
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+S3PBT01 只证明 ApprovalQueue 与 PaperBroker 的本地 JSON 持久化现在通过锁和原子替换避免并发覆盖；它不证明停止/取消流程，也不启用真实 broker 或实盘交易。
 
 ## 3. 为什么重要
 
@@ -78,7 +79,7 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `GOV-SEMANTIC-ALPHA-in-progress`
+- release_gate: `S3PB-GATE-in-progress`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +102,9 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `B / GOV-SEMANTIC-ALPHA-in-progress`
+- phase/gate: `S3PB / S3PB-GATE-in-progress`
 
 ## 17. Next Unique Task
 
-- task_id: `TASK-ALPHA-B-001`
-- reason: Resolve production validation and execution-policy UNKNOWN items before release readiness.
+- task_id: `S3PBT02`
+- reason: S3PBT01 completed atomic queue/broker persistence, but stop/cancel/PID cleanup and no-write-after-stop evidence remains pending before S3PB can pass.

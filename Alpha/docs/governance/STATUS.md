@@ -14,7 +14,7 @@
 - Project: `Alpha`
 - Path: `Alpha`
 - Product version: `0.1.0`
-- Phase/Gate: `B / GOV-SEMANTIC-ALPHA-in-progress`
+- Phase/Gate: `S3PB / S3PB-GATE-in-progress`
 - Models/Formulas/Parameters total: `9 / 9 / 55`
 - Active formulas/parameters: `9 / 55`
 - Machine checked formulas/parameters: `9 / 42`
@@ -35,10 +35,18 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `GOV-SEMANTIC-ALPHA-in-progress`
-- Next executable task: `TASK-ALPHA-B-001`
+- Release gate: `S3PB-GATE-in-progress`
+- Next executable task: `S3PBT02`
 - Pending/stale events: `5`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `5`
 - Unresolved fact IDs: `5`
+
+## S3PBT01 Atomic Storage Update
+
+- Scope: ApprovalQueue and PaperBroker persisted JSON storage only.
+- Result: threaded and Windows cross-process smoke passed for concurrent queue enqueue and persisted broker submit.
+- Atomicity: simulated `os.replace` failure preserves existing queue/broker JSON and removes temporary files.
+- Local pytest: blocked by missing `pytest`; repository tests were added but not executed in this environment.
+- Not covered: AutoPaperAgent cancellation, start/stop PID cleanup, force termination, write-after-stop, broker paper API, or live trading readiness.
