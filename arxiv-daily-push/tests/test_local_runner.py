@@ -269,6 +269,7 @@ class LocalRunnerTests(unittest.TestCase):
             install = (Path(tmp) / "launchd" / "install-local-launchd.sh").read_text(encoding="utf-8")
             self.assertIn('script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"', install)
             self.assertIn('cp "$script_dir/com.linze.adp.local.daily.plist"', install)
+            self.assertIn("launchctl enable gui/$(id -u)/com.linze.adp.local.daily 2>/dev/null || true", install)
             self.assertFalse(validate_local_runner_report(report))
 
     def test_operation_readiness_blocks_until_real_smtp_scheduler_and_latest_run_exist(self) -> None:

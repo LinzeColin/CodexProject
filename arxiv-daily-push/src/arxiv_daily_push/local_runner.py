@@ -786,6 +786,7 @@ def _install_script(plist_names: list[str]) -> str:
         lines.extend(
             [
                 f"cp \"$script_dir/{name}\" \"$HOME/Library/LaunchAgents/{name}\"",
+                f"launchctl enable gui/$(id -u)/{label} 2>/dev/null || true",
                 f"launchctl bootstrap gui/$(id -u) \"$HOME/Library/LaunchAgents/{name}\" 2>/dev/null || launchctl kickstart -k gui/$(id -u)/{label}",
                 f"launchctl enable gui/$(id -u)/{label}",
             ]

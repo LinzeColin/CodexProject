@@ -169,7 +169,7 @@ The append-only machine record is `development_events.jsonl`.
 - Successes: local runner dry-run persists queue, content ledger, reports, and email previews; real SMTP path fails closed without env keys and passes with fake SMTP; write=false does not persist state; launchd package is generated but not installed; generated launchd package now separates health preflight, daily run, and readiness watchdog; readiness refuses to claim stable daily email operation without SMTP enablement, scheduler install evidence, and recent real-send evidence.
 - Failures: None in focused validation.
 - Decisions: Keep GitHub cloud scheduled production disabled; do not install launchd or send real local SMTP in this task.
-- Remaining risks: Owner-controlled local SMTP env/Keychain smoke, launchd install, and one confirmed local run with `real_smtp_sent=true` still need explicit execution before the owner can safely just wait for daily emails; Stage 2 integrated production remains separately blocked by V7.1 P0/P1 gates.
+- Remaining risks: Owner-controlled local SMTP password and one confirmed local run with `real_smtp_sent=true` still need explicit execution before the owner can safely just wait for daily emails; Stage 2 integrated production remains separately blocked by V7.1 P0/P1 gates.
 - Rollback: Revert local runner code, tests, runbooks, S1P5T05 manifest/event, and generated governance files.
 - Next step: Start `S2P1T01` bioRxiv/medRxiv source promotion.
 
