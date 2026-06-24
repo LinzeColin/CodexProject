@@ -2,13 +2,13 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。长期日更运行方式不是 Codex Automation，而是本机 Mac `launchd` + Codex/local Python；当前只能在 `local-runner readiness` 同时通过 SMTP、scheduler 安装证据和最新真实发送证据后，才可宣称“可以等每天邮件”。
+arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。长期日更运行方式不是 Codex Automation，而是本机 Mac `launchd` + Codex/local Python；`local-runner readiness --require-smtp --require-scheduler` 已通过，可以按本机 Stage1 daily runner 等每天邮件。
 
 ## 2. 本次运行改变了什么
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-Stage 1 daily-operation hardening 增加了 `local-runner readiness` 和 health/daily/watchdog 三段本机 launchd 包生成；本机 Stage1-only launchd 已安装并验证三个 label 存在。本机 SMTP password 已写入 Keychain，但 Gmail SMTP 返回 `SMTPAuthenticationError`，因此还没有完成真实 SMTP 发送；没有启用 GitHub cloud schedule。
+Stage 1 daily-operation hardening 增加了 `local-runner readiness` 和 health/daily/watchdog 三段本机 launchd 包生成；本机 Stage1-only launchd 已安装并验证三个 label 存在。本机 SMTP password 已写入 Keychain，真实 `local-runner daily --allow-smtp-send` 已通过且 `real_smtp_sent=true`；没有启用 GitHub cloud schedule。
 
 ## 3. 为什么重要
 
