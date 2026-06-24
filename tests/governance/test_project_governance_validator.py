@@ -3455,6 +3455,62 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("2 of 2", setup)
         self.assertNotIn("generate_governance_dashboard.py --write --all --root-artifact-dir", setup)
 
+    def test_review9_s6pbt02_setup_doctor_enforces_exact_branch_contract(self) -> None:
+        doctor = load_setup_doctor_module()
+        compliant = doctor.evaluate_branch_protection_contract(
+            {
+                "required_status_checks": {
+                    "strict": True,
+                    "contexts": ["governance"],
+                    "checks": [{"context": "governance", "app_id": 15368}],
+                },
+                "required_pull_request_reviews": {
+                    "dismiss_stale_reviews": False,
+                    "required_approving_review_count": 0,
+                    "bypass_pull_request_allowances": {"users": [], "teams": [], "apps": []},
+                },
+                "enforce_admins": {"enabled": True},
+                "allow_force_pushes": {"enabled": False},
+                "allow_deletions": {"enabled": False},
+            }
+        )
+        self.assertEqual(compliant["status"], "PASS", compliant)
+        self.assertEqual(compliant["required_status_check_contexts"], ["governance"])
+        self.assertEqual(compliant["required_status_check_display"], ["Project Governance / governance"])
+        self.assertEqual(compliant["required_status_check_count"], 1)
+        self.assertEqual(compliant["no_bypass"], "PASS")
+
+        current_mismatch = doctor.evaluate_branch_protection_contract(
+            {
+                "required_status_checks": {
+                    "strict": False,
+                    "contexts": ["governance", "openai-database-verify"],
+                    "checks": [
+                        {"context": "governance", "app_id": 15368},
+                        {"context": "openai-database-verify", "app_id": 15368},
+                    ],
+                },
+                "required_pull_request_reviews": {
+                    "dismiss_stale_reviews": False,
+                    "required_approving_review_count": 0,
+                    "bypass_pull_request_allowances": {"users": [], "teams": [], "apps": []},
+                },
+                "enforce_admins": {"enabled": False},
+                "allow_force_pushes": {"enabled": False},
+                "allow_deletions": {"enabled": False},
+            }
+        )
+        self.assertEqual(current_mismatch["status"], "FAIL")
+        self.assertEqual(current_mismatch["required_status_check_count"], 2)
+        self.assertEqual(current_mismatch["required_status_check_contract"], "FAIL")
+        self.assertEqual(current_mismatch["status_checks_strict"], "FAIL")
+        self.assertEqual(current_mismatch["enforce_admins"], "FAIL")
+        self.assertEqual(current_mismatch["no_bypass"], "FAIL")
+        self.assertTrue(
+            any("openai-database-verify" in failure for failure in current_mismatch["failures"]),
+            current_mismatch["failures"],
+        )
+
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
         project = {
