@@ -2034,7 +2034,7 @@ formulas:
         input_domain: "Email V1 forbidden markers in mail_templates.py"
     constraints: "This formula changes only email content-object/render integration and regression tests. It does not change source adapters, ranking, queue scoring, public schemas, DB/migrations, SMTP transport, scheduler triggers, Release upload, production flags, or V7.1 historical baseline files."
     missing_policy: "Missing EMAIL_LEARNING_V1 contract id, missing template version, missing M1-M4 mail product id, missing content object, missing arXiv/PDF/ChatGPT links for arXiv, missing V1 visible sections, visible forbidden old-template markers, unescaped HTML, or production side effects blocks Email V1 acceptance."
-    output_range: "EMAIL_LEARNING_V1 implemented locally pending PR/CI; production restore, real scheduler, Release/final production, and integrated production acceptance remain blocked by inherited V7.1/V7.2 gates."
+    output_range: "EMAIL_LEARNING_V1 merged to main for audited M1-M4 render paths; production restore, real scheduler, Release/final production, and integrated production acceptance remain blocked by inherited V7.1/V7.2 gates."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py"
       - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"

@@ -40,7 +40,7 @@ The append-only machine record is `development_events.jsonl`.
 - Version before: 0.23.0
 - Version after: 0.23.0
 - Base commit: 1cdad3d9e41f4543b06f158157f35878a30dbc93
-- Result commit: PENDING
+- Result commit: 69ceda49a4dd840039d32910c3f400dc0aba7c24
 - Task IDs: `S2PHT01V1.1-T05`; references `S2PHT01V1.1-T02`, `S2PHT01V1.1-T03`, `S2PHT01V1.1-T04`
 - Goal: Record that the EMAIL_LEARNING_V1 renderer is merged to main, remove stale local-validation/PR-pending wording, and preserve no-production-side-effect boundaries for later Stage2 work.
 - Assumptions: This is a governance/status sync only; the runtime implementation was merged by PR #152 and no mail production code is changed in this iteration.
@@ -2148,4 +2148,5 @@ None for this new project baseline.
 - Decisions: `ACC-S2PFT02-HK-MO` is accepted only as metadata-only Hong Kong and Macau independent profile evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, city coverage, and special-zone discovery all remain false/disabled. Email V1 PR #152 and governance PR #153 are merged to main; S2PFT02 does not modify mail runtime paths and preserves the Email V1 contract/readiness gate.
 - Remaining risks: S2PFT03 city coverage, S2PFT04 special-zone discovery, and S2PFT05 full D3 governance remain unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
 - Rollback: Revert S2PFT02 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
-- Next step: Run final render/changed-only validation, then open a clean PR for S2PFT02.
+- Post-merge evidence: PR #155 merged to main at `69ceda49a4dd840039d32910c3f400dc0aba7c24` after 7/7 GitHub check-runs passed: governance, stage1-bootstrap, real-arxiv-30-day-backfill, live-all-arxiv-dry-run, and classify-arxiv-runtime-change x3.
+- Next step: Continue `S2PFT03` key-city metadata-only coverage under V7.2 boundaries; do not enable production source inclusion, SMTP, scheduler, Release, public schema, queue/schema mutation, or integrated production acceptance.
