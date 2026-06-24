@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PH
-- Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_IMPLEMENTED_LOCAL_VALIDATION_PENDING_PR_CI
-- Confirmed iteration count: 95
+- Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
+- Confirmed iteration count: 96
 - Reconstructed event count: 0
-- Current task: `S2PHT01V1.1-T02-T04` has implemented the EMAIL_LEARNING_V1 M1-M4 renderer locally and is pending final full gates, PR, and CI. `S2PCT02` keeps legacy alias `S2P2T02` for the next no-conflict Science/top-journal metadata-only no-send shadow evidence. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into `main` at `1cdad3d9e41f4543b06f158157f35878a30dbc93`; audited daily delivery, Stage1 B1 report email, local runner previews, scheduled readiness checks, and Stage2 shadow previews now require the shared V1 contract and M1-M4 product ids. `S2PCT02` keeps legacy alias `S2P2T02` for the next no-conflict Science/top-journal metadata-only no-send shadow evidence. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -33,6 +33,28 @@ The append-only machine record is `development_events.jsonl`.
 
 ## Iteration Records
 
+### `ITER-20260625-ADP-S2PH-EMAIL-V1-MAIN-MERGE-STATUS`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from GitHub PR #152 merge state, `origin/main@1cdad3d9e41f4543b06f158157f35878a30dbc93`, GitHub Actions success checks, Email V1 source/test scans, and governance-only post-merge status sync.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 1cdad3d9e41f4543b06f158157f35878a30dbc93
+- Result commit: PENDING
+- Task IDs: `S2PHT01V1.1-T05`; references `S2PHT01V1.1-T02`, `S2PHT01V1.1-T03`, `S2PHT01V1.1-T04`
+- Goal: Record that the EMAIL_LEARNING_V1 renderer is merged to main, remove stale local-validation/PR-pending wording, and preserve no-production-side-effect boundaries for later Stage2 work.
+- Assumptions: This is a governance/status sync only; the runtime implementation was merged by PR #152 and no mail production code is changed in this iteration.
+- Files changed: governance status matrix, delivery task record, append-only development event, run manifest, changelog, generated governance views, and this ledger.
+- Model changes: None in this status sync. `MOD-ADP-037` was already updated by the merged Email V1 renderer PR.
+- Formula changes: None in this status sync. `FORM-ADP-039` was already updated by the merged Email V1 renderer PR.
+- Parameter changes: None in this status sync. Email V1 parameter bindings were already updated by the merged PR.
+- Commands run: GitHub PR #152 merge and Actions inspection; `git fetch origin main`; `git diff --stat origin/main HEAD`; `git grep` Email V1 source/test bindings on `origin/main`; old V2/helper source scan on `origin/main`; generated governance dashboard sync; V7.2 contract validator; ADP project governance validator; changed-only governance with semantic checks; lean check-render; JSON/JSONL/YAML/manifest parse checks; `git diff --check`.
+- Test results: PR #152 merged to main at `1cdad3d9e41f4543b06f158157f35878a30dbc93`; GitHub Actions on `ee3cecb7891ee63214b244dbb7e8b7f8fb6c0b2a` passed Project Governance run `28134309934`, Stage 1 bootstrap run `28134309925`, real 30-day backfill run `28134309930`, and live all-ArXiv cloud dry-run run `28134309943`; `origin/main` source/test scan confirms Email V1 bindings; old V2 template/helper scan has no matches; generated governance dashboard sync PASS; V7.2 contract validator PASS; ADP project governance errors 0 warnings 0; changed-only governance semantic errors 0 warnings 0; lean check-render drift 0 reference issues 0; JSON/JSONL/YAML/manifest parse OK; `git diff --check` PASS.
+- Decisions: Treat M1-M4 as bound to EMAIL_LEARNING_V1 for the audited current paths on `main`; future mail entrypoints must pass the same Email V1 contract/readiness gate before they can be considered compliant.
+- Remaining risks: Live SMTP, scheduler enablement, Release upload, production restore, and integrated production acceptance remain blocked by V7.2 gates; this status sync does not send email or enable production.
+- Rollback: Revert only this governance/status sync commit; do not revert PR #152 unless the owner explicitly abandons Email V1.
+- Next step: Commit, push, open PR, wait for CI, merge the governance sync, and notify the Stage2 main development thread.
+
 ### `ITER-20260625-ADP-S2PH-EMAIL-V1-T02-T04-RENDERER`
 
 - Date: 2026-06-25
@@ -40,7 +62,7 @@ The append-only machine record is `development_events.jsonl`.
 - Version before: 0.23.0
 - Version after: 0.23.0
 - Base commit: 17a8a88421dbd8fef97c4286fa8563c327978b1b
-- Result commit: PENDING
+- Result commit: 1cdad3d9e41f4543b06f158157f35878a30dbc93 via PR #152
 - Task IDs: `S2PHT01V1.1-T02`, `S2PHT01V1.1-T03`, `S2PHT01V1.1-T04`
 - Goal: Implement the V7.2/V1.1 EMAIL_LEARNING_V1 renderer and route audited M1-M4 email paths through the unified content object, HTML/plain template, ChatGPT new-chat link, and fail-closed visible marker gate.
 - Assumptions: This changes private mail rendering and readiness gates only; it does not claim integrated production acceptance or enable live operations.
@@ -51,9 +73,9 @@ The append-only machine record is `development_events.jsonl`.
 - Commands run: py_compile; focused email-chain unittest; full ADP unittest; semantic extractor; project governance; changed-only governance with semantic checks; V7.2 contract validator; lean check-render; JSON/JSONL/YAML/CSV parse checks; old V2 template/helper scan; `git diff --check`.
 - Test results: py_compile PASS; focused email-chain unittest 80 OK; full arxiv-daily-push unittest 280 OK after rebasing onto `origin/main`; semantic extractor checked 67 formulas and 451 parameters; project governance errors 0 warnings 0; changed-only governance semantic errors 0 warnings 0; V7.2 contract validator PASS; lean check-render drift 0 reference issues 0; JSON/JSONL/YAML/CSV parse OK; old V2 template/helper scan no matches; `git diff --check` PASS. Root governance full unittest was attempted before rebase and still had unrelated cross-project Review9/Alpha/EEI historical failures, so it is not used as this ADP PR acceptance gate.
 - Decisions: Current daily delivery, B1 report email, local runner preview, scheduled readiness gate, and Stage2 shadow previews now require `EMAIL_LEARNING_V1` metadata and M1-M4 product ids. Old V2 visible markers and old daily email helper names are blocked by tests and source scan.
-- Remaining risks: PR creation, GitHub CI, review, and merge are still pending; live SMTP/scheduler/Release/integrated production acceptance remain blocked by V7.2 gates.
-- Rollback: Revert the Email V1 renderer runtime files, tests, phase record, manifest, registry/status/event updates, and rendered governance views; no data migration is required.
-- Next step: Commit, push, open PR, and notify the Stage2 main development thread.
+- Remaining risks: Live SMTP/scheduler/Release/integrated production acceptance remain blocked by V7.2 gates; new future mail entrypoints must be reviewed against the Email V1 gate before use.
+- Rollback: Revert PR #152 if and only if the owner explicitly abandons Email V1; no data migration is required.
+- Next step: Record post-merge governance status, then allow no-conflict Stage2 work to continue under V7.2 gates.
 
 ### `ITER-20260624-ADP-S2PA-V7-2-CURRENT-CONTRACT`
 

@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 86
-- acceptance_count: 80
+- task_count: 87
+- acceptance_count: 81
 
 ## Delivery Tasks
 
@@ -98,6 +98,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PAT05 | S2PA | completed | ACC-S2PAT05-AUDIT-LOCK | V7.1 parallel audit findings, merge policy, lifecycle contract, and P0/P1 production-forbidden gate are locked into repository governance; repository lock remains pending PR CI attestation | `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml`; `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
 | S2PAT06 | S2PA | completed | ACC-S2PAT06-V7-2-CURRENT | V7.2 merges valid V7.1 requirements with V1.1 EMAIL_LEARNING_V1 increments, keeps V7.1 read-only, publishes CURRENT, and requires Stage2 agent revalidation before new work; PR CI remains the repository merge attestation | `docs/pursuing_goal/CURRENT.yaml`; `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml` |
 | S2PHT01V1.1-T02-T04 | S2PH | completed | ACC-S2PHT01V1.1-T02-CONTENT-OBJECT; ACC-S2PHT01V1.1-T03-HTML-RENDER; ACC-S2PHT01V1.1-T04-GOLDEN-REGRESSION | EMAIL_LEARNING_V1 renderer now binds audited M1-M4 daily/B1/local/scheduled/shadow preview paths to one content object, HTML/plain renderer, ChatGPT new-chat link, and forbidden visible marker gate without changing SMTP, scheduler, Release, source adapters, public schema, DB, CURRENT, or V7.1 | `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md`; `governance/run_manifests/ADP-S2PHT01V1-1-T02-T04-EMAIL-V1-RENDERER-20260625.json`; `tests/test_mail_templates.py` |
+| S2PHT01V1.1-T05 | S2PH | completed | ACC-S2PHT01V1.1-T05-MAIN-MERGE-STATUS | PR #152 is merged to `main@1cdad3d9e41f4543b06f158157f35878a30dbc93`, so audited M1-M4 mail paths are treated as EMAIL_LEARNING_V1-bound on main while future mail entrypoints must pass the same contract/readiness gate | `https://github.com/LinzeColin/CodexProject/pull/152`; `governance/run_manifests/ADP-S2PHT01V1-1-T05-EMAIL-V1-MAIN-MERGE-STATUS-20260625.json` |
 | S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7.2-inherited name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
 | S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.2-inherited D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
 | S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.2 Science/main-journal metadata-only no-send shadow task; agent must record V7.2 revalidation before new work; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
