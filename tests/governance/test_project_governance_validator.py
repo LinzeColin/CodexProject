@@ -4687,6 +4687,67 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s3pdt01_openaidatabase_privacy_manifest_and_gate_evidence(self) -> None:
+        privacy_log = ROOT / "governance" / "stage_gates" / "s3pd" / "privacy_scan.log"
+        self.assertTrue(privacy_log.is_file())
+        privacy_text = privacy_log.read_text(encoding="utf-8")
+        for required in {
+            "S3PDT01",
+            "tracked_raw_private_file_count: 0",
+            "high_risk_secret_hit_count: 0",
+            "private_import_default_no_raw_storage: PASS",
+            "redaction_email_phone_secret_local_path: PASS",
+            "delete_recovery_from_redacted_output: PASS",
+            "reject_raw_source_inside_tracked_derived_tree: PASS",
+            "git_leakage_scan: PASS",
+            "No module named pytest",
+        }:
+            self.assertIn(required, privacy_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PDT01-OAIDB-PRIVACY-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "OpenAIDatabase")
+        self.assertEqual(manifest["task_id"], "S3PDT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PDT01"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "OpenAIDatabase/.gitignore",
+            "OpenAIDatabase/scripts/privacy_guard.py",
+            "OpenAIDatabase/tests/test_s3pdt01_privacy.py",
+            "governance/stage_gates/s3pd/privacy_scan.log",
+            "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
+            "OpenAIDatabase/docs/governance/DEVELOPMENT_LEDGER.md",
+            "OpenAIDatabase/docs/governance/MODEL_SPEC.md",
+            "OpenAIDatabase/docs/governance/OWNER_STATUS.md",
+            "OpenAIDatabase/docs/governance/STATUS.md",
+            "OpenAIDatabase/docs/governance/events.jsonl",
+            "OpenAIDatabase/docs/governance/development_events.jsonl",
+            "OpenAIDatabase/开发记录",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("Ran 3 tests", observed)
+        self.assertIn("tracked_raw_private_file_count 0", observed)
+        self.assertIn("high_risk_secret_hit_count 0", observed)
+        self.assertIn("No module named pytest", observed)
+        self.assertIn(
+            "No real raw export, cookie, browser profile, plaintext secret, production private data, owner data ingestion, or delivery readiness approval is used or implied by S3PDT01.",
+            manifest["unresolved_risks"],
+        )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
