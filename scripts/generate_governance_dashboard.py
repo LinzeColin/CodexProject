@@ -1720,7 +1720,14 @@ def select_projects(
     return projects, True
 
 
-def generate(write: bool, *, project_filter: str | None = None, changed_only: bool = False, base_ref: str | None = None) -> dict[str, Any]:
+def generate(
+    write: bool,
+    *,
+    project_filter: str | None = None,
+    changed_only: bool = False,
+    base_ref: str | None = None,
+    root_artifact_dir: Path | None = None,
+) -> dict[str, Any]:
     config = structural.load_yaml(structural.PROJECTS_FILE)
     projects = [project for project in structural.as_list(config.get("projects")) if isinstance(project, dict)]
     selected_projects, include_root = select_projects(projects, project_filter=project_filter, changed_only=changed_only, base_ref=base_ref)
@@ -1746,7 +1753,9 @@ def generate(write: bool, *, project_filter: str | None = None, changed_only: bo
         }
         for path, text in root_outputs.items():
             if write:
-                path.write_text(text, encoding="utf-8")
+                target = root_artifact_dir / rel(path) if root_artifact_dir else path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(text, encoding="utf-8")
             outputs.append(rel(path))
     for info in infos:
         base = ROOT / info["path"] / "docs/governance"
@@ -1767,6 +1776,7 @@ def generate(write: bool, *, project_filter: str | None = None, changed_only: bo
         "snapshot_event_time": meta["snapshot_event_time"],
         "generator_version": GENERATOR_VERSION,
         "outputs": outputs,
+        "root_output_mode": "artifact" if root_artifact_dir else "tracked",
     }
 
 
@@ -1778,10 +1788,21 @@ def main() -> int:
     scope.add_argument("--project", help="Generate governance views for one project id or path.")
     scope.add_argument("--changed-only", action="store_true", help="Generate governance views for changed projects only.")
     parser.add_argument("--base-ref", help="Optional base ref for --changed-only.")
+    parser.add_argument(
+        "--root-artifact-dir",
+        type=Path,
+        help="Write root generated views under this artifact directory instead of the tracked repository root.",
+    )
     args = parser.parse_args()
     print(
         json.dumps(
-            generate(args.write, project_filter=args.project, changed_only=args.changed_only, base_ref=args.base_ref),
+            generate(
+                args.write,
+                project_filter=args.project,
+                changed_only=args.changed_only,
+                base_ref=args.base_ref,
+                root_artifact_dir=args.root_artifact_dir,
+            ),
             ensure_ascii=False,
             indent=2,
             sort_keys=True,
