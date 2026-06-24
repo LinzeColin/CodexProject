@@ -56,13 +56,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence (CI-attested heartbeat `128/288` PASS at `2026-06-23T21:24:52Z`; prior live attempt paused at `135/288` PASS, then failed on resume at `2026-06-24T10:43:46Z` because the fixed Playwright browser path was missing; current clean attempt started at `2026-06-24T10:52:04Z`, reached `3/288` PASS at `2026-06-24T11:07:16Z`, and is running with operator PID `57281` plus host-level watchdog PID `17163`; monitor/supervisor/watchdog/heartbeat and clean-room package evidence are not release-ready closure)
+1. 24h operator soak evidence
 2. historical event binding backlog
-3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve; `EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` is now available as the A202 source/license/owner/legal release-decision fill-in contract, `EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` is now available as the A026/A027 production gold-label fill-in contract, and `EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json` is now available as the A210 brand-clearance / risk-waiver fill-in contract.
+3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: A202 source/license/owner/legal decisions filled from the A202 intake template, gold-set labels filled from the T904 intake template, precision/recall, source coverage, soak manifest, A209 monitor/supervisor snapshot, clean-room package inclusion evidence, full 24h checkpoint validation
+- evidence_required: gold-set labels, precision/recall, source coverage, soak manifest
 - principal_risks: source license limits, stale relationships, false relation assertions
 - generated_from_refs: `EEI/docs/governance/ASSURANCE_STATUS.yaml, EEI/docs/governance/delivery_tasks.yaml`
 
@@ -74,29 +74,20 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - total_parameters: `82`
 - active_parameters: `82`
 - active_values_changed_by_this_view: `0`
-- latest_T1302_A203_preflight: `scripts/validate_production_api_release_preflight.py` now proves `api_surface_ready=true` while keeping `release_ready=false` until A202 publication clearance, A204/A205 activation and A209 24h soak are complete.
-- latest_T1303_operator_cli: `scripts/apply_model_config.py` now supports dry-run preview plus explicit PostgreSQL `--execute`; `scripts/validate_release_manager_activation.py` now validates evidence-derived READY preflight only when all external gates are real; `artifacts/model_config_import_preview.json` remains non-closure evidence for A204/A205.
-- latest_T1303_mvp_release_gate: `scripts/validate_mvp_release_gate.py` now aggregates A202/A203/A204-A205/A209/A210/A026/A027 into `MVP_RELEASE_BLOCKED` until every required external gate is real and current.
-- latest_T1301_A202_signed_intake_preflight: `scripts/validate_a202_signed_intake_preflight.py` now reports `A202_SIGNED_INTAKE_MISSING` with five missing signed input groups and keeps `release_ready=false`.
-- latest_A209_finalization: `scripts/finalize_operator_soak_evidence.py` now reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `3/288` clean-restart windows and blocks downstream release-gate refresh until 288/288 release-ready evidence exists.
-- latest_T1303_external_release_evidence_bundle: `scripts/validate_external_release_evidence_bundle.py` now consolidates A202/A210/A026/A027/A209 external gate evidence into `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED` and blocks release-manager refresh until all external inputs are real and ready.
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-IN-PROGRESS`
-- latest_clean_room_sync: fresh checkout should validate `package_paths=437`, `manifest_paths=444`, `checksum_paths=443` after the latest A209 heartbeat refresh artifacts became staged.
-- latest_ci_attested_commit: `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd`
-- latest_ci_attestation: Project Governance run `28059597753` / job `83070396547` PASS; EEI validation run `28059597696` / job `83070396099` PASS, including Step 10 G2 PostgreSQL integration, Step 11 browser E2E and Step 12 live FastAPI/PostgreSQL E2E.
+- release_gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `EVENT-20260624-024_CI_ATTESTED_AT_7AFCB9DA; CURRENT_STATUS_SYNC_PENDING_CI`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `14`
-- legacy_unbound_events: `17`
-- precommit_pending_events: `31`
-- pending_or_stale_events: `46`
+- legacy_unbound_events: `18`
+- precommit_pending_events: `59`
+- pending_or_stale_events: `79`
 
 ## 15. UNKNOWN
 
@@ -106,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `d80785a099d1ff7f16798381c3716e8793b2ffae`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:075a0e30f6373607cd845134cdf957ae8af897ff4465d7813b9ab7a45d5b65a1`
-- snapshot_event_time: `2026-06-23T20:34:26Z`
+- source_snapshot_hash: `sha256:385ba409ac5a4f450e78cdf2eca5df1d6fd0020e9912ba6bc26135e347499a7c`
+- snapshot_event_time: `2026-06-24T11:45:50Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1307-A209-CLEAN-SOAK-RECOVERY-IN-PROGRESS`
+- phase/gate: `C / TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

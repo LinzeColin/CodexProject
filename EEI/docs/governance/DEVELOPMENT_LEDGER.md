@@ -12,10 +12,33 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS`
-- Confirmed iteration count: 37
+- Confirmed iteration count: 38
 - Reconstructed development event count: 3
-- Current task: `TASK-T1307 A209 crash recovery and clean background soak evidence refresh`
-- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the previous CI-attested heartbeat at commit `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd` records `128/288` PASS, but the post-crash resume failed because the fixed Playwright browser path was missing. The clean restarted attempt now records operator PID `57281`, watchdog PID `17163`, `3/288` successful windows and `release_gate_closed_by_background_heartbeat=false`; the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+- Current task: `TASK-T904 A026/A027 production gold-set fixture-ref exclusion hardening`
+- Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. This run hardens the A026/A027 production gold-set path so repository fixture refs and fixture labelers are rejected when `production_gold_set=true`; it still does not supply real production labels. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the previous CI-attested heartbeat at commit `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd` records `128/288` PASS, but the post-crash resume failed because the fixed Playwright browser path was missing. The clean restarted attempt now records operator PID `57281`, watchdog PID `17163`, `3/288` successful windows and `release_gate_closed_by_background_heartbeat=false`; the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+
+## ITER-20260624-032 - T904/A026-A027 production gold-set fixture-ref exclusion
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `4b140561e0d3d3f006fb966e7df475a5e33a3531`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T904`
+- Goal: prevent A026/A027 production gold-set closure from reusing repository fixture evidence references or fixture labelers.
+- Assumptions: mathematical threshold unit tests may still use copied rows, but the production `build_contract(... allow_production_gold_set=True)` path must reject repository-local evidence refs and fixture labelers before A026/A027 can close.
+- Files changed: `EEI/scripts/validate_gold_quality_evaluation.py`, `EEI/tests/unit/test_gold_quality_evaluation.py`, A026/A027 gold-quality artifacts, production gold-label intake template, delivery task records, phase development record, changelog, version matrix and governance event.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight or threshold value changed.
+- Parameter changes: no active threshold value changed; this is a fail-closed validation-rule hardening for the existing gold-quality gate.
+- Commands run: focused py_compile, focused ruff, gold-quality unit tests, gold-quality artifact generation/validation and template generation/validation.
+- Test results: py_compile PASS; ruff PASS; `tests/unit/test_gold_quality_evaluation.py` PASS 11/11; gold-quality artifact generation/validation PASS with A026/A027 `IN_PROGRESS`; template generation/validation PASS with `TEMPLATE_ONLY`.
+- Successes: `production_gold_set=true` now rejects `tests/`, `data/` and `fixture://` evidence refs plus `fixture_reviewer`/`fixture_*` labelers, preventing repository fixture rows from being packaged as production gold evidence.
+- Failures: no real 50-case entity gold set, real 100-case relationship gold set, owner approval, legal/source clearance, A210 clearance or A209 24h completion was added.
+- Decisions: keep A026 and A027 `IN_PROGRESS`; keep A209 as a non-blocking background stability gate; do not change EEI system name.
+- Remaining risks: broader release artifacts and remote CI still need to bind this hardening commit; future operators still need real labeled data before closing A026/A027.
+- Rollback: revert the gold-quality validator/test/artifacts and governance updates, regenerate clean-room/release artifacts and rerun focused T904 validation.
+- Next step: run v5/governance/release validation, commit/push and verify CI while A209 continues in background.
 
 ## Phase Matrix
 

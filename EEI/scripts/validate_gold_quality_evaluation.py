@@ -54,6 +54,14 @@ PRODUCTION_GOLD_REQUIRED_LIST_FIELDS = (
     "source_document_refs",
     "labeler_qualification_refs",
 )
+PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES = (
+    "data/",
+    "tests/",
+    "fixture://",
+)
+PRODUCTION_GOLD_FORBIDDEN_LABELERS = {
+    "fixture_reviewer",
+}
 
 
 @dataclass(frozen=True)
@@ -119,6 +127,23 @@ def required_list(row: dict[str, Any], key: str, *, case_id: str) -> list[str]:
     return result
 
 
+def reject_repository_fixture_refs(refs: list[str], *, case_id: str, field: str) -> None:
+    for ref in refs:
+        if ref.startswith(PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES):
+            raise ValueError(
+                f"{case_id} {field} must not use repository fixture reference {ref!r} "
+                "for production_gold_set"
+            )
+
+
+def reject_fixture_labeler(labeler: str, *, case_id: str) -> None:
+    normalized = labeler.strip().lower()
+    if normalized in PRODUCTION_GOLD_FORBIDDEN_LABELERS or normalized.startswith("fixture_"):
+        raise ValueError(
+            f"{case_id} labeler {labeler!r} is not allowed for production_gold_set"
+        )
+
+
 def production_intake_policy() -> dict[str, Any]:
     return {
         "allow_flag_required": "--allow-production-gold-set",
@@ -129,6 +154,10 @@ def production_intake_policy() -> dict[str, Any]:
             "operator_supplied_labels": True,
             "synthetic_or_fixture_labels": False,
         },
+        "forbidden_repository_ref_prefixes": list(
+            PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES
+        ),
+        "forbidden_labelers": sorted(PRODUCTION_GOLD_FORBIDDEN_LABELERS),
         "release_boundary": {
             "gold_quality_pass_only_closes": ["A026", "A027"],
             "does_not_close": ["A202", "A209", "A210", "release_manager_activation"],
@@ -264,6 +293,20 @@ def validate_production_gold_evidence(payload: dict[str, Any]) -> dict[str, Any]
         raise ValueError("production_gold_evidence.operator_supplied_labels must be true")
     if evidence.get("synthetic_or_fixture_labels") is not False:
         raise ValueError("production_gold_evidence.synthetic_or_fixture_labels must be false")
+    reject_repository_fixture_refs(
+        required_list(evidence, "source_document_refs", case_id="production_gold_evidence"),
+        case_id="production_gold_evidence",
+        field="source_document_refs",
+    )
+    reject_repository_fixture_refs(
+        required_list(
+            evidence,
+            "labeler_qualification_refs",
+            case_id="production_gold_evidence",
+        ),
+        case_id="production_gold_evidence",
+        field="labeler_qualification_refs",
+    )
     return evidence
 
 
@@ -318,11 +361,21 @@ def validate_label_payload(
             if case_id in seen:
                 raise ValueError(f"duplicate case_id: {case_id}")
             seen.add(case_id)
-            required_text(entry, "labeler", case_id=case_id)
+            labeler = required_text(entry, "labeler", case_id=case_id)
             required_text(entry, "labeled_at", case_id=case_id)
             evidence_refs = entry.get("evidence_refs")
             if not isinstance(evidence_refs, list) or not evidence_refs:
                 raise ValueError(f"{case_id} evidence_refs must be non-empty")
+            evidence_refs = [str(ref).strip() for ref in evidence_refs if str(ref).strip()]
+            if not evidence_refs:
+                raise ValueError(f"{case_id} evidence_refs must be non-empty")
+            if production_gold_set:
+                reject_fixture_labeler(labeler, case_id=case_id)
+                reject_repository_fixture_refs(
+                    evidence_refs,
+                    case_id=case_id,
+                    field="evidence_refs",
+                )
             source_coverage(entry, case_id=case_id)
 
 

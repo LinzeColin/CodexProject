@@ -30,22 +30,25 @@ def production_labels_payload() -> dict:
         "operator_supplied_labels": True,
         "synthetic_or_fixture_labels": False,
     }
-    labels["entity_resolution_cases"] = [
-        {
-            **copy.deepcopy(labels["entity_resolution_cases"][0]),
-            "case_id": f"ENT-PROD-{index:03d}",
-            "labeler": "production_labeler",
-        }
-        for index in range(50)
-    ]
-    labels["relationship_cases"] = [
-        {
-            **copy.deepcopy(labels["relationship_cases"][0]),
-            "case_id": f"REL-PROD-{index:03d}",
-            "labeler": "production_labeler",
-        }
-        for index in range(100)
-    ]
+    entity_cases = []
+    for index in range(50):
+        case_id = f"ENT-PROD-{index:03d}"
+        case = copy.deepcopy(labels["entity_resolution_cases"][0])
+        case["case_id"] = case_id
+        case["labeler"] = "production_labeler"
+        case["evidence_refs"] = [f"operator-gold-evidence:{case_id}"]
+        entity_cases.append(case)
+    labels["entity_resolution_cases"] = entity_cases
+
+    relationship_cases = []
+    for index in range(100):
+        case_id = f"REL-PROD-{index:03d}"
+        case = copy.deepcopy(labels["relationship_cases"][0])
+        case["case_id"] = case_id
+        case["labeler"] = "production_labeler"
+        case["evidence_refs"] = [f"operator-gold-evidence:{case_id}"]
+        relationship_cases.append(case)
+    labels["relationship_cases"] = relationship_cases
     return labels
 
 
@@ -139,6 +142,28 @@ def test_production_gold_set_requires_evidence_metadata(tmp_path) -> None:
     gold.write_json(labels_path, labels)
 
     with pytest.raises(ValueError, match="production_gold_evidence is required"):
+        gold.build_contract(labels_path, allow_production_gold_set=True)
+
+
+def test_production_gold_set_rejects_repository_fixture_case_refs(tmp_path) -> None:
+    labels = production_labels_payload()
+    labels["entity_resolution_cases"][0]["evidence_refs"] = [
+        "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
+    ]
+    labels_path = tmp_path / "production_labels_fixture_ref.json"
+    gold.write_json(labels_path, labels)
+
+    with pytest.raises(ValueError, match="must not use repository fixture reference"):
+        gold.build_contract(labels_path, allow_production_gold_set=True)
+
+
+def test_production_gold_set_rejects_fixture_labelers(tmp_path) -> None:
+    labels = production_labels_payload()
+    labels["relationship_cases"][0]["labeler"] = "fixture_reviewer"
+    labels_path = tmp_path / "production_labels_fixture_labeler.json"
+    gold.write_json(labels_path, labels)
+
+    with pytest.raises(ValueError, match="not allowed for production_gold_set"):
         gold.build_contract(labels_path, allow_production_gold_set=True)
 
 

@@ -5309,6 +5309,53 @@ Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTI
 - Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, `artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` and this governance/documentation update.
 - Regenerate development, clean-room and release artifacts, then rerun focused T904 validation.
 
+## 2026-06-24 - T904/A026-A027 production gold-set fixture-ref exclusion
+
+Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABELS EXIST
+
+### Scope
+
+- Hardened `scripts/validate_gold_quality_evaluation.py` so `production_gold_set=true` rejects repository fixture evidence references before A026/A027 can close.
+- Rejected production gold cases whose `evidence_refs` start with `data/`, `tests/` or `fixture://`.
+- Rejected `fixture_reviewer` and `fixture_*` labelers for production gold sets.
+- Exposed the forbidden reference prefixes and forbidden labelers in the A026/A027 production gold-label intake template.
+- Updated unit tests so the release-capable production contract-test payload uses `operator-gold-evidence:*` refs rather than copied repository fixture refs.
+
+### Acceptance mapping
+
+- T904 -> A026/A027.
+- A026 remains `IN_PROGRESS`: no real 50-case operator-supplied entity-resolution gold set is committed.
+- A027 remains `IN_PROGRESS`: no real 100-case operator-supplied relationship gold set is committed.
+- This hardening does not close A202, A209, A210 or release-manager activation.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight or threshold value changed.
+- Existing thresholds remain unchanged: A026 sample >= 50 and precision >= 95.00%; A027 sample >= 100 and precision >= 90.00%; minimum source coverage = 1.00.
+- This is a validation-rule hardening for the existing gold-quality gate.
+
+### Validation
+
+- `python3 -m py_compile scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `.venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py`: PASS, 11 passed.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py generate`: PASS with `release_gate_closure_allowed=false`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate`: PASS with A026/A027 `IN_PROGRESS`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py generate-template`: PASS with `TEMPLATE_ONLY`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate-template`: PASS.
+
+### Remaining gaps
+
+- Real production labels are still not present.
+- External source-license, passage-level, owner, legal, brand and 24h soak gates remain incomplete.
+- A209 continues as a background 24h soak gate and is not affected by this T904 hardening.
+
+### Rollback
+
+- Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, A026/A027 artifacts and this governance/documentation update.
+- Regenerate clean-room and release artifacts, then rerun focused T904 validation.
+
 ## 2026-06-24 - T1309/A210 brand-clearance intake template
 
 Status: LOCAL FOCUSED VALIDATED; A210 STILL IN PROGRESS

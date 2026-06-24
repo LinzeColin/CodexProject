@@ -4,7 +4,7 @@
     "A027"
   ],
   "artifact_id": "t904-a026-a027-production-gold-label-intake-template",
-  "generated_at": "2026-06-23T16:35:03Z",
+  "generated_at": "2026-06-24T11:41:40Z",
   "label_payload_skeleton": {
     "dataset_id": "<operator-production-gold-dataset-id>",
     "entity_resolution_cases": {
@@ -93,6 +93,14 @@
   "production_claim_allowed": false,
   "production_gold_evidence_schema": {
     "allow_flag_required": "--allow-production-gold-set",
+    "forbidden_labelers": [
+      "fixture_reviewer"
+    ],
+    "forbidden_repository_ref_prefixes": [
+      "data/",
+      "tests/",
+      "fixture://"
+    ],
     "release_boundary": {
       "does_not_close": [
         "A202",
