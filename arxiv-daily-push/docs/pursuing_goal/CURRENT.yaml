@@ -8,7 +8,7 @@ current_product_contract:
   product_contract: docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml
   roadmap: docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml
   migration_matrix: docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml
-  activation_state: current_on_branch_pending_pr_ci
+  activation_state: current_on_main_merged_pr_140
 previous_read_only_contract:
   version: ADP-PRODUCT-CONTRACT-V7.1
   root_lock: docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml

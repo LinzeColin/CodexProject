@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260624-ADP-097"
-source_snapshot_hash: "sha256:fb97edae1ae538692313a2e23e88936f0ece73d5f9a3a7caa0e30a5144bad390"
+source_snapshot_hash: "sha256:9a7af70e788c281c3b3ad236a8714d90920dd2454079d05b2bcdabe260102061"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-24T20:55:00+10:00"
@@ -70,10 +70,10 @@ delivery_readiness:
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
-  v7_contract_hash: "a433a4e5d153d8ee849799a21b188a9c4e39036d1de75dd3f91c6ab315e7d5c6"
-  v7_roadmap_hash: "aa1aa0b1b0b532a7dc092d6ed124cddb3c9b097a67b969ee2c8d58eed2bd9378"
+  v7_contract_hash: "f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8"
+  v7_roadmap_hash: "fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56"
   v7_parallel_audit: "ADP-V7.2-FINAL-BASELINE-REVIEW"
-  v7_parallel_audit_hash: "d0e8976a64334f48bce338cff93304ad8684ce25bd5c6b32bd651709326c97fb"
+  v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
   open_p0_findings: 8
   open_p1_findings: 37
   production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed"
