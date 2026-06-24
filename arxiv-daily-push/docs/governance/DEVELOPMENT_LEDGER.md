@@ -2129,3 +2129,23 @@ None for this new project baseline.
 - Remaining risks: S2PFT02 Hong Kong/Macau, S2PFT03 city coverage, S2PFT04 special-zone discovery, and S2PFT05 full D3 governance remain unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
 - Rollback: Revert S2PFT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
 - Next step: Run final render/changed-only validation, then open a clean PR for S2PFT01.
+
+### `ITER-20260625-ADP-S2PF-S2PFT02-HK-MO-PROFILE`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PFT01 receipt, Hong Kong and Macau profile fixture rows, model/formula/parameter registry diff, and local S2PFT02 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90
+- Result commit: PENDING
+- Task IDs: `S2PFT02`, legacy alias `S2P5T02`; next task `S2PFT03`
+- Goal: Complete Hong Kong and Macau independent profile evidence after S2PFT01, register S2PFT02 governance entries, and preserve V7.2 no-production boundaries.
+- Files changed: S2PFT02 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-066` Hong Kong and Macau independent profile model.
+- Formula changes: Added `FORM-ADP-068` with machine-verifiable AST fingerprints bound to the S2PFT02 implementation.
+- Parameter changes: Added `PARAM-ADP-469` through `PARAM-ADP-478` for S2PFT02 model id, acceptance id, task ids, required jurisdiction ids, required language profiles, allowed legal system states, required profile fields, forbidden template states, and report filename.
+- Test results: focused Stage2 source tests 55 OK; full arxiv-daily-push unittest 284 OK; semantic extractor checked 68 formulas and 461 parameters; V7.2 validator PASS; ADP project governance errors 0 warnings 0; lean check-render drift_count 0 reference_issue_count 0; changed-only lean governance errors 0 warnings 0; JSON/YAML/JSONL/CSV parse OK; `git diff --check` PASS.
+- Decisions: `ACC-S2PFT02-HK-MO` is accepted only as metadata-only Hong Kong and Macau independent profile evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, city coverage, and special-zone discovery all remain false/disabled. Email V1 PR #152 and governance PR #153 are merged to main; S2PFT02 does not modify mail runtime paths and preserves the Email V1 contract/readiness gate.
+- Remaining risks: S2PFT03 city coverage, S2PFT04 special-zone discovery, and S2PFT05 full D3 governance remain unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PFT02 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Next step: Run final render/changed-only validation, then open a clean PR for S2PFT02.
