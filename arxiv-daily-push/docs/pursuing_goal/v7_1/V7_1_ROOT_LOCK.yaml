@@ -26,8 +26,8 @@ stage2_boundary:
   status: "in_progress"
   production_accepted: false
   current_phase: "S2PD"
-  current_task_id: "S2PDT03"
-  next_unique_task: "S2PDT03"
+  current_task_id: "S2PDT04"
+  next_unique_task: "S2PDT04"
   current_shadow_source_task: "S2PBT01"
   legacy_aliases:
     S2PCT01: "S2P2T01"
@@ -38,6 +38,7 @@ stage2_boundary:
     S2PDT01: "S2P3T01"
     S2PDT02: "S2P3T02"
     S2PDT03: "S2P3T03"
+    S2PDT04: "S2P3T04"
   final_task: "S2PMT07"
   stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_continues_in_parallel: true

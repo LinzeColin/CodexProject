@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PDT03_LEGAL_METADATA_MODEL_ID,
     S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
     S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
@@ -27,6 +28,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pdt03_china_legal_metadata_relation_shadow_report,
     build_s2pdt02_china_c1_department_source_map_report,
     build_s2pdt01_china_c0_source_foundation_report,
     build_s2pct04_top_journal_profile_report,
@@ -39,6 +41,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
     run_s2pct04_top_journal_profile_shadow,
@@ -49,6 +52,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pdt03_china_legal_metadata_relation_shadow_report,
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pct04_top_journal_profile_report,
@@ -442,6 +446,203 @@ def china_c1_department_records() -> list[dict]:
             "pdf_downloaded": False,
             "full_text_extracted": False,
             "evidence_refs": ["fixture:china-c1-nea"],
+        },
+    ]
+
+
+def china_c1_department_source_map_report() -> dict:
+    return build_s2pdt02_china_c1_department_source_map_report(
+        generated_at=GENERATED_AT,
+        c0_source_foundation_report=china_c0_source_foundation_report(),
+        department_records=china_c1_department_records(),
+    )
+
+
+def china_legal_records() -> list[dict]:
+    base = {
+        "identity_state": "official_domain",
+        "metadata_only": True,
+        "pdf_downloaded": False,
+        "full_text_extracted": False,
+    }
+    return [
+        {
+            **base,
+            "legal_id": "cn-law:data-security-amendment-draft",
+            "source_id": "china-c0:npc:committee-report",
+            "title": "数据安全法修订草案",
+            "legal_status": "draft",
+            "version_label": "draft-for-comment",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c2/data-security-amendment-draft.html",
+            "published_date": "2026-05-01",
+            "effective_date": "2026-05-01",
+            "evidence_refs": ["fixture:legal-draft"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:data-security-amendment-formal",
+            "source_id": "china-c0:law:constitution-amendment",
+            "title": "数据安全法修订决定",
+            "legal_status": "formal",
+            "version_label": "promulgated",
+            "official_domain": "npc.gov.cn",
+            "source_url": "https://www.npc.gov.cn/npc/c30834/data-security-amendment-formal.html",
+            "published_date": "2026-05-08",
+            "effective_date": "2026-06-01",
+            "evidence_refs": ["fixture:legal-formal"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:industrial-policy-amended",
+            "source_id": "china-c1:industry:miit",
+            "title": "产业政策管理办法修订条款",
+            "legal_status": "amended",
+            "version_label": "amended-version",
+            "official_domain": "miit.gov.cn",
+            "source_url": "https://www.miit.gov.cn/zwgk/zcwj/industrial-policy-amended.html",
+            "published_date": "2026-05-10",
+            "effective_date": "2026-06-10",
+            "evidence_refs": ["fixture:legal-amended"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:legacy-market-rule-repealed",
+            "source_id": "china-c1:market:samr",
+            "title": "旧市场监管规则废止公告",
+            "legal_status": "repealed",
+            "version_label": "repealed",
+            "official_domain": "samr.gov.cn",
+            "source_url": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/legacy-market-rule-repealed.html",
+            "published_date": "2026-05-12",
+            "effective_date": "2026-05-12",
+            "evidence_refs": ["fixture:legal-repealed"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:data-security-implementation-measures",
+            "source_id": "china-c1:macro:ndrc",
+            "title": "数据安全法实施办法",
+            "legal_status": "implemented",
+            "version_label": "implementation-measures",
+            "official_domain": "ndrc.gov.cn",
+            "source_url": "https://www.ndrc.gov.cn/xwdt/tzgg/data-security-implementation-measures.html",
+            "published_date": "2026-05-15",
+            "effective_date": "2026-07-01",
+            "evidence_refs": ["fixture:legal-implemented"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:data-security-judicial-interpretation",
+            "source_id": "china-c0:spc-spp:judicial-interpretation",
+            "title": "数据安全案件司法解释",
+            "legal_status": "interpreted",
+            "version_label": "judicial-interpretation",
+            "official_domain": "court.gov.cn",
+            "source_url": "https://www.court.gov.cn/fabu/xiangqing/data-security-judicial-interpretation.html",
+            "published_date": "2026-05-18",
+            "effective_date": "2026-06-18",
+            "identity_state": "official_publication_portal",
+            "evidence_refs": ["fixture:legal-interpreted"],
+        },
+        {
+            **base,
+            "legal_id": "cn-law:ndrc-reprint-data-security-amendment",
+            "source_id": "china-c1:macro:ndrc",
+            "title": "国家发展改革委转载数据安全法修订决定",
+            "legal_status": "formal",
+            "version_label": "department-reprint",
+            "official_domain": "ndrc.gov.cn",
+            "source_url": "https://www.ndrc.gov.cn/xwdt/tzgg/reprint-data-security-amendment.html",
+            "published_date": "2026-05-20",
+            "effective_date": "2026-06-01",
+            "evidence_refs": ["fixture:legal-reprint"],
+        },
+    ]
+
+
+def china_legal_relation_records() -> list[dict]:
+    base = {"metadata_only": True, "evidence_refs": ["fixture:legal-relation"]}
+    return [
+        {
+            **base,
+            "relation_id": "rel:draft-to-formal:data-security",
+            "relation_type": "draft_to_formal",
+            "source_legal_id": "cn-law:data-security-amendment-draft",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-08",
+            "forced_update_required": False,
+        },
+        {
+            **base,
+            "relation_id": "rel:amends:industrial-policy",
+            "relation_type": "amends",
+            "source_legal_id": "cn-law:data-security-amendment-formal",
+            "target_legal_id": "cn-law:industrial-policy-amended",
+            "relation_date": "2026-05-10",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:repeals:legacy-market-rule",
+            "relation_type": "repeals",
+            "source_legal_id": "cn-law:industrial-policy-amended",
+            "target_legal_id": "cn-law:legacy-market-rule-repealed",
+            "relation_date": "2026-05-12",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:implements:data-security",
+            "relation_type": "implements",
+            "source_legal_id": "cn-law:data-security-implementation-measures",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-15",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:interprets:data-security",
+            "relation_type": "interprets",
+            "source_legal_id": "cn-law:data-security-judicial-interpretation",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-18",
+            "forced_update_required": True,
+        },
+        {
+            **base,
+            "relation_id": "rel:reprint:ndrc-data-security",
+            "relation_type": "reprint_of",
+            "source_legal_id": "cn-law:ndrc-reprint-data-security-amendment",
+            "target_legal_id": "cn-law:data-security-amendment-formal",
+            "relation_date": "2026-05-20",
+            "source_role": "reprint",
+            "target_role": "original",
+            "original_source_verified": True,
+            "forced_update_required": False,
+        },
+    ]
+
+
+def china_prior_conclusion_records() -> list[dict]:
+    return [
+        {
+            "conclusion_id": "prior:amended-policy",
+            "legal_id": "cn-law:industrial-policy-amended",
+            "previous_state": "current",
+            "updated_state": "requires_revision",
+            "update_required": True,
+            "rescore_required": True,
+            "evidence_refs": ["fixture:prior-amended"],
+        },
+        {
+            "conclusion_id": "prior:repealed-market-rule",
+            "legal_id": "cn-law:legacy-market-rule-repealed",
+            "previous_state": "current",
+            "updated_state": "invalidated",
+            "update_required": True,
+            "rescore_required": True,
+            "evidence_refs": ["fixture:prior-repealed"],
         },
     ]
 
@@ -967,6 +1168,99 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["schema_migration_allowed"])
             self.assertTrue(Path(report["department_source_map_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pdt02_china_c1_department_source_map_report.json").is_file())
+
+    def test_s2pdt03_china_legal_metadata_relation_validates_status_effectivity_reprint_and_updates_without_production(self) -> None:
+        report = build_s2pdt03_china_legal_metadata_relation_shadow_report(
+            generated_at=GENERATED_AT,
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_records=china_legal_records(),
+            relation_records=china_legal_relation_records(),
+            prior_conclusion_records=china_prior_conclusion_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT03_LEGAL_METADATA_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT03-LEGAL")
+        self.assertEqual(report["task_id"], "S2PDT03")
+        self.assertEqual(report["legacy_task_id"], "S2P3T03")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_legal_metadata_relation_shadow_ready"])
+        self.assertEqual(report["upstream_c1_department_source_map_gate"], "pass")
+        self.assertEqual(report["legal_status_taxonomy_gate"], "pass")
+        self.assertEqual(report["version_effectivity_gate"], "pass")
+        self.assertEqual(report["reprint_relation_gate"], "pass")
+        self.assertEqual(report["forced_update_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_legal_statuses"]).issubset(set(report["legal_statuses_observed"])))
+        self.assertTrue(set(report["required_relation_types"]).issubset(set(report["relation_types_observed"])))
+        self.assertEqual(report["legal_record_count"], 7)
+        self.assertEqual(report["relation_record_count"], 6)
+        self.assertFalse(report["legal_advice_provided"])
+        self.assertFalse(report["v7_1_current_switched"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["bulk_scraping_allowed"])
+        self.assertFalse(report["pdf_download_enabled"])
+        self.assertFalse(report["full_text_download_enabled"])
+        self.assertFalse(validate_s2pdt03_china_legal_metadata_relation_shadow_report(report))
+
+    def test_s2pdt03_china_legal_metadata_relation_blocks_unknown_status_date_confusion_bad_reprint_and_missing_update(self) -> None:
+        legal_records = china_legal_records()
+        legal_records[0] = dict(legal_records[0], legal_status="unknown_status", effective_date="2026/05/01")
+        relation_records = china_legal_relation_records()
+        relation_records[-1] = dict(
+            relation_records[-1],
+            source_role="original",
+            target_role="reprint",
+            original_source_verified=False,
+        )
+        prior_conclusions = [
+            dict(record, update_required=False, rescore_required=False, updated_state="")
+            for record in china_prior_conclusion_records()
+        ]
+
+        report = build_s2pdt03_china_legal_metadata_relation_shadow_report(
+            generated_at=GENERATED_AT,
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_records=legal_records,
+            relation_records=relation_records,
+            prior_conclusion_records=prior_conclusions,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["legal_status_taxonomy_gate"], "blocked")
+        self.assertEqual(report["version_effectivity_gate"], "blocked")
+        self.assertEqual(report["reprint_relation_gate"], "blocked")
+        self.assertEqual(report["forced_update_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("unsupported statuses", joined)
+        self.assertIn("date confusion", joined)
+        self.assertIn("reprint relation guard", joined)
+        self.assertIn("old conclusion update", joined)
+
+    def test_s2pdt03_china_legal_metadata_relation_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt03_china_legal_metadata_relation_shadow(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                c1_department_source_map_report=china_c1_department_source_map_report(),
+                legal_records=china_legal_records(),
+                relation_records=china_legal_relation_records(),
+                prior_conclusion_records=china_prior_conclusion_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt03_china_legal_metadata_relation_shadow_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["legal_metadata_relation_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json").is_file())
 
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1544,6 +1838,50 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["legacy_task_id"], "S2P3T02")
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d3_c1_department_source_map_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_china_legal_metadata_relation_shadow_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            c1_report_path = Path(tmp) / "c1-department-source-map-report.json"
+            legal_records_path = Path(tmp) / "legal-records.json"
+            relation_records_path = Path(tmp) / "relation-records.json"
+            prior_conclusion_records_path = Path(tmp) / "prior-conclusion-records.json"
+            c1_report_path.write_text(json.dumps(china_c1_department_source_map_report(), ensure_ascii=False), encoding="utf-8")
+            legal_records_path.write_text(json.dumps({"legal_records": china_legal_records()}, ensure_ascii=False), encoding="utf-8")
+            relation_records_path.write_text(json.dumps({"relation_records": china_legal_relation_records()}, ensure_ascii=False), encoding="utf-8")
+            prior_conclusion_records_path.write_text(
+                json.dumps({"prior_conclusion_records": china_prior_conclusion_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-legal-metadata-relation-shadow",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--c1-department-source-map-report",
+                    str(c1_report_path),
+                    "--legal-records",
+                    str(legal_records_path),
+                    "--relation-records",
+                    str(relation_records_path),
+                    "--prior-conclusion-records",
+                    str(prior_conclusion_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT03_LEGAL_METADATA_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT03")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_legal_metadata_relation_shadow_ready"])
         self.assertFalse(payload["d3_core_source_domain_accepted"])
 
 

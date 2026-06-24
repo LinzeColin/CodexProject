@@ -681,6 +681,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PDT02 / legacy S2P3T02 China C1 department source map remains completed as no-production evidence, but legal metadata relation work remains unavailable.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PDT04":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PDT04-D3-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PDT04 / legacy S2P3T04 中国官方 D3 source-domain readiness review，同时保持 D3 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PDT04 China official D3 readiness review after completed legal metadata relation shadow",
+                "option_a": "整合 C0/C1 与法律关系 shadow evidence，做 30-date replay、2-day shadow、权威 gate 和阅读板块路由解释，不影响 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PDT03，只保留法律元数据关系 shadow；风险更低但 D3 核心资格不推进。",
+                "option_c": "越过 D3 readiness gate 或 V7/V7.2 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; D3 replay/shadow evidence, authority gate, board-routing explanations, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "把中国官方 C0/C1 与法律关系证据汇总成 D3 readiness review，为后续 B2/B3/B4/B5/B6 阅读板块路由提供可审计资格证据。",
+                "risks": "readiness 被误写为 production accepted、板块路由解释缺失、shadow 数据影响正式 arXiv 邮件、V7.2 未合入前抢跑邮件/Schema",
+                "evidence": "D3 replay/shadow tests, authority gate checks, board-routing explanation fixtures, semantic extractor, project governance validator",
+                "priority": "P1",
+                "no_decision": "S2PDT03 / legacy S2P3T03 China legal metadata relation shadow remains completed as no-production evidence, but D3 readiness review remains unavailable.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {

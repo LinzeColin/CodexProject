@@ -3313,3 +3313,53 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-063"
+    name: "S2PDT03 China legal metadata relation shadow"
+    kind: "deterministic legal-metadata relation shadow model"
+    purpose: "Validate China legal metadata status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore and old-conclusion update, and no-production boundaries after S2PDT02 C1 department source map."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt03-china-legal-metadata-relation-shadow-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-065"
+    parameter_ids:
+      - "PARAM-ADP-440"
+      - "PARAM-ADP-441"
+      - "PARAM-ADP-442"
+      - "PARAM-ADP-443"
+      - "PARAM-ADP-444"
+      - "PARAM-ADP-445"
+      - "PARAM-ADP-446"
+      - "PARAM-ADP-447"
+      - "PARAM-ADP-448"
+      - "PARAM-ADP-449"
+    inputs:
+      - "passing S2PDT02 C1 department source-map report"
+      - "China legal metadata records"
+      - "China legal relation records"
+      - "prior conclusion update records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China legal metadata relation shadow report"
+      - "legal status taxonomy gate"
+      - "version effectivity gate"
+      - "reprint relation gate"
+      - "forced update gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md"
