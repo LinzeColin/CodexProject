@@ -85,8 +85,15 @@ jobs:
       - name: Verify generated governance dashboard
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: |
-          python3 scripts/generate_governance_dashboard.py --write --all
-          git diff --exit-code -- README.md GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md governance/binding_backlog.yaml ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
+          mkdir -p "${RUNNER_TEMP}/governance-generated-views"
+          python3 scripts/generate_governance_dashboard.py --write --all --root-artifact-dir "${RUNNER_TEMP}/governance-generated-views"
+          git diff --exit-code -- ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
+      - name: Upload generated governance views artifact
+        if: success() && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-generated-views-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/governance-generated-views/**
       - name: Write CI attestation
         if: success() && github.event_name == 'workflow_dispatch' && inputs.scope == 'all'
         env:

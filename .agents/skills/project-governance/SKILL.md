@@ -65,9 +65,9 @@ iteration counts. Git commit count is not iteration count.
 8. For diff-sensitive root, PR, or push checks, run
    `python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`.
    Use `--base-ref <sha-or-ref>` when validating a pushed range.
-9. Regenerate human-readable status pages with
-   `python3 scripts/generate_governance_dashboard.py --write` and verify
-   `git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'`
+9. Regenerate project human-readable status pages and root generated views with
+   `python3 scripts/generate_governance_dashboard.py --write --all --root-artifact-dir /tmp/governance-generated-views` and verify
+   `git diff --exit-code -- ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'`
    after a second generation pass.
 10. Run `python3 scripts/governance_setup_doctor.py --json` when checking local
     hook trust or GitHub branch-protection evidence. Report no-bypass as

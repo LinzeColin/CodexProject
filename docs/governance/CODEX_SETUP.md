@@ -93,8 +93,8 @@ Pushes and manual full audits also run all-project semantic drift reporting:
 
 ```bash
 python3 scripts/validate_project_governance.py --all --semantic --drift-report
-python3 scripts/generate_governance_dashboard.py --write
-git diff --exit-code -- GOVERNANCE_DASHBOARD.md ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
+python3 scripts/generate_governance_dashboard.py --write --all --root-artifact-dir /tmp/governance-generated-views
+git diff --exit-code -- ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
 ```
 
 Successful CI writes and validates a post-commit attestation with:
