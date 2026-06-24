@@ -21,8 +21,8 @@
   ],
   "generated_at": "2026-06-25T09:20:00+10:00",
   "base_commit": "9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90",
-  "result_commit": "PENDING",
-  "status": "completed_local_validation_passed_pending_pr_ci",
+  "result_commit": "69ceda49a4dd840039d32910c3f400dc0aba7c24",
+  "status": "completed_main_merged_ci_passed_no_production_side_effects",
   "scope": "Hong Kong and Macau independent jurisdiction profile evidence with required jurisdiction ids, language profiles, legal system states, government structures, authority evidence, mainland-template reuse blockers, metadata-only gates, and no production side effects.",
   "upstream_required_tasks": [
     "S2PFT01"
@@ -122,5 +122,15 @@
   "release_changed": false,
   "inherited_v7_1_open_p0_findings": 8,
   "inherited_v7_1_open_p1_findings": 37,
-  "rollback": "Revert S2PFT02 Hong Kong/Macau profile code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made."
+  "rollback": "Revert S2PFT02 Hong Kong/Macau profile code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made.",
+  "pull_request": "https://github.com/LinzeColin/CodexProject/pull/155",
+  "main_merge_commit": "69ceda49a4dd840039d32910c3f400dc0aba7c24",
+  "pr_head_commit": "d055dc0e1cf95ae74a9902220441aa3a2535342b",
+  "github_checks": [
+    "governance success",
+    "stage1-bootstrap success",
+    "real-arxiv-30-day-backfill success",
+    "live-all-arxiv-dry-run success",
+    "classify-arxiv-runtime-change success for governance/bootstrap/backfill/dry-run workflows"
+  ]
 }

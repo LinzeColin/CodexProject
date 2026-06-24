@@ -25,8 +25,9 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   has passed and remains a D1 alias/history record, not the current task.
   Formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and
   `INTEGRATED_PRODUCTION_ACCEPTED` remain blocked by V7.2 P0/P1 and final gate
-  rules. EMAIL_LEARNING_V1 work uses contextual next task `S2PHT01V1.1-T01`
-  and must complete its read-only path audit before implementation.
+  rules. EMAIL_LEARNING_V1 M1-M4 renderer is merged to main through PR #152 and
+  maintained through PR #153; future mail entrypoints must use the same Email
+  V1 contract/readiness gate and must not bypass it.
   `ADP-S1P5T05` completed the Stage 1 local production and migration prep after
   `ARXIV_PRODUCTION_ACCEPTED`.
   Final Stage 1 production strategy is local Mac + Codex/local runner; GitHub

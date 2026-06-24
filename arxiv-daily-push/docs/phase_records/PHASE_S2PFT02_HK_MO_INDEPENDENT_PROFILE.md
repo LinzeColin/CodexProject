@@ -61,6 +61,7 @@ This task does not claim:
 - changed-only lean governance: errors 0 warnings 0
 - JSON/YAML/JSONL/CSV parse: OK
 - git diff --check: PASS
+- PR #155 merged to main at `69ceda49a4dd840039d32910c3f400dc0aba7c24` with 7/7 GitHub check-runs success; this did not enable D3 full source-domain acceptance, Stage2 production acceptance, SMTP, scheduler, Release, public schema, queue/schema, or mail runtime changes.
 
 ## Next
 
