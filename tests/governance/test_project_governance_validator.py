@@ -3187,8 +3187,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 self.assertEqual(row["category"], "root_generated_or_status_view", row["source_path"])
                 self.assertIn("s6pat02_generated_view_removal", row["archive_action"])
                 continue
-            if row["source_path"] in later_changed:
-                self.assertIn(row["category"], {"root_legacy_governance_script", "root_generated_or_status_view"})
+            if row["source_path"] in later_changed and row["category"] in {
+                "root_legacy_governance_script",
+                "root_generated_or_status_view",
+            }:
                 continue
             self.assertTrue(source.is_file(), row["source_path"])
             blob = subprocess.run(
