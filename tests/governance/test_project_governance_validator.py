@@ -5345,6 +5345,104 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s4pct01_opme_structure_simplification_archives_backups_and_original_work(self) -> None:
+        s4pa_root = ROOT / "governance" / "stage_gates" / "s4pa"
+        archive_manifest = json.loads((s4pa_root / "wave1_archive_manifest.json").read_text(encoding="utf-8"))
+        structure_report = ROOT / "OpMe_System" / "docs" / "OpMe_structure_report.md"
+        project = load_validator_module().load_yaml(ROOT / "OpMe_System" / "docs" / "governance" / "project.yaml")
+
+        def is_s4pct01_opme_candidate(item: dict[str, Any]) -> bool:
+            source_path = item["source_path"]
+            return item["project_id"] == "OpMe_System" and (
+                source_path.startswith("OpMe_System/backups/generated-artifacts/")
+                or source_path.startswith("OpMe_System/work/original/")
+            )
+
+        opme_archived = [item for item in archive_manifest["candidates"] if is_s4pct01_opme_candidate(item)]
+        self.assertEqual(len(opme_archived), 18)
+        self.assertEqual(Counter(item["category"] for item in opme_archived), {"ARCHIVE": 18})
+        self.assertFalse(
+            any(path.is_file() for path in (ROOT / "OpMe_System" / "backups" / "generated-artifacts").glob("**/*")),
+            "generated-artifacts should not retain active files",
+        )
+        self.assertFalse(
+            any(path.is_file() for path in (ROOT / "OpMe_System" / "work" / "original").glob("**/*")),
+            "work/original should not retain active files",
+        )
+        self.assertTrue((ROOT / "OpMe_System" / "backend" / "app" / "main.py").is_file())
+        self.assertTrue((ROOT / "OpMe_System" / "frontend" / "src" / "App.jsx").is_file())
+        self.assertTrue((ROOT / "OpMe_System" / "app_bundle" / "native_launcher.c").is_file())
+        self.assertTrue((ROOT / "OpMe_System" / "app_bundle" / "assets" / "OpMeIcon.icns").is_file())
+        self.assertTrue((ROOT / "OpMe_System" / "samples" / "fault_case.json").is_file())
+        self.assertTrue((ROOT / "OpMe_System" / "samples" / "dynamic_measurements.csv").is_file())
+
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        reconciliations = {
+            item["source_path"]: item
+            for item in manifest.get("archive_checksum_reconciliation", [])
+        }
+        self.assertEqual(reconciliations, {})
+        for item in opme_archived:
+            with self.subTest(source_path=item["source_path"]):
+                self.assertFalse((ROOT / item["source_path"]).exists(), item["source_path"])
+                target = ROOT / item["proposed_target"]
+                self.assertTrue(target.is_file(), item["proposed_target"])
+                observed = hashlib.sha256(target.read_bytes()).hexdigest()
+                self.assertEqual(observed, item["sha256"], item["source_path"])
+
+        report_text = structure_report.read_text(encoding="utf-8")
+        for required in {
+            "S4PCT01",
+            "ACC-S4PCT01",
+            "OLD_TO_NEW_MAP",
+            "OpMe_System/backups/generated-artifacts/**",
+            "OpMe_System/work/original/**",
+            "Delivery package and runtime source responsibilities are separated: yes",
+            "App bundle build source moved: no",
+            "Sample/demo input moved: no",
+        }:
+            self.assertIn(required, report_text)
+
+        evidence = {item["evidence_id"]: item for item in project["evidence_refs"]}
+        self.assertEqual(
+            evidence["EVID-OTHER8-S4PCT01-OPME-STRUCTURE-REPORT"]["ref"],
+            "OpMe_System/docs/OpMe_structure_report.md",
+        )
+        self.assertEqual(
+            evidence["EVID-OTHER8-S4PCT01-MANIFEST"]["ref"],
+            "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+        )
+        validations = {item["validation_id"]: item for item in project["validations"]}
+        self.assertEqual(validations["VAL-OPME-S4PCT01-STRUCTURE"]["fact_level"], "EXTRACTED")
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "OpMe_System")
+        self.assertEqual(manifest["task_id"], "S4PCT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4PCT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S4PC-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["archive_actions"]["opme_archived_path_count"], 18)
+        self.assertEqual(manifest["archive_actions"]["opme_samples_action"], "UNCHANGED_ACTIVE_DEMO_INPUT")
+        self.assertEqual(manifest["archive_actions"]["opme_app_bundle_action"], "UNCHANGED_ACTIVE_DELIVERY_BUILD_SOURCE")
+        self.assertFalse(manifest["stop_conditions"]["backend_or_frontend_runtime_changed"])
+        self.assertFalse(manifest["stop_conditions"]["app_bundle_build_source_moved"])
+        self.assertFalse(manifest["stop_conditions"]["startup_command_changed_without_readme_sync"])
+        changed = set(manifest["changed_files_actual"])
+        self.assertIn("OpMe_System/docs/OpMe_structure_report.md", changed)
+        self.assertTrue(
+            any(path.startswith("governance/archive/other8_wave1_pending/OpMe_System/backups/") for path in changed)
+        )
+        self.assertTrue(
+            any(path.startswith("governance/archive/other8_wave1_pending/OpMe_System/work/original/") for path in changed)
+        )
+        self.assertFalse(any(path.startswith((("EEI/", "arxiv-daily-push/"))) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

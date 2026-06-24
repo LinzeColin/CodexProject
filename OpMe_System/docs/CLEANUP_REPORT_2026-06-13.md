@@ -26,6 +26,10 @@ Generated artifacts were backed up under:
 
 The local checkout uses sparse checkout to exclude that generated-artifacts backup directory from this Mac.
 
+S4PCT01 note: these generated-artifacts backup files were later archived under
+`governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/`
+to keep historical truth while removing backup artifacts from the active project surface.
+
 ## Deleted Locally
 
 Cache/dependency/build files removed:
@@ -54,7 +58,7 @@ Necessary local files retained:
 - Scripts: `scripts/dev.sh`, `scripts/run_local_services.sh`, `scripts/install_app_entries.sh`, `scripts/smoke_test.sh`, `scripts/generate_sample_reports.py`
 - App bundle source: `app_bundle/Wuhan Kaiming OpMe.app/`
 - Project documentation: `README.md`, `docs/HANDOFF.md`, `docs/PROJECT_STATUS.md`, `docs/CLEANUP_POLICY.md`
-- Original ChatGPT/reference prototype files under `work/original/`
+- Original ChatGPT/reference prototype files under `work/original/` were later archived by S4PCT01 under `governance/archive/other8_wave1_pending/OpMe_System/work/original/`
 - Sample input data under `samples/`
 - Empty `outputs/` and `reports/` directories for future regenerated deliverables
 

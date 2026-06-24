@@ -2104,6 +2104,14 @@ validations:
     fact_level: "PROPOSED"
     evidence_refs:
       - "EVID-REVIEW9-S5PAT03-MANIFEST"
+  -
+    validation_id: "VAL-OPME-S4PCT01-STRUCTURE"
+    name: "Other8 S4PCT01 OpMe structure simplification"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OTHER8-S4PCT01-OPME-STRUCTURE-REPORT"
+      - "EVID-OTHER8-S4PCT01-MANIFEST"
 delivery_readiness:
   status: "UNVERIFIED"
   release_gate: "GOV-SEMANTIC-OPME-in-progress"
@@ -2175,3 +2183,13 @@ evidence_refs:
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-OTHER8-S4PCT01-OPME-STRUCTURE-REPORT"
+    kind: "stage_gate_evidence"
+    ref: "OpMe_System/docs/OpMe_structure_report.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OTHER8-S4PCT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json"
+    fact_level: "EXTRACTED"
