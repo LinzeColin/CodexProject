@@ -130,6 +130,7 @@ def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
     category = str(profile["primary_category"])
     evidence_label = str(profile["evidence_label"])
     combined = f"{title} {summary} {category}".lower()
+    topic = _topic_label(category, combined)
     score = _attention_score(category, combined)
     decision = "读" if score >= 4.2 else "扫读" if score >= 3.2 else "跳过"
     return {
@@ -141,6 +142,13 @@ def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
         "first_principles_chain": _first_principles_chain(combined),
         "domain_mappings": _domain_mappings(category, combined),
         "key_questions": _key_questions(category, combined),
+        "plain_language_explanation": _plain_language_explanation(title, summary, category, topic),
+        "learning_outcomes": _learning_outcomes(topic, combined),
+        "method_flow": _method_flow(topic, combined),
+        "knowledge_units": _knowledge_units(topic, title, summary, category, combined),
+        "reusable_methods": _reusable_methods(topic, combined),
+        "transfer_scenarios": _transfer_scenarios(topic, combined),
+        "learning_boundary": _learning_boundary(evidence_label),
         "evidence_gaps": [
             f"当前只基于{evidence_label}，不能当作同行评审结论或真实市场验证。",
             "需要确认论文正文中的数学定义、实验设定和失败条件是否支持摘要主张。",
@@ -152,6 +160,182 @@ def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
             "content": "用变量、反馈回路和失败条件解释今天是否值得继续读。",
             "learning_goal": "看完能回答：这篇论文的增量在哪里，什么条件下不成立。",
         },
+    }
+
+
+def _topic_label(category: str, text: str) -> str:
+    if category.startswith("q-fin") or any(keyword in text for keyword in ("portfolio", "risk", "trading", "market")):
+        return "市场风险和策略验证"
+    if any(keyword in text for keyword in ("agent", "artificial intelligence", "language model", "model")):
+        return "AI 系统和证据验证"
+    if any(keyword in text for keyword in ("benchmark", "dataset", "evaluation")):
+        return "评估基准和可复现实验"
+    if any(keyword in text for keyword in ("optimization", "control", "simulation")):
+        return "复杂系统优化和仿真"
+    if any(keyword in text for keyword in ("health", "clinical", "medical")):
+        return "医学决策和风险控制"
+    return "研究问题拆解和证据判断"
+
+
+def _plain_language_explanation(title: str, summary: str, category: str, topic: str) -> str:
+    title_text = _truncate_text(title or "这篇论文", max_chars=64)
+    summary_text = _truncate_text(summary or "摘要没有给出足够细节", max_chars=150)
+    category_text = category or "未标明分类"
+    return (
+        f"这篇论文可以先理解为：作者围绕“{topic}”提出一个需要被验证的研究线索。"
+        f"现实难点是，标题《{title_text}》背后的主张不能只靠关键词判断；"
+        f"需要看它把什么问题、方法、证据和失败条件连在一起。"
+        f"从当前摘要级信息看，论文给出的核心上下文是：{summary_text}。"
+        f"因此这封邮件只把它当作 {category_text} 下的学习材料和验证入口，"
+        "不把摘要主张升级成已经证实的事实。"
+    )
+
+
+def _learning_outcomes(topic: str, text: str) -> list[str]:
+    outcomes = [
+        f"把“{topic}”拆成问题、方法、证据和失败条件。",
+        "区分论文事实、邮件解释和迁移建议，避免把摘要当结论。",
+        "学会从一个研究标题里找出可验证变量，而不是只记住术语。",
+        "把论文方法改写成学习、研究或产品中的最小验证动作。",
+    ]
+    if any(keyword in text for keyword in ("benchmark", "dataset", "evaluation")):
+        outcomes.append("判断一个评估基准能否减少后续研究和产品验证成本。")
+    elif any(keyword in text for keyword in ("agent", "model", "learning")):
+        outcomes.append("判断一个模型系统主张是否有足够证据支持真实使用。")
+    else:
+        outcomes.append("判断这篇论文最值得继续追问的证据缺口。")
+    return outcomes[:5]
+
+
+def _method_flow(topic: str, text: str) -> list[str]:
+    if any(keyword in text for keyword in ("benchmark", "dataset", "evaluation")):
+        return ["定义要比较的能力", "建立数据或任务", "运行可复现实验", "比较结果差异", "检查失败样例", "决定是否复用"]
+    if any(keyword in text for keyword in ("portfolio", "risk", "trading", "market")):
+        return ["确定市场状态", "定义策略或模型反应", "观察收益与风险变化", "检查拥挤和冲击", "用回撤或恢复时间验证"]
+    if any(keyword in text for keyword in ("agent", "model", "learning")):
+        return ["说明系统要解决的问题", "拆出输入和输出", "绑定证据来源", "检查模型能力边界", "用失败条件决定下一步"]
+    return [f"锁定{topic}", "找出关键变量", "看作者怎样处理", "检查证据支持", "迁移为一个可执行动作"]
+
+
+def _knowledge_units(topic: str, title: str, summary: str, category: str, text: str) -> list[dict[str, str]]:
+    title_hint = _truncate_text(title or "本篇论文", max_chars=48)
+    summary_hint = _truncate_text(summary or "当前摘要级证据", max_chars=90)
+    units = [
+        {
+            "title": "论文不是结论库，而是证据入口",
+            "what": f"《{title_hint}》现在只能证明作者报告了一个 {topic} 相关主张。",
+            "why": "摘要和元数据能定位问题，但不能替代正文、图表和实验。",
+            "paper_link": f"当前材料来自 {category or '未知分类'} 摘要级信息：{summary_hint}",
+            "transfer": "读任何论文前，先标记事实层级，再决定是否深挖正文。",
+            "mistake": "把摘要里的可能性直接写成确定结论。",
+        },
+        {
+            "title": "先找变量，再谈方法",
+            "what": f"这篇论文的学习价值取决于它是否把 {topic} 拆成可观察变量。",
+            "why": "变量清楚，方法才可能复现；变量含糊，术语再多也无法迁移。",
+            "paper_link": "邮件把标题、分类、摘要和证据边界放在同一条链上检查。",
+            "transfer": "做研究、产品或自动化评估时，先列输入、输出和评价指标。",
+            "mistake": "只记方法名，不知道它改变了哪个变量。",
+        },
+        {
+            "title": "失败条件和方法本身一样重要",
+            "what": "论文值得学的部分不只是它声称有效，还包括什么情况下可能失效。",
+            "why": "失败条件能防止把局部实验或理论假设误用到真实系统。",
+            "paper_link": "当前邮件保留证据缺口，提醒继续检查正文设定和限制。",
+            "transfer": "为学习计划、交易研究或产品实验预先写下停止条件。",
+            "mistake": "只保存看起来有用的结论，忽略不适用条件。",
+        },
+        {
+            "title": "迁移要看共同结构，不看表面领域",
+            "what": f"{topic} 可以迁移的不是原领域标签，而是问题结构和验证路径。",
+            "why": "不同领域可能共享“输入-机制-输出-反馈”的同一结构。",
+            "paper_link": "邮件把论文变量映射为学习、研究和产品中的可执行判断。",
+            "transfer": "把新论文转成一个小实验、一条检查清单或一个产品假设。",
+            "mistake": "用“这个领域也重要”代替真正的迁移解释。",
+        },
+    ]
+    if any(keyword in text for keyword in ("benchmark", "dataset", "evaluation")):
+        units.append(
+            {
+                "title": "评估基准的价值在于降低验证成本",
+                "what": "一个好基准能让不同方法在同一任务上比较。",
+                "why": "比较条件一致，后续选择才不是凭感觉。",
+                "paper_link": "当前摘要出现 benchmark / evaluation 信号，应继续检查任务定义和样本来源。",
+                "transfer": "为自己的项目设计小型验收集，而不是只看单次演示。",
+                "mistake": "把基准分数当作真实世界效果。",
+            }
+        )
+    return units[:5]
+
+
+def _reusable_methods(topic: str, text: str) -> list[dict[str, str]]:
+    methods = [
+        {
+            "name": "摘要级证据分层",
+            "when": "刚看到论文、还没读正文时使用。",
+            "how": "把已知事实、作者解释、你的迁移想法分开放。",
+            "not_for": "不能用来替代全文事实核查。",
+        },
+        {
+            "name": "变量-机制-输出拆解",
+            "when": f"遇到 {topic} 这种跨学科主张时使用。",
+            "how": "先写变量，再写变量如何互动，最后写能观察到的输出。",
+            "not_for": "变量无法观察或测量时不要强行建模。",
+        },
+        {
+            "name": "最小验证动作",
+            "when": "论文看起来有价值，但还不值得投入长时间阅读时使用。",
+            "how": "设计一个 15-30 分钟能完成的小检查，确认是否继续。",
+            "not_for": "不能把小检查的结果包装成论文最终结论。",
+        },
+    ]
+    if any(keyword in text for keyword in ("risk", "failure", "robustness", "security")):
+        methods.append(
+            {
+                "name": "失败条件前置",
+                "when": "论文涉及风险、鲁棒性、部署或决策系统时使用。",
+                "how": "先写出什么证据会推翻当前判断，再看正文是否覆盖。",
+                "not_for": "不要只寻找支持自己观点的证据。",
+            }
+        )
+    return methods[:4]
+
+
+def _transfer_scenarios(topic: str, text: str) -> list[dict[str, str]]:
+    scenarios = [
+        {
+            "scenario": "学习",
+            "connection": f"把 {topic} 拆成 4-6 个知识单元，每个单元都写清事实、解释和迁移。",
+        },
+        {
+            "scenario": "研究工作流",
+            "connection": "把论文先放入证据队列，只在关键事实可追踪时进入结论库。",
+        },
+        {
+            "scenario": "产品或自动化系统",
+            "connection": "把论文主张改成一个可验收的小功能假设，而不是直接写进产品宣传。",
+        },
+    ]
+    if any(keyword in text for keyword in ("portfolio", "risk", "market", "trading")):
+        scenarios.append(
+            {
+                "scenario": "量化研究",
+                "connection": "把论文变量映射到收益、波动、回撤、流动性和恢复时间，再决定是否回测。",
+            }
+        )
+    return scenarios[:4]
+
+
+def _learning_boundary(evidence_label: str) -> dict[str, list[str]]:
+    return {
+        "can_determine": [
+            f"当前来源层级是{evidence_label}。",
+            "可以确定邮件中的事实入口来自当前论文对象和受支持 claim。",
+        ],
+        "cannot_determine": [
+            "不能确定正文图表、实验细节和限制是否完全支持摘要主张。",
+            "不能确定同行评审、真实部署、商业价值或长期效果已经成立。",
+        ],
     }
 
 

@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from urllib.parse import unquote
 
 from arxiv_daily_push.arxiv_adapter import ArxivQuery
 from arxiv_daily_push.cli import main
@@ -53,12 +54,25 @@ class Stage1B1ReportTests(unittest.TestCase):
         self.assertEqual(package["status"], "pass")
         self.assertEqual(package["board_id"], "B1")
         self.assertRegex(package["email_subject"], r"^20260701 -- arXiv Daily Push -- arXiv cs\.AI -- .+")
-        self.assertIn("【先看结论】", package["email_plain"])
+        self.assertIn("【M1｜科学与理论前沿邮件】", package["email_plain"])
+        self.assertIn("【先把论文讲成人话】", package["email_plain"])
+        self.assertIn("【学习成果导航】", package["email_plain"])
+        self.assertIn("【真正值得学的新知识】", package["email_plain"])
+        self.assertIn("【继续学习入口】", package["email_plain"])
+        self.assertIn("arXiv 摘要页：https://arxiv.org/abs/2401.00001v2", package["email_plain"])
+        self.assertIn("PDF：https://arxiv.org/pdf/2401.00001v2", package["email_plain"])
+        self.assertIn("ChatGPT 新对话：https://chatgpt.com/?q=", package["email_plain"])
         self.assertIn("候选队列：今日 arXiv 候选", package["email_plain"])
-        self.assertIn("一阶拆解", package["email_html"])
+        self.assertIn("真正值得学的新知识", package["email_html"])
+        self.assertIn('target="_blank" rel="noopener noreferrer"', package["email_html"])
+        decoded_prompt = unquote(package["email_plain"].split("ChatGPT 新对话：", 1)[1].splitlines()[0])
+        self.assertIn("用户背景：高中理科水平的成年人", decoded_prompt)
+        self.assertIn("请结合正文关键图表和实验继续讲解", decoded_prompt)
         self.assertIn("claim:arxiv:2401.00001", package["report_markdown"])
         self.assertNotIn("Claim Ledger", package["email_plain"])
         self.assertNotIn("ROI", package["email_plain"])
+        self.assertNotIn("Delta", package["email_plain"])
+        self.assertNotIn("阅读时间", package["email_plain"])
         self.assertNotIn("project:", package["email_plain"])
         self.assertNotIn(".mp4", package["email_plain"])
         self.assertNotIn("100.0%", package["email_plain"])

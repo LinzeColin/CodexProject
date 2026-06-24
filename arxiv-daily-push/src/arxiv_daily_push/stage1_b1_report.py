@@ -13,6 +13,7 @@ from .config import DEFAULT_RECIPIENT, DEFAULT_TIMEZONE
 from .contracts import stable_content_hash, validate_evidence_claim, validate_source_item
 from .evidence_gate import EvidenceGateError, build_claim_ledger
 from .lesson import LessonGenerationError, generate_lesson
+from .mail_templates import build_chatgpt_learning_url, mail_product_for_board, safe_https_url, source_pdf_url
 
 
 STAGE1_B1_REPORT_MODEL_ID = "adp-stage1-b1-report-email-v1"
@@ -31,6 +32,11 @@ STAGE1_B1_PROHIBITED_EMAIL_MARKERS = (
     "Release 资料包",
     "12秒视频",
     ".mp4",
+    "阅读时间",
+    "30 秒",
+    "30秒",
+    "Frontier Delta",
+    "Delta",
 )
 
 
@@ -329,16 +335,19 @@ def _render_report_markdown(
         f"- generated_at: `{generated_at}`",
         f"- source_url: {url}",
         "",
-        "## 1. 先给结论",
+        "## 1. 先把论文讲成人话",
         "",
-        str(frontstage.get("one_line_takeaway") or "这篇论文应先作为学习和验证线索，而不是直接当作已验证结论。"),
+        str(frontstage.get("plain_language_explanation") or frontstage.get("one_line_takeaway") or "这篇论文应先作为学习和验证线索，而不是直接当作已验证结论。"),
         "",
-        "## 2. 一阶机制拆解",
+        "## 2. 学习成果导航",
         "",
     ]
-    for index, item in enumerate(frontstage.get("first_principles_chain") or ["问题定义", "变量", "机制", "输出", "失败条件"], start=1):
+    for index, item in enumerate(frontstage.get("learning_outcomes") or [], start=1):
         lines.append(f"{index}. {item}")
-    lines.extend(["", "## 3. 证据与边界", ""])
+    lines.extend(["", "## 3. 作者具体怎么做", ""])
+    for index, item in enumerate(frontstage.get("method_flow") or frontstage.get("first_principles_chain") or [], start=1):
+        lines.append(f"{index}. {item}")
+    lines.extend(["", "## 4. 证据与边界", ""])
     for claim in ledger.get("claims") or []:
         if not isinstance(claim, Mapping):
             continue
@@ -350,24 +359,29 @@ def _render_report_markdown(
     lines.extend(
         [
             "",
-            "## 4. 决策映射",
+            "## 5. 真正值得学的新知识",
             "",
         ]
     )
-    for mapping in frontstage.get("domain_mappings") or []:
-        if isinstance(mapping, Mapping):
-            lines.append(f"- {mapping.get('paper_variable')}: {mapping.get('decision_mapping')}")
-    lines.extend(["", "## 5. 三个必须追问的问题", ""])
-    for question in frontstage.get("key_questions") or []:
-        lines.append(f"- {question}")
+    for unit in frontstage.get("knowledge_units") or []:
+        if isinstance(unit, Mapping):
+            lines.append(f"- **{unit.get('title')}**：{unit.get('what')} {unit.get('why')}")
+    lines.extend(["", "## 6. 可以直接复用的方法", ""])
+    for method in frontstage.get("reusable_methods") or []:
+        if isinstance(method, Mapping):
+            lines.append(f"- **{method.get('name')}**：{method.get('when')} {method.get('how')} 不适用：{method.get('not_for')}")
+    lines.extend(["", "## 7. 具体迁移", ""])
+    for scenario in frontstage.get("transfer_scenarios") or []:
+        if isinstance(scenario, Mapping):
+            lines.append(f"- **{scenario.get('scenario')}**：{scenario.get('connection')}")
     lines.extend(
         [
             "",
-            "## 6. 下一步动作",
+            "## 8. 下一步动作",
             "",
             str(frontstage.get("default_action") or "先做最小复现实验，再决定是否深读全文。"),
             "",
-            "## 7. 不能越界的地方",
+            "## 9. 不能越界的地方",
             "",
             "- 当前证据只来自 arXiv 摘要和元数据。",
             "- 不得把摘要主张改写成已证实事实。",
@@ -390,38 +404,55 @@ def _render_email_plain(
     arxiv = _arxiv_meta(source_item)
     frontstage = lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {}
     title = _clean_text(str(source_item.get("title") or "Untitled"))
-    url = str(source_item.get("canonical_url") or "")
+    product = mail_product_for_board(STAGE1_B1_BOARD_ID)
+    url = safe_https_url(source_item.get("canonical_url"))
+    pdf_url = source_pdf_url(source_item)
+    chatgpt_url = build_chatgpt_learning_url(source_item, chinese_title=_learning_title(frontstage, title))
     category = str(arxiv.get("primary_category") or "unknown")
+    boundary = frontstage.get("learning_boundary") if isinstance(frontstage.get("learning_boundary"), Mapping) else {}
     return "\n".join(
         [
             subject,
             "",
-            "【先看结论】",
-            str(frontstage.get("one_line_takeaway") or "这篇论文目前适合作为学习线索，不能直接当作已验证结论。"),
+            f"【{product['id']}｜{product['name']}】",
+            str(product["focus"]),
             "",
-            "【今天讲什么】",
+            "【先把论文讲成人话】",
             f"论文：{title}",
-            f"分类：{category}；证据：关键事实已全部绑定 arXiv 摘要/元数据",
+            f"分类：{category}；证据深度：摘要级 arXiv 元数据",
+            str(frontstage.get("plain_language_explanation") or frontstage.get("one_line_takeaway") or "这篇论文目前适合作为学习线索，不能直接当作已验证结论。"),
             "",
-            "【一阶拆解】",
-            " → ".join(str(item) for item in frontstage.get("first_principles_chain") or ["问题", "变量", "机制", "输出", "失败条件"]),
+            "【学习成果导航】",
+            *_numbered_lines(frontstage.get("learning_outcomes"), limit=6),
             "",
-            "【为什么重要】",
-            _decision_mapping_sentence(frontstage),
+            "【作者具体怎么做】",
+            " → ".join(str(item) for item in frontstage.get("method_flow") or frontstage.get("first_principles_chain") or ["问题", "变量", "机制", "输出", "失败条件"]),
             "",
-            "【证据边界】",
-            str(evidence_audit.get("evidence_boundary")),
+            "【真正值得学的新知识】",
+            *_knowledge_unit_lines(frontstage.get("knowledge_units"), limit=5),
+            "",
+            "【可以直接复用的方法】",
+            *_method_lines(frontstage.get("reusable_methods"), limit=4),
+            "",
+            "【连接到你的学习、研究和产品】",
+            *_transfer_lines(frontstage.get("transfer_scenarios"), limit=4),
+            "",
+            "【边界】",
+            "可以确定：" + "；".join(str(item) for item in boundary.get("can_determine", [])[:2]) if isinstance(boundary.get("can_determine"), list) else str(evidence_audit.get("evidence_boundary")),
+            "不能确定：" + "；".join(str(item) for item in boundary.get("cannot_determine", [])[:2]) if isinstance(boundary.get("cannot_determine"), list) else "不能把摘要主张当成全文验证结果。",
             "",
             "【你今天可以做的最小动作】",
             str(frontstage.get("default_action") or "列出输入、输出和失败条件，再决定是否深读全文。"),
             "",
-            "【候选队列状态】",
-            candidate_queue_summary,
-            "",
-            "【入口】",
-            f"原文：{url}",
+            "【继续学习入口】",
+            f"arXiv 摘要页：{url}",
+            f"PDF：{pdf_url}",
+            f"ChatGPT 新对话：{chatgpt_url}",
             f"报告：{report_id}",
             f"Run：{daily_input.get('run_id')}",
+            "",
+            "【候选队列状态】",
+            candidate_queue_summary,
         ]
     )
 
@@ -439,35 +470,161 @@ def _render_email_html(
     arxiv = _arxiv_meta(source_item)
     frontstage = lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {}
     title = _clean_text(str(source_item.get("title") or "Untitled"))
-    url = str(source_item.get("canonical_url") or "")
-    chain = frontstage.get("first_principles_chain") or ["问题", "变量", "机制", "输出", "失败条件"]
-    questions = frontstage.get("key_questions") or []
+    product = mail_product_for_board(STAGE1_B1_BOARD_ID)
+    url = safe_https_url(source_item.get("canonical_url"))
+    pdf_url = source_pdf_url(source_item)
+    chatgpt_url = build_chatgpt_learning_url(source_item, chinese_title=_learning_title(frontstage, title))
+    chain = frontstage.get("method_flow") or frontstage.get("first_principles_chain") or ["问题", "变量", "机制", "输出", "失败条件"]
+    outcomes = frontstage.get("learning_outcomes") or []
+    boundary = frontstage.get("learning_boundary") if isinstance(frontstage.get("learning_boundary"), Mapping) else {}
     return "\n".join(
         [
             "<!doctype html>",
             '<html lang="zh-CN"><head><meta charset="utf-8">',
             f"<title>{html.escape(subject)}</title>",
-            "<style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55;color:#202124;max-width:760px;margin:0 auto;padding:24px}h1{font-size:22px}h2{font-size:17px;margin-top:24px}.meta{color:#5f6368}.chain span{display:inline-block;margin:4px 6px 4px 0;padding:4px 8px;border:1px solid #dadce0;border-radius:6px}</style>",
+            '<meta name="viewport" content="width=device-width, initial-scale=1">',
+            "<style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.65;color:#202124;max-width:760px;margin:0 auto;padding:24px;background:#f5f7fb}.page{background:#fff;border:1px solid #e3e8ef;border-radius:10px;padding:24px}h1{font-size:24px;line-height:1.35;margin:0 0 10px}h2{font-size:18px;margin:26px 0 10px}.meta{color:#5f6368}.chain span{display:inline-block;margin:4px 6px 4px 0;padding:6px 9px;border:1px solid #d9e0ea;border-radius:7px;background:#f6f8fb}.unit,.method{border-top:1px solid #e6ebf2;padding:12px 0}.btn{display:inline-block;margin:4px 8px 8px 0;padding:10px 12px;border-radius:7px;text-decoration:none;background:#1c438f;color:#fff!important;font-weight:700}.btn.alt{background:#edf1f7;color:#25344f!important}@media(max-width:560px){body{padding:0}.page{border-radius:0;border-left:0;border-right:0;padding:18px}h1{font-size:21px}}</style>",
             "</head><body>",
-            f"<h1>{html.escape(subject)}</h1>",
-            f"<p><strong>先看结论：</strong>{html.escape(str(frontstage.get('one_line_takeaway') or '这篇论文目前适合作为学习线索。'))}</p>",
-            f"<p class=\"meta\">{html.escape(title)} | {html.escape(str(arxiv.get('primary_category') or 'unknown'))} | 关键事实已全部绑定证据</p>",
-            "<h2>一阶拆解</h2>",
+            '<div class="page">',
+            f"<p class=\"meta\">{html.escape(str(product['id']))}｜{html.escape(str(product['name']))}｜{html.escape(str(product['earliest_send']))}</p>",
+            f"<h1>{html.escape(_learning_title(frontstage, title))}</h1>",
+            f"<p class=\"meta\">{html.escape(title)} | {html.escape(str(arxiv.get('primary_category') or 'unknown'))} | 摘要级 arXiv 元数据</p>",
+            "<h2>先把论文讲成人话</h2>",
+            f"<p>{html.escape(str(frontstage.get('plain_language_explanation') or frontstage.get('one_line_takeaway') or '这篇论文目前适合作为学习线索。'))}</p>",
+            "<h2>学习成果导航</h2>",
+            _html_ordered_list(outcomes[:6]),
+            "<h2>作者具体怎么做</h2>",
             "<p class=\"chain\">" + "".join(f"<span>{html.escape(str(item))}</span>" for item in chain) + "</p>",
-            "<h2>为什么重要</h2>",
-            f"<p>{html.escape(_decision_mapping_sentence(frontstage))}</p>",
-            "<h2>证据边界</h2>",
-            f"<p>{html.escape(str(evidence_audit.get('evidence_boundary')))}</p>",
+            "<h2>真正值得学的新知识</h2>",
+            _html_knowledge_units(frontstage.get("knowledge_units")),
+            "<h2>可以直接复用的方法</h2>",
+            _html_methods(frontstage.get("reusable_methods")),
+            "<h2>连接到你的学习、研究和产品</h2>",
+            _html_transfer(frontstage.get("transfer_scenarios")),
+            "<h2>边界</h2>",
+            f"<p><strong>可以确定：</strong>{html.escape('；'.join(str(item) for item in boundary.get('can_determine', [])[:2]) if isinstance(boundary.get('can_determine'), list) else str(evidence_audit.get('evidence_boundary')))}</p>",
+            f"<p><strong>不能确定：</strong>{html.escape('；'.join(str(item) for item in boundary.get('cannot_determine', [])[:2]) if isinstance(boundary.get('cannot_determine'), list) else '不能把摘要主张当成全文验证结果。')}</p>",
             "<h2>今天的最小动作</h2>",
             f"<p>{html.escape(str(frontstage.get('default_action') or '列出输入、输出和失败条件，再决定是否深读全文。'))}</p>",
+            "<h2>继续学习入口</h2>",
+            f"<p>{_safe_link('arXiv 摘要页', url, primary=True)}{_safe_link('PDF', pdf_url, primary=False)}{_safe_link('ChatGPT 新对话', chatgpt_url, primary=False)}</p>",
             "<h2>候选队列</h2>",
             f"<p>{html.escape(candidate_queue_summary)}</p>",
-            "<h2>三个追问</h2>",
-            "<ul>" + "".join(f"<li>{html.escape(str(question))}</li>" for question in questions[:3]) + "</ul>",
-            "<h2>入口</h2>",
-            f"<p><a href=\"{html.escape(url)}\">打开 arXiv 原文</a><br>报告：{html.escape(report_id)}<br>Run：{html.escape(str(daily_input.get('run_id')))}</p>",
-            "</body></html>",
+            f"<p class=\"meta\">报告：{html.escape(report_id)}<br>Run：{html.escape(str(daily_input.get('run_id')))}</p>",
+            "</div></body></html>",
         ]
+    )
+
+
+def _learning_title(frontstage: Mapping[str, Any], title: str) -> str:
+    plain = _clean_text(str(frontstage.get("plain_language_title") or ""))
+    if plain:
+        return plain
+    takeaway = _clean_text(str(frontstage.get("one_line_takeaway") or ""))
+    if takeaway and len(takeaway) <= 72:
+        return takeaway
+    return f"用普通中文读懂：{_truncate(title, 54)}"
+
+
+def _numbered_lines(value: Any, *, limit: int) -> list[str]:
+    if not isinstance(value, list):
+        return ["1. 识别论文事实、解释和迁移建议。"]
+    return [f"{index}. {item}" for index, item in enumerate([str(item) for item in value[:limit] if str(item).strip()], start=1)]
+
+
+def _knowledge_unit_lines(value: Any, *, limit: int) -> list[str]:
+    if not isinstance(value, list):
+        return ["1. 证据入口：先确认论文主张来自哪里、能支持到什么程度。"]
+    lines = []
+    for index, item in enumerate(value[:limit], start=1):
+        if not isinstance(item, Mapping):
+            continue
+        lines.append(
+            f"{index}. {item.get('title')}：{item.get('what')} 为什么重要：{item.get('why')} "
+            f"迁移：{item.get('transfer')}"
+        )
+    return lines or ["1. 证据入口：先确认论文主张来自哪里、能支持到什么程度。"]
+
+
+def _method_lines(value: Any, *, limit: int) -> list[str]:
+    if not isinstance(value, list):
+        return ["- 摘要级证据分层：先分开事实、解释和迁移建议；不能替代全文核查。"]
+    lines = []
+    for item in value[:limit]:
+        if not isinstance(item, Mapping):
+            continue
+        lines.append(f"- {item.get('name')}：{item.get('when')} {item.get('how')} 不适用：{item.get('not_for')}")
+    return lines or ["- 摘要级证据分层：先分开事实、解释和迁移建议；不能替代全文核查。"]
+
+
+def _transfer_lines(value: Any, *, limit: int) -> list[str]:
+    if not isinstance(value, list):
+        return ["- 学习：把论文拆成事实、解释、方法和边界。"]
+    lines = []
+    for item in value[:limit]:
+        if isinstance(item, Mapping):
+            lines.append(f"- {item.get('scenario')}：{item.get('connection')}")
+    return lines or ["- 学习：把论文拆成事实、解释、方法和边界。"]
+
+
+def _html_ordered_list(items: Sequence[Any]) -> str:
+    rows = "".join(f"<li>{html.escape(str(item))}</li>" for item in items if str(item).strip())
+    return f"<ol>{rows}</ol>" if rows else "<ol><li>识别论文事实、解释和迁移建议。</li></ol>"
+
+
+def _html_knowledge_units(value: Any) -> str:
+    if not isinstance(value, list):
+        return "<p>先确认论文主张来自哪里、能支持到什么程度。</p>"
+    rows = []
+    for item in value[:5]:
+        if not isinstance(item, Mapping):
+            continue
+        rows.append(
+            "<div class=\"unit\">"
+            f"<strong>{html.escape(str(item.get('title') or '知识单元'))}</strong>"
+            f"<p>{html.escape(str(item.get('what') or ''))}</p>"
+            f"<p>{html.escape(str(item.get('why') or ''))}</p>"
+            f"<p><em>迁移：</em>{html.escape(str(item.get('transfer') or ''))}</p>"
+            "</div>"
+        )
+    return "".join(rows) or "<p>先确认论文主张来自哪里、能支持到什么程度。</p>"
+
+
+def _html_methods(value: Any) -> str:
+    if not isinstance(value, list):
+        return "<p>摘要级证据分层：先分开事实、解释和迁移建议。</p>"
+    rows = []
+    for item in value[:4]:
+        if not isinstance(item, Mapping):
+            continue
+        rows.append(
+            "<div class=\"method\">"
+            f"<strong>{html.escape(str(item.get('name') or '可复用方法'))}</strong>"
+            f"<p>{html.escape(str(item.get('when') or ''))} {html.escape(str(item.get('how') or ''))}</p>"
+            f"<p><em>不适用：</em>{html.escape(str(item.get('not_for') or ''))}</p>"
+            "</div>"
+        )
+    return "".join(rows) or "<p>摘要级证据分层：先分开事实、解释和迁移建议。</p>"
+
+
+def _html_transfer(value: Any) -> str:
+    if not isinstance(value, list):
+        return "<ul><li>学习：把论文拆成事实、解释、方法和边界。</li></ul>"
+    rows = []
+    for item in value[:4]:
+        if isinstance(item, Mapping):
+            rows.append(f"<li><strong>{html.escape(str(item.get('scenario') or '迁移'))}</strong>：{html.escape(str(item.get('connection') or ''))}</li>")
+    return f"<ul>{''.join(rows)}</ul>" if rows else "<ul><li>学习：把论文拆成事实、解释、方法和边界。</li></ul>"
+
+
+def _safe_link(label: str, url: str, *, primary: bool) -> str:
+    safe_url = safe_https_url(url)
+    if not safe_url:
+        return ""
+    class_name = "btn" if primary else "btn alt"
+    return (
+        f"<a class=\"{class_name}\" href=\"{html.escape(safe_url, quote=True)}\" "
+        f"target=\"_blank\" rel=\"noopener noreferrer\">{html.escape(label)}</a>"
     )
 
 

@@ -1220,7 +1220,7 @@ formulas:
     model_id: "MOD-ADP-034"
     assumption_ids: ["ASM-ADP-036", "ASM-ADP-035", "ASM-ADP-002", "ASM-ADP-020", "ASM-ADP-022"]
     status: "active"
-    expression: "Manual delivery testing may perform real SMTP only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input and Stage 1 text artifacts, run scheduled daily-run delivery without Release/video requirements, send exactly to the configured recipient, render the decision-first Chinese email frontstage with responsive HTML plus plain-text fallback, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and frontstage numeric score labels, and avoid enabling scheduled production."
+    expression: "Manual delivery testing may perform real SMTP only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input and Stage 1 text artifacts, run scheduled daily-run delivery without Release/video requirements, send exactly to the configured recipient, render the M1 learning email frontstage with responsive HTML plus plain-text fallback, include safe arXiv/PDF/ChatGPT learning entries, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and legacy reading-time or Delta labels, and avoid enabling scheduled production."
     variables:
       - name: "confirm_manual_delivery_test"
         data_type: "string"
@@ -1241,7 +1241,7 @@ formulas:
       - name: "email_frontend_format"
         data_type: "object"
         unit: "email subject and body"
-        input_domain: "YYYYMMDD -- Project Name -- arXiv Group -- Theme subject; Chinese sections; no video link requirement; candidate queue summary; no visible ROI score, numeric x/5 score, Release clutter, or delivery policy line"
+        input_domain: "YYYYMMDD -- Project Name -- arXiv Group -- Theme subject; M1 learning sections; arXiv/PDF/ChatGPT learning entries; no video link requirement; candidate queue summary; no visible ROI score, numeric x/5 score, Release clutter, reading-time line, Delta label, or delivery policy line"
     constraints: "The manual test workflow has no schedule trigger, does not read repository production enablement variables, does not attach video to email, does not expose ROI scoring in the email front-end, does not require Release storage, and stops before side effects when preflight, all-arXiv input, Stage 1 text artifacts, or SMTP delivery fail."
     missing_policy: "Missing confirmation, non-default branch dispatch, missing SMTP password secret, failed source fetch, missing text artifacts, or failed scheduled execution blocks the manual test before claiming success."
     output_range: "manual workflow run status success only when SMTP-backed Stage 1 text scheduled execution returns production_evidence_ready true; otherwise blocked or failed with artifacts"
@@ -1249,11 +1249,11 @@ formulas:
     test_refs: ["arxiv-daily-push/tests/test_manual_delivery_workflow.py", "arxiv-daily-push/tests/test_scheduled_execution.py", "arxiv-daily-push/tests/test_global_scan.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_MANUAL_DELIVERY_TEST.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_HUMAN_FORMAT.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md", "arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
-    implementation_fingerprint: "sha256:c908cb417efe7996f74009abb01c72f01d8548c21958bbbd50a860c339917bc8"
-    last_verified_commit: "d328d5d76ff1ea519d59c5316f7497ba6ef03e2a"
-    verified_at: "2026-06-24T09:46:05+10:00"
-    evidence_hash: "sha256:6e73aa4cc48f61e941b56f0d84651712879dd53f2050ef4aa24a745eedd59323"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::build_daily_delivery_package", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::MAIL_PRODUCT_TEMPLATES", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::mail_product_for_board", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::safe_https_url", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::source_pdf_url", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::build_chatgpt_learning_url", "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py::run_scheduled_execution", "arxiv-daily-push/tests/test_manual_delivery_workflow.py::ManualDeliveryWorkflowTests"]
+    implementation_fingerprint: "sha256:244be6f5e543a35bd6f341c9aa777d9d4ac3879aaf51aa2a18418ddc2dc7d59d"
+    last_verified_commit: "36f5a723d010cfa5c2d9a2155e1d6a96b9a55bc5"
+    verified_at: "2026-06-24T19:40:00+10:00"
+    evidence_hash: "sha256:8c0c458aadb9de11bcb79789d52a73423ebdc8c54484a01fc843e71221814d8c"
   - formula_id: "FORM-ADP-037"
     model_id: "MOD-ADP-035"
     assumption_ids: ["ASM-ADP-037", "ASM-ADP-035", "ASM-ADP-020"]
@@ -1342,16 +1342,16 @@ formulas:
     model_id: "MOD-ADP-037"
     assumption_ids: ["ASM-ADP-002", "ASM-ADP-035", "ASM-ADP-036"]
     status: "active"
-    expression: "The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen surfaces read/skim/skip, evidence level, estimated reading time, and one-line conclusion without numeric x/5 foreground scoring; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content."
+    expression: "The Phase 12 email is acceptable only when the daily package produces a multipart learning email with a bounded Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen identifies the M1 mail product and explains the paper in plain Chinese; the body includes learning outcomes, method flow, knowledge units, reusable methods, transfer scenarios, evidence boundaries, source/PDF/ChatGPT learning entries, candidate queue summary, and feedback actions; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, legacy reading-time labels, Delta labels, and repeated English summary; SMTP evidence stores hashes only, not body content."
     variables:
       - name: "lesson_frontstage"
         data_type: "object"
         unit: "email content contract"
-        input_domain: "decision, backend attention_score, evidence_level, reading time, takeaway, chain, mappings, questions, gaps, default action"
+        input_domain: "mail product, evidence level, plain-language explanation, learning outcomes, method flow, knowledge units, reusable methods, transfer scenarios, learning boundary, source links, default action"
       - name: "plain_text_body"
         data_type: "string"
         unit: "Chinese characters"
-        input_domain: "less than or equal to 1500 user-visible chars in deterministic render tests"
+        input_domain: "less than or equal to 6000 user-visible chars in deterministic render tests"
       - name: "html_alternative"
         data_type: "string"
         unit: "HTML email body"
@@ -1364,18 +1364,18 @@ formulas:
         data_type: "object"
         unit: "SMTP delivery report"
         input_domain: "body_sha256, html_body_sha256, html_alternative_present, body_logged=false"
-    constraints: "This formula does not change all-arXiv scanning, candidate queue persistence, ROI ranking, SMTP enablement flags, Release upload flags, production schedule variables, or secret handling. It changes only the human-frontstage render path and regression tests."
-    missing_policy: "Missing frontstage payload, missing HTML alternative, non-contract subject, plain text over the length cap, visible Claim Ledger/ROI/delivery policy text, visible x/5 foreground score, video attachment, Release/video clutter, polluted q-fin candidate summary, or logged email body blocks V2 email acceptance."
-    output_range: "email decision UI V2 ready or blocked; production remains disabled until a later controlled manual workflow and owner approval"
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/src/arxiv_daily_push/video.py"]
+    constraints: "This formula does not change all-arXiv scanning, candidate queue persistence, ROI ranking, SMTP enablement flags, Release upload flags, production schedule variables, source inclusion, or secret handling. It changes only the human-frontstage render path, learning-link helper, and regression tests."
+    missing_policy: "Missing learning frontstage payload, missing HTML alternative, non-contract subject, plain text over the length cap, unsafe source/PDF/ChatGPT link, visible Claim Ledger/ROI/delivery policy text, visible x/5 foreground score, reading-time label, Delta label, video attachment, Release/video clutter, polluted q-fin candidate summary, or logged email body blocks email acceptance."
+    output_range: "M1 learning email ready or blocked; M2/M3/M4 remain product-contract templates until routed by Stage 2 without production schedule enablement"
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"]
     test_refs: ["arxiv-daily-push/tests/test_global_scan.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_notifications.py", "arxiv-daily-push/tests/test_scheduled_execution.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"]
-    implementation_fingerprint: "sha256:9fb17848bd8e4b95222a701627f63b9950c77c381063b42a541bb2db161c9412"
-    last_verified_commit: "d328d5d76ff1ea519d59c5316f7497ba6ef03e2a"
-    verified_at: "2026-06-24T09:46:05+10:00"
-    evidence_hash: "sha256:0a34ff75234c903e38b6804b30bf4cbcc32418455a5ae9a10b196510bf6b82e9"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_text", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_daily_email_html", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_email_queue_items", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_cross_domain_reason", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_feedback_links", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py::_video_card", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::MAIL_PRODUCT_TEMPLATES", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::mail_product_for_board", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::safe_https_url", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::source_pdf_url", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::build_chatgpt_learning_url", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson", "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_frontstage", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"]
+    implementation_fingerprint: "sha256:3be9ce9551c13d7cbc4367b280634c4745fb9a4e33527eb326c46ccf1c9ccc89"
+    last_verified_commit: "36f5a723d010cfa5c2d9a2155e1d6a96b9a55bc5"
+    verified_at: "2026-06-24T19:40:00+10:00"
+    evidence_hash: "sha256:e9e247244543ceed6aac399f982286a1466c5dc1d2a5bc15dbf14c6fda677bc5"
   - formula_id: "FORM-ADP-040"
     model_id: "MOD-ADP-038"
     assumption_ids: ["ASM-ADP-039", "ASM-ADP-037", "ASM-ADP-018"]
@@ -1464,7 +1464,7 @@ formulas:
     model_id: "MOD-ADP-040"
     assumption_ids: ["ASM-ADP-041", "ASM-ADP-002", "ASM-ADP-040"]
     status: "active"
-    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is Chinese-first and follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, candidate queue summary is present, ROI/backend policy/Claim Ledger/video markers are absent from the email foreground, artifact writes are explicit dry-run files only, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
+    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is Chinese-first M1 learning mail, follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, includes plain-language explanation, learning outcomes, method flow, knowledge units, reusable methods, transfer scenarios, source/PDF/ChatGPT learning entries, and candidate queue summary, keeps ROI/backend policy/Claim Ledger/video/reading-time/Delta markers out of the email foreground, writes artifacts only as explicit dry-run files, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
     variables:
       - name: "daily_input"
         data_type: "object"
@@ -1482,22 +1482,26 @@ formulas:
         data_type: "string"
         unit: "email section"
         input_domain: "queue_report summary, daily candidate count summary, or explicit no-snapshot fallback"
+      - name: "learning_entries"
+        data_type: "object"
+        unit: "email links"
+        input_domain: "safe HTTPS source URL, arXiv PDF URL, and encoded ChatGPT learning prompt URL"
       - name: "artifact_files"
         data_type: "object"
         unit: "file refs"
         input_domain: "Markdown, HTML, plain text, HTML email, and audit JSON only when --write is explicit"
     constraints: "The builder is text-first for Stage 1 and does not generate media, attach video, enable production schedule, send SMTP, upload GitHub Releases, perform live network fetch, or log secrets."
-    missing_policy: "Missing daily input, invalid SourceItem, unsupported P0/P1 claims, missing candidate queue summary, non-contract subject, non-Chinese email, visible backend markers, or any side-effect flag set true returns blocked status."
+    missing_policy: "Missing daily input, invalid SourceItem, unsupported P0/P1 claims, missing candidate queue summary, missing learning entry, unsafe link, non-contract subject, non-Chinese email, visible backend or legacy markers, or any side-effect flag set true returns blocked status."
     output_range: "B1 report/email package with status pass or blocked, report Markdown/HTML, email plain/HTML, claim audit, content ledger update, and optional artifact file refs"
-    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
     test_refs: ["arxiv-daily-push/tests/test_stage1_b1_report.py", "arxiv-daily-push/tests/test_cli.py"]
     evidence_refs: ["governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::build_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::validate_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_evidence_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_report_markdown", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_plain", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_html", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_candidate_queue_summary", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_write_artifacts", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
-    implementation_fingerprint: "sha256:779341b8fc20369acf05da62d140daca3e670a526440eff80022112d7e8d30d1"
-    last_verified_commit: "dfade5116e51289615879c4db80e65ff7d54b27e"
-    verified_at: "2026-06-24T03:49:15Z"
-    evidence_hash: "sha256:c2e8146d4903e225bebdea587b968e4385ccd1238cb8a90ff2838c8669d1c724"
+    implementation_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::build_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::validate_b1_report_email_package", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_evidence_audit", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_report_markdown", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_plain", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_render_email_html", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_candidate_queue_summary", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_write_artifacts", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::MAIL_PRODUCT_TEMPLATES", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::mail_product_for_board", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::safe_https_url", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::source_pdf_url", "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::build_chatgpt_learning_url", "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"]
+    implementation_fingerprint: "sha256:ce095bf76ec9aa3c20bef3ecdf50cddaf1f09756f8daa23b5fe6d7224a4d82e9"
+    last_verified_commit: "36f5a723d010cfa5c2d9a2155e1d6a96b9a55bc5"
+    verified_at: "2026-06-24T19:40:00+10:00"
+    evidence_hash: "sha256:a70124478455881cba41e586476ad9c770c557c31b46ab097afddc5eaa94f8b6"
   - formula_id: "FORM-ADP-043"
     model_id: "MOD-ADP-041"
     assumption_ids: ["ASM-ADP-042", "ASM-ADP-038", "ASM-ADP-041"]

@@ -2,6 +2,7 @@
 
 ## Unreleased - 2026-06-24
 
+- Improved ADP M1-M4 email template layer with V1 learning-mail sections, safe arXiv/PDF/ChatGPT continuation links, M1 product labeling in current render paths, and focused renderer tests while keeping source adapters, ranking, queue, SMTP, scheduler, Release, video, schema, and production flags unchanged.
 - Added `S2PCT01` / legacy `S2P2T01` V7.1 D2 top-journal shadow foundation using official public Nature RSS metadata, filtering to `s41586-*` main-journal research article links only.
 - Added `adp fetch-top-journal-latest` and `adp stage2-top-journal-shadow-daily` with separate no-send queue, ledger, dry-run package, and email preview persistence; kept Stage 2 production acceptance, SMTP, Release, schedule, and video disabled.
 - Verified a live Nature RSS no-send canary with 3 real `s41586` source IDs and local queue/ledger/email preview artifacts under `/tmp`.

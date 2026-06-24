@@ -45,6 +45,13 @@ class LessonGenerationTests(unittest.TestCase):
         self.assertTrue(frontstage["one_line_takeaway"])
         self.assertGreaterEqual(len(frontstage["first_principles_chain"]), 2)
         self.assertGreaterEqual(len(frontstage["domain_mappings"]), 1)
+        self.assertTrue(frontstage["plain_language_explanation"])
+        self.assertGreaterEqual(len(frontstage["learning_outcomes"]), 4)
+        self.assertGreaterEqual(len(frontstage["method_flow"]), 4)
+        self.assertGreaterEqual(len(frontstage["knowledge_units"]), 4)
+        self.assertGreaterEqual(len(frontstage["reusable_methods"]), 3)
+        self.assertGreaterEqual(len(frontstage["transfer_scenarios"]), 2)
+        self.assertTrue(frontstage["learning_boundary"])
         self.assertIn("default_action", frontstage)
         self.assertNotIn("Claim Ledger", json.dumps(frontstage, ensure_ascii=False))
 

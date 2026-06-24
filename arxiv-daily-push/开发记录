@@ -10,9 +10,15 @@
 - total_hours: `10.50`
 - completed_hours: `8.50`
 - progress: `80.95%`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
+- roadmap_kind: `product`
+- roadmap_task_count: `4`
+- roadmap_gate_count: `5`
+- roadmap_acceptance_count: `4`
+- roadmap_test_command_count: `10`
+- roadmap_evidence_ref_count: `11`
 - evidence_status: `EXTRACTED`
 
 ## Roadmap
@@ -27,6 +33,9 @@ Stage -> Phase -> Task
 - derived_percent: `61.90%`
 - stop_conditions: `V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED, bioRxiv/medRxiv 或 Nature shadow 影响正式 arXiv 邮件, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
 - stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 #### S2PB B1 preprint source shadow promotion
 
@@ -36,10 +45,21 @@ Stage -> Phase -> Task
 - derived_percent: `23.81%`
 - stop_conditions: `改写历史 task/event ID, 把 no-send evidence 当作 formal production inclusion, 发生 V6/V7 命名或合同冲突但未标记 R-CONFLICT`
 - stop_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S2PBT01 | bioRxiv 与 medRxiv no-send shadow source evidence | completed | 2.50 | 23.81% | ARXIV_PRODUCTION_ACCEPTED, ADP-S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
+
+Task detail fields:
+
+- S2PBT01 test_commands: `python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py ... -q, stage2-preprint-replay-shadow --start-date 2024-01-01 --count 30, scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`
+- S2PBT01 test_results: `NOT_APPLICABLE`
+- S2PBT01 evidence_refs: `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json, governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`
+- S2PBT01 risks: `NOT_APPLICABLE`
+- S2PBT01 rollback: `Revert S2PBT01/S2P1T01 source adapter, shadow/replay code, registry records, manifests, and rendered governance sync.`
 
 #### S2PC D2 Nature/top-journal shadow foundation
 
@@ -49,11 +69,27 @@ Stage -> Phase -> Task
 - derived_percent: `38.10%`
 - stop_conditions: `把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction, 把 S2PCT01 shadow evidence 当作 D2 source-domain acceptance, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
 - stop_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S2PCT01 | Nature/top-journal metadata-only no-send shadow evidence | completed | 2.00 | 19.05% | S2PBT01 | ACC-S2PCT01-NATURE |
 | S2PCT02 | Science main-journal metadata-only no-send shadow evidence | planned | 2.00 | 19.05% | S2PCT01 | ACC-S2PCT02-SCIENCE |
+
+Task detail fields:
+
+- S2PCT01 test_commands: `python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q, stage2-top-journal-shadow-daily using the live Nature batch under /tmp/adp_s2p2_nature_live_20260624`
+- S2PCT01 test_results: `NOT_APPLICABLE`
+- S2PCT01 evidence_refs: `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json, arxiv-daily-push/tests/test_top_journal_adapter.py, arxiv-daily-push/tests/test_stage2_sources.py, https://github.com/LinzeColin/CodexProject/pull/119`
+- S2PCT01 risks: `NOT_APPLICABLE`
+- S2PCT01 rollback: `Revert S2PCT01/S2P2T01 Nature adapter, shadow daily code, fixtures, tests, phase record, manifest, and rendered governance sync.`
+- S2PCT02 test_commands: `planned: Science source adapter focused tests, planned: Science no-send shadow daily with separate queue/ledger/email preview`
+- S2PCT02 test_results: `NOT_APPLICABLE`
+- S2PCT02 evidence_refs: `arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`
+- S2PCT02 risks: `NOT_APPLICABLE`
+- S2PCT02 rollback: `Remove planned S2PCT02 governance entry if Science implementation is deferred or superseded.`
 
 ### S5 项目迁移与三文件重建
 
@@ -63,6 +99,9 @@ Stage -> Phase -> Task
 - derived_percent: `38.10%`
 - stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
 - stop_gate: `S5-GATE`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 #### S5PB 剩余项目治理压缩迁移
 
@@ -72,10 +111,21 @@ Stage -> Phase -> Task
 - derived_percent: `38.10%`
 - stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
 - stop_gate: `S5PB-GATE`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 38.10% | S5PBT04 | ACC-S5PBT05 |
+
+Task detail fields:
+
+- S5PBT05 test_commands: `python -B -m unittest ...test_review9_s5pbt05_* -q, python -B scripts/lean_governance.py check-render --project arxiv-daily-push, python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main`
+- S5PBT05 test_results: `NOT_APPLICABLE`
+- S5PBT05 evidence_refs: `arxiv-daily-push/docs/governance/project.yaml, arxiv-daily-push/docs/governance/roadmap.yaml, arxiv-daily-push/docs/governance/events.jsonl, governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json`
+- S5PBT05 risks: `NOT_APPLICABLE`
+- S5PBT05 rollback: `Revert only this task commit; retain the read-only audit evidence.`
 
 
 ## V7.1 当前根治理锁
@@ -107,3 +157,4 @@ Stage -> Phase -> Task
 | 2026-06-24T09:20:00+10:00 | next_task_ready | S2P1T01 bioRxiv/medRxiv source promotion is ready as the next executable task, with source adapter tests, registry gate, fixture parse, replay/shadow reports and arXiv no-regression evidence required. | S2P1T01 | EXTRACTED |
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT05 proposes arxiv-daily-push Lean v2 canonical files and rendered Chinese human entry files while preserving legacy V6 roadmap anchor roadmap_sha256 76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10 and planned final production task S2P7T04 as historical context. | S5PBT05 | PROPOSED |
 | 2026-06-24T10:58:00+10:00 | stage2_preprint_shadow_evidence | S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only source path passed live canaries, fixture replay, and real no-send 30-date replay with 48h shadow evidence while preserving Stage 1 arXiv local production boundaries. | S2PBT01 | EXTRACTED |
+| 2026-06-24T19:15:00+10:00 | email_template_improvement | ADP M1-M4 email template layer was improved to V1 learning-mail structure with M1 current render labeling, learning sections, safe arXiv/PDF/ChatGPT continuation entries, and focused mail-chain tests while production boundaries remain unchanged. | ADP-M1M4-EMAIL-TEMPLATE-V1 | EXTRACTED |

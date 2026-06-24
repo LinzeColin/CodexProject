@@ -97,7 +97,9 @@ class Stage1HistoricalPreviewTests(unittest.TestCase):
             first_email = Path(report["preview_records"][0]["artifact_files"]["email_plain"]["path"]).read_text(
                 encoding="utf-8"
             )
-            self.assertIn("【先看结论】", first_email)
+            self.assertIn("【M1｜科学与理论前沿邮件】", first_email)
+            self.assertIn("【先把论文讲成人话】", first_email)
+            self.assertIn("【继续学习入口】", first_email)
             self.assertIn("候选队列", first_email)
             self.assertNotIn("ROI", first_email)
             self.assertNotIn(".mp4", first_email)

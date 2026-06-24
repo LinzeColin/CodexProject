@@ -33,6 +33,30 @@ The append-only machine record is `development_events.jsonl`.
 
 ## Iteration Records
 
+### `ITER-20260624-ADP-M1M4-EMAIL-TEMPLATE-V1`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from V1 mail template pack, V7.1 mail product contract, Stage2 thread clarification, renderer code, focused mail-chain tests, and semantic registry deltas.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: e1e00541933529e54909b92ecf07cc0f9e9d015b
+- Result commit: PENDING
+- Task IDs: `ADP-M1M4-EMAIL-TEMPLATE-V1`; related V7.1 mail products `M1`, `M2`, `M3`, `M4`.
+- Goal: Improve the ADP M1-M4 email template layer so current Stage 1/Stage 2 previews use the V1 learning-mail structure without changing source adapters, queue/ranking, scheduler, SMTP, production flags, ledger schema, or Stage 2 source inclusion.
+- Assumptions: M1 is B1 plus B4/B5/B6 at 07:30; M2 is B2 plus B4/B5/B6 at 11:30; M3 is B3 plus B4/B5/B6 at 17:00; M4 is B1-B6 cross-board overview at 21:30 after M1-M3 terminal. Current code path renders M1 while M2/M3/M4 remain product-contract templates until routed by Stage 2.
+- Files changed: `mail_templates.py`, lesson frontstage generation, all-arXiv daily email renderer, Stage 1 B1 report/email renderer, focused mail-chain tests, model/formula/parameter governance registries, project facts, model spec, changelog, events, and rendered three human entry files.
+- Model changes: Refreshed `MOD-ADP-037` and `MOD-ADP-040` descriptions to learning-mail semantics. No new model, source adapter, ranking model, queue model, scheduler model, SMTP model, or production model was added.
+- Formula changes: Refreshed `FORM-ADP-036`, `FORM-ADP-039`, and `FORM-ADP-042` fingerprints and descriptions after adding M1 learning sections, safe arXiv/PDF/ChatGPT entries, and `mail_templates.py` helper references.
+- Parameter changes: `PARAM-ADP-277` plain-text cap changed from 1500 to 6000 for encoded ChatGPT learning prompt links; `PARAM-ADP-315` prohibited marker count changed from 9 to 14.
+- Commands run: Stage 2 shadow preview regression test; full arxiv-daily-push unit test suite; semantic extractor; project governance validator; Lean render drift check; JSONL/YAML parse check; git diff check.
+- Test results: `test_stage2_sources.py` returned 9 tests OK; full `arxiv-daily-push/tests` returned 228 tests OK; semantic extractor checked 54 formulas and 364 parameters; project governance validator reported `arxiv-daily-push` errors 0 warnings 0 while root validation remained blocked by four unrelated EEI PENDING_CI manifest/attestation gaps; Lean check-render returned drift_count 0 and reference_issue_count 0; JSONL/YAML parse check passed; `git diff --check` passed.
+- Successes: Email previews now foreground `M1｜科学与理论前沿邮件`, plain-language explanation, learning outcomes, method flow, knowledge units, reusable methods, transfer scenarios, boundaries, arXiv/PDF/ChatGPT learning entries, and candidate queue summary while tested bodies continue to hide visible ROI, Release, video, delivery-policy, backend, reading-time, and Delta clutter.
+- Failures: M2/M3/M4 final routing is not implemented in this task by design; no real Gmail SMTP send, production scheduler enablement, Release upload, video generation, source inclusion, or Stage 2 production acceptance was performed.
+- Decisions: Keep this task template-only; do not change source connectors, ranking, queue state, SMTP authorization, scheduler, production flags, schema/migrations, or old mail-delivery side-effect gates.
+- Remaining risks: Real email-client rendering beyond structural HTML checks and a controlled SMTP preview remains unproved; Stage 2 routing must later bind M2/M3/M4 without letting connectors generate final emails.
+- Rollback: Revert `mail_templates.py`, lesson/report/global-scan render changes, focused tests, registry/project/ledger/event updates, and rendered three human entry files.
+- Next step: Review clean PR and merge only after CI confirms the main-based diff.
+
 ### `ITER-20260624-ADP-S2PA-V7-1-PARALLEL-AUDIT-ROOT-LOCK`
 
 - Date: 2026-06-24
