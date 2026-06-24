@@ -48,10 +48,27 @@ jobs:
       - name: Run governance validator tests
         if: github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope != 'information-quality')
         run: |
+          set +e
+          log_file="${RUNNER_TEMP}/governance-validator-tests.log"
+          echo "python=$(python3 --version)"
           if python3 -c "import pytest" >/dev/null 2>&1; then
-            python3 -m pytest tests/governance -q
+            python3 -m pytest tests/governance -q > "${log_file}" 2>&1
           else
-            python3 -m unittest discover -s tests/governance -p 'test_*.py' -q
+            python3 -m unittest discover -s tests/governance -p 'test_*.py' -q > "${log_file}" 2>&1
+          fi
+          exit_code=$?
+          cat "${log_file}"
+          if [ "${exit_code}" -ne 0 ]; then
+            python3 - "${log_file}" <<'PY'
+          import sys
+          from pathlib import Path
+
+          text = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+          tail = "\n".join(text.splitlines()[-80:]) or "governance validator tests failed without output"
+          escaped = tail.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Governance validator tests failed::{escaped}")
+          PY
+            exit "${exit_code}"
           fi
       - name: Run changed-only governance CI
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
