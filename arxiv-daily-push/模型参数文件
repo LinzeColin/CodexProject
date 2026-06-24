@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT02`
-- active_model_count: `52`
-- active_formula_count: `54`
-- active_parameter_count: `364`
+- current_task: `S2PCT03`
+- active_model_count: `54`
+- active_formula_count: `56`
+- active_parameter_count: `369`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,9 +24,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT01`
+- stage2_current_task: `S2PCT03`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PCT03` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -510,6 +510,24 @@
 - parameter_refs: `PARAM-ADP-379, PARAM-ADP-380, PARAM-ADP-381`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT01-NATURE`
 
+### MOD-ADP-053 S2PCT02 Science metadata ingest
+
+- purpose: `Fetch a small official public Science RSS metadata window, classify Research Article, Report, Review, and Perspective records, map eligible records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-055`
+- parameter_refs: `PARAM-ADP-379, PARAM-ADP-382, PARAM-ADP-383`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT02-SCIENCE`
+
+### MOD-ADP-054 S2PCT02 Science shadow daily path
+
+- purpose: `Build a separate Science/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2/integrated production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-056`
+- parameter_refs: `PARAM-ADP-384, PARAM-ADP-385, PARAM-ADP-386`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT02-SCIENCE`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -835,6 +853,18 @@
 - model_id: `MOD-ADP-052`
 - expression_or_pseudocode: `A S2PCT01 top-journal shadow daily run builds ROI-ranked candidates from passing Nature SourceItems, selects one shadow daily input, updates a separate top-journal queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, or mutation of the accepted Stage 1 arXiv local production path.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+### FORM-ADP-055
+
+- model_id: `MOD-ADP-053`
+- expression_or_pseudocode: `S2PCT02 Science ingest passes only when the official public Science RSS feed is used, DOI records are canonicalized, article types are classified as Research Article, Report, Review, or Perspective, generated SourceItems validate, duplicates are separated from new items, and PDF/full-text/bulk/paywall side effects remain disabled.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT02-SCIENCE`
+
+### FORM-ADP-056
+
+- model_id: `MOD-ADP-054`
+- expression_or_pseudocode: `A S2PCT02 Science shadow daily run builds ROI-ranked candidates from passing Science SourceItems, selects one shadow daily input, updates a separate Science queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, D2 source-domain acceptance, or mutation of the accepted Stage 1 arXiv local production path.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT02-SCIENCE`
 
 ## 参数
 
@@ -1201,6 +1231,11 @@
 | PARAM-ADP-376 | S2P1_PROMOTION_REPORT_FILENAME | S2P1 promotion report filename | stage2_s2p1_preprint_promotion_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
 | PARAM-ADP-377 | TOP_JOURNAL_INGEST_MODEL_ID | Top-journal ingest model id | adp-stage2-top-journal-ingest-v1 | EXTRACTED from top_journal_adapter.py | EXTRACTED |
 | PARAM-ADP-378 | TOP_JOURNAL_MAX_CANARY_RECORDS | Top-journal max canary records per call | 10 | EXTRACTED from top_journal_adapter.py | EXTRACTED |
-| PARAM-ADP-379 | SUPPORTED_TOP_JOURNALS | S2PCT01 supported top journals | nature | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-379 | SUPPORTED_TOP_JOURNALS | Supported top journals for metadata-only shadow ingest | nature;science | EXTRACTED from top_journal_adapter.py | EXTRACTED |
 | PARAM-ADP-380 | S2P2_QUEUE_FILENAME | S2PCT01 top-journal shadow queue filename | stage2_s2p2_top_journal_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
 | PARAM-ADP-381 | S2P2_LEDGER_FILENAME | S2PCT01 top-journal shadow ledger filename | stage2_s2p2_top_journal_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-382 | SCIENCE_RSS_URL | Science official RSS feed URL | https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-383 | SCIENCE_ACCEPTED_ARTICLE_TYPES | Science accepted article type classifications | research_article;report;review;perspective | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-384 | S2PCT02_SCIENCE_SHADOW_MODEL_ID | S2PCT02 Science shadow model id | adp-s2pct02-science-shadow-daily-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-385 | S2PCT02_QUEUE_FILENAME | S2PCT02 Science shadow queue filename | stage2_s2pct02_science_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-386 | S2PCT02_LEDGER_FILENAME | S2PCT02 Science shadow ledger filename | stage2_s2pct02_science_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |

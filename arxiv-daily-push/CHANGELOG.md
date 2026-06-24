@@ -2,6 +2,10 @@
 
 ## Unreleased - 2026-06-24
 
+- Completed `S2PCT02` / legacy `S2P2T02` Science main-journal metadata-only no-send shadow evidence using the official public Science RSS feed.
+- Added Science article-type gates for Research Article, Report, Review, and Perspective, duplicate DOI/source handling, separate Science shadow queue/ledger/email preview persistence, and `adp stage2-science-shadow-daily`.
+- Verified focused top-journal/stage2 tests, semantic governance, and a live Science RSS no-send canary while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PDF/full-text download, and paywall bypass disabled.
+- Advanced V7.1 root routing to `S2PCT03` / legacy `S2P2T03` The Lancet metadata-only shadow, and hardened dashboard generation so stale owner decisions do not override the next task after a task transition.
 - Added `S2PCT01` / legacy `S2P2T01` V7.1 D2 top-journal shadow foundation using official public Nature RSS metadata, filtering to `s41586-*` main-journal research article links only.
 - Added `adp fetch-top-journal-latest` and `adp stage2-top-journal-shadow-daily` with separate no-send queue, ledger, dry-run package, and email preview persistence; kept Stage 2 production acceptance, SMTP, Release, schedule, and video disabled.
 - Verified a live Nature RSS no-send canary with 3 real `s41586` source IDs and local queue/ledger/email preview artifacts under `/tmp`.

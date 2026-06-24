@@ -1181,15 +1181,33 @@ tasks:
     objective: "Add Science main-journal metadata-only no-send shadow evidence using the stabilized S2PCT01 top-journal framework before any formal D2 source-domain or Stage 2 production inclusion."
     scope: "Science official/public discovery adapter design, article type classification for Research/Report/Review/Perspective, metadata-only SourceItems, duplicate DOI/source identity gates, no-send shadow queue/ledger/email preview, focused tests, and governance registration."
     non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
-    status: "planned"
+    status: "completed"
     dependencies: ["S2PCT01"]
-    required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/global_scan.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/fixtures/science_rss_sample.xml", "arxiv-daily-push/docs/phase_records/PHASE_S2PCT02_SCIENCE_SHADOW_EVIDENCE.md", "arxiv-daily-push/docs/governance/model_registry.yaml", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/governance/parameter_registry.csv", "governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json"]
     acceptance_ids: ["ACC-S2PCT02-SCIENCE"]
-    test_commands: ["planned: focused Science/top-journal adapter and Stage2 source tests", "planned: no-send Science shadow daily with separate queue/ledger/email preview", "planned: semantic governance and changed-only project governance"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct02_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q", "fetch-top-journal-latest --journal science --max-records 3 --fetcher curl", "stage2-science-shadow-daily using the live Science batch under /tmp/adp_s2pct02_live"]
+    test_results: ["focused top-journal and Stage2 source tests: 21 tests OK", "Science fixture filters non-target Books et al. and In Depth items and admits Research Article, Report, Review, and Perspective", "Science shadow daily persists separate queue, ledger, dry-run package, and email preview with real_smtp_sent=false, formal_production_inclusion=false, d2_source_domain_accepted=false", "live Science RSS no-send canary: batch pass, new_item_count 3, selected_source_id science:10.1126/science.ads7910"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PCT02_SCIENCE_SHADOW_EVIDENCE.md", "governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json", "arxiv-daily-push/tests/test_top_journal_adapter.py", "arxiv-daily-push/tests/test_stage2_sources.py", "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"]
+    risk: "Science article type misclassification, duplicate DOI/canonical identity, full-text/paywall boundary errors, or shadow contamination of accepted arXiv mail must block this task; P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Revert Science additions in top_journal_adapter.py, stage2_sources.py, CLI, Science fixture/tests, phase record, governance registrations, manifest, and event."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PCT03"
+    legacy_alias: "S2P2T03"
+    phase: "S2PC"
+    objective: "Add The Lancet main-journal metadata-only no-send shadow evidence after Science shadow is stable, including Online First/PubMed relationship checks and medical article type gates before any formal D2 production inclusion."
+    scope: "The Lancet official/public discovery adapter design, metadata-only SourceItems, medical article type and relationship gates, duplicate DOI/source identity gates, no-send shadow queue/ledger/email preview, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
+    status: "planned"
+    dependencies: ["S2PCT02"]
+    required_files: ["planned: The Lancet metadata-only adapter, fixtures, focused tests, and governance registrations"]
+    acceptance_ids: ["ACC-S2PCT03-LANCET"]
+    test_commands: ["planned: Lancet source adapter focused tests", "planned: Lancet no-send shadow daily with separate queue/ledger/email preview", "planned: semantic governance and changed-only project governance"]
     test_results: ["PENDING"]
     evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"]
-    risk: "Science article type misclassification, duplicate DOI/canonical identity, full-text/paywall boundary errors, or shadow contamination of accepted arXiv mail must block this task; P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
-    rollback: "Remove S2PCT02 adapter/shadow code, fixtures/tests, governance registrations, task record, and event if the Science source path is deferred or superseded."
+    risk: "医学文章类型、PubMed/Online First 关系、许可边界、重复 DOI 或 shadow 污染正式 arXiv 邮件必须阻断；P0/P1 和 S2PMT07 仍阻断 D2/source-domain 与 integrated production acceptance。"
+    rollback: "Remove planned S2PCT03 governance entry if Lancet implementation is deferred or superseded."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

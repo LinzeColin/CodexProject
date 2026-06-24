@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 52
-- formula_count: 54
-- parameter_count: 381
+- model_count: 54
+- formula_count: 56
+- parameter_count: 386
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -59,6 +59,13 @@ Fact levels follow `docs/governance/STANDARD.md`.
   evidence after PR #119 merged to `main@047f453`; they do not claim D2
   source-domain acceptance, Stage 2 production acceptance, SMTP, Release,
   scheduler, PDF/full-text download, or paywall bypass.
+
+- `S2PCT02` / legacy `S2P2T02` adds `MOD-ADP-053` and `MOD-ADP-054`.
+  They cover Science metadata-only ingest, Research Article/Report/Review/
+  Perspective article-type gates, DOI identity, and no-send shadow daily
+  evidence. They do not claim D2 source-domain acceptance, Stage 2 production
+  acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall
+  bypass.
 
 ## A. Model Overview
 
@@ -115,6 +122,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-050 | S2P1T01 preprint replay and 48h shadow evidence | deterministic historical replay and shadow evidence builder | Run 30 historical bioRxiv/medRxiv preprint as-of dates through the no-send shadow daily path, persist local queue/ledger/report/email preview artifacts, build a 48h shadow aggregate, and feed the S2P1T01 promotion gate without claiming full Stage 2 production acceptance | active | adp-s2p1-preprint-replay-shadow-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-051 | S2PCT01 Nature/top-journal metadata ingest | deterministic source adapter | Fetch and map bounded official Nature RSS metadata into top-journal SourceItems while filtering non-main-journal article URLs and blocking PDF/full-text/paywall/production side effects | active | adp-stage2-top-journal-ingest-v1 | `src/arxiv_daily_push/top_journal_adapter.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-052 | S2PCT01 top-journal no-send shadow daily path | deterministic shadow source runner | Persist separate top-journal queue, JSONL ledger, report, and email preview artifacts from metadata-only SourceItems while keeping Stage 1 arXiv production, SMTP, Release, video, scheduler, and formal D2 inclusion disabled | active | adp-stage2-top-journal-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-053 | S2PCT02 Science metadata ingest | deterministic source adapter | Fetch and map bounded official Science RSS metadata into top-journal SourceItems while classifying Research Article, Report, Review, and Perspective items and blocking PDF/full-text/paywall/production side effects | active | adp-stage2-top-journal-ingest-v1 | `src/arxiv_daily_push/top_journal_adapter.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-054 | S2PCT02 Science no-send shadow daily path | deterministic shadow source runner | Persist separate Science queue, JSONL ledger, report, and email preview artifacts from metadata-only SourceItems while keeping Stage 1 arXiv production, SMTP, Release, video, scheduler, and formal D2 inclusion disabled | active | adp-s2pct02-science-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -209,6 +218,8 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-052 validates the S2P1 replay/shadow aggregate across 30 historical preprint dates, 48h shadow coverage, unique selected source/canonical IDs, no future leakage, no P0/P1 blockers, queue/ledger/email persistence, and no production side effects.
 - FORM-ADP-053 validates Nature/top-journal metadata ingest across official RSS input, accepted `s41586` article URL identity, bounded canary size, SourceItem mapping, and no PDF/full-text/paywall/production side effects.
 - FORM-ADP-054 validates the top-journal no-send shadow daily path across separate queue persistence, JSONL ledger persistence, email preview persistence, no Stage 1 arXiv mutation, and disabled SMTP/Release/video/scheduler/formal inclusion flags.
+- FORM-ADP-055 validates Science metadata ingest across official RSS input, DOI identity, Research Article/Report/Review/Perspective classification, bounded canary size, SourceItem mapping, and no PDF/full-text/paywall/production side effects.
+- FORM-ADP-056 validates the S2PCT02 Science no-send shadow daily path across separate queue persistence, JSONL ledger persistence, email preview persistence, no Stage 1 arXiv mutation, and disabled SMTP/Release/video/scheduler/D2 acceptance flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -275,6 +286,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2P1T01 preprint source promotion parameters: PARAM-ADP-360 through PARAM-ADP-371.
 - Active S2P1T01 replay/shadow evidence parameters: PARAM-ADP-372 through PARAM-ADP-376.
 - Active S2PCT01 Nature/top-journal shadow parameters: PARAM-ADP-377 through PARAM-ADP-381.
+- Active S2PCT02 Science/top-journal shadow parameters: PARAM-ADP-382 through PARAM-ADP-386, with PARAM-ADP-379 updated to `nature;science`.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

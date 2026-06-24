@@ -12,11 +12,12 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   current execution contract. V5/V6/V7.0 files remain historical evidence and
   alias references; they no longer override V7.1.
 - Every implementation closeout must state the current V7.1 Task ID and any
-  legacy alias. Current development entry is `S2PCT02` (`S2P2T02` legacy alias)
-  Science/top-journal metadata-only no-send shadow evidence. `S2PCT01`
-  (`S2P2T01` legacy alias) Nature/top-journal metadata-only no-send shadow
-  foundation has merged to main and remains a completed D2 shadow foundation
-  record, not a D2 source-domain acceptance claim. `S2PBT01`
+  legacy alias. Current development entry is `S2PCT03` (`S2P2T03` legacy alias)
+  The Lancet/top-journal metadata-only no-send shadow evidence. `S2PCT02`
+  (`S2P2T02` legacy alias) Science/top-journal metadata-only no-send shadow
+  evidence and `S2PCT01` (`S2P2T01` legacy alias) Nature/top-journal
+  metadata-only no-send shadow foundation are completed D2 shadow records, not
+  D2 source-domain acceptance claims. `S2PBT01`
   (`S2P1T01` legacy alias) bioRxiv/medRxiv no-send replay and shadow evidence
   has passed and remains a D1 alias/history record, not the current task.
   Formal source production inclusion, `STAGE2_PRODUCTION_ACCEPTED`, and

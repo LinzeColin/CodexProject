@@ -6,9 +6,9 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT02`
-- progress: `80.95%`
-- capability_count: `9`
+- current_task: `S2PCT03`
+- progress: `84.00%`
+- capability_count: `10`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -26,7 +26,8 @@
 | FEAT-ADP-006 | Stage 1 严格验收与 Gmail SMTP test10 | completed | 30 天真实 arXiv backfill、CONTENT_LEDGER closure、test10 Gmail SMTP 证据共同支持 Stage 1 arXiv accepted。 | EXTRACTED |
 | FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | completed | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
 | FEAT-ADP-008 | Stage 2 Nature/top-journal shadow source evidence | completed | S2PCT01/S2P2T01 已完成 official Nature RSS metadata-only adapter、s41586 主刊 research article filter、top-journal SourceItem、separate shadow queue/ledger/email preview、live Nature no-send canary 和 PR #119 main merge；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。 | EXTRACTED |
-| FEAT-ADP-009 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
+| FEAT-ADP-009 | Stage 2 Science/top-journal shadow source evidence | completed | S2PCT02/S2P2T02 已完成 official Science RSS metadata-only adapter、Science Research Article/Report/Review/Perspective 类型门、DOI identity gate、separate shadow queue/ledger/email preview 和 live Science no-send canary；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。 | EXTRACTED |
+| FEAT-ADP-010 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
 
 ## V7.1 当前根治理锁
 
@@ -37,9 +38,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT01`
+- stage2_current_task: `S2PCT03`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -66,4 +67,5 @@
 | EVID-ADP-S2P1T01-PREPRINT | manifest | governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json | EXTRACTED |
 | EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW | manifest | governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
+| EVID-ADP-S2PCT02-SCIENCE | manifest | governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-REVIEW9-S5PBT05-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json | PROPOSED |

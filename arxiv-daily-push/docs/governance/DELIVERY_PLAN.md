@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 72
-- acceptance_count: 65
+- task_count: 73
+- acceptance_count: 66
 
 ## Delivery Tasks
 
@@ -98,7 +98,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PAT05 | S2PA | completed | ACC-S2PAT05-AUDIT-LOCK | V7.1 parallel audit findings, merge policy, lifecycle contract, and P0/P1 production-forbidden gate are locked into repository governance; repository lock remains pending PR CI attestation | `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml`; `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
 | S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7 name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
 | S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.1 D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
-| S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.1 Science/main-journal metadata-only no-send shadow task; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
+| S2PCT02 | S2PC | completed | ACC-S2PCT02-SCIENCE | V7.1 D2 Science/main-journal metadata-only no-send shadow evidence passed fixture tests and live RSS canary; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PCT02_SCIENCE_SHADOW_EVIDENCE.md`; `governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json`; `https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science` |
+| S2PCT03 | S2PC | planned | ACC-S2PCT03-LANCET | Next V7.1 The Lancet/main-journal metadata-only no-send shadow task; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
@@ -147,7 +148,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 11 two-day simulation acceptance | two unique scheduled daily simulation runs, mocked SMTP/Release refs, ledger appends, and no production acceptance claim | pass; `run-two-day-simulation` produced 2 observed days for 2026-06-22 and 2026-06-23 |
 | Phase 12 all-arXiv queue delivery | all-arXiv primary archive scan, candidate queue persistence, ROI ranking, one daily lead, text-only Chinese teaching email, and email queue summary | pass for code and workflow contract; no production variables enabled |
 | Phase 12 production enablement | owner-provisioned default-branch runner evidence, live all-arXiv scan, queue persistence, text-only Chinese teaching email, Gmail SMTP delivery, and explicit production variables | blocked; PR CI and owner-provisioned runtime evidence not yet complete |
-| Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 168 active parameters and all 33 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
+| Semantic coverage rollout contract | task-bound machine checks for active parameter values and formula fingerprints | machine_verified; 369 active parameters and all 56 active formulas machine-check, 0 active rows remain HUMAN_REVIEW_REQUIRED |
 | Phase 11 production trial start | explicit confirmation, durable default branch, runner, SMTP, Release, workflow vars, and trial-start workflow refs | blocked; default branch and trial-start workflow refs recorded, while confirmation, runner, SMTP, Release, workflow-vars, and default-branch trial-start run evidence are not present |
 | Production 30-day acceptance | 30-day run, scheduler, Release, SMTP, and resource evidence | blocked; evidence not present |
 | Project governance | validator output | pass |

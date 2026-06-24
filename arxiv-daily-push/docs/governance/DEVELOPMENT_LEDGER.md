@@ -11,9 +11,9 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S2PC
 - Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED
-- Confirmed iteration count: 94
+- Confirmed iteration count: 95
 - Reconstructed event count: 0
-- Current task: `S2PCT02` keeps legacy alias `S2P2T02` for the next Science/top-journal metadata-only no-send shadow evidence. `S2PCT01 -> S2P2T01` is completed Nature shadow foundation on `main@047f453`; `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
+- Current task: `S2PCT03` keeps legacy alias `S2P2T03` for the next The Lancet/main-journal metadata-only no-send shadow evidence. `S2PCT01 -> S2P2T01` is completed Nature shadow foundation, `S2PCT02 -> S2P2T02` is completed Science shadow evidence, and `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.1 parallel audit records open P0=8 and P1=37; therefore real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -28,10 +28,32 @@ The append-only machine record is `development_events.jsonl`.
 | S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, accelerated real-arXiv acceptance artifact, test10 SMTP proof, and local production/migration prep within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`; `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
 | S2PA | V7.1 product contract, Chinese governance, parallel audit, and compatibility lock | completed_pending_ci | V7.1 root lock, contract/roadmap/audit hash checks, AGENTS updates, three-base visibility, P0/P1 production-forbidden policy, and validator/test enforcement without Stage 2 production acceptance | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt`; `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml` |
 | S2PB | V7.1 D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
-| S2PC | V7.1 D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature metadata-only shadow foundation to S2PCT02 Science without D2 source-domain acceptance or production inclusion | `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119`; next `S2PCT02` |
+| S2PC | V7.1 D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature and S2PCT02 Science metadata-only shadow evidence to S2PCT03 The Lancet without D2 source-domain acceptance or production inclusion | `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json`; next `S2PCT03` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S2PCT02-SCIENCE-SHADOW`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from Science RSS fixture tests, live metadata-only canary, S2PCT02 run manifest, semantic registries, and no-send shadow output.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 138981d49a47d1bbb1496f325f095e3a4c32381e
+- Result commit: PENDING
+- Task IDs: `S2PCT02`, legacy alias `S2P2T02`; next task `S2PCT03`, legacy alias `S2P2T03`
+- Goal: Add Science main-journal metadata-only no-send shadow evidence using the stabilized top-journal framework without claiming D2 source-domain or Stage 2 production acceptance.
+- Assumptions: Science RSS metadata is source discovery metadata only; accepted types are Research Article, Report, Review, and Perspective; no PDF/full-text/paywall bypass, SMTP, Release, scheduler, video, or formal production inclusion is allowed.
+- Files changed: Science/top-journal adapter support, Stage2 Science shadow daily path, CLI command, Science fixture/tests, phase record, run manifest, registries, canonical project/roadmap records, V7.1 root lock, dashboard owner-decision stale-task guard, three-base render inputs, root governance assertions, this ledger, and event records.
+- Model changes: Added `MOD-ADP-053` for Science metadata ingest and `MOD-ADP-054` for Science no-send shadow daily.
+- Formula changes: Added `FORM-ADP-055` and `FORM-ADP-056`; refreshed CLI-linked existing semantic fingerprints after adding the Science command path.
+- Parameter changes: Updated `PARAM-ADP-379` to `nature;science`; added `PARAM-ADP-382` through `PARAM-ADP-386`.
+- Commands run: focused top-journal/stage2 unit tests, live `fetch-top-journal-latest --journal science` canary, live `stage2-science-shadow-daily` canary, semantic extractor, project governance validator, changed-only semantic sync, Lean render/check-render, V7.1 task-pack validator, root governance tests, and diff hygiene check.
+- Test results: focused Science/top-journal tests 21 OK; live Science RSS batch passed with 3 new metadata records; Science shadow daily selected `science:10.1126/science.ads7910`; semantic extractor checked 56 active formulas and 369 active parameters; project governance validator 0 errors; changed-only governance 0 errors/0 warnings; Lean check-render drift 0/reference issues 0; V7.1 task-pack validator PASS; root governance tests 238 OK; `git diff --check` passed.
+- Decisions: `ACC-S2PCT02-SCIENCE` is accepted only as metadata-only no-send shadow evidence. `D2_SOURCE_DOMAIN_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, Release upload, GitHub production schedule, video, PDF/full-text download, and paywall bypass all remain false/disabled.
+- Remaining risks: S2PCT03 The Lancet adapter and medical article-type gates are not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal D2 source-domain or integrated production acceptance.
+- Rollback: Revert Science additions in `top_journal_adapter.py`, `stage2_sources.py`, CLI, Science fixture/tests, phase record, registry entries, manifest, V7.1 root-lock pointer, this iteration/event, and rendered governance sync.
+- Next step: Implement S2PCT03 The Lancet metadata-only no-send shadow evidence with focused source tests and governance validation.
 
 ### `ITER-20260624-ADP-S2PA-V7-1-PARALLEL-AUDIT-ROOT-LOCK`
 

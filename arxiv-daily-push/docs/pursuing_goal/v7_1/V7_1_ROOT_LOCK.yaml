@@ -29,11 +29,13 @@ stage2_boundary:
   status: in_progress
   production_accepted: false
   current_phase: S2PC
-  current_task_id: S2PCT01
-  next_unique_task: S2PCT01
+  current_task_id: S2PCT03
+  next_unique_task: S2PCT03
   current_shadow_source_task: S2PBT01
   legacy_aliases:
     S2PCT01: S2P2T01
+    S2PCT02: S2P2T02
+    S2PCT03: S2P2T03
     S2PBT01: S2P1T01
   final_task: S2PMT07
   stop_gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION
