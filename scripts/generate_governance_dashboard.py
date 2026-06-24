@@ -1135,7 +1135,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "release_gate": release_gate,
         "blocker_ids": unresolved[:8],
     }
-    if project_id == "arxiv-daily-push" and "V7_1" in release_gate:
+    if project_id == "arxiv-daily-push" and str(matrix.get("current_v7_contract_version") or "").startswith("ADP-PRODUCT-CONTRACT-V7."):
         delivery_readiness.update(
             {
                 "v7_contract": str(matrix.get("current_v7_contract_version") or "UNKNOWN"),
@@ -1154,6 +1154,10 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "current_v7_task_id": str(matrix.get("current_v7_task_id") or "UNKNOWN"),
             }
         )
+        if int(matrix.get("v7_open_p0_findings") or 0) or int(matrix.get("v7_open_p1_findings") or 0):
+            delivery_readiness["blocker_ids"] = list(delivery_readiness["blocker_ids"]) + [
+                "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
+            ]
 
     assurance = {
         "project_id": project_id,

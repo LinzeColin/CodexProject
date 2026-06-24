@@ -1,0 +1,39 @@
+schema_version: 1
+overlay_id: EMAIL_LEARNING_V1_FRONTSTAGE_OVERLAY
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+email_contract_id: EMAIL_LEARNING_V1
+email_contract_version: "1.0.0"
+pack_revision: "1.1.0"
+parent_contract: ADP-PRODUCT-CONTRACT-V7.1
+scope: visible_email_frontstage_only
+forbidden_visible:
+  - reading_time
+  - thirty_second_or_one_minute_decision
+  - read_scan_skip
+  - frontier_delta
+  - generic_expected_roi
+  - fixed_action_ladder
+  - generic_question_cards
+required_visible:
+  - plain_language_explanation
+  - new_knowledge
+  - new_methods
+  - new_strategies
+  - new_logic
+  - new_thinking
+  - concrete_transfer
+  - brief_limits
+  - arxiv_link
+  - pdf_link
+  - chatgpt_new_chat
+  - copy_prompt_fallback
+backend_capabilities_preserved:
+  - evidence_governance
+  - review
+  - action_ledger
+  - roi_conversion_ledger
+  - cross_source_delta
+  - three_plus_one_orchestration
+acceptance_gate: EMAIL_LEARNING_V1_ACCEPTED
+development_gate_min_gold_items: 3
+final_gate_min_gold_items: 10

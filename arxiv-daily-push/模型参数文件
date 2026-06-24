@@ -10,12 +10,33 @@
 - active_model_count: `52`
 - active_formula_count: `54`
 - active_parameter_count: `364`
-- blockers: `NOT_APPLICABLE`
-- next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
-- next_unique_task: `NOT_APPLICABLE`
+- blockers: `none`
+- next_gate: `S2PC-GATE-V7-2-REVALIDATION`
+- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
+- evidence_ref_count: `17`
+- roadmap_test_command_count: `10`
+- roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
 
-## V7.1 当前根治理锁
+## V7.2 CURRENT 产品合同
+
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.2`
+- root_lock: `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`
+- product_contract: `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml`
+- contract_sha256: `a433a4e5d153d8ee849799a21b188a9c4e39036d1de75dd3f91c6ab315e7d5c6`
+- roadmap_version: `ADP-ROADMAP-V7.2`
+- roadmap_sha256: `aa1aa0b1b0b532a7dc092d6ed124cddb3c9b097a67b969ee2c8d58eed2bd9378`
+- migration_matrix_sha256: `282c7367c2566e386f556ceb5edc06be06e7b3318324ac349a8ba207b5801af4`
+- final_review_sha256: `d0e8976a64334f48bce338cff93304ad8684ce25bd5c6b32bd651709326c97fb`
+- previous_read_only_contract: `ADP-PRODUCT-CONTRACT-V7.1`
+- previous_read_only_root_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- global_current_task: `S2PCT02`
+- email_v1_workstream_next: `S2PHT01V1.1-T01`
+- v7_contract_remediation_next: `S2PHT01V1.1-T01`
+- shadow_source_next: `S2PCT02`
+- agent_revalidation_required: `true`
+
+## V7.1 只读历史根治理锁
 
 - contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
 - contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
@@ -30,10 +51,10 @@
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
-- production_forbidden_until: `P0=0; P1=0; S2PMT07 independent review passed`
+- production_forbidden_until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
 - forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
 
-## V7.1 根治理说明
+## V7.1 只读历史根治理说明
 
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。

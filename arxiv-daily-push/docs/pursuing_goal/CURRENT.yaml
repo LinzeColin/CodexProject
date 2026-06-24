@@ -1,0 +1,43 @@
+schema_version: 1
+project_id: arxiv-daily-push
+as_of: "2026-06-24"
+timezone: Australia/Sydney
+current_product_contract:
+  version: ADP-PRODUCT-CONTRACT-V7.2
+  root_lock: docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml
+  product_contract: docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml
+  roadmap: docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml
+  migration_matrix: docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml
+  activation_state: current_on_branch_pending_pr_ci
+previous_read_only_contract:
+  version: ADP-PRODUCT-CONTRACT-V7.1
+  root_lock: docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml
+  policy: read_only_history_baseline
+current_pointer_registry:
+  global_current_task: S2PCT02
+  global_current_task_meaning: Stage2 Science metadata-only no-send shadow evidence may continue when it does not touch V7.2 shared contract files.
+  v7_contract_remediation_next: S2PHT01V1.1-T01
+  email_v1_workstream_next: S2PHT01V1.1-T01
+  shadow_source_next: S2PCT02
+single_current_contract_rule: Only this file may identify the CURRENT product contract. Workstream next tasks must be named by context and must not replace the product-contract pointer.
+production_boundary:
+  stage1_gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED
+  stage2_integrated_production_accepted: false
+  inherited_v7_1_open_p0_findings: 8
+  inherited_v7_1_open_p1_findings: 37
+  v7_2_baseline_migration_open_p0_findings: 0
+  v7_2_baseline_migration_open_p1_findings: 0
+  forbidden_until:
+    - inherited V7.1 P0=0
+    - inherited V7.1 P1=0
+    - S2PMT07 independent review passed
+    - INTEGRATED_PRODUCTION_ACCEPTED written with evidence
+  forbidden_actions:
+    - real_smtp_send
+    - automatic_scheduler_install
+    - daily_operation_enablement
+    - production_restore
+    - release_packaging
+    - final_video_claim
+agent_revalidation_required: true
+agent_revalidation_policy: Every active or completed Stage2 agent must read V7.2, review its completed work against V7.2, repair non-compliance before starting new work, and record a revalidation receipt in its PR or closeout.

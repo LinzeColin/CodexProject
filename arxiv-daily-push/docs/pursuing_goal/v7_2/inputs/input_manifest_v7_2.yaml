@@ -1,0 +1,18 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+inputs:
+  - name: V7.1 product contract
+    path: docs/pursuing_goal/v7_1/machine_readable/product_contract_v7.yaml
+    sha256: e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad
+  - name: V7.1 roadmap
+    path: docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml
+    sha256: b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6
+  - name: V7.1 audit findings
+    path: docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml
+    sha256: f102af13006e5a18de6ad71e6c2e6b9080ba06384dd6d26fd99019a9437dc165
+  - name: V1.1 task pack
+    original_path: /Users/linzezhang/Downloads/arxiv_email_learning_v1_1_codex_task_pack.zip
+    sha256: 8edbae035da904fe7b465142f90c64f1690a9d36fb24d2a5100fd699e6592eff
+  - name: V7.1 plus V1.1 reaudit report
+    original_path: /Users/linzezhang/Downloads/ARXIV_V7_1_V1_1_REAUDIT_CN.md
+    sha256: dac6bcab86e9e7dd04da0cb069fe2443517b56d52fce0cdd3ce3686e2f2b6d1b

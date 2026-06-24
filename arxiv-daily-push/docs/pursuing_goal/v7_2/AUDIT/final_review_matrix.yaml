@@ -1,0 +1,60 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+review_protocol: EMAIL_V1_THREE_AGENT_REVIEW
+review_stage: final_baseline_review_for_v7_2_publication
+input_manifest:
+  v7_1_root: docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml
+  v1_1_pack_sha256: 8edbae035da904fe7b465142f90c64f1690a9d36fb24d2a5100fd699e6592eff
+  reaudit_report_sha256: dac6bcab86e9e7dd04da0cb069fe2443517b56d52fce0cdd3ce3686e2f2b6d1b
+agents:
+  A:
+    role: dual_plane_governance
+    status: pass_with_required_controls
+    conclusion: V7.1 remains read-only parent; V7.2 must absorb V1.1 dual-plane, overlay, current-pointer layering and receipts.
+  B:
+    role: roadmap_task_graph_handoff
+    status: pass_with_required_controls
+    conclusion: V7.2 may publish as current contract, but T01 must resolve exact repository paths before implementation; Stage2 shadow may continue with no shared-file conflict.
+  C:
+    role: email_content_rendering_provenance
+    status: pass_with_required_controls
+    conclusion: EMAIL_LEARNING_V1 cannot enter implementation until frontstage decision, provenance, ChatGPT fallback and gold-test gates are recorded in V7.2.
+latest_revalidation:
+  timestamp: "2026-06-24T21:45:00+10:00"
+  reviewer_agents:
+    A:
+      agent_id: 019ef961-57a4-74e0-bcfd-9fc4afc1cf03
+      verdict: PASS_WITH_NO_BLOCKERS
+      checked:
+        - V7.2 inherited blocker separation
+        - renderer fallback and three-base current task fields
+        - no production code/schema/workflow diff
+    B:
+      agent_id: 019ef961-6563-7c62-8657-7ee26795e295
+      verdict: PASS_WITH_NO_BLOCKERS
+      checked:
+        - SCOPE-ESCAPE migration entry
+        - S2PAT06 validation evidence ownership
+        - S2PCT02 planned task field rendering
+    C:
+      agent_id: 019ef961-6bc1-7c11-bd57-d7b65c240b83
+      verdict: PASS_WITH_NO_BLOCKERS
+      checked:
+        - governance_code_changed versus production_code_or_public_schema_changed
+        - V7.2 hash consistency
+        - no production code/schema/workflow diff
+  blocker_findings: []
+baseline_publication_verdict:
+  status: pass
+  scope: Publish V7.2 product contract and CURRENT pointer on this branch pending PR CI.
+  not_authorized:
+    - email_production_code_change
+    - public_schema_change
+    - real_smtp_send
+    - scheduler_enablement
+    - release_upload
+    - integrated_production_acceptance
+remaining_execution_gates:
+  - S2PHT01V1.1-T01 exact repository path audit
+  - EMAIL_LEARNING_V1 implementation tasks T02-T05
+  - agent revalidation receipts for completed Stage2 work

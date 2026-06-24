@@ -3,7 +3,7 @@ project_id: "arxiv-daily-push"
 current_stage_id: "S2"
 current_phase_id: "S2PC"
 current_task_id: "S2PCT02"
-next_gate_id: "S2PC-GATE-V7-CONTRACT-BLOCKED"
+next_gate_id: "S2PC-GATE-V7-2-REVALIDATION"
 total_estimated_hours: 10.5
 completed_estimated_hours: 8.5
 stages:
@@ -13,14 +13,15 @@ stages:
     person_goal: "在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、ledger、邮件预览和 shadow 证据。"
     status: "in_progress"
     stop_conditions:
-      - "V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED"
+      - "V7.2 current contract gate 或 agent revalidation 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED"
       - "bioRxiv/medRxiv 或 Nature shadow 影响正式 arXiv 邮件"
       - "启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion"
     stop_gate:
       gate_id: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
-      status: "blocked_by_v7_root_contract"
+      status: "blocked_by_v7_2_revalidation_and_final_production_gates"
       pass_conditions:
-        - "V7 root contract、AGENTS、三基文件和 CI contract hash gate 合并"
+        - "V7.2 root contract、CURRENT、AGENTS、三基文件和 CI contract hash gate 合并"
+        - "active/completed Stage2 agents record V7.2 revalidation receipts before new work"
         - "B1 来源级与板块级 replay/shadow/email gates 全部通过"
         - "Stage 1 arXiv local runner 无回归"
       evidence_refs:
@@ -71,7 +72,7 @@ stages:
       -
         phase_id: "S2PC"
         name: "D2 Nature/top-journal shadow foundation"
-        objective: "将 legacy S2P2T01 作为 V7.1 canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence，并继续到 S2PCT02 Science 主刊 metadata-only shadow。"
+        objective: "将 legacy S2P2T01 作为 V7.2-inherited canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence，并继续到 S2PCT02 Science 主刊 metadata-only shadow。"
         status: "in_progress"
         stop_conditions:
           - "把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction"
@@ -83,7 +84,7 @@ stages:
           pass_conditions:
             - "S2PCT01/S2P2T01 Nature evidence persisted"
             - "formal production flags remain false"
-            - "V7.1 P0/P1 cleared and S2PMT07 independent review passes before acceptance"
+            - "V7.2 production stop gates and S2PMT07 independent review pass before acceptance"
           evidence_refs:
             - "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
             - "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md"
@@ -108,7 +109,7 @@ stages:
               - "arxiv-daily-push/tests/test_top_journal_adapter.py"
               - "arxiv-daily-push/tests/test_stage2_sources.py"
               - "https://github.com/LinzeColin/CodexProject/pull/119"
-            risk: "V7.1 P0/P1 和 S2PMT07 未完成前不能纳入正式生产、不能启用邮件发送或 schedule，Nature metadata 不能被误读为全文抽取。"
+            risk: "V7.2 production stop gates 和 S2PMT07 未完成前不能纳入正式生产、不能启用邮件发送或 schedule，Nature metadata 不能被误读为全文抽取。"
             rollback: "Revert S2PCT01/S2P2T01 Nature adapter, shadow daily code, fixtures, tests, phase record, manifest, and rendered governance sync."
           -
             task_id: "S2PCT02"
@@ -126,7 +127,7 @@ stages:
               - "planned: Science source adapter focused tests"
               - "planned: Science no-send shadow daily with separate queue/ledger/email preview"
             evidence_refs:
-              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+              - "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml"
             risk: "错误文章类型、重复 DOI、全文/订阅墙越界、或 Science shadow 污染正式 arXiv 邮件必须阻断；不得宣称 D2_SOURCE_DOMAIN_ACCEPTED 或 Stage2 production accepted。"
             rollback: "Remove planned S2PCT02 governance entry if Science implementation is deferred or superseded."
   -

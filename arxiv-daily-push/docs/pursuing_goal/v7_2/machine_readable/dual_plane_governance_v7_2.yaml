@@ -1,0 +1,73 @@
+schema_version: 1
+contract_id: ADP-DUAL-PLANE-GOVERNANCE-V7.2
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+planes:
+  H:
+    name: human_owner_plane
+    editable_authority:
+      - owner_intent_under_00_用户中心/00_只改这里
+    generated_or_verified_views:
+      - 00_用户中心
+      - 功能清单
+      - 开发记录
+      - 模型参数文件
+      - email_samples
+      - acceptance_entry
+  M:
+    name: machine_engineering_plane
+    authority:
+      - product_contract
+      - requirements
+      - decisions
+      - roadmap_tasks
+      - acceptance
+      - runtime_state
+      - evidence
+      - provenance
+      - tests
+authority_matrix:
+  owner_goal_preferences_visible_email_switches: H
+  product_contract_requirement_decision_task_acceptance: M
+  runtime_queue_delivery_review_action_roi_evidence: M
+  three_base_files_and_owner_status: M_to_H
+  email_v1_sample_confirmation: H_with_M_hash
+bridges:
+  H_to_M:
+    - validate
+    - impact_preview
+    - compile
+    - apply
+    - apply_receipt
+  M_to_H:
+    - query
+    - render
+    - render_receipt
+    - staleness_marker
+required_change_identity:
+  - plane_revision_id
+  - git_commit
+  - parent_contract_hash
+  - email_contract_version
+  - sample_hash
+  - config_revision
+  - prompt_version
+  - renderer_version
+  - model_version
+  - evidence_revision
+  - run_id
+  - artifact_id
+  - html_hash
+  - input_hashes
+  - output_hashes
+  - apply_receipt
+  - render_receipt
+  - rollback_reference
+drift_tests:
+  - h_contract_task_status_sample_hash_equals_m
+  - every_m_requirement_has_h_feature_entry
+  - every_task_has_test_and_evidence
+  - h_view_revision_matches_runtime_artifact
+  - no_second_editable_fact_source
+  - generated_view_manual_edit_fails_ci
+  - render_failure_preserves_last_known_good
+stop_code: G-DRIFT

@@ -1,0 +1,24 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+single_current_product_contract:
+  pointer_file: docs/pursuing_goal/CURRENT.yaml
+  current_contract_version: ADP-PRODUCT-CONTRACT-V7.2
+  previous_contract_version: ADP-PRODUCT-CONTRACT-V7.1
+  previous_contract_policy: read_only_history_baseline
+contextual_next_tasks:
+  global_current_task:
+    task_id: S2PCT02
+    meaning: Science main-journal metadata-only no-send shadow source work may continue when it does not touch V7.2 shared files.
+  email_v1_workstream_next:
+    task_id: S2PHT01V1.1-T01
+    meaning: Read-only call-chain and H/M exact repository path audit before implementation.
+  v7_contract_remediation_next:
+    task_id: S2PHT01V1.1-T01
+    meaning: Resolve exact repository paths, owner, read/write mode and rollback receipt targets.
+  shadow_source_next:
+    task_id: S2PCT02
+    meaning: No-send source shadow path, no formal D2 acceptance.
+rules:
+  - Contextual next tasks must not overwrite the CURRENT product-contract pointer.
+  - No Stage2 agent may continue new task work until it records V7.2 revalidation for its completed work.
+  - No shared V7.2 contract, CURRENT, AGENTS, three-base or governance status file may be edited in parallel without explicit integration owner sequencing.

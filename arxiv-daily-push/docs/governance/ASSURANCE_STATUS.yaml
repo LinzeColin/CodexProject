@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-094"
-source_snapshot_hash: "sha256:faae81238fdcadc99e1c57e38470b198ee99ba66291bd2c8e457bda8ae72a07d"
+as_of_event_id: "EVENT-20260624-ADP-097"
+source_snapshot_hash: "sha256:fb97edae1ae538692313a2e23e88936f0ece73d5f9a3a7caa0e30a5144bad390"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T14:10:00+10:00"
+snapshot_event_time: "2026-06-24T20:55:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,22 +60,23 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 55
+    legacy_unbound_events: 59
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED"
-  blocker_ids: []
-  v7_contract: "ADP-PRODUCT-CONTRACT-V7.1"
-  v7_contract_hash: "e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad"
-  v7_roadmap_hash: "b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6"
-  v7_parallel_audit: "ADP-PARALLEL-AUDIT-V7.1"
-  v7_parallel_audit_hash: "f102af13006e5a18de6ad71e6c2e6b9080ba06384dd6d26fd99019a9437dc165"
+  release_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT"
+  blocker_ids:
+    - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
+  v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
+  v7_contract_hash: "a433a4e5d153d8ee849799a21b188a9c4e39036d1de75dd3f91c6ab315e7d5c6"
+  v7_roadmap_hash: "aa1aa0b1b0b532a7dc092d6ed124cddb3c9b097a67b969ee2c8d58eed2bd9378"
+  v7_parallel_audit: "ADP-V7.2-FINAL-BASELINE-REVIEW"
+  v7_parallel_audit_hash: "d0e8976a64334f48bce338cff93304ad8684ce25bd5c6b32bd651709326c97fb"
   open_p0_findings: 8
   open_p1_findings: 37
-  production_forbidden_until: "P0=0; P1=0; S2PMT07 independent review passed"
+  production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
@@ -83,40 +84,40 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PCT02"
   status: "planned"
-  reason: "Continue S2PC after the merged S2PCT01 Nature foundation by adding Science main-journal metadata-only no-send shadow evidence without formal D2 production inclusion."
+  reason: "Add Science main-journal metadata-only no-send shadow evidence using the stabilized S2PCT01 top-journal framework before any formal D2 source-domain or Stage 2 production inclusion."
   acceptance_ids:
     - "ACC-S2PCT02-SCIENCE"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Implement Science metadata-only adapter and no-send shadow daily path, then run focused Science/top-journal tests, ADP source no-regression tests, semantic governance, and changed-only project governance."
+  unblock_condition: "Run `planned: focused Science/top-journal adapter and Stage2 source tests` and attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
       reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
-  decision_id: "DEC-ADP-V7-1-AUDIT-LOCK-20260624"
-  review_id: "REVIEW8"
+  decision_id: "DEC-ADP-V7-2-CURRENT-20260624"
+  review_id: "V7.2-FINAL-BASELINE-REVIEW"
   project_id: "arxiv-daily-push"
-  decision_question: "是否接受 V7.1 根合同、并行审查和 P0/P1 禁止生产规则作为所有后续 ADP agent 的当前执行合同，并把当前开发入口切到 S2PCT01 / legacy S2P2T01，同时保留 S2PBT01 -> S2P1T01 已通过 shadow alias。"
-  question: "是否接受 V7.1 根合同、并行审查和 P0/P1 禁止生产规则作为所有后续 ADP agent 的当前执行合同，并把当前开发入口切到 S2PCT01 / legacy S2P2T01，同时保留 S2PBT01 -> S2P1T01 已通过 shadow alias。"
+  decision_question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
+  question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.1 root/audit lock, treat S2PCT01 Nature foundation as merged shadow evidence, continue S2PCT02 Science metadata-only shadow, and keep S2PBT01 as completed D1 shadow/evidence alias while P0/P1 remain open"
-  option_a: "继续 S2PCT02 Science/top-journal metadata-only shadow evidence，不影响现有 arXiv 本地生产路径。"
-  option_b: "退回 V6 名称；会增加跨线程漂移风险。"
-  option_c: "越过 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
+  current_recommendation: "A: use V7.2 as CURRENT product contract, keep V7.1 read-only, require V7.2 revalidation for all active/completed Stage2 agents, continue no-conflict S2PCT02 Science metadata-only shadow evidence, and keep EMAIL_LEARNING_V1 at T01 before implementation."
+  option_a: "继续 S2PCT02 Science/top-journal metadata-only shadow evidence，并先记录 V7.2 revalidation。"
+  option_b: "暂停所有 Stage2 任务直到 EMAIL_LEARNING_V1 完成；会不必要阻塞无冲突 Shadow 来源。"
+  option_c: "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
   options:
-    - "继续 S2PCT02 Science/top-journal metadata-only shadow evidence，不影响现有 arXiv 本地生产路径。"
-    - "退回 V6 名称；会增加跨线程漂移风险。"
-    - "越过 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
+    - "继续 S2PCT02 Science/top-journal metadata-only shadow evidence，并先记录 V7.2 revalidation。"
+    - "暂停所有 Stage2 任务直到 EMAIL_LEARNING_V1 完成；会不必要阻塞无冲突 Shadow 来源。"
+    - "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
-  expected_benefit: "在保持 arXiv 稳定运行的前提下，逐步把 Stage 2 从 Nature 扩展到 Science/top-journal metadata-only shadow 来源。"
+  expected_benefit: "在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。"
   principal_risks: "源身份混淆、重复 canonical paper、Nature 元数据被误读为全文/正式出版抽取、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "V7.1 contract/audit hash checks, root lock validator, three-base render proof, Science/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence"
+  evidence_required: "V7.2 contract/CURRENT hash checks, root lock validator, three-base render proof, V7.2 revalidation receipts, Science/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "Stage2 continues with V6/V7 naming drift and unclear integrated acceptance boundary."
+  consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."
   unblock_task_id: "S2PCT02"
   acceptance_ids:
     - "ACC-S2PCT02-SCIENCE"
