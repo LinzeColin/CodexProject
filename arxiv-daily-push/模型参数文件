@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT04`
-- active_model_count: `56`
-- active_formula_count: `58`
-- active_parameter_count: `376`
+- current_task: `S2PCT05`
+- active_model_count: `57`
+- active_formula_count: `59`
+- active_parameter_count: `382`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,7 +24,7 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT04`
+- stage2_current_task: `S2PCT05`
 - stage2_shadow_source_task: `S2PBT01`
 - legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04`
 - stage2_final_task: `S2PMT07`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PCT04` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PCT05` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -546,6 +546,15 @@
 - parameter_refs: `PARAM-ADP-391, PARAM-ADP-392, PARAM-ADP-393`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT03-LANCET`
 
+### MOD-ADP-057 S2PCT04 top-journal profile and publication relation shadow
+
+- purpose: `Build a metadata-only no-send top-journal profile report across completed Nature, Science, and Lancet shadow batches, classify research/review/editorial/news/correction/retraction profiles, record original/discusses/corrects/retracts relation edges, and apply correction/retraction forced-event updates without claiming D2/Stage2/integrated production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-059`
+- parameter_refs: `PARAM-ADP-394, PARAM-ADP-395, PARAM-ADP-396, PARAM-ADP-397, PARAM-ADP-398, PARAM-ADP-399`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT04-PROFILE`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -895,6 +904,12 @@
 - model_id: `MOD-ADP-056`
 - expression_or_pseudocode: `A S2PCT03 Lancet shadow daily run builds ROI-ranked candidates from passing Lancet SourceItems, selects one shadow daily input, updates a separate Lancet queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, D2 source-domain acceptance, PubMed full-record harvesting, or mutation of the accepted Stage 1 arXiv local production path.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT03-LANCET`
+
+### FORM-ADP-059
+
+- model_id: `MOD-ADP-057`
+- expression_or_pseudocode: `A S2PCT04 top-journal profile report passes only when completed Nature, Science, and Lancet metadata-only SourceBatches validate; profile taxonomy observes research, review, editorial, news, correction, and retraction; publication relation edges include original_publication, discusses, corrects, and retracts; correction and retraction forced events update known prior targets; and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, and paywall side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT04-PROFILE`
 
 ## 参数
 
@@ -1276,3 +1291,9 @@
 | PARAM-ADP-391 | S2PCT03_LANCET_SHADOW_MODEL_ID | S2PCT03 Lancet shadow model id | adp-s2pct03-lancet-shadow-daily-v1 | EXTRACTED from code constant and focused tests | EXTRACTED |
 | PARAM-ADP-392 | S2PCT03_QUEUE_FILENAME | S2PCT03 Lancet shadow queue filename | stage2_s2pct03_lancet_queue.json | EXTRACTED from code constant and focused tests | EXTRACTED |
 | PARAM-ADP-393 | S2PCT03_LEDGER_FILENAME | S2PCT03 Lancet shadow ledger filename | stage2_s2pct03_lancet_ledger.jsonl | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-394 | S2PCT04_JOURNAL_PROFILE_MODEL_ID | S2PCT04 top-journal profile model id | adp-s2pct04-top-journal-profile-v1 | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-395 | S2PCT04_REQUIRED_JOURNALS | S2PCT04 required top journals | nature;science;lancet | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-396 | S2PCT04_REQUIRED_PROFILE_KINDS | S2PCT04 required profile kinds | research;review;editorial;news;correction;retraction | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-397 | S2PCT04_FORCED_EVENT_TYPES | S2PCT04 forced event types | correction;retraction | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-398 | S2PCT04_LEDGER_FILENAME | S2PCT04 profile shadow ledger filename | stage2_s2pct04_profile_ledger.jsonl | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-399 | S2PCT04_ACCEPTANCE_ID | S2PCT04 acceptance id | ACC-S2PCT04-JOURNAL-PROFILE | EXTRACTED from code constant and focused tests | EXTRACTED |

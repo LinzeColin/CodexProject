@@ -3059,25 +3059,67 @@ tasks:
     objective: "Add top-journal profile, publication relation, correction, and retraction modeling after Nature, Science, and Lancet shadow evidence is stable, before any formal D2 production inclusion."
     scope: "Top-journal article profile taxonomy, publication relation graph metadata, correction/retraction forced events, old-conclusion update behavior, focused tests, and governance registration."
     non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no formal top-journal production inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no video requirement, no PDF/full-text download, and no paywall bypass."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PCT01"
       - "S2PCT02"
       - "S2PCT03"
     required_files:
-      - "planned: top-journal profile/relation/correction/retraction code, fixtures, focused tests, and governance registrations"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_publication_events.json"
+      - "arxiv-daily-push/tests/fixtures/top_journal_prior_profile_state.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT04_JOURNAL_PROFILE_EVIDENCE.md"
+      - "arxiv-daily-push/docs/governance/model_registry.yaml"
+      - "arxiv-daily-push/docs/governance/formula_registry.yaml"
+      - "arxiv-daily-push/docs/governance/parameter_registry.csv"
+      - "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
     acceptance_ids:
       - "ACC-S2PCT04-JOURNAL-PROFILE"
     test_commands:
-      - "planned: profile taxonomy tests"
-      - "planned: correction/retraction forced event updates old conclusions"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct04_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_top_journal_adapter.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct04_cli_py PYTHONPATH=arxiv-daily-push/src python3 -c 'from arxiv_daily_push.cli import main; raise SystemExit(main())' -- stage2-top-journal-profile-shadow --state-dir /tmp/adp_s2pct04_cli --date 2026-06-24 --generated-at 2026-06-24T09:30:00+10:00 --nature-batch /tmp/adp_s2pct04_cli/nature.json --science-batch /tmp/adp_s2pct04_cli/science.json --lancet-batch /tmp/adp_s2pct04_cli/lancet.json --publication-events arxiv-daily-push/tests/fixtures/top_journal_publication_events.json --prior-profile-state arxiv-daily-push/tests/fixtures/top_journal_prior_profile_state.json --no-write --json"
+    test_results:
+      - "focused Stage2/top-journal tests: 32 tests OK"
+      - "S2PCT04 profile report classified research, review, editorial, news, correction, and retraction profile kinds"
+      - "publication_relation_gate=pass with original_publication, discusses, corrects, and retracts relation edges"
+      - "forced_event_update_gate=pass with correction -> requires_revision and retraction -> invalidated"
+      - "CLI fixture canary: status pass, validation_errors empty, forced_event_update_count 2, all production flags false"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT04_JOURNAL_PROFILE_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_publication_events.json"
+      - "arxiv-daily-push/tests/fixtures/top_journal_prior_profile_state.json"
+    risk: "Correction/retraction events must update old conclusions; profile misclassification, relation graph errors, and shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Revert S2PCT04 profile/relation additions in stage2_sources.py, CLI, fixtures/tests, phase record, governance registrations, manifest, and event."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  -
+    task_id: "S2PCT05"
+    phase: "S2PC"
+    objective: "Add engineering open-source, code, benchmark, model-card, release, and standards public-signal framework after top-journal profile/relation evidence is stable, before any formal D2 production inclusion."
+    scope: "Engineering signal taxonomy, officiality checks, repository/version/paper relation metadata, reproducibility state, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no production mail inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no PDF/full-text download, and no paid API use."
+    status: "planned"
+    dependencies:
+      - "S2PCT04"
+    required_files:
+      - "planned: engineering signal code, fixtures, focused tests, and governance registrations"
+    acceptance_ids:
+      - "ACC-S2PCT05-ENGINEERING-SIGNALS"
+    test_commands:
+      - "planned: engineering signal profile and officiality tests"
+      - "planned: repository/version/paper relation tests"
       - "planned: semantic governance and changed-only project governance"
     test_results:
       - "PENDING"
     evidence_refs:
       - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
-    risk: "Correction/retraction events must update old conclusions; profile misclassification, relation graph errors, and shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
-    rollback: "Remove planned S2PCT04 governance entry if profile/retraction implementation is deferred or superseded."
+    risk: "Unofficial mirrors, repository-paper relation errors, unverifiable versions, marketing pages masquerading as engineering evidence, or engineering shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Remove planned S2PCT05 governance entry if engineering signal implementation is deferred or superseded."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []
