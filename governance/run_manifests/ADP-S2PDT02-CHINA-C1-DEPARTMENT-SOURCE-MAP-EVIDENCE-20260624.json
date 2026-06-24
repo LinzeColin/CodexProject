@@ -1,0 +1,72 @@
+{
+  "manifest_id": "ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PD",
+  "task_id": "S2PDT02",
+  "legacy_task_id": "S2P3T02",
+  "acceptance_id": "ACC-S2PDT02-C1",
+  "model_id": "MOD-ADP-062",
+  "formula_id": "FORM-ADP-064",
+  "parameter_ids": [
+    "PARAM-ADP-432",
+    "PARAM-ADP-433",
+    "PARAM-ADP-434",
+    "PARAM-ADP-435",
+    "PARAM-ADP-436",
+    "PARAM-ADP-437",
+    "PARAM-ADP-438",
+    "PARAM-ADP-439"
+  ],
+  "generated_at": "2026-06-24T20:45:00+10:00",
+  "base_commit": "867797a0e06cb3d644a23f5edcddcb620dda5386",
+  "result_commit": "PENDING",
+  "status": "completed_local_validation_pending_commit",
+  "scope": "China C1 central department metadata-only source map with aliases, official domains, sector coverage, industry routes, board routes, and no-production gates.",
+  "covered_sectors": [
+    "macro_policy",
+    "science_technology",
+    "industry_policy",
+    "finance",
+    "market_regulation",
+    "key_industry"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md",
+    "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt02_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt02_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+  ],
+  "test_results": [
+    "focused Stage2 source tests: 39 OK",
+    "semantic extractor: semantic_formulas_checked 64, semantic_parameters_checked 422"
+  ],
+  "next_task_id": "S2PDT03",
+  "next_legacy_task_id": "S2P3T03",
+  "d3_c1_department_source_map_ready": true,
+  "d3_core_source_domain_accepted": false,
+  "formal_production_inclusion": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "production_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_affected": false,
+  "queue_mutation_allowed": false,
+  "schema_migration_allowed": false,
+  "bulk_scraping_allowed": false,
+  "pdf_download_enabled": false,
+  "full_text_download_enabled": false,
+  "paid_api_used": false,
+  "paywall_bypass_allowed": false,
+  "v7_1_current_switched": false,
+  "v7_2_mail_or_schema_prerun": false,
+  "rollback": "Revert S2PDT02 China C1 department source-map code, tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync."
+}

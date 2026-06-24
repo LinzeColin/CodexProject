@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "iteration_id": "ITER-20260624-ADP-S2PCT07-D2-QUALIFICATION",
+  "task_id": "S2PCT07",
+  "task_ids": [
+    "S2PCT07"
+  ],
+  "legacy_task_id": "NOT_APPLICABLE",
+  "phase": "S2PC",
+  "timestamp": "2026-06-24T19:10:00+10:00",
+  "base_commit": "dfd2eca60f994fddf90517e99ee6e1021003cb43",
+  "result_commit": "PENDING",
+  "result": "completed_local_validation_pending_commit",
+  "fact_level": "EXTRACTED",
+  "summary": "Completed S2PCT07 D2 source-domain qualification and cross-type calibration evidence while preserving D2 source-domain acceptance and all production gates as false.",
+  "binding_rationale": "S2PCT07 qualification requires passing S2PCT04, S2PCT05, and S2PCT06 upstream reports, complete D2 domain type coverage, 30 unique replay dates, 48h no-production shadow evidence, correction/retraction forced-event propagation, selected/queued/deferred queue explanations, and zero cross-type calibration spread.",
+  "binding_status": "local_validation_passed_pre_commit",
+  "model_ids_changed": [
+    "MOD-ADP-060"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-062"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-416",
+    "PARAM-ADP-417",
+    "PARAM-ADP-418",
+    "PARAM-ADP-419",
+    "PARAM-ADP-420",
+    "PARAM-ADP-421",
+    "PARAM-ADP-422",
+    "PARAM-ADP-423"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md",
+    "arxiv-daily-push/docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct07_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct07_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+  ],
+  "test_results": [
+    "focused Stage2 source tests: 31 OK",
+    "S2PCT07 qualification gates passed for upstream, domain coverage, 30-date replay, 48h shadow, forced-event, queue explanation, and type calibration",
+    "semantic extractor: semantic_formulas_checked 62, semantic_parameters_checked 406"
+  ],
+  "d2_source_domain_qualification_ready": true,
+  "d2_source_domain_accepted": false,
+  "formal_production_inclusion": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "production_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "production_affected": false,
+  "queue_mutation_allowed": false,
+  "schema_migration_allowed": false,
+  "pdf_download_enabled": false,
+  "full_text_download_enabled": false,
+  "paid_api_used": false,
+  "paywall_bypass_allowed": false,
+  "marketing_material_accepted": false,
+  "next_task": "S2PDT01_CHINA_C0_NATIONAL_AUTHORITATIVE_BACKBONE",
+  "next_task_id": "S2PDT01",
+  "next_legacy_task_id": "S2P3T01",
+  "risks": [
+    "D2 source-domain qualification readiness must not be treated as D2_SOURCE_DOMAIN_ACCEPTED.",
+    "V7.1 P0/P1 and S2PMT07 independent review still block Stage2 production acceptance and integrated production acceptance.",
+    "S2PD China official source-domain work is not implemented yet."
+  ],
+  "rollback": "Revert S2PCT07 qualification additions in stage2_sources.py, CLI, tests, governance registrations, phase record, event, manifest, root-lock pointer, and rendered governance sync.",
+  "version_before": "0.23.0",
+  "version_after": "0.23.0"
+}
