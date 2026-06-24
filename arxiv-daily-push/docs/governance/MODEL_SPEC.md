@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 46
-- formula_count: 48
-- parameter_count: 359
+- model_count: 49
+- formula_count: 51
+- parameter_count: 371
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -41,6 +41,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   all-arXiv dry-run with at least 30 real candidates plus the existing
   controlled SMTP refs; it sends no new email and keeps production scheduling
   disabled.
+
+- `S2P1T01` / `0.23.0` adds disabled Stage 2 bioRxiv and medRxiv
+  metadata-only preprint source promotion scaffolding. The new models can fetch
+  small official details API windows, build separate shadow queue/ledger/email
+  previews, and run no-send shadow evidence, but they cannot enter formal
+  production until a 30-date terminal replay and 48-hour shadow gate both pass.
 
 ## A. Model Overview
 
@@ -91,6 +97,9 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-043 | Review8 Stage 1 post-migration bootstrap gate | deterministic target-runner bootstrap validator | Verify Python, Git checkout, SSL, SQLite/FTS5, runtime smoke, GitHub-hosted workflow runner boundary, GitHub Actions env names, and secret-name-only readiness without production side effects | active | adp-stage1-post-migration-bootstrap-v1 | `src/arxiv_daily_push/stage1_bootstrap.py`, `src/arxiv_daily_push/cli.py`, `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml` |
 | MOD-ADP-044 | Review8 Stage 1 historical B1 preview batch | deterministic offline/input-backed B1 report and email preview evidence generator | Generate 30 independent historical B1/arXiv report/email preview packages from supported inputs or deterministic fixtures before live-day delivery while preserving no-production-side-effect and no-future-leakage gates | active | adp-stage1-historical-b1-previews-v1 | `src/arxiv_daily_push/stage1_historical_previews.py`, `src/arxiv_daily_push/stage1_b1_report.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-045 | S1P5T04 accelerated real arXiv acceptance evidence | deterministic accelerated acceptance evidence builder | Build Stage 1 acceptance readiness evidence from a passing live all-arXiv cloud dry-run, 30 real candidates, and controlled SMTP refs while preserving disabled production scheduling | active | adp-stage1-accelerated-acceptance-v1 | `src/arxiv_daily_push/stage1_accelerated_acceptance.py`, `src/arxiv_daily_push/trial.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-047 | Stage 2 bioRxiv/medRxiv preprint metadata ingest | deterministic source adapter | Fetch small public bioRxiv/medRxiv details API windows and map metadata into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects | active | adp-stage2-preprint-ingest-v1 | `src/arxiv_daily_push/preprint_adapter.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-048 | S2P1T01 preprint source promotion gate | deterministic source promotion validator | Require passing bioRxiv and medRxiv SourceBatches plus 30-date terminal replay and 48-hour no-production shadow evidence before Stage 2 preprint source promotion can pass | active | adp-s2p1-preprint-source-promotion-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-049 | S2P1 preprint shadow daily path | deterministic shadow delivery pipeline | Build ROI-ranked bioRxiv/medRxiv shadow daily inputs, persist a separate preprint queue and JSONL ledger, and generate email previews without production inclusion or external side effects | active | adp-s2p1-preprint-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/global_scan.py`, `src/arxiv_daily_push/lesson.py` |
 
 ## B. Assumptions
 
@@ -140,6 +149,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | ASM-ADP-042 | Review8 Stage 1 local runtime recovery must provide explicit heartbeat/checkpoint, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls while keeping production scheduling, real SMTP, Release upload, video generation, and long-running local background work disabled. | `src/arxiv_daily_push/stage1_runtime.py`, `tests/test_stage1_runtime.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 local runtime recovery | active |
 | ASM-ADP-043 | Review8 Stage 1 migration packaging must produce a low-resource, hash-verifiable package and new-machine checklist while keeping production scheduling, real SMTP, Release upload, video generation, 30-day replay, and secret-value persistence disabled. | `src/arxiv_daily_push/stage1_migration.py`, `tests/test_stage1_migration.py`, `docs/runbooks/STAGE1_MIGRATION_RUNBOOK.md`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 migration package | active |
 | ASM-ADP-044 | Review8 Stage 1 post-migration bootstrap must prove an explicit target machine or GitHub-hosted cloud runner boundary before heavy historical previews or live-day evidence, and must not silently fall back to the user's Mac background runtime. | `src/arxiv_daily_push/stage1_bootstrap.py`, `.github/workflows/arxiv-daily-push-stage1-bootstrap.yml`, `tests/test_stage1_bootstrap.py`, `docs/pursuing_goal/BASELINE_LOCK.md` | Review8 Stage 1 post-migration bootstrap | active |
+| ASM-ADP-045 | S2P1T01 preprint source promotion must keep bioRxiv and medRxiv disabled/zero-weight until both the 30-date terminal replay and 48-hour no-production shadow gate pass; no GitHub cloud scheduled production, SMTP send, Release upload, video generation, PDF download, full-text download, or Stage 1 arXiv production mutation is allowed. | `src/arxiv_daily_push/preprint_adapter.py`, `src/arxiv_daily_push/stage2_sources.py`, `config/owner_controls.yaml`, `tests/test_preprint_adapter.py`, `tests/test_stage2_sources.py`, `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md` | Stage 2 source promotion | active |
 
 ## C. Functions and Formulas
 
@@ -178,6 +188,9 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-031 validates production launch readiness across PR merged/non-draft state, expected head SHA binding, workflow contract readiness, durable external readiness refs, explicit launch confirmation, and no-side-effect safety.
 - FORM-ADP-032 validates production refs template generation, GitHub metadata discovery, provisioning audit workflow, downloaded audit artifact review, and readiness across required runner, SMTP secret-name, Release target, workflow variable, durable-ref, no-secret-input, redacted discovery-error, audit artifact refs, and no-side-effect gates.
 - FORM-ADP-033 validates the two-day simulation across consecutive dates, mocked scheduled daily runs, mocked SMTP/Release evidence, trial ledger appends, unique source/publication IDs, no secret leakage, no Codex auth read, no network fetch, and no production acceptance claim.
+- FORM-ADP-049 validates metadata-only preprint SourceBatches from the official bioRxiv/medRxiv details API with bounded canary size, DOI identity, abstract-level evidence, and no external side effects.
+- FORM-ADP-050 validates the S2P1T01 preprint source promotion gate across source, 30-date replay, 48-hour shadow, no-production, no-SMTP, no-Release, and no-video requirements.
+- FORM-ADP-051 validates the S2P1 shadow daily path across preprint candidate ranking, separate queue persistence, JSONL ledger persistence, email previews, and no mutation of the accepted Stage 1 arXiv local path.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.

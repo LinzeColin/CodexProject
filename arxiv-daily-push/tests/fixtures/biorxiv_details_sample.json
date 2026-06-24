@@ -1,0 +1,28 @@
+{
+  "messages": [
+    {
+      "status": "ok",
+      "interval": "1d",
+      "cursor": 0,
+      "count": 1
+    }
+  ],
+  "collection": [
+    {
+      "doi": "10.1101/2026.06.23.660001",
+      "title": "Agent benchmark for cellular automation and healthcare decision risk",
+      "authors": "Ada Example; Ben Researcher",
+      "author_corresponding": "Ada Example",
+      "author_corresponding_institution": "Example Institute",
+      "date": "2026-06-23",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_by_nc_nd",
+      "category": "bioinformatics",
+      "jats xml path": "/content/10.1101/2026.06.23.660001v1.source.xml",
+      "abstract": "We introduce a framework and benchmark dataset for agent based decision learning in cellular automation. The method covers health, privacy, security, cost efficiency, model robustness, evaluation, statistics, and deployment decisions with explainable failure modes.",
+      "published": "NA",
+      "server": "biorxiv"
+    }
+  ]
+}
