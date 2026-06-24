@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `19`
+- evidence_ref_count: `20`
 - roadmap_test_command_count: `1`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -51,3 +51,4 @@
 | EVID-ALPHA-S3PBT01-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json | EXTRACTED |
 | EVID-ALPHA-S3PBT02-SHUTDOWN-LOG | stage_gate_evidence | governance/stage_gates/s3pb/shutdown_fault_tests.log | EXTRACTED |
 | EVID-ALPHA-S3PBT02-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json | EXTRACTED |
+| EVID-ALPHA-S3PBT03-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json | EXTRACTED |

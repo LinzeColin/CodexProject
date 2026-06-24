@@ -177,3 +177,19 @@ tasks:
     rollback: "Revert S3PBT02 runtime/script/test/governance/evidence/rendered files and restore prior lifecycle scripts; keep S3PBT01 atomic storage unless the whole S3PB patch set is rolled back."
     target_version: "0.1.0"
     completed_version: "0.1.0"
+  - task_id: "S3PBT03"
+    phase: "S3PB"
+    objective: "补齐 Alpha 关停、磁盘错误、陈旧 PID 和强制终止故障注入证明。"
+    scope: ["atomic JSON disk-error injection", "force-terminated writer preservation", "AutoPaperAgent no-write-after-stopped check", "dashboard stale-PID process-reuse protection", "shutdown fault evidence"]
+    non_scope: ["real broker path", "live trading activation", "production database migration", "real uvicorn process termination proof"]
+    status: "completed"
+    dependencies: ["S3PBT02"]
+    required_files: ["Alpha/backend/app/services/atomic_json_store.py", "Alpha/scripts/start_alpha_dashboard.sh", "Alpha/scripts/stop_alpha_dashboard.sh", "Alpha/tests/test_shutdown_fault_injection.py", "governance/stage_gates/s3pb/shutdown_fault_tests.log", "governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json"]
+    acceptance_ids: ["ACC-S3PBT03"]
+    test_commands: ["python -B -m py_compile Alpha\\backend\\app\\services\\agent_runtime.py Alpha\\backend\\app\\services\\atomic_json_store.py Alpha\\tests\\test_shutdown_fault_injection.py Alpha\\tests\\test_agent_runtime.py Alpha\\tests\\test_lifecycle_scripts.py", "/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh", "/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh", "set PYTHONPATH=Alpha && python -B Alpha\\tests\\test_shutdown_fault_injection.py", "python -B -m pytest Alpha\\tests -k \"concurrent or shutdown or pid\" -q"]
+    test_results: ["PASS; py_compile exit 0", "PASS; start script bash syntax exit 0", "PASS; stop script bash syntax exit 0", "PASS; 5 shutdown fault-injection tests passed", "NOT_RUN_LOCAL_TOOL_UNAVAILABLE; No module named pytest"]
+    evidence_refs: ["governance/stage_gates/s3pb/shutdown_fault_tests.log", "governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json"]
+    risk: "S3PBT03 closes the S3PB technical fault-injection gap for local JSON/runtime/PID behavior, but does not prove live broker readiness, production market validation, or real uvicorn termination in this Windows workspace."
+    rollback: "Revert S3PBT03 script/test/governance/evidence/rendered files and restore prior PID identity handling; keep S3PBT01/S3PBT02 unless rolling back all S3PB work."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"

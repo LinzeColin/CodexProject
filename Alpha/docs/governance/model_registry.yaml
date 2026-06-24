@@ -86,18 +86,18 @@ models:
   - model_id: "MOD-005"
     name: "Paper trading loop"
     kind: "deterministic_workflow_model"
-    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic storage, fill persisted paper orders through a broker transaction, emit audit payloads, and report app-runtime stop/drain/timeout lifecycle truth."
+    purpose: "Generate paper order intents, risk-check them, enqueue broker-ready tickets through locked atomic storage, fill persisted paper orders through a broker transaction, emit audit payloads, report app-runtime stop/drain/timeout lifecycle truth, and preserve local state under shutdown fault injection."
     owner: "Alpha"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "paper-loop-v0.0.2-lifecycle"
+    model_version: "paper-loop-v0.0.3-shutdown-faults"
     assumptions: ["ASM-001", "ASM-002"]
     formula_ids: ["FORM-005"]
     parameter_ids: ["PARAM-031", "PARAM-032", "PARAM-033", "PARAM-034", "PARAM-035", "PARAM-036", "PARAM-037"]
     inputs: ["GovernorPolicy", "price fixture", "approval queue", "paper broker state"]
     outputs: ["run result", "OrderIntent", "risk check", "approval queue result", "paper portfolio", "audit events"]
     code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42", "Alpha/backend/app/services/paper_trading_loop.py:59", "Alpha/backend/app/services/agent_runtime.py:58", "Alpha/backend/app/services/approval_queue.py:19", "Alpha/backend/app/services/paper_broker.py:44"]
-    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8", "Alpha/tests/test_paper_trading_loop.py:75", "Alpha/tests/test_agent_runtime.py:66", "Alpha/tests/test_lifecycle_scripts.py:7", "Alpha/tests/test_approval_queue.py:45", "Alpha/tests/test_paper_broker_persistence.py:19"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8", "Alpha/tests/test_paper_trading_loop.py:75", "Alpha/tests/test_agent_runtime.py:66", "Alpha/tests/test_lifecycle_scripts.py:7", "Alpha/tests/test_shutdown_fault_injection.py:67", "Alpha/tests/test_shutdown_fault_injection.py:82", "Alpha/tests/test_shutdown_fault_injection.py:133", "Alpha/tests/test_shutdown_fault_injection.py:158", "Alpha/tests/test_approval_queue.py:45", "Alpha/tests/test_paper_broker_persistence.py:19"]
     evidence_refs: ["Alpha/configs/agent_loop.yaml:1", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log", "governance/stage_gates/s3pb/shutdown_fault_tests.log"]
   - model_id: "MOD-006"
     name: "Paper broker accounting"

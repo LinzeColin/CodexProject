@@ -25,6 +25,13 @@ process_is_active() {
   [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null
 }
 
+process_matches_dashboard() {
+  local pid="$1"
+  local command_text
+  command_text="$(ps -p "$pid" -o command= 2>/dev/null || ps -p "$pid" -o args= 2>/dev/null || true)"
+  [[ "$command_text" == *"uvicorn"* && "$command_text" == *"backend.app.main:app"* ]]
+}
+
 archive_pid_file() {
   local pid_file="$1"
   local archived="${pid_file}.stale.$(date -u +%Y%m%dT%H%M%SZ)"
@@ -87,13 +94,16 @@ if [[ -f "$DASHBOARD_PID_FILE" ]]; then
   PID="$(read_pid_file "$DASHBOARD_PID_FILE")"
   if ! valid_pid "$PID"; then
     archive_pid_file "$DASHBOARD_PID_FILE"
-  elif process_is_active "$PID"; then
+  elif process_is_active "$PID" && process_matches_dashboard "$PID"; then
     echo "Alpha dashboard already running at $URL"
     if [[ "$OPEN_BROWSER" != "0" ]] && command -v open >/dev/null 2>&1; then
       open "$URL"
     fi
     exit 0
   else
+    if process_is_active "$PID"; then
+      echo "Alpha dashboard PID $PID points to a non-dashboard process."
+    fi
     archive_pid_file "$DASHBOARD_PID_FILE"
   fi
 fi
