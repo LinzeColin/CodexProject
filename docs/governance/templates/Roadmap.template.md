@@ -3,6 +3,7 @@
 ## 摘要
 
 - project_id: `<PROJECT_ID>`
+- roadmap_kind: `product`
 - product_version: `<VERSION>`
 - current_stage: `<STAGE_ID> - <STAGE_NAME>`
 - current_phase: `<PHASE_ID> - <PHASE_NAME>`

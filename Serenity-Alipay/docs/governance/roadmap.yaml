@@ -1,4 +1,5 @@
 schema_version: "codexproject.roadmap.v1"
+roadmap_kind: "product"
 project_id: "Serenity-Alipay"
 total_estimated_hours: 32
 completed_estimated_hours: 32
