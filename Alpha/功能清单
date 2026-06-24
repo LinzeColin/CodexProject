@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `14`
+- evidence_ref_count: `17`
 - roadmap_test_command_count: `1`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -24,8 +24,8 @@
 | FEAT-ALPHA-001 | 动量策略锦标赛与 fixture 基准 | active | 基于 fixture 价格生成动量候选、风险排序、winner 和等权买入持有基准。 | EXTRACTED |
 | FEAT-ALPHA-002 | 交易前风控与 owner-review 门禁 | active | 按 kill switch、idempotency、side、quantity、price、notional 和 max notional 拒绝不安全订单意图。 | EXTRACTED |
 | FEAT-ALPHA-003 | 实盘策略 fail-closed | active | 默认禁用实盘；即使 policy 允许，已提交 live broker adapter 仍返回 rejected。 | EXTRACTED |
-| FEAT-ALPHA-004 | paper trading loop 与 paper broker | active | 生成 paper intent、risk check、ticket queue、paper fill、portfolio snapshot 和 audit payload。 | EXTRACTED |
-| FEAT-ALPHA-005 | 审批队列新鲜度与 dashboard actionability | active | 用 expires_at 和当前 UTC 时间区分 fresh、expired、blocked 或 unknown ticket actionability。 | EXTRACTED |
+| FEAT-ALPHA-004 | paper trading loop 与 paper broker | active | 生成 paper intent、risk check、locked ticket queue、locked paper fill、portfolio snapshot 和 audit payload。 | EXTRACTED |
+| FEAT-ALPHA-005 | 审批队列新鲜度与 dashboard actionability | active | 用 expires_at 和当前 UTC 时间区分 fresh、expired、blocked 或 unknown ticket actionability，并在文件队列模式下从锁定持久化状态读取。 | EXTRACTED |
 | FEAT-ALPHA-006 | Strategy DSL 安全边界 | active | 验证策略 payload 的 lookback、持仓数量、单资产权重，并拒绝杠杆、做空和期权类 MVP 禁止项。 | EXTRACTED |
 
 ## 证据
@@ -46,3 +46,6 @@
 | EVID-ALPHA-TRACEABILITY-MATRIX | legacy_governance | Alpha/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
 | EVID-ALPHA-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-ALPHA-EXTRACT-001.json | EXTRACTED |
 | EVID-REVIEW9-S5PAT01-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json | PROPOSED |
+| EVID-ALPHA-S3PBT01-ATOMIC-LOG | stage_gate_evidence | governance/stage_gates/s3pb/atomic_write_tests.log | EXTRACTED |
+| EVID-ALPHA-S3PBT01-CONCURRENCY-LOG | stage_gate_evidence | governance/stage_gates/s3pb/concurrency_tests.log | EXTRACTED |
+| EVID-ALPHA-S3PBT01-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PBT01-ALPHA-ATOMIC-STORAGE-20260624.json | EXTRACTED |

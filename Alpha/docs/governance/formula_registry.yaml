@@ -129,7 +129,7 @@ formulas:
     model_id: "MOD-005"
     assumption_ids: ["ASM-001", "ASM-002"]
     status: "active"
-    expression: "Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket; if risk.allowed submit PaperOrder; return run result and audit payload."
+    expression: "Paper cycle: tournament=run_strategy_tournament(price_path); intent=OrderIntent(quantity=1, side='buy', ttl=refresh_interval); risk=pre_trade_risk_check(intent); ticket=BrokerReadyOrderTicket.from_intent(intent,risk); enqueue ticket through locked atomic queue storage; if risk.allowed submit PaperOrder through locked persisted broker transaction when paper_state_path exists; return run result and audit payload."
     variables:
       - name: "refresh_interval_seconds"
         data_type: "integer"
@@ -143,24 +143,24 @@ formulas:
         data_type: "float"
         unit: "fixture price"
         input_domain: ">0"
-    constraints: ["Generated intent selects tradable winner whose latest close <= max_notional when available.", "Paper order only submits when risk.allowed is true."]
+    constraints: ["Generated intent selects tradable winner whose latest close <= max_notional when available.", "Paper order only submits when risk.allowed is true.", "S3PBT01 serializes persisted queue enqueue and persisted broker submit with process and OS file locks plus atomic replace."]
     missing_policy: "If no tradable tournament winner exists, fallback uses the highest-priced eligible fixture candidate or latest sorted price."
     output_range: "status completed; paper_order filled or skipped/rejected."
-    code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42", "Alpha/backend/app/services/paper_trading_loop.py:104"]
-    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8"]
-    evidence_refs: ["Alpha/configs/agent_loop.yaml:1"]
-    implementation_refs: ["Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop.run_once", "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop._generate_order_intent", "Alpha/backend/app/services/paper_trading_loop.py::build_default_loop", "Alpha/backend/app/services/paper_trading_loop.py::_select_tradable_winner", "Alpha/backend/app/services/paper_trading_loop.py::latest_mark_prices", "Alpha/backend/app/services/order_ticket.py::OrderIntent.create", "Alpha/backend/app/services/order_ticket.py::BrokerReadyOrderTicket.from_intent"]
-    implementation_fingerprint: "sha256:b4063ccedb41575c3b848eefc155200b0514254cf48d4f6240a25a1262dd12ce"
-    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
-    verified_at: "2026-06-21T13:51:43Z"
-    evidence_hash: "sha256:a55762e879c000f5b35acf239b5acff2a08a343153553898f41c7c8711354baa"
+    code_refs: ["Alpha/backend/app/services/paper_trading_loop.py:42", "Alpha/backend/app/services/paper_trading_loop.py:60", "Alpha/backend/app/services/paper_trading_loop.py:104", "Alpha/backend/app/services/approval_queue.py:19", "Alpha/backend/app/services/paper_broker.py:44"]
+    test_refs: ["Alpha/tests/test_paper_trading_loop.py:8", "Alpha/tests/test_paper_trading_loop.py:75", "Alpha/tests/test_approval_queue.py:45", "Alpha/tests/test_paper_broker_persistence.py:19"]
+    evidence_refs: ["Alpha/configs/agent_loop.yaml:1", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log"]
+    implementation_refs: ["Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop.run_once", "Alpha/backend/app/services/paper_trading_loop.py::PaperTradingLoop._generate_order_intent", "Alpha/backend/app/services/paper_trading_loop.py::build_default_loop", "Alpha/backend/app/services/paper_trading_loop.py::_select_tradable_winner", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.enqueue", "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order_to_path"]
+    implementation_fingerprint: "sha256:3b3f39e1783b4715c8f403d7c8c2d04bd1d663d2ad279edcd8308f0f2da6cd49"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:662933949e78ed50f75db9348b0b2aad362c1141b157e873d27a11abd1deeefb"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-006"
     model_id: "MOD-006"
     assumption_ids: ["ASM-001"]
     status: "active"
-    expression: "Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Portfolio total_equity=cash+sum(quantity*mark_price)."
+    expression: "Reject duplicate idempotency, quantity<=0, price<=0, invalid side, insufficient cash/position. Buy: cash-=quantity*price and position+=quantity. Sell: position-=quantity and cash+=quantity*price. Persisted submit uses a locked read-submit-atomic-replace transaction. Portfolio total_equity=cash+sum(quantity*mark_price)."
     variables:
       - name: "cash"
         data_type: "float"
@@ -174,17 +174,17 @@ formulas:
         data_type: "float"
         unit: "fixture price"
         input_domain: ">=0; missing mark defaults 0"
-    constraints: ["Idempotency keys cannot repeat.", "Buy cannot exceed paper cash.", "Sell cannot exceed paper position."]
+    constraints: ["Idempotency keys cannot repeat.", "Buy cannot exceed paper cash.", "Sell cannot exceed paper position.", "S3PBT01 persisted broker writes use atomic temp-file replace and lock file serialization."]
     missing_policy: "Missing mark price defaults to 0.0 in portfolio snapshot."
     output_range: "filled or rejected; total_equity rounded to 2 decimals."
-    code_refs: ["Alpha/backend/app/services/paper_broker.py:43", "Alpha/backend/app/services/paper_broker.py:83"]
-    test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4"]
-    evidence_refs: ["Alpha/backend/app/services/paper_broker.py:74"]
-    implementation_refs: ["Alpha/backend/app/services/paper_broker.py::PaperBroker", "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order", "Alpha/backend/app/services/paper_broker.py::PaperBroker.snapshot", "Alpha/backend/app/services/paper_broker.py::PaperBroker.portfolio_snapshot"]
-    implementation_fingerprint: "sha256:2915e4608b9bcf49a3931d2fc39cd3fbb5bcc4cb7747f3409249919e99c92483"
-    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
-    verified_at: "2026-06-21T13:51:43Z"
-    evidence_hash: "sha256:498d2b6fb0315fb0328ad4bba719508b1da5e9a61c7ccc571b63ca665ed77bd7"
+    code_refs: ["Alpha/backend/app/services/paper_broker.py:44", "Alpha/backend/app/services/paper_broker.py:58", "Alpha/backend/app/services/paper_broker.py:63", "Alpha/backend/app/services/paper_broker.py:103", "Alpha/backend/app/services/atomic_json_store.py:24"]
+    test_refs: ["Alpha/tests/test_paper_broker_persistence.py:4", "Alpha/tests/test_paper_broker_persistence.py:19", "Alpha/tests/test_paper_broker_persistence.py:42"]
+    evidence_refs: ["Alpha/backend/app/services/paper_broker.py:94", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log"]
+    implementation_refs: ["Alpha/backend/app/services/paper_broker.py::PaperBroker", "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order_to_path", "Alpha/backend/app/services/paper_broker.py::PaperBroker.save", "Alpha/backend/app/services/paper_broker.py::PaperBroker.submit_order", "Alpha/backend/app/services/paper_broker.py::PaperBroker.snapshot", "Alpha/backend/app/services/paper_broker.py::PaperBroker.portfolio_snapshot", "Alpha/backend/app/services/atomic_json_store.py::json_transaction", "Alpha/backend/app/services/atomic_json_store.py::write_json_atomic"]
+    implementation_fingerprint: "sha256:b07d235e17f879098a757b293f4f536754d5bbdb7a35cc59ceccc5da047e45f6"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:5e2842b5dfae30ac10e39c80692da6d566935b3117c49015980ac4cc010bd838"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-007"
@@ -205,18 +205,18 @@ formulas:
         data_type: "string"
         unit: "enum"
         input_domain: "pending_owner_approval, blocked_by_risk, other"
-    constraints: ["Naive datetimes are treated as UTC.", "Invalid datetime returns freshness status invalid."]
+    constraints: ["Naive datetimes are treated as UTC.", "Invalid datetime returns freshness status invalid.", "S3PBT01 queue reads and writes reload under lock so concurrent enqueue does not overwrite existing tickets."]
     missing_policy: "Missing expires_at returns freshness status unknown and seconds_until_expiry None."
     output_range: "freshness status in unknown, invalid, fresh, expired; actionability string."
     unknown_task_ids: ["TASK-ALPHA-B-001"]
-    code_refs: ["Alpha/backend/app/services/approval_queue.py:59"]
-    test_refs: ["Alpha/tests/test_approval_queue.py:17"]
-    evidence_refs: ["Alpha/backend/app/services/approval_queue.py:74"]
-    implementation_refs: ["Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest_with_freshness", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.summary", "Alpha/backend/app/services/approval_queue.py::annotate_ticket_freshness", "Alpha/backend/app/services/approval_queue.py::_freshness", "Alpha/backend/app/services/approval_queue.py::_parse_iso_datetime"]
-    implementation_fingerprint: "sha256:33e472dcc264823e921c92e8b3697db11cf723a8ecb05db28b5e81f75cc8912e"
-    last_verified_commit: "f7288e9edf09484dd8cf36fe8e6523ccb1780125"
-    verified_at: "2026-06-21T13:51:43Z"
-    evidence_hash: "sha256:ca2fd1856e6c55914766ddf67efe616faeb5d145d37fdaf9c1491494a18b3c13"
+    code_refs: ["Alpha/backend/app/services/approval_queue.py:19", "Alpha/backend/app/services/approval_queue.py:49", "Alpha/backend/app/services/approval_queue.py:76", "Alpha/backend/app/services/approval_queue.py:91", "Alpha/backend/app/services/atomic_json_store.py:24"]
+    test_refs: ["Alpha/tests/test_approval_queue.py:17", "Alpha/tests/test_approval_queue.py:45", "Alpha/tests/test_approval_queue.py:63"]
+    evidence_refs: ["Alpha/backend/app/services/approval_queue.py:76", "governance/stage_gates/s3pb/atomic_write_tests.log", "governance/stage_gates/s3pb/concurrency_tests.log"]
+    implementation_refs: ["Alpha/backend/app/services/approval_queue.py::ApprovalQueue.enqueue", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.latest_with_freshness", "Alpha/backend/app/services/approval_queue.py::ApprovalQueue.summary", "Alpha/backend/app/services/approval_queue.py::annotate_ticket_freshness", "Alpha/backend/app/services/approval_queue.py::_freshness", "Alpha/backend/app/services/approval_queue.py::_parse_iso_datetime", "Alpha/backend/app/services/atomic_json_store.py::json_transaction", "Alpha/backend/app/services/atomic_json_store.py::read_json"]
+    implementation_fingerprint: "sha256:6f4895e9cbcebd732da2bab208673fc749404602cd8576ce0d5925e19f050b73"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:db492cd00464dd3fe6a47df959788f37745ce6895f7a8ac4f6a44034460cbdc7"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-008"

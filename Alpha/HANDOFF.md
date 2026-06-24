@@ -24,6 +24,7 @@ Build Alpha as a GitHub-backed personal quant agent workspace with automatic pap
 - `/agent/loop/status` exposes automatic loop state, run count, last result summary, next run time, and errors.
 - `scripts/start_alpha_dashboard.sh` now performs a startup health check and removes stale pid files on failure.
 - Approval queue now derives ticket freshness from `expires_at`; only fresh `pending_owner_approval` tickets count as owner-actionable.
+- S3PBT01 now serializes ApprovalQueue and PaperBroker persisted JSON writes through locked atomic storage so concurrent local paper-loop runs do not overwrite queue or portfolio state.
 - AppleScript `Alpha.app` is installed at `/Users/linzezhang/Downloads/Alpha.app`, `/Users/linzezhang/Applications/Alpha.app`, and `/Applications/Alpha.app`.
 - GitHub connector backup now contains the core runtime/dashboard/code/test changes from this run.
 - Repo launcher exists at `outputs/applications/Alpha.command`; an older external copy was observed at `/Users/linzezhang/Downloads/applicatioins/Alpha.command`.
@@ -35,6 +36,7 @@ Build Alpha as a GitHub-backed personal quant agent workspace with automatic pap
 - Broker-ready real-money candidates flow through `OrderIntent -> risk check -> approval queue -> BrokerReadyOrderTicket`.
 - Refresh cadence target is 300 seconds by default.
 - Use one app-managed paper loop; do not start a second external agent process beside the dashboard.
+- Persisted queue/broker JSON writes must use `atomic_json_store`; do not reintroduce direct file read-modify-write for these state files.
 
 ## Files To Read First
 
@@ -43,6 +45,7 @@ Build Alpha as a GitHub-backed personal quant agent workspace with automatic pap
 - `HANDOFF.md`
 - `docs/decision_log.md`
 - `configs/trading_governor_policy.yaml`
+- `backend/app/services/atomic_json_store.py`
 - `backend/app/services/paper_trading_loop.py`
 - `backend/app/services/strategy_iteration.py`
 - `backend/app/services/paper_broker.py`
@@ -81,6 +84,8 @@ strategy tournament validation -> 9 candidates, 9 validated, winner momentum_QQQ
 Dashboard HTML/API fallback -> contains System Snapshot, Paper Portfolio, Strategy Tournament, Approval Queue, Run Paper Cycle, 300000ms refresh, OOS Return, Hit Rate, Windows, Fresh Tickets, Expired Tickets, and Seconds Left
 Repo launcher -> outputs/applications/Alpha.command exists and is executable
 External app launchers -> /Users/linzezhang/Downloads/Alpha.app, /Users/linzezhang/Applications/Alpha.app, and /Applications/Alpha.app exist and pass plist validation
+S3PBT01 atomic storage smoke -> threaded queue/broker concurrency passed and Windows cross-process queue/broker concurrency passed
+S3PBT01 pytest target -> not run locally because pytest is unavailable: No module named pytest
 ```
 
 ## Unresolved Risks
@@ -88,11 +93,11 @@ External app launchers -> /Users/linzezhang/Downloads/Alpha.app, /Users/linzezha
 - Current market data is fixture-only.
 - Broker paper integration is not connected yet.
 - Dashboard is local MVP only.
-- Approval queue is local file/in-memory capable, not a durable production database yet.
+- Approval queue and paper broker JSON writes are atomic for local file use, but they are still not a durable production database.
 - Real broker live order submission remains intentionally out of scope.
 - Strategy tournament is still fixture-level; it now has simple walk-forward/OOS metrics, but not multi-year OOS, cost-model, slippage-model, or walk-forward portfolio validation.
 - Local `git push -u origin main` is blocked by missing HTTPS credentials (`could not read Username`); GitHub connector synced core runtime files, but older `docs/seed_pack/**` and `docs/task_pack_seed/**` still need a normal authenticated push or follow-up connector sync.
 
 ## Next Step
 
-Authenticate GitHub CLI/HTTPS push or continue connector-based sync for the remaining seed/task-pack docs, then start broker paper integration design.
+Continue S3PB with stop/cancel/PID cleanup and no-write-after-stop evidence before any broker paper integration design; real-money live submission remains out of scope.

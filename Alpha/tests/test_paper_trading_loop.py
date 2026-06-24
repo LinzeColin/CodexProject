@@ -1,6 +1,8 @@
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from backend.app.services.approval_queue import ApprovalQueue
+from backend.app.services.paper_broker import PaperBroker
 from backend.app.services.paper_trading_loop import DEFAULT_REFRESH_INTERVAL_SECONDS, PaperTradingLoop
 from backend.app.services.policy import GovernorPolicy
 
@@ -70,3 +72,28 @@ def test_paper_loop_persists_portfolio_across_loop_instances(tmp_path):
     assert first["paper_portfolio"]["trade_count"] == 1
     assert second["paper_portfolio"]["trade_count"] == 2
     assert second["paper_portfolio"]["total_equity"] > 0
+
+
+def test_concurrent_paper_loop_instances_do_not_drop_queue_or_portfolio_updates(tmp_path):
+    policy = GovernorPolicy.load(Path("configs/trading_governor_policy.yaml"))
+    state_path = tmp_path / "portfolio.json"
+    queue_path = tmp_path / "queue.json"
+
+    def run_cycle(_index: int) -> dict:
+        loop = PaperTradingLoop(
+            policy=policy,
+            price_path=Path("data/sample_prices.csv"),
+            approval_queue=ApprovalQueue(queue_path),
+            paper_state_path=state_path,
+        )
+        return loop.run_once()
+
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        results = list(pool.map(run_cycle, range(12)))
+
+    queue = ApprovalQueue(queue_path).list_tickets()
+    broker = PaperBroker.load(state_path)
+    assert all(result["approval_queue"]["status"] == "queued" for result in results)
+    assert all(result["paper_order"]["status"] == "filled" for result in results)
+    assert len(queue) == 12
+    assert broker.portfolio_snapshot()["trade_count"] == 12
