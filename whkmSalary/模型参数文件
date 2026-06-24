@@ -10,9 +10,12 @@
 - active_model_count: `2`
 - active_formula_count: `10`
 - active_parameter_count: `80`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- evidence_ref_count: `11`
+- roadmap_test_command_count: `3`
+- roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
 
 ## 模型

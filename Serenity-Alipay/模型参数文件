@@ -10,9 +10,12 @@
 - active_model_count: `5`
 - active_formula_count: `12`
 - active_parameter_count: `49`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S4-GATE-PASSED`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- evidence_ref_count: `18`
+- roadmap_test_command_count: `8`
+- roadmap_gate_count: `4`
 - evidence_status: `EXTRACTED`
 
 ## 模型

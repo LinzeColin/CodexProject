@@ -9,10 +9,13 @@
 - current_task: `S5PBT03`
 - active_model_count: `11`
 - active_formula_count: `11`
-- active_parameter_count: `92`
-- blockers: `NOT_APPLICABLE`
+- active_parameter_count: `0`
+- blockers: `none`
 - next_gate: `S5PB-GATE-IN-PROGRESS`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- evidence_ref_count: `10`
+- roadmap_test_command_count: `3`
+- roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
 
 ## 模型

@@ -10,9 +10,12 @@
 - active_model_count: `9`
 - active_formula_count: `9`
 - active_parameter_count: `55`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- evidence_ref_count: `14`
+- roadmap_test_command_count: `1`
+- roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
 
 ## 模型

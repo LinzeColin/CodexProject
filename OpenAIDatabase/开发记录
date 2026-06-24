@@ -10,9 +10,15 @@
 - total_hours: `4.00`
 - completed_hours: `4.00`
 - progress: `100.00%`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S5PB-GATE-IN-PROGRESS`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- roadmap_kind: `product`
+- roadmap_task_count: `1`
+- roadmap_gate_count: `2`
+- roadmap_acceptance_count: `1`
+- roadmap_test_command_count: `3`
+- roadmap_evidence_ref_count: `4`
 - evidence_status: `EXTRACTED`
 
 ## Roadmap
@@ -27,6 +33,9 @@ Stage -> Phase -> Task
 - derived_percent: `100.00%`
 - stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
 - stop_gate: `S5-GATE`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 #### S5PB 剩余项目治理压缩迁移
 
@@ -36,10 +45,21 @@ Stage -> Phase -> Task
 - derived_percent: `100.00%`
 - stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
 - stop_gate: `S5PB-GATE`
+- stop_gate_pass_criteria: `NOT_APPLICABLE`
+- stop_gate_evidence: `NOT_APPLICABLE`
+- stop_gate_failure_action: `NOT_APPLICABLE`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S5PBT03 | 迁移 OpenAIDatabase | completed | 4.00 | 100.00% | S5PBT02 | ACC-S5PBT03 |
+
+Task detail fields:
+
+- S5PBT03 test_commands: `python -B -m unittest ...test_review9_s5pbt03_* -q, python -B scripts/lean_governance.py check-render --project OpenAIDatabase, python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main`
+- S5PBT03 test_results: `NOT_APPLICABLE`
+- S5PBT03 evidence_refs: `OpenAIDatabase/docs/governance/project.yaml, OpenAIDatabase/docs/governance/roadmap.yaml, OpenAIDatabase/docs/governance/events.jsonl, governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json`
+- S5PBT03 risks: `NOT_APPLICABLE`
+- S5PBT03 rollback: `Revert only this task commit; retain the read-only audit evidence.`
 
 
 ## 近期事件

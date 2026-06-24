@@ -9,9 +9,12 @@
 - current_task: `S4PCT02`
 - progress: `100.00%`
 - capability_count: `4`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S4-GATE-PASSED`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- evidence_ref_count: `18`
+- roadmap_test_command_count: `8`
+- roadmap_gate_count: `4`
 - evidence_status: `EXTRACTED`
 
 ## 功能概览

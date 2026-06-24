@@ -10,9 +10,15 @@
 - total_hours: `5.00`
 - completed_hours: `5.00`
 - progress: `100.00%`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- roadmap_kind: `product`
+- roadmap_task_count: `1`
+- roadmap_gate_count: `2`
+- roadmap_acceptance_count: `1`
+- roadmap_test_command_count: `1`
+- roadmap_evidence_ref_count: `12`
 - evidence_status: `EXTRACTED`
 
 ## Roadmap
@@ -27,6 +33,9 @@ Stage -> Phase -> Task
 - derived_percent: `100.00%`
 - stop_conditions: `一次 PR 同时迁移多个项目, 为了通过 schema 虚构数据, 业务测试失败`
 - stop_gate: `S5-GATE`
+- stop_gate_pass_criteria: `10/10 项目通过结构、准确性和人类可读验收, 迁移过程中无批量空泛文件`
+- stop_gate_evidence: `migration_PRs, full_readonly_baseline, project_acceptance_matrix`
+- stop_gate_failure_action: `blocked`
 
 #### S5PA 模型密集项目迁移
 
@@ -36,10 +45,21 @@ Stage -> Phase -> Task
 - derived_percent: `100.00%`
 - stop_conditions: `上一项目未通过 Gate, 批量脚本产生无证据事实`
 - stop_gate: `S5PA-GATE`
+- stop_gate_pass_criteria: `4 个项目逐一验证通过, 每项有独立 diff/test/evidence`
+- stop_gate_evidence: `four_project_PRs, owner_reviews`
+- stop_gate_failure_action: `remain_in_phase`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S5PAT01 | 迁移 Alpha | completed | 5.00 | 100.00% | S4-GATE | ACC-S5PAT01 |
+
+Task detail fields:
+
+- S5PAT01 test_commands: `See S5PAT01 run manifest and Project Governance CI.`
+- S5PAT01 test_results: `PASS evidence required before task is considered complete; PR/main CI evidence remains outside this precommit file.`
+- S5PAT01 evidence_refs: `Alpha/docs/governance/project.yaml, Alpha/docs/governance/roadmap.yaml, Alpha/docs/governance/events.jsonl, Alpha/功能清单, Alpha/开发记录, Alpha/模型参数文件, governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json`
+- S5PAT01 risks: `范围扩张、事实失真或治理回归, Alpha live readiness 仍 blocked，不能误写成生产上线就绪`
+- S5PAT01 rollback: `Revert only this task commit; retain prior read-only audit evidence.`
 
 
 ## 近期事件
