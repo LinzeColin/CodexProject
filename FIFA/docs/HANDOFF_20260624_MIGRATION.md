@@ -26,6 +26,9 @@ Migrate the TAB FIFA research system to a new computer by ensuring GitHub contai
 - `FIFA/artifacts/backups/20260624/runtime_outputs_snapshot_20260624.tar.gz`
 - `FIFA/artifacts/backups/20260624/runtime_outputs_20260624.sha256`
 - `FIFA/artifacts/backups/20260624/legacy_workspace_HANDOFF_20260624.md`
+- `FIFA/artifacts/backups/20260624/local_residual_fifa_files_20260624.tar.gz`
+- `FIFA/artifacts/backups/20260624/residual_fifa_files_20260624.sha256`
+- `FIFA/artifacts/backups/20260624/residual_fifa_paths_20260624.txt`
 - `FIFA/ops/local_full_migration_backup_20260624.md`
 - `FIFA/docs/HANDOFF_20260624_MIGRATION.md`
 
@@ -44,6 +47,12 @@ Expected archive SHA-256:
 70b60f7ac656f1e9c1ea38000e21367a23239db4773cbc3698f93bf7ec1c2c8e
 ```
 
+Expected residual archive SHA-256:
+
+```text
+bb31fd7235347c7f2410c68160c222e2264fb565ccbedf2f2d8b5f97f29e7aa8
+```
+
 ## Remaining Risks
 
 - The standalone `LinzeColin/FIFA` repository is not usable until access is fixed or the repo is created.
@@ -52,5 +61,4 @@ Expected archive SHA-256:
 
 ## Next Step
 
-Commit and push the `FIFA/` migration backup files. After remote push proof is available, delete the old local workspace directory and report exact deleted size/count.
-
+Commit and push the `FIFA/` migration backup files. After remote push proof is available, delete the old local workspace, duplicate local `FIFA/` directories, and residual Downloads/LenovoPro14 FIFA files. Report exact deleted size/count.

@@ -1,0 +1,168 @@
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/TAB FIFA盘口研究系统.html
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/03062026.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/05062026.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_hash_gate_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/partial_daily_research_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/available_board_strategy_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_visual_inventory_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/live_board_discovery_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/14062026_partial_daily_research.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_config_doctor_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_run_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_raw_publish_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_maturity_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_publish_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_reports.sqlite3
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_preview_raw_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_kpi_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_dashboard_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/model_divergence_review_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_evolution_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/live_board_discovery_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_raw_publish_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_verification_status_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/13062026_partial_daily_research.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_publish_preflight_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_manifest_template_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/available_board_strategy_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_index_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/source_model_registry_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_next_batch_pair_template_latest.csv
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/13062026_partial_daily_research.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_dashboard_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_model_comparison_v0_1.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/fixture_sanity_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_config_doctor_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/active_timeline_report_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_intelligence_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/source_model_registry_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/model_divergence_review_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_readiness_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/active_timeline_report_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_model_comparison_v0_1.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_approval_template_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/odds_provider_blocked_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_verification_status_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_readiness_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_live_board_discovery_raw_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_candidate_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/fixture_sanity_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_config_doctor_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_publish_preflight_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_fallback_verification_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_workbench_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/dashboard_data_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_publish_preflight_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_fallback_verification_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/model_divergence_review_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/active_timeline_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/partial_daily_research_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/research_only_raw/20260613T043332Z-8ae221d0_matches_tab_fifa_matches_main_markets_raw_v0_9.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/research_only_raw/20260613T043332Z-8ae221d0_team_futures_multi_tab_fifa_world_cup_team_futures_multi_raw_v0_16.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/research_only_raw/20260613T040114Z-b1078d6f_futures_tab_fifa_world_cup_futures_raw_v0_13.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/research_only_raw/20260613T043332Z-8ae221d0_futures_tab_fifa_world_cup_futures_raw_v0_13.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/research_only_raw/20260613T043332Z-8ae221d0_group_betting_tab_fifa_world_cup_group_betting_raw_v0_14.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/research_only_raw/20260613T040114Z-b1078d6f_group_betting_tab_fifa_world_cup_group_betting_raw_v0_14.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_kpi_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_pair_template_latest.csv
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/13062026_partial_daily_research.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_readiness_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_visual_inventory_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_doctor_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/dashboard.html
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_preview_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_status_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_approval_template_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_candidate_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/partial_daily_research_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/source_model_registry_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/raw_refresh_recovery_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_hash_gate_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/raw_refresh_recovery_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/product_readiness_dashboard_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/tab_fifa_model_comparison_v0_1.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_candidate_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_kpi_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/14062026_partial_daily_research.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/app_server.log
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_index_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_alternate_plan_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_maturity_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_workbench_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_hash_gate_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_visual_inventory_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/matches_repair_validation_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_preview_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/fixture_sanity_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/14062026_partial_daily_research.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_alternate_plan_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/goal_traceability_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_publish_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/live_board_discovery_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_workbench_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_preview_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/active_timeline_report_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/odds_provider_coverage_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_intelligence_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/strategy_performance_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_publish_preflight_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_maturity_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_verification_status_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_evolution_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/source_model_github_metadata_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/active_backfill_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_status_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/recommendation_operations_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_raw_publish_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/position_monitor_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_evolution_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_team_total_overlay_raw_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_publish_preflight_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/goal_traceability_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_alternate_probe_evidence_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/strategy_performance_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/latest_commit.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/raw_refresh_health_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/strategy_performance_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_publish_preflight_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_intelligence_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/report_index_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_fallback_verification_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_doctor_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/public_snapshot_import_status_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/raw_refresh_research_only_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/recommendation_operations_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/openfootball_worldcup_2026_raw_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/product_readiness_dashboard_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/position_monitor_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_verification_template_latest.csv
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/product_readiness_dashboard_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/automation_doctor_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/raw_refresh_recovery_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_alternate_plan_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/provider_manual_overlay_publish_latest.md
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/available_board_strategy_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/position_monitor_latest.json
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/recommendation_operations_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/app_assets/goal_traceability_latest.pdf
+/Users/linzezhang/Downloads/CodexProject/FIFA Report/04062026.pdf
+/Users/linzezhang/Downloads/2026 FIFA.xlsx
+/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-sports/outputs/legacy/tab_fifa_2026_betting_research_report_v1_0.pdf
+/Users/linzezhang/Documents/Codex/2026-06-02/curl-fssl-https-chatgpt-com-codex/outputs/seven_chat_pdf_reports_package_20260605_093841/02_各主题既有PDF产出/04_fifa_analysis_original_FIFA分析系统原版/outputs/tab_fifa_2026_betting_research_report_v1_0.pdf
+/Users/linzezhang/Documents/Codex/2026-06-02/curl-fssl-https-chatgpt-com-codex/outputs/seven_chat_pdf_reports_package_20260605_093841/01_七个聊天主题PDF报告/04_fifa_analysis_original_FIFA分析系统原版_聊天往来逻辑报告.pdf
+/Users/linzezhang/Downloads/LenovoPro14/completed/20260605-173754-7823bfd1-fifa-unit-regression.json
+/Users/linzezhang/Downloads/LenovoPro14/completed/20260605-172843-729a7f13-queued-and-local-fifa-status.json
+/Users/linzezhang/Downloads/LenovoPro14/results/20260605-201740-4da2b7ba-fifa-status-tests-20260605.txt
+/Users/linzezhang/Downloads/LenovoPro14/results/fifa-audit.err
+/Users/linzezhang/Downloads/LenovoPro14/results/fifa-cli-status.json
+/Users/linzezhang/Downloads/LenovoPro14/results/fifa-pytest.txt
+/Users/linzezhang/Downloads/LenovoPro14/results/fifa-next-action-plan.txt
+/Users/linzezhang/Downloads/LenovoPro14/results/20260605-160945-0d981343-fifa-cli-status.txt
+/Users/linzezhang/Downloads/LenovoPro14/results/fifa-cli-unittest.txt
+/Users/linzezhang/Downloads/LenovoPro14/results/fifa-audit.json
+/Users/linzezhang/Downloads/LenovoPro14/results/20260605-182536-b50d3002-queued-and-local-fifa-status.txt
+/Users/linzezhang/Downloads/LenovoPro14/results/20260605-182554-10ce8b8f-fifa-unit-regression.txt
+/Users/linzezhang/Downloads/LenovoPro14/jobs/20260605-182536-b50d3002-queued-and-local-fifa-status.json
+/Users/linzezhang/Downloads/LenovoPro14/jobs/20260605-160945-0d981343-fifa-cli-status.json
+/Users/linzezhang/Downloads/LenovoPro14/jobs/20260605-182554-10ce8b8f-fifa-unit-regression.json
+/Users/linzezhang/Downloads/LenovoPro14/jobs/20260605-201740-4da2b7ba-fifa-status-tests-20260605.json
