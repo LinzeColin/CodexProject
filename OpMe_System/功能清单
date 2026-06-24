@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `11`
+- evidence_ref_count: `13`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -42,3 +42,5 @@
 | EVID-OPME-DEVELOPMENT-EVENTS | legacy_events | OpMe_System/docs/governance/development_events.jsonl | EXTRACTED |
 | EVID-OPME-SEMANTIC-MANIFEST | run_manifest | governance/run_manifests/GOV-SEMANTIC-OPME-EXTRACT-001.json | EXTRACTED |
 | EVID-REVIEW9-S5PAT03-MANIFEST | run_manifest | governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json | PROPOSED |
+| EVID-OTHER8-S4PCT01-OPME-STRUCTURE-REPORT | stage_gate_evidence | OpMe_System/docs/OpMe_structure_report.md | EXTRACTED |
+| EVID-OTHER8-S4PCT01-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json | EXTRACTED |

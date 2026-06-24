@@ -1,0 +1,346 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625",
+  "project_id": "OpMe_System",
+  "task_id": "S4PCT01",
+  "acceptance_ids": [
+    "ACC-S4PCT01"
+  ],
+  "iteration_id": "ITER-OTHER8-S4PCT01-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "421154de2c10c8c44bc0bf854a4042bfe5a46958",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:545dc5ad9c038201d7e988721727b29f7aba5a4114574ca8d11e0a034b5e5f0e",
+  "changed_files_declared": [
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/ARTIFACTS_MANIFEST.md",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_delivery_summary.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_web_pdf_enhanced.zip",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0001_gear.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0002_gear.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0003_dynamic.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0004_fault.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0005_gear.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0006_machining.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/__init__.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/main.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/__init__.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/dynamic_monitoring.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/fault_diagnosis.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/gear_repair.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/machining_service.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/Wuhan_Kaiming_Skill.md",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/Wuhan_Kaiming_Task_List.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "OpMe_System/.gitignore",
+    "OpMe_System/功能清单",
+    "OpMe_System/模型参数文件",
+    "OpMe_System/docs/CLEANUP_REPORT_2026-06-13.md",
+    "OpMe_System/docs/governance/project.yaml",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpMe_System/README.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/ARTIFACTS_MANIFEST.md",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_delivery_summary.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_web_pdf_enhanced.zip",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0001_gear.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0002_gear.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0003_dynamic.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0004_fault.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0005_gear.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0006_machining.pdf",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/__init__.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/main.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/__init__.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/dynamic_monitoring.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/fault_diagnosis.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/gear_repair.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/machining_service.py",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/Wuhan_Kaiming_Skill.md",
+    "governance/archive/other8_wave1_pending/OpMe_System/work/original/Wuhan_Kaiming_Task_List.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "OpMe_System/.gitignore",
+    "OpMe_System/功能清单",
+    "OpMe_System/模型参数文件",
+    "OpMe_System/docs/CLEANUP_REPORT_2026-06-13.md",
+    "OpMe_System/docs/governance/project.yaml",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpMe_System/README.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "OpMe_System/docs/governance/project.yaml",
+    "OpMe_System/功能清单",
+    "OpMe_System/模型参数文件",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "OpMe_System/.gitignore",
+    "OpMe_System/README.md",
+    "OpMe_System/docs/CLEANUP_REPORT_2026-06-13.md",
+    "OpMe_System/docs/governance/project.yaml",
+    "OpMe_System/功能清单",
+    "OpMe_System/模型参数文件",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage4_wave1_opme_structure_simplification",
+    "checksum_bound_archive_move",
+    "runtime_source_delivery_backup_separation",
+    "no_product_behavior_change"
+  ],
+  "stage_gate_status": {
+    "S4PBT02": "PASSED_AND_BOUND",
+    "S4PCT01": "LOCAL_PRECOMMIT_PASSED",
+    "S4PC-GATE": "IN_PROGRESS",
+    "project_file_movement": "OPME_ARCHIVE_ONLY",
+    "whkm_structure_task": "NOT_STARTED"
+  },
+  "archive_actions": {
+    "opme_archived_path_count": 18,
+    "opme_category_counts": {
+      "ARCHIVE": 18
+    },
+    "opme_backups_archived_count": 9,
+    "opme_original_work_archived_count": 9,
+    "opme_samples_action": "UNCHANGED_ACTIVE_DEMO_INPUT",
+    "opme_app_bundle_action": "UNCHANGED_ACTIVE_DELIVERY_BUILD_SOURCE",
+    "opme_generated_app_bundle_candidate_action": "DEFERRED_ACTIVE_BUILD_INPUT_REVIEW",
+    "checksum_reconciled_path_count": 0
+  },
+  "archived_paths": [
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/ARTIFACTS_MANIFEST.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/ARTIFACTS_MANIFEST.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "9000eeaadf1a87edb588feb313fe0e43adbb9974691eb6bab080d8e51b0e8816",
+      "size_bytes": 469
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_delivery_summary.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_delivery_summary.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "9d1e8b9b3531aac50d387fccc5f0e5e02224f4e7da9955d6d2c832cba2107af0",
+      "size_bytes": 4364
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_web_pdf_enhanced.zip",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/outputs/wuhan_kaiming_web_pdf_enhanced.zip",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "799a9918e114a5fc6160007f1ff2c9af0b4465b9f9cd7cb3ea8c2acba6e1a442",
+      "size_bytes": 75207
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0001_gear.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0001_gear.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "fd65072bf284898091c9e9be9483f7861b1dca612b11609e878214ddab7786f1",
+      "size_bytes": 5695
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0002_gear.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0002_gear.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "3a704ddc3d25be8d757484368c670317354b8edaea931b5d27fa0ba5e98e44ba",
+      "size_bytes": 5693
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0003_dynamic.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0003_dynamic.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "b29f2392defef778e67bd4a17b5ea2fb5c788818d29baeb78f4b368b83baa677",
+      "size_bytes": 5930
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0004_fault.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0004_fault.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "c139084058519c3f94fd2851e855649942adf9efeb7016aff6c006580ce4e775",
+      "size_bytes": 5953
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0005_gear.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0005_gear.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "34f26dca4d1f37eda295a6750a2fc2b8002ff95db79f43053d21f58351e00ca2",
+      "size_bytes": 5693
+    },
+    {
+      "source_path": "OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0006_machining.pdf",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/reports/case_0006_machining.pdf",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "d3c9b6595a072cff83b12507ff165fcdf39aafb33c617b49864f6c8e6bd09ce9",
+      "size_bytes": 6166
+    },
+    {
+      "source_path": "OpMe_System/work/original/Wuhan_Kaiming_Skill.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/Wuhan_Kaiming_Skill.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "fd90c94fd39adf0cc9e435c0fa242b715f01b93c27651d3f84a93248cff0f30e",
+      "size_bytes": 3697
+    },
+    {
+      "source_path": "OpMe_System/work/original/Wuhan_Kaiming_Task_List.md",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/Wuhan_Kaiming_Task_List.md",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "6e4c27379ae5c41ab044b3e9f2a385b2af0a29c113afcb8e410a4fcc6cb91b8a",
+      "size_bytes": 6722
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/__init__.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/__init__.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/main.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/main.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "1e1d4ff13c4f7ee78997587cfebedd9fb851dd67b18b454837d63f25449857bf",
+      "size_bytes": 3448
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/modules/__init__.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/__init__.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/modules/dynamic_monitoring.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/dynamic_monitoring.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "cf291aae4936ad5d56e3e82ef93734035108dbb156b993bebbe5cfa95ccb4b91",
+      "size_bytes": 2318
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/modules/fault_diagnosis.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/fault_diagnosis.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "3ce24ca3dda4b57c374ff45cd9b8698f079d05fd5dd256ecad8e59e963052c03",
+      "size_bytes": 1544
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/modules/gear_repair.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/gear_repair.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "a81b4ef4949e4b097ad4373dfa048fe73ad0b812b5fcae3eccf73d5ec3363727",
+      "size_bytes": 1501
+    },
+    {
+      "source_path": "OpMe_System/work/original/wuhan_kaiming_project/modules/machining_service.py",
+      "proposed_target": "governance/archive/other8_wave1_pending/OpMe_System/work/original/wuhan_kaiming_project/modules/machining_service.py",
+      "category": "ARCHIVE",
+      "s4pat02_sha256": "045c8ebf3eda9875f2cbef9d8498f16dbc4a0bdda155a10576c7ecc4a7f922de",
+      "size_bytes": 1702
+    }
+  ],
+  "archive_checksum_reconciliation": [],
+  "stop_conditions": {
+    "opme_delivery_and_source_still_mixed": false,
+    "backend_or_frontend_runtime_changed": false,
+    "app_bundle_build_source_moved": false,
+    "startup_command_changed_without_readme_sync": false,
+    "samples_moved_or_demo_input_removed": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": [],
+    "allowed_project": "OpMe_System"
+  },
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct01_opme_structure_simplification_archives_backups_and_original_work -q",
+    "python -B scripts/lean_governance.py check-render --project OpMe_System",
+    "python -B -m compileall -q OpMe_System/backend/app OpMe_System/backend/tests",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B scripts/lean_governance.py render --project OpMe_System --write",
+      "exit_code": 0,
+      "result": "updated_count=2 unchanged_count=1"
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+      "exit_code": 0,
+      "result": "valid_json"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct01_opme_structure_simplification_archives_backups_and_original_work -q",
+      "exit_code": 0,
+      "result": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project OpMe_System",
+      "exit_code": 0,
+      "result": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B -m compileall -q OpMe_System/backend/app OpMe_System/backend/tests",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "set PYTHONPATH=OpMe_System/backend&& OpMe_System/.venv/Scripts/python -B -m pytest OpMe_System/backend/tests -q",
+      "exit_code": 0,
+      "result": "8 passed, 1 warning"
+    },
+    {
+      "command": "pnpm --dir OpMe_System/frontend install --lockfile=false",
+      "exit_code": 1,
+      "result": "dependencies installed but esbuild build script initially blocked by pnpm security policy"
+    },
+    {
+      "command": "pnpm --dir OpMe_System/frontend rebuild esbuild --config.dangerously-allow-all-builds=true with bundled node on PATH",
+      "exit_code": 0,
+      "result": "esbuild postinstall completed"
+    },
+    {
+      "command": "pnpm --dir OpMe_System/frontend run build with bundled node on PATH",
+      "exit_code": 0,
+      "result": "vite build completed"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "ok; line-ending warnings only"
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "no forbidden project changes"
+    }
+  ],
+  "evidence_refs": [
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/archive/other8_wave1_pending/OpMe_System/backups/generated-artifacts/2026-06-13/ARTIFACTS_MANIFEST.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json"
+  ],
+  "unresolved_risks": [
+    "S4PC-GATE remains in progress until S4PCT02 whkm structure and S4PCT03 wave gate pass PR and main CI.",
+    "OpMe app_bundle generated candidates remain in active path because current delivery scripts use app_bundle/native_launcher.c and app_bundle/assets/OpMeIcon.* as build inputs.",
+    "Full backend API smoke may require a dependency-prepared environment with fastapi, pydantic, and httpx."
+  ],
+  "next_allowed_task": "S4PCT02",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow after PR merge",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI_ATTESTED",
+  "finished_at": "2026-06-25T00:00:00+10:00"
+}
