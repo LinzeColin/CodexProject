@@ -8,7 +8,7 @@ email_v1_workstream_next: S2PHT01V1.1-T01
 stage2_shadow_source_next: S2PCT02
 workstreams:
   - workstream_id: V7_2_BASELINE_UPGRADE
-    status: published_on_branch_pending_pr_ci
+    status: published_on_main_merged_pr_140
     scope: Merge valid V7.1 requirements with V1.1 increments, publish V7.2, and point CURRENT to V7.2.
     completed_tasks:
       - S2PHT01V1.1-T00

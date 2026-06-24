@@ -97,7 +97,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:fb97edae1ae538692313a2e23e88936f0ece73d5f9a3a7caa0e30a5144bad390`
+- source_snapshot_hash: `sha256:9a7af70e788c281c3b3ad236a8714d90920dd2454079d05b2bcdabe260102061`
 - snapshot_event_time: `2026-06-24T20:55:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
