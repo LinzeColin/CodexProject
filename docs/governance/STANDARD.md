@@ -180,7 +180,9 @@ production claims require evidence refs.
 | `NIGHTLY` / `MANUAL` / `RELEASE` | all | all | prohibited unless an explicit release task says otherwise |
 
 Only the selected target render task may use write mode to update the three
-target-project human files. CI and Hook never use `--write`.
+target-project human files. CI and Hook must not write root generated views
+back into tracked source; manual or scheduled root view generation writes to a
+temporary artifact directory through `--root-artifact-dir`.
 
 ## Risk-Tier Routing
 
