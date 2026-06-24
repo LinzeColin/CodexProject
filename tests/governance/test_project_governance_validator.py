@@ -6263,6 +6263,104 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("active_formula_count: `1`", model_params)
         self.assertIn("active_parameter_count: `1`", model_params)
 
+    def test_other8_s2pbt03_render_write_is_noop_and_supports_single_view(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            project_root = Path(tmp) / "ProjectA"
+            governance_root = project_root / "docs" / "governance"
+            governance_root.mkdir(parents=True)
+            (governance_root / "project.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.project.v1",
+                        "project_id: ProjectA",
+                        "version: 0.1.0",
+                        "fact_level: VERIFIED",
+                        "features: []",
+                        "models: []",
+                        "formulas: []",
+                        "parameters: []",
+                        "evidence_refs: []",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "roadmap.yaml").write_text(
+                "\n".join(
+                    [
+                        "schema_version: codexproject.roadmap.v1",
+                        "roadmap_kind: product",
+                        "project_id: ProjectA",
+                        "total_estimated_hours: 1",
+                        "current_stage_id: S1",
+                        "current_phase_id: S1PA",
+                        "current_task_id: S1PAT01",
+                        "next_gate_id: S1PA-GATE",
+                        "stages:",
+                        "  - stage_id: S1",
+                        "    name: Stage One",
+                        "    person_goal: Ship",
+                        "    status: in_progress",
+                        "    stop_conditions: [stop]",
+                        "    stop_gate:",
+                        "      gate_id: S1-GATE",
+                        "      pass_criteria: [pass]",
+                        "      evidence: [EVID-A]",
+                        "      failure_action: blocked",
+                        "    phases:",
+                        "      - phase_id: S1PA",
+                        "        name: Phase A",
+                        "        objective: Do work",
+                        "        status: in_progress",
+                        "        stop_conditions: [stop]",
+                        "        stop_gate:",
+                        "          gate_id: S1PA-GATE",
+                        "          pass_criteria: [pass]",
+                        "          evidence: [EVID-A]",
+                        "          failure_action: remain_in_phase",
+                        "        tasks:",
+                        "          - task_id: S1PAT01",
+                        "            name: Current",
+                        "            objective: Finish",
+                        "            status: in_progress",
+                        "            estimated_hours: 1",
+                        "            dependencies: [none]",
+                        "            acceptance_ids: [ACC-A]",
+                        "            test_commands: [pytest]",
+                        "            test_results: [pending]",
+                        "            evidence_refs: [EVID-A]",
+                        "            risks: [none]",
+                        "            rollback: revert",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (governance_root / "events.jsonl").write_text("", encoding="utf-8")
+
+            first = cli.render_project_files(project_root, write=True, view="development-record")
+            self.assertEqual(first["view"], "开发记录")
+            self.assertEqual(first["updated_count"], 1)
+            self.assertEqual(first["unchanged_count"], 0)
+            self.assertTrue((project_root / "开发记录").exists())
+            self.assertFalse((project_root / "功能清单").exists())
+            self.assertFalse((project_root / "模型参数文件").exists())
+            before = (project_root / "开发记录").read_text(encoding="utf-8")
+
+            second = cli.render_project_files(project_root, write=True, view="development-record")
+            after = (project_root / "开发记录").read_text(encoding="utf-8")
+            self.assertEqual(before, after)
+            self.assertEqual(second["updated_count"], 0)
+            self.assertEqual(second["unchanged_count"], 1)
+
+            checked = cli.check_render_project_files(project_root, view="development-record")
+            self.assertEqual(checked["view"], "开发记录")
+            self.assertEqual(checked["drift_count"], 0)
+
+            with self.assertRaisesRegex(ValueError, "Unknown render view"):
+                cli.render_project_files(project_root, write=False, view="unknown-view")
+
 
 if __name__ == "__main__":
     unittest.main()
