@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 10
+task_count: 11
 
 ## Phase A - Discovery and Baseline
 
@@ -131,6 +131,24 @@ task_count: 10
 - evidence: personalization export PASS, startup route PASS, evaluation harness PASS with no failures, focused unittest added.
 - risk: generated export is redacted derived context but pattern scan is not a full secret scanner.
 - rollback: remove `TASK-OAI-C-002` files and revert VERSION, CHANGELOG, and governance entries to 0.1.0.
+- target version: 0.2.0
+- completed version: 0.2.0
+
+### S3PDT01
+
+- task_id: S3PDT01
+- phase: S3PD
+- objective: Verify OpenAIDatabase private import, redaction, Git leakage, and deletion-recovery contracts with synthetic private data.
+- scope: `scripts/privacy_guard.py`, `.gitignore`, focused unittest, privacy scan evidence, governance records.
+- non_scope: real raw exports, cookies, browser profiles, plaintext secrets, production private data, delivery readiness approval.
+- status: completed
+- dependencies: S2PCT03
+- required files: `scripts/privacy_guard.py`, `tests/test_s3pdt01_privacy.py`, `governance/stage_gates/s3pd/privacy_scan.log`
+- acceptance_ids: ACC-S3PDT01
+- test commands: bundled-python focused unittest; bundled-python privacy scan; `git ls-files` raw/private check; `git check-ignore` raw/private patterns.
+- evidence: focused unittest ran 3 tests OK; privacy scan PASS with no tracked raw private files and no high-risk secret hits; raw/private paths are gitignored.
+- risk: synthetic privacy proof does not approve real raw export ingestion or production memory safety.
+- rollback: remove privacy guard, S3PDT01 tests/evidence, governance records, and `.gitignore` additions.
 - target version: 0.2.0
 - completed version: 0.2.0
 

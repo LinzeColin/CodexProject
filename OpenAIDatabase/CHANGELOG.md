@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased - Other8 S3PDT01 Privacy Boundary
+
+- Added `scripts/privacy_guard.py` to import raw private sources only from external or ignored private locations and persist redacted derived outputs with an audit log.
+- Added focused S3PDT01 unittest coverage for synthetic private import redaction, raw-source deletion recovery, rejected leaky derived-tree imports, and current repo privacy scan.
+- Extended `.gitignore` to keep `data/raw/` and `data/private_imports/` out of Git by default.
+- Recorded S3PD privacy scan evidence without approving real raw export ingestion, cookies, browser profiles, plaintext secrets, or delivery readiness.
+
+No memory extraction heuristic, active parameter value, retrieval behavior, writeback behavior, or production privacy readiness changed.
+
 ## 0.2.0 - 2026-06-21
 
 - Added the three-layer private context architecture for core profile, project memory, and behavior history.

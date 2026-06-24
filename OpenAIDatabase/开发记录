@@ -70,3 +70,4 @@ Task detail fields:
 | 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving OpenAIDatabase delivery readiness as FAILED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
 | 2026-06-22T00:24:25Z | owner_decision_required | Privacy and product owners must fund de-identified gold-set validation, adversarial secret leakage tests, retrieval metrics and human write approval logs before safe memory-operation claims. | TASK-OAI-B-001 | UNKNOWN |
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT03 proposes OpenAIDatabase Lean v2 canonical files and rendered Chinese human entry files. | S5PBT03 | PROPOSED |
+| 2026-06-24T23:55:00+10:00 | privacy_boundary_validation | S3PDT01 verifies OpenAIDatabase private import, redacted derived output, Git leakage scan, and raw-source deletion recovery contracts using synthetic private data. | S3PDT01 | EXTRACTED |

@@ -6,7 +6,7 @@ governance_spec_version: 1.0.0
 model_count: 11
 formula_count: 11
 parameter_count: 92
-task_count: 10
+task_count: 11
 
 ## A. Model Overview
 
