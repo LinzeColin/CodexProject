@@ -1,16 +1,282 @@
-# OpenAIDatabase 模型参数文件
+# 模型参数文件
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再作为模型、公式或参数的可编辑事实源。
+- project_id: `OpenAIDatabase`
+- product_version: `0.2.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT03`
+- active_model_count: `11`
+- active_formula_count: `11`
+- active_parameter_count: `92`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical 文件：
+## 模型
 
-- 模型规范：`docs/governance/MODEL_SPEC.md`
-- 模型机器源：`docs/governance/model_registry.yaml`
-- 公式机器源：`docs/governance/formula_registry.yaml`
-- 参数机器源：`docs/governance/parameter_registry.csv`
-- 追踪矩阵：`docs/governance/TRACEABILITY_MATRIX.csv`
+### MOD-001 Memory candidate classification and tiering
 
-不要在本文件新增权重、阈值、默认值、激活值、公式或校准结论。所有新增
-模型和参数事实必须写入 canonical registry，并通过根治理 validator。
+- purpose: `Convert redacted source chunks into pending memory candidates with category, importance, validity, confidence, sensitivity, tier, evidence, and dedupe behavior.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-001`
+- parameter_refs: `PARAM-001, PARAM-002, PARAM-003, PARAM-004, PARAM-005, PARAM-006, PARAM-007, PARAM-008, PARAM-009, PARAM-010`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-002 Secret redaction and sensitivity policy
+
+- purpose: `Detect secrets and PII, redact unsafe text, assign sensitivity, and emit secret_ref metadata instead of plaintext credentials.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-002`
+- parameter_refs: `PARAM-011, PARAM-012, PARAM-013, PARAM-014, PARAM-015, PARAM-016, PARAM-017`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-003 Active memory promotion and retrieval weight
+
+- purpose: `Build active memory rows from candidates or review overrides and map tiers to retrieval weights and use constraints.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-003`
+- parameter_refs: `PARAM-018, PARAM-019, PARAM-020, PARAM-021, PARAM-022, PARAM-023`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-004 Read-only SQLite search and fetch
+
+- purpose: `Index redacted active and pending memory records and provide read-only search/fetch with secret filtering.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-004`
+- parameter_refs: `PARAM-024, PARAM-025, PARAM-026, PARAM-027, PARAM-028, PARAM-029, PARAM-030`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-005 Memory Atlas weight score
+
+- purpose: `Compute memory node weight from tier, importance, and confidence and map it into visual node size, brightness, orbit, and graph edge weights.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-005`
+- parameter_refs: `PARAM-031, PARAM-032, PARAM-033, PARAM-034, PARAM-035, PARAM-036, PARAM-037, PARAM-038, PARAM-039, PARAM-040, PARAM-041, PARAM-042, PARAM-043, PARAM-044`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-006 ROI leverage and staleness score
+
+- purpose: `Compute leverage score, staleness status, and recommended action for memory nodes.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-006`
+- parameter_refs: `PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-007 Contribution activity score
+
+- purpose: `Aggregate conversations, messages, memory increments, decisions, tool calls, errors, and aborts into daily, weekly, monthly, and yearly activity levels.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-007`
+- parameter_refs: `PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-008 Codex local behavior summary
+
+- purpose: `Summarize local Codex sessions into redacted manifests, daily activity, and personalization recommendations.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-008`
+- parameter_refs: `PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-009 Data source registry and public snapshot gate
+
+- purpose: `Register active and planned data sources, enforce canonical event fields, and keep planned sources out of homepage selector and fake activity.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-009`
+- parameter_refs: `PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068, PARAM-069, PARAM-070, PARAM-071, PARAM-072`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-010 Writeback proposal version chain
+
+- purpose: `Create local draft memory change proposals with diff, revision, parent, rollback, safety metadata, and agent-apply gate.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-010`
+- parameter_refs: `PARAM-073, PARAM-074, PARAM-075, PARAM-076, PARAM-077, PARAM-078, PARAM-079, PARAM-080, PARAM-081, PARAM-082`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### MOD-011 Personalization export and resource routing
+
+- purpose: `Map the three-layer private context source into ChatGPT and Codex personalization exports, route future agents to the smallest sufficient resources, and log sync/export/evaluation/agent runs.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-011`
+- parameter_refs: `PARAM-083, PARAM-084, PARAM-085, PARAM-086, PARAM-087, PARAM-088, PARAM-089, PARAM-090, PARAM-091, PARAM-092`
+- evidence_refs: `EVID-OAIDB-MODEL-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+## 公式
+
+### FORM-001
+
+- model_id: `MOD-001`
+- expression_or_pseudocode: `candidate = None if no trigger match or normalized statement length < 8. Else classify_chunk uses priority temporary_or_sensitive unless temp_is_rule, deprecated_info, security_boundary, decision, answering_rule, workflow, project_context, preference, else fact. Importance maps security_boundary/decision/answering_rule to 高, workflow/project_context/preference/deprecated_info to 中, else 低. Validity maps temporary_or_sensitive to 临时, project_context to 项目结束前, workflow/preference to 半年, else 长期. Confidence is high if trigger_count >= 3 or importance == 高, medium if trigger_count >= 1, else low. assign_memory_tier returns 临时 for sensitive/secret or 临时 validity, 核心画像 for preference/answering_rule/core profile regex, 一般 for decision/project_context/workflow/security_boundary or long/project/half-year validity, else 临时. merge key is category + normalized statement; evidence is capped at 10; medium confidence promotes to high after evidence_count >= 3.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-002
+
+- model_id: `MOD-002`
+- expression_or_pseudocode: `redact_text replaces SECRET_PATTERNS and PII_PATTERNS findings before candidate persistence. In make_candidate, secret_types excluding email/phone produce secret_ref = stable_id('secretref', source + conversation_id + normalized redacted text + secret types) and sensitivity secret. Non-secret defaults to private. temporary_or_sensitive becomes sensitive unless already secret and statement is replaced with a redacted_source_hash prefix of sha256(redacted)[:16]. OpenAI-export decision/project/workflow/deprecated candidates without meta_context become sensitive. security_boundary becomes sensitive unless secret. secret_ref candidates receive credential_policy plaintext_in_git=false, agent_access authorized_local_secret_resolver_only, requires_user_authorization=true, local_resolver_required=true, trading boundary fail closed.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-003
+
+- model_id: `MOD-003`
+- expression_or_pseudocode: `normalized_memory_tier first demotes code/config noise to 临时, then applies aliases 重要中长期->一般 and 一般短期->临时, else uses stored tier if valid, else assign_memory_tier. retrieval_weight maps 核心画像 to high, 一般 to medium, all other tiers to low. build_active_memory_rows copies each candidate, normalizes tier, applies curation override fields, sets status active, review_status active_auto_promoted_from_full_flow, activation_mode user_authorized_full_flow, and derives use_when/do_not_use_for from tier and secret status.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-004
+
+- model_id: `MOD-004`
+- expression_or_pseudocode: `build_sqlite_index creates memory table and inserts active/candidate records except rows where sensitivity == secret. query_index builds WHERE sensitivity != secret plus AND over query terms where each term matches statement OR category OR source via LIKE. SQL order is date DESC, importance ASC and LIMIT limit*5. Post-filter keeps rows with SENSITIVITY_RANK <= rank(sensitivity_max) until limit. fetch_index returns not_found when absent, redacted_secret when record sensitivity is secret, otherwise the redacted record JSON.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-005
+
+- model_id: `MOD-005`
+- expression_or_pseudocode: `tier_score = TIER_WEIGHT.get(normalize_tier(memory_tier), 0.25); importance_score = IMPORTANCE_WEIGHT.get(importance, 0.35); confidence_score = CONFIDENCE_WEIGHT.get(confidence, 0.6); weight_score = round(tier_score*0.5 + importance_score*0.3 + confidence_score*0.2, 4). Memory node visual size = round(4 + weight_score*8, 3); brightness = confidence score rounded to 3; orbit_radius = round(30 + (1 - weight_score)*76, 3); theme/tier edges use round(weight_score, 4).`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-006
+
+- model_id: `MOD-006`
+- expression_or_pseudocode: `recency_days = today - date when date exists. sensitivity_penalty = 0.35 for sensitive or secret else 0.1. staleness_status = stale_short_term when validity == 临时 and recency_days > 30; needs_review when recency_days > 180; current otherwise when date exists; missing-date branch when date is absent. decision_impact = 1 for category decision else 0. leverage_score = round(max(0.0, memory_weight(row) + decision_impact*0.15 - sensitivity_penalty), 4). Recommended action maps 核心画像 to keep_high_weight, 一般 to review_for_project_linkage, stale or needs_review to keep_low_weight_or_refresh, else keep_as_context.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-007
+
+- model_id: `MOD-007`
+- expression_or_pseudocode: `activity_score = conversation_count*5 + message_count + memory_count*3 + candidate_count + decision_count*4 + tool_call_count*2 + error_event_count + abort_count*2. activity_level = 0 if score <= 0 or max_score <= 0 else ceil(score/max_score*5) bounded 1..5. Quantile p = sorted_scores[min(n-1, max(0, ceil(p*n)-1))]. Daily range is filled from min to max date and then aggregated to week/month/year.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-008
+
+- model_id: `MOD-008`
+- expression_or_pseudocode: `For each Codex session, topic_labels are topic rules with matched counts; signal_labels are signal rules with matched counts. activity_score = message_count + user_message_count*2 + tool_call_count*3 + len(topic_labels)*4 + error_event_count*2. Daily buckets sum session activity_score and derive activity_level = 0 if score <= 0 or max_score <= 0 else max(1, min(5, ceil(score*5/max_score))). Session output stores redacted thread/cwd/model metadata, topic labels, preference signals, top tool counts, and backup_policy redacted_summary_only_no_raw_transcript_no_plaintext_secret.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-009
+
+- model_id: `MOD-009`
+- expression_or_pseudocode: `load_data_source_registry returns {} unless schema_version == memory_atlas_data_source_registry.v1 and sources is a list. registry_source_map keeps sources with non-empty id. Acceptance requires sources memory_atlas and codex active; wechat, xiaohongshu, douyin planned; canonical required fields include source_id, record_id, occurred_at, record_type, summary, sensitivity, dedupe_key; homepage data_sources exactly all, memory_atlas, codex with labels 总数据源, ChatGPT, Codex; planned sources must remain registry-only and ingestion_status planned_no_real_data. Static summaries redact private/sensitive/source details before public snapshot.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-010
+
+- model_id: `MOD-010`
+- expression_or_pseudocode: `saveProposal requires editable and non-empty draft text. proposal_id = atlas_<compactTimestamp(now)>_<stableHash(node.id:text:nodeProposalCount+1)>; status = draft_pending_agent_apply; revision = latest.revision + 1 or 1; parent_proposal_id = latest proposal id or null; rollback_unit = policy.rollback_unit or per_memory_version; safety direct_frontend_mutation_of_active_memory=false, requires_conflict_check=true, requires_agent_or_human_apply=true, forbidden_payload from policy or plaintext secrets/raw conversation text/record hashes/local absolute paths. createRollbackProposal uses latest and previous/target, action rollback_to_version, revision latest+1, parent latest, supersedes latest, rollback_to_proposal_id target, and rollback_to_revision target revision.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+### FORM-011
+
+- model_id: `MOD-011`
+- expression_or_pseudocode: `build_export_payload loads agent_context_pack plus three_layer_context and resource_routes. It copies layer metadata, sync_required_targets, run_log_categories, startup/chatgpt/codex/project/taste routes, profile, memory, preferences, meta_data, behavior, data_sources, and safety flags. render_chatgpt writes Core Profile, Preferences And Taste, History And Patterns, Project And Decision Context, Future Agent Sync Rules, and Meta Rules. render_codex writes Startup Read Order, Codex Route, Required Sync Targets, Four Run Log Categories, and Agent Rules. route_resources selects exactly one route by intent or fails with valid_intents. evaluate checks required files, required export sections, sync targets, run log categories, and forbidden plaintext patterns. sync_codex_memory_data --build-atlas now rebuilds agent context and personalization exports after Codex-derived data refresh.`
+- evidence_refs: `EVID-OAIDB-FORMULA-REGISTRY, EVID-SEMANTIC-OAIDB-MANIFEST`
+
+## 参数
+
+| 参数 ID | 符号 | 名称 | 当前值 | 来源 | 事实等级 |
+|---|---|---|---|---|---|
+| PARAM-001 | TRIGGER_PATTERNS | candidate trigger regex set | answering_rule;preference;decision;project_context;workflow;security_boundary;deprecated_info;temporary_or_sensitive | EXTRACTED from code trigger map | EXTRACTED |
+| PARAM-002 | category_priority | classification category priority | temporary_or_sensitive;deprecated_info;security_boundary;decision;answering_rule;workflow;project_context;preference;fact | EXTRACTED from classify_chunk if/elif order | EXTRACTED |
+| PARAM-003 | importance_map | category to importance mapping | security_boundary;decision;answering_rule=高;workflow;project_context;preference;deprecated_info=中;else=低 | EXTRACTED from classify_chunk | EXTRACTED |
+| PARAM-004 | validity_map | category to validity mapping | temporary_or_sensitive=临时;project_context=项目结束前;workflow;preference=半年;else=长期 | EXTRACTED from classify_chunk | EXTRACTED |
+| PARAM-005 | confidence_high_trigger_count | high confidence trigger threshold | 3 | EXTRACTED from classify_chunk | EXTRACTED |
+| PARAM-006 | min_candidate_statement_length | minimum normalized statement length | 8 | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-007 | statement_truncate_limit | candidate statement truncate limit | 420 | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-008 | merge_confidence_evidence_threshold | evidence count for confidence promotion | 3 | EXTRACTED from merge_candidates | EXTRACTED |
+| PARAM-009 | merge_evidence_cap | max evidence rows kept per candidate | 10 | EXTRACTED from merge_candidates | EXTRACTED |
+| PARAM-010 | review_status_default | generated candidate review status | pending | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-011 | SECRET_PATTERNS | secret detection regex set | openai_api_key;github_token;aws_access_key;private_key;bearer_token;credential_assignment | EXTRACTED from code | EXTRACTED |
+| PARAM-012 | PII_PATTERNS | PII detection regex set | email;phone | EXTRACTED from code | EXTRACTED |
+| PARAM-013 | SENSITIVITY_RANK | sensitivity rank map | public=0;private=1;sensitive=2;secret=3 | EXTRACTED from code | EXTRACTED |
+| PARAM-014 | redacted_source_hash_length | temporary sensitive hash prefix length | 16 | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-015 | security_boundary_sensitivity | security boundary sensitivity rule | sensitive unless secret | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-016 | credential_policy_template | secret_ref credential policy | plaintext_in_git=false;agent_access=authorized_local_secret_resolver_only;requires_user_authorization=true;local_resolver_required=true;trading_boundary=fail_closed | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-017 | secret_backup_status | secret backup status string | backed_up_redacted_secret_ref_only_with_encrypted_raw_reference | EXTRACTED from make_candidate | EXTRACTED |
+| PARAM-018 | TIER_ALIASES | tier alias normalization map | 重要中长期=一般;一般短期=临时 | EXTRACTED from code | EXTRACTED |
+| PARAM-019 | retrieval_weight_map | tier to retrieval weight map | 核心画像=high;一般=medium;else=low | EXTRACTED from retrieval_weight | EXTRACTED |
+| PARAM-020 | curation_override_fields | fields accepted from core profile review | statement;category;importance;validity;confidence;reason;memory_tier;sensitivity;backup_status | EXTRACTED from apply_curation_override | EXTRACTED |
+| PARAM-021 | active_review_status | active row review status | active_auto_promoted_from_full_flow | EXTRACTED from build_active_memory_rows | EXTRACTED |
+| PARAM-022 | activation_mode | active row activation mode | user_authorized_full_flow | EXTRACTED from build_active_memory_rows | EXTRACTED |
+| PARAM-023 | code_noise_demote_rule | code or config noise demotion rule | true when looks_like_code_or_config_noise | EXTRACTED from normalized_memory_tier and build_active_memory_rows | EXTRACTED |
+| PARAM-024 | sqlite_index_path | SQLite memory index path | data/processed/indexes/memory_index.sqlite | EXTRACTED from build_sqlite_index | EXTRACTED |
+| PARAM-025 | search_limit_default | CLI search result limit default | 10 | EXTRACTED from parser | EXTRACTED |
+| PARAM-026 | search_overfetch_multiplier | SQL overfetch multiplier | 5 | EXTRACTED from query_index | EXTRACTED |
+| PARAM-027 | search_sensitivity_max_default | search sensitivity max default | sensitive | EXTRACTED from query_index signature and parser | EXTRACTED |
+| PARAM-028 | search_term_fields | LIKE term search fields | statement;category;source | EXTRACTED from query_index | EXTRACTED |
+| PARAM-029 | search_sort_order | SQL result ordering | date DESC;importance ASC | EXTRACTED from query_index | EXTRACTED |
+| PARAM-030 | fetch_secret_response | fetch response for secret record | redacted_secret | EXTRACTED from fetch_index | EXTRACTED |
+| PARAM-031 | TIER_WEIGHT | tier score map | 核心画像=1.0;一般=0.66;临时=0.28 | EXTRACTED from code | EXTRACTED |
+| PARAM-032 | IMPORTANCE_WEIGHT | importance score map | 高=1.0;中=0.62;低=0.32 | EXTRACTED from code | EXTRACTED |
+| PARAM-033 | CONFIDENCE_WEIGHT | confidence score map | high=1.0;medium=0.72;low=0.45 | EXTRACTED from code | EXTRACTED |
+| PARAM-034 | w_tier | tier score coefficient | 0.5 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-035 | w_importance | importance score coefficient | 0.3 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-036 | w_confidence | confidence score coefficient | 0.2 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-037 | fallback_tier_score | unrecognized tier fallback score | 0.25 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-038 | fallback_importance_score | unrecognized importance fallback score | 0.35 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-039 | fallback_confidence_score | unrecognized confidence fallback score | 0.6 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-040 | weight_rounding_decimals | weight score rounding | 4 | EXTRACTED from memory_weight | EXTRACTED |
+| PARAM-041 | node_size_base | visual node size base | 4 | EXTRACTED from node construction | EXTRACTED |
+| PARAM-042 | node_size_multiplier | visual node size multiplier | 8 | EXTRACTED from node construction | EXTRACTED |
+| PARAM-043 | orbit_radius_base | visual orbit radius base | 30 | EXTRACTED from node construction | EXTRACTED |
+| PARAM-044 | orbit_radius_multiplier | visual orbit radius multiplier | 76 | EXTRACTED from node construction | EXTRACTED |
+| PARAM-045 | sensitivity_penalty_sensitive | sensitive or secret ROI penalty | 0.35 | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-046 | sensitivity_penalty_other | non-sensitive ROI penalty | 0.1 | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-047 | decision_impact_multiplier | decision category leverage uplift | 0.15 | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-048 | leverage_floor | minimum leverage score | 0.0 | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-049 | stale_short_term_days | temporary stale threshold | 30 | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-050 | needs_review_days | needs review recency threshold | 180 | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-051 | recommended_action_map | ROI action mapping | 核心画像=keep_high_weight;一般=review_for_project_linkage;stale_or_review=keep_low_weight_or_refresh;else=keep_as_context | EXTRACTED from roi_metrics | EXTRACTED |
+| PARAM-052 | activity_score_coefficients | contribution activity score coefficients | conversation=5;message=1;memory=3;candidate=1;decision=4;tool=2;error=1;abort=2 | EXTRACTED from add_activity_score | EXTRACTED |
+| PARAM-053 | activity_level_max | max activity level | 5 | EXTRACTED from activity_level | EXTRACTED |
+| PARAM-054 | quantile_percentiles | score quantile percentiles | p50=0.5;p75=0.75;p90=0.9;p95=0.95 | EXTRACTED from score_quantiles | EXTRACTED |
+| PARAM-055 | fill_daily_range_enabled | daily range gap fill behavior | true | EXTRACTED from fill_daily_range | EXTRACTED |
+| PARAM-056 | score_version | activity score version label | activity_score.v2 | EXTRACTED from build_contribution | EXTRACTED |
+| PARAM-057 | TOPIC_RULES | Codex topic detection rules | memory_atlas;memory_database;codex_local;github_backup;delivery_quality;frontend_visual;security_boundary;finance_trading | EXTRACTED from code | EXTRACTED |
+| PARAM-058 | SIGNAL_RULES | Codex preference signal rules | prefer_chinese;real_data_required;github_as_memory_source;human_readable_reports;authorization_gate;agent_personalization;no_plaintext_secrets_in_git | EXTRACTED from code | EXTRACTED |
+| PARAM-059 | codex_redaction_limit | redacted text truncation limit | 160 | EXTRACTED from redact_text signature | EXTRACTED |
+| PARAM-060 | codex_activity_coefficients | Codex session activity coefficients | message=1;user_message=2;tool_call=3;topic_label=4;error_event=2 | EXTRACTED from session summary | EXTRACTED |
+| PARAM-061 | codex_activity_level_formula | Codex daily level formula | ceil(score*5/max_score) bounded 1..5 else 0 | EXTRACTED from activity_level | EXTRACTED |
+| PARAM-062 | codex_backup_policy | Codex sync backup policy | redacted_summary_only_no_raw_transcript_no_plaintext_secret | EXTRACTED from session summary | EXTRACTED |
+| PARAM-063 | codex_session_importance_thresholds | Codex session importance thresholds | 高 if activity>=120 or signals>=3;中 if activity>=40 or any signal;else 低 | EXTRACTED from codex_session_to_memory_row | EXTRACTED |
+| PARAM-064 | data_source_schema_version | source registry schema version | memory_atlas_data_source_registry.v1 | EXTRACTED from config and loader | EXTRACTED |
+| PARAM-065 | data_source_contract_version | canonical event contract version | canonical_memory_event.v1 | EXTRACTED from config | EXTRACTED |
+| PARAM-066 | active_source_ids | active source IDs | memory_atlas;codex | EXTRACTED from source_registry | EXTRACTED |
+| PARAM-067 | planned_source_ids | planned source IDs | wechat;xiaohongshu;douyin | EXTRACTED from source_registry and acceptance | EXTRACTED |
+| PARAM-068 | canonical_required_fields | canonical event required fields | source_id;record_id;occurred_at;record_type;title;summary;topics;sensitivity;memory_tier;importance;confidence;dedupe_key | EXTRACTED from config | EXTRACTED |
+| PARAM-069 | homepage_visible_source_ids | homepage data source selector IDs | all;memory_atlas;codex | EXTRACTED from acceptance audit | EXTRACTED |
+| PARAM-070 | homepage_source_labels | homepage data source labels | all=总数据源;memory_atlas=ChatGPT;codex=Codex | EXTRACTED from acceptance audit | EXTRACTED |
+| PARAM-071 | planned_source_mock_policy | planned source no-fake policy | planned_sources_must_not_create_fake_nodes_or_activity | EXTRACTED from registry privacy contract and audit | EXTRACTED |
+| PARAM-072 | static_summary_private_policy | public snapshot private summary policy | private original text omitted;authorized agent fetch required | EXTRACTED from static_summary | EXTRACTED |
+| PARAM-073 | WRITEBACK_QUEUE_KEY | frontend writeback localStorage key | memory-atlas.writeback.proposals.v1 | EXTRACTED from frontend | EXTRACTED |
+| PARAM-074 | PROPOSAL_SCHEMA_VERSION | proposal schema version | memory_change_proposal.v1 | EXTRACTED from build script and frontend fallback | EXTRACTED |
+| PARAM-075 | proposal_status | writeback proposal status | draft_pending_agent_apply | EXTRACTED from saveProposal and isWritebackProposal | EXTRACTED |
+| PARAM-076 | revision_increment | proposal revision increment rule | latest.revision + 1 else 1 | EXTRACTED from saveProposal and rollback | EXTRACTED |
+| PARAM-077 | rollback_unit | writeback rollback unit | git_commit_or_memory_version | EXTRACTED from source contract and frontend | EXTRACTED |
+| PARAM-078 | forbidden_payload_list | frontend forbidden proposal payload list | plaintext secrets;raw conversation text;record hashes;local absolute paths | EXTRACTED from saveProposal | EXTRACTED |
+| PARAM-079 | direct_frontend_mutation_flag | direct frontend active memory mutation flag | false | EXTRACTED from source contract and proposal safety | EXTRACTED |
+| PARAM-080 | requires_conflict_check | writeback requires conflict check | true | EXTRACTED from saveProposal | EXTRACTED |
+| PARAM-081 | diff_segment_split_regex | proposal readable segment split regex | [。！？!?;；\\\\n]+ | EXTRACTED from splitReadableSegments | EXTRACTED |
+| PARAM-082 | version_chain_display_limit | proposal version chain display limit | 6 | EXTRACTED from frontend | EXTRACTED |
+| PARAM-083 | context_layer_ids | three-layer context IDs | L1_CORE_PROFILE;L2_PROJECT_MEMORY;L3_BEHAVIOR_HISTORY | EXTRACTED from three_layer_context config | EXTRACTED |
+| PARAM-084 | sync_required_targets | required memory update targets | profile;preference;taste;history;pattern | EXTRACTED from config and AGENTS | EXTRACTED |
+| PARAM-085 | personalization_export_targets | generated personalization output files | chatgpt_personalization.md;codex_personalization.md;personalization_export.json | EXTRACTED from script constants | EXTRACTED |
+| PARAM-086 | codex_startup_read_order | Codex startup route read order | AGENTS.md;data/derived/personalization/codex_personalization.md | EXTRACTED from startup route config and focused test; deeper context files are conditional resources, not default startup read order. | EXTRACTED |
+| PARAM-087 | resource_route_intents | registered resource routing intents | startup;chatgpt_personalization;codex_personalization;project_history;taste_profile;evaluation | EXTRACTED from route config | EXTRACTED |
+| PARAM-088 | required_log_categories | four run log categories | sync_runs;export_runs;evaluation_runs;agent_runs | EXTRACTED from config and docs | EXTRACTED |
+| PARAM-089 | evaluation_required_sections | required export Markdown sections | Core Profile;Preferences And Taste;History And Patterns;Project And Decision Context;Future Agent Sync Rules | EXTRACTED from harness | EXTRACTED |
+| PARAM-090 | forbidden_plaintext_patterns | basic forbidden plaintext guardrail | sk-;BEGIN PRIVATE KEY;api_key=;password=;Bearer | EXTRACTED from harness | EXTRACTED |
+| PARAM-091 | sync_chain_after_build_atlas | post-sync regeneration chain | build_memory_atlas_data;build_agent_context_pack;build_personalization_exports | EXTRACTED from sync script | EXTRACTED |
+| PARAM-092 | evaluation_status_success | evaluation pass status string | PASS | EXTRACTED from evaluator | EXTRACTED |

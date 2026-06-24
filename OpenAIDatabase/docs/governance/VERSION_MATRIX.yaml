@@ -23,10 +23,13 @@ parameter_profile_versions:
   writeback: "writeback-proposal-parameters-v0"
   personalization_routing: "personalization-routing-parameters-v0"
 data_snapshot_version: "public_redacted_read_only_visualization"
-current_iteration: "ITER-20260621-OAI-004"
-current_phase: "B"
-current_gate: "GOV-SEMANTIC-OAIDB-in-progress"
+current_iteration: "ITER-20260624-REVIEW9-S5PBT03"
+current_phase: "S5PB"
+current_gate: "S5PB-GATE-IN-PROGRESS"
 legacy_version_labels:
-  - source: "OpenAIDatabase/apps/memory-atlas/package.json"
+  -
+    source: "OpenAIDatabase/apps/memory-atlas/package.json"
     value: "0.1.0"
     fact_level: "EXTRACTED"
+notes:
+  - "Review9 S5PBT03 migrates OpenAIDatabase to Lean v2 canonical facts and Chinese human-readable entries without changing memory extraction, privacy, retrieval, atlas, writeback, personalization, data, frontend, script, or runtime behavior."

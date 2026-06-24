@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import csv
 import importlib.util
 import io
 import hashlib
@@ -2307,6 +2308,790 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
         self.assertIn("EEI delivery readiness remains FAILED", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s5pbt02_fifa_project_yaml_preserves_research_only_truth(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "FIFA" / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "FIFA")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "unverified_delivery_readiness")
+        self.assertIn("research-only", project["summary"])
+        self.assertIn("production readiness", project["summary"])
+        self.assertEqual(len(project["features"]), 6)
+        self.assertEqual(len(project["models"]), 11)
+        self.assertEqual(len(project["formulas"]), 11)
+        self.assertEqual(len(project["parameters"]), 108)
+        self.assertEqual(len(project["strategies"]), 3)
+
+        model_ids = {item["model_id"] for item in project["models"]}
+        formula_ids = {item["formula_id"] for item in project["formulas"]}
+        parameter_ids = {item["parameter_id"] for item in project["parameters"]}
+        self.assertEqual({f"MOD-{index:03d}" for index in range(1, 12)}, model_ids)
+        self.assertEqual({f"FORM-{index:03d}" for index in range(1, 12)}, formula_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 109)}, parameter_ids)
+        self.assertNotIn("PARAM-109", parameter_ids)
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PBT02-MANIFEST", evidence_ids)
+        self.assertIn("EVID-SEMANTIC-FIFA-MANIFEST", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
+        model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 91)
+        self.assertEqual(parameter_semantic_counts["HUMAN_REVIEW_REQUIRED"], 17)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"], 10)
+        self.assertEqual(formula_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
+        self.assertEqual(model_semantic_counts["MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"], 10)
+        self.assertEqual(model_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
+
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("91/108 active parameters", limitations)
+        self.assertIn("17 个 active parameters", limitations)
+        self.assertIn("delivery_readiness 仍为 UNVERIFIED", limitations)
+        self.assertIn("不改 odds parsing", limitations)
+        self.assertEqual(project["delivery_readiness"]["status"], "UNVERIFIED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+        self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 6)
+
+        matrix = validator.load_yaml(ROOT / "FIFA" / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-REVIEW9-S5PBT02")
+        self.assertEqual(matrix["current_phase"], "S5PB")
+        self.assertEqual(matrix["current_gate"], "S5PB-GATE-IN-PROGRESS")
+
+    def test_review9_s5pbt02_fifa_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "FIFA" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "FIFA")
+        self.assertEqual(roadmap["current_stage_id"], "S5")
+        self.assertEqual(roadmap["current_phase_id"], "S5PB")
+        self.assertEqual(roadmap["current_task_id"], "S5PBT02")
+        self.assertEqual(roadmap["next_gate_id"], "S5PB-GATE-IN-PROGRESS")
+        self.assertEqual(roadmap["total_estimated_hours"], 4)
+        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S5PBT02"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "completed")
+        self.assertEqual(task["dependencies"], ["S5PBT01"])
+        self.assertEqual(task["acceptance_ids"], ["ACC-S5PBT02"])
+        self.assertIn("FIFA/docs/governance/project.yaml", task["evidence_refs"])
+        self.assertIn("任何项目缺少 owner-readable 三文件", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+        self.assertIn("未知事实被写成 VERIFIED", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+
+    def test_review9_s5pbt02_fifa_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "FIFA" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 4)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-FIFA-SEMANTIC-20260621-001"]["fact_level"], "RECONSTRUCTED")
+        self.assertIn("not model validity", by_id["EVT-FIFA-SEMANTIC-20260621-001"]["notes"])
+        self.assertEqual(by_id["EVT-FIFA-REVIEW6-FINAL-20260622-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("UNVERIFIED", by_id["EVT-FIFA-REVIEW6-FINAL-20260622-001"]["summary"])
+        self.assertEqual(by_id["EVT-FIFA-OWNER-DECISION-20260622-001"]["fact_level"], "UNKNOWN")
+        self.assertEqual(by_id["EVT-FIFA-REVIEW9-S5PBT02-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pbt02_fifa_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        result = cli.check_render_project_files(ROOT / "FIFA")
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (ROOT / "FIFA" / "功能清单").read_text(encoding="utf-8")
+        dev_text = (ROOT / "FIFA" / "开发记录").read_text(encoding="utf-8")
+        model_text = (ROOT / "FIFA" / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-FIFA-006", feature_text)
+        self.assertIn("ai_controlled_access_rejected", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PBT02", dev_text)
+        self.assertIn("MOD-011", model_text)
+        self.assertIn("PARAM-108", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pbt02_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "FIFA",
+            "path": "FIFA",
+            "model_behavior_globs": ["tab-research-pipeline/**/*", "legacy/**/*", "ops/**/*", "*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "FIFA/docs/governance/project.yaml",
+                "FIFA/docs/governance/roadmap.yaml",
+                "FIFA/docs/governance/events.jsonl",
+                "FIFA/docs/governance/VERSION_MATRIX.yaml",
+                "FIFA/功能清单",
+                "FIFA/开发记录",
+                "FIFA/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+                "docs/governance/VERSION_MATRIX.yaml",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pbt02_manifest_records_fifa_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "FIFA")
+        self.assertEqual(manifest["task_id"], "S5PBT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT02"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("fifa_only_scope", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "FIFA/docs/governance/project.yaml",
+            "FIFA/docs/governance/roadmap.yaml",
+            "FIFA/docs/governance/events.jsonl",
+            "FIFA/docs/governance/VERSION_MATRIX.yaml",
+            "FIFA/功能清单",
+            "FIFA/开发记录",
+            "FIFA/模型参数文件",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EEI/", "OpenAIDatabase/", "PFI_BIG_DATA_SIMULATOR/")) for path in changed))
+        self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("FIFA delivery readiness remains UNVERIFIED", " ".join(manifest["unresolved_risks"]))
+
+    def test_review9_s5pbt03_openaidatabase_project_yaml_preserves_memory_truth(self) -> None:
+        validator = load_validator_module()
+        project = validator.load_yaml(ROOT / "OpenAIDatabase" / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "OpenAIDatabase")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "failed_delivery_readiness")
+        self.assertIn("partial semantic extraction", project["summary"])
+        self.assertIn("draft proposal", project["summary"])
+        self.assertEqual(len(project["features"]), 5)
+        self.assertEqual(len(project["models"]), 11)
+        self.assertEqual(len(project["formulas"]), 11)
+        self.assertEqual(len(project["parameters"]), 92)
+        self.assertEqual(len(project["strategies"]), 2)
+
+        model_ids = {item["model_id"] for item in project["models"]}
+        formula_ids = {item["formula_id"] for item in project["formulas"]}
+        parameter_ids = {item["parameter_id"] for item in project["parameters"]}
+        self.assertEqual({f"MOD-{index:03d}" for index in range(1, 12)}, model_ids)
+        self.assertEqual({f"FORM-{index:03d}" for index in range(1, 12)}, formula_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 93)}, parameter_ids)
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PBT03-MANIFEST", evidence_ids)
+        self.assertIn("EVID-SEMANTIC-OAIDB-MANIFEST", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
+        model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 28)
+        self.assertEqual(parameter_semantic_counts["HUMAN_REVIEW_REQUIRED"], 64)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 10)
+        self.assertEqual(formula_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
+        self.assertEqual(model_semantic_counts["MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"], 10)
+        self.assertEqual(model_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
+
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("28/92 active parameters", limitations)
+        self.assertIn("64 个 active parameters 与 FORM-010", limitations)
+        self.assertIn("delivery_readiness 仍为 FAILED", limitations)
+        self.assertIn("不改 memory extraction", limitations)
+        self.assertEqual(project["delivery_readiness"]["status"], "FAILED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+        self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 2)
+        self.assertEqual(project["delivery_readiness"]["active_requirements"], 9)
+
+        matrix = validator.load_yaml(ROOT / "OpenAIDatabase" / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-REVIEW9-S5PBT03")
+        self.assertEqual(matrix["current_phase"], "S5PB")
+        self.assertEqual(matrix["current_gate"], "S5PB-GATE-IN-PROGRESS")
+
+    def test_review9_s5pbt03_openaidatabase_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "OpenAIDatabase" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "OpenAIDatabase")
+        self.assertEqual(roadmap["current_stage_id"], "S5")
+        self.assertEqual(roadmap["current_phase_id"], "S5PB")
+        self.assertEqual(roadmap["current_task_id"], "S5PBT03")
+        self.assertEqual(roadmap["next_gate_id"], "S5PB-GATE-IN-PROGRESS")
+        self.assertEqual(roadmap["total_estimated_hours"], 4)
+        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S5PBT03"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "completed")
+        self.assertEqual(task["dependencies"], ["S5PBT02"])
+        self.assertEqual(task["acceptance_ids"], ["ACC-S5PBT03"])
+        self.assertIn("OpenAIDatabase/docs/governance/project.yaml", task["evidence_refs"])
+        self.assertIn("任何项目缺少 owner-readable 三文件", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+        self.assertIn("未知事实被写成 VERIFIED", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+
+    def test_review9_s5pbt03_openaidatabase_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "OpenAIDatabase" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 4)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-OAIDB-SEMANTIC-20260621-001"]["fact_level"], "RECONSTRUCTED")
+        self.assertIn("not model validity", by_id["EVT-OAIDB-SEMANTIC-20260621-001"]["notes"])
+        self.assertEqual(by_id["EVT-OAIDB-REVIEW6-FINAL-20260622-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("FAILED", by_id["EVT-OAIDB-REVIEW6-FINAL-20260622-001"]["summary"])
+        self.assertEqual(by_id["EVT-OAIDB-OWNER-DECISION-20260622-001"]["fact_level"], "UNKNOWN")
+        self.assertEqual(by_id["EVT-OAIDB-REVIEW9-S5PBT03-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pbt03_openaidatabase_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        result = cli.check_render_project_files(ROOT / "OpenAIDatabase")
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (ROOT / "OpenAIDatabase" / "功能清单").read_text(encoding="utf-8")
+        dev_text = (ROOT / "OpenAIDatabase" / "开发记录").read_text(encoding="utf-8")
+        model_text = (ROOT / "OpenAIDatabase" / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-OAIDB-005", feature_text)
+        self.assertIn("FORM-010", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PBT03", dev_text)
+        self.assertIn("MOD-011", model_text)
+        self.assertIn("PARAM-092", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pbt03_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "OpenAIDatabase",
+            "path": "OpenAIDatabase",
+            "model_behavior_globs": ["apps/**/*", "scripts/**/*", "skills/**/*", "data/**/*", "config/**/*", "*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "OpenAIDatabase/docs/governance/project.yaml",
+                "OpenAIDatabase/docs/governance/roadmap.yaml",
+                "OpenAIDatabase/docs/governance/events.jsonl",
+                "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+                "OpenAIDatabase/功能清单",
+                "OpenAIDatabase/开发记录",
+                "OpenAIDatabase/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+                "docs/governance/VERSION_MATRIX.yaml",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pbt03_manifest_records_openaidatabase_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "OpenAIDatabase")
+        self.assertEqual(manifest["task_id"], "S5PBT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT03"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("openaidatabase_only_scope", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "OpenAIDatabase/docs/governance/project.yaml",
+            "OpenAIDatabase/docs/governance/roadmap.yaml",
+            "OpenAIDatabase/docs/governance/events.jsonl",
+            "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
+            "OpenAIDatabase/功能清单",
+            "OpenAIDatabase/开发记录",
+            "OpenAIDatabase/模型参数文件",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("FIFA/", "PFI/", "arxiv-daily-push/")) for path in changed))
+        self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("OpenAIDatabase delivery readiness remains FAILED", " ".join(manifest["unresolved_risks"]))
+
+    def test_review9_s5pbt04_pfi_project_yaml_preserves_strategy_truth(self) -> None:
+        validator = load_validator_module()
+        pfi_root = ROOT / "PFI" / "大数据模拟器"
+        project = validator.load_yaml(pfi_root / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "PFI_BIG_DATA_SIMULATOR")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "unverified_delivery_readiness")
+        self.assertIn("策略族", project["summary"])
+        self.assertIn("不把模拟胜出", project["summary"])
+        self.assertIn("实盘有效", project["summary"])
+        self.assertEqual(len(project["features"]), 6)
+        self.assertEqual(len(project["models"]), 15)
+        self.assertEqual(len(project["formulas"]), 15)
+        self.assertEqual(len(project["parameters"]), 213)
+        self.assertEqual(len(project["strategies"]), 2)
+
+        model_ids = {item["model_id"] for item in project["models"]}
+        formula_ids = {item["formula_id"] for item in project["formulas"]}
+        parameter_ids = {item["parameter_id"] for item in project["parameters"]}
+        self.assertEqual({f"MOD-{index:03d}" for index in range(1, 16)}, model_ids)
+        self.assertEqual({f"FORM-{index:03d}" for index in range(1, 16)}, formula_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 214)}, parameter_ids)
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PBT04-MANIFEST", evidence_ids)
+        self.assertIn("EVID-SEMANTIC-PFI-MANIFEST", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
+        model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 211)
+        self.assertEqual(parameter_semantic_counts["HUMAN_REVIEW_REQUIRED"], 2)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 15)
+        self.assertEqual(model_semantic_counts["MACHINE_VERIFIED"], 15)
+
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("211/213 active parameters", limitations)
+        self.assertIn("PARAM-110/PARAM-111", limitations)
+        self.assertIn("delivery_readiness 仍为 UNVERIFIED", limitations)
+        self.assertIn("TASK-PFI-B-001", limitations)
+        self.assertIn("不改策略规则", limitations)
+        self.assertEqual(project["delivery_readiness"]["status"], "UNVERIFIED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+        self.assertEqual(project["delivery_readiness"]["active_requirements"], 15)
+
+        matrix = validator.load_yaml(pfi_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-REVIEW9-S5PBT04")
+        self.assertEqual(matrix["current_phase"], "S5PB")
+        self.assertEqual(matrix["current_gate"], "S5PB-GATE-IN-PROGRESS")
+
+    def test_review9_s5pbt04_pfi_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        pfi_root = ROOT / "PFI" / "大数据模拟器"
+        roadmap = validator.load_yaml(pfi_root / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "PFI_BIG_DATA_SIMULATOR")
+        self.assertEqual(roadmap["current_stage_id"], "S5")
+        self.assertEqual(roadmap["current_phase_id"], "S5PB")
+        self.assertEqual(roadmap["current_task_id"], "S5PBT04")
+        self.assertEqual(roadmap["next_gate_id"], "S5PB-GATE-IN-PROGRESS")
+        self.assertEqual(roadmap["total_estimated_hours"], 4)
+        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S5PBT04"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "completed")
+        self.assertEqual(task["dependencies"], ["S5PBT03"])
+        self.assertEqual(task["acceptance_ids"], ["ACC-S5PBT04"])
+        self.assertIn("PFI/大数据模拟器/docs/governance/project.yaml", task["evidence_refs"])
+        self.assertIn("任何项目缺少 owner-readable 三文件", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+        self.assertIn("未知事实被写成 VERIFIED", roadmap["stages"][0]["phases"][0]["stop_conditions"])
+
+    def test_review9_s5pbt04_pfi_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "PFI" / "大数据模拟器" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 4)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-PFI-SEMANTIC-20260621-001"]["fact_level"], "RECONSTRUCTED")
+        self.assertIn("not strategy validity", by_id["EVT-PFI-SEMANTIC-20260621-001"]["notes"])
+        self.assertEqual(by_id["EVT-PFI-REVIEW6-FINAL-20260622-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("UNVERIFIED", by_id["EVT-PFI-REVIEW6-FINAL-20260622-001"]["summary"])
+        self.assertEqual(by_id["EVT-PFI-OWNER-DECISION-20260622-001"]["fact_level"], "UNKNOWN")
+        self.assertIn("OOS", by_id["EVT-PFI-OWNER-DECISION-20260622-001"]["summary"])
+        self.assertEqual(by_id["EVT-PFI-REVIEW9-S5PBT04-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pbt04_pfi_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        pfi_root = ROOT / "PFI" / "大数据模拟器"
+        result = cli.check_render_project_files(pfi_root)
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (pfi_root / "功能清单").read_text(encoding="utf-8")
+        dev_text = (pfi_root / "开发记录").read_text(encoding="utf-8")
+        model_text = (pfi_root / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-PFI-006", feature_text)
+        self.assertIn("provider/OOS", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PBT04", dev_text)
+        self.assertIn("MOD-015", model_text)
+        self.assertIn("PARAM-213", model_text)
+        self.assertIn("PARAM-110", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pbt04_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "PFI_BIG_DATA_SIMULATOR",
+            "path": "PFI/大数据模拟器",
+            "model_behavior_globs": ["qbvs/**/*", "scripts/**/*", "data/**/*", "config/**/*", "*.py"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "PFI/大数据模拟器/docs/governance/project.yaml",
+                "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+                "PFI/大数据模拟器/docs/governance/events.jsonl",
+                "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+                "PFI/大数据模拟器/功能清单",
+                "PFI/大数据模拟器/开发记录",
+                "PFI/大数据模拟器/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+                "docs/governance/VERSION_MATRIX.yaml",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pbt04_manifest_records_pfi_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "PFI_BIG_DATA_SIMULATOR")
+        self.assertEqual(manifest["task_id"], "S5PBT04")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT04"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("pfi_big_data_simulator_only_scope", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "PFI/大数据模拟器/docs/governance/project.yaml",
+            "PFI/大数据模拟器/docs/governance/roadmap.yaml",
+            "PFI/大数据模拟器/docs/governance/events.jsonl",
+            "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
+            "PFI/大数据模拟器/功能清单",
+            "PFI/大数据模拟器/开发记录",
+            "PFI/大数据模拟器/模型参数文件",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "arxiv-daily-push/")) for path in changed))
+        self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("PFI delivery readiness remains UNVERIFIED", " ".join(manifest["unresolved_risks"]))
+
+    def test_review9_s5pbt05_arxiv_project_yaml_preserves_stage_truth(self) -> None:
+        validator = load_validator_module()
+        arxiv_root = ROOT / "arxiv-daily-push"
+        project = validator.load_yaml(arxiv_root / "docs" / "governance" / "project.yaml")
+        self.assertEqual(project["schema_version"], "codexproject.project.v1")
+        self.assertEqual(project["project_id"], "arxiv-daily-push")
+        self.assertEqual(project["fact_level"], "EXTRACTED")
+        self.assertEqual(project["current_status"], "stage1_accepted_s2pbt01_evidence_passed_no_formal_production")
+        self.assertIn("Stage 1 B1/arXiv accepted", project["summary"])
+        self.assertIn("S2PBT01/S2P1T01 bioRxiv/medRxiv", project["summary"])
+        self.assertIn("不得宣称 Stage 2 或 integrated production accepted", project["summary"])
+        self.assertEqual(len(project["features"]), 8)
+        self.assertEqual(len(project["models"]), 50)
+        self.assertEqual(len(project["formulas"]), 52)
+        self.assertEqual(len(project["parameters"]), 359)
+        self.assertEqual(len(project["strategies"]), 3)
+        self.assertEqual(len(project["validations"]), 4)
+
+        source_models = validator.load_yaml(arxiv_root / "docs" / "governance" / "model_registry.yaml")["models"]
+        source_formulas = validator.load_yaml(arxiv_root / "docs" / "governance" / "formula_registry.yaml")["formulas"]
+        with (arxiv_root / "docs" / "governance" / "parameter_registry.csv").open(encoding="utf-8", newline="") as handle:
+            source_parameters = list(csv.DictReader(handle))
+        self.assertEqual(
+            {item["model_id"] for item in source_models if item.get("status") == "active"},
+            {item["model_id"] for item in project["models"]},
+        )
+        self.assertEqual(
+            {item["formula_id"] for item in source_formulas if item.get("status") == "active"},
+            {item["formula_id"] for item in project["formulas"]},
+        )
+        self.assertEqual(
+            {item["parameter_id"] for item in source_parameters if item.get("status") == "active"},
+            {item["parameter_id"] for item in project["parameters"]},
+        )
+
+        evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
+        self.assertIn("EVID-REVIEW9-S5PBT05-MANIFEST", evidence_ids)
+        self.assertIn("EVID-ADP-STAGE1-ACCEPTED", evidence_ids)
+        self.assertIn("EVID-ADP-LOCAL-PRODUCTION-PREP", evidence_ids)
+        self.assertIn("EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW", evidence_ids)
+        for section in ("features", "models", "formulas", "parameters", "strategies", "validations"):
+            for item in project[section]:
+                for evidence_id in item["evidence_refs"]:
+                    self.assertIn(evidence_id, evidence_ids)
+
+        parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
+        formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
+        model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 359)
+        self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED"], 52)
+        self.assertEqual(model_semantic_counts["EXTRACTED"], 50)
+
+        limitations = " ".join(item["statement"] for item in project["limitations"])
+        self.assertIn("342/342 active parameters", limitations)
+        self.assertIn("48/48 active formulas", limitations)
+        self.assertIn("46 个 active models 只从 model_registry EXTRACTED", limitations)
+        self.assertIn("delivery_readiness 对 Stage 1 arXiv 为 VERIFIED", limitations)
+        self.assertIn("evidence_freshness 仍为 PARTIAL", limitations)
+        self.assertIn("S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过", limitations)
+        self.assertEqual(project["delivery_readiness"]["status"], "VERIFIED")
+        self.assertEqual(project["delivery_readiness"]["release_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertTrue(project["delivery_readiness"]["owner_decision_required"])
+        self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 0)
+        self.assertEqual(project["delivery_readiness"]["active_requirements"], 9)
+        self.assertEqual(project["delivery_readiness"]["partial_requirements"], 1)
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_id"], "S2PBT01/S2P1T01")
+        self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "evidence_passed_no_formal_production")
+
+        matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PBT01-LEAN-V2-MERGE-SYNC")
+        self.assertEqual(matrix["current_phase"], "S2P1")
+        self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertEqual(matrix["review9_migration_iteration"], "ITER-20260624-REVIEW9-S5PBT05")
+        self.assertEqual(matrix["review9_migration_phase"], "S5PB")
+        self.assertEqual(matrix["review9_migration_gate"], "S5PB-GATE-IN-PROGRESS")
+
+    def test_review9_s5pbt05_arxiv_roadmap_tracks_single_project_task(self) -> None:
+        validator = load_validator_module()
+        roadmap = validator.load_yaml(ROOT / "arxiv-daily-push" / "docs" / "governance" / "roadmap.yaml")
+        self.assertEqual(roadmap["schema_version"], "codexproject.roadmap.v1")
+        self.assertEqual(roadmap["project_id"], "arxiv-daily-push")
+        self.assertEqual(roadmap["current_stage_id"], "S2")
+        self.assertEqual(roadmap["current_phase_id"], "S2PB")
+        self.assertEqual(roadmap["current_task_id"], "S2PBT01")
+        self.assertEqual(roadmap["next_gate_id"], "S2PB-GATE-V7-CONTRACT-BLOCKED")
+        self.assertEqual(roadmap["total_estimated_hours"], 6.5)
+        self.assertEqual(roadmap["completed_estimated_hours"], 4)
+
+        tasks = [
+            task
+            for stage in roadmap["stages"]
+            for phase in stage["phases"]
+            for task in phase["tasks"]
+        ]
+        self.assertEqual([task["task_id"] for task in tasks], ["S2PBT01", "S5PBT05"])
+        task = tasks[0]
+        self.assertEqual(task["status"], "evidence_passed_no_formal_production")
+        self.assertEqual(task["dependencies"], ["ARXIV_PRODUCTION_ACCEPTED", "ADP-S1P5T05"])
+        self.assertEqual(task["acceptance_ids"], ["ADP-ACC-S2P1T01-SOURCE-PROMOTION"])
+        self.assertIn("governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json", task["evidence_refs"])
+        self.assertIn("V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED", roadmap["stages"][0]["stop_conditions"])
+
+    def test_review9_s5pbt05_arxiv_events_preserve_truth_levels(self) -> None:
+        events = [
+            json.loads(line)
+            for line in (ROOT / "arxiv-daily-push" / "docs" / "governance" / "events.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(len(events), 7)
+        self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        by_id = {event["event_id"]: event for event in events}
+        self.assertEqual(by_id["EVT-ADP-STAGE1-ACCEPTED-20260623-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("does not imply Stage 2 sources are implemented", by_id["EVT-ADP-STAGE1-ACCEPTED-20260623-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-TEST10-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("does not mean unattended local production mail is installed", by_id["EVT-ADP-TEST10-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-S2P1T01-READY-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("Ready is not implemented", by_id["EVT-ADP-S2P1T01-READY-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-S2PBT01-REAL-REPLAY-SHADOW-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("formal production inclusion", by_id["EVT-ADP-S2PBT01-REAL-REPLAY-SHADOW-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-REVIEW9-S5PBT05-LOCAL"]["fact_level"], "PROPOSED")
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+
+    def test_review9_s5pbt05_arxiv_human_files_render_without_drift(self) -> None:
+        cli = load_lean_governance_module()
+        arxiv_root = ROOT / "arxiv-daily-push"
+        result = cli.check_render_project_files(arxiv_root)
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
+        feature_text = (arxiv_root / "功能清单").read_text(encoding="utf-8")
+        dev_text = (arxiv_root / "开发记录").read_text(encoding="utf-8")
+        model_text = (arxiv_root / "模型参数文件").read_text(encoding="utf-8")
+        self.assertIn("# 功能清单", feature_text)
+        self.assertIn("FEAT-ADP-008", feature_text)
+        self.assertIn("bioRxiv/medRxiv", feature_text)
+        self.assertIn("Stage -> Phase -> Task", dev_text)
+        self.assertIn("S5PBT05", dev_text)
+        self.assertIn("ARXIV_PRODUCTION_ACCEPTED", dev_text)
+        self.assertIn("S2P1T01", dev_text)
+        self.assertIn("MOD-ADP-046", model_text)
+        self.assertIn("FORM-ADP-048", model_text)
+        self.assertIn("PARAM-ADP-359", model_text)
+        for text in (feature_text, dev_text, model_text):
+            self.assertNotIn("docs/governance/", text.splitlines()[0])
+
+    def test_review9_s5pbt05_files_are_project_governance_only(self) -> None:
+        sync = load_sync_module()
+        project = {
+            "project_id": "arxiv-daily-push",
+            "path": "arxiv-daily-push",
+            "model_behavior_globs": ["src/**/*", "config/**/*", "schemas/**/*", "tests/**/*", ".github/workflows/arxiv-daily-push-*"],
+        }
+        changes, _ = sync.classify_changes(
+            {"projects": [project]},
+            [
+                "arxiv-daily-push/docs/governance/project.yaml",
+                "arxiv-daily-push/docs/governance/roadmap.yaml",
+                "arxiv-daily-push/docs/governance/events.jsonl",
+                "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+                "arxiv-daily-push/功能清单",
+                "arxiv-daily-push/开发记录",
+                "arxiv-daily-push/模型参数文件",
+            ],
+        )
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(changes[0].classifications, {"governance_only_change", "trivial_change"})
+        self.assertEqual(
+            changes[0].updated_governance_files,
+            {
+                "docs/governance/project.yaml",
+                "docs/governance/roadmap.yaml",
+                "docs/governance/events.jsonl",
+                "docs/governance/VERSION_MATRIX.yaml",
+            },
+        )
+        validation = sync.SyncValidation()
+        sync.validate_diff_contract(validation, changes)
+        self.assertFalse(validation.errors)
+
+    def test_review9_s5pbt05_manifest_records_arxiv_only_scope(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["project_id"], "arxiv-daily-push")
+        self.assertEqual(manifest["task_id"], "S5PBT05")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT05"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertIn("review9_stage5_single_project_migration", manifest["change_classification"])
+        self.assertIn("arxiv_daily_push_only_scope", manifest["change_classification"])
+        self.assertIn("arxiv_external_ci_scope_guard", manifest["change_classification"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+            ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+            ".github/workflows/arxiv-daily-push-real-backfill.yml",
+            "arxiv-daily-push/docs/governance/project.yaml",
+            "arxiv-daily-push/docs/governance/roadmap.yaml",
+            "arxiv-daily-push/docs/governance/events.jsonl",
+            "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+            "arxiv-daily-push/功能清单",
+            "arxiv-daily-push/开发记录",
+            "arxiv-daily-push/模型参数文件",
+            "tests/governance/test_project_governance_validator.py",
+            "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "PFI/")) for path in changed))
+        self.assertIn("S5PB-GATE remains in_progress", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("evidence_freshness remains PARTIAL", " ".join(manifest["unresolved_risks"]))
+        self.assertIn("S2P1T01 is ready but not implemented", " ".join(manifest["unresolved_risks"]))
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
@@ -2972,12 +3757,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertNotIn(forbidden, text)
 
     def test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths(self) -> None:
-        workflow = (ROOT / ".github" / "workflows" / "arxiv-daily-push-stage1-bootstrap.yml").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn('"arxiv-daily-push/**"', workflow)
-        for forbidden in {'"governance/**"', '"scripts/**"', '"tests/governance/**"'}:
-            self.assertNotIn(forbidden, workflow)
+        for workflow_name in {
+            "arxiv-daily-push-stage1-bootstrap.yml",
+            "arxiv-daily-push-phase12-cloud-dry-run.yml",
+            "arxiv-daily-push-real-backfill.yml",
+        }:
+            workflow = (ROOT / ".github" / "workflows" / workflow_name).read_text(encoding="utf-8")
+            self.assertIn('"arxiv-daily-push/**"', workflow)
+            self.assertIn("runtime-change-scope:", workflow)
+            self.assertIn("classify-arxiv-runtime-change", workflow)
+            self.assertIn("needs: runtime-change-scope", workflow)
+            self.assertIn("governance-only paths do not run this external/runtime check", workflow)
+            self.assertIn("arxiv-daily-push/(src|tests|config|schemas)/", workflow)
+            for forbidden in {'"governance/**"', '"scripts/**"', '"tests/governance/**"'}:
+                self.assertNotIn(forbidden, workflow)
 
     def test_review7_setup_doctor_reports_missing_hooks_unverified(self) -> None:
         doctor = load_setup_doctor_module()
@@ -3817,8 +4610,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-089")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-089")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-090")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-090")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],

@@ -1,0 +1,3246 @@
+schema_version: "codexproject.project.v1"
+project_id: "FIFA"
+project_name: "FIFA World Cup TAB Research System"
+summary: "FIFA 是 research-only TAB FIFA market research 系统；本迁移保留赔率、概率、stake、raw refresh、live board、manual verification 与 legacy softmax 的治理真相，不把 blocked/UNVERIFIED 事实提升成可投注、可发布或 production readiness。"
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "research_owner + risk_owner"
+current_status: "unverified_delivery_readiness"
+limitations:
+  -
+    statement: "实现一致性为 PARTIAL：91/108 active parameters 和 10/10 active formulas 有机器抽取/指纹证据；17 个 active parameters 仍为 HUMAN_REVIEW_REQUIRED。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-FIFA-001"
+  -
+    statement: "delivery_readiness 仍为 UNVERIFIED；raw access、TT-001 manual verification、private My Bets snapshot、manual signature preflight 和 recurring report authorization 仍未闭合。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+      - "EVID-FIFA-DELIVERY-TASKS"
+      - "EVID-FIFA-OWNER-STATUS"
+    unknown_task_ids:
+      - "TASK-FIFA-C-001"
+      - "TASK-FIFA-C-002"
+      - "TASK-FIFA-D-001"
+      - "TASK-FIFA-D-002"
+      - "TASK-FIFA-E-001"
+  -
+    statement: "本迁移不改 odds parsing、probability model、stake allocation、raw refresh、live board discovery、automation readiness、legacy softmax、配置、测试 fixture、脚本运行或发布行为。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-DEVELOPMENT-EVENTS"
+      - "EVID-REVIEW9-S5PBT02-MANIFEST"
+    unknown_task_ids: []
+features:
+  -
+    feature_id: "FEAT-FIFA-001"
+    name: "赔率解析、隐含概率与无水概率"
+    description: "读取授权/公开安全的十进制赔率并计算 implied/no-vig 概率；只作为研究输入，不授权自动下注。"
+    status: "in_progress"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+    requirement_ids:
+      - "REQ-FIFA-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:12"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1013"
+    evidence_refs:
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-FIFA-002"
+    name: "候选信号、Poisson 代理与推荐路由"
+    description: "组合市场概率、Poisson score proxy、edge/EV、consensus 和展示路由；信号仍需人工/数据门禁，不是可执行投注建议。"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-002"
+      - "MOD-004"
+    formula_ids:
+      - "FORM-002"
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+    requirement_ids:
+      - "REQ-FIFA-002"
+      - "REQ-FIFA-004"
+      - "REQ-FIFA-012"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:92"
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:99"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:143"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11628"
+    evidence_refs:
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-FIFA-003"
+    name: "资金、stake 上限与零执行边界"
+    description: "记录 bankroll allocation、stake rounding、safety gate 与 executable stake 边界；在正式原始数据、私有仓位和人工批准未闭合前 executable amount 必须保持 AUD 0。"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-003"
+      - "MOD-007"
+      - "MOD-010"
+    formula_ids:
+      - "FORM-003"
+      - "FORM-007"
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+    requirement_ids:
+      - "REQ-FIFA-003"
+      - "REQ-FIFA-007"
+      - "REQ-FIFA-010"
+      - "REQ-FIFA-015"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:28"
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:128"
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:129"
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:550"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1517"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3632"
+    evidence_refs:
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-FIFA-004"
+    name: "Public raw 与 live board fail-closed"
+    description: "保留 TAB/public raw refresh、live board discovery 和 access policy 事实；ai_controlled_access_rejected 必须 fail-closed。"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-005"
+      - "MOD-006"
+    formula_ids:
+      - "FORM-005"
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+    requirement_ids:
+      - "REQ-FIFA-005"
+      - "REQ-FIFA-006"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:145"
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:45"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8893"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9005"
+    evidence_refs:
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-FIFA-005"
+    name: "Provider KPI、TT-001 与人工发布门禁"
+    description: "记录 provider KPI、Team Total 手工验证、private My Bets read-only snapshot 与 manual signature preflight；当前多项仍 blocked/planned。"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-008"
+      - "MOD-009"
+    formula_ids:
+      - "FORM-008"
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+    requirement_ids:
+      - "REQ-FIFA-008"
+      - "REQ-FIFA-009"
+      - "REQ-FIFA-013"
+      - "REQ-FIFA-014"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:98"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:449"
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:556"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:826"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-FIFA-006"
+    name: "Legacy softmax 生命周期"
+    description: "保留 legacy fifa-analysis-system rules/softmax 模型事实，状态为 deprecated/planned lifecycle decision，不迁移成当前可交付模型。"
+    status: "planned"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-011"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-109"
+      - "PARAM-110"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+      - "PARAM-117"
+    requirement_ids:
+      - "REQ-FIFA-011"
+    code_refs:
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:82"
+    test_refs:
+      - "FIFA/legacy/fifa-analysis-system/README.md:12"
+    evidence_refs:
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Decimal Odds Validation and No-vig Probability Transform"
+    purpose: "Validate decimal odds, compute implied probability, and normalize market probabilities after removing overround."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:12"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:72"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1013"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1024"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-002"
+    name: "Market Probability, Poisson xG, Candidate Score and Stake Gate"
+    purpose: "Turn market probabilities and curated overlays into candidate probabilities, EV, edge, decision, and research stake units."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:25"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:92"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:104"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:143"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11628"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-003"
+    name: "Bankroll Plan and Time-adjusted Stake Allocation"
+    purpose: "Calculate uncommitted bankroll, cap current-window exposure, and allocate target exposure across research candidates."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:28"
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:82"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2362"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-004"
+    name: "Recommendation Model Consensus Enrichment"
+    purpose: "Map recommendation selections to probability keys and enrich recommendations with current-market Poisson, goalmodel proxy, and Elo-Dixon-Coles comparison signals."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-044"
+      - "PARAM-045"
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:99"
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:127"
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:150"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2513"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-005"
+    name: "Raw Refresh Health and Access-policy Fail-closed Gate"
+    purpose: "Classify raw refresh readiness, access-denied states, batch mismatches, route mismatches, stale raw, and safe recovery paths."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids:
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:145"
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:379"
+      - "FIFA/tab-research-pipeline/run_daily_report.py:2190"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7700"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8893"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-006"
+    name: "Live Board Discovery and Unavailable Review Queue"
+    purpose: "Compare expected FIFA boards with observed TAB live navigation and route missing boards to retry or unavailable review."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:45"
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:204"
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:220"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8343"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8378"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9005"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-007"
+    name: "Public Artifact and Private-data Safety Scanner"
+    purpose: "Block automation or publication when outputs contain sensitive TAB account/session/private-position markers or unsafe local paths."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:9"
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:67"
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:128"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1517"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1856"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:12012"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-008"
+    name: "Provider Coverage, KPI, Credit, and Alternate-market Plan"
+    purpose: "Score provider market coverage, summarize credit runway, and decide whether to continue small-batch probes, hold, or route to manual/official provider paths."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids:
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:98"
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:256"
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:189"
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:556"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7561"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-009"
+    name: "Manual Team Total Verification, Hash Gate, and Overlay Publish Preflight"
+    purpose: "Validate manually entered Team Total O/U rows, compute canonical hashes, require user signature, and block formal publish until hashes and approvals match."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:449"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:826"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:998"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1282"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6917"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7250"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-010"
+    name: "Automation Readiness and Research-only Candidate Gate"
+    purpose: "Combine latest commit readiness, raw refresh, public safety, artifact safety, report index consistency, private bootstrap, and user authorization into automation status and next actions."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:129"
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:529"
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:19"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3531"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3632"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9894"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    model_id: "MOD-011"
+    name: "Legacy Rules Softmax Football Prediction MVP"
+    purpose: "Legacy MVP that scores home/draw/away outcomes from team statistics and backtests saved predictions."
+    status: "deprecated"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-109"
+      - "PARAM-110"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+      - "PARAM-117"
+    code_refs:
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:11"
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:82"
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:232"
+    test_refs:
+      - "FIFA/legacy/fifa-analysis-system/README.md:12"
+    evidence_refs:
+      - "EVID-FIFA-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "parse_decimal_odds rejects bool, non DECIMAL_ODDS_RE strings, non-finite values, and odds <= 1.0; implied_probability=1/odds; no_vig_probability_i=(1/odds_i)/sum_j(1/odds_j)."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:12"
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:62"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:72"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1013"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1024"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "total_goals=clamp(0.7+3.4*(1-under_25_probability),1.1,3.6); ratio=clamp(home_market_probability/max(away_market_probability,0.01),0.15,6.0); home_share=1/(1+exp(-0.55*ln(ratio))); xg=max(0.2,total_goals*share); Poisson score probabilities multiply home and away Poisson masses; breakeven=1/odds; edge=model_probability-breakeven; EV=model_probability*odds-1; stake_policy applies quality gates and EV/edge thresholds."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:80"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:92"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:104"
+      - "FIFA/tab-research-pipeline/tab_research/model.py:143"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11628"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "uncommitted_budget=max(0,budget-open_stake); target=0 if uncommitted_mid<=0 or base_candidate_exposure<=0 else round10(min(base_candidate_exposure*2,uncommitted_mid*0.06,budget_mid*0.035,uncommitted_mid)); allocation_weight=base_stake*(1+min(EV,0.30)*2); if target < 10*n, keep only floor(target/10) highest weights; allocate proportional, round to nearest 5, rebalance, and cap to target."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:28"
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:82"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2362"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "Map recommendation market/selection to a probability key, collect non-missing probabilities from current_market_poisson, goalmodel_market_dc_proxy, and open_source_elo_dixon_coles, compare current selection with consensus.selection, carry max_abs_current_vs_elo_dc, and append a Chinese model-cross-validation summary."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:99"
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:127"
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:150"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2513"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "raw_refresh_health aggregates target blocker codes, refresh errors, diagnostics access-policy markers, batch readiness flags, and partial research refresh summary; access_policy_status blocks automated public raw refresh when ai_controlled_access_rejected appears."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:145"
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:379"
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:436"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7700"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8893"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "discovery_ready is true only when raw discovery is not failed and raw summary says ready; expected rows not listed become missing; full_expected_nav_ready=discovery_ready and expected_rows exists and no missing rows; missing rows route to unavailable_review_queue or discovery_retry_queue."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:45"
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:155"
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:204"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8343"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8378"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9005"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "Scan candidate public/private artifacts for sensitive markers, private-output field markers, private path patterns, missing artifact errors, and permission issues; readiness is true only when the issue list is empty."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:9"
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:67"
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:128"
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:197"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1517"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1856"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:12012"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "Coverage ratio=count/event_count; each market row compares ratio with required_ratio; provider KPI averages row scores; alternate plan marks Team Total fallback_required when enough event-market probes show zero Team Total availability; credit_policy sets recommended batch by remaining credit ratio and queue length; operational_decision routes to credit_safe_probe, manual/official, or hold."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:98"
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:256"
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:313"
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:212"
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:262"
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:556"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7561"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "Read manual import rows, validate rows against queue IDs and required fields, mark complete events when at least two valid rows include both Over and Under directions, canonicalize complete rows, hash canonical JSON with SHA256, and require approval fields matching refresh_id, board_id, market_family, manual_import_sha256, overlay_raw_sha256, approved_by_user, operator_initials, and signed_at_aest before publish preflight is ready."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:449"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:826"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:998"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1244"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1282"
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1311"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6917"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7250"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-010"
+    model_id: "MOD-010"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
+    expression: "Automation readiness combines latest commit consistency, raw_refresh_ready, output safety, artifact safety, report index consistency, technical preflight, private bootstrap, and explicit authorization. Status is research_only_daily_ready_formal_blocked when research-only report is ready but live artifacts are not; automation_ready requires live artifacts and automation entry authorization."
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:129"
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:529"
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:550"
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:19"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3531"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3632"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9894"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    formula_id: "FORM-011"
+    model_id: "MOD-011"
+    status: "deprecated"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    expression: "Legacy scores start with home_win=0, draw=0.15, away_win=0; factor weights multiply recent form, attack, defense, ranking, home advantage, injury, fatigue, news, and trend features; draw receives max(0,0.45-abs(home-away))*0.6; probabilities=softmax(scores); confidence is high when top-two gap >=0.20, medium when >=0.10, otherwise low."
+    code_refs:
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:11"
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:48"
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:55"
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:82"
+      - "FIFA/legacy/fifa-analysis-system/app/services.py:232"
+    test_refs:
+      - "FIFA/legacy/fifa-analysis-system/README.md:12"
+    evidence_refs:
+      - "EVID-FIFA-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "DECIMAL_ODDS_RE"
+    name: "Decimal odds regex"
+    value: "^\\d+(?:\\.\\d+)?$"
+    source: "EXTRACTED from odds parser"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:8"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1013"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "PRICE_LIKE_RE"
+    name: "Price-like regex"
+    value: "^(?:\\d+(?:\\.\\d+)?|nan|inf|infinity|susp)$"
+    source: "EXTRACTED from odds parser"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:9"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1024"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "MIN_DECIMAL_ODDS"
+    name: "Minimum valid decimal odds"
+    value: "1.0"
+    source: "EXTRACTED from odds parser"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:25"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1013"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "NO_VIG_TOTAL_MIN"
+    name: "No-vig inverse total minimum"
+    value: "0.0"
+    source: "EXTRACTED from no-vig transform"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/odds.py:65"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1013"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "TOTAL_GOALS_MIN"
+    name: "Minimum estimated total goals"
+    value: "1.1"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:93"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "TOTAL_GOALS_MAX"
+    name: "Maximum estimated total goals"
+    value: "3.6"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:93"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "TOTAL_GOALS_INTERCEPT"
+    name: "Total-goals intercept"
+    value: "0.7"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:93"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "TOTAL_GOALS_UNDER_SLOPE"
+    name: "Total-goals under probability slope"
+    value: "3.4"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:93"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "RATIO_MIN"
+    name: "Home-away probability ratio minimum"
+    value: "0.15"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:94"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "RATIO_MAX"
+    name: "Home-away probability ratio maximum"
+    value: "6.0"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:94"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "AWAY_PROB_FLOOR"
+    name: "Away probability denominator floor"
+    value: "0.01"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:94"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "HOME_SHARE_LOGIT_COEF"
+    name: "Home-share log-ratio coefficient"
+    value: "0.55"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:95"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "XG_FLOOR"
+    name: "Minimum pre-overlay xG per team"
+    value: "0.2"
+    source: "EXTRACTED from estimate_xg"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:96"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "OVERLAY_XG_FLOOR"
+    name: "Minimum post-overlay xG per team"
+    value: "0.1"
+    source: "EXTRACTED from apply_quality_overlay"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:99"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "ODDS_QUALITY_MIN"
+    name: "Minimum odds passing quality gate"
+    value: "1.30"
+    source: "EXTRACTED from passes_quality_gate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:156"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "RESULT_ODDS_MAX"
+    name: "Maximum Result odds passing gate"
+    value: "15.0"
+    source: "EXTRACTED from passes_quality_gate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:161"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "LONGSHOT_NOTE_ODDS_MIN"
+    name: "Longshot requires quality note threshold"
+    value: "5.0"
+    source: "EXTRACTED from passes_quality_gate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:165"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "HIGH_EV_THRESHOLD"
+    name: "Small-stake EV threshold"
+    value: "0.08"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:148"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "HIGH_EDGE_THRESHOLD"
+    name: "Small-stake edge threshold"
+    value: "0.025"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:148"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "SHORT_ODDS_CUTOFF"
+    name: "Short-odds stake cutoff"
+    value: "4.0"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:149"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "HIGH_STAKE_UNIT_SHORT"
+    name: "Small-stake unit for odds <= 4"
+    value: "0.5"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:149"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "HIGH_STAKE_UNIT_LONG"
+    name: "Small-stake unit for odds > 4"
+    value: "0.25"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:149"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MARGINAL_EV_THRESHOLD"
+    name: "Marginal stake EV threshold"
+    value: "0.02"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:150"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MARGINAL_EDGE_THRESHOLD"
+    name: "Marginal stake edge threshold"
+    value: "0.01"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:150"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MARGINAL_STAKE_UNIT"
+    name: "Marginal stake unit"
+    value: "0.25"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:151"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "ZERO_STAKE_UNIT"
+    name: "Zero stake fallback"
+    value: "0.0"
+    source: "EXTRACTED from stake_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:145"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MAX_POISSON_GOALS"
+    name: "Poisson grid maximum goals"
+    value: "12"
+    source: "EXTRACTED from poisson_distribution default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:80"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "QUALITY_OVERLAYS"
+    name: "Match quality overlay table"
+    value: "Mexico v South Africa;Canada v Bosn-Herzegovina;USA v Paraguay;Brazil v Morocco;Netherlands v Japan;France v Senegal;England v Croatia;Australia v Turkiye"
+    source: "EXTRACTED from QUALITY_OVERLAYS"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:25"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "MODEL_QUALITY_NOTES"
+    name: "Selection quality note keys"
+    value: "Brazil v Morocco|Morocco;Netherlands v Japan|Japan;France v Senegal|Senegal;England v Croatia|Croatia;Belgium v Egypt|Under 2.5 Goals;South Korea v Czechia|Only One or Neither to score"
+    source: "EXTRACTED from MODEL_QUALITY_NOTES"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:36"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "CURATED_TOTALS"
+    name: "Curated totals support keys"
+    value: "Belgium v Egypt|Under 2.5 Goals|Brazil v Morocco|Under 2.5 Goals|Mexico v South Africa|Only One or Neither to score|Netherlands v Japan|Only One or Neither to score|South Korea v Czechia|Only One or Neither to score"
+    source: "EXTRACTED from CURATED_TOTALS"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/model.py:63"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1157"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "UNIT_AUD"
+    name: "Stake unit amount"
+    value: "40.0"
+    source: "EXTRACTED from bankroll default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:31"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "BUDGET_MIN_AUD"
+    name: "Minimum budget"
+    value: "3000.0"
+    source: "EXTRACTED from bankroll default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:32"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "BUDGET_MID_AUD"
+    name: "Mid budget"
+    value: "4000.0"
+    source: "EXTRACTED from bankroll default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:33"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "BUDGET_MAX_AUD"
+    name: "Maximum budget"
+    value: "5000.0"
+    source: "EXTRACTED from bankroll default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:34"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "UNCOMMITTED_CAP_RATIO"
+    name: "Uncommitted mid-budget cap"
+    value: "0.06"
+    source: "EXTRACTED from bankroll target cap"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:56"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "PORTFOLIO_CAP_RATIO"
+    name: "Mid-budget portfolio cap"
+    value: "0.035"
+    source: "EXTRACTED from bankroll target cap"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:57"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "TARGET_ROUND_STEP"
+    name: "Current-window target rounding step"
+    value: "10.0"
+    source: "EXTRACTED from bankroll target rounding"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:59"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "ALLOCATION_EV_CAP"
+    name: "Allocation EV multiplier cap"
+    value: "0.30"
+    source: "EXTRACTED from allocation weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:100"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "ALLOCATION_EV_MULTIPLIER"
+    name: "Allocation EV weight multiplier"
+    value: "2.0"
+    source: "EXTRACTED from allocation weight"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:100"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "MIN_EXECUTABLE_STAKE_AUD"
+    name: "Minimum executable stake"
+    value: "10.0"
+    source: "EXTRACTED from allocation logic"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:104"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "ACTIVE_COUNT_DIVISOR"
+    name: "Active candidate count divisor"
+    value: "10.0"
+    source: "EXTRACTED from allocation logic"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:107"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "STAKE_ROUND_STEP_AUD"
+    name: "Stake allocation rounding step"
+    value: "5.0"
+    source: "EXTRACTED from allocation logic"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:116"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "MIN_REDUCIBLE_STAKE_AUD"
+    name: "Minimum stake preserved while capping"
+    value: "10.0"
+    source: "EXTRACTED from cap_to_target"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/bankroll.py:149"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2371"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "CURRENT_MARKET_POISSON_SOURCE"
+    name: "Current market Poisson source key"
+    value: "current_market_poisson"
+    source: "EXTRACTED from recommendation signal"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:104"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "GOALMODEL_DC_SOURCE"
+    name: "Goalmodel proxy source key"
+    value: "goalmodel_market_dc_proxy"
+    source: "EXTRACTED from recommendation signal"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:105"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "ELO_DC_SOURCE"
+    name: "Elo-Dixon-Coles source key"
+    value: "open_source_elo_dixon_coles"
+    source: "EXTRACTED from recommendation signal"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:106"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "RESULT_MARKET_LABEL"
+    name: "Result market label"
+    value: "Result"
+    source: "EXTRACTED from model_probability_key"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:130"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "TOTALS_UNDER_LABEL"
+    name: "Totals under label fragment"
+    value: "Under 2.5"
+    source: "EXTRACTED from model_probability_key"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:138"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "BTTS_NO_LABEL"
+    name: "BTTS no label fragment"
+    value: "Only One or Neither"
+    source: "EXTRACTED from model_probability_key"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:143"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "CONSENSUS_ALIGNMENT_RULE"
+    name: "Consensus alignment equality rule"
+    value: "selection equality"
+    source: "EXTRACTED from recommendation signal"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:111"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "MISSING_CONFIDENCE_FALLBACK"
+    name: "Consensus confidence fallback text"
+    value: "unknown"
+    source: "EXTRACTED literal fallback string from summary builder; lower-case \"unknown\" is code text, not epistemic UNKNOWN. GOV-SEMANTIC-FIFA-001 tracks validator disambiguation."
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-FIFA-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/recommendations.py:161"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:2476"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "RAW_FRESHNESS_SLA_HOURS"
+    name: "Raw freshness SLA fallback"
+    value: "4.0"
+    source: "EXTRACTED from raw_refresh_health"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:162"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7700"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "RAW_REFRESH_READY_FIELD"
+    name: "Raw refresh ready field"
+    value: "raw_refresh_ready"
+    source: "EXTRACTED from raw_refresh_health"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:167"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7700"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "ACCESS_DENIED_MARKER"
+    name: "Access denied marker"
+    value: "Access Denied"
+    source: "EXTRACTED from raw refresh classifier"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:197"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8893"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "AI_ACCESS_BLOCKER_CODE"
+    name: "AI controlled access blocker code"
+    value: "ai_controlled_access_rejected"
+    source: "EXTRACTED from raw refresh classifier"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:151"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8893"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-056"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "AUTO_PUBLIC_RAW_ALLOWED_WHEN_BLOCKED"
+    name: "Automated public raw allowed when access blocked"
+    value: "false"
+    source: "EXTRACTED from access_policy_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:441"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-057"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "FORBIDDEN_RECOVERY"
+    name: "Forbidden recovery list"
+    value: "headed_fallback|captcha_bypass|fingerprint_spoofing|stealth_browser"
+    source: "EXTRACTED from access_policy_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:442"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-058"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "ALLOWED_RECOVERY"
+    name: "Allowed recovery list"
+    value: "official_data_feed|user_authorized_manual_export_import|research_only_from_existing_fresh_partial_raw"
+    source: "EXTRACTED from access_policy_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:443"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-059"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "BATCH_MISMATCH_CODES"
+    name: "Batch mismatch blocker codes"
+    value: "batch_refresh_id_mismatch|batch_manifest_mismatch"
+    source: "EXTRACTED from raw_refresh_health"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:152"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9861"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-060"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "OBSERVED_ROWS_CAP"
+    name: "Observed live links cap"
+    value: "40"
+    source: "EXTRACTED from normalize_observed_rows"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:181"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8343"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-061"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "FULL_EXPECTED_NAV_READY_RULE"
+    name: "Full expected nav ready rule"
+    value: "discovery_ready and expected_rows and no missing_rows"
+    source: "EXTRACTED from live board summary"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:73"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8343"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-062"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "DISCOVERY_FAILED_STATUSES"
+    name: "Discovery failed statuses"
+    value: "failed|blocked|error"
+    source: "EXTRACTED from discovery_raw_failed"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:159"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9005"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-063"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "DISCOVERY_RETRY_DECISION"
+    name: "Discovery retry decision value"
+    value: "discovery_retry_required"
+    source: "EXTRACTED from discovery_retry_queue"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/live_board_discovery.py:225"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8378"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-064"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "SENSITIVE_MARKERS"
+    name: "Sensitive UI marker list"
+    value: "sessionId|session_id|sid=|socket|logged_in|logged-in|customer|customerNumber|account|accountNumber|balance|Active Session|My Bets|Bet Slip|Pending Bets|My Offers|/accounts/|REDACTED_ACTIVE_SESSION|REDACTED_BS_LABEL|REDACTED_PENDING_BETS|REDACTED_MY_OFFERS|REDACTED_MB_LABEL"
+    source: "EXTRACTED from safety constants"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:9"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1517"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-065"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "PRIVATE_OUTPUT_FIELD_MARKERS"
+    name: "Private output field marker list"
+    value: "placed_at_text|open_stake_aud|estimated_return_aud|estimated_return_if_all_win_aud|potential_profit_if_all_win_aud|tab_my_bets_positions|private_detail_path|positions_ready|private_detail_available|private_match_stakes|match_stakes|open_exposure_aud|remaining_budget_aud|target_new_exposure_aud|/work/private/"
+    source: "EXTRACTED from safety constants"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:33"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1856"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-066"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "PUBLIC_PATH_PATTERNS"
+    name: "Public path regex patterns"
+    value: "7 regex patterns"
+    source: "EXTRACTED from safety constants"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:55"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1856"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-067"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "MISSING_PUBLIC_ARTIFACT_MARKER"
+    name: "Missing public artifact marker"
+    value: "missing_public_artifact"
+    source: "EXTRACTED from public artifact safety"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:133"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1856"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-068"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "PUBLIC_ARTIFACT_ISSUE_THRESHOLD"
+    name: "Public artifact tolerated issue count"
+    value: "0"
+    source: "EXTRACTED from public artifact safety"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/safety.py:147"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1517"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-069"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "RESULT_REQUIRED_RATIO"
+    name: "Result coverage required ratio"
+    value: "0.90"
+    source: "EXTRACTED from provider KPI"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:117"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-070"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "HANDICAP_REQUIRED_RATIO"
+    name: "Handicap coverage required ratio"
+    value: "0.50"
+    source: "EXTRACTED from provider KPI"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:118"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-071"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "TOTAL_OU_REQUIRED_RATIO"
+    name: "Total O/U coverage required ratio"
+    value: "0.70"
+    source: "EXTRACTED from provider KPI"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:119"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-072"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "TEAM_TOTAL_REQUIRED_RATIO"
+    name: "Team Total O/U coverage required ratio"
+    value: "0.50"
+    source: "EXTRACTED from provider KPI"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:120"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-073"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "PARTIAL_OK_SCORE"
+    name: "Partial-ok score"
+    value: "0.55"
+    source: "EXTRACTED from market_row"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:265"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-074"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "PARTIAL_SCORE_MIN"
+    name: "Partial score minimum clamp"
+    value: "0.25"
+    source: "EXTRACTED from market_row"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:269"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-075"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "PARTIAL_SCORE_MAX"
+    name: "Partial score maximum clamp"
+    value: "0.75"
+    source: "EXTRACTED from market_row"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:269"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7542"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-076"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "KPI_CREDIT_READY_RATIO"
+    name: "Provider KPI credit ready ratio"
+    value: "0.50"
+    source: "EXTRACTED from credit_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_kpi.py:366"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-077"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "TEAM_TOTAL_LOW_YIELD_PROBE_THRESHOLD"
+    name: "Team Total low-yield probe threshold"
+    value: "3"
+    source: "EXTRACTED from alternate plan"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:20"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:10944"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-078"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "DEFAULT_PRIMARY_REFRESH_CREDIT_FLOOR"
+    name: "Default primary refresh credit floor"
+    value: "3"
+    source: "EXTRACTED from alternate plan"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:21"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-079"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "CREDIT_BATCH_UNKNOWN_MAX"
+    name: "Recommended batch when credit ratio missing"
+    value: "3"
+    source: "EXTRACTED from credit_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:565"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-080"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "CREDIT_BATCH_HIGH_RATIO"
+    name: "High-credit batch threshold and size"
+    value: "0.80->5"
+    source: "EXTRACTED from credit_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:567"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-081"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "CREDIT_BATCH_READY_RATIO"
+    name: "Ready-credit batch threshold and size"
+    value: "0.50->3"
+    source: "EXTRACTED from credit_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:570"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-082"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "CREDIT_BATCH_PARTIAL_RATIO"
+    name: "Partial-credit batch threshold and size"
+    value: "0.20->1"
+    source: "EXTRACTED from credit_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:573"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-083"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "CREDIT_BATCH_BLOCKED_SIZE"
+    name: "Blocked-credit batch size"
+    value: "0"
+    source: "EXTRACTED from credit_policy"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:577"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-084"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "VALUE_SUPPORT_ROLE_BONUS"
+    name: "Value-support priority bonus"
+    value: "0.02"
+    source: "EXTRACTED from market_family_priority"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:551"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-085"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "SCARCITY_PRIORITY_BONUS"
+    name: "Scarcity priority bonus"
+    value: "0.01"
+    source: "EXTRACTED from market_family_priority"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_alternate_plan.py:552"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11009"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-086"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "DEFAULT_IMPORT_RELATIVE_PATH"
+    name: "Manual import relative path"
+    value: "manual_verification/provider_team_total_manual_verification.csv"
+    source: "EXTRACTED from manual verification constant"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:50"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:11067"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-087"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "DEFAULT_OVERLAY_APPROVAL_RELATIVE_PATH"
+    name: "Overlay approval relative path"
+    value: "manual_verification/provider_team_total_overlay_approval.json"
+    source: "EXTRACTED from manual verification constant"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:51"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-088"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "DEFAULT_WORKBENCH_BATCH_SIZE"
+    name: "Manual workbench batch size"
+    value: "8"
+    source: "EXTRACTED from manual workbench"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:52"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6977"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-089"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "QUALITY_REQUIRED_FIELDS"
+    name: "Manual quality required fields"
+    value: "tab_match_name|team_scope|tab_market_name|selection_name|line|decimal_odds|observed_at_aest|operator_initials|evidence_note_or_screenshot_ref|verification_status"
+    source: "EXTRACTED from QUALITY_REQUIRED_FIELDS"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:71"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-090"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "COMPLETE_PAIR_MIN_ROWS"
+    name: "Complete event minimum rows"
+    value: "2"
+    source: "EXTRACTED from audit_import_rows"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1023"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-091"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "REQUIRED_DIRECTIONS"
+    name: "Required directions for complete pair"
+    value: "over|under"
+    source: "EXTRACTED from audit_import_rows"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1021"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-092"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "PARTIAL_HASH_STATUS_RULE"
+    name: "Partial manual hash readiness rule"
+    value: "0<complete_event_count<queue_count"
+    source: "EXTRACTED from hash_gate_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:1319"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:6995"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-093"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "APPROVED_BY_USER_REQUIRED"
+    name: "Approval user flag requirement"
+    value: "true"
+    source: "EXTRACTED from validate_overlay_approval"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:898"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-094"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "OPERATOR_INITIALS_REQUIRED"
+    name: "Operator initials required"
+    value: "true"
+    source: "EXTRACTED from validate_overlay_approval"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:900"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-095"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "SIGNED_AT_AEST_REQUIRED"
+    name: "Signed-at AEST timestamp required"
+    value: "true"
+    source: "EXTRACTED from validate_overlay_approval"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:900"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-096"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "CURRENT_EXECUTABLE_NEW_STAKE_LOCK"
+    name: "Executable new stake lock while manual gate pending"
+    value: "0"
+    source: "EXTRACTED from manual hash and preflight payloads"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:504"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:10979"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-097"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "FORMAL_PUBLISH_ALLOWED_DEFAULT"
+    name: "Formal publish allowed default"
+    value: "false"
+    source: "EXTRACTED from manual hash and preflight payloads"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:502"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-098"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "FULL_AUTOMATION_ALLOWED_DEFAULT"
+    name: "Full automation allowed default"
+    value: "false"
+    source: "EXTRACTED from manual hash and preflight payloads"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/provider_manual_verification.py:503"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7197"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-099"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "DEFAULT_CADENCE"
+    name: "Automation candidate cadence"
+    value: "4h"
+    source: "EXTRACTED from build_automation_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:21"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-100"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "DEFAULT_TIMEZONE"
+    name: "Automation candidate timezone"
+    value: "Australia/Sydney"
+    source: "EXTRACTED from build_automation_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:22"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-101"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "FOUR_HOUR_RRULE"
+    name: "Four-hour automation RRULE"
+    value: "FREQ=HOURLY;INTERVAL=4"
+    source: "EXTRACTED from build_automation_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-001"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:26"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-102"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "AUTO_WAGERING_ALLOWED"
+    name: "Auto wagering permission"
+    value: "false"
+    source: "EXTRACTED from automation candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:39"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-103"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "REQUIRES_USER_AUTHORIZATION"
+    name: "User authorization required"
+    value: "true"
+    source: "EXTRACTED from automation candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:40"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-104"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "RESEARCH_ONLY_FORMAL_BLOCKED_STATUS"
+    name: "Research-only formal-blocked status"
+    value: "research_only_daily_ready_formal_blocked"
+    source: "EXTRACTED from readiness_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:537"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3531"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-105"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "AUTOMATION_ENTRYPOINT"
+    name: "Automation candidate entrypoint"
+    value: "scripts/run_tab_fifa_daily_automation.sh --allow-research-only-success"
+    source: "EXTRACTED from build_automation_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:23"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:9894"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-106"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "ARTIFACT_CHAIN_READY_RULE"
+    name: "Artifact chain readiness rule"
+    value: "latest_ready AND raw_ready AND output_safety AND artifact_safety AND no_report_index_issues"
+    source: "EXTRACTED from readiness summary"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:169"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3632"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-107"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "EXPECTED_ARTIFACTS"
+    name: "Automation expected artifact list"
+    value: "9 artifact names"
+    source: "EXTRACTED from automation_candidate"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-FIFA-B-002"
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_candidate.py:190"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3774"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+  -
+    parameter_id: "PARAM-108"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "TECHNICAL_PREFLIGHT_BLOCK_STATUS"
+    name: "Technical preflight blocked status"
+    value: "current_run_preflight_blocked"
+    source: "EXTRACTED from readiness_status"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids: []
+    code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/automation_readiness.py:539"
+    config_refs:
+      - "FIFA/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:3632"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-FIFA-MANIFEST"
+strategies:
+  -
+    strategy_id: "STRAT-FIFA-001"
+    name: "research_only_zero_stake_boundary"
+    status: "active"
+    fact_level: "EXTRACTED"
+    description: "默认模式是 research-only；除非 formal raw、private position、manual verification 和 automation gates 均通过，否则 executable new stake 为 AUD 0。"
+    evidence_refs:
+      - "EVID-FIFA-OWNER-STATUS"
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    strategy_id: "STRAT-FIFA-002"
+    name: "tab_access_fail_closed"
+    status: "active"
+    fact_level: "EXTRACTED"
+    description: "ai_controlled_access_rejected、Access Denied、batch mismatch 等 blocker 不允许通过 headed fallback、captcha bypass、fingerprint spoofing 或 stealth browser 恢复。"
+    evidence_refs:
+      - "EVID-FIFA-PARAMETER-REGISTRY"
+      - "EVID-FIFA-TRACEABILITY-MATRIX"
+  -
+    strategy_id: "STRAT-FIFA-003"
+    name: "manual_authorized_recovery_only"
+    status: "blocked"
+    fact_level: "UNKNOWN"
+    description: "可接受恢复路径限于 official data feed、user-authorized manual export/import 或已有 fresh partial raw 的 research-only diagnostics；正式交付仍 blocked。"
+    evidence_refs:
+      - "EVID-FIFA-DELIVERY-TASKS"
+      - "EVID-FIFA-OWNER-STATUS"
+validations:
+  -
+    validation_id: "VAL-FIFA-STRUCTURAL-COMPLETENESS"
+    name: "structural_completeness"
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-IMPLEMENTATION-CONGRUENCE"
+    name: "implementation_congruence"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-PARAMETER-SOURCE-QUALITY"
+    name: "parameter_source_quality"
+    status: "PARTIAL"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-METHODOLOGICAL-RATIONALE"
+    name: "methodological_rationale"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-EMPIRICAL-VALIDATION"
+    name: "empirical_validation"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-OPERATIONAL-VALIDATION"
+    name: "operational_validation"
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-DELIVERY-EVIDENCE"
+    name: "delivery_evidence"
+    status: "UNVERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-FIFA-EVIDENCE-FRESHNESS"
+    name: "evidence_freshness"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-FIFA-ASSURANCE-STATUS"
+delivery_readiness:
+  status: "UNVERIFIED"
+  release_gate: "GOV-SEMANTIC-FIFA-in-progress"
+  owner_decision_required: true
+  next_executable_task: "TASK-FIFA-C-001"
+  blocked_requirements: 6
+  planned_requirements: 3
+  in_progress_requirements: 6
+  evidence_refs:
+    - "EVID-FIFA-ASSURANCE-STATUS"
+    - "EVID-FIFA-TRACEABILITY-MATRIX"
+evidence_refs:
+  -
+    evidence_id: "EVID-FIFA-MODEL-REGISTRY"
+    kind: "file"
+    ref: "FIFA/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+    description: "FIFA model and assumption registry migrated from Review6/semantic governance."
+  -
+    evidence_id: "EVID-FIFA-FORMULA-REGISTRY"
+    kind: "file"
+    ref: "FIFA/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+    description: "Formula expressions, implementation fingerprints and semantic review statuses."
+  -
+    evidence_id: "EVID-FIFA-PARAMETER-REGISTRY"
+    kind: "file"
+    ref: "FIFA/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+    description: "Active parameter inventory with source selectors and review statuses."
+  -
+    evidence_id: "EVID-FIFA-TRACEABILITY-MATRIX"
+    kind: "file"
+    ref: "FIFA/docs/governance/TRACEABILITY_MATRIX.csv"
+    fact_level: "EXTRACTED"
+    description: "Requirement to model, formula, parameter, task and acceptance mapping."
+  -
+    evidence_id: "EVID-FIFA-ASSURANCE-STATUS"
+    kind: "file"
+    ref: "FIFA/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+    description: "Assurance dimensions and delivery readiness truth for FIFA."
+  -
+    evidence_id: "EVID-FIFA-DELIVERY-TASKS"
+    kind: "file"
+    ref: "FIFA/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+    description: "Task backlog, blockers, acceptance IDs and focused validation commands."
+  -
+    evidence_id: "EVID-FIFA-DEVELOPMENT-EVENTS"
+    kind: "file"
+    ref: "FIFA/docs/governance/development_events.jsonl"
+    fact_level: "RECONSTRUCTED"
+    description: "Historical reconstructed and extracted FIFA governance events."
+  -
+    evidence_id: "EVID-FIFA-OWNER-STATUS"
+    kind: "file"
+    ref: "FIFA/docs/governance/OWNER_STATUS.md"
+    fact_level: "EXTRACTED"
+    description: "Owner-readable readiness, decision and blocker summary."
+  -
+    evidence_id: "EVID-SEMANTIC-FIFA-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+    description: "Semantic extraction evidence for 91 active parameters and 10 active formulas."
+  -
+    evidence_id: "EVID-REVIEW9-S5PBT02-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"
+    description: "Review9 S5PBT02 FIFA Lean v2 migration manifest."
