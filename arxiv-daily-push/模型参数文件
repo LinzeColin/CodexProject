@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT06`
-- active_model_count: `58`
-- active_formula_count: `60`
-- active_parameter_count: `389`
+- current_task: `S2PCT07`
+- active_model_count: `59`
+- active_formula_count: `61`
+- active_parameter_count: `398`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,7 +24,7 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT06`
+- stage2_current_task: `S2PCT07`
 - stage2_shadow_source_task: `S2PBT01`
 - legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04`
 - stage2_final_task: `S2PMT07`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PCT06` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PCT07` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -564,6 +564,15 @@
 - parameter_refs: `PARAM-ADP-400, PARAM-ADP-401, PARAM-ADP-402, PARAM-ADP-403, PARAM-ADP-404, PARAM-ADP-405, PARAM-ADP-406`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT05-ENGINEERING`
 
+### MOD-ADP-059 S2PCT06 authoritative report source shadow
+
+- purpose: `Build a metadata-only no-send authoritative report source report from research institution reports, lab technical reports, industry technical reports, and product technical notes linked to known S2PCT05 engineering signals without claiming D2/Stage2/integrated production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-061`
+- parameter_refs: `PARAM-ADP-407, PARAM-ADP-408, PARAM-ADP-409, PARAM-ADP-410, PARAM-ADP-411, PARAM-ADP-412, PARAM-ADP-413, PARAM-ADP-414, PARAM-ADP-415`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT06-REPORTS`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -925,6 +934,12 @@
 - model_id: `MOD-ADP-058`
 - expression_or_pseudocode: `A S2PCT05 engineering signal report passes only when the S2PCT04 profile report passes, all required signal types are observed, every signal traces to a known canonical paper, officiality/version/relation/reproducibility gates pass, and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, paid API, and paywall side effects remain false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT05-ENGINEERING`
+
+### FORM-ADP-061
+
+- model_id: `MOD-ADP-059`
+- expression_or_pseudocode: `A S2PCT06 authoritative report source report passes only when the S2PCT05 engineering signal report passes, all required report types are observed, every report has a supported publisher type, verified publisher identity, declared interest relation, accepted evidence level, traceability to a known engineering signal and canonical paper, and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, paid API, paywall, and marketing-material acceptance side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT06-REPORTS`
 
 ## 参数
 
@@ -1319,3 +1334,12 @@
 | PARAM-ADP-404 | S2PCT05_ALLOWED_REPRODUCIBILITY_STATES | S2PCT05 accepted reproducibility states | reproducible;partial;claimed;not_applicable | EXTRACTED from code constant and focused tests | EXTRACTED |
 | PARAM-ADP-405 | S2PCT05_LEDGER_FILENAME | S2PCT05 engineering signal ledger filename | stage2_s2pct05_engineering_signal_ledger.jsonl | EXTRACTED from code constant and focused tests | EXTRACTED |
 | PARAM-ADP-406 | S2PCT05_ACCEPTANCE_ID | S2PCT05 acceptance id | ACC-S2PCT05-ENGINEERING-SIGNALS | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-407 | S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID | S2PCT06 authoritative report model id | adp-s2pct06-authoritative-reports-v1 | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-408 | S2PCT06_ACCEPTANCE_ID | S2PCT06 acceptance id | ACC-S2PCT06-REPORTS | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-409 | S2PCT06_TASK_ID | S2PCT06 canonical task id | S2PCT06 | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-410 | S2PCT06_REQUIRED_REPORT_TYPES | S2PCT06 required authoritative report types | research_institution_report;lab_technical_report;industry_technical_report;product_technical_note | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-411 | S2PCT06_ALLOWED_PUBLISHER_TYPES | S2PCT06 allowed publisher types | research_institution;public_lab;industry_research_lab;company_product_org | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-412 | S2PCT06_ALLOWED_IDENTITY_STATES | S2PCT06 accepted publisher identity states | official_domain;institutional_repository;publisher_signed;standards_or_government_affiliated | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-413 | S2PCT06_ALLOWED_INTEREST_RELATIONS | S2PCT06 accepted interest relations | independent_research;sponsor_disclosed;vendor_authored;product_owner_authored | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-414 | S2PCT06_ALLOWED_EVIDENCE_LEVELS | S2PCT06 accepted evidence levels | primary_research_report;technical_whitepaper;methodology_note;product_technical_note | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-415 | S2PCT06_LEDGER_FILENAME | S2PCT06 authoritative report ledger filename | stage2_s2pct06_authoritative_report_ledger.jsonl | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |

@@ -597,6 +597,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PCT05 engineering public-signal remains completed as no-send shadow evidence, but D2 report source coverage is deferred.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PCT07":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PCT07-D2-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PCT07 D2 数据源域资格与跨类型校准，同时保持 D2 source-domain acceptance 与 production inclusion false，直到 replay/shadow/独立审查全部通过。",
+                "recommendation": "A: continue S2PCT07 D2 qualification after completed top-journal, engineering, and report shadow evidence",
+                "option_a": "继续 D2 30 日重放、2 日 Shadow、类型差异评分、强制事件和队列解释测试，不影响现有 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PCT06，只保留报告来源 shadow evidence；风险更低但 D2 来源域资格仍未验证。",
+                "option_c": "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; 30-date D2 replay, two-day no-production shadow, cross-type calibration, queue explanation tests, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "把 D2 从单项 shadow evidence 推进到来源域级资格判断，明确顶刊、工程信号和报告来源之间的类型权重与失败边界。",
+                "risks": "30 日重放失败、类型权重失真、强制事件未传播、队列解释不透明、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "D2 replay report, 2-day shadow report, cross-type calibration report, forced-event tests, semantic extractor, project governance validator",
+                "priority": "P1",
+                "no_decision": "S2PCT06 authoritative report source coverage remains completed as no-send shadow evidence, but D2 source-domain acceptance remains unavailable.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {

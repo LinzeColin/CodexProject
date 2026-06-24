@@ -109,12 +109,14 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2pct03_lancet_shadow_report,
@@ -524,6 +526,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pct05_engineering.add_argument("--engineering-signals", required=True, help="Engineering signal metadata JSON list or object with signals.")
     s2pct05_engineering.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pct05_engineering.add_argument("--json", action="store_true", help="Print JSON engineering signal report.")
+
+    s2pct06_reports = subparsers.add_parser(
+        "stage2-authoritative-reports-shadow",
+        help="Run S2PCT06 authoritative research institution and industry technical report shadow evidence.",
+    )
+    s2pct06_reports.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pct06_reports.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pct06_reports.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pct06_reports.add_argument("--engineering-signal-report", required=True, help="Passing S2PCT05 engineering signal report JSON.")
+    s2pct06_reports.add_argument("--technical-reports", required=True, help="Technical report metadata JSON list or object with reports.")
+    s2pct06_reports.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pct06_reports.add_argument("--json", action="store_true", help="Print JSON authoritative report source report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1627,6 +1641,35 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             print(f"- signal_types_observed: {', '.join(report.get('signal_types_observed', []))}")
             print(f"- engineering_signal_count: {report.get('engineering_signal_count')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-authoritative-reports-shadow":
+        engineering_signal_report = load_json_mapping(args.engineering_signal_report)
+        report_payload = json.loads(Path(args.technical_reports).read_text(encoding="utf-8"))
+        if isinstance(report_payload, dict) and isinstance(report_payload.get("reports"), list):
+            technical_reports = report_payload["reports"]
+        elif isinstance(report_payload, list):
+            technical_reports = report_payload
+        else:
+            technical_reports = []
+        report = run_s2pct06_authoritative_report_shadow(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            engineering_signal_report=engineering_signal_report,
+            technical_reports=technical_reports,
+            write=not args.no_write,
+        )
+        errors = validate_s2pct06_authoritative_report_source_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- report_types_observed: {', '.join(report.get('report_types_observed', []))}")
+            print(f"- authoritative_report_count: {report.get('authoritative_report_count')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

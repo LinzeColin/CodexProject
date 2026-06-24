@@ -3121,3 +3121,52 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-059"
+    name: "S2PCT06 authoritative report source shadow"
+    kind: "deterministic metadata-only authoritative report model"
+    purpose: "Validate authoritative research institution, laboratory, industry technical report, and product technical note metadata against S2PCT05 engineering public-signal evidence without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct06-authoritative-reports-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-061"
+    parameter_ids:
+      - "PARAM-ADP-407"
+      - "PARAM-ADP-408"
+      - "PARAM-ADP-409"
+      - "PARAM-ADP-410"
+      - "PARAM-ADP-411"
+      - "PARAM-ADP-412"
+      - "PARAM-ADP-413"
+      - "PARAM-ADP-414"
+      - "PARAM-ADP-415"
+    inputs:
+      - "passing S2PCT05 engineering signal report"
+      - "authoritative technical report metadata"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "authoritative report source report"
+      - "report taxonomy gate"
+      - "publisher identity gate"
+      - "interest relation gate"
+      - "evidence level gate"
+      - "traceability gate"
+      - "authoritative report ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/authoritative_technical_reports.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT06_AUTHORITATIVE_REPORTS_EVIDENCE.md"

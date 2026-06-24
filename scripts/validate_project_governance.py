@@ -577,6 +577,7 @@ def validate_arxiv_daily_push_v7_root_lock(
         "S2PCT04": "ACC-S2PCT04-JOURNAL-PROFILE",
         "S2PCT05": "ACC-S2PCT05-ENGINEERING-SIGNALS",
         "S2PCT06": "ACC-S2PCT06-REPORTS",
+        "S2PCT07": "ACC-S2PCT07-D2",
     }.items():
         task = task_by_id.get(task_id)
         if not task:
@@ -604,6 +605,7 @@ def validate_arxiv_daily_push_v7_root_lock(
         ("S2P2T04", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2PCT05", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2PCT06", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2PCT07", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2PBT01", project_agent, "arxiv-daily-push/AGENTS.md"),
     ):
         if needle not in text:
@@ -611,7 +613,7 @@ def validate_arxiv_daily_push_v7_root_lock(
 
     for rel_path in ("功能清单", "开发记录", "模型参数文件"):
         text = (project_path / rel_path).read_text(encoding="utf-8") if (project_path / rel_path).exists() else ""
-        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PCT02", "S2P2T02", "S2PCT03", "S2P2T03", "S2PCT04", "S2P2T04", "S2PCT05", "S2PCT06", "S2PBT01"):
+        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PCT02", "S2P2T02", "S2PCT03", "S2P2T03", "S2PCT04", "S2P2T04", "S2PCT05", "S2PCT06", "S2PCT07", "S2PBT01"):
             if needle not in text:
                 validation.add(required, scope, f"{rel_path} missing V7 lock reference: {needle}")
 

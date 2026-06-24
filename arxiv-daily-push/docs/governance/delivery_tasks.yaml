@@ -3143,22 +3143,66 @@ tasks:
     objective: "Add authoritative research institution and industry technical report framework after engineering public-signal evidence is stable, before any formal D2 production inclusion."
     scope: "Report type taxonomy, publishing organization identity, interest relation metadata, evidence-level classification, focused tests, and governance registration."
     non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no production mail inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no PDF/full-text download, and no paid API use."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PCT05"
     required_files:
-      - "planned: report source code, fixtures, focused tests, and governance registrations"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/authoritative_technical_reports.json"
+      - "arxiv-daily-push/docs/governance/model_registry.yaml"
+      - "arxiv-daily-push/docs/governance/formula_registry.yaml"
+      - "arxiv-daily-push/docs/governance/parameter_registry.csv"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT06_AUTHORITATIVE_REPORTS_EVIDENCE.md"
     acceptance_ids:
       - "ACC-S2PCT06-REPORTS"
     test_commands:
-      - "planned: report type, organization identity, interest relation, and evidence-level tests"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct06_focus_initial PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct06_semantic_after_hash PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+    test_results:
+      - "focused Stage2 source tests: 27 tests OK"
+      - "S2PCT06 authoritative report report observed research_institution_report, lab_technical_report, industry_technical_report, and product_technical_note"
+      - "publisher_identity_gate=pass, interest_relation_gate=pass, evidence_level_gate=pass, traceability_gate=pass"
+      - "shadow persistence writes report and four ledger rows with all production flags false"
+      - "semantic extractor checked 61 formulas and 398 parameters"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT06_AUTHORITATIVE_REPORTS_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/authoritative_technical_reports.json"
+    risk: "Marketing material masquerading as research, source identity errors, opaque interest relationships, or report shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Revert S2PCT06 authoritative report additions in stage2_sources.py, CLI, fixture/tests, phase record, governance registrations, manifest, and event."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  -
+    task_id: "S2PCT07"
+    phase: "S2PC"
+    objective: "Calibrate D2 source-domain qualification across top-journal, engineering public-signal, and authoritative report shadow evidence before any formal production inclusion."
+    scope: "D2 source-domain readiness criteria, cross-type coverage, blocking reasons, replay/shadow acceptance policy, and no-production-inclusion tests."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no production mail inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no PDF/full-text download, and no paid API use."
+    status: "planned"
+    dependencies:
+      - "S2PCT01"
+      - "S2PCT02"
+      - "S2PCT03"
+      - "S2PCT04"
+      - "S2PCT05"
+      - "S2PCT06"
+    required_files:
+      - "planned: D2 qualification code, fixtures, focused tests, and governance registrations"
+    acceptance_ids:
+      - "ACC-S2PCT07-D2"
+    test_commands:
+      - "planned: D2 source-domain qualification and cross-type calibration tests"
       - "planned: semantic governance and changed-only project governance"
     test_results:
       - "PENDING"
     evidence_refs:
       - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
-    risk: "Marketing material masquerading as research, source identity errors, opaque interest relationships, or report shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
-    rollback: "Remove planned S2PCT06 governance entry if report framework implementation is deferred or superseded."
+    risk: "Top-journal, engineering signal, or report shadow evidence being treated as formal D2 source-domain acceptance or contaminating accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Remove planned S2PCT07 governance entry if D2 qualification is deferred or superseded."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

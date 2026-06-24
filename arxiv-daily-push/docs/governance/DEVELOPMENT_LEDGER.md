@@ -11,9 +11,9 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.0
 - Current phase: S2PC
 - Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED
-- Confirmed iteration count: 95
+- Confirmed iteration count: 99
 - Reconstructed event count: 0
-- Current task: `S2PCT03` keeps legacy alias `S2P2T03` for the next The Lancet/main-journal metadata-only no-send shadow evidence. `S2PCT01 -> S2P2T01` is completed Nature shadow foundation, `S2PCT02 -> S2P2T02` is completed Science shadow evidence, and `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
+- Current task: `S2PCT06` completed authoritative research institution, laboratory, industry technical report, and product technical note metadata-only no-send shadow evidence with no legacy alias. `S2PCT01 -> S2P2T01`, `S2PCT02 -> S2P2T02`, `S2PCT03 -> S2P2T03`, and `S2PCT04 -> S2P2T04` are completed top-journal aliases; `S2PCT05` and `S2PCT06` have no legacy alias; next task is `S2PCT07` D2 source-domain qualification. `S2PBT01 -> S2P1T01` is completed D1 preprint shadow/evidence alias. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.1 P0/P1 and S2PMT07 gates remain the current blocker before any formal production inclusion.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.1 parallel audit records open P0=8 and P1=37; therefore real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until P0/P1=0 and `S2PMT07` independent review passes. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -28,10 +28,32 @@ The append-only machine record is `development_events.jsonl`.
 | S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, accelerated real-arXiv acceptance artifact, test10 SMTP proof, and local production/migration prep within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`; `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
 | S2PA | V7.1 product contract, Chinese governance, parallel audit, and compatibility lock | completed_pending_ci | V7.1 root lock, contract/roadmap/audit hash checks, AGENTS updates, three-base visibility, P0/P1 production-forbidden policy, and validator/test enforcement without Stage 2 production acceptance | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt`; `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml` |
 | S2PB | V7.1 D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
-| S2PC | V7.1 D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature and S2PCT02 Science metadata-only shadow evidence to S2PCT03 The Lancet without D2 source-domain acceptance or production inclusion | `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `governance/run_manifests/ADP-S2PCT02-SCIENCE-SHADOW-EVIDENCE-20260624.json`; next `S2PCT03` |
+| S2PC | V7.1 D2 top-journal, engineering, and authoritative report source domain | in_progress | Continue from completed S2PCT01-S2PCT06 metadata-only shadow evidence to S2PCT07 D2 source-domain qualification without D2 source-domain acceptance or production inclusion | `governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json`; `governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json`; next `S2PCT07` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S2PCT06-AUTHORITATIVE-REPORTS`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from authoritative report fixtures, S2PCT06 run manifest, semantic registries, and no-send shadow output.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: f5919bf81817c8024774389a3948229ebb80de5e
+- Result commit: PENDING
+- Task IDs: `S2PCT06`; next task `S2PCT07`
+- Goal: Add authoritative research institution, laboratory, industry technical report, and product technical note metadata-only no-send shadow evidence using the stabilized S2PCT05 engineering signal framework without claiming D2 source-domain or Stage 2 production acceptance.
+- Assumptions: Authoritative reports are metadata-only source evidence; every report must identify publisher type, publisher identity, interest relation, evidence level, source/version reference, known engineering signal, and canonical paper. Marketing-only material, PDF/full-text download, paid API use, paywall bypass, SMTP, Release, scheduler, video, and formal production inclusion are not allowed.
+- Files changed: S2PCT06 report source model in `stage2_sources.py`, CLI command, authoritative technical report fixture/tests, phase record, run manifest, model/formula/parameter registries, project/roadmap records, V7.1 root lock, three-base render inputs, root governance assertions, this ledger, and event records.
+- Model changes: Added `MOD-ADP-059` for authoritative report source shadow evidence.
+- Formula changes: Added `FORM-ADP-061`; refreshed CLI-linked existing semantic fingerprints after adding the authoritative report command path.
+- Parameter changes: Added `PARAM-ADP-407` through `PARAM-ADP-415`.
+- Commands run: focused Stage2 source unit tests and semantic extractor.
+- Test results: focused Stage2 source tests 27 OK; S2PCT06 taxonomy gate passed with research institution, lab technical, industry technical, and product technical note report types; publisher identity, interest relation, evidence level, and traceability gates passed; semantic extractor checked 61 active formulas and 398 active parameters.
+- Decisions: `ACC-S2PCT06-REPORTS` is accepted only as metadata-only no-send shadow evidence. `D2_SOURCE_DOMAIN_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, Release upload, GitHub production schedule, video, PDF/full-text download, paid API use, paywall bypass, and marketing-material acceptance all remain false/disabled.
+- Remaining risks: S2PCT07 D2 source-domain qualification and cross-type calibration is not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal D2 source-domain or integrated production acceptance.
+- Rollback: Revert S2PCT06 additions in `stage2_sources.py`, CLI, fixture/tests, phase record, registry entries, manifest, V7.1 root-lock pointer, this iteration/event, and rendered governance sync.
+- Next step: Implement S2PCT07 D2 source-domain qualification and cross-type calibration with focused source-domain tests and governance validation.
 
 ### `ITER-20260624-ADP-S2PCT02-SCIENCE-SHADOW`
 

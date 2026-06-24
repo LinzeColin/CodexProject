@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 58
-- formula_count: 60
-- parameter_count: 406
+- model_count: 59
+- formula_count: 61
+- parameter_count: 415
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -89,6 +89,15 @@ Fact levels follow `docs/governance/STANDARD.md`.
   production acceptance, SMTP, Release, scheduler, repository clone, PDF/full
   text download, paid API use, or paywall bypass.
 
+- `S2PCT06` adds `MOD-ADP-059`. It covers authoritative research institution
+  reports, public laboratory technical reports, industry technical reports, and
+  product technical notes linked to known S2PCT05 engineering public signals.
+  It validates publisher identity, interest relation, evidence level, report
+  version/source traceability, and canonical-paper traceability. It has no
+  legacy alias and does not claim D2 source-domain acceptance, Stage 2
+  production acceptance, SMTP, Release, scheduler, PDF/full-text download, paid
+  API use, paywall bypass, or marketing-material acceptance.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -150,6 +159,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-056 | S2PCT03 Lancet no-send shadow daily path | deterministic shadow source runner | Persist separate Lancet queue, JSONL ledger, report, and email preview artifacts from metadata-only SourceItems while keeping Stage 1 arXiv production and formal D2 inclusion disabled | active | adp-s2pct03-lancet-shadow-daily-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/lesson.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-057 | S2PCT04 top-journal profile and publication relation shadow | deterministic metadata-only profile and relation model | Build a top-journal profile report across completed Nature, Science, and Lancet shadow batches with publication relation edges and correction/retraction forced updates while keeping all production flags false | active | adp-s2pct04-top-journal-profile-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-058 | S2PCT05 engineering public-signal shadow | deterministic metadata-only engineering signal model | Validate official code repositories, releases, model cards, benchmark results, and standards/specifications linked to known papers while keeping all production flags false | active | adp-s2pct05-engineering-signals-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-059 | S2PCT06 authoritative report source shadow | deterministic metadata-only authoritative report model | Validate research institution, lab, industry technical report, and product technical note metadata linked to known engineering signals while keeping all production flags false | active | adp-s2pct06-authoritative-reports-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -250,6 +260,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-058 validates S2PCT03 Lancet no-send shadow daily across separate queue/ledger/email preview persistence, dry-run only execution, and disabled SMTP/Release/video/scheduler/PubMed harvesting/D2 acceptance flags.
 - FORM-ADP-059 validates S2PCT04 top-journal profile/relation evidence across completed Nature/Science/Lancet batches, profile taxonomy coverage, publication relation edges, correction/retraction forced updates, and disabled production/D2 side-effect flags.
 - FORM-ADP-060 validates S2PCT05 engineering public-signal evidence across required signal-type coverage, officiality, version traceability, paper relation, reproducibility state, and disabled production/D2 side-effect flags.
+- FORM-ADP-061 validates S2PCT06 authoritative report source evidence across required report-type coverage, publisher type, publisher identity, interest relation, evidence level, engineering-signal traceability, canonical-paper traceability, and disabled production/D2 side-effect flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -320,6 +331,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PCT03 Lancet/top-journal medical shadow parameters: PARAM-ADP-387 through PARAM-ADP-393, with PARAM-ADP-379 updated to `nature;science;lancet`.
 - Active S2PCT04 top-journal profile/relation parameters: PARAM-ADP-394 through PARAM-ADP-399.
 - Active S2PCT05 engineering public-signal parameters: PARAM-ADP-400 through PARAM-ADP-406.
+- Active S2PCT06 authoritative report source parameters: PARAM-ADP-407 through PARAM-ADP-415.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

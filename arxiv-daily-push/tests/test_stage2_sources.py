@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
     S2PCT04_JOURNAL_PROFILE_MODEL_ID,
     S2PCT03_LANCET_SHADOW_MODEL_ID,
@@ -21,6 +22,7 @@ from arxiv_daily_push.stage2_sources import (
     S2P1_PREPRINT_PROMOTION_MODEL_ID,
     S2P2_TOP_JOURNAL_SHADOW_MODEL_ID,
     build_s2pct05_engineering_signal_report,
+    build_s2pct06_authoritative_report_source_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -29,12 +31,14 @@ from arxiv_daily_push.stage2_sources import (
     build_s2p1_preprint_daily_input,
     build_s2p1_preprint_promotion_report,
     run_s2pct05_engineering_signal_shadow,
+    run_s2pct06_authoritative_report_shadow,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
     validate_s2pct05_engineering_signal_report,
+    validate_s2pct06_authoritative_report_source_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -53,6 +57,7 @@ LANCET_RSS = FIXTURES / "lancet_rss_sample.xml"
 TOP_JOURNAL_EVENTS = FIXTURES / "top_journal_publication_events.json"
 TOP_JOURNAL_PRIOR_PROFILE_STATE = FIXTURES / "top_journal_prior_profile_state.json"
 TOP_JOURNAL_ENGINEERING_SIGNALS = FIXTURES / "top_journal_engineering_signals.json"
+AUTHORITATIVE_TECHNICAL_REPORTS = FIXTURES / "authoritative_technical_reports.json"
 GENERATED_AT = "2026-06-24T09:30:00+10:00"
 
 
@@ -128,6 +133,18 @@ def top_journal_profile_report() -> dict:
 
 def top_journal_engineering_signals() -> list:
     return json.loads(TOP_JOURNAL_ENGINEERING_SIGNALS.read_text(encoding="utf-8"))["signals"]
+
+
+def engineering_signal_report() -> dict:
+    return build_s2pct05_engineering_signal_report(
+        generated_at=GENERATED_AT,
+        profile_report=top_journal_profile_report(),
+        engineering_signals=top_journal_engineering_signals(),
+    )
+
+
+def authoritative_technical_reports() -> list:
+    return json.loads(AUTHORITATIVE_TECHNICAL_REPORTS.read_text(encoding="utf-8"))["reports"]
 
 
 def replay_batches(start: date, count: int = 30) -> dict:
@@ -372,6 +389,56 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertIn("canonical_document_id is unknown", " ".join(report["blocking_reasons"]))
         self.assertIn("official_code_repository", " ".join(report["blocking_reasons"]))
 
+    def test_s2pct06_authoritative_report_source_report_validates_type_identity_interest_and_evidence(self) -> None:
+        report = build_s2pct06_authoritative_report_source_report(
+            generated_at=GENERATED_AT,
+            engineering_signal_report=engineering_signal_report(),
+            technical_reports=authoritative_technical_reports(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT06-REPORTS")
+        self.assertEqual(report["task_id"], "S2PCT06")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["engineering_signal_gate"], "pass")
+        self.assertEqual(report["report_taxonomy_gate"], "pass")
+        self.assertEqual(report["publisher_identity_gate"], "pass")
+        self.assertEqual(report["interest_relation_gate"], "pass")
+        self.assertEqual(report["evidence_level_gate"], "pass")
+        self.assertEqual(report["traceability_gate"], "pass")
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["marketing_material_accepted"])
+        self.assertTrue(set(report["required_report_types"]).issubset(set(report["report_types_observed"])))
+        self.assertEqual(report["authoritative_report_count"], 4)
+        self.assertFalse(validate_s2pct06_authoritative_report_source_report(report))
+
+    def test_s2pct06_authoritative_report_source_report_blocks_unknown_signal_and_marketing_identity(self) -> None:
+        reports = authoritative_technical_reports()
+        reports[0] = dict(
+            reports[0],
+            related_signal_ids=["eng-signal:unknown"],
+            publisher_identity_state="marketing_page",
+            interest_disclosure="",
+        )
+
+        report = build_s2pct06_authoritative_report_source_report(
+            generated_at=GENERATED_AT,
+            engineering_signal_report=engineering_signal_report(),
+            technical_reports=reports,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["report_taxonomy_gate"], "blocked")
+        self.assertEqual(report["publisher_identity_gate"], "blocked")
+        self.assertEqual(report["interest_relation_gate"], "blocked")
+        self.assertEqual(report["traceability_gate"], "blocked")
+        self.assertIn("publisher_identity_state is not accepted", " ".join(report["blocking_reasons"]))
+        self.assertIn("interest_disclosure is required", " ".join(report["blocking_reasons"]))
+        self.assertIn("related_signal_ids unknown", " ".join(report["blocking_reasons"]))
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -505,6 +572,30 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["engineering_signal_ledger_path"]).is_file())
             ledger_lines = Path(report["engineering_signal_ledger_path"]).read_text(encoding="utf-8").strip().splitlines()
             self.assertEqual(len(ledger_lines), 5)
+
+    def test_s2pct06_authoritative_report_shadow_persists_report_and_ledger_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct06_authoritative_report_shadow(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                engineering_signal_report=engineering_signal_report(),
+                technical_reports=authoritative_technical_reports(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct06_authoritative_report_source_report(report))
+            self.assertFalse(report["formal_production_inclusion"])
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["stage2_production_accepted"])
+            self.assertFalse(report["integrated_production_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["marketing_material_accepted"])
+            self.assertTrue(Path(report["authoritative_report_path"]).is_file())
+            self.assertTrue(Path(report["authoritative_report_ledger_path"]).is_file())
+            ledger_lines = Path(report["authoritative_report_ledger_path"]).read_text(encoding="utf-8").strip().splitlines()
+            self.assertEqual(len(ledger_lines), 4)
 
     def test_replay_shadow_evidence_passes_30_dates_and_persists_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -778,6 +869,35 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["task_id"], "S2PCT05")
         self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["engineering_signal_count"], 5)
+
+    def test_cli_stage2_authoritative_reports_shadow_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            engineering_report_path = Path(tmp) / "engineering-report.json"
+            engineering_report_path.write_text(json.dumps(engineering_signal_report(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-authoritative-reports-shadow",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--engineering-signal-report",
+                    str(engineering_report_path),
+                    "--technical-reports",
+                    str(AUTHORITATIVE_TECHNICAL_REPORTS),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PCT06")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["authoritative_report_count"], 4)
 
 
 if __name__ == "__main__":
