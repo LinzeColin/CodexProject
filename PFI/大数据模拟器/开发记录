@@ -2,11 +2,11 @@
 
 ## 摘要
 
-- project_id: `FIFA`
+- project_id: `PFI_BIG_DATA_SIMULATOR`
 - product_version: `0.1.0`
 - current_stage: `S5`
 - current_phase: `S5PB`
-- current_task: `S5PBT02`
+- current_task: `S5PBT04`
 - total_hours: `4.00`
 - completed_hours: `4.00`
 - progress: `100.00%`
@@ -39,14 +39,14 @@ Stage -> Phase -> Task
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S5PBT02 | 迁移 FIFA | completed | 4.00 | 100.00% | S5PBT01 | ACC-S5PBT02 |
+| S5PBT04 | 迁移 PFI 大数据模拟器 | completed | 4.00 | 100.00% | S5PBT03 | ACC-S5PBT04 |
 
 
 ## 近期事件
 
 | 时间 | 类型 | 摘要 | 任务 | 事实等级 |
 |---|---|---|---|---|
-| 2026-06-21T14:22:12Z | semantic_extraction | Semantic extractor evidence covers 91 active parameters and 10 active formulas; 17 active parameters remain HUMAN_REVIEW_REQUIRED. | GOV-SEMANTIC-FIFA-001 | RECONSTRUCTED |
-| 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving FIFA delivery readiness as UNVERIFIED and operational validation as FAILED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
-| 2026-06-22T00:24:25Z | owner_decision_required | Research and risk owners must decide whether to obtain authorized odds snapshots, calibration evidence and report fact checks while keeping stake/executable amount at 0. | TASK-FIFA-C-001 | UNKNOWN |
-| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT02 proposes FIFA Lean v2 canonical files and rendered Chinese human entry files. | S5PBT02 | PROPOSED |
+| 2026-06-21T00:00:00Z | semantic_extraction | Semantic extractor evidence covers 211 active parameters and 15 active formulas; PARAM-110 and PARAM-111 remain HUMAN_REVIEW_REQUIRED. | GOV-SEMANTIC-PFI-001 | RECONSTRUCTED |
+| 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving PFI delivery readiness as UNVERIFIED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
+| 2026-06-22T00:24:25Z | owner_decision_required | Model, risk and research owners must validate OOS, multiple-testing controls, costs and robustness before ranking strategy claims. | TASK-PFI-B-001 | UNKNOWN |
+| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT04 proposes PFI Lean v2 canonical files and rendered Chinese human entry files. | S5PBT04 | PROPOSED |

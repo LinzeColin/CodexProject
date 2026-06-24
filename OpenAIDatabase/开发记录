@@ -1,18 +1,52 @@
-# OpenAIDatabase 开发记录
+# 开发记录
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再作为开发迭代、任务状态、测试结果或发布 Gate 的
-可编辑事实源。
+- project_id: `OpenAIDatabase`
+- product_version: `0.2.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT03`
+- total_hours: `4.00`
+- completed_hours: `4.00`
+- progress: `100.00%`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical 文件：
+## Roadmap
 
-- 开发 Ledger：`docs/governance/DEVELOPMENT_LEDGER.md`
-- Append-only 事件：`docs/governance/development_events.jsonl`
-- 交付计划：`docs/governance/DELIVERY_PLAN.md`
-- 任务机器源：`docs/governance/delivery_tasks.yaml`
-- 版本矩阵：`docs/governance/VERSION_MATRIX.yaml`
-- 变更记录：`CHANGELOG.md`
+Stage -> Phase -> Task
 
-历史信息未删除；旧摘要可从 Git 历史读取。新增开发运行必须 append 到
-`docs/governance/development_events.jsonl`，不能覆盖历史事件。
+### S5 项目迁移与三文件重建
+
+- person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
+- status: `in_progress`
+- derived_hours: `4.00`
+- derived_percent: `100.00%`
+- stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
+- stop_gate: `S5-GATE`
+
+#### S5PB 剩余项目治理压缩迁移
+
+- objective: `收敛现有大量治理文档，保留有用事实并恢复三文件。`
+- status: `in_progress`
+- derived_hours: `4.00`
+- derived_percent: `100.00%`
+- stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
+- stop_gate: `S5PB-GATE`
+
+| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+|---|---|---|---:|---:|---|---|
+| S5PBT03 | 迁移 OpenAIDatabase | completed | 4.00 | 100.00% | S5PBT02 | ACC-S5PBT03 |
+
+
+## 近期事件
+
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-21T13:11:50Z | semantic_extraction | Semantic extractor evidence covers 28 active parameters and 10 active formulas; 64 active parameters and FORM-010 remain HUMAN_REVIEW_REQUIRED. | GOV-SEMANTIC-OAIDB-001 | RECONSTRUCTED |
+| 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving OpenAIDatabase delivery readiness as FAILED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
+| 2026-06-22T00:24:25Z | owner_decision_required | Privacy and product owners must fund de-identified gold-set validation, adversarial secret leakage tests, retrieval metrics and human write approval logs before safe memory-operation claims. | TASK-OAI-B-001 | UNKNOWN |
+| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT03 proposes OpenAIDatabase Lean v2 canonical files and rendered Chinese human entry files. | S5PBT03 | PROPOSED |

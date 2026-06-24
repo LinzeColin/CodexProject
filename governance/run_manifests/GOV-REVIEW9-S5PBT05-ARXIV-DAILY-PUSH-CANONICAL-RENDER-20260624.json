@@ -1,0 +1,187 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S5PBT05",
+  "acceptance_ids": [
+    "ACC-S5PBT05"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5PBT05",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "854fdb3289a0046319ef06e705e412eb32a368ea",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:16491e01829bfa77d310e111c0b56c3dbbaf5dafe032225d010afa90a5d5cb40",
+  "changed_files_declared": [
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+  ],
+  "required_governance_files": [
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    ".github/workflows/arxiv-daily-push-real-backfill.yml",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "review9_stage5_single_project_migration",
+    "arxiv_daily_push_only_scope",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change",
+    "arxiv_external_ci_scope_guard",
+    "workflow_scope_guard",
+    "external_api_ci_not_for_governance_only"
+  ],
+  "model_delta": "NOT_CHANGED: S5PBT05 migrates existing arxiv-daily-push governance facts into Lean v2 canonical governance and rendered human views; product runtime behavior is unchanged. The additional workflow change only gates expensive external arXiv CI so governance-only PRs do not run live backfill/dry-run/bootstrap jobs.",
+  "formula_delta": "NOT_CHANGED: 48 active formulas are documented from existing ADP governance registries and remain MACHINE_VERIFIED; no formula or scoring behavior changed.",
+  "parameter_delta": "NOT_CHANGED: 342 active parameters remain from existing registry and remain MACHINE_VERIFIED; no threshold, SMTP, schedule, source adapter, or runtime parameter changed.",
+  "version_delta": "No product, runtime, data, model, threshold, deployment, source adapter, SMTP, schedule, release, publication, or Stage 2 behavior change. CI scope guards were added for arxiv workflow efficiency and to avoid external API failures on governance-only PRs.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_project_yaml_preserves_stage_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_manifest_records_arxiv_only_scope tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths -q",
+    "python -B scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_project_yaml_preserves_stage_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_arxiv_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt05_manifest_records_arxiv_only_scope tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_adp_bootstrap_does_not_trigger_on_shared_governance_paths -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "7 focused tests passed, including S5PBT05 migration facts and arxiv external CI scope guards."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "drift_count=0; reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "projects changed: arxiv-daily-push; errors=0; warnings=0."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parses as JSON after CI scope-guard update."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Full governance test suite passed after workflow scope-guard update."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 registered projects checked; errors=0; warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean worktree changed-only CI passed after scope-guard amend: validation errors=0 warnings=0; check-render drift_count=0 for 10 projects; zero_diff clean=true."
+    }
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-005.json",
+    "governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json",
+    "governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json",
+    "governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json",
+    "governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/roadmap.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
+    ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
+    ".github/workflows/arxiv-daily-push-real-backfill.yml"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PBT05 arxiv-daily-push canonical facts and rendered Chinese human entries",
+  "ci_run_reference": "LOCAL_CLEAN_TREE_CHANGED_ONLY_CI_PASS_AFTER_SCOPE_GUARD_UPDATE",
+  "summary": "Review9 S5PBT05 migrates arxiv-daily-push to Lean Governance v2 canonical project/roadmap/events and owner-readable Chinese files, preserving Stage 1 ARXIV_PRODUCTION_ACCEPTED, local Mac + Codex/local runner strategy, evidence_freshness PARTIAL, owner-controlled local SMTP smoke requirement, and S2P1T01 ready-not-implemented truth. Product runtime behavior is unchanged. This PR also adds arxiv workflow scope guards so governance-only changes no longer run expensive live arXiv replay/dry-run/bootstrap CI.",
+  "rollback": "Revert the three arxiv workflow scope-guard changes; delete arxiv-daily-push/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; revert arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml, the three arxiv-daily-push human entry files, S5PBT05 focused/workflow tests, and this manifest.",
+  "unresolved_risks": [
+    "S5PB-GATE remains in_progress until arxiv-daily-push S5PBT05 is merged and verified on main.",
+    "S5-GATE remains open until all 10 registered projects pass structure, accuracy, and human-readable acceptance.",
+    "arxiv-daily-push evidence_freshness remains PARTIAL; local unattended production SMTP still needs owner-controlled local env/Keychain smoke evidence.",
+    "S2P1T01 is ready but not implemented; bioRxiv/medRxiv source promotion must not affect the accepted Stage 1 arXiv path.",
+    "External arXiv replay remains suitable for manual/runtime-changing validation, but governance-only PRs must not depend on live arXiv availability or API rate limits."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage.",
+  "local_validation_completed_at": "2026-06-24T10:42:00+10:00",
+  "clean_tree_ci_completed_at": "2026-06-24T10:44:00+10:00"
+}

@@ -1,0 +1,180 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624",
+  "project_id": "FIFA",
+  "task_id": "S5PBT02",
+  "acceptance_ids": [
+    "ACC-S5PBT02"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S5PBT02",
+  "generated_at": "2026-06-24T00:00:00+10:00",
+  "implementation_base_sha": "d328d5d76ff1ea519d59c5316f7497ba6ef03e2a",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5a0bc0299388de666e845ae82d4ff6193d3dc4e2583ab3edf5770f014eb75171",
+  "changed_files_declared": [
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+  ],
+  "changed_files_actual": [
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+  ],
+  "required_governance_files": [
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+  ],
+  "updated_governance_files": [
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/docs/governance/VERSION_MATRIX.yaml",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+  ],
+  "change_classification": [
+    "project_governance_change",
+    "review9_stage5_single_project_migration",
+    "fifa_only_scope",
+    "canonical_project_facts",
+    "canonical_roadmap_facts",
+    "canonical_events_jsonl",
+    "human_entry_render",
+    "render_drift_validation",
+    "no_business_behavior_change"
+  ],
+  "model_delta": "NOT_CHANGED: S5PBT02 migrates existing FIFA governance facts into Lean v2 canonical governance and rendered human views; it does not change odds parsing, probability scoring, stake allocation, raw refresh, live board discovery, automation readiness, legacy softmax, configuration, fixtures, scripts, publication, or release behavior.",
+  "formula_delta": "NOT_CHANGED: 11 formulas are documented from existing FIFA governance registries; 10 active formulas have machine fingerprints and the deprecated legacy formula is retained as lifecycle decision evidence.",
+  "parameter_delta": "NOT_CHANGED: 108 active parameters remain from existing registry; 91 are MACHINE_VERIFIED and 17 remain HUMAN_REVIEW_REQUIRED.",
+  "version_delta": "No product, runtime, data, model, threshold, deployment, automation, publication, or release behavior change.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_project_yaml_preserves_research_only_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_manifest_records_fifa_only_scope -q",
+    "python -B scripts/lean_governance.py check-render --project FIFA",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_project_yaml_preserves_research_only_truth tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_roadmap_tracks_single_project_task tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_events_preserve_truth_levels tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_fifa_human_files_render_without_drift tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_files_are_project_governance_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s5pbt02_manifest_records_fifa_only_scope -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 6 focused S5PBT02 FIFA tests locally; OK in 0.097s."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project FIFA",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "FIFA drift_count=0 reference_issue_count=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Changed files are FIFA-only plus root governance manifest/tests; projects changed: FIFA; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree local run passed after rebasing onto latest origin/main: validation exit_code=0, check_render drift/reference issues=0, zero_diff.clean=true, changed_count=0."
+    },
+    {
+      "command": "python -B scripts/validate_information_quality.py --changed-only --fast --fail-on-error",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 206 tests in 17.749s; OK. Missing-base lines are expected fixture output from tests."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "errors=0 warnings=0 across root and all registered projects."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all --semantic",
+      "exit_code": 0,
+      "result": "PASS_WITH_EXISTING_WARNINGS",
+      "observed": "errors=0; semantic governance validation warnings=4 for existing EEI PENDING_CI manifests within allowed binding window, unrelated to FIFA S5PBT02."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py baseline --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "FIFA canonical and human entry files are present/nonempty; overall baseline still reports 9 canonical and 3 human-entry missing for not-yet-migrated projects."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parsed as valid JSON."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "FIFA/docs/governance/model_registry.yaml",
+    "FIFA/docs/governance/formula_registry.yaml",
+    "FIFA/docs/governance/parameter_registry.csv",
+    "FIFA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "FIFA/docs/governance/ASSURANCE_STATUS.yaml",
+    "FIFA/docs/governance/OWNER_STATUS.md",
+    "FIFA/docs/governance/development_events.jsonl",
+    "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json",
+    "FIFA/docs/governance/project.yaml",
+    "FIFA/docs/governance/roadmap.yaml",
+    "FIFA/docs/governance/events.jsonl",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S5PBT02 FIFA canonical facts and rendered Chinese human entries",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_BEFORE_PR",
+  "summary": "Review9 S5PBT02 migrates FIFA to Lean Governance v2 canonical project/roadmap/events and owner-readable Chinese files, preserving research-only, zero-stake, fail-closed access, UNVERIFIED delivery readiness and FAILED operational validation truth. Product runtime behavior is unchanged.",
+  "rollback": "Delete FIFA/docs/governance/project.yaml, roadmap.yaml, and events.jsonl; revert FIFA/docs/governance/VERSION_MATRIX.yaml, the three FIFA human entry files, S5PBT02 focused tests, and this manifest.",
+  "unresolved_risks": [
+    "S5PB-GATE remains in_progress until FIFA, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR and arxiv-daily-push are migrated and verified on main.",
+    "S5-GATE remains open until all 10 registered projects pass structure, accuracy, and human-readable acceptance.",
+    "FIFA delivery readiness remains UNVERIFIED; raw access, TT-001 manual verification, private My Bets snapshot, manual signature preflight, recurring report authorization and legacy softmax lifecycle decision remain unresolved."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

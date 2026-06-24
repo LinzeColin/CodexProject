@@ -1,0 +1,71 @@
+schema_version: "codexproject.roadmap.v1"
+project_id: "OpenAIDatabase"
+current_stage_id: "S5"
+current_phase_id: "S5PB"
+current_task_id: "S5PBT03"
+next_gate_id: "S5PB-GATE-IN-PROGRESS"
+total_estimated_hours: 4
+completed_estimated_hours: 4
+stages:
+  -
+    stage_id: "S5"
+    name: "项目迁移与三文件重建"
+    person_goal: "逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 PR 同时迁移多个项目"
+      - "无证据事实被写入 VERIFIED"
+      - "业务测试失败被忽略"
+    stop_gate:
+      gate_id: "S5-GATE"
+      status: "open"
+      pass_conditions:
+        - "10/10 项目通过结构、准确性和人类可读验收"
+        - "迁移过程中无批量空泛文档"
+      evidence_refs:
+        - "migration_PRs"
+        - "full_readonly_baseline"
+        - "project_acceptance_matrix"
+    phases:
+      -
+        phase_id: "S5PB"
+        name: "剩余项目治理压缩迁移"
+        objective: "收敛现有大量治理文档，保留有用事实并恢复三文件。"
+        status: "in_progress"
+        stop_conditions:
+          - "任何项目缺少 owner-readable 三文件"
+          - "未知事实被写成 VERIFIED"
+        stop_gate:
+          gate_id: "S5PB-GATE"
+          status: "in_progress"
+          pass_conditions:
+            - "全部 10 个项目 Lean v2 合规"
+            - "三文件均非索引页"
+            - "每项目 focused tests 通过"
+          evidence_refs:
+            - "ten_project_matrix"
+            - "validation_all"
+            - "owner_signoffs"
+        tasks:
+          -
+            task_id: "S5PBT03"
+            name: "迁移 OpenAIDatabase"
+            objective: "建立记忆分析能力、规则和 Roadmap 事实源。"
+            status: "completed"
+            estimated_hours: 4
+            total_hours_percent: "2.04%"
+            dependencies:
+              - "S5PBT02"
+            acceptance_ids:
+              - "ACC-S5PBT03"
+            test_commands:
+              - "python -B -m unittest ...test_review9_s5pbt03_* -q"
+              - "python -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+              - "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+            evidence_refs:
+              - "OpenAIDatabase/docs/governance/project.yaml"
+              - "OpenAIDatabase/docs/governance/roadmap.yaml"
+              - "OpenAIDatabase/docs/governance/events.jsonl"
+              - "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
+            risk: "范围扩张、事实失真或治理回归"
+            rollback: "Revert only this task commit; retain the read-only audit evidence."

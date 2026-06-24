@@ -1,19 +1,41 @@
-# FIFA 功能清单
+# 功能清单
 
-更新时间：2026-06-20
+## 摘要
 
-本文件是兼容入口，不再作为功能、模型、参数或任务的独立事实源。
+- project_id: `FIFA`
+- product_version: `0.1.0`
+- current_stage: `S5`
+- current_phase: `S5PB`
+- current_task: `S5PBT02`
+- progress: `100.00%`
+- capability_count: `6`
+- blockers: `NOT_APPLICABLE`
+- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_unique_task: `NOT_APPLICABLE`
+- evidence_status: `EXTRACTED`
 
-Canonical governance:
+## 功能概览
 
-- 功能/需求与追踪闭环：`docs/governance/TRACEABILITY_MATRIX.csv`
-- 模型与公式：`docs/governance/MODEL_SPEC.md`
-- 任务与验收：`docs/governance/DELIVERY_PLAN.md`
-- 机器任务注册表：`docs/governance/delivery_tasks.yaml`
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
+|---|---|---|---|---|
+| FEAT-FIFA-001 | 赔率解析、隐含概率与无水概率 | in_progress | 读取授权/公开安全的十进制赔率并计算 implied/no-vig 概率；只作为研究输入，不授权自动下注。 | EXTRACTED |
+| FEAT-FIFA-002 | 候选信号、Poisson 代理与推荐路由 | blocked | 组合市场概率、Poisson score proxy、edge/EV、consensus 和展示路由；信号仍需人工/数据门禁，不是可执行投注建议。 | EXTRACTED |
+| FEAT-FIFA-003 | 资金、stake 上限与零执行边界 | blocked | 记录 bankroll allocation、stake rounding、safety gate 与 executable stake 边界；在正式原始数据、私有仓位和人工批准未闭合前 executable amount 必须保持 AUD 0。 | EXTRACTED |
+| FEAT-FIFA-004 | Public raw 与 live board fail-closed | blocked | 保留 TAB/public raw refresh、live board discovery 和 access policy 事实；ai_controlled_access_rejected 必须 fail-closed。 | EXTRACTED |
+| FEAT-FIFA-005 | Provider KPI、TT-001 与人工发布门禁 | blocked | 记录 provider KPI、Team Total 手工验证、private My Bets read-only snapshot 与 manual signature preflight；当前多项仍 blocked/planned。 | EXTRACTED |
+| FEAT-FIFA-006 | Legacy softmax 生命周期 | planned | 保留 legacy fifa-analysis-system rules/softmax 模型事实，状态为 deprecated/planned lifecycle decision，不迁移成当前可交付模型。 | EXTRACTED |
 
-仍有效的历史摘要：
+## 证据
 
-- 项目是 research-only FIFA World Cup TAB 市场研究系统。
-- 支持授权/公开安全市场快照读取、中文研究报告、本地 Web/macOS 入口、private My Bets read-only bootstrap。
-- 当前 hard boundary 不变：不自动下注、不点击 odds、不改 Bet Slip、不绕过 TAB access controls。
-- `ai_controlled_access_rejected` 必须 fail-closed。
+| 证据 ID | 类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-FIFA-MODEL-REGISTRY | file | FIFA/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-FIFA-FORMULA-REGISTRY | file | FIFA/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-FIFA-PARAMETER-REGISTRY | file | FIFA/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-FIFA-TRACEABILITY-MATRIX | file | FIFA/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
+| EVID-FIFA-ASSURANCE-STATUS | file | FIFA/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-FIFA-DELIVERY-TASKS | file | FIFA/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-FIFA-DEVELOPMENT-EVENTS | file | FIFA/docs/governance/development_events.jsonl | RECONSTRUCTED |
+| EVID-FIFA-OWNER-STATUS | file | FIFA/docs/governance/OWNER_STATUS.md | EXTRACTED |
+| EVID-SEMANTIC-FIFA-MANIFEST | manifest | governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json | EXTRACTED |
+| EVID-REVIEW9-S5PBT02-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json | PROPOSED |

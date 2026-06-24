@@ -1,0 +1,132 @@
+schema_version: "codexproject.roadmap.v1"
+project_id: "arxiv-daily-push"
+current_stage_id: "S2"
+current_phase_id: "S2PB"
+current_task_id: "S2PBT01"
+next_gate_id: "S2PB-GATE-V7-CONTRACT-BLOCKED"
+total_estimated_hours: 6.5
+completed_estimated_hours: 4
+stages:
+  -
+    stage_id: "S2"
+    name: "Stage 2 多来源证据推进"
+    person_goal: "在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、ledger、邮件预览和 shadow 证据。"
+    status: "in_progress"
+    stop_conditions:
+      - "V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED"
+      - "bioRxiv/medRxiv shadow 影响正式 arXiv 邮件"
+      - "启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion"
+    stop_gate:
+      gate_id: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
+      status: "blocked_by_v7_root_contract"
+      pass_conditions:
+        - "V7 root contract、AGENTS、三基文件和 CI contract hash gate 合并"
+        - "B1 来源级与板块级 replay/shadow/email gates 全部通过"
+        - "Stage 1 arXiv local runner 无回归"
+      evidence_refs:
+        - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
+        - "EVID-ADP-DELIVERY-TASKS"
+    phases:
+      -
+        phase_id: "S2PB"
+        name: "B1 preprint source shadow promotion"
+        objective: "将 legacy S2P1T01 作为 V7 alias S2PBT01 推进 bioRxiv/medRxiv metadata-only source evidence。"
+        status: "in_progress"
+        stop_conditions:
+          - "改写历史 task/event ID"
+          - "把 no-send evidence 当作 formal production inclusion"
+          - "发生 V6/V7 命名或合同冲突但未标记 R-CONFLICT"
+        stop_gate:
+          gate_id: "S2PB-GATE-V7-CONTRACT-BLOCKED"
+          status: "in_progress"
+          pass_conditions:
+            - "S2PBT01/S2P1T01 evidence persisted"
+            - "formal production flags remain false"
+            - "V7/root contract gate later reconciles alias"
+          evidence_refs:
+            - "EVID-ADP-S2P1T01-PREPRINT"
+            - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
+        tasks:
+          -
+            task_id: "S2PBT01"
+            name: "bioRxiv 与 medRxiv no-send shadow source evidence"
+            objective: "完成 metadata-only adapter、source gate、queue/ledger/email preview、30-date real replay 和 48h shadow evidence，并保持 formal production false。"
+            status: "evidence_passed_no_formal_production"
+            estimated_hours: 2.5
+            total_hours_percent: "38.46%"
+            dependencies:
+              - "ARXIV_PRODUCTION_ACCEPTED"
+              - "ADP-S1P5T05"
+            acceptance_ids:
+              - "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
+            test_commands:
+              - "python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py ... -q"
+              - "stage2-preprint-replay-shadow --start-date 2024-01-01 --count 30"
+              - "scripts/validate_project_governance.py --changed-only --enforce-sync --semantic"
+            evidence_refs:
+              - "governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json"
+              - "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json"
+            risk: "V7/root contract gates 未完成前不能纳入正式生产、不能启用邮件发送或 schedule。"
+            rollback: "Revert S2PBT01/S2P1T01 source adapter, shadow/replay code, registry records, manifests, and rendered governance sync."
+  -
+    stage_id: "S5"
+    name: "项目迁移与三文件重建"
+    person_goal: "逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 PR 同时迁移多个项目"
+      - "无证据事实被写入 VERIFIED"
+      - "业务测试失败被忽略"
+    stop_gate:
+      gate_id: "S5-GATE"
+      status: "open"
+      pass_conditions:
+        - "10/10 项目通过结构、准确性和人类可读验收"
+        - "迁移过程中无批量空泛文档"
+      evidence_refs:
+        - "migration_PRs"
+        - "full_readonly_baseline"
+        - "project_acceptance_matrix"
+    phases:
+      -
+        phase_id: "S5PB"
+        name: "剩余项目治理压缩迁移"
+        objective: "收敛现有大量治理文档，保留有用事实并恢复三文件。"
+        status: "in_progress"
+        stop_conditions:
+          - "任何项目缺少 owner-readable 三文件"
+          - "未知事实被写成 VERIFIED"
+        stop_gate:
+          gate_id: "S5PB-GATE"
+          status: "in_progress"
+          pass_conditions:
+            - "全部 10 个项目 Lean v2 合规"
+            - "三文件均非索引页"
+            - "每项目 focused tests 通过"
+          evidence_refs:
+            - "ten_project_matrix"
+            - "validation_all"
+            - "owner_signoffs"
+        tasks:
+          -
+            task_id: "S5PBT05"
+            name: "迁移 arxiv-daily-push"
+            objective: "提取 Stage 1 accepted、本地 runner、source promotion、delivery/evidence gate 与 Roadmap。"
+            status: "completed"
+            estimated_hours: 4
+            total_hours_percent: "2.04%"
+            dependencies:
+              - "S5PBT04"
+            acceptance_ids:
+              - "ACC-S5PBT05"
+            test_commands:
+              - "python -B -m unittest ...test_review9_s5pbt05_* -q"
+              - "python -B scripts/lean_governance.py check-render --project arxiv-daily-push"
+              - "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+            evidence_refs:
+              - "arxiv-daily-push/docs/governance/project.yaml"
+              - "arxiv-daily-push/docs/governance/roadmap.yaml"
+              - "arxiv-daily-push/docs/governance/events.jsonl"
+              - "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
+            risk: "范围扩张、Stage 1 accepted 误读、Stage 2 ready 被误写成已实现或治理回归"
+            rollback: "Revert only this task commit; retain the read-only audit evidence."
