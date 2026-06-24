@@ -1,0 +1,208 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625",
+  "project_id": "ROOT",
+  "task_id": "S4PCT03",
+  "acceptance_ids": [
+    "ACC-S4PCT03"
+  ],
+  "iteration_id": "ITER-OTHER8-S4PCT03-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "2d2e6eb9401dceb127f9f1f2041bcce57564d5c6",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:c55919f9ce47902363943a941ccc4503f1d17f6fe9a8aaa13c78c4c03e77ead1",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py",
+    "tools/wave1_gate.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py",
+    "tools/wave1_gate.py"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py",
+    "tools/wave1_gate.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py",
+    "tools/wave1_gate.py"
+  ],
+  "change_classification": [
+    "other8_stage4_wave1_gate_closure",
+    "readability_link_test_rollback_gate",
+    "root_governance_only_no_project_runtime_change"
+  ],
+  "stage_gate_status": {
+    "S4PAT01": "PASSED_AND_BOUND",
+    "S4PAT02": "PASSED_AND_BOUND",
+    "S4PBT01": "PASSED_AND_BOUND",
+    "S4PBT02": "PASSED_AND_BOUND",
+    "S4PCT01": "PASSED_AND_BOUND",
+    "S4PCT02": "PASSED_AND_BOUND",
+    "S4-GATE": "LOCAL_PRECOMMIT_PASSED",
+    "S4PC-GATE": "LOCAL_PRECOMMIT_PASSED",
+    "next_allowed_task": "S5PAT01"
+  },
+  "gate_summary": {
+    "wave1_projects": [
+      "Alpha",
+      "EVA_OS",
+      "OpMe_System",
+      "whkmSalary"
+    ],
+    "gate_report": "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "human_report": "governance/stage_gates/s4pc/wave1_gate.md",
+    "checks_passed": 66,
+    "evidence_refs_missing": 0,
+    "forbidden_scope_touched": []
+  },
+  "stop_conditions": {
+    "unscanned_file_movement": false,
+    "broken_links_or_missing_evidence": false,
+    "focused_tests_missing_or_unbound": false,
+    "rollback_path_missing": false,
+    "forbidden_project_scope_touched": false,
+    "wave2_started_before_wave1_gate": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": [],
+    "allowed_project": "ROOT"
+  },
+  "test_commands": [
+    "python -B tools/structure_audit.py --wave 1",
+    "python -B tools/structure_audit.py --wave 1 --check",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback -q",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "python -B tools/structure_audit.py --wave 1",
+      "exit_code": 0,
+      "result": "PASS checks=66 next_allowed_task=S5PAT01"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --wave 1 --check",
+      "exit_code": 0,
+      "result": "PASS no output drift"
+    },
+    {
+      "command": "python -B -m py_compile tools/wave1_gate.py tools/structure_audit.py",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback -q",
+      "exit_code": 0,
+      "result": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m compileall -q Alpha/backend Alpha/tests",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "python -B -m compileall -q EVA_OS/src EVA_OS/shared EVA_OS/systems",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "python -B -m compileall -q OpMe_System/backend/app OpMe_System/backend/tests",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "python -B -m unittest discover -s whkmSalary/tests -q",
+      "exit_code": 0,
+      "result": "Ran 10 tests OK"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project Alpha",
+      "exit_code": 0,
+      "result": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project EVA_OS",
+      "exit_code": 0,
+      "result": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project OpMe_System",
+      "exit_code": 0,
+      "result": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project whkmSalary",
+      "exit_code": 0,
+      "result": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "validation exit_code=0; errors=0 warnings=0; check_render checked_count=8; zero_diff.clean=false precommit"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "git diff --cached --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "no forbidden project changes"
+    },
+    {
+      "command": "python -B -m unittest discover -s Alpha/tests -q",
+      "exit_code": 1,
+      "result": "NOT_RUN_VALID_GATE_COMMAND; incorrect invocation without Alpha PYTHONPATH and pytest dependency, not counted as passing evidence"
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pa/rollback_plan.md",
+    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
+    "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json"
+  ],
+  "unresolved_risks": [
+    "S4PCT03 closes Wave 1 structure gate only; it does not claim full product runtime readiness for all four projects.",
+    "S5PAT01 must start Wave 2 with its own privacy/artifact/reference baseline before touching FIFA, OpenAIDatabase, PFI, or Serenity structures.",
+    "S4PA structure_audit --check remains historical-pre-move evidence and is intentionally not used as a post-migration no-op check."
+  ],
+  "next_allowed_task": "S5PAT01",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow after PR merge",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI_ATTESTED",
+  "finished_at": "2026-06-25T00:00:00+10:00"
+}

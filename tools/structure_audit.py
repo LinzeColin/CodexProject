@@ -388,13 +388,21 @@ def machine_json(data: dict) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--projects", nargs="+", required=True)
+    parser.add_argument("--projects", nargs="+")
+    parser.add_argument("--wave", choices=["1"], help="Run a completed-wave gate verifier.")
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     parser.add_argument("--max-text-bytes", type=int, default=512_000)
     parser.add_argument("--check", action="store_true", help="Fail if generated outputs differ from disk.")
     args = parser.parse_args()
 
     repo = repo_root()
+    if args.wave == "1":
+        import wave1_gate
+
+        gate_args = ["--check"] if args.check else []
+        return wave1_gate.main(gate_args)
+    if not args.projects:
+        parser.error("--projects is required unless --wave is used")
     output_dir = repo / args.output_dir
     structure_map, reference_graph, archive_plan = build_evidence(repo, args.projects, output_dir, args.max_text_bytes)
     expected = {
