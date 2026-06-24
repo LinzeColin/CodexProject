@@ -36,9 +36,24 @@ Active Codex-related project hub for LinzeColin.
 
 ## Required Checks
 
+Use read-only changed-scope checks for ordinary PR and local development:
+
 ```bash
 python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
-python3 scripts/generate_governance_dashboard.py --write --root-artifact-dir /tmp/governance-generated-views
 ```
+
+Write-mode generators are not part of the ordinary PR fast gate. Run them only
+for scheduled/manual/release governance evidence, and write root generated views
+to an artifact directory instead of the tracked repository root:
+
+```bash
+python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir /tmp/governance-generated-views
+```
+
+## Current Governance Snapshot
+
+- Other8 remediation baseline: `main@e25be8d65e67fe89af18e18e1562191a60066449`
+- Roadmap kind: `portfolio_remediation`; it must stay separate from product roadmaps in project `开发记录`.
+- S1 review evidence is local, untracked evidence under `.git/codex-review/other8-s1pa-e25be8d6/`, `.git/codex-review/other8-s1pb-e25be8d6/`, and `.git/codex-review/other8-s1pc-e25be8d6/`.
 
 This repository is the source-level project hub. Each project directory must keep Lean v2 canonical facts and human-entry files synchronized with implementation evidence. Root dashboards and portfolio summaries are generated on demand as CI artifacts instead of committed source files.

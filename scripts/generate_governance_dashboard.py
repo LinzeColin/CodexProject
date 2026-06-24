@@ -1278,14 +1278,6 @@ Active Codex-related project hub for LinzeColin.
 - Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
 - Project human-entry files: `功能清单`, `开发记录`, `模型参数文件`
 
-## Snapshot Metadata
-
-- source_base_commit: `{meta['source_base_commit']}`
-- source_tree_hash: `{meta['source_tree_hash']}`
-- source_snapshot_hash: `{meta['source_snapshot_hash']}`
-- generator_version: `{GENERATOR_VERSION}`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-
 ## Assurance Vocabulary
 
 - `structural_completeness`: required governance files parse and cross-reference.
@@ -1306,9 +1298,18 @@ Active Codex-related project hub for LinzeColin.
 
 ## Required Checks
 
+Use read-only changed-scope checks for ordinary PR and local development:
+
 ```bash
 python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main
-python3 scripts/generate_governance_dashboard.py --write --root-artifact-dir /tmp/governance-generated-views
+```
+
+Write-mode generators are not part of the ordinary PR fast gate. Run them only
+for scheduled/manual/release governance evidence, and write root generated views
+to an artifact directory instead of the tracked repository root:
+
+```bash
+python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir /tmp/governance-generated-views
 ```
 
 This repository is the source-level project hub. Each project directory must keep Lean v2 canonical facts and human-entry files synchronized with implementation evidence. Root dashboards and portfolio summaries are generated on demand as CI artifacts instead of committed source files.

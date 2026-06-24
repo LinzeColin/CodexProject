@@ -5965,6 +5965,29 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         for forbidden in ("governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
             self.assertNotIn(forbidden, entry)
 
+    def test_other8_s2pat01_root_readme_uses_read_only_fast_gate(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        required = readme.split("## Required Checks", 1)[1].split("##", 1)[0]
+        self.assertIn("lean_governance.py ci --changed-only --base-ref origin/main", required)
+        self.assertIn("Write-mode generators are not part of the ordinary PR fast gate", required)
+        self.assertIn("--write --changed-only --base-ref origin/main --root-artifact-dir", required)
+        fast_gate = required.split("Write-mode generators", 1)[0]
+        self.assertNotIn("generate_governance_dashboard.py --write", fast_gate)
+
+        dashboard = load_dashboard_module()
+        rendered = dashboard.render_readme(
+            [{"project_id": "Example", "path": "Example"}],
+            {
+                "source_base_commit": "a" * 40,
+                "source_tree_hash": "sha256:" + "b" * 64,
+                "source_snapshot_hash": "sha256:" + "c" * 64,
+            },
+        )
+        self.assertNotIn("source_snapshot_hash", rendered)
+        rendered_required = rendered.split("## Required Checks", 1)[1].split("##", 1)[0]
+        self.assertIn("lean_governance.py ci --changed-only --base-ref origin/main", rendered_required)
+        self.assertNotIn("generate_governance_dashboard.py --write", rendered_required.split("Write-mode generators", 1)[0])
+
 
 if __name__ == "__main__":
     unittest.main()
