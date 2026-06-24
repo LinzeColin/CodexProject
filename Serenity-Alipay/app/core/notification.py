@@ -7,6 +7,7 @@ from pathlib import Path
 from app.adapters.mail_notifier import send_with_apple_mail, write_mail_ready_draft
 from app.adapters.macos_notifier import send_local_notification, write_local_notification_script
 from app.config import Settings
+from app.core.mail_policy import should_send_mail_for_run, suppressed_no_material_change_message
 from app.core.reporting import (
     _notification_deadline,
     _notification_next_step,
@@ -55,7 +56,7 @@ def _severity_for_run(conn: sqlite3.Connection, run_id: str) -> str:
         SELECT COUNT(*) AS n
         FROM manual_review_queue m
         JOIN recommendation_snapshot r ON r.run_id=m.run_id AND r.asset_id=m.asset_id
-        WHERE m.run_id=?
+        WHERE m.run_id=? AND COALESCE(r.rank, 999) <= 5
         """,
         (run_id,),
     ).fetchone()["n"]
@@ -107,8 +108,8 @@ def render_notification_for_run(settings: Settings, run_id: str, severity: str |
     rec_dicts = [dict(row) for row in recs]
     top5 = rec_dicts[:5]
     execution_locked = str(run["data_quality_status"]) != "pass"
-    urgent = severity == "Urgent" or any(row.get("action_label") in {"Clear", "Block"} for row in rec_dicts)
-    actionable = [row for row in rec_dicts if str(row.get("action_label")) not in {"Maintain"}]
+    urgent = severity == "Urgent" or any(row.get("action_label") in {"Clear", "Block"} for row in top5)
+    actionable = [row for row in top5 if str(row.get("action_label")) not in {"Maintain"}]
     actionable_count = len(actionable)
     title = _notification_subject(severity, execution_locked, urgent, actionable_count)
     primary_action = "禁止新增" if execution_locked else (_zh_action(actionable[0]["action_label"]) if actionable else "维持")
@@ -156,7 +157,11 @@ def render_notification_for_run(settings: Settings, run_id: str, severity: str |
         )
     body_lines.extend(
         [
-            "- 数据缺失、冲突或执行状态异常时，一律暂停新增并等待下一轮复核。",
+            (
+                "- 数据缺失、冲突或执行状态异常时，一律暂停新增并等待下一轮复核。"
+                if execution_locked
+                else "- 观察池复核不阻断当前 Top5；满足 Serenity 条件后再进入持仓建议。"
+            ),
             "",
         ]
     )
@@ -165,7 +170,7 @@ def render_notification_for_run(settings: Settings, run_id: str, severity: str |
         title,
         run_id,
         severity,
-        rec_dicts,
+        top5,
         str(run["run_time_bj"]),
         str(run["run_time_au"]),
         data_quality_status=str(run["data_quality_status"]),
@@ -192,7 +197,16 @@ def notify_run(
     send_status = "drafted"
     error = None
     if send_mail and not dry_run:
-        if settings.mail_send_enabled:
+        notification_rows = _notification_recommendations(settings, run_id)
+        should_send_mail = should_send_mail_for_run(
+            rendered.severity,
+            notification_rows,
+            data_quality_status=_run_quality(settings, run_id),
+        )
+        if not should_send_mail:
+            send_status = "suppressed_no_material_change"
+            error = suppressed_no_material_change_message()
+        elif settings.mail_send_enabled:
             result = send_with_apple_mail(
                 rendered.title,
                 rendered.body,
@@ -254,3 +268,26 @@ def notify_run(
         "local_status": local_status,
         "error": error or local_error,
     }
+
+
+def _run_quality(settings: Settings, run_id: str) -> str:
+    with connect(settings.db_path) as conn:
+        row = conn.execute("SELECT data_quality_status FROM run_log WHERE run_id=?", (run_id,)).fetchone()
+    return str(row["data_quality_status"]) if row else "missing"
+
+
+def _notification_recommendations(settings: Settings, run_id: str) -> list[dict[str, object]]:
+    with connect(settings.db_path) as conn:
+        rows = _rows(
+            conn,
+            """
+            SELECT r.*, a.asset_code, a.asset_name, s.grade, s.hard_block_reason
+            FROM recommendation_snapshot r
+            JOIN asset_master a ON a.asset_id=r.asset_id
+            JOIN score_snapshot s ON s.run_id=r.run_id AND s.asset_id=r.asset_id
+            WHERE r.run_id=?
+            ORDER BY r.rank ASC
+            """,
+            (run_id,),
+        )
+    return [dict(row) for row in rows[:5]]

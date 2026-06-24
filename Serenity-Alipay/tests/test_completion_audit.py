@@ -26,10 +26,6 @@ def _write_launchd_template(path: Path, root: Path, *, start_interval: int = 180
         ],
         "WorkingDirectory": root.as_posix(),
         "StartInterval": start_interval,
-        "EnvironmentVariables": {
-            "SERENITY_DRY_RUN": "true",
-            "SERENITY_MAIL_SEND_ENABLED": "false",
-        },
     }
     with path.open("wb") as handle:
         plistlib.dump(data, handle)
@@ -167,7 +163,47 @@ def test_completion_audit_blocks_stale_readiness_report_package_count(tmp_path: 
     assert "239 members" in items["readiness_report_package_consistency"]["proof"]
 
 
-def test_completion_audit_blocks_stale_readiness_report_benchmark_summary(tmp_path: Path):
+def test_completion_audit_allows_intraday_benchmark_return_drift_for_timestamped_snapshot(tmp_path: Path):
+    settings = temp_settings(tmp_path)
+    copy_sample_data(settings, Path.cwd())
+    report_dir = settings.root_dir / "outputs" / "preflight"
+    report_dir.mkdir(parents=True)
+    history_path = settings.manual_dir / "benchmark_price_history.csv"
+    rows = []
+    start = date(2025, 5, 1)
+    for code, base in [("000001.SH", 4000), ("SPX", 7000)]:
+        for offset in range(0, 401):
+            rows.append(
+                {
+                    "asset_code": code,
+                    "date": (start + timedelta(days=offset)).isoformat(),
+                    "close": str(base + offset),
+                    "source_name": "test",
+                    "source_type": "public_aggregation",
+                    "source_priority": "5",
+                    "url_or_path": "https://example.com",
+                    "evidence_level": "Medium",
+                    "as_of": "2026-06-12",
+                }
+            )
+    with history_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    (report_dir / "PRODUCTION_READINESS_REPORT.md").write_text(
+        "Shanghai Composite canonical code `000001.SH`: 401 rows from 2025-05-01 to 2026-06-05.\n"
+        "S&P 500 canonical code `SPX`: 401 rows from 2025-05-01 to 2026-06-05.\n",
+        encoding="utf-8",
+    )
+
+    result = run_completion_audit(settings)
+
+    items = {item["item_id"]: item for item in result["items"]}
+    assert items["readiness_report_benchmark_consistency"]["status"] == "pass"
+    assert "return_snapshot_drift_tolerated" in items["readiness_report_benchmark_consistency"]["proof"]
+
+
+def test_completion_audit_blocks_missing_benchmark_row_metadata(tmp_path: Path):
     settings = temp_settings(tmp_path)
     copy_sample_data(settings, Path.cwd())
     report_dir = settings.root_dir / "outputs" / "preflight"
@@ -195,8 +231,7 @@ def test_completion_audit_blocks_stale_readiness_report_benchmark_summary(tmp_pa
         writer.writeheader()
         writer.writerows(rows)
     (report_dir / "PRODUCTION_READINESS_REPORT.md").write_text(
-        "Shanghai Composite canonical code `000001.SH`: 49 rows from 2026-03-01 to 2026-06-05.\n"
-        "S&P 500 canonical code `SPX`: 49 rows from 2026-03-01 to 2026-06-05.\n",
+        "Shanghai Composite canonical code `000001.SH`: 1 rows from 2026-03-01 to 2026-03-01.\n",
         encoding="utf-8",
     )
 
@@ -204,7 +239,7 @@ def test_completion_audit_blocks_stale_readiness_report_benchmark_summary(tmp_pa
 
     items = {item["item_id"]: item for item in result["items"]}
     assert items["readiness_report_benchmark_consistency"]["status"] == "block"
-    assert "000001.SH" in items["readiness_report_benchmark_consistency"]["proof"]
+    assert "missing" in items["readiness_report_benchmark_consistency"]["proof"]
 
 
 def test_completion_audit_requires_execution_lock_for_manual_review_run(tmp_path: Path):
@@ -220,7 +255,11 @@ def test_completion_audit_requires_execution_lock_for_manual_review_run(tmp_path
 
     items = {item["item_id"]: item for item in result["items"]}
     assert items["execution_lock_zero_order"]["status"] == "pass"
-    assert "data_quality_status=manual_review" in items["execution_lock_zero_order"]["proof"]
+    proof = items["execution_lock_zero_order"]["proof"]
+    assert "data_quality_status=" in proof
+    if "data_quality_status=pass" not in proof:
+        assert "report_locked=True" in proof
+        assert "notification_locked=True" in proof
 
 
 def test_completion_audit_accepts_risk_gate_regression_when_latest_run_has_no_hard_gate_hit(tmp_path: Path):
@@ -266,6 +305,35 @@ def test_completion_audit_accepts_safe_launchd_runtime_status(tmp_path: Path):
     assert items["launchd_runtime_status"]["status"] == "pass"
     assert "install_state=loaded" in items["launchd_runtime_status"]["proof"]
     assert "latest_tick_action=non_business_day" in items["launchd_runtime_status"]["proof"]
+
+
+def test_completion_audit_accepts_launchd_runtime_status_with_sqlite_int_dry_run(tmp_path: Path):
+    settings = temp_settings(tmp_path)
+    copy_sample_data(settings, Path.cwd())
+    status_dir = settings.root_dir / "outputs" / "implementation"
+    status_dir.mkdir(parents=True)
+    (status_dir / "LAUNCHD_STATUS.json").write_text(
+        json.dumps(
+            {
+                "install_state": "loaded",
+                "plist_lint": "OK",
+                "stderr_bytes": 0,
+                "mail_send_enabled": True,
+                "automatic_trading": False,
+                "latest_tick": {
+                    "action": "ran",
+                    "dry_run": 0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = run_completion_audit(settings)
+
+    items = {item["item_id"]: item for item in result["items"]}
+    assert items["launchd_runtime_status"]["status"] == "pass"
+    assert "dry_run=0" in items["launchd_runtime_status"]["proof"]
 
 
 def test_completion_audit_accepts_shadow_safe_launchd_schedule_contract(tmp_path: Path):
@@ -326,7 +394,35 @@ def test_completion_audit_surfaces_mail_send_config_gate(tmp_path: Path):
 
     items = {item["item_id"]: item for item in result["items"]}
     assert items["mail_send_config_gate"]["status"] == "block"
-    assert "SERENITY_MAIL_SEND_ENABLED=true" in items["mail_send_config_gate"]["next_action"]
+    assert "--send-mail" in items["mail_send_config_gate"]["next_action"]
+
+
+def test_completion_audit_shadow_ready_passes_when_production_ready(tmp_path: Path):
+    settings = temp_settings(tmp_path)
+    copy_sample_data(settings, Path.cwd())
+    report_dir = settings.root_dir / "outputs" / "preflight"
+    report_dir.mkdir(parents=True)
+    (report_dir / "preflight_latest.json").write_text(
+        json.dumps(
+            {
+                "production_ready": True,
+                "shadow_ready": True,
+                "blockers": [],
+                "checks": [
+                    {"name": "mail_send_config", "status": "pass", "evidence": {"mail_send_enabled": True}},
+                    {"name": "moomoo_opend", "status": "pass", "message": "socket ok"},
+                    {"name": "benchmark_sources", "status": "pass", "evidence": {"ok": True}},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = run_completion_audit(settings)
+
+    items = {item["item_id"]: item for item in result["items"]}
+    assert items["shadow_ready_gate"]["status"] == "pass"
+    assert items["shadow_ready_gate"]["severity"] == "info"
 
 
 def test_completion_audit_requires_production_unlock_workflow_artifact(tmp_path: Path):

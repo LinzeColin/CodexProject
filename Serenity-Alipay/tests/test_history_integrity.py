@@ -2,7 +2,7 @@ from pathlib import Path
 import csv
 
 from app.core.history_integrity import run_history_integrity
-from app.db import connect, init_db, insert_row, upsert_asset
+from app.db import connect, init_db, insert_row, record_asset_pool_entries, upsert_asset
 from tests.helpers import temp_settings
 
 
@@ -105,3 +105,92 @@ def test_asset_master_keeps_first_seen_identity(tmp_path: Path):
     assert row["asset_type"] == "off_platform_fund"
     assert row["fund_company"] == "历史基金公司"
     assert row["is_excluded"] == 0
+
+
+def test_asset_pool_entry_keeps_first_holding_pool_entry(tmp_path: Path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    with connect(settings.db_path) as conn:
+        upsert_asset(
+            conn,
+            {
+                "asset_id": "FUND001",
+                "asset_code": "FUND001",
+                "asset_name": "基金一号",
+                "asset_type": "off_platform_fund",
+                "market": "CN",
+                "fund_company": "基金公司",
+                "risk_level": "high",
+                "is_excluded": 0,
+                "exclusion_reason": "",
+            },
+        )
+        conn.executemany(
+            """
+            INSERT INTO run_log (
+              run_id, run_time_bj, run_time_au, schedule_slot, model_profile,
+              status, data_quality_status, notification_status, notes,
+              report_path, offline_html_path, created_at
+            )
+            VALUES (?, ?, ?, ?, 'model', 'success', 'pass', 'sent', '', NULL, NULL, ?)
+            """,
+            [
+                (
+                    "r1",
+                    "2026-06-12T08:30:00+08:00",
+                    "2026-06-12T10:30:00+10:00",
+                    "R1",
+                    "2026-06-12T00:30:00+00:00",
+                ),
+                (
+                    "r2",
+                    "2026-06-13T08:30:00+08:00",
+                    "2026-06-13T10:30:00+10:00",
+                    "R1",
+                    "2026-06-13T00:30:00+00:00",
+                ),
+            ],
+        )
+        conn.executemany(
+            """
+            INSERT INTO recommendation_snapshot (
+              run_id, asset_id, rank, target_weight, current_weight, deviation,
+              action_label, trigger_reason, next_check_by, manual_review_required
+            )
+            VALUES (?, 'FUND001', ?, 0.2, 0.0, 0.2, 'Buy', 'test', 'next', 0)
+            """,
+            [("r1", 5), ("r2", 1)],
+        )
+
+    init_db(settings.db_path)
+    with connect(settings.db_path) as conn:
+        record_asset_pool_entries(
+            conn,
+            run_id="r2",
+            asset_id="FUND001",
+            rank=1,
+            run_time_bj="2026-06-13T08:30:00+08:00",
+            run_time_au="2026-06-13T10:30:00+10:00",
+            run_created_at="2026-06-13T00:30:00+00:00",
+            created_at="2026-06-13T00:30:00+00:00",
+        )
+        holding = conn.execute(
+            """
+            SELECT first_run_id, first_rank, first_run_time_bj, first_run_created_at
+            FROM asset_pool_entry
+            WHERE asset_id='FUND001' AND pool_kind='holding_pool'
+            """
+        ).fetchone()
+        candidate = conn.execute(
+            """
+            SELECT first_run_id
+            FROM asset_pool_entry
+            WHERE asset_id='FUND001' AND pool_kind='candidate_pool'
+            """
+        ).fetchone()
+
+    assert holding["first_run_id"] == "r1"
+    assert holding["first_rank"] == 5
+    assert holding["first_run_time_bj"] == "2026-06-12T08:30:00+08:00"
+    assert holding["first_run_created_at"] == "2026-06-12T00:30:00+00:00"
+    assert candidate["first_run_id"] == "r1"

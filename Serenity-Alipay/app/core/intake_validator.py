@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 from app.adapters.alipay_importer import read_positions_csv
 from app.adapters.manual_sources import load_candidates, load_fund_rules, load_price_history
 from app.config import Settings
+from app.core.metrics import WINDOWS, calculate_returns
 from app.core.path_display import display_path
 
 
@@ -30,7 +31,6 @@ CRITICAL_RULE_FIELDS = (
     "custody_fee",
 )
 PRODUCTION_SOURCE_TYPES = {"moomoo", "alipay", "official"}
-MIN_BENCHMARK_SPAN_DAYS = 93
 MIN_BENCHMARK_TRADING_ROWS = 11
 EVIDENCE_REF_PATTERN = re.compile(r"(?:evidence|evidence_path|source_path|source_url)=([^;,\n]+)", re.IGNORECASE)
 
@@ -243,6 +243,89 @@ def _price_history_columns(path: Path) -> set[str]:
         return set(reader.fieldnames or [])
 
 
+def _validate_candidate_nav_history(settings: Settings, gaps: list[IntakeGap]) -> dict[str, object]:
+    path = settings.manual_dir / "price_history.csv"
+    candidates_path = settings.manual_dir / "candidates.csv"
+    if not candidates_path.exists():
+        return {"path": str(path), "rows": 0, "status": "skipped_candidate_universe_missing"}
+    if not path.exists():
+        _gap(
+            gaps,
+            "candidate_nav_history",
+            "block",
+            path,
+            "file",
+            "path",
+            "Candidate NAV history CSV is missing",
+            "Run collect-fund-nav-history --apply to provide 24-month NAV history",
+        )
+        return {"path": str(path), "rows": 0, "status": "block"}
+
+    history = load_price_history(path)
+    candidates = [candidate for candidate in load_candidates(settings.manual_dir / "candidates.csv") if not candidate.is_excluded]
+    columns = _price_history_columns(path)
+    required_meta = {"source_name", "source_type", "source_priority", "url_or_path", "evidence_level", "as_of"}
+    missing_meta = sorted(required_meta - columns)
+    for candidate in candidates:
+        points = history.get(candidate.asset_code, [])
+        if not points:
+            _gap(
+                gaps,
+                "candidate_nav_history",
+                "block",
+                path,
+                candidate.asset_code,
+                "asset_code",
+                "Candidate has no NAV history",
+                "Fetch or stage 24-month NAV history before allowing the fund into screening scope",
+            )
+            continue
+        span_days = (points[-1].date - points[0].date).days if len(points) >= 2 else 0
+        if span_days < settings.min_candidate_nav_history_span_days:
+            _gap(
+                gaps,
+                "candidate_nav_history",
+                "block",
+                path,
+                candidate.asset_code,
+                "date_span",
+                (
+                    f"Candidate NAV history spans only {span_days} days; "
+                    f"requires {settings.min_candidate_nav_history_months} months / "
+                    f"{settings.min_candidate_nav_history_span_days} days"
+                ),
+                "Fetch complete 24-month NAV history before screening or action-ready recommendation",
+            )
+        if missing_meta:
+            _gap(
+                gaps,
+                "candidate_nav_history",
+                "block",
+                path,
+                candidate.asset_code,
+                "source_metadata",
+                f"Missing NAV source metadata columns: {', '.join(missing_meta)}",
+                "Use collect-fund-nav-history or add verifiable source metadata columns",
+            )
+    if not missing_meta:
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        for candidate in candidates:
+            candidate_rows = [row for row in rows if row.get("asset_code") == candidate.asset_code]
+            if candidate_rows and all(row.get("source_type") == "public_aggregation" for row in candidate_rows):
+                _gap(
+                    gaps,
+                    "candidate_nav_history",
+                    "warn",
+                    path,
+                    candidate.asset_code,
+                    "source_type",
+                    "Candidate NAV history uses public aggregation fallback",
+                    "Prefer moomoo, Alipay, or fund-company official NAV source when available",
+                )
+    return {"path": str(path), "rows": sum(len(points) for points in history.values()), "status": "checked"}
+
+
 def _validate_benchmarks(settings: Settings, gaps: list[IntakeGap]) -> dict[str, object]:
     path = settings.manual_dir / "benchmark_price_history.csv"
     if not path.exists():
@@ -261,9 +344,23 @@ def _validate_benchmarks(settings: Settings, gaps: list[IntakeGap]) -> dict[str,
             continue
         if len(points) < 11:
             _gap(gaps, "benchmark_history", "block", path, code, "rows", f"{name} has only {len(points)} rows", "Provide enough rows for recent 10 trading day comparison")
-        elif (points[-1].date - points[0].date).days < MIN_BENCHMARK_SPAN_DAYS:
+        elif (points[-1].date - points[0].date).days < 365:
             span_days = (points[-1].date - points[0].date).days
-            _gap(gaps, "benchmark_history", "block", path, code, "date_span", f"{name} history spans only {span_days} days", "Provide enough exact benchmark history for 1m and 3m comparison")
+            _gap(gaps, "benchmark_history", "block", path, code, "date_span", f"{name} history spans only {span_days} days", "Provide enough exact benchmark history for 1m, 3m, 12m, and recent 10 trading day comparison")
+        else:
+            returns = calculate_returns(points)
+            missing_windows = [window for window in WINDOWS if returns.get(window) is None]
+            if missing_windows:
+                _gap(
+                    gaps,
+                    "benchmark_history",
+                    "block",
+                    path,
+                    code,
+                    "return_windows",
+                    f"{name} benchmark return windows missing: {', '.join(missing_windows)}",
+                    "Provide exact benchmark history that can calculate 1m, 3m, 12m, and recent 10 trading day returns",
+                )
         if points[0].close == 100.0 and _has_sample_marker(path.name, "manual"):
             _gap(gaps, "benchmark_history", "block", path, code, "close", f"{name} looks sample-indexed from 100.0", "Replace with real close values from exact benchmark source")
         if missing_meta:
@@ -312,6 +409,7 @@ def validate_intake(settings: Settings, scan_paths: list[Path] | None = None, wr
         "alipay_positions": _validate_alipay(settings, gaps),
         "fund_rules": _validate_fund_rules(settings, gaps),
         "candidate_universe": _validate_candidates(settings, gaps),
+        "candidate_nav_history": _validate_candidate_nav_history(settings, gaps),
         "benchmark_history": _validate_benchmarks(settings, gaps),
     }
     scanned = _scan_candidates(scan_paths or [])

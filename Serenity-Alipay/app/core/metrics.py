@@ -13,9 +13,11 @@ class AssetMetrics:
     recovery_time_days: int | None
     recovered: bool
     drawdown_7d: float | None
+    point_count: int
+    history_span_days: int | None
 
 
-WINDOWS = ("1m", "3m", "10d")
+WINDOWS = ("1m", "3m", "12m", "10d")
 
 
 def _return_from_start(points: list[PricePoint], start_index: int) -> float | None:
@@ -41,10 +43,12 @@ def calculate_returns(points: list[PricePoint]) -> dict[str, float | None]:
         return {window: None for window in WINDOWS}
     one_month_idx = _index_for_days(points, 31)
     three_month_idx = _index_for_days(points, 93)
+    twelve_month_idx = _index_for_days(points, 365)
     ten_day_idx = len(points) - 11 if len(points) >= 11 else None
     return {
         "1m": _return_from_start(points, one_month_idx) if one_month_idx is not None else None,
         "3m": _return_from_start(points, three_month_idx) if three_month_idx is not None else None,
+        "12m": _return_from_start(points, twelve_month_idx) if twelve_month_idx is not None else None,
         "10d": _return_from_start(points, ten_day_idx) if ten_day_idx is not None else None,
     }
 
@@ -90,10 +94,13 @@ def drawdown_over_last_n(points: list[PricePoint], count: int = 7) -> float | No
 def calculate_metrics(points: list[PricePoint]) -> AssetMetrics:
     returns = calculate_returns(points)
     mdd, recovery, recovered = max_drawdown_and_recovery(points)
+    history_span_days = (points[-1].date - points[0].date).days if len(points) >= 2 else None
     return AssetMetrics(
         returns=returns,
         max_drawdown=mdd,
         recovery_time_days=recovery,
         recovered=recovered,
         drawdown_7d=drawdown_over_last_n(points, 7),
+        point_count=len(points),
+        history_span_days=history_span_days,
     )

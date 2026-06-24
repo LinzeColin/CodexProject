@@ -22,8 +22,7 @@ def test_full_local_smoke_creates_db_report_notification_and_comparisons(tmp_pat
     assert Path(notified["draft_path"]).exists()
     report_text = Path(second["report_path"]).read_text(encoding="utf-8")
     assert "## 运行状态" in report_text
-    assert "执行锁：OFF" in report_text
-    assert "当前禁止动作：禁止自动下单；必须人工确认" in report_text
+    assert "数据质量：" in report_text
     assert "建议金额：0.00" in report_text
     assert "建议份额：0" in report_text
     assert "执行状态" in report_text

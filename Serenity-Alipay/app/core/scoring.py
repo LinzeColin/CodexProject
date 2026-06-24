@@ -8,6 +8,18 @@ from app.core.metrics import AssetMetrics, WINDOWS
 
 
 CONSERVATIVE_KEYWORDS = ("bond", "money", "cash", "yuebao", "conservative", "fixed income")
+BUY_LIMITED_STATUSES = {"limited", "restricted", "quota_limited", "large_purchase_limited"}
+EXECUTABLE_REDEMPTION_STATUSES = {"open", "limited", "restricted"}
+EXECUTION_CRITICAL_FIELDS = {
+    "subscription_status",
+    "redemption_status",
+    "subscription_fee",
+    "redemption_fee",
+    "subscription_fee_schedule",
+    "redemption_fee_schedule",
+    "management_fee",
+    "custody_fee",
+}
 
 
 @dataclass(frozen=True)
@@ -70,6 +82,37 @@ def _benchmark_win_count(
     return wins
 
 
+def _missing_penalty(field: str) -> float:
+    if field in {"return_windows", "nav_history_24m"}:
+        return 20.0
+    return 8.0
+
+
+def _status_key(value: str | None) -> str:
+    return (value or "").strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def _has_execution_data_gap(missing: list[str]) -> bool:
+    return bool(EXECUTION_CRITICAL_FIELDS.intersection(missing))
+
+
+def _execution_score(rule: FundRule | None, missing: list[str]) -> tuple[float, str | None]:
+    if rule is None:
+        return 0.0, "missing"
+    if _has_execution_data_gap(missing):
+        return 0.0, "missing"
+
+    subscription_status = _status_key(rule.subscription_status)
+    redemption_status = _status_key(rule.redemption_status)
+    if redemption_status not in EXECUTABLE_REDEMPTION_STATUSES:
+        return 0.0, "closed"
+    if subscription_status == "open":
+        return (8.0, "limited") if redemption_status != "open" else (10.0, None)
+    if subscription_status in BUY_LIMITED_STATUSES:
+        return 7.0, "limited"
+    return 0.0, "closed"
+
+
 def score_candidate(
     candidate: Candidate,
     rule: FundRule | None,
@@ -79,6 +122,9 @@ def score_candidate(
     settings: Settings,
 ) -> ScoreResult:
     missing: list[str] = []
+    min_history_span_days = settings.min_candidate_nav_history_span_days
+    if metrics.history_span_days is None or metrics.history_span_days < min_history_span_days:
+        missing.append("nav_history_24m")
     if any(metrics.returns.get(window) is None for window in WINDOWS):
         missing.append("return_windows")
     if metrics.max_drawdown is None:
@@ -102,7 +148,7 @@ def score_candidate(
             if value in (None, ""):
                 missing.append(field)
 
-    data_score = max(0.0, 25.0 - (8.0 * len(missing)))
+    data_score = max(0.0, 25.0 - sum(_missing_penalty(field) for field in set(missing)))
 
     stale_days = max(candidate.missing_nav_days, candidate.missing_holding_days)
     timeliness_score = 15.0 if stale_days <= 2 else 0.0
@@ -115,7 +161,8 @@ def score_candidate(
         source_score = 0.0
 
     wins = _benchmark_win_count(metrics, shanghai_returns, sp500_returns)
-    return_score = 15.0 * (wins / 6.0)
+    benchmark_comparison_count = len(WINDOWS) * 2
+    return_score = 15.0 * (wins / benchmark_comparison_count) if benchmark_comparison_count else 0.0
 
     risk_score = 0.0
     if metrics.max_drawdown is not None:
@@ -124,19 +171,7 @@ def score_candidate(
     if metrics.recovery_time_days is not None and metrics.recovery_time_days >= settings.recovery_time_block_days:
         risk_score = min(risk_score, 5.0)
 
-    executable_score = 10.0
-    if rule is None:
-        executable_score = 0.0
-    elif (
-        rule.subscription_status.lower() != "open"
-        or rule.redemption_status.lower() != "open"
-        or "redemption_status" in missing
-        or "subscription_fee" in missing
-        or "redemption_fee" in missing
-        or "subscription_fee_schedule" in missing
-        or "redemption_fee_schedule" in missing
-    ):
-        executable_score = 0.0
+    executable_score, execution_constraint = _execution_score(rule, missing)
 
     total = data_score + timeliness_score + source_score + return_score + risk_score + executable_score
     grade = _grade_from_score(total)
@@ -164,6 +199,18 @@ def score_candidate(
         action = "Manual Review"
         trigger = hard_block_reason
         manual_review = True
+    elif "nav_history_24m" in missing:
+        hard_block_reason = (
+            f"nav_history_span_days {metrics.history_span_days or 0} "
+            f"< {settings.min_candidate_nav_history_span_days}"
+        )
+        grade = "Block"
+        action = "Block"
+        trigger = (
+            f"candidate NAV history < {settings.min_candidate_nav_history_months} months; "
+            "not eligible for screening/action-ready pool"
+        )
+        manual_review = True
     elif stale_days > 2:
         grade = "Manual Review"
         action = "Manual Review"
@@ -185,12 +232,25 @@ def score_candidate(
             grade = "Watch"
         action = "Pause New"
         trigger = "aggregated fallback caps grade"
+    elif execution_constraint == "limited":
+        if grade == "Action-Ready":
+            grade = "Watch"
+        action = "Pause New"
+        trigger = "申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度"
     elif executable_score == 0.0:
         if grade == "Action-Ready":
             grade = "Watch"
         action = "Pause New"
-        trigger = "fee/redemption/subscription status missing or closed"
+        if execution_constraint == "missing":
+            trigger = "fee/redemption/subscription status missing or closed"
+        else:
+            trigger = "申购或赎回状态关闭/未知；暂停新增并等待平台状态恢复"
         manual_review = True
+    elif missing:
+        if grade == "Action-Ready":
+            grade = "Watch"
+        action = "Maintain"
+        trigger = f"required data missing: {', '.join(sorted(set(missing)))}"
     elif return_score == 0.0:
         action = "Reduce"
         trigger = "underperformed Shanghai Composite and S&P 500 across windows"

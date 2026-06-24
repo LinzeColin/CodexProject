@@ -145,6 +145,8 @@ def _temp_settings(settings: Settings, root: Path) -> Settings:
         top5_change_rate_threshold=settings.top5_change_rate_threshold,
         drawdown_7d_worsen_threshold=settings.drawdown_7d_worsen_threshold,
         min_official_sources_action_ready=settings.min_official_sources_action_ready,
+        min_candidate_nav_history_months=settings.min_candidate_nav_history_months,
+        min_candidate_nav_history_span_days=settings.min_candidate_nav_history_span_days,
     )
 
 

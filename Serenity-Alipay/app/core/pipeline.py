@@ -4,6 +4,7 @@ import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 from app.adapters import moomoo_adapter
 from app.adapters.alipay_importer import read_positions_csv
@@ -17,6 +18,7 @@ from app.core.discipline import (
     single_position_overexpansion_events,
 )
 from app.core.metrics import calculate_metrics
+from app.core.mail_policy import should_send_mail_for_run, suppressed_no_material_change_message
 from app.core.reporting import (
     render_markdown_report,
     render_notification,
@@ -28,8 +30,11 @@ from app.core.reporting import (
 from app.core.run_visibility import display_run_time_with_backfill_note
 from app.core.scoring import ScoreResult, score_candidate
 from app.core.time_display import format_display_time
-from app.db import connect, init_db, insert_row, upsert_asset
-from app.scheduler import slot_times
+from app.db import connect, init_db, insert_row, record_asset_pool_entries, upsert_asset
+from app.scheduler import SlotTimes, slot_times
+
+
+ACTION_POOL_SIZE = 5
 
 
 def _now_iso() -> str:
@@ -43,6 +48,18 @@ def _run_id(slot: str) -> str:
 
 def _source_id(run_id: str, asset_code: str, suffix: str) -> str:
     return f"{run_id}_{asset_code}_{suffix}".replace("/", "_")
+
+
+def _action_pool_rows(recommendations: list[dict[str, object]], limit: int = ACTION_POOL_SIZE) -> list[dict[str, object]]:
+    return [
+        row
+        for row in recommendations
+        if int(row.get("rank") or 0) > 0 and int(row.get("rank") or 0) <= limit
+    ]
+
+
+def _action_pool_requires_manual_review(recommendations: list[dict[str, object]]) -> bool:
+    return any(bool(row.get("manual_review_required")) for row in _action_pool_rows(recommendations))
 
 
 def _asset_row(candidate: Candidate) -> dict[str, object]:
@@ -160,9 +177,11 @@ def _latest_positions(conn) -> dict[str, float]:
 def _latest_baseline_reference(conn) -> tuple[dict[str, float], str | None]:
     latest_baseline = conn.execute(
         """
-        SELECT run_id FROM baseline_snapshot
-        WHERE baseline_kind='serenity_baseline'
-        ORDER BY created_at DESC, rowid DESC
+        SELECT b.run_id
+        FROM baseline_snapshot b
+        JOIN run_log r ON r.run_id=b.run_id
+        WHERE b.baseline_kind='serenity_baseline'
+        ORDER BY r.run_time_bj DESC, r.created_at DESC, b.rowid DESC
         LIMIT 1
         """
     ).fetchone()
@@ -240,7 +259,7 @@ def _write_offline_index(conn, settings: Settings) -> Path:
                status, data_quality_status, report_path, offline_html_path
         FROM run_log
         WHERE report_path IS NOT NULL AND offline_html_path IS NOT NULL
-        ORDER BY created_at DESC, rowid DESC
+        ORDER BY run_time_bj DESC, created_at DESC, rowid DESC
         LIMIT 100
         """
     ).fetchall()
@@ -275,9 +294,16 @@ def run_slot(
     dry_run: bool = True,
     send_mail: bool = False,
     run_date: date | None = None,
+    run_datetime_bj: datetime | None = None,
 ) -> dict[str, object]:
     init_db(settings.db_path)
-    times = slot_times(slot, run_date, primary_tz=settings.timezone_primary, secondary_tz=settings.timezone_secondary)
+    if run_datetime_bj:
+        primary_zone = ZoneInfo(settings.timezone_primary)
+        secondary_zone = ZoneInfo(settings.timezone_secondary)
+        beijing_dt = run_datetime_bj.astimezone(primary_zone) if run_datetime_bj.tzinfo else run_datetime_bj.replace(tzinfo=primary_zone)
+        times = SlotTimes(slot=slot.upper(), beijing=beijing_dt, secondary=beijing_dt.astimezone(secondary_zone))
+    else:
+        times = slot_times(slot, run_date, primary_tz=settings.timezone_primary, secondary_tz=settings.timezone_secondary)
     run_id = _run_id(slot)
     created_at = _now_iso()
     run_time_bj = times.beijing.isoformat(timespec="seconds")
@@ -293,7 +319,12 @@ def run_slot(
     benchmark_history = load_price_history(benchmark_prices_path) if benchmark_prices_path.exists() else price_history
     shanghai_returns = calculate_metrics(benchmark_history.get("000001.SH", [])).returns
     sp500_returns = calculate_metrics(benchmark_history.get("SPX", [])).returns
-    moomoo = moomoo_adapter.healthcheck()
+    moomoo = moomoo_adapter.healthcheck(
+        settings=settings,
+        auto_start_opend=settings.opend_auto_start_enabled and not dry_run,
+        keep_auto_started_opend=settings.opend_keep_auto_started,
+        opend_wait_seconds=settings.opend_wait_seconds,
+    )
 
     scored_rows: list[dict[str, object]] = []
     with connect(settings.db_path) as conn:
@@ -323,7 +354,16 @@ def run_slot(
                 "event_type": "moomoo_healthcheck",
                 "severity": "info" if moomoo.available else "warn",
                 "message": moomoo.detail,
-                "context_json": json.dumps({"status": moomoo.status}),
+                "context_json": json.dumps(
+                    {
+                        "status": moomoo.status,
+                        "sdk_available": moomoo.sdk_available,
+                        "opend_lifecycle": moomoo.opend_lifecycle,
+                        "cleanup": moomoo.cleanup,
+                    },
+                    ensure_ascii=False,
+                    default=str,
+                ),
                 "created_at": created_at,
             },
         )
@@ -534,7 +574,7 @@ def run_slot(
                 )
 
         target_weights = _target_weights(scored_rows)
-        ranked = _ranked_recommendation_rows(scored_rows)
+        ranked = _ranked_recommendation_rows(scored_rows, limit=10)
         recommendations: list[dict[str, object]] = []
         for rank, row in enumerate(ranked, start=1):
             candidate = row["candidate"]
@@ -574,6 +614,16 @@ def run_slot(
                     "manual_review_required": int(score.manual_review_required),
                 },
             )
+            record_asset_pool_entries(
+                conn,
+                run_id=run_id,
+                asset_id=candidate.asset_id,
+                rank=rank,
+                run_time_bj=run_time_bj,
+                run_time_au=run_time_au,
+                run_created_at=created_at,
+                created_at=created_at,
+            )
             insert_row(
                 conn,
                 "decision_record",
@@ -608,22 +658,24 @@ def run_slot(
             rebalance_events += single_position_overexpansion_events(conn, run_id, settings)
         persist_rebalance_events(conn, run_id, created_at, rebalance_events)
 
+        action_pool = _action_pool_rows(recommendations)
         data_quality_status = "degraded" if not moomoo.available else "pass"
-        if any(row["manual_review_required"] for row in recommendations):
+        if _action_pool_requires_manual_review(recommendations):
             data_quality_status = "manual_review"
         severity = "Info"
         if rebalance_events:
             severity = "Alert"
-        if any(row["action_label"] in {"Clear", "Block"} for row in recommendations):
+        if any(row["action_label"] in {"Clear", "Block"} for row in action_pool):
             severity = "Urgent"
         if data_quality_status in {"degraded", "manual_review"} and severity == "Info":
             severity = "Warn"
         execution_locked = data_quality_status != "pass"
+        notification_recommendations = action_pool
 
         notification_title, notification_body = render_notification(
             run_id,
             severity,
-            recommendations,
+            notification_recommendations,
             run_time_bj,
             run_time_au,
             data_quality_status=data_quality_status,
@@ -633,8 +685,8 @@ def run_slot(
             rebalance_events[0].trigger_reason
             if rebalance_events
             else (
-                recommendations[0]["trigger_reason"]
-                if recommendations
+                notification_recommendations[0]["trigger_reason"]
+                if notification_recommendations
                 else ""
             )
         )
@@ -642,7 +694,7 @@ def run_slot(
             notification_title,
             run_id,
             severity,
-            recommendations,
+            notification_recommendations,
             run_time_bj,
             run_time_au,
             data_quality_status=data_quality_status,
@@ -697,7 +749,16 @@ def run_slot(
         send_status = "drafted"
         send_error = None
         if send_mail and not dry_run:
-            if settings.mail_send_enabled:
+            should_send_mail = should_send_mail_for_run(
+                severity,
+                notification_recommendations,
+                data_quality_status=data_quality_status,
+                execution_locked=execution_locked,
+            )
+            if not should_send_mail:
+                send_status = "suppressed_no_material_change"
+                send_error = suppressed_no_material_change_message()
+            elif settings.mail_send_enabled:
                 mail_result = send_with_apple_mail(
                     notification_title,
                     notification_body,
@@ -743,6 +804,25 @@ def run_slot(
         )
         offline_index_path = _write_offline_index(conn, settings)
 
+    moomoo_cleanup = None
+    if moomoo.cleanup_required and moomoo.opend_lifecycle_handle is not None:
+        from app.core.moomoo_lifecycle import cleanup_started_processes
+
+        moomoo_cleanup = cleanup_started_processes(moomoo.opend_lifecycle_handle)
+        with connect(settings.db_path) as conn:
+            insert_row(
+                conn,
+                "audit_log",
+                {
+                    "run_id": run_id,
+                    "event_type": "moomoo_opend_cleanup",
+                    "severity": "info",
+                    "message": str(moomoo_cleanup.get("cleanup_result")),
+                    "context_json": json.dumps(moomoo_cleanup, ensure_ascii=False, default=str),
+                    "created_at": _now_iso(),
+                },
+            )
+
     return {
         "run_id": run_id,
         "status": "degraded" if not moomoo.available else "success",
@@ -752,6 +832,7 @@ def run_slot(
         "offline_index_path": str(offline_index_path),
         "notification_path": str(notification_path),
         "moomoo_status": moomoo.status,
+        "moomoo_cleanup": moomoo_cleanup,
         "rebalance_events": [event.trigger_reason for event in rebalance_events],
-        "top5": [row["asset_code"] for row in recommendations],
+        "top5": [row["asset_code"] for row in _action_pool_rows(recommendations)],
     }

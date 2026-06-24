@@ -35,7 +35,7 @@ def test_mail_smoke_writes_draft_and_artifacts_without_sending(monkeypatch, tmp_
     assert "HTML + 纯文本兜底" in html_body
 
 
-def test_mail_smoke_blocks_real_send_when_env_disabled(monkeypatch, tmp_path: Path):
+def test_mail_smoke_blocks_real_send_when_runtime_send_not_enabled(monkeypatch, tmp_path: Path):
     settings = temp_settings(tmp_path)
     monkeypatch.setattr("app.core.mail_smoke.shutil.which", lambda name: "/usr/bin/osascript")
     monkeypatch.setattr("app.core.mail_smoke.subprocess.run", lambda *args, **kwargs: _Completed())
@@ -44,4 +44,4 @@ def test_mail_smoke_blocks_real_send_when_env_disabled(monkeypatch, tmp_path: Pa
 
     assert result["status"] == "blocked"
     assert result["send_status"] == "blocked_by_config"
-    assert result["send_error"] == "SERENITY_MAIL_SEND_ENABLED is false"
+    assert result["send_error"] == "Real sending is not enabled for this runtime"
