@@ -3817,8 +3817,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-086")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-086")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-089")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-089")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
@@ -3826,7 +3826,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json",
+            "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")

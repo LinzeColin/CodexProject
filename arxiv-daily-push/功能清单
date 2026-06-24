@@ -7,10 +7,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2 - 逐来源、逐板块晋升与全系统生产验收`
 - current_phase: `S2P1 - B1 研究前沿来源逐源晋升`
-- current_task: `S2P1T01 - bioRxiv 与 medRxiv 晋升`
+- current_task: `S2PBT01 / S2P1T01 - bioRxiv 与 medRxiv 晋升`
 - current_gate: `ARXIV_PRODUCTION_ACCEPTED`
-- next_unique_task: `S2P1T01`
-- evidence_status: `STAGE1_ACCEPTED; LOCAL_PRODUCTION_MIGRATION_PREP_VERIFIED; S2P1T01_IMPLEMENTED_PENDING_REPLAY_SHADOW`
+- next_unique_task: `S2PBT01 / S2P1T01`
+- evidence_status: `STAGE1_ACCEPTED; LOCAL_PRODUCTION_MIGRATION_PREP_VERIFIED; S2PBT01_REAL_REPLAY_SHADOW_EVIDENCE_PASSED_NO_FORMAL_PRODUCTION`
 - production_schedule_status: `GITHUB_CLOUD_SCHEDULE_DISABLED; LOCAL_CODEX_RUNNER_PREPARED`
 - notification_channel: `Gmail SMTP email`
 - recipient: `linzezhang35@gmail.com`
@@ -35,7 +35,7 @@
 | `FEAT-ADP-006` | Stage 1 严格验收证据 | completed | 证明 arXiv 单源可长期稳定作为第一板块 | S1P5T03-R 真实 30 天 backfill、CONTENT_LEDGER、PR CI artifact | Stage 2 多来源验收、邮件模板优化 | EXTRACTED |
 | `FEAT-ADP-007` | 真实 CONTENT_LEDGER 闭环 | completed | 记录已讲主讲、未讲候选、邮件预览状态和 artifact refs | 30 selected rows、269 queued rows、本地控制跑与云端 artifact 已一致通过 | 生产邮件发送 | EXTRACTED |
 | `FEAT-ADP-008` | 本地生产状态持久化 | completed | Codex 恢复后可从本地 state dir 补历史缺失并核对证据 | `candidate_queue.json`、`local_content_ledger.jsonl`、per-run report、plain/HTML email preview、SMTP report | 将 secret 写入仓库或 plist | EXTRACTED |
-| `FEAT-ADP-009` | Stage 2 bioRxiv/medRxiv shadow source | in_progress | 把生命科学和医学预印本纳入 B1 source-promotion 候选，但先隔离影子运行，不影响 arXiv 生产基线 | metadata-only details API adapter、SourceItem `preprint`、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、live canary | 正式生产纳入、真实 SMTP、Release、视频、PDF/全文下载、GitHub cloud schedule | EXTRACTED |
+| `FEAT-ADP-009` | Stage 2 bioRxiv/medRxiv shadow source | in_progress | 把生命科学和医学预印本纳入 B1 source-promotion 候选，但先隔离影子运行，不影响 arXiv 生产基线 | metadata-only details API adapter、SourceItem `preprint`、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary、real no-send replay | 正式生产纳入、真实 SMTP、Release、视频、PDF/全文下载、GitHub cloud schedule、`STAGE2_PRODUCTION_ACCEPTED` | EXTRACTED |
 
 ## 关键证据
 
@@ -50,9 +50,11 @@
 | `EVID-EMAIL-HUMAN-036-001` | local_test | `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_email_human_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_global_scan.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_notifications.py -q` | `ADP-PHASE12-EMAIL-HUMAN-FORMAT-036`; 23 tests OK | EXTRACTED |
 | `EVID-S1P5T05-001` | local_test | `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s1p5t05_focus_now PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_stage1_migration.py -q` | `ADP-S1P5T05`; 15 tests OK | EXTRACTED |
 | `EVID-S1P5T05-002` | run_manifest | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` | local production/migration prep | EXTRACTED |
-| `EVID-S2P1T01-001` | local_test | focused S2P1/source/global/lesson/registry/contract tests | `S2P1T01`; 39 tests OK | EXTRACTED |
+| `EVID-S2P1T01-001` | local_test | focused S2P1/source/global/lesson/registry/contract tests | `S2P1T01`; 41 tests OK | EXTRACTED |
 | `EVID-S2P1T01-002` | live_canary | bioRxiv and medRxiv fixed-interval API canaries via curl fallback | `FEAT-ADP-009`; source adapters `biorxiv.details.v1` and `medrxiv.details.v1` | EXTRACTED |
 | `EVID-S2P1T01-003` | run_manifest | `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` | S2P1T01 implemented but promotion not complete | EXTRACTED |
+| `EVID-S2P1T01-004` | local_test | `stage2-preprint-replay-shadow` fixture path; 6 tests OK | `MOD-ADP-050`; `FORM-ADP-052`; `PARAM-ADP-372..376` | EXTRACTED |
+| `EVID-S2PBT01-005` | local_real_replay | `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json` | `S2PBT01/S2P1T01`; 30/30 real no-send replay; shadow_hours 720 | EXTRACTED |
 
 ## 限制与风险
 
@@ -61,4 +63,4 @@
 | 真实本地生产邮件尚未启用 | Stage 1 accepted 与本地 prep 完成不等于已经每天自动发送 | 先做 owner-controlled local SMTP env/Keychain smoke，再考虑安装 launchd | EXTRACTED |
 | GitHub cloud schedule 不再是生产 runner | 旧 workflow 证据仍可保留，但不能作为最终每日运行策略 | 保持 GitHub cloud schedule disabled，GitHub 只做代码/PR/CI/证据/备份 | EXTRACTED |
 | 邮件前台仍可继续优化 | 当前先保证 Stage 1 交付与迁移，模板美化不阻塞 S2P1T01 | 后续单独开邮件前台质量任务 | EXTRACTED |
-| Stage 2 多来源尚未完成 | bioRxiv/medRxiv adapter、shadow path、live canary 已完成；30-date replay 与 48h shadow evidence 未完成，不能纳入正式生产 | `S2P1T01_REPLAY_AND_48H_SHADOW_EVIDENCE` | EXTRACTED |
+| Stage 2 多来源尚未完成 | bioRxiv/medRxiv adapter、shadow path、replay/shadow builder、live canary、real no-send 30-date replay 已完成；V7 root contract/hash gate 未完成，不能纳入正式生产 | `S2PBT01_V7_CONTRACT_ALIAS_SYNC_OR_ROOT_V7_HASH_GATE` | EXTRACTED |

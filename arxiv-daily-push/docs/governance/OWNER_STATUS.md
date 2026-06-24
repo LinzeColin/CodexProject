@@ -39,7 +39,7 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (354/354 active parameters, 51/51 active formulas)
+- implementation_congruence: `VERIFIED` (359/359 active parameters, 52/52 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,11 +68,11 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `49`
-- total_formulas: `51`
-- active_formulas: `51`
-- total_parameters: `371`
-- active_parameters: `354`
+- model_count: `50`
+- total_formulas: `52`
+- active_formulas: `52`
+- total_parameters: `376`
+- active_parameters: `359`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -86,8 +86,8 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 - tree_bound_events: `0`
 - commit_bound_events: `1`
 - legacy_unbound_events: `54`
-- precommit_pending_events: `31`
-- pending_or_stale_events: `85`
+- precommit_pending_events: `35`
+- pending_or_stale_events: `89`
 
 ## 15. UNKNOWN
 
@@ -97,8 +97,8 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:df44db9c9bc9b045bcee70a57180327fec495e272e0d86f8da8e713591bcf4fc`
-- snapshot_event_time: `2026-06-24T09:46:05+10:00`
+- source_snapshot_hash: `sha256:ecbb2dc6f95cea8a84a880f029ec6fa506281abbc276022f01bb9dcc35fd262d`
+- snapshot_event_time: `2026-06-24T11:12:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
 - phase/gate: `S2P1 / ARXIV_PRODUCTION_ACCEPTED`
@@ -106,4 +106,4 @@ Stage 1 local production prep remains complete, but Stage 2 does not begin.
 ## 17. Next Unique Task
 
 - task_id: `S2P1T01`
-- reason: Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep.
+- reason: Promote bioRxiv and medRxiv as the next Stage 2 source adapters after Stage 1 arXiv acceptance and local production prep; V7 alias S2PBT01.

@@ -52,6 +52,7 @@ model_versions:
   MOD-ADP-047: "adp-stage2-preprint-ingest-v1"
   MOD-ADP-048: "adp-s2p1-preprint-source-promotion-v1"
   MOD-ADP-049: "adp-s2p1-preprint-shadow-daily-v1"
+  MOD-ADP-050: "adp-s2p1-preprint-replay-shadow-v1"
 parameter_profile_versions:
   adp-foundation-parameters: "adp-foundation-parameters-v1"
   adp-contract-parameters: "adp-contract-parameters-v1"
@@ -102,8 +103,9 @@ parameter_profile_versions:
   adp-stage2-preprint-ingest-parameters: "adp-stage2-preprint-ingest-parameters-v1"
   adp-s2p1-preprint-source-promotion-parameters: "adp-s2p1-preprint-source-promotion-parameters-v1"
   adp-s2p1-preprint-shadow-parameters: "adp-s2p1-preprint-shadow-parameters-v1"
+  adp-s2p1-preprint-replay-shadow-parameters: "adp-s2p1-preprint-replay-shadow-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260624-ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION"
+current_iteration: "ITER-20260624-ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE"
 current_phase: "S2P1"
 current_gate: "ARXIV_PRODUCTION_ACCEPTED"
 current_v6_task_id: "S2P1T01"

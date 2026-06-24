@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from collections.abc import Mapping, Sequence
+from datetime import date as Date
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +33,8 @@ from .preprint_adapter import (
 
 S2P1_PREPRINT_PROMOTION_MODEL_ID = "adp-s2p1-preprint-source-promotion-v1"
 S2P1_PREPRINT_SHADOW_MODEL_ID = "adp-s2p1-preprint-shadow-daily-v1"
+S2P1_PREPRINT_REPLAY_MODEL_ID = "adp-s2p1-preprint-terminal-replay-v1"
+S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID = "adp-s2p1-preprint-shadow-evidence-v1"
 S2P1_ACCEPTANCE_ID = "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
 S2P1_TASK_ID = "S2P1T01"
 S2P1_REQUIRED_SERVERS = ("biorxiv", "medrxiv")
@@ -37,6 +42,9 @@ S2P1_REPLAY_REQUIRED_DATES = 30
 S2P1_SHADOW_REQUIRED_HOURS = 48
 S2P1_QUEUE_FILENAME = "stage2_s2p1_preprint_queue.json"
 S2P1_LEDGER_FILENAME = "stage2_s2p1_preprint_ledger.jsonl"
+S2P1_REPLAY_REPORT_FILENAME = "stage2_s2p1_preprint_replay_report.json"
+S2P1_SHADOW_EVIDENCE_FILENAME = "stage2_s2p1_preprint_shadow_48h_report.json"
+S2P1_PROMOTION_REPORT_FILENAME = "stage2_s2p1_preprint_promotion_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -166,6 +174,7 @@ def run_s2p1_preprint_shadow_daily(
     generated_at: str,
     source_batches: Mapping[str, Mapping[str, Any]],
     queue: Mapping[str, Any] | None = None,
+    recent_source_ids: Sequence[str] = (),
     write: bool = True,
 ) -> dict[str, Any]:
     """Run one no-send Stage 2 shadow daily path and persist local evidence."""
@@ -183,6 +192,7 @@ def run_s2p1_preprint_shadow_daily(
         generated_at=generated_at,
         source_batches=source_batches,
         queue=queue_state,
+        recent_source_ids=recent_source_ids,
     )
     if write:
         _write_json(run_dir / "adp-s2p1-preprint-daily-input-report.json", daily_report)
@@ -316,6 +326,409 @@ def fetch_s2p1_preprint_batches(
         )
         for server in S2P1_REQUIRED_SERVERS
     }
+
+
+def build_s2p1_preprint_replay_shadow_evidence(
+    *,
+    state_dir: str | Path,
+    generated_at: str,
+    start_date: str | None = None,
+    end_date: str | None = None,
+    count: int = S2P1_REPLAY_REQUIRED_DATES,
+    lookback_days: int = 7,
+    max_records: int = 3,
+    source_batches_by_date: Mapping[str, Mapping[str, Mapping[str, Any]]] | None = None,
+    fetcher: Any | None = None,
+    write: bool = True,
+    polite_delay_seconds: float = 0.0,
+) -> dict[str, Any]:
+    """Build terminal replay plus 48h no-production shadow evidence for S2P1T01."""
+
+    state = Path(state_dir).resolve()
+    if write:
+        state.mkdir(parents=True, exist_ok=True)
+    dates = _replay_dates(start_date=start_date, end_date=end_date, count=count, generated_at=generated_at)
+    if not dates:
+        replay_report = _blocked_replay_report(generated_at, state, ["date range produced no replay dates"], requested_count=count)
+        shadow_report = _shadow_evidence_report(generated_at=generated_at, state=state, daily_reports=[], replay_report=replay_report)
+        return _combined_replay_shadow_report(generated_at, state, replay_report, shadow_report, {}, write=write)
+    if lookback_days < 1:
+        replay_report = _blocked_replay_report(generated_at, state, ["lookback_days must be >= 1"], requested_count=count)
+        shadow_report = _shadow_evidence_report(generated_at=generated_at, state=state, daily_reports=[], replay_report=replay_report)
+        return _combined_replay_shadow_report(generated_at, state, replay_report, shadow_report, {}, write=write)
+
+    daily_reports: list[dict[str, Any]] = []
+    selected_source_ids: list[str] = []
+    selected_canonical_ids: list[str] = []
+    source_batches_by_server: dict[str, Mapping[str, Any]] = {}
+    blocking_reasons: list[str] = []
+    queue_state = _load_json(state / S2P1_QUEUE_FILENAME) if (state / S2P1_QUEUE_FILENAME).exists() else None
+    for index, as_of in enumerate(dates, start=1):
+        source_batches = (
+            source_batches_by_date.get(as_of.isoformat(), {})
+            if isinstance(source_batches_by_date, Mapping)
+            else _fetch_replay_source_batches(
+                as_of=as_of,
+                generated_at=generated_at,
+                lookback_days=lookback_days,
+                max_records=max_records,
+                fetcher=fetcher,
+            )
+        )
+        if not isinstance(source_batches, Mapping):
+            source_batches = {}
+        for server in S2P1_REQUIRED_SERVERS:
+            batch = source_batches.get(server)
+            if isinstance(batch, Mapping):
+                source_batches_by_server[server] = batch
+        report = run_s2p1_preprint_shadow_daily(
+            state_dir=state,
+            date=as_of.isoformat(),
+            generated_at=generated_at,
+            source_batches=source_batches,
+            queue=queue_state,
+            recent_source_ids=selected_source_ids,
+            write=write,
+        )
+        report["replay_day_index"] = index
+        report["accelerated_historical_shadow"] = True
+        report["as_of_date"] = as_of.isoformat()
+        daily_reports.append(report)
+        queue_candidate = report.get("daily_report", {}).get("candidate_queue") if isinstance(report.get("daily_report"), Mapping) else None
+        if isinstance(queue_candidate, Mapping):
+            queue_state = queue_candidate
+        if report.get("status") != "pass":
+            blocking_reasons.extend(f"{as_of.isoformat()}: {reason}" for reason in report.get("blocking_reasons") or ["shadow daily blocked"])
+        else:
+            source_id = str(report.get("selected_source_id") or "")
+            canonical_id = str((report.get("content_ledger_row") or {}).get("canonical_document_id") or "")
+            if source_id:
+                selected_source_ids.append(source_id)
+            if canonical_id:
+                selected_canonical_ids.append(canonical_id)
+        if polite_delay_seconds > 0 and index < len(dates) and source_batches_by_date is None:
+            time.sleep(float(polite_delay_seconds))
+
+    replay_report = _replay_report(
+        generated_at=generated_at,
+        state=state,
+        requested_count=count,
+        dates=dates,
+        daily_reports=daily_reports,
+        selected_source_ids=selected_source_ids,
+        selected_canonical_ids=selected_canonical_ids,
+        blocking_reasons=blocking_reasons,
+    )
+    shadow_report = _shadow_evidence_report(generated_at=generated_at, state=state, daily_reports=daily_reports, replay_report=replay_report)
+    promotion_report = build_s2p1_preprint_promotion_report(
+        generated_at=generated_at,
+        source_batches=source_batches_by_server,
+        replay_report=replay_report,
+        shadow_report=shadow_report,
+    )
+    return _combined_replay_shadow_report(generated_at, state, replay_report, shadow_report, promotion_report, write=write)
+
+
+def validate_s2p1_preprint_replay_shadow_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2P1_PREPRINT_REPLAY_MODEL_ID:
+        errors.append("S2P1 replay-shadow report model_id must be adp-s2p1-preprint-terminal-replay-v1")
+    replay = report.get("replay_report") if isinstance(report.get("replay_report"), Mapping) else {}
+    shadow = report.get("shadow_report") if isinstance(report.get("shadow_report"), Mapping) else {}
+    promotion = report.get("promotion_report") if isinstance(report.get("promotion_report"), Mapping) else {}
+    if replay.get("status") != "pass":
+        errors.append("embedded S2P1 replay_report must pass")
+    if shadow.get("status") != "pass":
+        errors.append("embedded S2P1 shadow_report must pass")
+    if promotion.get("status") != "pass":
+        errors.append("embedded S2P1 promotion_report must pass")
+    if report.get("formal_production_inclusion") is not False:
+        errors.append("formal_production_inclusion must be false")
+    if report.get("github_cloud_schedule_enabled") is not False:
+        errors.append("github_cloud_schedule_enabled must be false")
+    if report.get("real_smtp_sent") is not False:
+        errors.append("real_smtp_sent must be false")
+    return errors
+
+
+def _fetch_replay_source_batches(
+    *,
+    as_of: Date,
+    generated_at: str,
+    lookback_days: int,
+    max_records: int,
+    fetcher: Any | None,
+) -> dict[str, dict[str, Any]]:
+    start = as_of - timedelta(days=int(lookback_days) - 1)
+    interval = f"{start.isoformat()}/{as_of.isoformat()}"
+    return {
+        server: ingest_latest_preprints(
+            server=server,
+            generated_at=generated_at,
+            interval=interval,
+            max_records=max_records,
+            fetcher=fetcher,
+        )
+        for server in S2P1_REQUIRED_SERVERS
+    }
+
+
+def _replay_report(
+    *,
+    generated_at: str,
+    state: Path,
+    requested_count: int,
+    dates: Sequence[Date],
+    daily_reports: Sequence[Mapping[str, Any]],
+    selected_source_ids: Sequence[str],
+    selected_canonical_ids: Sequence[str],
+    blocking_reasons: Sequence[str],
+) -> dict[str, Any]:
+    daily_records = [_daily_replay_record(as_of, report) for as_of, report in zip(dates, daily_reports, strict=False)]
+    future_leakage = [record for record in daily_records if record.get("future_leakage")]
+    duplicate_selected = _duplicate_values(selected_source_ids)
+    duplicate_canonical = _duplicate_values(selected_canonical_ids)
+    queue_breaks = [
+        record
+        for record in daily_records
+        if record.get("status") == "pass" and not (record.get("queue_persisted") and record.get("ledger_persisted") and record.get("email_preview_persisted"))
+    ]
+    p0_p1_records = [record for record in daily_records if int(record.get("p0_p1_blocker_count") or 0) > 0]
+    reasons = list(blocking_reasons)
+    if len({date.isoformat() for date in dates}) < S2P1_REPLAY_REQUIRED_DATES:
+        reasons.append("S2P1 replay requires 30 unique dates")
+    if len(daily_reports) < requested_count:
+        reasons.append("S2P1 replay did not produce all requested daily reports")
+    if duplicate_selected:
+        reasons.append("S2P1 replay duplicate selected source IDs: " + ", ".join(duplicate_selected))
+    if duplicate_canonical:
+        reasons.append("S2P1 replay duplicate canonical document IDs: " + ", ".join(duplicate_canonical))
+    if future_leakage:
+        reasons.append("S2P1 replay has future-dated selected preprints")
+    if queue_breaks:
+        reasons.append("S2P1 replay queue/ledger/email persistence continuity failed")
+    if p0_p1_records:
+        reasons.append("S2P1 replay has P0/P1 blockers")
+    status = "pass" if not reasons else "blocked"
+    return {
+        "model_id": S2P1_PREPRINT_REPLAY_MODEL_ID,
+        "acceptance_id": S2P1_ACCEPTANCE_ID,
+        "task_id": S2P1_TASK_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "state_dir": str(state),
+        "required_replay_count": S2P1_REPLAY_REQUIRED_DATES,
+        "requested_replay_count": int(requested_count),
+        "replay_count": len(daily_reports),
+        "success_count": len([report for report in daily_reports if report.get("status") == "pass"]),
+        "unique_date_count": len({date.isoformat() for date in dates}),
+        "unique_selected_source_count": len(set(selected_source_ids)),
+        "unique_selected_canonical_count": len(set(selected_canonical_ids)),
+        "real_preprint_source_id_count": len([source_id for source_id in selected_source_ids if _is_preprint_source_id(source_id)]),
+        "future_leakage_count": len(future_leakage),
+        "duplicate_selected_count": len(duplicate_selected),
+        "duplicate_canonical_count": len(duplicate_canonical),
+        "queue_continuity_break_count": len(queue_breaks),
+        "p0_p1_blocker_count": len(p0_p1_records),
+        "formal_production_inclusion": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "video_generated": False,
+        "daily_records": daily_records,
+        "blocking_reasons": sorted(set(reasons)),
+    }
+
+
+def _daily_replay_record(as_of: Date, report: Mapping[str, Any]) -> dict[str, Any]:
+    source_item = (
+        report.get("daily_report", {}).get("daily_input", {}).get("source_item", {})
+        if isinstance(report.get("daily_report"), Mapping)
+        else {}
+    )
+    if not isinstance(source_item, Mapping):
+        source_item = {}
+    selected_source_id = str(report.get("selected_source_id") or source_item.get("source_id") or "")
+    source_date = _source_item_preprint_date(source_item)
+    validation_errors = report.get("validation_errors") if isinstance(report.get("validation_errors"), list) else []
+    blocking_reasons = [str(reason) for reason in report.get("blocking_reasons") or []]
+    p0_p1_blockers = [
+        reason
+        for reason in [*blocking_reasons, *[str(error) for error in validation_errors]]
+        if "P0" in reason or "P1" in reason or "claim" in reason.lower() or "validation" in reason.lower()
+    ]
+    return {
+        "date": as_of.isoformat(),
+        "status": str(report.get("status") or "blocked"),
+        "selected_source_id": selected_source_id,
+        "selected_title": str(report.get("selected_title") or source_item.get("title") or ""),
+        "canonical_document_id": str((report.get("content_ledger_row") or {}).get("canonical_document_id") or _canonical_document_id(source_item)),
+        "source_preprint_date": source_date,
+        "future_leakage": bool(source_date and source_date > as_of.isoformat()),
+        "queue_persisted": Path(str(report.get("candidate_queue_path") or "")).is_file(),
+        "ledger_persisted": Path(str(report.get("content_ledger_path") or "")).is_file(),
+        "email_preview_persisted": Path(str((report.get("email_preview_paths") or {}).get("plain") or "")).is_file(),
+        "daily_input_ready": bool(report.get("daily_input_ready") is True),
+        "daily_run_status": str(report.get("daily_run_status") or ""),
+        "p0_p1_blocker_count": len(p0_p1_blockers),
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def _shadow_evidence_report(
+    *,
+    generated_at: str,
+    state: Path,
+    daily_reports: Sequence[Mapping[str, Any]],
+    replay_report: Mapping[str, Any],
+) -> dict[str, Any]:
+    dates = [str(report.get("date") or report.get("as_of_date") or "") for report in daily_reports if str(report.get("date") or report.get("as_of_date") or "")]
+    shadow_hours = _shadow_hours_from_dates(dates)
+    reasons: list[str] = []
+    if replay_report.get("status") != "pass":
+        reasons.append("S2P1 shadow evidence requires passing replay report")
+    if shadow_hours < S2P1_SHADOW_REQUIRED_HOURS:
+        reasons.append("S2P1 shadow requires at least 48 hours")
+    if any(report.get("status") != "pass" for report in daily_reports):
+        reasons.append("S2P1 shadow daily reports must all pass")
+    if any(report.get("formal_production_inclusion") is not False for report in daily_reports):
+        reasons.append("S2P1 shadow daily formal_production_inclusion must be false")
+    if any(report.get("real_smtp_sent") is not False for report in daily_reports):
+        reasons.append("S2P1 shadow daily must not send SMTP")
+    if any(report.get("production_affected") is not False for report in daily_reports):
+        reasons.append("S2P1 shadow daily must not affect production")
+    return {
+        "model_id": S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID,
+        "acceptance_id": S2P1_ACCEPTANCE_ID,
+        "task_id": S2P1_TASK_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": "pass" if not reasons else "blocked",
+        "state_dir": str(state),
+        "shadow_hours": shadow_hours,
+        "shadow_tick_count": len(daily_reports),
+        "accelerated_historical_shadow": True,
+        "formal_production_inclusion": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "video_required": False,
+        "daily_report_refs": [str(report.get("run_dir") or "") for report in daily_reports],
+        "blocking_reasons": reasons,
+    }
+
+
+def _combined_replay_shadow_report(
+    generated_at: str,
+    state: Path,
+    replay_report: Mapping[str, Any],
+    shadow_report: Mapping[str, Any],
+    promotion_report: Mapping[str, Any],
+    *,
+    write: bool,
+) -> dict[str, Any]:
+    status = "pass" if replay_report.get("status") == shadow_report.get("status") == promotion_report.get("status") == "pass" else "blocked"
+    artifact_paths = {
+        "replay_report": str(state / S2P1_REPLAY_REPORT_FILENAME),
+        "shadow_report": str(state / S2P1_SHADOW_EVIDENCE_FILENAME),
+        "promotion_report": str(state / S2P1_PROMOTION_REPORT_FILENAME),
+        "queue": str(state / S2P1_QUEUE_FILENAME),
+        "ledger": str(state / S2P1_LEDGER_FILENAME),
+    }
+    report = {
+        "model_id": S2P1_PREPRINT_REPLAY_MODEL_ID,
+        "acceptance_id": S2P1_ACCEPTANCE_ID,
+        "task_id": S2P1_TASK_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "s2p1_source_promotion_accepted": status == "pass",
+        "stage2_production_accepted": False,
+        "formal_production_inclusion": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "video_generated": False,
+        "replay_report": replay_report,
+        "shadow_report": shadow_report,
+        "promotion_report": promotion_report,
+        "artifact_paths": artifact_paths,
+        "blocking_reasons": sorted(set([*replay_report.get("blocking_reasons", []), *shadow_report.get("blocking_reasons", []), *promotion_report.get("blocking_reasons", [])])),
+    }
+    report["validation_errors"] = validate_s2p1_preprint_replay_shadow_report(report) if status == "pass" else []
+    if write:
+        _write_json(state / S2P1_REPLAY_REPORT_FILENAME, replay_report)
+        _write_json(state / S2P1_SHADOW_EVIDENCE_FILENAME, shadow_report)
+        _write_json(state / S2P1_PROMOTION_REPORT_FILENAME, promotion_report)
+        _write_json(state / "stage2_s2p1_preprint_replay_shadow_report.json", report)
+    return report
+
+
+def _blocked_replay_report(generated_at: str, state: Path, reasons: Sequence[str], *, requested_count: int) -> dict[str, Any]:
+    return {
+        "model_id": S2P1_PREPRINT_REPLAY_MODEL_ID,
+        "acceptance_id": S2P1_ACCEPTANCE_ID,
+        "task_id": S2P1_TASK_ID,
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": "blocked",
+        "state_dir": str(state),
+        "required_replay_count": S2P1_REPLAY_REQUIRED_DATES,
+        "requested_replay_count": int(requested_count),
+        "replay_count": 0,
+        "success_count": 0,
+        "unique_date_count": 0,
+        "future_leakage_count": 0,
+        "duplicate_selected_count": 0,
+        "p0_p1_blocker_count": 0,
+        "blocking_reasons": list(reasons),
+    }
+
+
+def _replay_dates(*, start_date: str | None, end_date: str | None, count: int, generated_at: str) -> list[Date]:
+    if count < 1:
+        return []
+    if start_date:
+        start = _parse_date(start_date)
+        return [start + timedelta(days=offset) for offset in range(count)]
+    end = _parse_date(end_date) if end_date else _parse_date(str(generated_at)[:10])
+    start = end - timedelta(days=count - 1)
+    return [start + timedelta(days=offset) for offset in range(count)]
+
+
+def _parse_date(value: str) -> Date:
+    return datetime.strptime(str(value), "%Y-%m-%d").date()
+
+
+def _source_item_preprint_date(item: Mapping[str, Any]) -> str:
+    metadata = item.get("metadata") if isinstance(item.get("metadata"), Mapping) else {}
+    preprint = metadata.get("preprint") if isinstance(metadata.get("preprint"), Mapping) else {}
+    raw = str(preprint.get("date") or "").strip()
+    return raw[:10] if re.fullmatch(r"\d{4}-\d{2}-\d{2}.*", raw) else ""
+
+
+def _duplicate_values(values: Sequence[str]) -> list[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for value in values:
+        if value in seen:
+            duplicates.add(value)
+        elif value:
+            seen.add(value)
+    return sorted(duplicates)
+
+
+def _shadow_hours_from_dates(dates: Sequence[str]) -> float:
+    parsed = sorted(_parse_date(item[:10]) for item in dates if re.fullmatch(r"\d{4}-\d{2}-\d{2}", item[:10]))
+    if len(parsed) < 2:
+        return 0.0
+    return float(((parsed[-1] - parsed[0]).days + 1) * 24)
+
+
+def _is_preprint_source_id(source_id: str) -> bool:
+    return source_id.startswith(("biorxiv:", "medrxiv:"))
 
 
 def _preprint_scan(source_batches: Mapping[str, Mapping[str, Any]], *, generated_at: str) -> dict[str, Any]:

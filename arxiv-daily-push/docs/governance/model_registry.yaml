@@ -1240,3 +1240,25 @@ models:
     config_refs: ["NOT_APPLICABLE"]
     test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_global_scan.py"]
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]
+  - model_id: "MOD-ADP-050"
+    name: "S2P1T01 preprint replay and 48h shadow evidence"
+    kind: "deterministic historical replay and shadow evidence builder"
+    purpose: "Run 30 historical bioRxiv/medRxiv preprint as-of dates through the no-send shadow daily path, persist local queue/ledger/report/email preview artifacts, build a 48h shadow aggregate, and feed the S2P1T01 promotion gate without claiming full Stage 2 production acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2p1-preprint-replay-shadow-v1"
+    assumption_ids: ["ASM-ADP-003", "ASM-ADP-035"]
+    formula_ids: ["FORM-ADP-052"]
+    parameter_ids:
+      - "PARAM-ADP-372"
+      - "PARAM-ADP-373"
+      - "PARAM-ADP-374"
+      - "PARAM-ADP-375"
+      - "PARAM-ADP-376"
+    inputs: ["state_dir", "generated_at", "start_date", "end_date", "count", "lookback_days", "max_records", "source_batches_by_date", "fetcher"]
+    outputs: ["S2P1 replay-shadow aggregate report", "replay report", "48h shadow report", "promotion report", "preprint queue", "preprint ledger", "daily reports", "email previews"]
+    code_refs: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py"]
+    config_refs: ["NOT_APPLICABLE"]
+    test_refs: ["arxiv-daily-push/tests/test_stage2_sources.py"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md"]

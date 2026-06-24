@@ -1,0 +1,121 @@
+{
+  "run_id": "ADP-S2P1T01-REPLAY-SHADOW-BUILDER-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2P1T01",
+  "iteration_id": "ITER-20260624-ADP-S2P1T01-REPLAY-SHADOW-BUILDER",
+  "event_id": "EVENT-20260624-ADP-087",
+  "created_at": "2026-06-24T10:45:00+10:00",
+  "status": "in_progress",
+  "scope": [
+    "Add deterministic S2P1T01 replay and 48h shadow evidence builder.",
+    "Add CLI command for accelerated historical bioRxiv/medRxiv replay without production side effects.",
+    "Persist local preprint queue, ledger, per-day reports, email previews, replay report, shadow report, and promotion report under an explicit state_dir.",
+    "Register MOD-ADP-050, FORM-ADP-052, and PARAM-ADP-372 through PARAM-ADP-376."
+  ],
+  "non_scope": [
+    "No Stage 2 production acceptance claim.",
+    "No formal production inclusion of bioRxiv or medRxiv.",
+    "No production schedule enablement.",
+    "No GitHub cloud scheduled production runner.",
+    "No real SMTP send.",
+    "No GitHub Release upload.",
+    "No PDF or full-text download.",
+    "No video requirement.",
+    "No secret reads or logging."
+  ],
+  "implemented_files": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件"
+  ],
+  "models_added": [
+    "adp-s2p1-preprint-replay-shadow-v1"
+  ],
+  "formulas_added": [
+    "FORM-ADP-052"
+  ],
+  "parameters_added": [
+    "S2P1_PREPRINT_REPLAY_MODEL_ID",
+    "S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID",
+    "S2P1_REPLAY_REPORT_FILENAME",
+    "S2P1_SHADOW_EVIDENCE_FILENAME",
+    "S2P1_PROMOTION_REPORT_FILENAME"
+  ],
+  "builder_contract": {
+    "cli_command": "stage2-preprint-replay-shadow",
+    "required_replay_dates": 30,
+    "required_shadow_hours": 48,
+    "state_dir_required": true,
+    "writes_queue": true,
+    "writes_ledger": true,
+    "writes_email_previews": true,
+    "writes_replay_report": true,
+    "writes_shadow_report": true,
+    "writes_promotion_report": true,
+    "stage2_production_accepted": false
+  },
+  "fixture_replay_validation": {
+    "status": "pass",
+    "success_count": 30,
+    "unique_date_count": 30,
+    "duplicate_selected_count": 0,
+    "duplicate_canonical_count": 0,
+    "future_leakage_count": 0,
+    "queue_continuity_break_count": 0,
+    "p0_p1_blocker_count": 0,
+    "shadow_hours_minimum": 48,
+    "stage2_production_accepted": false
+  },
+  "acceptance_gates": {
+    "source_gate_ready_for_test": true,
+    "replay_shadow_builder_ready": true,
+    "durable_real_30_date_replay_attached": false,
+    "durable_48h_shadow_attached": false,
+    "formal_production_inclusion": false,
+    "stage2_source_promotion_complete": false,
+    "stage2_production_accepted": false
+  },
+  "safety_gates": {
+    "secret_values_logged": false,
+    "secret_values_committed": false,
+    "github_cloud_schedule_enabled": false,
+    "production_schedule_enabled": false,
+    "real_smtp_sent": false,
+    "release_upload_enabled": false,
+    "real_release_uploaded": false,
+    "video_generated": false,
+    "pdf_downloaded": false,
+    "full_text_downloaded": false,
+    "stage1_arxiv_local_runner_modified_for_production": false
+  },
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2p1_replay_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+  ],
+  "test_results": [
+    "focused S2P1 replay/shadow fixture tests: 6 tests OK",
+    "fixture aggregate reports 30/30 success, 30 unique dates, no future leakage, no duplicate selected/canonical IDs, no queue continuity break, no P0/P1 blockers, and at least 48h shadow evidence",
+    "stage2_production_accepted remains false"
+  ],
+  "production_acceptance_claimed": false,
+  "stage2_completion_claimed": false,
+  "stage1_arxiv_acceptance_preserved": "ARXIV_PRODUCTION_ACCEPTED",
+  "next_task": "S2P1T01_REAL_REPLAY_AND_48H_SHADOW_EVIDENCE",
+  "rollback": "Revert replay/shadow builder code, CLI command, tests, MOD-ADP-050, FORM-ADP-052, PARAM-ADP-372..376, this manifest, EVENT-20260624-ADP-087, and related governance/owner records.",
+  "risks": [
+    "Durable real 30-date replay against live bioRxiv/medRxiv historical data has not been attached yet.",
+    "Live preprint API windows may be sparse or drift.",
+    "Source promotion can still fail on duplicate canonical DOI, future leakage, P0/P1 evidence blockers, or queue/ledger/email persistence discontinuity.",
+    "bioRxiv and medRxiv remain excluded from formal production until promotion gates pass."
+  ]
+}
