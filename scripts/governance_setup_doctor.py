@@ -95,6 +95,11 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "github.event.pull_request.base.sha" in text
             and "--base-ref \"${GOVERNANCE_BASE_REF}\"" in text
         ),
+        "pull_request_skips_full_governance_tests": (
+            "Run full governance validator tests" in text
+            and "github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')" in text
+            and "github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope != 'information-quality')" not in text
+        ),
         "main_push_changed_only_uses_event_before": (
             "github.event_name == 'push'" in text
             and "github.event.before || inputs.base_ref || ''" in text

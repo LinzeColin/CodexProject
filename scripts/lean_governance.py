@@ -799,6 +799,8 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
 
     dirty = git_status_porcelain(root)
     zero_diff = not dirty
+    selected_project_count = int(scope.get("selected_project_count", len(scope["selected_projects"])))
+    total_project_count = int(scope.get("total_project_count", baseline["totals"]["projects"]))
     summary = {
         "schema_version": 1,
         "command": "ci",
@@ -818,6 +820,19 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
             "checked_count": len(check_render_results),
             "skipped": check_render_skipped,
             "skipped_count": len(check_render_skipped),
+        },
+        "budget_telemetry": {
+            "schema_version": 1,
+            "mode": "changed-only-fast-gate",
+            "unit": "project-scope-proxy",
+            "selected_project_count": selected_project_count,
+            "total_project_count": total_project_count,
+            "full_project_scan_avoided_count": max(total_project_count - selected_project_count, 0),
+            "semantic_scope": "changed-only",
+            "check_render_checked_count": len(check_render_results),
+            "check_render_skipped_count": len(check_render_skipped),
+            "write": False,
+            "full_governance_location": "schedule_or_workflow_dispatch_all",
         },
         "zero_diff": {
             "clean": zero_diff,

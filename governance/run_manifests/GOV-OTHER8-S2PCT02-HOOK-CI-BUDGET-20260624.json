@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PCT02",
+  "acceptance_ids": [
+    "ACC-S2PCT02"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PCT02",
+  "generated_at": "2026-06-24T16:05:00+10:00",
+  "implementation_base_sha": "ffb60236a4138d204c02cc1961bf27494f2a795f",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:50b9146e378df3d7c59ea93eb28c954c4eb48d0b1c101b72f8dd8cb1930c0ae2",
+  "changed_files_declared": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/budget_guard.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json"
+  ],
+  "changed_files_actual": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/budget_guard.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json"
+  ],
+  "required_governance_files": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/budget_guard.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json"
+  ],
+  "updated_governance_files": [
+    ".codex/hooks/governance_stop.py",
+    ".github/workflows/project-governance.yml",
+    "scripts/governance_setup_doctor.py",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/budget_guard.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json"
+  ],
+  "change_classification": [
+    "pull_request_changed_only_fast_gate",
+    "stop_hook_advisory_fast_hint",
+    "budget_telemetry_project_scope_proxy",
+    "other8_s2pct02"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "PR governance workflow no longer runs the full governance test suite on pull_request; full validator tests and full governance validation are reserved for schedule or manual all scope. Stop Hook suggestions now point only to changed-only CI and expose a read-only event matrix and budget policy. Changed-only CI summaries include project-scope budget telemetry.",
+  "test_commands": [
+    "python -B tools/budget_guard.py --self-test",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_ci_changed_only_orchestrates_read_only_gates tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_ci_changed_only_skips_unmigrated_check_render tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review6_setup_doctor_reports_entry_gate_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_pr_governance_keeps_full_computation_out_of_pr_path tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_stop_hook_is_pure_advisory_under_one_second tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pct02_budget_guard_contract_passes -q",
+    "python -B scripts/governance_setup_doctor.py --json",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "python -m json.tool governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json",
+    "git diff --name-only HEAD -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B tools/budget_guard.py --self-test",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=PASS; workflow, Stop Hook, changed-only CI budget telemetry, and zero-write checks all true."
+    },
+    {
+      "command": "python -B -m unittest ...S2PCT02 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "6 tests OK; covered changed-only CI orchestration, skipped unmigrated render checks, doctor entry gates, PR workflow stratification, Stop Hook advisory mode, and budget guard self-test."
+    },
+    {
+      "command": "python -B scripts/governance_setup_doctor.py --json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "workflow_entry_gates.status=PASS including pull_request_skips_full_governance_tests=true; overall status=WARN only because local app trust and GitHub branch protection remain externally UNVERIFIED."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 10 registered projects validated with errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0; selected_project_count=8 total_project_count=10 full_project_scan_avoided_count=2; check_render.checked_count=8; zero_diff.clean=true."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Run manifest JSON parsed successfully."
+    },
+    {
+      "command": "git diff --name-only HEAD -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No diff under EEI or arxiv-daily-push; excluded project trees remain untouched."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors reported."
+    }
+  ],
+  "evidence_refs": [
+    ".github/workflows/project-governance.yml",
+    ".codex/hooks/governance_stop.py",
+    "scripts/lean_governance.py",
+    "scripts/governance_setup_doctor.py",
+    "tools/budget_guard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT02-HOOK-CI-BUDGET-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PCT02 moves full governance computation out of PR and Stop Hook default paths while preserving changed-scope truth.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PCT02 makes PR/main paths use the changed-only fast gate, keeps Stop Hook advisory and zero-write, exposes budget telemetry from the changed-only CI summary, and adds a read-only budget guard matching the roadmap test command.",
+  "rollback": "Revert workflow, Stop Hook, lean_governance budget telemetry, governance_setup_doctor check, budget_guard, focused tests, and this manifest.",
+  "unresolved_risks": [
+    "GitHub branch protection and Codex app hook trust remain externally UNVERIFIED without authenticated GitHub/App state.",
+    "Full governance validator tests are intentionally not run on PR; schedule/manual all remains the high-risk release gate.",
+    "Existing Serenity-Alipay semantic extractor mismatch remains outside this S2PCT02 scope and must be handled by later semantic remediation or manual all gate work."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

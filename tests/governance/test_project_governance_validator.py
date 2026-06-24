@@ -848,6 +848,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(summary["write"])
         self.assertTrue(summary["zero_diff"]["clean"])
         self.assertEqual(summary["check_render"]["checked_count"], 1)
+        self.assertEqual(summary["budget_telemetry"]["mode"], "changed-only-fast-gate")
+        self.assertEqual(summary["budget_telemetry"]["semantic_scope"], "changed-only")
+        self.assertEqual(summary["budget_telemetry"]["selected_project_count"], 1)
+        self.assertEqual(summary["budget_telemetry"]["total_project_count"], 1)
+        self.assertEqual(summary["budget_telemetry"]["full_governance_location"], "schedule_or_workflow_dispatch_all")
 
     def test_review9_s3_ci_changed_only_skips_unmigrated_check_render(self) -> None:
         cli = load_lean_governance_module()
@@ -883,6 +888,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(summary["check_render"]["checked_count"], 0)
         self.assertEqual(summary["check_render"]["skipped_count"], 1)
         self.assertEqual(summary["check_render"]["skipped"][0]["reason"], "missing_lean_canonical_facts")
+        self.assertEqual(summary["budget_telemetry"]["check_render_checked_count"], 0)
+        self.assertEqual(summary["budget_telemetry"]["check_render_skipped_count"], 1)
 
     def test_review9_s4pat01_serenity_evidence_index_bounds_read_scope(self) -> None:
         validator = load_validator_module()
@@ -3939,6 +3946,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         checks = report["checks"]
         for check_name in {
             "pull_request_changed_only_enforce_sync_semantic",
+            "pull_request_skips_full_governance_tests",
             "main_push_changed_only_uses_event_before",
             "pull_request_skips_information_quality",
             "full_governance_runs_only_on_schedule_or_manual_all",
@@ -3998,11 +4006,32 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("github.event.pull_request.base.sha", workflow)
         self.assertIn("scripts/lean_governance.py ci --changed-only", workflow)
         self.assertNotIn("scripts/validate_project_governance.py --changed-only", workflow)
+        self.assertIn("Run full governance validator tests", workflow)
+        self.assertNotIn("github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope != 'information-quality')", workflow)
         self.assertIn("scripts/lean_governance.py validate --all --semantic --drift-report", workflow)
         self.assertIn("scripts/lean_governance.py validate --project", workflow)
         self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
         self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+
+    def test_other8_s2pct02_budget_guard_contract_passes(self) -> None:
+        hook_text = STOP_HOOK.read_text(encoding="utf-8")
+        self.assertIn("budget_policy", hook_text)
+        self.assertIn("event_matrix", hook_text)
+        self.assertNotIn("unittest discover", hook_text)
+        self.assertNotIn("pytest tests/governance", hook_text)
+
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "tools" / "budget_guard.py"), "--self-test"],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "PASS", report)
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

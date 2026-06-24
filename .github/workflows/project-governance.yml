@@ -45,8 +45,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run governance validator tests
-        if: github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope != 'information-quality')
+      - name: Run full governance validator tests
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')
         run: |
           set +e
           log_file="${RUNNER_TEMP}/governance-validator-tests.log"

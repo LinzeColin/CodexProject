@@ -15,7 +15,6 @@ from typing import Any
 
 SUGGESTED_COMMANDS = [
     "python3 scripts/lean_governance.py ci --changed-only --base-ref <base_ref>",
-    "python3 -m unittest discover -s tests/governance -p 'test_*.py' -q",
 ]
 
 
@@ -40,6 +39,17 @@ def main() -> int:
             "release, or high-risk governance changes; the hook does not inspect files."
         ),
         "suggested_commands": SUGGESTED_COMMANDS,
+        "event_matrix": {
+            "pull_request": "changed-only fast gate",
+            "main_push": "changed-only fast gate",
+            "schedule": "full governance gate",
+            "manual_all": "full governance gate",
+        },
+        "budget_policy": {
+            "default": "changed-only fast gate",
+            "write": False,
+            "full_governance": "schedule or manual all only",
+        },
     }
     emit({"continue": True, "governance_hint": hint})
     return 0
