@@ -14,7 +14,7 @@
 - Project: `whkmSalary`
 - Path: `whkmSalary`
 - Product version: `0.0.0`
-- Phase/Gate: `B / S3PA-GATE-owner-blocked`
+- Phase/Gate: `S4PC / S4PC-GATE-in-progress`; delivery remains `S3PA-GATE-owner-blocked`
 - Models/Formulas/Parameters total: `2 / 10 / 80`
 - Active formulas/parameters: `10 / 80`
 - Machine checked formulas/parameters: `9 / 78`
@@ -61,3 +61,11 @@
 - The existing 湖北 regression fixture remains unchanged: `total_score=13.875`, `perf_money=4995.0`, `total_salary=22995.0`, `after_tax_salary=22305.15`.
 - Deployment dependencies are pinned in `requirements.txt`; local Streamlit runtime smoke is not claimed because `streamlit` and `pandas` are not installed locally.
 - Readiness remains `FAILED`; owner policy, legal/tax basis, and historical reconciliation remain blocked under `TASK-WHKM-B-001`.
+
+## S4PCT02 Structure Update
+
+- Runtime implementation now lives under `src/whkm_salary/`; root `salary_logic.py` and `streamlit_app.py` are compatibility wrappers only.
+- `tests/` remains the test boundary and now covers package/root compatibility; `config/structure_contract.yaml` records structure ownership only and does not carry salary policy parameters.
+- Chinese owner entries remain `功能清单`, `开发记录`, and `模型参数文件`, rendered from Lean v2 governance files.
+- `Procfile` startup remains `streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0`.
+- Delivery readiness remains `FAILED`; this structure migration does not approve payroll policy, tax basis, rounding law, or real payroll use.

@@ -2,6 +2,8 @@
 
 ## Unreleased - 2026-06-24
 
+- S4PCT02 establishes the minimal `src/`, `tests/`, `config/`, and Chinese owner-entry structure: runtime implementation now lives under `src/whkm_salary/`, root `salary_logic.py` and `streamlit_app.py` remain compatibility wrappers, and `Procfile` startup stays unchanged.
+- Added `config/structure_contract.yaml` and `docs/whkm_structure_report.md`; no salary formulas, active parameter values, Streamlit defaults, or payroll readiness claims changed.
 - S3PAT03 adds explicit Decimal half-up cent rounding for monetary outputs and keeps the existing 湖北 regression fixture unchanged.
 - Pinned deployment dependencies to `streamlit==1.58.0` and `pandas==3.0.3`; local Streamlit runtime smoke is not claimed because those packages are not installed in the local environment.
 - S3PAT02 consolidates Streamlit province weights to the `salary_logic.projects` single source.

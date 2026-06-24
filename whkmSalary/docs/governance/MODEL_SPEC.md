@@ -21,8 +21,8 @@ Legacy files `功能清单`, `开发记录`, and `模型参数文件` are compat
 
 | ID | Name | Kind | Status | Evidence |
 |---|---|---|---|---|
-| MOD-001 | Quarterly performance salary calculation | business_calculation_model | active | `whkmSalary/salary_logic.py:143` |
-| MOD-002 | Streamlit input constraints | deterministic_rule_engine | active | `whkmSalary/streamlit_app.py:23` |
+| MOD-001 | Quarterly performance salary calculation | business_calculation_model | active | `whkmSalary/src/whkm_salary/salary_logic.py:143` |
+| MOD-002 | Streamlit input constraints | deterministic_rule_engine | active | `whkmSalary/src/whkm_salary/streamlit_app.py:23` |
 
 ## Assumptions And Policy Source
 
