@@ -1,0 +1,99 @@
+{
+  "manifest_id": "ADP-S2PAT06-V7-2-CURRENT-CONTRACT-20260624",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PAT06",
+  "task_aliases": [
+    "S2PHT01V1.1-T00"
+  ],
+  "phase": "S2PA",
+  "generated_at": "2026-06-24T20:40:00+10:00",
+  "actor": "Codex",
+  "status": "completed_local_validation_passed_pending_pr_ci",
+  "acceptance_claimed": true,
+  "acceptance_ids": [
+    "ACC-S2PAT06-V7-2-CURRENT"
+  ],
+  "acceptance_id": "ACC-S2PAT06-V7-2-CURRENT",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "previous_contract_version": "ADP-PRODUCT-CONTRACT-V7.1",
+  "current_pointer": "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+  "root_lock": "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+  "v7_1_preserved_read_only": true,
+  "email_v1_workstream_next": "S2PHT01V1.1-T01",
+  "global_current_task": "S2PCT02",
+  "agent_revalidation_required": true,
+  "stage2_shadow_sources_may_continue": true,
+  "stage2_shadow_conditions": [
+    "no_shared_v7_2_contract_file_conflict",
+    "no_public_schema_change",
+    "no_final_email_or_real_side_effects",
+    "V7_2_revalidation_receipt_recorded"
+  ],
+  "stage2_production_accepted": false,
+  "d2_source_domain_accepted": false,
+  "integrated_production_accepted": false,
+  "formal_production_inclusion": false,
+  "github_cloud_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "video_generated": false,
+  "governance_code_changed": true,
+  "production_code_or_public_schema_changed": false,
+  "production_email_code_changed": false,
+  "public_schema_changed": false,
+  "source_inputs": {
+    "v7_1_product_contract_sha256": "e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad",
+    "v7_1_roadmap_sha256": "b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6",
+    "v7_1_audit_findings_sha256": "f102af13006e5a18de6ad71e6c2e6b9080ba06384dd6d26fd99019a9437dc165",
+    "v1_1_task_pack_sha256": "8edbae035da904fe7b465142f90c64f1690a9d36fb24d2a5100fd699e6592eff",
+    "reaudit_report_sha256": "dac6bcab86e9e7dd04da0cb069fe2443517b56d52fce0cdd3ce3686e2f2b6d1b"
+  },
+  "v7_2_hashes": {
+    "product_contract_sha256": "a433a4e5d153d8ee849799a21b188a9c4e39036d1de75dd3f91c6ab315e7d5c6",
+    "roadmap_sha256": "aa1aa0b1b0b532a7dc092d6ed124cddb3c9b097a67b969ee2c8d58eed2bd9378",
+    "migration_matrix_sha256": "282c7367c2566e386f556ceb5edc06be06e7b3318324ac349a8ba207b5801af4",
+    "final_review_sha256": "d0e8976a64334f48bce338cff93304ad8684ce25bd5c6b32bd651709326c97fb"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/AUDIT/final_review_matrix.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_contract_final PYTHONPATH=scripts:arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_tests_final PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest arxiv-daily-push/docs/pursuing_goal/v7_2/tests/test_v7_2_contract.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_project_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_changed_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_lean_validate_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_semantic_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_render_final PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_pycompile python3 -m py_compile scripts/validate_project_governance.py scripts/lean_governance.py arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py arxiv-daily-push/docs/pursuing_goal/v7_2/tests/test_v7_2_contract.py",
+    "git diff --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_v72_root_full_final PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest discover -s tests/governance -p 'test_*.py' -q"
+  ],
+  "test_results": [
+    "V7.2 contract validator: PASS errors 0 warnings 0",
+    "V7.2 contract unittest: 4 tests OK",
+    "project governance validator for arxiv-daily-push: errors 0 warnings 0",
+    "changed-only governance with semantic against origin/main: errors 0 warnings 0",
+    "lean_governance validate changed-only with semantic against origin/main: errors 0 warnings 0",
+    "semantic extractor for arxiv-daily-push: 54 formulas and 364 parameters checked",
+    "lean_governance check-render for arxiv-daily-push: drift_count 0 reference_issue_count 0",
+    "py_compile for modified governance scripts and V7.2 validator/test: PASS",
+    "git diff --check: PASS",
+    "root governance full unittest: 263 tests run, 5 unrelated pre-existing/non-ADP failures in Serenity-Alipay, Alpha/OPME event-count expectations, and EEI render drift; ADP V7.2 targeted tests passed"
+  ],
+  "blocking_gates": [
+    "PR CI merge attestation",
+    "Stage2 agent V7.2 revalidation before new work",
+    "EMAIL_LEARNING_V1 T01 read-only path audit before implementation",
+    "Stage2 Stop Gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION",
+    "S2PMT07 independent review gate"
+  ],
+  "rollback": "Revert V7.2 directory, CURRENT.yaml, V7.2 governance status edits, validator/test changes, and S2PAT06 event records. V7.1 remains untouched.",
+  "next_task": "S2PHT01V1.1-T01_READ_ONLY_PATH_AUDIT_AND_S2PCT02_REVALIDATION",
+  "next_task_id": "S2PHT01V1.1-T01"
+}

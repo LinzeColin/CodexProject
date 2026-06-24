@@ -1,0 +1,50 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+requirements:
+  - requirement_id: REQ-ADP-V7-2-INHERIT-001
+    requirement: V7.2 must preserve all non-conflicting V7.1 system requirements, including multi-source governance, evidence, 3+1 orchestration, backend review/action/ROI ledgers and production stop gates.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T00
+    acceptance_id: ACC-ADP-V7-2-BASELINE
+  - requirement_id: REQ-ADP-V7-2-OVERRIDE-001
+    requirement: EMAIL_LEARNING_V1 must override V7.1 visible email frontstage wherever V7.1 requires reading time, decision cards, Frontier Delta, generic ROI or fixed action ladders.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T00
+      - S2PHT01V1.1-T02
+      - S2PHT01V1.1-T03
+    acceptance_id: A-V1-015
+  - requirement_id: REQ-ADP-V7-2-DP-001
+    requirement: EMAIL_LEARNING_V1 and every V7.2 status change must synchronize H/M dual planes through a single authority matrix, receipts, hash identity and drift tests.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T00
+      - S2PHT01V1.1-T05
+    acceptance_id: A-V1-013
+  - requirement_id: REQ-ADP-V7-2-REV-001
+    requirement: V7.2 baseline publication and EMAIL_LEARNING_V1 final gate require at least three independent agents before implementation and final acceptance.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T00
+      - S2PHT01V1.1-T04
+    acceptance_id: A-V1-014
+  - requirement_id: REQ-ADP-V7-2-PROV-001
+    requirement: Actual V1 emails must record complete provenance including git commit, parent contract hash, email contract version, sample hash, config, prompt, renderer, model, evidence, run, artifact and html hash.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T03
+      - S2PHT01V1.1-T05
+    acceptance_id: A-V1-017
+  - requirement_id: REQ-ADP-V7-2-GOLD-001
+    requirement: EMAIL_LEARNING_V1 final gate requires 10 gold items; 3 fixtures only unlock continued development and cannot prove final acceptance.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T04
+    acceptance_id: A-V1-016
+  - requirement_id: REQ-ADP-V7-2-REVALIDATE-001
+    requirement: Every active or completed Stage2 agent must re-review its completed work against V7.2 and repair non-compliant work before starting new tasks.
+    status: accepted
+    task_ids:
+      - S2PHT01V1.1-T00
+    acceptance_id: ACC-ADP-V7-2-AGENT-REVALIDATION

@@ -1,0 +1,110 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+source_contract: ADP-PRODUCT-CONTRACT-V7.1
+incremental_input: EMAIL_LEARNING_V1 pack revision 1.1.0
+v7_1_retained_requirements:
+  - id: RETAIN-V71-001
+    requirement: Four source domains, six reading boards and M1-M4 3+1 mail architecture remain valid.
+    destination: product_contract_v7_2.inherits_v7_1_requirements
+  - id: RETAIN-V71-002
+    requirement: Evidence governance, untrusted source boundaries, queue/ledger, review/action/ROI backend ledgers and final production stop gates remain valid.
+    destination: product_contract_v7_2.inherits_v7_1_requirements
+  - id: RETAIN-V71-003
+    requirement: Stage2 no-send shadow source development may continue when it has no shared file conflict and no real side effects.
+    destination: product_contract_v7_2.stage2_shadow_exception
+v7_1_replaced_requirements:
+  - id: REPLACE-V71-001
+    old_requirement: Visible email frontstage renders one-minute decision card.
+    replacement: EMAIL_LEARNING_V1 plain-language teaching frontstage.
+    decision: DEC-EMAIL-V1-FRONTSTAGE
+  - id: REPLACE-V71-002
+    old_requirement: Visible email frontstage renders Frontier Delta.
+    replacement: Backend Delta may remain, but V1 visible frontstage must focus on new knowledge, methods, logic, thinking and transfer.
+    decision: DEC-EMAIL-V1-FRONTSTAGE
+  - id: REPLACE-V71-003
+    old_requirement: Visible email frontstage renders generic expected ROI and fixed action ladder.
+    replacement: Backend ROI/action ledgers remain; V1 visible frontstage may only include concrete transfer and brief limits.
+    decision: DEC-EMAIL-V1-FRONTSTAGE
+v1_1_new_requirements:
+  - id: ADD-V11-001
+    requirement: EMAIL_LEARNING_V1 frontstage overlay.
+    destination: email_learning_frontstage_overlay_v1.yaml
+  - id: ADD-V11-002
+    requirement: H/M dual-plane authority, receipts and drift tests.
+    destination: dual_plane_governance_v7_2.yaml
+  - id: ADD-V11-003
+    requirement: Three-agent initial and final review.
+    destination: AUDIT/final_review_matrix.yaml
+  - id: ADD-V11-004
+    requirement: Complete V1 email provenance.
+    destination: product_contract_v7_2.dual_plane_governance.required_receipt_fields
+  - id: ADD-V11-005
+    requirement: 10 gold items at final gate.
+    destination: email_learning_frontstage_overlay_v1.yaml
+file_migration_matrix:
+  - plane: H
+    source: V1.1 human templates and owner baseline
+    target_type: owner-visible views and three-base records
+    exact_path_status: resolved_for_v7_2_contract_records_only
+    exact_paths:
+      - arxiv-daily-push/功能清单
+      - arxiv-daily-push/开发记录
+      - arxiv-daily-push/模型参数文件
+      - arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/README_先读.md
+  - plane: M
+    source: V1.1 machine-readable pack
+    target_type: product contract, requirements, decisions, roadmap, stop codes, audit and validation
+    exact_path_status: resolved_for_v7_2_contract_records_only
+    exact_paths:
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/requirements_v7_2.yaml
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/decision_log_v7_2.yaml
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/stop_codes_v7_2.yaml
+      - arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/current_pointer_registry_v7_2.yaml
+  - plane: implementation
+    source: V1.1 candidate implementation files
+    target_type: exact code path audit
+    exact_path_status: deferred_to_S2PHT01V1.1-T01
+    exact_paths: []
+task_id_mapping:
+  workstream_id: EMAIL_LEARNING_V1
+  canonical_parent_task: S2PKT01
+  canonical_parent_status: mapped_for_contract; exact file ownership still requires T01
+  aliases:
+    - S2PHT01V1.1-T00
+    - S2PHT01V1.1-T01
+    - S2PHT01V1.1-T02
+    - S2PHT01V1.1-T03
+    - S2PHT01V1.1-T04
+    - S2PHT01V1.1-T05
+stop_gate_migration:
+  inherited:
+    - R-CONFLICT
+    - G-DRIFT
+    - TRACE-FAIL
+    - SCHEMA-BREAK
+    - SCOPE-BREACH
+    - CONTENT-QUALITY-FAIL
+    - EMAIL-DUP
+    - EMAIL-WATERLINE-FAIL
+  added_or_strengthened:
+    - BASELINE-CONFLICT
+    - TASK-MAPPING-UNKNOWN
+    - AGENT-REVIEW-FAIL
+    - PROVENANCE-MISSING
+    - GOLD-GATE-FAIL
+    - SCOPE-ESCAPE
+    - CURRENT-POINTER-CONFLICT
+    - REVALIDATION-MISSING
+  aliases_or_strengthenings:
+    - old_code: SCOPE-BREACH
+      v7_2_code: SCOPE-ESCAPE
+      relationship: strengthened_alias_for_EMAIL_LEARNING_V1_scope
+      rule: SCOPE-BREACH remains inherited; SCOPE-ESCAPE is the V7.2 EMAIL_LEARNING_V1 stop code for any forbidden connector, public schema, DB, queue, scheduler, SMTP, backup/restore, 3+1 orchestration, or unrelated governance change.
+rollback:
+  current_pointer: Restore docs/pursuing_goal/CURRENT.yaml to V7.1 root lock or remove the pointer file if V7.2 PR is not merged.
+  v7_2_contract: Revert the V7.2 directory and governance status edits.
+  v7_1: No rollback change; V7.1 is read-only and remains available.
+  implementation: EMAIL_LEARNING_V1 implementation tasks remain separately revertible and must not alter DB, SMTP, scheduler or 3+1 orchestration.
