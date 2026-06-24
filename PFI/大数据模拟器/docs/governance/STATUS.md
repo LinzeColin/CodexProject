@@ -15,6 +15,7 @@
 - Path: `PFI/大数据模拟器`
 - Product version: `0.1.0`
 - Phase/Gate: `B / GOV-SEMANTIC-PFI-in-progress`
+- Latest remediation task: `S3PCT02` lifecycle verification completed locally with synthetic temporary data
 - Models/Formulas/Parameters total: `15 / 15 / 213`
 - Active formulas/parameters: `15 / 213`
 - Machine checked formulas/parameters: `15 / 211`
@@ -28,7 +29,7 @@
 | parameter_source_quality | `PARTIAL` | `PFI/大数据模拟器/docs/governance/parameter_registry.csv` |
 | methodological_rationale | `UNVERIFIED` | `PFI/大数据模拟器/docs/governance/MODEL_SPEC.md` |
 | empirical_validation | `UNVERIFIED` | `PFI/大数据模拟器/docs/governance/delivery_tasks.yaml` |
-| operational_validation | `FAILED` | `PFI/大数据模拟器/docs/governance/development_events.jsonl` |
+| operational_validation | `PARTIAL` | `governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv, governance/stage_gates/s3pc/pfi_process_cleanup.log, governance/stage_gates/s3pc/pfi_persistence_recovery.log` |
 | delivery_evidence | `UNVERIFIED` | `PFI/大数据模拟器/docs/governance/delivery_tasks.yaml` |
 | evidence_freshness | `PARTIAL` | `PFI/大数据模拟器/docs/governance/development_events.jsonl` |
 
@@ -37,6 +38,7 @@
 - Readiness: `UNVERIFIED`
 - Release gate: `GOV-SEMANTIC-PFI-in-progress`
 - Next executable task: `TASK-PFI-B-001`
+- Latest lifecycle evidence: `S3PCT02` bounded multiprocess/cache/SQLite/cancel-resume cleanup passed locally; pytest remains unavailable in the bundled runtime
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
