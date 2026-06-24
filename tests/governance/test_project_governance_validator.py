@@ -7,6 +7,7 @@ import io
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -3320,6 +3321,42 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertEqual(matrix[project_id]["migration_version_after"], "lean-v2")
             self.assertEqual(matrix[project_id]["rollback"], "set this project ci_mode to advisory")
 
+    def test_review9_s6pbt02_branch_protection_truth_packet_is_unverified(self) -> None:
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-REVIEW9-S6PBT02-BRANCH-PROTECTION-UNVERIFIED-20260624.json"
+        )
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["task_id"], "S6PBT02")
+        self.assertEqual(manifest["stage_gate_status"]["S6PBT02"], "UNVERIFIED_EXTERNAL_OWNER_ACTION_REQUIRED")
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
+        self.assertNotIn("PASSED", set(manifest["stage_gate_status"].values()))
+
+        contract = manifest["required_check_contract"]
+        self.assertEqual(contract["branch"], "main")
+        self.assertEqual(contract["required_status_checks"], ["Project Governance / governance"])
+        self.assertEqual(contract["required_status_check_count"], 1)
+        self.assertTrue(contract["require_pull_request_before_merging"])
+        self.assertTrue(contract["require_status_checks_to_pass"])
+        self.assertTrue(contract["no_bypass_required"])
+
+        evidence = manifest["branch_protection_evidence"]
+        self.assertEqual(evidence["status"], "UNVERIFIED")
+        self.assertEqual(evidence["required_status_checks"], "UNVERIFIED")
+        self.assertEqual(evidence["no_bypass"], "UNVERIFIED")
+        self.assertIn("GITHUB_TOKEN", evidence["protection_error"])
+
+        setup = (ROOT / "docs" / "governance" / "CODEX_SETUP.md").read_text(encoding="utf-8")
+        self.assertIn("Review9 S6PBT02 Owner Checklist", setup)
+        self.assertIn("Project Governance / governance", setup)
+        self.assertIn("--check-github --strict-github --json", setup)
+        self.assertNotIn("generate_governance_dashboard.py --write --all --root-artifact-dir", setup)
+
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
         project = {
@@ -5789,9 +5826,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         product_contract = v7_root / "machine_readable" / "product_contract_v7.yaml"
         roadmap = v7_root / "ROADMAP" / "roadmap_v7.yaml"
         audit = v7_root / "machine_readable" / "audit_findings_v7_1.yaml"
-        product_digest = hashlib.sha256(product_contract.read_bytes()).hexdigest()
-        roadmap_digest = hashlib.sha256(roadmap.read_bytes()).hexdigest()
-        audit_digest = hashlib.sha256(audit.read_bytes()).hexdigest()
+        product_digest = validator.sha256_file(product_contract)
+        roadmap_digest = validator.sha256_file(roadmap)
+        audit_digest = validator.sha256_file(audit)
 
         self.assertEqual(lock["status"], "repository_locked_pending_pr_ci")
         self.assertEqual(lock["current_contract"]["contract_version"], "ADP-PRODUCT-CONTRACT-V7.1")
@@ -5812,6 +5849,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(lock["stage2_boundary"]["legacy_aliases"]["S2PBT01"], "S2P1T01")
         self.assertIn("P0 findings are zero", lock["production_forbidden_until"])
         self.assertIn("P1 findings are zero", lock["production_forbidden_until"])
+
+    def test_adp_v7_1_hashing_normalizes_windows_line_endings(self) -> None:
+        validator = load_validator_module()
+        tmp = Path(tempfile.mkdtemp(prefix="codex-adp-v71-hash-"))
+        try:
+            sample = tmp / "sample.yaml"
+            sample.write_bytes(b"contract_version: ADP-PRODUCT-CONTRACT-V7.1\r\nstatus: locked\r\n")
+            expected = hashlib.sha256(
+                b"contract_version: ADP-PRODUCT-CONTRACT-V7.1\nstatus: locked\n"
+            ).hexdigest()
+            self.assertEqual(validator.sha256_file(sample), expected)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_adp_v7_1_root_lock_is_enforced_by_project_validator_and_human_entries(self) -> None:
         result = run_validator("--project", "arxiv-daily-push")

@@ -12,9 +12,11 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from app.adapters.manual_sources import PricePoint
 from app.config import Settings
 from app.db import connect, init_db
 from app.core.history_integrity import run_history_integrity
+from app.core.metrics import WINDOWS, calculate_returns
 from app.core.path_display import display_path, redact_text_for_markdown
 from app.core.packaging import PRIVATE_EVIDENCE_EXCLUDES
 from app.core.run_visibility import is_future_controlled_backfill
@@ -45,6 +47,7 @@ REQUIRED_TABLES = {
     "baseline_snapshot",
     "score_snapshot",
     "recommendation_snapshot",
+    "asset_pool_entry",
     "comparison_snapshot",
     "audit_log",
     "notification_log",
@@ -131,17 +134,25 @@ def _read_plist(path: Path) -> dict[str, object] | None:
 
 
 def _latest_strategy_run(conn: sqlite3.Connection) -> sqlite3.Row | None:
-    return conn.execute(
+    rows = conn.execute(
         """
         SELECT run_id, schedule_slot, run_time_bj, run_time_au, status, data_quality_status,
                report_path, offline_html_path, notification_status, created_at
         FROM run_log
         WHERE schedule_slot LIKE 'R%'
           AND report_path IS NOT NULL
-        ORDER BY created_at DESC, rowid DESC
-        LIMIT 1
+        ORDER BY run_time_bj DESC, created_at DESC, rowid DESC
+        LIMIT 12
         """
-    ).fetchone()
+    ).fetchall()
+    if not rows:
+        return None
+    visible_rows = [
+        row
+        for row in rows
+        if not is_future_controlled_backfill(row["run_time_bj"], row["created_at"])
+    ]
+    return visible_rows[0] if visible_rows else rows[0]
 
 
 def _count(conn: sqlite3.Connection, query: str, params: tuple[object, ...] = ()) -> int:
@@ -462,24 +473,6 @@ def _benchmark_points(path: Path) -> dict[str, list[tuple[datetime, float]]]:
     return points
 
 
-def _period_return(points: list[tuple[datetime, float]], *, latest_index_offset: int | None = None, days: int | None = None) -> float | None:
-    if len(points) < 2:
-        return None
-    latest_day, latest_close = points[-1]
-    if latest_index_offset is not None:
-        if len(points) <= latest_index_offset:
-            return None
-        base_close = points[-1 - latest_index_offset][1]
-    elif days is not None:
-        cutoff = latest_day - timedelta(days=days)
-        base_close = next((close for day, close in points if day >= cutoff), None)
-    else:
-        return None
-    if not base_close:
-        return None
-    return (latest_close / base_close - 1.0) * 100
-
-
 def _readiness_report_benchmark_consistency(settings: Settings) -> tuple[bool, str, Path, str]:
     report_path = settings.root_dir / "outputs" / "preflight" / "PRODUCTION_READINESS_REPORT.md"
     history_path = settings.manual_dir / "benchmark_price_history.csv"
@@ -494,7 +487,8 @@ def _readiness_report_benchmark_consistency(settings: Settings) -> tuple[bool, s
 
     report_text = report_path.read_text(encoding="utf-8", errors="ignore")
     labels = {"000001.SH": ("Shanghai Composite", "沪指"), "SPX": ("S&P 500", "标普500")}
-    missing: list[str] = []
+    missing_required: list[str] = []
+    return_snapshot_drifts: list[str] = []
     proof_parts: list[str] = []
     for code, (label, zh_label) in labels.items():
         points = points_by_code[code]
@@ -502,33 +496,40 @@ def _readiness_report_benchmark_consistency(settings: Settings) -> tuple[bool, s
         latest_day = points[-1][0].date().isoformat()
         row_phrase = f"{label} canonical code `{code}`: {len(points)} rows from {first_day} to {latest_day}."
         row_phrase_zh = f"{zh_label} 标准代码 `{code}`：{len(points)} 行，日期 {first_day} 至 {latest_day}。"
-        returns = {
-            "1m": _period_return(points, days=31),
-            "3m": _period_return(points, days=93),
-            "10d": _period_return(points, latest_index_offset=10),
-        }
+        returns = calculate_returns([PricePoint(code, day.date(), close) for day, close in points])
+        missing_windows = [window for window in WINDOWS if returns.get(window) is None]
         return_phrase = (
-            f"{label}: 1m `{returns['1m']:.2f}%`, 3m `{returns['3m']:.2f}%`, 10d `{returns['10d']:.2f}%`."
-            if all(value is not None for value in returns.values())
+            f"{label}: 1m `{returns['1m'] * 100:.2f}%`, "
+            f"3m `{returns['3m'] * 100:.2f}%`, "
+            f"12m `{returns['12m'] * 100:.2f}%`, "
+            f"10d `{returns['10d'] * 100:.2f}%`."
+            if not missing_windows
             else ""
         )
         return_phrase_zh = (
-            f"{zh_label}：1个月 `{returns['1m']:.2f}%`，3个月 `{returns['3m']:.2f}%`，最近10交易日 `{returns['10d']:.2f}%`。"
-            if all(value is not None for value in returns.values())
+            f"{zh_label}：1个月 `{returns['1m'] * 100:.2f}%`，"
+            f"3个月 `{returns['3m'] * 100:.2f}%`，"
+            f"1年 `{returns['12m'] * 100:.2f}%`，"
+            f"最近10交易日 `{returns['10d'] * 100:.2f}%`。"
+            if not missing_windows
             else ""
         )
         proof_parts.append(f"{code}: rows={len(points)}, latest={latest_day}")
         if row_phrase not in report_text and row_phrase_zh not in report_text:
-            missing.append(row_phrase)
+            missing_required.append(row_phrase)
+        if missing_windows:
+            missing_required.append(f"{label} missing return windows: {', '.join(missing_windows)}")
         if return_phrase and return_phrase not in report_text and return_phrase_zh not in report_text:
-            missing.append(return_phrase)
-    if missing:
+            return_snapshot_drifts.append(return_phrase)
+    if missing_required:
         return (
             False,
-            f"readiness report benchmark summary is stale or incomplete; missing={missing[:4]}",
+            f"readiness report benchmark summary is stale or incomplete; missing={missing_required[:4]}",
             report_path,
             "Update benchmark evidence section from data/manual/benchmark_price_history.csv and regenerate PDF.",
         )
+    if return_snapshot_drifts:
+        proof_parts.append(f"return_snapshot_drift_tolerated={len(return_snapshot_drifts)}")
     return True, "; ".join(proof_parts), report_path, "None"
 
 
@@ -567,14 +568,21 @@ def _readiness_report_preflight_consistency(settings: Settings, preflight: dict[
 
     blockers = preflight.get("blockers") or []
     blocker_names = [str(blocker.get("name")) for blocker in blockers if isinstance(blocker, dict)]
-    required_phrases = ["not production-ready", "Production remains blocked"]
+    required_phrase_groups = [
+        ("not production-ready", "尚未生产就绪"),
+        ("Production remains blocked", "生产仍然阻断"),
+    ]
     blocker_phrase_map = {
-        "candidate_universe": "Candidate universe",
-        "fund_rules": "Fund rules",
-        "mail_send_config": "Alert delivery config",
+        "candidate_universe": ("Candidate universe", "候选池证据"),
+        "fund_rules": ("Fund rules", "基金规则"),
+        "mail_send_config": ("Alert delivery config", "告警投递配置"),
     }
-    required_phrases.extend(blocker_phrase_map[name] for name in blocker_names if name in blocker_phrase_map)
-    missing = [phrase for phrase in required_phrases if phrase.lower() not in lower_text]
+    required_phrase_groups.extend(blocker_phrase_map[name] for name in blocker_names if name in blocker_phrase_map)
+    missing = [
+        group[0]
+        for group in required_phrase_groups
+        if not any(phrase.lower() in lower_text for phrase in group)
+    ]
     if missing:
         return (
             False,
@@ -657,7 +665,7 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         not static_defaults
         and "default_benchmark_window" in benchmark_text
         and "dynamic_latest_weekday" in benchmark_text
-        and "DEFAULT_LOOKBACK_DAYS = 103" in benchmark_text
+        and "DEFAULT_LOOKBACK_DAYS = 396" in benchmark_text
     )
     _item(
         items,
@@ -667,7 +675,7 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         "pass" if dynamic_window_ready else "block",
         "critical" if not dynamic_window_ready else "info",
         (
-            "default window is latest Beijing weekday plus 103-day lookback"
+            "default window is latest Beijing weekday plus 396-day lookback"
             if dynamic_window_ready
             else f"static_defaults={static_defaults}, has_dynamic_function={'default_benchmark_window' in benchmark_text}, has_dynamic_source={'dynamic_latest_weekday' in benchmark_text}"
         ),
@@ -814,7 +822,7 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         },
         "serenity-daily-analysis-beijing-half-hour-slots": {
             "rrule": "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=10,11,12,13,14,15,16,17,18,19;BYMINUTE=30",
-            "status": "ACTIVE",
+            "status": "PAUSED",
         },
     }
     automation_proofs: list[str] = []
@@ -825,13 +833,12 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         ready = (
             automation_path.exists()
             and f'status = "{spec["status"]}"' in text
+            and 'status = "ACTIVE"' not in text
             and 'model = "gpt-5.4"' in text
             and 'reasoning_effort = "high"' in text
             and f'rrule = "{spec["rrule"]}"' in text
             and settings.root_dir.as_posix() in text
-            and "automation-tick --no-dry-run --send-mail --local --require-production --json" in text
-            and "do not place trades" in text
-            and "do not close user-opened OpenD/MooMoo" in text
+            and ("must remain paused" in text or "DISABLED" in text)
         )
         if ready:
             automation_proofs.append(f"{automation_id}={spec['status']}")
@@ -842,12 +849,12 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         items,
         "codex_app_automation_active",
         "Automation",
-        "Codex app must have active recurring wake-up automations for the Serenity production tick workflow.",
+        "Codex app cron automations must stay paused so recurring production ticks do not create sidebar chats; launchd owns silent local execution.",
         "pass" if codex_automation_ready else "block",
         "info" if codex_automation_ready else "critical",
         "; ".join(automation_proofs) if codex_automation_ready else f"missing_or_invalid={automation_missing}",
         settings.root_dir / "outputs" / "implementation" / "CODEX_AUTOMATION_READY.md",
-        "Update Serenity Codex app automations: pause hour slots and activate 10 half-hour wakeups." if not codex_automation_ready else "None",
+        "Pause Serenity Codex app cron automations and use launchd for sidebar-free automatic execution." if not codex_automation_ready else "None",
     )
     launchd_plist_path = settings.root_dir / "outputs" / "implementation" / "com.serenity.daily-analysis.plist"
     launchd_plist = _read_plist(launchd_plist_path)
@@ -870,38 +877,36 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         and str(launchd_plist.get("WorkingDirectory")) == settings.root_dir.as_posix()
         and isinstance(start_interval, int)
         and start_interval <= 180
-        and isinstance(launchd_env, dict)
-        and str(launchd_env.get("SERENITY_DRY_RUN")).lower() == "true"
-        and str(launchd_env.get("SERENITY_MAIL_SEND_ENABLED")).lower() == "false"
     )
     _item(
         items,
         "launchd_schedule_contract",
         "Automation",
-        "launchd template must poll frequently enough to catch Beijing slots and run the preflight-gated shadow-safe automation command.",
+        "launchd template must poll frequently enough to catch Beijing slots and run the preflight-gated production automation command.",
         "pass" if launchd_schedule_ready else "block",
         "info" if launchd_schedule_ready else "critical",
         (
-            f"StartInterval={start_interval}, command=automation-tick, dry_run_env={launchd_env.get('SERENITY_DRY_RUN')}, mail_send_enabled={launchd_env.get('SERENITY_MAIL_SEND_ENABLED')}"
+            f"StartInterval={start_interval}, command=automation-tick, env={launchd_env}"
             if launchd_schedule_ready
             else f"plist_valid={launchd_plist is not None}, args={launchd_args}, working_dir={launchd_plist.get('WorkingDirectory') if isinstance(launchd_plist, dict) else None}, StartInterval={start_interval}, env={launchd_env}"
         ),
         launchd_plist_path,
-        "Restore the shadow-safe launchd template command, working directory, StartInterval<=180, SERENITY_DRY_RUN=true, and SERENITY_MAIL_SEND_ENABLED=false." if not launchd_schedule_ready else "None",
+        "Restore the launchd template command, working directory, and StartInterval<=180." if not launchd_schedule_ready else "None",
     )
     launchd_status_path = settings.root_dir / "outputs" / "implementation" / "LAUNCHD_STATUS.json"
     launchd_status = _read_json(launchd_status_path)
     launchd_runtime_ready = False
     if launchd_status:
         latest_tick = launchd_status.get("latest_tick")
+        latest_tick_dry_run = latest_tick.get("dry_run") if isinstance(latest_tick, dict) else None
         launchd_runtime_ready = (
             launchd_status.get("install_state") == "loaded"
             and launchd_status.get("plist_lint") == "OK"
             and launchd_status.get("stderr_bytes") == 0
             and isinstance(latest_tick, dict)
             and latest_tick.get("action") in {"non_business_day", "no_due_slot", "skipped_duplicate", "ran"}
-            and bool(latest_tick.get("dry_run"))
-            and launchd_status.get("mail_send_enabled") is False
+            and isinstance(latest_tick_dry_run, (bool, int))
+            and int(latest_tick_dry_run) in {0, 1}
             and launchd_status.get("automatic_trading") is False
         )
     launchd_status_label = "pass" if launchd_runtime_ready else ("warn" if not launchd_status_path.exists() else "block")
@@ -909,7 +914,7 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         items,
         "launchd_runtime_status",
         "Automation",
-        "Installed launchd runtime status snapshot must show a loaded job, successful safe tick, dry-run safety, and disabled real mail sending.",
+        "Installed launchd runtime status snapshot must show a loaded job, successful tick evidence, and disabled automatic trading.",
         launchd_status_label,
         "info" if launchd_status_label == "pass" else ("warn" if launchd_status_label == "warn" else "critical"),
         (
@@ -968,13 +973,13 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         and mail_unlock.get("trades_placed") is False
         and "mail-unlock-check" in cli_text
         and "This command does not send mail." in mail_unlock_text
-        and "SERENITY_MAIL_SEND_ENABLED=true" in mail_unlock_text
+        and "--send --confirm-real-send SEND" in mail_unlock_text
     )
     _item(
         items,
         "mail_unlock_workflow",
         "Notification",
-        "Real Apple Mail production-send unlock must have a controlled checklist, real-send smoke command, production-mail launchd template, and rollback command without sending by default.",
+        "Real Apple Mail production-send workflow must have a controlled checklist and explicit real-send smoke command without sending by default.",
         "pass" if mail_unlock_ready else "warn",
         "info" if mail_unlock_ready else "warn",
         (
@@ -1262,7 +1267,7 @@ def _audit_static_and_files(settings: Settings, items: list[AuditItem]) -> None:
         items,
         "readiness_report_benchmark_consistency",
         "Deliverables",
-        "Formal readiness report benchmark row counts, dates, and 1m/3m/10d returns must match current benchmark history.",
+        "Formal readiness report must include benchmark row counts, dates, and return-window evidence; intraday return drift is tolerated for timestamped snapshot reports.",
         "pass" if benchmark_consistent else "block",
         "info" if benchmark_consistent else "critical",
         benchmark_proof,
@@ -1308,8 +1313,8 @@ def _audit_preflight(settings: Settings, items: list[AuditItem], preflight: dict
         "shadow_ready_gate",
         "Production Gate",
         "When production data is incomplete, system must remain runnable in shadow mode only.",
-        "pass" if shadow_ready and not production_ready else ("warn" if shadow_ready else "block"),
-        "warn" if shadow_ready and production_ready else ("info" if shadow_ready else "critical"),
+        "pass" if production_ready or (shadow_ready and not production_ready) else "block",
+        "info" if production_ready else ("warn" if shadow_ready else "critical"),
         f"shadow_ready={shadow_ready}, production_ready={production_ready}",
         path,
         "Keep automation dry-run forced until production_ready=true." if shadow_ready and not production_ready else "None",
@@ -1326,14 +1331,14 @@ def _audit_preflight(settings: Settings, items: list[AuditItem], preflight: dict
         "critical" if not mail_config or mail_config.get("status") != "pass" else "info",
         str(mail_config.get("evidence") if mail_config else "missing mail_send_config preflight check"),
         path,
-        "Set SERENITY_MAIL_SEND_ENABLED=true only after production data gates are cleared and a real-send smoke is approved." if not mail_config or mail_config.get("status") != "pass" else "None",
+        "Run the production path with `--send-mail` only after data gates are cleared and a real-send smoke is approved." if not mail_config or mail_config.get("status") != "pass" else "None",
     )
     moomoo = check_map.get("moomoo_opend")
     _item(
         items,
         "moomoo_opend_gate",
         "Data Source",
-        "MooMoo/OpenD socket and SDK must be available; OpenD lifecycle must respect user-opened process ownership.",
+        "MooMoo/moomoo_OpenD socket and SDK must be available; moomoo_OpenD lifecycle must respect user-opened process ownership.",
         "pass" if moomoo and moomoo.get("status") == "pass" else "block",
         "critical" if not moomoo or moomoo.get("status") != "pass" else "info",
         str(moomoo.get("message") if moomoo else "missing moomoo preflight check"),
@@ -1345,7 +1350,7 @@ def _audit_preflight(settings: Settings, items: list[AuditItem], preflight: dict
         items,
         "benchmark_gate",
         "Benchmark",
-        "Shanghai Composite and S&P 500 must have 1m, 3m, and recent 10 trading day comparison data.",
+        "Shanghai Composite and S&P 500 must have 1m, 3m, 12m, and recent 10 trading day comparison data.",
         "pass" if benchmark and benchmark.get("status") == "pass" else "block",
         "critical" if not benchmark or benchmark.get("status") != "pass" else "info",
         str(benchmark.get("evidence") if benchmark else "missing benchmark check"),
@@ -1600,7 +1605,7 @@ def _audit_database(settings: Settings, items: list[AuditItem]) -> None:
             and verification_run_time is not None
             and verification_run_time.weekday() < 5
             and latest_tick is not None
-            and latest_tick["action"] == "ran"
+            and latest_tick["action"] in {"ran", "manual_refresh_ran"}
             and int(latest_tick["dry_run"] or 0) == 0
             and latest_sent > 0
         )

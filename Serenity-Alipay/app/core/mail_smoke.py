@@ -59,7 +59,7 @@ def _write_markdown(path: Path, settings: Settings, result: dict[str, object]) -
         f"- Send status: `{result['send_status']}`",
         f"- Draft path: `{display_path(settings.root_dir, result['draft_path'])}`",
         "",
-        "Real sending requires both `SERENITY_MAIL_SEND_ENABLED=true` and `--send --confirm-real-send SEND`.",
+        "Real sending requires `--send --confirm-real-send SEND` on a runtime that enables production mail intent.",
     ]
     if result.get("send_error"):
         lines.extend(["", f"- Send error: `{result['send_error']}`"])
@@ -111,7 +111,7 @@ def run_mail_smoke(
     if send:
         if not settings.mail_send_enabled:
             send_status = "blocked_by_config"
-            send_error = "SERENITY_MAIL_SEND_ENABLED is false"
+            send_error = "Real sending is not enabled for this runtime"
         elif confirm_real_send != "SEND":
             send_status = "blocked_by_confirmation"
             send_error = "Real send requires --confirm-real-send SEND"

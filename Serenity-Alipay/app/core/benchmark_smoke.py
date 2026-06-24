@@ -10,8 +10,9 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
-from app.adapters.manual_sources import load_price_history
+from app.adapters.manual_sources import PricePoint, load_price_history
 from app.config import Settings
+from app.core.metrics import WINDOWS, calculate_returns
 from app.core.moomoo_lifecycle import cleanup_started_processes, ensure_opend, lifecycle_to_dict
 from app.core.moomoo_smoke import probe_sdk
 
@@ -88,9 +89,9 @@ YAHOO_CANDIDATES = (
     ),
 )
 
-MIN_REQUIRED_SPAN_DAYS = 93
+MIN_REQUIRED_SPAN_DAYS = 365
 MIN_REQUIRED_TRADING_ROWS = 11
-DEFAULT_LOOKBACK_DAYS = 103
+DEFAULT_LOOKBACK_DAYS = 396
 
 
 def _now(settings: Settings) -> str:
@@ -197,9 +198,24 @@ def _period_seconds(day: str) -> int:
 def _history_supports_required_windows(history: list[dict[str, object]]) -> bool:
     if len(history) < MIN_REQUIRED_TRADING_ROWS:
         return False
-    first = datetime.fromisoformat(str(history[0]["date"])).date()
-    latest = datetime.fromisoformat(str(history[-1]["date"])).date()
-    return (latest - first).days >= MIN_REQUIRED_SPAN_DAYS
+    points = sorted(
+        (
+            PricePoint(
+                str(row.get("asset_code") or ""),
+                datetime.fromisoformat(str(row["date"])).date(),
+                float(row["close"]),
+            )
+            for row in history
+            if row.get("date") and row.get("close") not in (None, "")
+        ),
+        key=lambda point: point.date,
+    )
+    if len(points) < MIN_REQUIRED_TRADING_ROWS:
+        return False
+    if (points[-1].date - points[0].date).days < MIN_REQUIRED_SPAN_DAYS:
+        return False
+    returns = calculate_returns(points)
+    return all(returns.get(window) is not None for window in WINDOWS)
 
 
 def _select_benchmark_history(

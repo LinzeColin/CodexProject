@@ -73,16 +73,23 @@ def process_snapshot() -> list[ProcessInfo]:
 
 def _wait_for_socket(host: str, port: int, timeout: float, wait_seconds: float) -> bool:
     deadline = time.monotonic() + wait_seconds
+    stable_hits = 0
     while time.monotonic() <= deadline:
         try:
             with socket.create_connection((host, port), timeout=timeout):
-                return True
+                stable_hits += 1
+                if stable_hits >= 3:
+                    return True
         except OSError:
-            time.sleep(0.5)
+            stable_hits = 0
+        time.sleep(1.0 if stable_hits else 0.5)
     return False
 
 
 def _primary_workbench(workbenches: list[WorkbenchProbe]) -> WorkbenchProbe | None:
+    for workbench in workbenches:
+        if workbench.moomoo_opend_app_path:
+            return workbench
     for workbench in workbenches:
         if workbench.start_script:
             return workbench
@@ -94,11 +101,21 @@ def _new_processes(before: list[ProcessInfo], after: list[ProcessInfo]) -> list[
     return [process for process in after if process.pid not in before_pids]
 
 
+def _start_workbench(workbench: WorkbenchProbe) -> str | None:
+    if workbench.moomoo_opend_app_path:
+        subprocess.run(["open", workbench.moomoo_opend_app_path], capture_output=True, text=True, check=False)
+        return workbench.moomoo_opend_app_path
+    if workbench.start_script:
+        subprocess.run(["bash", workbench.start_script], capture_output=True, text=True, check=False)
+        return workbench.start_script
+    return None
+
+
 def _cleanup_processes(processes: list[ProcessInfo]) -> str:
     targets = [
         process
         for process in processes
-        if any(marker in process.command for marker in ["moomoo_OpenD", "OpenD.app", "CrashReporter"])
+        if any(marker in process.command for marker in ["moomoo_OpenD", "OpenD.app", "moomoo_Op"])
     ]
     if not targets:
         return "no_started_processes_to_cleanup"
@@ -136,7 +153,7 @@ def ensure_opend(
     before = process_snapshot()
     before_probe = probe_socket(host, port, timeout)
     if before_probe.reachable or not auto_start:
-        detail = before_probe.detail if before_probe.reachable else "OpenD was not started because auto_start is disabled"
+        detail = before_probe.detail if before_probe.reachable else "moomoo_OpenD was not started because auto_start is disabled"
         return OpenDLifecycle(
             socket_was_reachable=before_probe.reachable,
             socket_is_reachable=before_probe.reachable,
@@ -154,7 +171,7 @@ def ensure_opend(
         )
 
     workbench = _primary_workbench(discover_workbenches(settings, include_user_codex=include_user_codex))
-    if not workbench or not workbench.start_script:
+    if not workbench or not (workbench.start_script or workbench.moomoo_opend_app_path):
         return OpenDLifecycle(
             socket_was_reachable=False,
             socket_is_reachable=False,
@@ -168,20 +185,21 @@ def ensure_opend(
             before_processes=before,
             after_processes=before,
             started_processes=[],
-            detail="No OpenD start script found",
+            detail="No moomoo_OpenD start entry found",
         )
 
-    subprocess.run(["bash", workbench.start_script], capture_output=True, text=True, check=False)
+    start_command = _start_workbench(workbench)
     reachable = _wait_for_socket(host, port, timeout, wait_seconds)
     after = process_snapshot()
     started = _new_processes(before, after)
+    started_by_tool = bool(started)
     return OpenDLifecycle(
         socket_was_reachable=False,
         socket_is_reachable=reachable,
         auto_start_requested=True,
         start_attempted=True,
-        started_by_tool=reachable,
-        start_command=workbench.start_script,
+        started_by_tool=started_by_tool,
+        start_command=start_command,
         cleanup_requested=cleanup_if_started,
         cleanup_attempted=False,
         cleanup_result=None,
@@ -189,9 +207,9 @@ def ensure_opend(
         after_processes=after,
         started_processes=started,
         detail=(
-            f"OpenD auto-started via {workbench.start_script}"
+            f"moomoo_OpenD auto-started via {start_command}"
             if reachable
-            else f"OpenD start attempted via {workbench.start_script}, but socket did not become reachable"
+            else f"moomoo_OpenD start attempted via {start_command}, but socket did not become reachable"
         ),
     )
 

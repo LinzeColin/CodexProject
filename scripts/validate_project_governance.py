@@ -442,7 +442,8 @@ def check_semantic_coverage_task_binding(
 
 
 def sha256_file(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    text = path.read_text(encoding="utf-8")
+    return hashlib.sha256(text.replace("\r\n", "\n").encode("utf-8")).hexdigest()
 
 
 def validate_arxiv_daily_push_v7_root_lock(
