@@ -3451,9 +3451,126 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("Review9 S6PBT02 Owner Checklist", setup)
         self.assertIn("Project Governance / governance", setup)
         self.assertIn("--check-github --strict-github --json", setup)
-        self.assertIn("Current 2026-06-24 probe", setup)
+        self.assertIn("Historical 2026-06-24 pre-fix probe", setup)
         self.assertIn("2 of 2", setup)
         self.assertNotIn("generate_governance_dashboard.py --write --all --root-artifact-dir", setup)
+
+    def test_review9_s6pbt02_branch_protection_verified_manifest_passes(self) -> None:
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-REVIEW9-S6PBT02-BRANCH-PROTECTION-VERIFIED-20260624.json"
+        )
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["task_id"], "S6PBT02")
+        self.assertEqual(manifest["stage_gate_status"]["S6PBT02"], "PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
+
+        contract = manifest["required_check_contract"]
+        self.assertEqual(contract["required_status_checks"], ["Project Governance / governance"])
+        self.assertEqual(contract["api_required_status_check_contexts"], ["governance"])
+        self.assertEqual(contract["required_status_check_count"], 1)
+        self.assertTrue(contract["require_pull_request_before_merging"])
+        self.assertTrue(contract["require_status_checks_to_pass"])
+        self.assertTrue(contract["no_bypass_required"])
+
+        update = manifest["github_branch_protection_update"]
+        self.assertEqual(update["second_attempt"]["http_status"], 200)
+        self.assertEqual(update["second_attempt"]["required_status_checks"]["contexts"], ["governance"])
+        self.assertTrue(update["second_attempt"]["required_status_checks"]["strict"])
+        self.assertTrue(update["second_attempt"]["enforce_admins"])
+        self.assertTrue(update["second_attempt"]["required_pull_request_reviews_present"])
+        self.assertFalse(update["second_attempt"]["allow_force_pushes"])
+        self.assertFalse(update["second_attempt"]["allow_deletions"])
+
+        doctor = manifest["authenticated_doctor_evidence"]
+        self.assertEqual(doctor["exit_code"], 0)
+        self.assertEqual(doctor["report_failures"], [])
+        branch = doctor["branch_protection_summary"]
+        for key in (
+            "protected",
+            "required_status_check_contract",
+            "status_checks_strict",
+            "pull_request_required",
+            "enforce_admins",
+            "no_bypass",
+            "force_pushes_blocked",
+            "deletions_blocked",
+        ):
+            self.assertEqual(branch[key], "PASS", key)
+        self.assertEqual(branch["required_status_check_contexts"], ["governance"])
+        self.assertEqual(branch["required_status_check_count"], 1)
+
+        rejection = manifest["direct_push_rejection_evidence"]
+        self.assertEqual(rejection["exit_code"], 1)
+        self.assertEqual(rejection["result"], "PASS_REJECTED")
+        self.assertIn("GH006", rejection["observed"])
+        self.assertIn('Required status check "governance" is expected', rejection["observed"])
+
+        setup = (ROOT / "docs" / "governance" / "CODEX_SETUP.md").read_text(encoding="utf-8")
+        self.assertIn("Verified 2026-06-24 S6PBT02 update", setup)
+        self.assertIn("GH006: Protected branch update failed", setup)
+        self.assertIn("This satisfies S6PBT02 and closes `S6PB-GATE`", setup)
+
+    def test_review9_s6pbt02_setup_doctor_enforces_exact_branch_contract(self) -> None:
+        doctor = load_setup_doctor_module()
+        compliant = doctor.evaluate_branch_protection_contract(
+            {
+                "required_status_checks": {
+                    "strict": True,
+                    "contexts": ["governance"],
+                    "checks": [{"context": "governance", "app_id": 15368}],
+                },
+                "required_pull_request_reviews": {
+                    "dismiss_stale_reviews": False,
+                    "required_approving_review_count": 0,
+                    "bypass_pull_request_allowances": {"users": [], "teams": [], "apps": []},
+                },
+                "enforce_admins": {"enabled": True},
+                "allow_force_pushes": {"enabled": False},
+                "allow_deletions": {"enabled": False},
+            }
+        )
+        self.assertEqual(compliant["status"], "PASS", compliant)
+        self.assertEqual(compliant["required_status_check_contexts"], ["governance"])
+        self.assertEqual(compliant["required_status_check_display"], ["Project Governance / governance"])
+        self.assertEqual(compliant["required_status_check_count"], 1)
+        self.assertEqual(compliant["no_bypass"], "PASS")
+
+        current_mismatch = doctor.evaluate_branch_protection_contract(
+            {
+                "required_status_checks": {
+                    "strict": False,
+                    "contexts": ["governance", "openai-database-verify"],
+                    "checks": [
+                        {"context": "governance", "app_id": 15368},
+                        {"context": "openai-database-verify", "app_id": 15368},
+                    ],
+                },
+                "required_pull_request_reviews": {
+                    "dismiss_stale_reviews": False,
+                    "required_approving_review_count": 0,
+                    "bypass_pull_request_allowances": {"users": [], "teams": [], "apps": []},
+                },
+                "enforce_admins": {"enabled": False},
+                "allow_force_pushes": {"enabled": False},
+                "allow_deletions": {"enabled": False},
+            }
+        )
+        self.assertEqual(current_mismatch["status"], "FAIL")
+        self.assertEqual(current_mismatch["required_status_check_count"], 2)
+        self.assertEqual(current_mismatch["required_status_check_contract"], "FAIL")
+        self.assertEqual(current_mismatch["status_checks_strict"], "FAIL")
+        self.assertEqual(current_mismatch["enforce_admins"], "FAIL")
+        self.assertEqual(current_mismatch["no_bypass"], "FAIL")
+        self.assertTrue(
+            any("openai-database-verify" in failure for failure in current_mismatch["failures"]),
+            current_mismatch["failures"],
+        )
 
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
