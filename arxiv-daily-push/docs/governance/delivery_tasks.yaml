@@ -3285,24 +3285,34 @@ tasks:
     objective: "实现草案/正式、修订/废止、实施/解释关系，使法律状态变化能触发重评分和旧结论更新。"
     scope: "Legal metadata status taxonomy, version/effectivity relations, repost relation guard, forced update tests, and no-production evidence."
     non_scope: "No legal advice, no production inclusion, no SMTP, no scheduler, no Release, no paid API, no PDF/full-text bulk download."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PDT01"
       - "S2PDT02"
     required_files:
-      - "planned: S2PDT03 legal metadata relation tests"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/docs/governance/model_registry.yaml"
+      - "arxiv-daily-push/docs/governance/formula_registry.yaml"
+      - "arxiv-daily-push/docs/governance/parameter_registry.csv"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
     acceptance_ids:
       - "ACC-S2PDT03-LEGAL"
     test_commands:
-      - "planned: legal status/version/effectivity relation tests"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt03_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt03_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
     test_results:
-      - "PENDING"
+      - "focused Stage2 source tests: 43 OK"
+      - "semantic extractor: semantic_formulas_checked 65, semantic_parameters_checked 432"
     evidence_refs:
-      - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+      - "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md"
     risk: "法律状态未知、日期混淆、转载关系误判或旧结论未更新必须阻断。"
-    rollback: "Remove planned S2PDT03 governance entry if legal metadata work is deferred or superseded."
+    rollback: "Revert S2PDT03 legal metadata relation code, tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync."
     target_version: "0.24.0"
-    completed_version: ""
+    completed_version: "0.24.0"
     unknown_task_ids: []
   -
     task_id: "S2PDT04"

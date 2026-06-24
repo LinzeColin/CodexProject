@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence、S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence，S2PCT06 权威研究机构、实验室和产业技术报告 shadow evidence，S2PCT07 D2 source-domain qualification readiness，S2PDT01/S2P3T01 中国 C0 全国权威主干 source foundation，以及 S2PDT02/S2P3T02 中国 C1 中央机关与重点部门 source map 已完成，下一入口为 S2PDT03/S2P3T03 中国法律元数据关系 shadow，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence、S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence，S2PCT06 权威研究机构、实验室和产业技术报告 shadow evidence，S2PCT07 D2 source-domain qualification readiness，S2PDT01/S2P3T01 中国 C0 全国权威主干 source foundation，S2PDT02/S2P3T02 中国 C1 中央机关与重点部门 source map，以及 S2PDT03/S2P3T03 中国法律元数据关系 shadow 已完成，下一入口为 S2PDT04/S2P3T04 中国官方 D3 readiness，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.24.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pdt02_china_c1_department_source_map_complete_s2pdt03_next_no_formal_production"
+current_status: "stage1_accepted_s2pdt03_china_legal_metadata_relation_complete_s2pdt04_next_no_formal_production"
 limitations:
   -
-    statement: "422/422 semantically checked active parameters 与 64/64 active formulas 为 MACHINE_VERIFIED；62 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "432/432 semantically checked active parameters 与 65/65 active formulas 为 MACHINE_VERIFIED；63 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -31,7 +31,7 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence、S2PCT05 engineering public-signal shadow evidence、S2PCT06 authoritative report shadow evidence、S2PCT07 D2 source-domain qualification readiness、S2PDT01/S2P3T01 中国 C0 全国权威主干 metadata-only source foundation 与 S2PDT02/S2P3T02 中国 C1 中央机关 source map 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D3_CORE_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence、S2PCT05 engineering public-signal shadow evidence、S2PCT06 authoritative report shadow evidence、S2PCT07 D2 source-domain qualification readiness、S2PDT01/S2P3T01 中国 C0 全国权威主干 metadata-only source foundation、S2PDT02/S2P3T02 中国 C1 中央机关 source map 与 S2PDT03/S2P3T03 中国法律元数据关系 shadow 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D3_CORE_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
@@ -2419,6 +2419,36 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-S2PDT02-C1"
+  -
+    model_id: "MOD-ADP-063"
+    name: "S2PDT03 China legal metadata relation shadow"
+    purpose: "Validate China legal metadata status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore and old-conclusion update, and no-production boundaries after S2PDT02 C1 department source map."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-065"
+    parameter_ids:
+      - "PARAM-ADP-440"
+      - "PARAM-ADP-441"
+      - "PARAM-ADP-442"
+      - "PARAM-ADP-443"
+      - "PARAM-ADP-444"
+      - "PARAM-ADP-445"
+      - "PARAM-ADP-446"
+      - "PARAM-ADP-447"
+      - "PARAM-ADP-448"
+      - "PARAM-ADP-449"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PDT03-LEGAL"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -3456,6 +3486,21 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-ADP-S2PDT02-C1"
+  -
+    formula_id: "FORM-ADP-065"
+    model_id: "MOD-ADP-063"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "A S2PDT03 China legal metadata relation shadow report passes only when the S2PDT02 China C1 department source-map report passes; required legal statuses and relation types are observed; reprint relations identify reprint/original roles; forced rescore and old-conclusion updates are present; and legal advice, D3 core source-domain acceptance, production inclusion, V7.1 CURRENT switching, V7.2 mail/schema pre-run, and production side effects remain false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PDT03-LEGAL"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -11337,6 +11382,136 @@ parameters:
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-440"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_LEGAL_METADATA_MODEL_ID"
+    name: "S2PDT03 legal metadata relation model id"
+    value: "adp-s2pdt03-china-legal-metadata-relation-shadow-v1"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-441"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_ACCEPTANCE_ID"
+    name: "S2PDT03 legal acceptance id"
+    value: "ACC-S2PDT03-LEGAL"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-442"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_TASK_ID"
+    name: "S2PDT03 canonical task id"
+    value: "S2PDT03"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-443"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_LEGACY_TASK_ID"
+    name: "S2PDT03 legacy task id"
+    value: "S2P3T03"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-444"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_REQUIRED_LEGAL_STATUSES"
+    name: "S2PDT03 required legal statuses"
+    value: "draft;formal;amended;repealed;implemented;interpreted"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-445"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_REQUIRED_RELATION_TYPES"
+    name: "S2PDT03 required relation types"
+    value: "draft_to_formal;amends;repeals;implements;interprets;reprint_of"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-446"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_REQUIRED_DATE_FIELDS"
+    name: "S2PDT03 required legal date fields"
+    value: "published_date;effective_date"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-447"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_REQUIRED_FORCED_UPDATE_FIELDS"
+    name: "S2PDT03 required forced update fields"
+    value: "update_required;rescore_required;updated_state"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-448"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_ALLOWED_IDENTITY_STATES"
+    name: "S2PDT03 allowed official identity states"
+    value: "official_domain;official_gazette;official_publication_portal"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-449"
+    model_id: "MOD-ADP-063"
+    formula_id: "FORM-ADP-065"
+    symbol: "S2PDT03_REPORT_FILENAME"
+    name: "S2PDT03 legal metadata relation report filename"
+    value: "stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json"
+    source: "EXTRACTED from S2PDT03 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -11530,23 +11705,28 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
     fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PDT03-LEGAL"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
+    fact_level: "EXTRACTED"
 delivery_readiness:
   status: "VERIFIED"
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
   owner_decision_required: true
   blocked_requirements: 0
-  active_requirements: 10
+  active_requirements: 11
   partial_requirements: 1
-  next_executable_task_id: "S2PDT03"
+  next_executable_task_id: "S2PDT04"
   next_executable_task_status: "planned"
 governance_counts:
-  active_models: 62
-  active_formulas: 64
-  active_parameters: 422
+  active_models: 63
+  active_formulas: 65
+  active_parameters: 432
   tasks_total: 76
   task_status_counts:
-    completed: 71
+    completed: 72
     blocked: 1
     deprecated: 1
     ready: 1
-    planned: 2
+    planned: 1

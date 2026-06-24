@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 62
-- formula_count: 64
-- parameter_count: 439
+- model_count: 63
+- formula_count: 65
+- parameter_count: 449
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -116,6 +116,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   keeping D3 core source-domain acceptance, production flags, V7.1 CURRENT
   switching, and V7.2 mail/schema pre-run false.
 
+- `S2PDT03` adds `MOD-ADP-063`. It validates China legal metadata status,
+  version/effectivity relations, reprint/original-source guard, forced rescore
+  and old-conclusion update, and no-production boundaries after S2PDT02 C1
+  source map while keeping legal advice, D3 core source-domain acceptance,
+  production flags, V7.1 CURRENT switching, and V7.2 mail/schema pre-run false.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -181,6 +187,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-060 | S2PCT07 D2 source-domain qualification and cross-type calibration | deterministic source-domain qualification model | Calibrate top-journal, engineering signal, and authoritative report shadow evidence with replay, shadow, forced-event, queue explanation, and type calibration gates while keeping D2 acceptance and production flags false | active | adp-s2pct07-d2-source-domain-qualification-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-061 | S2PDT01 China C0 national authority source foundation | deterministic official-source foundation model | Validate law/regulation, NPC, State Council, gazette, and Supreme Court/Procuratorate metadata-only official-source evidence with traceability and no-production gates | active | adp-s2pdt01-china-c0-source-foundation-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-062 | S2PDT02 China C1 central department source map | deterministic official-department source-map model | Validate macro, science/technology, industry, finance, market-regulation, and key-industry department source maps with aliases, routes, official domains, and no-production gates | active | adp-s2pdt02-china-c1-department-source-map-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-063 | S2PDT03 China legal metadata relation shadow | deterministic legal-metadata relation shadow model | Validate legal status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore, old-conclusion update, and no-production gates | active | adp-s2pdt03-china-legal-metadata-relation-shadow-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -285,6 +292,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-062 validates S2PCT07 D2 source-domain qualification readiness across upstream pass evidence, complete domain type coverage, 30-date replay, 48h shadow, forced-event propagation, selected/queued/deferred queue explanations, zero type-calibration spread, and disabled production/D2 acceptance flags.
 - FORM-ADP-063 validates S2PDT01 China C0 national authority metadata-only source foundation across upstream D2 qualification, required authority taxonomy, official identity, document traceability, metadata-only no-download boundaries, and disabled D3/production acceptance flags.
 - FORM-ADP-064 validates S2PDT02 China C1 central department metadata-only source map across upstream C0 foundation, required sector coverage, official identity, aliases, industry/board routes, metadata-only no-download boundaries, disabled D3/production acceptance flags, and no V7.2 mail/schema pre-run.
+- FORM-ADP-065 validates S2PDT03 China legal metadata relation shadow across upstream C1 source map, required legal statuses, required relation types, date confusion guard, reprint/original-source guard, forced rescore/old-conclusion update, metadata-only no-download boundaries, disabled legal-advice/D3/production acceptance flags, and no V7.2 mail/schema pre-run.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -359,6 +367,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PCT07 D2 qualification parameters: PARAM-ADP-416 through PARAM-ADP-423.
 - Active S2PDT01 China C0 source parameters: PARAM-ADP-424 through PARAM-ADP-431.
 - Active S2PDT02 China C1 department source-map parameters: PARAM-ADP-432 through PARAM-ADP-439.
+- Active S2PDT03 China legal metadata relation parameters: PARAM-ADP-440 through PARAM-ADP-449.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

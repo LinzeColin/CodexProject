@@ -6,10 +6,10 @@
 - product_version: `0.24.0`
 - current_stage: `S2`
 - current_phase: `S2PD`
-- current_task: `S2PDT03`
-- active_model_count: `62`
-- active_formula_count: `64`
-- active_parameter_count: `422`
+- current_task: `S2PDT04`
+- active_model_count: `63`
+- active_formula_count: `65`
+- active_parameter_count: `432`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PD-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,9 +24,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PDT03`
+- stage2_current_task: `S2PDT04`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01; S2PDT02 -> S2P3T02; S2PDT03 -> S2P3T03`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01; S2PDT02 -> S2P3T02; S2PDT03 -> S2P3T03; S2PDT04 -> S2P3T04`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PDT03` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PDT04` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -600,6 +600,15 @@
 - parameter_refs: `PARAM-ADP-432, PARAM-ADP-433, PARAM-ADP-434, PARAM-ADP-435, PARAM-ADP-436, PARAM-ADP-437, PARAM-ADP-438, PARAM-ADP-439`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PDT02-C1`
 
+### MOD-ADP-063 S2PDT03 China legal metadata relation shadow
+
+- purpose: `Validate China legal metadata status taxonomy, version/effectivity relations, reprint/original-source guard, forced rescore and old-conclusion update, and no-production boundaries after S2PDT02 C1 department source map.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-065`
+- parameter_refs: `PARAM-ADP-440, PARAM-ADP-441, PARAM-ADP-442, PARAM-ADP-443, PARAM-ADP-444, PARAM-ADP-445, PARAM-ADP-446, PARAM-ADP-447, PARAM-ADP-448, PARAM-ADP-449`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PDT03-LEGAL`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -985,6 +994,12 @@
 - model_id: `MOD-ADP-062`
 - expression_or_pseudocode: `A S2PDT02 China C1 department source-map report passes only when the S2PDT01 China C0 source foundation report passes; required C1 sectors are all observed; every department has accepted official identity, official domain, source URL, aliases, industry routes, board routes, evidence refs, and metadata-only no-download boundaries; and D3 core source-domain acceptance plus production side effects remain false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PDT02-C1`
+
+### FORM-ADP-065
+
+- model_id: `MOD-ADP-063`
+- expression_or_pseudocode: `A S2PDT03 China legal metadata relation shadow report passes only when the S2PDT02 China C1 department source-map report passes; required legal statuses and relation types are observed; reprint relations identify reprint/original roles; forced rescore and old-conclusion updates are present; and legal advice, D3 core source-domain acceptance, production inclusion, V7.1 CURRENT switching, V7.2 mail/schema pre-run, and production side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PDT03-LEGAL`
 
 ## 参数
 
@@ -1412,3 +1427,13 @@
 | PARAM-ADP-437 | S2PDT02_REQUIRED_ROUTE_FIELDS | S2PDT02 required route fields | aliases;industry_routes;official_domain;source_url | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
 | PARAM-ADP-438 | S2PDT02_ALLOWED_IDENTITY_STATES | S2PDT02 allowed official identity states | official_domain;official_publication_portal | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
 | PARAM-ADP-439 | S2PDT02_REPORT_FILENAME | S2PDT02 China C1 report filename | stage2_s2pdt02_china_c1_department_source_map_report.json | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-440 | S2PDT03_LEGAL_METADATA_MODEL_ID | S2PDT03 legal metadata relation model id | adp-s2pdt03-china-legal-metadata-relation-shadow-v1 | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-441 | S2PDT03_ACCEPTANCE_ID | S2PDT03 legal acceptance id | ACC-S2PDT03-LEGAL | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-442 | S2PDT03_TASK_ID | S2PDT03 canonical task id | S2PDT03 | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-443 | S2PDT03_LEGACY_TASK_ID | S2PDT03 legacy task id | S2P3T03 | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-444 | S2PDT03_REQUIRED_LEGAL_STATUSES | S2PDT03 required legal statuses | draft;formal;amended;repealed;implemented;interpreted | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-445 | S2PDT03_REQUIRED_RELATION_TYPES | S2PDT03 required relation types | draft_to_formal;amends;repeals;implements;interprets;reprint_of | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-446 | S2PDT03_REQUIRED_DATE_FIELDS | S2PDT03 required legal date fields | published_date;effective_date | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-447 | S2PDT03_REQUIRED_FORCED_UPDATE_FIELDS | S2PDT03 required forced update fields | update_required;rescore_required;updated_state | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-448 | S2PDT03_ALLOWED_IDENTITY_STATES | S2PDT03 allowed official identity states | official_domain;official_gazette;official_publication_portal | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-449 | S2PDT03_REPORT_FILENAME | S2PDT03 legal metadata relation report filename | stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json | EXTRACTED from S2PDT03 code constant and focused tests | EXTRACTED |

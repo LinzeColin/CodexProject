@@ -2,10 +2,10 @@ schema_version: "codexproject.roadmap.v1"
 project_id: "arxiv-daily-push"
 current_stage_id: "S2"
 current_phase_id: "S2PD"
-current_task_id: "S2PDT03"
+current_task_id: "S2PDT04"
 next_gate_id: "S2PD-GATE-V7-CONTRACT-BLOCKED"
 total_estimated_hours: 28.5
-completed_estimated_hours: 20.5
+completed_estimated_hours: 22.5
 stages:
   -
     stage_id: "S2"
@@ -313,7 +313,7 @@ stages:
             legacy_alias: "S2P3T03"
             name: "China legal metadata, version effectivity, and reprint relation shadow"
             objective: "实现草案/正式、修订/废止、实施/解释与转载关系 metadata-only shadow，使法律状态变化能触发重评分和旧结论更新。"
-            status: "planned"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "7.02%"
             dependencies:
@@ -321,11 +321,13 @@ stages:
             acceptance_ids:
               - "ACC-S2PDT03-LEGAL"
             test_commands:
-              - "planned: legal status/version/effectivity relation tests"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt03_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt03_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
             evidence_refs:
-              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+              - "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
+              - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md"
             risk: "转载冒充原始源、法律状态误判、旧结论未更新、shadow 数据影响正式 arXiv 邮件、V7.2 未合入前抢跑邮件/Schema 必须阻断。"
-            rollback: "Remove planned S2PDT03 governance entry if superseded."
+            rollback: "Revert S2PDT03 legal metadata relation code, tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync."
           -
             task_id: "S2PDT04"
             legacy_alias: "S2P3T04"

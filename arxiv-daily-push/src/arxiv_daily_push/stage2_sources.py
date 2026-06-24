@@ -173,6 +173,16 @@ S2PDT02_REQUIRED_SECTORS = (
 S2PDT02_REQUIRED_ROUTE_FIELDS = ("aliases", "industry_routes", "official_domain", "source_url")
 S2PDT02_ALLOWED_IDENTITY_STATES = ("official_domain", "official_publication_portal")
 S2PDT02_REPORT_FILENAME = "stage2_s2pdt02_china_c1_department_source_map_report.json"
+S2PDT03_LEGAL_METADATA_MODEL_ID = "adp-s2pdt03-china-legal-metadata-relation-shadow-v1"
+S2PDT03_ACCEPTANCE_ID = "ACC-S2PDT03-LEGAL"
+S2PDT03_TASK_ID = "S2PDT03"
+S2PDT03_LEGACY_TASK_ID = "S2P3T03"
+S2PDT03_REQUIRED_LEGAL_STATUSES = ("draft", "formal", "amended", "repealed", "implemented", "interpreted")
+S2PDT03_REQUIRED_RELATION_TYPES = ("draft_to_formal", "amends", "repeals", "implements", "interprets", "reprint_of")
+S2PDT03_REQUIRED_DATE_FIELDS = ("published_date", "effective_date")
+S2PDT03_REQUIRED_FORCED_UPDATE_FIELDS = ("update_required", "rescore_required", "updated_state")
+S2PDT03_ALLOWED_IDENTITY_STATES = ("official_domain", "official_gazette", "official_publication_portal")
+S2PDT03_REPORT_FILENAME = "stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -2506,6 +2516,271 @@ def validate_s2pdt02_china_c1_department_source_map_report(report: Mapping[str, 
     return errors
 
 
+def build_s2pdt03_china_legal_metadata_relation_shadow_report(
+    *,
+    generated_at: str,
+    c1_department_source_map_report: Mapping[str, Any],
+    legal_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+    prior_conclusion_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build China legal status/version/reprint relation evidence without production inclusion."""
+
+    c1_errors = validate_s2pdt02_china_c1_department_source_map_report(c1_department_source_map_report)
+    c1_gate = (
+        "pass"
+        if not c1_errors
+        and c1_department_source_map_report.get("status") == "pass"
+        and c1_department_source_map_report.get("d3_c1_department_source_map_ready") is True
+        else "blocked"
+    )
+    legal_rows, legal_errors = _s2pdt03_legal_rows(legal_records)
+    relation_rows, relation_errors = _s2pdt03_relation_rows(relation_records, legal_rows)
+    prior_rows, prior_errors = _s2pdt03_prior_conclusion_rows(prior_conclusion_records, legal_rows)
+    status_gate = _s2pdt03_legal_status_gate(legal_rows)
+    effectivity_gate = _s2pdt03_version_effectivity_gate(legal_rows, relation_rows)
+    reprint_gate = _s2pdt03_reprint_relation_gate(relation_rows)
+    forced_update_gate = _s2pdt03_forced_update_gate(relation_rows, prior_rows)
+    metadata_gate = _s2pdt03_metadata_gate(legal_rows, relation_rows)
+    blocking_reasons = [
+        *c1_errors,
+        *legal_errors,
+        *relation_errors,
+        *prior_errors,
+        *status_gate["blocking_reasons"],
+        *effectivity_gate["blocking_reasons"],
+        *reprint_gate["blocking_reasons"],
+        *forced_update_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if c1_gate != "pass":
+        blocking_reasons.append("S2PDT03 requires passing S2PDT02 China C1 department source map")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and c1_gate
+        == status_gate["status"]
+        == effectivity_gate["status"]
+        == reprint_gate["status"]
+        == forced_update_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PDT03_LEGAL_METADATA_MODEL_ID,
+        "acceptance_id": S2PDT03_ACCEPTANCE_ID,
+        "task_id": S2PDT03_TASK_ID,
+        "legacy_task_id": S2PDT03_LEGACY_TASK_ID,
+        "phase": "S2PD",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_c1_department_source_map_gate": c1_gate,
+        "legal_status_taxonomy_gate": status_gate["status"],
+        "version_effectivity_gate": effectivity_gate["status"],
+        "reprint_relation_gate": reprint_gate["status"],
+        "forced_update_gate": forced_update_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_legal_statuses": list(S2PDT03_REQUIRED_LEGAL_STATUSES),
+        "legal_statuses_observed": status_gate["legal_statuses_observed"],
+        "required_relation_types": list(S2PDT03_REQUIRED_RELATION_TYPES),
+        "relation_types_observed": effectivity_gate["relation_types_observed"],
+        "required_date_fields": list(S2PDT03_REQUIRED_DATE_FIELDS),
+        "required_forced_update_fields": list(S2PDT03_REQUIRED_FORCED_UPDATE_FIELDS),
+        "legal_records": legal_rows,
+        "relation_records": relation_rows,
+        "prior_conclusion_records": prior_rows,
+        "legal_record_count": len(legal_rows),
+        "relation_record_count": len(relation_rows),
+        "prior_conclusion_record_count": len(prior_rows),
+        "legal_status_summary": status_gate,
+        "version_effectivity_summary": effectivity_gate,
+        "reprint_relation_summary": reprint_gate,
+        "forced_update_summary": forced_update_gate,
+        "metadata_summary": metadata_gate,
+        "d3_legal_metadata_relation_shadow_ready": status == "pass",
+        "legal_advice_provided": False,
+        "v7_1_current_switched": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "d3_core_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pdt03_china_legal_metadata_relation_shadow(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    c1_department_source_map_report: Mapping[str, Any],
+    legal_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+    prior_conclusion_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PDT03 legal metadata relation evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pdt03-china-legal-metadata-relation-shadow"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pdt03_china_legal_metadata_relation_shadow_report(
+        generated_at=generated_at,
+        c1_department_source_map_report=c1_department_source_map_report,
+        legal_records=legal_records,
+        relation_records=relation_records,
+        prior_conclusion_records=prior_conclusion_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "legal_metadata_relation_report_path": str(run_dir / "adp-s2pdt03-china-legal-metadata-relation-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pdt03-china-legal-metadata-relation-report.json", report)
+        _write_json(state / S2PDT03_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pdt03_china_legal_metadata_relation_shadow_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PDT03_LEGAL_METADATA_MODEL_ID:
+        errors.append("S2PDT03 legal model_id must be adp-s2pdt03-china-legal-metadata-relation-shadow-v1")
+    if report.get("task_id") != S2PDT03_TASK_ID:
+        errors.append("S2PDT03 legal task_id must be S2PDT03")
+    if report.get("legacy_task_id") != S2PDT03_LEGACY_TASK_ID:
+        errors.append("S2PDT03 legal legacy_task_id must be S2P3T03")
+    if report.get("acceptance_id") != S2PDT03_ACCEPTANCE_ID:
+        errors.append("S2PDT03 legal acceptance_id must be ACC-S2PDT03-LEGAL")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PDT03 legal status must be pass or blocked")
+    for key in (
+        "legal_advice_provided",
+        "v7_1_current_switched",
+        "v7_2_mail_or_schema_prerun",
+        "d3_core_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PDT03 legal metadata relation shadow")
+    records = report.get("legal_records")
+    if not isinstance(records, list):
+        errors.append("S2PDT03 legal_records must be a list")
+        records = []
+    relations = report.get("relation_records")
+    if not isinstance(relations, list):
+        errors.append("S2PDT03 relation_records must be a list")
+        relations = []
+    prior_records = report.get("prior_conclusion_records")
+    if not isinstance(prior_records, list):
+        errors.append("S2PDT03 prior_conclusion_records must be a list")
+        prior_records = []
+    legal_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"legal_records[{index}] must be an object")
+            continue
+        legal_id = str(record.get("legal_id") or "")
+        if not legal_id:
+            errors.append(f"legal_records[{index}].legal_id is required")
+        if legal_id in legal_ids:
+            errors.append(f"duplicate S2PDT03 legal_id: {legal_id}")
+        legal_ids.add(legal_id)
+        if record.get("legal_status") not in S2PDT03_REQUIRED_LEGAL_STATUSES:
+            errors.append(f"legal_records[{index}].legal_status is not supported")
+        if record.get("identity_state") not in S2PDT03_ALLOWED_IDENTITY_STATES:
+            errors.append(f"legal_records[{index}].identity_state is not accepted")
+        for field in ("source_id", "title", "official_domain", "source_url", *S2PDT03_REQUIRED_DATE_FIELDS):
+            if not record.get(field):
+                errors.append(f"legal_records[{index}].{field} is required")
+        if record.get("metadata_only") is not True:
+            errors.append(f"legal_records[{index}].metadata_only must be true")
+        if record.get("pdf_downloaded") is not False:
+            errors.append(f"legal_records[{index}].pdf_downloaded must be false")
+        if record.get("full_text_extracted") is not False:
+            errors.append(f"legal_records[{index}].full_text_extracted must be false")
+        if not record.get("evidence_refs"):
+            errors.append(f"legal_records[{index}].evidence_refs is required")
+    relation_ids: set[str] = set()
+    for index, relation in enumerate(relations):
+        if not isinstance(relation, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_id = str(relation.get("relation_id") or "")
+        if not relation_id:
+            errors.append(f"relation_records[{index}].relation_id is required")
+        if relation_id in relation_ids:
+            errors.append(f"duplicate S2PDT03 relation_id: {relation_id}")
+        relation_ids.add(relation_id)
+        if relation.get("relation_type") not in S2PDT03_REQUIRED_RELATION_TYPES:
+            errors.append(f"relation_records[{index}].relation_type is not supported")
+        for field in ("source_legal_id", "target_legal_id", "relation_date"):
+            if not relation.get(field):
+                errors.append(f"relation_records[{index}].{field} is required")
+        if relation.get("metadata_only") is not True:
+            errors.append(f"relation_records[{index}].metadata_only must be true")
+        if not relation.get("evidence_refs"):
+            errors.append(f"relation_records[{index}].evidence_refs is required")
+    observed_statuses = set(report.get("legal_statuses_observed") or [])
+    missing_statuses = [status for status in S2PDT03_REQUIRED_LEGAL_STATUSES if status not in observed_statuses]
+    if missing_statuses:
+        errors.append("S2PDT03 legal status coverage missing required statuses: " + ", ".join(missing_statuses))
+    observed_relations = set(report.get("relation_types_observed") or [])
+    missing_relations = [relation for relation in S2PDT03_REQUIRED_RELATION_TYPES if relation not in observed_relations]
+    if missing_relations:
+        errors.append("S2PDT03 legal relation coverage missing required relation types: " + ", ".join(missing_relations))
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PDT03 legal report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_c1_department_source_map_gate",
+            "legal_status_taxonomy_gate",
+            "version_effectivity_gate",
+            "reprint_relation_gate",
+            "forced_update_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PDT03 legal report requires {key}=pass")
+        if report.get("d3_legal_metadata_relation_shadow_ready") is not True:
+            errors.append("passing S2PDT03 legal report requires d3_legal_metadata_relation_shadow_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -4206,6 +4481,318 @@ def _s2pdt02_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "department_count": len(rows),
         "blocking_reasons": reasons,
     }
+
+
+def _s2pdt03_legal_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    legal_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"legal_records[{index}] must be an object")
+            continue
+        legal_id = str(record.get("legal_id") or "").strip()
+        official_domain = str(record.get("official_domain") or "").strip().lower()
+        source_url = str(record.get("source_url") or "").strip()
+        row = {
+            "legal_id": legal_id,
+            "source_id": str(record.get("source_id") or "").strip(),
+            "title": str(record.get("title") or "").strip(),
+            "legal_status": str(record.get("legal_status") or "").strip(),
+            "version_label": str(record.get("version_label") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "published_date": str(record.get("published_date") or "").strip(),
+            "effective_date": str(record.get("effective_date") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not legal_id:
+            errors.append(f"legal_records[{index}].legal_id is required")
+        if legal_id in legal_ids:
+            errors.append(f"duplicate S2PDT03 legal_id: {legal_id}")
+        legal_ids.add(legal_id)
+        if official_domain and source_url and official_domain not in source_url.lower():
+            errors.append(f"legal_records[{index}].source_url must contain official_domain")
+        if not _is_iso_date(row["published_date"]):
+            errors.append(f"legal_records[{index}].published_date must be YYYY-MM-DD")
+        if not _is_iso_date(row["effective_date"]):
+            errors.append(f"legal_records[{index}].effective_date must be YYYY-MM-DD")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT03 requires at least one legal metadata record")
+    return rows, errors
+
+
+def _s2pdt03_relation_rows(
+    records: Sequence[Mapping[str, Any]],
+    legal_rows: Sequence[Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    relation_ids: set[str] = set()
+    legal_ids = {str(row.get("legal_id") or "") for row in legal_rows if isinstance(row, Mapping)}
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_id = str(record.get("relation_id") or "").strip()
+        source_legal_id = str(record.get("source_legal_id") or "").strip()
+        target_legal_id = str(record.get("target_legal_id") or "").strip()
+        row = {
+            "relation_id": relation_id,
+            "relation_type": str(record.get("relation_type") or "").strip(),
+            "source_legal_id": source_legal_id,
+            "target_legal_id": target_legal_id,
+            "relation_date": str(record.get("relation_date") or "").strip(),
+            "source_role": str(record.get("source_role") or "").strip(),
+            "target_role": str(record.get("target_role") or "").strip(),
+            "original_source_verified": record.get("original_source_verified") is True,
+            "forced_update_required": record.get("forced_update_required") is True,
+            "metadata_only": record.get("metadata_only") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not relation_id:
+            errors.append(f"relation_records[{index}].relation_id is required")
+        if relation_id in relation_ids:
+            errors.append(f"duplicate S2PDT03 relation_id: {relation_id}")
+        relation_ids.add(relation_id)
+        if source_legal_id not in legal_ids:
+            errors.append(f"relation_records[{index}].source_legal_id must reference legal_records")
+        if target_legal_id not in legal_ids:
+            errors.append(f"relation_records[{index}].target_legal_id must reference legal_records")
+        if source_legal_id and target_legal_id and source_legal_id == target_legal_id:
+            errors.append(f"relation_records[{index}] source_legal_id and target_legal_id must differ")
+        if not _is_iso_date(row["relation_date"]):
+            errors.append(f"relation_records[{index}].relation_date must be YYYY-MM-DD")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT03 requires at least one legal relation record")
+    return rows, errors
+
+
+def _s2pdt03_prior_conclusion_rows(
+    records: Sequence[Mapping[str, Any]],
+    legal_rows: Sequence[Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    conclusion_ids: set[str] = set()
+    legal_ids = {str(row.get("legal_id") or "") for row in legal_rows if isinstance(row, Mapping)}
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"prior_conclusion_records[{index}] must be an object")
+            continue
+        conclusion_id = str(record.get("conclusion_id") or "").strip()
+        legal_id = str(record.get("legal_id") or "").strip()
+        row = {
+            "conclusion_id": conclusion_id,
+            "legal_id": legal_id,
+            "previous_state": str(record.get("previous_state") or "").strip(),
+            "updated_state": str(record.get("updated_state") or "").strip(),
+            "update_required": record.get("update_required") is True,
+            "rescore_required": record.get("rescore_required") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not conclusion_id:
+            errors.append(f"prior_conclusion_records[{index}].conclusion_id is required")
+        if conclusion_id in conclusion_ids:
+            errors.append(f"duplicate S2PDT03 conclusion_id: {conclusion_id}")
+        conclusion_ids.add(conclusion_id)
+        if legal_id not in legal_ids:
+            errors.append(f"prior_conclusion_records[{index}].legal_id must reference legal_records")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT03 requires at least one prior conclusion update record")
+    return rows, errors
+
+
+def _s2pdt03_legal_status_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("legal_status") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PDT03_REQUIRED_LEGAL_STATUSES) - observed)
+    unsupported = sorted(observed - set(S2PDT03_REQUIRED_LEGAL_STATUSES))
+    invalid_identity = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("identity_state") not in S2PDT03_ALLOWED_IDENTITY_STATES
+        or not str(row.get("official_domain") or "")
+        or not str(row.get("source_url") or "")
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT03 legal status coverage missing statuses: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PDT03 legal status coverage has unsupported statuses: " + ", ".join(unsupported))
+    if invalid_identity:
+        reasons.append("S2PDT03 legal identity requires accepted identity_state, official_domain, and source_url")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_legal_statuses": list(S2PDT03_REQUIRED_LEGAL_STATUSES),
+        "legal_statuses_observed": sorted(status for status in observed if status),
+        "accepted_identity_count": len(rows) - len(invalid_identity),
+        "legal_record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt03_version_effectivity_gate(
+    legal_rows: Sequence[Mapping[str, Any]],
+    relation_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    relation_types = {str(row.get("relation_type") or "") for row in relation_rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PDT03_REQUIRED_RELATION_TYPES) - relation_types)
+    unsupported = sorted(relation_types - set(S2PDT03_REQUIRED_RELATION_TYPES))
+    date_confused = [
+        row
+        for row in legal_rows
+        if not isinstance(row, Mapping)
+        or not _is_iso_date(str(row.get("published_date") or ""))
+        or not _is_iso_date(str(row.get("effective_date") or ""))
+    ]
+    relation_date_confused = [
+        row
+        for row in relation_rows
+        if not isinstance(row, Mapping) or not _is_iso_date(str(row.get("relation_date") or ""))
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT03 version/effectivity relation coverage missing relation types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PDT03 version/effectivity relation coverage has unsupported relation types: " + ", ".join(unsupported))
+    if date_confused or relation_date_confused:
+        reasons.append("S2PDT03 date confusion guard requires YYYY-MM-DD published/effective/relation dates")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_relation_types": list(S2PDT03_REQUIRED_RELATION_TYPES),
+        "relation_types_observed": sorted(relation_type for relation_type in relation_types if relation_type),
+        "date_checked_legal_record_count": len(legal_rows) - len(date_confused),
+        "date_checked_relation_record_count": len(relation_rows) - len(relation_date_confused),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt03_reprint_relation_gate(relation_rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    reprints = [row for row in relation_rows if isinstance(row, Mapping) and row.get("relation_type") == "reprint_of"]
+    invalid = [
+        row
+        for row in reprints
+        if row.get("source_role") != "reprint"
+        or row.get("target_role") != "original"
+        or row.get("original_source_verified") is not True
+    ]
+    reasons: list[str] = []
+    if not reprints:
+        reasons.append("S2PDT03 reprint relation guard requires at least one reprint_of relation")
+    if invalid:
+        reasons.append("S2PDT03 reprint relation guard requires source_role=reprint, target_role=original, and original_source_verified=true")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "reprint_relation_count": len(reprints),
+        "verified_reprint_relation_count": len(reprints) - len(invalid),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt03_forced_update_gate(
+    relation_rows: Sequence[Mapping[str, Any]],
+    prior_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    forced_relations = [
+        row
+        for row in relation_rows
+        if isinstance(row, Mapping)
+        and row.get("relation_type") in {"amends", "repeals", "implements", "interprets"}
+        and row.get("forced_update_required") is True
+    ]
+    updatable_legal_ids = {
+        str(row.get("source_legal_id") or "")
+        for row in forced_relations
+        if isinstance(row, Mapping) and str(row.get("source_legal_id") or "")
+    }
+    updatable_legal_ids.update(
+        str(row.get("target_legal_id") or "")
+        for row in forced_relations
+        if isinstance(row, Mapping) and str(row.get("target_legal_id") or "")
+    )
+    valid_prior_updates = [
+        row
+        for row in prior_rows
+        if isinstance(row, Mapping)
+        and row.get("legal_id") in updatable_legal_ids
+        and row.get("update_required") is True
+        and row.get("rescore_required") is True
+        and str(row.get("updated_state") or "")
+    ]
+    missing_fields = [
+        row
+        for row in prior_rows
+        if not isinstance(row, Mapping)
+        or row.get("update_required") is not True
+        or row.get("rescore_required") is not True
+        or not str(row.get("updated_state") or "")
+    ]
+    reasons: list[str] = []
+    if len(forced_relations) < 4:
+        reasons.append("S2PDT03 forced-update gate requires amend/repeal/implement/interpret relations with forced_update_required=true")
+    if not valid_prior_updates:
+        reasons.append("S2PDT03 status changes must trigger rescore and old conclusion update")
+    if missing_fields:
+        reasons.append("S2PDT03 prior conclusions require update_required, rescore_required, and updated_state")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "forced_relation_count": len(forced_relations),
+        "prior_update_count": len(valid_prior_updates),
+        "affected_legal_ids": sorted(updatable_legal_ids),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt03_metadata_gate(
+    legal_rows: Sequence[Mapping[str, Any]],
+    relation_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    legal_violations = [
+        row
+        for row in legal_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+    ]
+    relation_violations = [
+        row for row in relation_rows if not isinstance(row, Mapping) or row.get("metadata_only") is not True
+    ]
+    evidence_missing = [
+        row
+        for row in [*legal_rows, *relation_rows]
+        if not isinstance(row, Mapping) or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if legal_violations or relation_violations:
+        reasons.append("S2PDT03 legal records and relations must stay metadata-only with no PDF/full-text extraction")
+    if evidence_missing:
+        reasons.append("S2PDT03 legal records and relations require evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_legal_record_count": len(legal_rows) - len(legal_violations),
+        "metadata_only_relation_record_count": len(relation_rows) - len(relation_violations),
+        "evidence_backed_record_count": len(legal_rows) + len(relation_rows) - len(evidence_missing),
+        "blocking_reasons": reasons,
+    }
+
+
+def _is_iso_date(value: str) -> bool:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        return False
+    try:
+        Date.fromisoformat(value)
+    except ValueError:
+        return False
+    return True
 
 
 def _top_journal_profiles_from_batches(

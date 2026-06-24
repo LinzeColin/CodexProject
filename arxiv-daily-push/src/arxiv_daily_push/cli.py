@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
     run_s2pct07_d2_source_domain_qualification,
@@ -119,6 +120,7 @@ from .stage2_sources import (
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pdt03_china_legal_metadata_relation_shadow_report,
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pct07_d2_source_domain_qualification_report,
@@ -594,6 +596,20 @@ def build_parser() -> argparse.ArgumentParser:
     s2pdt02_china_c1.add_argument("--department-records", required=True, help="China C1 department metadata JSON list or object with department_records.")
     s2pdt02_china_c1.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pdt02_china_c1.add_argument("--json", action="store_true", help="Print JSON C1 department source-map report.")
+
+    s2pdt03_china_legal = subparsers.add_parser(
+        "stage2-china-legal-metadata-relation-shadow",
+        help="Run S2PDT03/S2P3T03 China legal metadata, version/effectivity, and reprint relation shadow evidence.",
+    )
+    s2pdt03_china_legal.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pdt03_china_legal.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pdt03_china_legal.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pdt03_china_legal.add_argument("--c1-department-source-map-report", required=True, help="Passing S2PDT02 C1 department source-map report JSON.")
+    s2pdt03_china_legal.add_argument("--legal-records", required=True, help="China legal metadata JSON list or object with legal_records.")
+    s2pdt03_china_legal.add_argument("--relation-records", required=True, help="China legal relation JSON list or object with relation_records.")
+    s2pdt03_china_legal.add_argument("--prior-conclusion-records", required=True, help="Prior conclusion update JSON list or object with prior_conclusion_records.")
+    s2pdt03_china_legal.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pdt03_china_legal.add_argument("--json", action="store_true", help="Print JSON legal metadata relation shadow report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1798,6 +1814,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- official_identity_gate: {report.get('official_identity_gate')}")
             print(f"- alias_gate: {report.get('alias_gate')}")
             print(f"- industry_route_gate: {report.get('industry_route_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-china-legal-metadata-relation-shadow":
+        report = run_s2pdt03_china_legal_metadata_relation_shadow(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            c1_department_source_map_report=load_json_mapping(args.c1_department_source_map_report),
+            legal_records=load_json_records(args.legal_records, "legal_records"),
+            relation_records=load_json_records(args.relation_records, "relation_records"),
+            prior_conclusion_records=load_json_records(args.prior_conclusion_records, "prior_conclusion_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pdt03_china_legal_metadata_relation_shadow_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- legal_status_taxonomy_gate: {report.get('legal_status_taxonomy_gate')}")
+            print(f"- version_effectivity_gate: {report.get('version_effectivity_gate')}")
+            print(f"- reprint_relation_gate: {report.get('reprint_relation_gate')}")
+            print(f"- forced_update_gate: {report.get('forced_update_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

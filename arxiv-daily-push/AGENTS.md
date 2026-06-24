@@ -12,9 +12,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   current execution contract. V5/V6/V7.0 files remain historical evidence and
   alias references; they no longer override V7.1.
 - Every implementation closeout must state the current V7.1 Task ID and any
-  legacy alias. Current development entry is `S2PDT03` / legacy `S2P3T03`
-  China legal metadata, effectivity/version, and reprint relation shadow.
-  `S2PDT02` / legacy `S2P3T02` China C1 central department source map and
+  legacy alias. Current development entry is `S2PDT04` / legacy `S2P3T04`
+  China official D3 source-domain readiness review.
+  `S2PDT03` / legacy `S2P3T03` China legal metadata, effectivity/version, and
+  reprint relation shadow, `S2PDT02` / legacy `S2P3T02` China C1 central department source map and
   `S2PDT01` / legacy `S2P3T01` China C0 national authoritative backbone are
   completed metadata-only no-production evidence. `S2PCT07` D2 source-domain
   qualification and cross-type calibration is completed as qualification-ready
@@ -46,8 +47,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   boards only after the V7 contract is readable, hashes match, and source-level
   gates pass, and P0/P1 audit findings are zero. Stage 2 is not complete until
   `S2PMT07 -> INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
-- Legacy `S2P3T03` maps to V7.1 `S2PDT03`; legacy `S2P3T02` maps to V7.1
-  `S2PDT02`; legacy `S2P3T01` maps to V7.1 `S2PDT01`. Legacy `S2P2T04` maps to V7.1
+- Legacy `S2P3T04` maps to V7.1 `S2PDT04`; legacy `S2P3T03` maps to V7.1
+  `S2PDT03`; legacy `S2P3T02` maps to V7.1 `S2PDT02`; legacy `S2P3T01` maps to V7.1 `S2PDT01`. Legacy `S2P2T04` maps to V7.1
   `S2PCT04`; `S2PCT05`, `S2PCT06`, and `S2PCT07` have no legacy alias. Legacy
   `S2P2T03` maps to V7.1
   `S2PCT03`; legacy `S2P2T02` maps to V7.1 `S2PCT02`; legacy `S2P2T01` maps
