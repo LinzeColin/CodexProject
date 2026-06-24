@@ -13,16 +13,16 @@ Governance spec version: `1.0.0`
 | D | Legacy Phase 7-10 TTS, video, local daily pipeline, and GitHub automation | media, resource, runner, and release gates pass |
 | E | Legacy Phase 11-12 weekly/monthly, all-arXiv queue delivery, manual delivery tests, and production handoff | operational acceptance remains blocked until final trial evidence passes |
 | S1-A | V5 Stage 1 Window A | B1/arXiv text-first baseline, owner controls, local data model, queue/ledger, B1 teaching email, runtime recovery, migration package, and post-migration bootstrap |
-| S2 | V7 multi-source integrated system | V7 contract locked; additional source/domain/board promotion only after Stage 1 arXiv production acceptance and contract hash checks |
-| S2PA | V7.1 product contract, parallel audit, Chinese governance, and production-forbidden lock | `V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED` |
+| S2 | V7.2 multi-source integrated system | V7.2 contract current; additional source/domain/board promotion only after Stage 1 arXiv production acceptance, V7.2 hash checks, and agent revalidation receipts |
+| S2PA | V7.2 current product contract, V7.1 read-only inheritance, V1.1 email-frontstage overlay, and production-forbidden lock | `ADP_PRODUCT_CONTRACT_V7_2_CURRENT` |
 | S2PB | D1 research/preprint/medical index source domain | `D1_SOURCE_DOMAIN_ACCEPTED` |
 
 ## Task Summary
 
 machine_summary:
 
-- task_count: 72
-- acceptance_count: 65
+- task_count: 73
+- acceptance_count: 66
 
 ## Delivery Tasks
 
@@ -96,9 +96,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PAT03 | S2PA | completed | ACC-S2PAT03-ROADMAP | root/ADP AGENTS and roadmap references now route new work through V7 while preserving legacy `S2P1T01` alias | `AGENTS.md`; `arxiv-daily-push/AGENTS.md` |
 | S2PAT04 | S2PA | completed | ACC-S2PAT04-CN-CI | 三基文件、VERSION_MATRIX、validator 和 governance tests expose and enforce V7 contract hashes | `功能清单`; `开发记录`; `模型参数文件` |
 | S2PAT05 | S2PA | completed | ACC-S2PAT05-AUDIT-LOCK | V7.1 parallel audit findings, merge policy, lifecycle contract, and P0/P1 production-forbidden gate are locked into repository governance; repository lock remains pending PR CI attestation | `docs/pursuing_goal/v7_1/machine_readable/audit_findings_v7_1.yaml`; `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
-| S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7 name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
-| S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.1 D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
-| S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.1 Science/main-journal metadata-only no-send shadow task; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml` |
+| S2PAT06 | S2PA | completed | ACC-S2PAT06-V7-2-CURRENT | V7.2 merges valid V7.1 requirements with V1.1 EMAIL_LEARNING_V1 increments, keeps V7.1 read-only, publishes CURRENT, and requires Stage2 agent revalidation before new work; PR CI remains the repository merge attestation | `docs/pursuing_goal/CURRENT.yaml`; `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml` |
+| S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7.2-inherited name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
+| S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.2-inherited D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
+| S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.2 Science/main-journal metadata-only no-send shadow task; agent must record V7.2 revalidation before new work; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |

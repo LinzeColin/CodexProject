@@ -469,6 +469,14 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(text.replace("\r\n", "\n").encode("utf-8")).hexdigest()
 
 
+def count_audit_severities(path: Path) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for match in re.finditer(r"(?m)^  severity: (P[0-3])$", path.read_text(encoding="utf-8")):
+        severity = match.group(1)
+        counts[severity] = counts.get(severity, 0) + 1
+    return counts
+
+
 def validate_arxiv_daily_push_v7_root_lock(
     validation: Validation,
     project_path: Path,
@@ -518,6 +526,9 @@ def validate_arxiv_daily_push_v7_root_lock(
     product_hash = sha256_file(files["product_contract"])
     roadmap_hash = sha256_file(files["roadmap"])
     audit_hash = sha256_file(files["audit_findings"])
+    audit_counts = count_audit_severities(files["audit_findings"])
+    if audit_counts.get("P0") != 8 or audit_counts.get("P1") != 37:
+        validation.add(required, scope, f"V7.1 inherited audit counts must remain P0=8/P1=37: {audit_counts}")
     if contract.get("contract_version") != expected_contract_version:
         validation.add(required, scope, "V7 lock contract_version mismatch")
     if contract.get("roadmap_version") != expected_roadmap_version:
@@ -617,16 +628,121 @@ def validate_arxiv_daily_push_v7_root_lock(
                 validation.add(required, scope, f"{rel_path} missing V7 lock reference: {needle}")
 
     matrix = parsed.get("version_matrix") if isinstance(parsed.get("version_matrix"), dict) else {}
-    if matrix.get("current_v7_contract_version") != expected_contract_version:
-        validation.add(required, scope, "VERSION_MATRIX.yaml missing current_v7_contract_version")
-    if matrix.get("current_v7_task_id") != "S2PCT01":
-        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PCT01")
+    if matrix.get("current_v7_contract_version") == "ADP-PRODUCT-CONTRACT-V7.1":
+        if matrix.get("current_v7_task_id") != "S2PCT01":
+            validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PCT01 for V7.1")
+    elif matrix.get("current_v7_contract_version") == "ADP-PRODUCT-CONTRACT-V7.2":
+        if matrix.get("current_v7_task_id") != "S2PCT02":
+            validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PCT02 for V7.2")
+    else:
+        validation.add(required, scope, "VERSION_MATRIX.yaml missing supported current_v7_contract_version")
     if matrix.get("current_v7_shadow_source_task_id") != "S2PBT01":
         validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_shadow_source_task_id must be S2PBT01")
     if matrix.get("current_v7_final_task_id") != "S2PMT07":
         validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_final_task_id must be S2PMT07")
     if matrix.get("stage1_acceptance_gate") != "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED":
         validation.add(required, scope, "VERSION_MATRIX.yaml must preserve ARXIV_PRODUCTION_ACCEPTED_MAINTAINED")
+
+    v72_root = project_path / "docs" / "pursuing_goal" / "v7_2"
+    v72_files = {
+        "current": project_path / "docs" / "pursuing_goal" / "CURRENT.yaml",
+        "lock": v72_root / "V7_2_ROOT_LOCK.yaml",
+        "product": v72_root / "machine_readable" / "product_contract_v7_2.yaml",
+        "roadmap": v72_root / "machine_readable" / "roadmap_v7_2.yaml",
+        "migration": v72_root / "machine_readable" / "migration_matrix_v7_1_to_v7_2.yaml",
+        "review": v72_root / "AUDIT" / "final_review_matrix.yaml",
+        "handoff": v72_root / "HANDOFF" / "00_下一Agent先读.md",
+    }
+    missing_v72 = [name for name, path in v72_files.items() if not check_file_nonempty(validation, path, required, scope)]
+    if missing_v72:
+        return
+    try:
+        current = load_yaml(v72_files["current"])
+        v72_lock = load_yaml(v72_files["lock"])
+        v72_product = load_yaml(v72_files["product"])
+        v72_migration = load_yaml(v72_files["migration"])
+        v72_review = load_yaml(v72_files["review"])
+        v72_roadmap = load_yaml(v72_files["roadmap"])
+    except Exception as exc:
+        validation.add(required, scope, f"V7.2 contract parse failure: {exc}")
+        return
+    if current.get("current_product_contract", {}).get("version") != "ADP-PRODUCT-CONTRACT-V7.2":
+        validation.add(required, scope, "CURRENT.yaml must point to ADP-PRODUCT-CONTRACT-V7.2")
+    if current.get("previous_read_only_contract", {}).get("version") != "ADP-PRODUCT-CONTRACT-V7.1":
+        validation.add(required, scope, "CURRENT.yaml must preserve V7.1 as read-only previous contract")
+    if current.get("agent_revalidation_required") is not True:
+        validation.add(required, scope, "CURRENT.yaml must require Stage2 agent revalidation")
+    v72_contract = v72_lock.get("current_contract") if isinstance(v72_lock.get("current_contract"), dict) else {}
+    if v72_contract.get("contract_version") != "ADP-PRODUCT-CONTRACT-V7.2":
+        validation.add(required, scope, "V7_2_ROOT_LOCK current contract_version mismatch")
+    if v72_product.get("contract_version") != "ADP-PRODUCT-CONTRACT-V7.2":
+        validation.add(required, scope, "product_contract_v7_2.yaml contract_version mismatch")
+    if v72_product.get("parent_contract", {}).get("version") != "ADP-PRODUCT-CONTRACT-V7.1":
+        validation.add(required, scope, "product_contract_v7_2.yaml must inherit V7.1")
+    inherited = v72_product.get("production_stop_gate", {}).get("inherited_v7_1_open_findings", {})
+    if inherited.get("P0") != 8 or inherited.get("P1") != 37:
+        validation.add(required, scope, "product_contract_v7_2.yaml must preserve inherited V7.1 P0=8/P1=37")
+    baseline = v72_product.get("production_stop_gate", {}).get("v7_2_baseline_migration_open_findings", {})
+    if baseline.get("P0") != 0 or baseline.get("P1") != 0:
+        validation.add(required, scope, "product_contract_v7_2.yaml V7.2 baseline blockers must be P0=0/P1=0")
+    inherited_lock = v72_lock.get("inherited_v7_1_audit_blockers", {})
+    if inherited_lock.get("open_p0_findings") != 8 or inherited_lock.get("open_p1_findings") != 37:
+        validation.add(required, scope, "V7_2_ROOT_LOCK.yaml must preserve inherited V7.1 P0=8/P1=37")
+    baseline_lock = v72_lock.get("v7_2_baseline_migration_blockers", {})
+    if baseline_lock.get("open_p0_findings") != 0 or baseline_lock.get("open_p1_findings") != 0:
+        validation.add(required, scope, "V7_2_ROOT_LOCK.yaml V7.2 baseline blockers must be P0=0/P1=0")
+    for field, path in (
+        ("contract_sha256", v72_files["product"]),
+        ("roadmap_sha256", v72_files["roadmap"]),
+        ("migration_matrix_sha256", v72_files["migration"]),
+        ("final_review_sha256", v72_files["review"]),
+    ):
+        if v72_contract.get(field) != sha256_file(path):
+            validation.add(required, scope, f"V7_2_ROOT_LOCK {field} does not match repository file")
+    for section in (
+        "v7_1_retained_requirements",
+        "v7_1_replaced_requirements",
+        "v1_1_new_requirements",
+        "file_migration_matrix",
+        "task_id_mapping",
+        "stop_gate_migration",
+        "rollback",
+    ):
+        if not v72_migration.get(section):
+            validation.add(required, scope, f"V7.2 migration matrix missing {section}")
+    agents = v72_review.get("agents") if isinstance(v72_review.get("agents"), dict) else {}
+    for agent_id in ("A", "B", "C"):
+        if agents.get(agent_id, {}).get("status") != "pass_with_required_controls":
+            validation.add(required, scope, f"V7.2 final review agent {agent_id} did not pass")
+    if v72_review.get("baseline_publication_verdict", {}).get("status") != "pass":
+        validation.add(required, scope, "V7.2 final review verdict must pass")
+    if v72_roadmap.get("email_v1_workstream_next") != "S2PHT01V1.1-T01":
+        validation.add(required, scope, "V7.2 roadmap must keep S2PHT01V1.1-T01 as next email task")
+    strengthened = set(v72_migration.get("stop_gate_migration", {}).get("added_or_strengthened", []))
+    if "SCOPE-ESCAPE" not in strengthened:
+        validation.add(required, scope, "V7.2 migration matrix must include SCOPE-ESCAPE")
+    if matrix.get("v7_open_p0_findings") != 8 or matrix.get("v7_open_p1_findings") != 37:
+        validation.add(required, scope, "VERSION_MATRIX.yaml must preserve inherited V7.1 open P0=8/P1=37")
+    if matrix.get("v7_2_baseline_open_p0_findings") != 0 or matrix.get("v7_2_baseline_open_p1_findings") != 0:
+        validation.add(required, scope, "VERSION_MATRIX.yaml V7.2 baseline blockers must be P0=0/P1=0")
+    s2pat06 = next((task for task in tasks if str(task.get("task_id") or "") == "S2PAT06"), None)
+    if not s2pat06:
+        validation.add(required, scope, "delivery_tasks.yaml must contain V7.2 task S2PAT06")
+    else:
+        acceptance_ids = {str(item) for item in as_list(s2pat06.get("acceptance_ids")) if item}
+        if "ACC-S2PAT06-V7-2-CURRENT" not in acceptance_ids:
+            validation.add(required, scope, "S2PAT06 missing ACC-S2PAT06-V7-2-CURRENT")
+
+    current_tokens = (
+        ("docs/pursuing_goal/CURRENT.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "功能清单").read_text(encoding="utf-8"), "功能清单"),
+        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "开发记录").read_text(encoding="utf-8"), "开发记录"),
+        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "模型参数文件").read_text(encoding="utf-8"), "模型参数文件"),
+    )
+    for needle, text, label in current_tokens:
+        if needle not in text:
+            validation.add(required, scope, f"{label} missing V7.2 current reference: {needle}")
 
 
 def rel(path: Path) -> str:
