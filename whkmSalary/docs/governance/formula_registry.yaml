@@ -19,17 +19,17 @@ formulas:
     missing_policy: "Missing weights, unrecognized province, incomplete keys, extra keys, negative/non-finite weights, and non-1.0 totals raise ValueError."
     output_range: "dict of metric weights."
     code_refs:
-      - "whkmSalary/salary_logic.py:30"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:30"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/salary_logic.py:15"
-      - "whkmSalary/salary_logic.py:204"
-    implementation_refs: ["whkmSalary/salary_logic.py::projects", "whkmSalary/salary_logic.py::ALIASES", "whkmSalary/salary_logic.py::WEIGHT_KEYS", "whkmSalary/salary_logic.py::WEIGHT_TOTAL", "whkmSalary/salary_logic.py::WEIGHT_TOTAL_TOLERANCE", "whkmSalary/salary_logic.py::resolve_weights", "whkmSalary/salary_logic.py::validate_weights"]
-    implementation_fingerprint: "sha256:ca988c0931f1bf65e6e49a61f39245683fac9826cfcf970bf593768bb44408cc"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:15"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:204"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::projects", "whkmSalary/src/whkm_salary/salary_logic.py::ALIASES", "whkmSalary/src/whkm_salary/salary_logic.py::WEIGHT_KEYS", "whkmSalary/src/whkm_salary/salary_logic.py::WEIGHT_TOTAL", "whkmSalary/src/whkm_salary/salary_logic.py::WEIGHT_TOTAL_TOLERANCE", "whkmSalary/src/whkm_salary/salary_logic.py::resolve_weights", "whkmSalary/src/whkm_salary/salary_logic.py::validate_weights"]
+    implementation_fingerprint: "sha256:cf95fb61c1afa5c1194207868afae1167526984b204def875284722f2880bfce"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
-    evidence_hash: "sha256:e9022addbf5d071e319625ff95306483ae5a3be63a54b8f8e3a659c14fdd7f47"
+    evidence_hash: "sha256:c8ebab952bc7c5e11c4fc9629cc2d5e7ac4b6be18193fc7adabe82976c3950af"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-002"
@@ -49,16 +49,16 @@ formulas:
     missing_policy: "Missing input is not handled by salary_logic; UI supplies defaults or Python raises."
     output_range: "float score; can be negative or above 200."
     code_refs:
-      - "whkmSalary/salary_logic.py:52"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:52"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/salary_logic.py:154"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_performance"]
-    implementation_fingerprint: "sha256:7c4833bb20c64e6e3ce54e2fc02c45644b1839847842005829b666a1d48f5b16"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:154"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_performance"]
+    implementation_fingerprint: "sha256:dbf5fcb0f25e83bb141702d1cad22f3d9f02f0746c0eda08e064c884451a98b1"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:963cd7260dee80a8c3797476fb934a9520855eb13b0b6218286c20c3d365a4aa"
+    evidence_hash: "sha256:6cb350b15b85af7b6a0256901cd593953a66097e9671d68e9a12c1e2f0f90dc1"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-003"
@@ -78,16 +78,16 @@ formulas:
     missing_policy: "Missing input is not handled by salary_logic; UI supplies default."
     output_range: "float score."
     code_refs:
-      - "whkmSalary/salary_logic.py:63"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:63"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:28"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_margin"]
-    implementation_fingerprint: "sha256:6b1e8a920ec03ccab12e948be6727a1732da278972dc6e8bdde637b719562872"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:28"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_margin"]
+    implementation_fingerprint: "sha256:44fe2860b2139e25a1198857838b83e9131b1bc56e6f5953d43ab787614bec2c"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:aa26e34e5f710c777c9526cd18cd8396ef764ae2bc18b90a71902db354c46b25"
+    evidence_hash: "sha256:9e8b8dd790f101b7ddee0b501f7777f5b19b2d4b27a4012c9333cc6026d2bd7d"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-004"
@@ -110,17 +110,17 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:80"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:80"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:30"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_settlement"]
-    implementation_fingerprint: "sha256:5609fc84388a51349bb9f221f2904037b37502eb81c5bab211137b74e3fdd874"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:30"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_settlement"]
+    implementation_fingerprint: "sha256:a1daa5dcdf8a0ac2c0574785f3e75b1a2281b579ca9fb90e6882d9cb78e62417"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
-    evidence_hash: "sha256:dd2fb5c19df6e10bb754548564c56765eeda78c97e73b81778b37d836bd4ffe6"
+    evidence_hash: "sha256:359fd25278fc39fd3b254eef2329405e1091aacd9470a40b3969bf0201f4e46e"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-005"
@@ -143,17 +143,17 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:92"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:92"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:34"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_invoice"]
-    implementation_fingerprint: "sha256:11f8a01506eafd9647933e72ba743b2b56c03f99d22e0d6b89af31d394e3721f"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:34"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_invoice"]
+    implementation_fingerprint: "sha256:ecbcfba0e0f3b87ebb57a9b4c25b2935f4fd58187754a1a9a41d1667c4f709dd"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
-    evidence_hash: "sha256:9daf74176d8928e26388104249cc3573bfe21a72eb3f6445dadf12c0f882295d"
+    evidence_hash: "sha256:078062f860ca81768581dc8b4e312f575b4b7c803f6577504ca19c49489f1d1b"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-006"
@@ -176,17 +176,17 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:106"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:106"
     test_refs:
       - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:36"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_payback"]
-    implementation_fingerprint: "sha256:410390f76c7ad32f7a070be1ba32f75bc8a45f198f32fc23df4003f8d294a96b"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:36"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_payback"]
+    implementation_fingerprint: "sha256:a6ec2ff62925a1e3f8ef3fa6a57379e00ad88486537a8b382b5bf5013829052a"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
-    evidence_hash: "sha256:4d8ba4e4456c9ade3999e4b1b8586ef37e8a392b2121e100bbd1a2e6cbee7980"
+    evidence_hash: "sha256:a33a5214dad0c844237b147bf6282a23a4af2f6577e5df748405e140bc4a2021"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-007"
@@ -206,16 +206,16 @@ formulas:
     missing_policy: "Missing input is not handled by salary_logic; UI supplies default."
     output_range: "float score."
     code_refs:
-      - "whkmSalary/salary_logic.py:109"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:109"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:40"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_audit_bias"]
-    implementation_fingerprint: "sha256:eaf9c1f6a46903ef3f39527d47c3d147777b005f4924ae08d215a769a2d7969e"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:40"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_audit_bias"]
+    implementation_fingerprint: "sha256:49581428694e72e2d00248d90527b0310bdb6953b5e843b69e85594d0109d42e"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:b8a1ae8f8320e672227da11bc1ff5b9a9492e5ed7674b7e6693708e59464aac4"
+    evidence_hash: "sha256:19a835ebc036ecee57f85eda1198bcebc9482a93ee8886c0e1d99f743421feec"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-008"
@@ -235,16 +235,16 @@ formulas:
     missing_policy: "No salary_logic fallback for negative direct-call rates; UI min is 0.0."
     output_range: "float score or None for negative direct-call rates."
     code_refs:
-      - "whkmSalary/salary_logic.py:117"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:117"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:42"
-    implementation_refs: ["whkmSalary/salary_logic.py::score_customer_cost"]
-    implementation_fingerprint: "sha256:4ff460702f0f720cb2e8a9aab1479be140e97d20b37643f57f675dbdb884f9db"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:42"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::score_customer_cost"]
+    implementation_fingerprint: "sha256:c7ec059708877ab718f1170ef82750090aee8afd1b644add5ff605d04b505ae3"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
     verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:a0d279af32d746e1daf802f1bb0f8b709cfb11058ddf9ccd356a8bf0dc667579"
+    evidence_hash: "sha256:ec29e104c8d8579d54d488aebfabdd127a777c7e3fcb86f20bb0334be889d6ad"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-009"
@@ -272,18 +272,18 @@ formulas:
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:143"
-      - "whkmSalary/salary_logic.py:228"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:143"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:228"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
-      - "whkmSalary/salary_logic.py:178"
-      - "whkmSalary/salary_logic.py:228"
-    implementation_refs: ["whkmSalary/salary_logic.py::BASE_MONTHLY", "whkmSalary/salary_logic.py::PERF_QUARTER_POOL", "whkmSalary/salary_logic.py::calculate", "whkmSalary/salary_logic.py::round_money"]
-    implementation_fingerprint: "sha256:cb72cd0b3f85436c62ffe4ec369e642f1a6a9c24423789ca7f5aa2ed6db2ed92"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:178"
+      - "whkmSalary/src/whkm_salary/salary_logic.py:228"
+    implementation_refs: ["whkmSalary/src/whkm_salary/salary_logic.py::BASE_MONTHLY", "whkmSalary/src/whkm_salary/salary_logic.py::PERF_QUARTER_POOL", "whkmSalary/src/whkm_salary/salary_logic.py::calculate", "whkmSalary/src/whkm_salary/salary_logic.py::round_money"]
+    implementation_fingerprint: "sha256:8dcf4168bc4b0c3caff8f77fd5c91f53dcd186e6804a7cee5c6fe626efdbe21a"
     last_verified_commit: "HEAD"
     verified_at: "2026-06-24T00:00:00+10:00"
-    evidence_hash: "sha256:4b1fc6dd1e36e43791d85bdc157a4e25625aabadb6def80308ae5bea76899af8"
+    evidence_hash: "sha256:fe439446e7d89b3e48b795bda04c2ecd41112e4d7403d63950c5233fb2d4f83a"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-010"
@@ -305,13 +305,13 @@ formulas:
     missing_policy: "Streamlit supplies defaults; direct code callers may bypass UI constraints."
     output_range: "UI input values or displayed exception."
     code_refs:
-      - "whkmSalary/streamlit_app.py:17"
-      - "whkmSalary/streamlit_app.py:58"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:17"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:58"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
-      - "whkmSalary/streamlit_app.py:17"
-      - "whkmSalary/streamlit_app.py:63"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:17"
+      - "whkmSalary/src/whkm_salary/streamlit_app.py:63"
     implementation_refs: []
     implementation_fingerprint: "HUMAN_REVIEW_REQUIRED"
     last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"

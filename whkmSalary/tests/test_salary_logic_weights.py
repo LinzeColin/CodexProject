@@ -6,8 +6,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 
 from salary_logic import WEIGHT_KEYS, projects, resolve_weights  # noqa: E402
+from whkm_salary.salary_logic import projects as package_projects  # noqa: E402
 
 
 class SalaryLogicWeightTests(unittest.TestCase):
@@ -43,11 +47,22 @@ class SalaryLogicWeightTests(unittest.TestCase):
             resolve_weights(weights=bad_total)
 
     def test_streamlit_uses_salary_logic_projects_as_single_weight_source(self) -> None:
-        text = (ROOT / "streamlit_app.py").read_text(encoding="utf-8")
-        self.assertIn("from salary_logic import projects, calculate", text)
+        text = (ROOT / "src" / "whkm_salary" / "streamlit_app.py").read_text(encoding="utf-8")
+        self.assertIn("from whkm_salary.salary_logic import projects, calculate", text)
         self.assertIn("list(projects.keys())", text)
         self.assertIn("weights = projects[province]", text)
         self.assertNotIn("province_weights =", text)
+
+    def test_s4pct02_src_package_and_root_compatibility_entries_are_bound(self) -> None:
+        self.assertIs(package_projects, projects)
+        self.assertTrue((ROOT / "src" / "whkm_salary" / "salary_logic.py").is_file())
+        self.assertTrue((ROOT / "src" / "whkm_salary" / "streamlit_app.py").is_file())
+        self.assertTrue((ROOT / "config" / "structure_contract.yaml").is_file())
+
+        root_logic = (ROOT / "salary_logic.py").read_text(encoding="utf-8")
+        root_app = (ROOT / "streamlit_app.py").read_text(encoding="utf-8")
+        self.assertIn("from whkm_salary.salary_logic import *", root_logic)
+        self.assertIn('runpy.run_module("whkm_salary.streamlit_app"', root_app)
 
 
 if __name__ == "__main__":
