@@ -4623,6 +4623,70 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s3pct03_serenity_lifecycle_manifest_and_gate_evidence(self) -> None:
+        lifecycle_matrix = ROOT / "governance" / "stage_gates" / "s3pc" / "serenity_lifecycle_matrix.csv"
+        process_log = ROOT / "governance" / "stage_gates" / "s3pc" / "serenity_process_cleanup.log"
+        recovery_log = ROOT / "governance" / "stage_gates" / "s3pc" / "serenity_persistence_recovery.log"
+        self.assertTrue(lifecycle_matrix.is_file())
+        self.assertTrue(process_log.is_file())
+        self.assertTrue(recovery_log.is_file())
+
+        rows = list(csv.DictReader(lifecycle_matrix.read_text(encoding="utf-8").splitlines()))
+        checks = {row["check"]: row["result"] for row in rows}
+        self.assertEqual(checks["auto_wake_opend"], "PASS")
+        self.assertEqual(checks["tool_owned_process_cleanup"], "PASS")
+        self.assertEqual(checks["user_owned_opend_protection"], "PASS")
+        self.assertEqual(checks["package_atomicity"], "PASS")
+        self.assertEqual(checks["launchd_tick_contract"], "PASS")
+        self.assertEqual(checks["roadmap_pytest_command"], "BLOCKED_LOCAL_TOOL_UNAVAILABLE")
+        self.assertEqual(checks["stop_condition_external_accounts"], "PASS")
+
+        process_text = process_log.read_text(encoding="utf-8")
+        self.assertIn("S3PCT03", process_text)
+        self.assertIn("background_residue_process_count: 0", process_text)
+        self.assertIn("no real OpenD process was started", process_text)
+        self.assertIn("No module named pytest", process_text)
+        recovery_text = recovery_log.read_text(encoding="utf-8")
+        self.assertIn("previous.txt still valid", recovery_text)
+        self.assertIn("terminated_started_processes:200", recovery_text)
+        self.assertIn("no production package", recovery_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PCT03-SERENITY-LIFECYCLE-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S3PCT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PCT03"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "Serenity-Alipay/tests/test_s3pct03_lifecycle.py",
+            "governance/stage_gates/s3pc/serenity_lifecycle_matrix.csv",
+            "governance/stage_gates/s3pc/serenity_process_cleanup.log",
+            "governance/stage_gates/s3pc/serenity_persistence_recovery.log",
+            "Serenity-Alipay/docs/governance/delivery_tasks.yaml",
+            "Serenity-Alipay/docs/governance/DEVELOPMENT_LEDGER.md",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("Ran 4 tests", observed)
+        self.assertIn("No module named pytest", observed)
+        self.assertIn(
+            "No real OpenD, email delivery, trading endpoint, production package path, production data path, or owner readiness approval is used or implied by S3PCT03.",
+            manifest["unresolved_risks"],
+        )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

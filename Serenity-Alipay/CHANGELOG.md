@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased - Other8 S3PCT03 Lifecycle Evidence
+
+- Added focused S3PCT03 lifecycle coverage for mocked OpenD auto-wake ownership, tool-owned cleanup, user-owned OpenD protection, delivery package atomic failure recovery, and launchd tick wrapper behavior.
+- Recorded S3PC stage-gate evidence for Serenity lifecycle, process cleanup, and package recovery without starting real OpenD, sending real mail, trading, or touching production data.
+- Re-bound stale machine source selectors and evidence hashes for PARAM-027 through PARAM-032 to the current `pipeline.py` line layout without changing active values.
+
+No scoring result, ranking result, gate logic, parameter value, empirical calibration, live account readiness, or production delivery readiness changed.
+
 ## Unreleased - App Entry and Manual Review Regression Hardening
 
 - Recorded the repeated app/manual-review bug cluster in `DEVELOPMENT_BUG_REGRESSION_LOG.md` so future agents have an explicit GitHub development record and regression contract.
