@@ -331,6 +331,9 @@ def is_generated_release_artifact(rel_path: str) -> bool:
 def classify_project_file(project: dict[str, Any], path: str) -> set[str]:
     rel = project_relative(path, project)
     classes: set[str] = set()
+    if rel.startswith("docs/pursuing_goal/"):
+        classes.add("governance_only_change")
+        return classes
     if is_project_governance_file(rel):
         classes.add("governance_only_change")
         return classes

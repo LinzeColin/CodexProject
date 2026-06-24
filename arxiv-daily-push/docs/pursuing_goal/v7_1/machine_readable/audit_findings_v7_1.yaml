@@ -1,0 +1,682 @@
+schema_version: 1
+audit_version: ADP-PARALLEL-AUDIT-V7.1
+as_of: '2026-06-24'
+severity_policy:
+  P0:
+    name: 灾难/安全/证据完整性级
+    merge: global
+    sla: 在任何生产启用、SMTP、恢复、调度安装或最终集成合并前清零
+  P1:
+    name: 高风险功能/可靠性级
+    merge: scope
+    sla: 阻塞受影响 Task/Phase 晋升；无交叉文件的来源 Shadow 开发可继续
+  P2:
+    name: 中风险质量/维护性级
+    merge: 'no'
+    sla: 必须进入 Roadmap 和负责人，不阻塞无关合并
+  P3:
+    name: 低风险改进级
+    merge: 'no'
+    sla: 进入优化 Backlog
+findings:
+- id: A-001
+  track: A_安全代码并发
+  title: 恢复清单允许路径穿越读取备份根目录外文件
+  severity: P0
+  merge_block: global
+  evidence_type: dynamic_reproduced
+  evidence: Probe P04；stage1_runtime.py:302-337
+  impact: 恶意或损坏的 manifest 可让 restore 读取 ../ 指向的任意本地文件并复制到目标数据库。
+  fix: 对 manifest path 做 PurePosixPath 规范化；拒绝绝对路径、..、空路径、符号链接逃逸；resolve 后必须 is_relative_to(backup_root)。
+  tests:
+  - 路径 ../、绝对路径、符号链接、TOCTOU 交换均必须拒绝
+  - 合法 database 相对路径恢复通过
+  task: S2PMT02
+- id: A-002
+  track: A_安全代码并发
+  title: 恢复先覆盖现有数据库、后验证，失败会破坏在线目标
+  severity: P0
+  merge_block: global
+  evidence_type: dynamic_reproduced
+  evidence: Probe P05；stage1_runtime.py:348-367
+  impact: 恢复结果 blocked 时原库已被无效数据覆盖，存在直接数据丢失。
+  fix: 同目录临时文件复制→SHA/SQLite quick_check/Schema 校验→fsync→原库预备份→os.replace 原子切换；任何失败删除临时文件且保留原库。
+  tests:
+  - 无效备份不得改变原库字节
+  - 断电/异常注入后只能存在旧库或完整新库，不得半文件
+  task: S2PMT02
+- id: A-003
+  track: A_安全代码并发
+  title: SMTP 发送与持久状态之间没有事务发件箱
+  severity: P0
+  merge_block: global
+  evidence_type: static_confirmed
+  evidence: smtp_delivery.py:64-99；发送完成后才返回内存报告
+  impact: 进程在 SMTP 接受邮件后、数据库提交前崩溃，重试会重复发送；无法做到可恢复的外部副作用。
+  fix: 实现 transactional outbox：业务事务写 outbox(PENDING)+唯一 mail_key；独立 sender claim/lease；发送后记录
+    provider result；重启 reconciliation；明确 at-least-once + 幂等 Message-ID。
+  tests:
+  - SMTP 接受后立即 kill -9，再启动不得产生不可控重复
+  - 双 sender 抢占同一 outbox 只允许一个有效发送
+  task: S2PMT03
+- id: A-004
+  track: A_安全代码并发
+  title: 邮件前台结论/机制/映射/行动绕过 Claim Ledger
+  severity: P0
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P14；lesson.py:126-156；validate_lesson_against_ledger 仅验证 sections
+  impact: 用户最先看到的关键判断可能是关键词模板推断，却被邮件描述为“关键事实已全部绑定证据”。
+  fix: Frontstage 每个字段使用 typed statement：fact/inference/hypothesis/action；fact 必须
+    claim_ids+evidence_ids；inference 必须 premise_claim_ids+reasoning_version+confidence；禁止无标签推断。
+  tests:
+  - 删除任一 frontstage 绑定后质量门失败
+  - 摘要级推断必须显示“推断/待验证”而非事实
+  task: S2PMT01
+- id: A-005
+  track: A_安全代码并发
+  title: 缺少不可信论文/网页内容的 Prompt Injection 与工具边界
+  severity: P0
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: V7.0 合同未定义 untrusted-content trust boundary
+  impact: Stage2 引入全文、网页和报告后，源内容可能诱导模型泄漏提示、调用工具、改写规则或产生错误操作。
+  fix: 将来源内容标记 UNTRUSTED_DATA；系统指令与数据分离；模型无仓库写权限/无密钥；工具 allowlist；输出 Schema；引用定位；注入检测只作信号，不能替代隔离。
+  tests:
+  - 恶意论文含“忽略规则/发送密钥/运行命令”时仍只作为引文数据
+  - 模型输出越权工具调用被执行层拒绝
+  task: S2PMT01
+- id: A-006
+  track: A_安全代码并发
+  title: tick 写入异常时 runtime.lock 永久残留
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P01；stage1_runtime.py:103-151
+  impact: 一次磁盘/权限错误即可阻塞后续自动运行，watchdog 只报告不恢复。
+  fix: 锁封装为 context manager + finally；锁中加入 owner_id/host/pid/lease_until/fencing_token；续租与安全接管。
+  tests:
+  - heartbeat/checkpoint 任一步异常后无残锁
+  - 模拟死进程后仅新 fencing token 可接管
+  task: S2PMT03
+- id: A-007
+  track: A_安全代码并发
+  title: 状态历史不验证声明的 from_state
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P09；state_machine.py:146-162
+  impact: 被篡改的历史记录仍可通过，审计链不可信。
+  fix: 每条 history.from_state 必须等于上一条 to_state；首条严格固定；所有字段完整。
+  tests:
+  - 篡改 from_state 必须失败
+  - 缺 reason/at 或时间倒序必须失败
+  task: S2PMT03
+- id: A-008
+  track: A_安全代码并发
+  title: current_state 与 state_history 末态可不一致
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P10；state_machine.py:77-103
+  impact: 控制台、恢复逻辑和审计可能读取不同状态。
+  fix: 验证 last(history).to_state == current_state；status 与状态映射一致；记录 schema_version/row_version。
+  tests:
+  - 末态不一致和 status 不一致均失败
+  task: S2PMT03
+- id: A-009
+  track: A_安全代码并发
+  title: 状态转换缺少乐观并发控制与 fencing token
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: state_machine.py:106-122 只对内存副本转换
+  impact: 两个 worker 可同时从同一旧状态成功，后写覆盖先写，造成重复处理或丢状态。
+  fix: 数据库 UPDATE ... WHERE id=? AND row_version=?；受影响行必须为 1；作业 claim 使用 lease + fencing
+    token；事件 append-only。
+  tests:
+  - 100 个并发 claimant 仅一个获得同一任务
+  - 过期 worker 的写入被 fencing token 拒绝
+  task: S2PMT03
+- id: A-010
+  track: A_安全代码并发
+  title: 报告文件在质量验证前写入正式目录
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P16；stage1_b1_report.py:161-167
+  impact: 最终返回 blocked，正式目录仍残留 5 个看似有效产物，后续发送/索引可能误用。
+  fix: 先纯内存构建与验证；通过后写 staging 目录；逐文件 fsync；manifest 完整后原子发布目录/指针；失败清理。
+  tests:
+  - 强制验证失败时正式目录 0 新文件
+  - 中途异常后无半发布 package
+  task: S2PMT02
+- id: A-011
+  track: A_安全代码并发
+  title: artifact_files.sha256 字段不是文件字节 SHA-256
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P15；stage1_b1_report.py:517-526
+  impact: 审计者按标准 SHA256 校验会失败，完整性字段语义错误。
+  fix: 使用 hashlib.sha256(path.read_bytes()) 或流式哈希；如保留 canonical content hash，改名 content_hash
+    并同时保存 file_sha256。
+  tests:
+  - 每个 artifact manifest SHA 与 sha256sum 完全相同
+  task: S2PMT02
+- id: A-012
+  track: A_安全代码并发
+  title: 邮件原文链接未限制 URL scheme
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P17；stage1_b1_report.py:468
+  impact: '被污染的 canonical_url 可生成 javascript: 等危险链接。'
+  fix: urlsplit；仅允许 https（必要时 http）；拒绝 userinfo、控制字符、非 allowlist host；纯文本也标识来源域。
+  tests:
+  - javascript/data/file/带凭据 URL 均拒绝或降级为无链接文本
+  task: S2PMT01
+- id: A-013
+  track: A_安全代码并发
+  title: 调度模板路径未结构化转义，macOS plist 甚至不可解析
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P07/P07B；stage1_runtime.py:493-525
+  impact: 带空格/分号路径会破坏命令，可能命令注入；launchd XML 中 && 未转义导致安装失败。
+  fix: 不拼 shell 字符串；launchd ProgramArguments 每参数一个 string 且 XML 库生成；systemd 使用结构化
+    unit/EnvironmentFile；PowerShell 参数数组；路径验证。
+  tests:
+  - 空格、中文、分号、& 路径均安全；plistlib/systemd-analyze/PowerShell parser 通过
+  task: S2PMT04
+- id: A-014
+  track: A_安全代码并发
+  title: 备份辅助文件同名时静默覆盖
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P06；stage1_runtime.py:266-272
+  impact: 两份不同配置/状态文件在备份中共享 files/same.txt，manifest 重复路径，恢复证据失真。
+  fix: 保存相对来源路径或 source_path_hash/filename；拒绝重复目标；manifest 路径唯一约束。
+  tests:
+  - 不同目录同名文件均可完整恢复，manifest path 无重复
+  task: S2PMT02
+- id: A-015
+  track: A_安全代码并发
+  title: 未来时间戳被钳制为 age=0，时钟漂移可长期伪装新鲜
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P03；stage1_runtime.py:563-576
+  impact: 未来 heartbeat/lock 不会被识别为异常，可能阻塞恢复或错误显示健康。
+  fix: 允许小容差；超过 clock_skew_tolerance 直接 CLOCK-TIMEZONE-FAIL；内部租约使用单调时钟，持久审计使用 UTC。
+  tests:
+  - 未来 5 分钟以上 heartbeat 阻塞；DST 不影响 lease 计算
+  task: S2PMT05
+- id: A-016
+  track: A_安全代码并发
+  title: lesson_id 只依赖 claim_id，不依赖内容/证据/模型版本
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P13；lesson.py:40-43
+  impact: Claim 文本或证据变更仍得到同一 lesson_id，缓存和审计可能返回旧内容。
+  fix: 区分 stable lesson_key 与 immutable lesson_revision_id；revision hash 包含 claim
+    statement/evidence hash/analysis model/prompt contract/language。
+  tests:
+  - 任一证据或内容变更导致 revision 变化，stable key 不变
+  task: S2PMT03
+- id: A-017
+  track: A_安全代码并发
+  title: SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID
+  severity: P1
+  merge_block: scope
+  evidence_type: dynamic_reproduced
+  evidence: Probe P11/P12；smtp_delivery.py:105-116,176-182
+  impact: 不同正文可共享同一 delivery_id；邮件客户端去重与系统修订追踪不明确。
+  fix: 定义 mail_key(cycle_id, product_id, recipient) 与 immutable content_revision_id；Message-ID
+    由 mail_key+revision+受控域生成；重发策略明确。
+  tests:
+  - 同 revision 重试 Message-ID 不变；内容修订 revision 变化且需显式 supersede/resend
+  task: S2PMT03
+- id: A-018
+  track: A_安全代码并发
+  title: V7 要求展示 ROI，但旧邮件验证明确禁止 ROI
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: stage1_b1_report.py:24-34
+  impact: 新产品合同与当前代码互相冲突，Stage1 回灌会被旧质量门阻断。
+  fix: 迁移为 Expected ROI / Actual ROI typed schema；禁止的是无假设保证收益，不是 ROI 字段本身；加入版本兼容测试。
+  tests:
+  - V7.1 合法 ROI 可发布；无成本/概率/证据的收益声明被拒绝
+  task: S2PAT05
+- id: A-019
+  track: A_安全代码并发
+  title: 零关键 Claim 时覆盖率被计算为 100%
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: stage1_b1_report.py:289-305
+  impact: 没有任何关键 Claim 也会“100% 证据覆盖”，形成空集真值误导。
+  fix: 关键 Claim 数必须达到板块最低要求；0 项返回 not_applicable/blocked，不得显示 100%。
+  tests:
+  - 0 critical claim 不能通过关键证据门
+  task: S2PMT01
+- id: A-020
+  track: A_安全代码并发
+  title: 依赖、CI Action、SBOM 与权限最小化未形成供应链基线
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: V7.0 任务包无 supply-chain contract
+  impact: 依赖漂移、恶意包、未固定 Action 或过宽 token 权限可能破坏生产链。
+  fix: 锁定依赖 hash；生成 SBOM；pip-audit/OSV；GitHub Actions 固定 commit SHA；最小 permissions；制品
+    provenance；secret scanning。
+  tests:
+  - CI 自动审计依赖和 Action 引用；高危漏洞按例外审批流程阻断
+  task: S2PMT01
+- id: A-021
+  track: A_安全代码并发
+  title: Roadmap 依赖为空、Stop Code 混用自由文本，机器门不可可靠执行
+  severity: P1
+  merge_block: global
+  evidence_type: static_confirmed
+  evidence: 'roadmap_v7.yaml 多个 dependencies: []，stop_conditions 含未注册中文短语'
+  impact: 不同 agent 可跳过前置任务；CI 无法判定 Stop Gate；交接连续性不稳定。
+  fix: V7.1 将 task_ids 数组化、依赖显式化、自由文本移入 stop_notes，stop_conditions 只允许注册代码。
+  tests:
+  - 任务图无缺失引用/环；所有 stop condition 均在 registry
+  task: S2PAT05
+- id: A-022
+  track: A_安全代码并发
+  title: SQLite 并发基础探针通过，但缺 busy_timeout、重试与高负载政策
+  severity: P2
+  merge_block: 'no'
+  evidence_type: dynamic_reproduced
+  evidence: Probe P18 120 项/24 并发通过；storage.py:86-95 未配置 busy_timeout
+  impact: 简单探针通过不代表长事务、备份、FTS 和多进程下稳定，仍可能 database is locked。
+  fix: 显式 busy_timeout；短事务；写入队列或单 writer；锁等待指标；指数退避；WAL checkpoint 政策。
+  tests:
+  - 多进程写+备份+FTS soak；锁等待 P95/P99 指标满足预算
+  task: S2PMT05
+- id: B-001
+  track: B_压力运行生命周期
+  title: 自动唤醒/安装/卸载当前只有 dry-run 模板，不是可验收功能
+  severity: P0
+  merge_block: global
+  evidence_type: static_confirmed
+  evidence: stage1_runtime.py:371-417,420-447 明确 dry_run_only/applied=false
+  impact: 无法证明系统会在目标机器自动唤醒、自动运行、自动关闭并在重启后恢复。
+  fix: 提供受控 install/status/uninstall 三态；平台适配器；安装后验收实际触发一次；默认关闭副作用；Owner 明确启用。
+  tests:
+  - 隔离 VM/容器/测试账号上安装→触发→状态→卸载完整通过
+  task: S2PMT04
+- id: B-002
+  track: B_压力运行生命周期
+  title: 缺少统一进程生命周期：STARTING/RUNNING/DRAINING/CHECKPOINTING/STOPPED
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: 当前 runtime 只有 tick/watchdog 文件，没有 drain/shutdown contract
+  impact: 收到 SIGTERM、系统睡眠、更新或超时时，无法安全停止新任务、完成/回滚在途工作。
+  fix: 实现 lifecycle state machine；信号处理；grace period；停止 claim；flush outbox/DB；checkpoint；release
+    lease；退出码。
+  tests:
+  - 每个阶段注入 SIGTERM/SIGINT，重启后无丢失/重复不可控副作用
+  task: S2PMT04
+- id: B-003
+  track: B_压力运行生命周期
+  title: watchdog 只报告 stale lock，不执行可证明安全的恢复
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: stage1_runtime.py:169-215
+  impact: 后台异常后可能永久停止，必须人工删除锁且有误删活进程风险。
+  fix: PID/host/boot_id/lease/fencing 验证；只有租约过期且 owner 不存活才接管；记录 recovery event。
+  tests:
+  - 活进程慢任务不被误杀；死进程锁自动安全接管
+  task: S2PMT03
+- id: B-004
+  track: B_压力运行生命周期
+  title: 启动时没有在途任务、outbox、临时文件和残锁 reconciliation
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: V7.0 生命周期合同未定义 startup reconciliation
+  impact: 断电后 QUEUED/RUNNING/SENDING/WRITING 状态可能永久悬挂或重复执行。
+  fix: 启动固定顺序：preflight→lease→schema→reconcile temp/outbox/inflight→resume/requeue→run。
+  tests:
+  - 在每个持久状态断电后重启，状态最终收敛且计数守恒
+  task: S2PMT04
+- id: B-005
+  track: B_压力运行生命周期
+  title: 无安全缓存分类、TTL、容量上限、清理与保留证据
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: 任务包未定义 cache housekeeping
+  impact: 磁盘可被全文/PDF/模型缓存耗尽；误清理可能删除原始证据或数据库。
+  fix: 区分 durable evidence / rebuildable cache / temp；按类别 TTL+max_bytes；先 dry-run；路径白名单；删除日志；最低可用磁盘水位。
+  tests:
+  - 路径穿越/符号链接不删；低磁盘自动降载；durable 目录永不清理
+  task: S2PMT04
+- id: B-006
+  track: B_压力运行生命周期
+  title: 缺少正式负载、压力、峰值、浸泡和容量基线
+  severity: P1
+  merge_block: scope
+  evidence_type: not_verified
+  evidence: 本轮仅执行 64 tick 和 120 SQLite 写入定向探针，非全系统压力测试
+  impact: 无法知道四源突发、全文下载、模型延迟、3+1 邮件截止水位下是否稳定。
+  fix: 建立 workload model 和 SLO；load→stress→spike→soak；记录 throughput、latency、queue
+    age、memory、disk、error rate。
+  tests:
+  - 至少 24h soak；2x 峰值；队列有界且可恢复
+  task: S2PMT05
+- id: B-007
+  track: B_压力运行生命周期
+  title: 没有双调度器/双 worker/重复触发的生产级竞态测试
+  severity: P0
+  merge_block: global
+  evidence_type: not_verified
+  evidence: 现有定向 P08 仅验证同进程线程下简单 lock
+  impact: GitHub/manual/local/重启补跑可能同时触发同一 cycle，导致重复报告和邮件。
+  fix: 定义 cycle_id、唯一约束、leader lease/fencing、outbox；用多进程/多主机模拟并发。
+  tests:
+  - 100 次重复 trigger 最终每个 M1-M4 只有一个 active revision 和一次受控投递
+  task: S2PMT05
+- id: B-008
+  track: B_压力运行生命周期
+  title: 没有“SMTP 已接受但本地未提交”崩溃窗口测试
+  severity: P0
+  merge_block: global
+  evidence_type: not_verified
+  evidence: 对应 A-003 外部副作用窗口
+  impact: 这是邮件重复最关键的故障窗口，未验证则不能生产启用。
+  fix: 可编程 fake SMTP 在 accept 后阻塞/kill；重启 reconciliation；检查 outbox 和 Message-ID。
+  tests:
+  - 每个发送阶段注入崩溃，重复率和最终状态符合明确合同
+  task: S2PMT05
+- id: B-009
+  track: B_压力运行生命周期
+  title: 缺少磁盘满、只读目录、数据库锁死、损坏缓存/备份等故障注入
+  severity: P1
+  merge_block: scope
+  evidence_type: not_verified
+  evidence: 现有测试矩阵未列出系统性 fault injection
+  impact: 最常见本地运行故障可能造成静默停机、半文件或数据丢失。
+  fix: pyfakefs/配额目录/fault injection adapter；所有持久写入 fail-closed 和原子。
+  tests:
+  - ENOSPC/EACCES/SQLITE_BUSY/corrupt JSON/PDF/backup 均有明确状态和恢复路径
+  task: S2PMT05
+- id: B-010
+  track: B_压力运行生命周期
+  title: 缺少 Australia/Sydney DST、时钟跳变、漏跑和补跑政策测试
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: schedule 以自由文本时间表示，无 misfire/catch-up/ambiguous-time policy
+  impact: 夏令时切换、机器休眠或网络恢复时可能漏发或重复发。
+  fix: 结构化 schedule(timezone, local_time, misfire_grace, catch_up, max_runs, fold
+    policy)；cycle 使用本地业务日+UTC instant。
+  tests:
+  - DST forward/backward、NTP 前后跳、休眠 8h 后补跑均确定性
+  task: S2PMT05
+- id: B-011
+  track: B_压力运行生命周期
+  title: M4 水位线缺少 cycle_id、超时、迟到数据和降级策略
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: 'product_contract_v7.yaml 只有 requires_terminal: M1-M3'
+  impact: M4 可能等待错日邮件、永久阻塞，或在迟到数据后无修订策略。
+  fix: watermark keyed by cycle_id；终态枚举；deadline；degraded reason；late-arrival revision
+    policy；M4 唯一键。
+  tests:
+  - M2 失败/M3 超时/迟到/重跑/跨日均生成正确 M4 状态
+  task: S2PMT03
+- id: B-012
+  track: B_压力运行生命周期
+  title: 没有覆盖 3+1 日报、周报、月报、复习、行动、ROI 的完整流程测试
+  severity: P1
+  merge_block: scope
+  evidence_type: not_verified
+  evidence: V7.0 测试矩阵为高层描述，无可执行 E2E 命令
+  impact: 单模块通过后仍可能在跨功能连接处丢数据、断链接或计数不守恒。
+  fix: 固定 35 日 fake clock 场景：每日四邮件、周报、月报、复习到期、行动、转化；核对全部 ledger。
+  tests:
+  - 一条命令生成可审计 run bundle，分项总数守恒、链接可达
+  task: S2PMT05
+- id: B-013
+  track: B_压力运行生命周期
+  title: 结果有效性测试偏结构存在性，缺语义、证据和非模板化验收
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: lesson/report 当前验证主要检查字段、中文字符、marker
+  impact: “格式齐全但没有新知识”的内容仍可通过。
+  fix: 10 项金标双盲；claim entailment；引用定位；相似度/模板率；反证；个人行动可执行；回归阈值。
+  tests:
+  - 金标五维≥4/5；关键事实人工抽检；模板重复率上限
+  task: S2PHT05
+- id: B-014
+  track: B_压力运行生命周期
+  title: 无背压、熔断、降级和负载丢弃优先级
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: 队列容量存在，但没有过载策略合同
+  impact: 来源突发或模型变慢时队列无限老化，错过邮件窗口或挤占高价值任务。
+  fix: 有界队列；priority aging；per-source quota；circuit breaker；降级到摘要级；deadline-aware
+    shedding；告警。
+  tests:
+  - 2x/5x 峰值下高优先项 SLO，低优先项明确延后/丢弃原因
+  task: S2PMT05
+- id: B-015
+  track: B_压力运行生命周期
+  title: 后台清理与数据保存没有事务边界和可观察完成信号
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: heartbeat/checkpoint 分别直接写文件，无 durable shutdown receipt
+  impact: 系统看似自动关闭，但状态、缓存、数据库和邮件进度可能尚未落盘。
+  fix: drain receipt：claimed/inflight/outbox/db checkpoint/cache cleanup/backup/lease
+    release 每步状态；失败保持 RECOVERING。
+  tests:
+  - 关闭中每一步 kill，重启可从 receipt 精确恢复
+  task: S2PMT04
+- id: B-016
+  track: B_压力运行生命周期
+  title: 缺少 fake clock、fake network、随机种子和资源隔离，测试易波动
+  severity: P2
+  merge_block: 'no'
+  evidence_type: design_gap
+  evidence: generated_at 由调用者自由传入，网络/SMTP 测试合同未统一
+  impact: 时间、网络和并发测试可能 flaky，无法稳定复现。
+  fix: Clock/Network/SMTP/FileSystem adapters；固定 seed；每测试独立临时目录与数据库；禁止共享全局环境。
+  tests:
+  - 同 seed 重跑完全一致；并行 pytest 无共享状态污染
+  task: S2PMT05
+- id: C-001
+  track: C_UI交互架构
+  title: 当前仓库未落地唯一中文 00_用户中心首屏
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: 当前项目仍以 config/docs/governance 和英文 Owner 文档为主；V7.0 只是待合并合同
+  impact: Owner 无法在一个入口确认状态、要求、功能、验收和下一步。
+  fix: 00_开始这里.md 作为唯一首屏，展示健康、当前 Task、阻塞、下一次运行、四个查看入口和只改这里。
+  tests:
+  - 从项目根两次点击内完成所有常用操作
+  task: S2PIT01
+- id: C-002
+  track: C_UI交互架构
+  title: 总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量
+  severity: P1
+  merge_block: scope
+  evidence_type: static_confirmed
+  evidence: 当前 Owner Console/Model And Queue 快照主要显示 max_active_items 等
+  impact: 无法判断系统真实工作量、积压和交付效果。
+  fix: 从数据库生成 real-time counts、oldest age、SLA breach、today delta；配置值和实际值分栏。
+  tests:
+  - 各分项与总数守恒；空/延迟/失败状态正确显示
+  task: S2PIT02
+- id: C-003
+  track: C_UI交互架构
+  title: 四查视图缺统一 freshness、事实源与漂移状态
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: V7.0 只定义文件名和字段方向
+  impact: 四页可能不同步，Owner 无法知道数据截至何时、是否陈旧。
+  fix: 每页显示 generated_at/data_as_of/source_revision/contract_hash/staleness；只从同一 query
+    layer 生成。
+  tests:
+  - 故意制造漂移/过期时 CI 和页面同时报警
+  task: S2PIT05
+- id: C-004
+  track: C_UI交互架构
+  title: 缺少一致的全局导航、面包屑、返回和关联跳转
+  severity: P2
+  merge_block: 'no'
+  evidence_type: design_gap
+  evidence: 任务包未定义 navigation contract
+  impact: 文件虽集中但仍需记路径，复杂状态之间无法自然追踪。
+  fix: 所有人类页面顶/底统一导航；每个对象链接到来源→Claim→报告→邮件→复习→行动→ROI。
+  tests:
+  - 自动链接检查无断链；核心旅程点击数达标
+  task: S2PMT06
+- id: C-005
+  track: C_UI交互架构
+  title: 错误和阻塞信息缺少恢复动作、负责人和安全重试入口
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: 现有 blocking_reasons 多为纯文本
+  impact: 用户知道失败但不知道该改什么、是否可重试、会不会重复发送。
+  fix: 错误卡统一：code/severity/impact/owner/first_seen/last_seen/retry_safe/CTA/runbook/evidence。
+  tests:
+  - 每个 P0/P1 错误至少一个可执行恢复动作或明确人工门
+  task: S2PMT06
+- id: C-006
+  track: C_UI交互架构
+  title: 修改配置缺少预览、diff、校验、影响分析和一键回滚
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: “一改”仅定义编辑目录，没有交互保护合同
+  impact: Owner 修改权重、时间或来源后可能直接破坏运行且难以定位。
+  fix: Edit→Validate→Preview diff/impact→Apply→Audit→Rollback；配置编译产物不可手改。
+  tests:
+  - 非法配置无法应用；应用后可回滚到上个 revision
+  task: S2PMT06
+- id: C-007
+  track: C_UI交互架构
+  title: 用户控制修改缺少 append-only 审计历史
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: V7.0 未定义 config revision ledger
+  impact: 无法解释结果变化来自模型、数据还是配置修改。
+  fix: config_revision(id, actor, diff, reason, validated_at, applied_at, rollback_of,
+    contract_hash)。
+  tests:
+  - 每次有效修改都有 revision；结果产物记录使用的 revision
+  task: S2PMT06
+- id: C-008
+  track: C_UI交互架构
+  title: 队列和账本缺搜索、筛选、排序、导出与下钻规范
+  severity: P2
+  merge_block: 'no'
+  evidence_type: design_gap
+  evidence: 四查字段规范未覆盖操作能力
+  impact: 数据增长后 Markdown 全量平铺不可用，无法定位逾期或失败项。
+  fix: 按状态/板块/来源/日期/严重度筛选；CSV/JSON 导出；详情页；固定常用视图。
+  tests:
+  - 1万项队列下首屏仍只显示摘要和 Top 异常，导出完整准确
+  task: S2PMT06
+- id: C-009
+  track: C_UI交互架构
+  title: 全量参数可见但缺渐进披露和变更影响解释
+  severity: P2
+  merge_block: 'no'
+  evidence_type: design_gap
+  evidence: 当前模型参数文件已有数百参数，用户容易过载
+  impact: “全部可见”可能演变成不可操作的大表。
+  fix: 关键参数首屏；高级/工程参数折叠；每项显示影响、范围、默认、回滚值和关联测试。
+  tests:
+  - 关键参数≤20 项首屏；全部参数可检索且无遗漏
+  task: S2PIT03
+- id: C-010
+  track: C_UI交互架构
+  title: 功能→Task→测试→运行证据在 UI 中没有可点击追踪链
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: CSV 追踪矩阵存在，但尚未成为 GitHub 人类页面的一部分
+  impact: Owner 无法直接判断某功能是否真的完成，而不是只写了文档。
+  fix: 功能清单每行加入 requirement/task/status/test/evidence/last_verified；开发记录反链；证据可点击。
+  tests:
+  - 每个 required feature 追踪覆盖 100%，无孤儿 Task/测试/证据
+  task: S2PAT05
+- id: C-011
+  track: C_UI交互架构
+  title: 旧 B1–B5/五邮件/英文名称与新 3+1 合同并存
+  severity: P1
+  merge_block: global
+  evidence_type: static_confirmed
+  evidence: 当前 stage1_b1_report.py 与 owner_controls 仍采用旧命名/禁止 ROI
+  impact: 不同 agent 会按不同产品模型开发，产生不可兼容接口。
+  fix: 单一 migration matrix；旧 ID 标 legacy_alias；用户界面只显示新中文名；CI 禁止新代码再引入旧合同。
+  tests:
+  - 全仓扫描旧标识仅允许在 archive/compat 列表出现
+  task: S2PAT05
+- id: C-012
+  track: C_UI交互架构
+  title: 缺少手动重试、取消、重新排队、跳过和重新生成的安全交互
+  severity: P1
+  merge_block: scope
+  evidence_type: design_gap
+  evidence: 控制面目前主要为只读 Markdown/配置
+  impact: 发生失败或误选时只能改数据库/文件，易制造重复副作用。
+  fix: 所有动作先 preview；显示幂等键与影响；危险动作二次确认；只允许状态机合法转换。
+  tests:
+  - 重复点击不重复发送；非法状态动作被禁用并解释原因
+  task: S2PMT06
+- id: C-013
+  track: C_UI交互架构
+  title: 缺少无障碍、响应式和主流邮件客户端兼容验收
+  severity: P2
+  merge_block: 'no'
+  evidence_type: not_verified
+  evidence: HTML 使用简单内嵌样式，未见 a11y/client matrix
+  impact: 移动端、暗色模式、屏幕阅读器或 Outlook 等可能难读/错位。
+  fix: 语义标题、alt、对比度、可触控尺寸、纯文本等价；Litmus 类矩阵或本地 snapshot。
+  tests:
+  - WCAG 基础检查；Gmail/Apple Mail/Outlook 关键模板截图或结构测试
+  task: S2PMT06
+- id: C-014
+  track: C_UI交互架构
+  title: 缺少 loading/empty/degraded/stale/partial-success 的完整反馈状态
+  severity: P2
+  merge_block: 'no'
+  evidence_type: design_gap
+  evidence: 页面规范偏“成功数据表”
+  impact: 数据为空或部分来源失败时，用户无法区分“尚未运行”“没有更新”“系统出错”。
+  fix: 五态设计；每态说明原因、数据截至、下一动作；M1-M4 部分成功可视化。
+  tests:
+  - 所有空态和降级态有 fixture/snapshot
+  task: S2PMT06
+- id: C-015
+  track: C_UI交互架构
+  title: 用户反馈尚未形成可见的排序/画像/内容改进闭环
+  severity: P2
+  merge_block: 'no'
+  evidence_type: design_gap
+  evidence: 合同定义反馈按钮，但未定义反馈后状态与模型变更可解释性
+  impact: 用户点击“太浅/无关”后不知道系统是否学习，长期信任下降。
+  fix: feedback event ledger；展示已采纳/待样本/不采纳原因；模型参数变更需最小样本与回滚。
+  tests:
+  - 反馈事件可追踪到后续排序/内容变化或明确无变化原因
+  task: S2PMT06

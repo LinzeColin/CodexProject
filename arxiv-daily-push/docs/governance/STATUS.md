@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:9c03db2bc5caa050d81ca19c1b0cf2b4a27b1705ea525681919d1cd8d26e9dc4`
-- snapshot_event_time: `2026-06-24T11:45:00+10:00`
+- source_snapshot_hash: `sha256:ec936fe5e8d4d4a55d861cd189063a9acb0d75fda579ce95033d003afda3f86e`
+- snapshot_event_time: `2026-06-24T12:27:40+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2P1 / ARXIV_PRODUCTION_ACCEPTED`
+- Phase/Gate: `S2PA / ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED`
 - Models/Formulas/Parameters total: `50 / 52 / 376`
 - Active formulas/parameters: `52 / 359`
 - Machine checked formulas/parameters: `52 / 359`
@@ -35,10 +35,21 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `ARXIV_PRODUCTION_ACCEPTED`
-- Next executable task: `S2P1T01`
-- Pending/stale events: `90`
+- Release gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED`
+- V7 contract: `ADP-PRODUCT-CONTRACT-V7.1`
+- V7 contract hash: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
+- V7 roadmap hash: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
+- V7.1 parallel audit: `ADP-PARALLEL-AUDIT-V7.1`
+- V7.1 audit hash: `f102af13006e5a18de6ad71e6c2e6b9080ba06384dd6d26fd99019a9437dc165`
+- Open audit blockers: `P0=8 / P1=37`
+- Production-forbidden until: `P0=0; P1=0; S2PMT07 independent review passed`
+- Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- Stage 2 integrated accepted: `false`
+- Next governance task: `S2PAT05`
+- Parallel shadow source task: `S2PBT01`
+- Next executable task: `S2PBT01`
+- Pending/stale events: `92`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
-- Legacy unbound events: `54`
+- Legacy unbound events: `55`
 - Unresolved fact IDs: `0`
