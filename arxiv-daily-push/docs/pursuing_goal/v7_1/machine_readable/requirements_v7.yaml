@@ -1,0 +1,224 @@
+schema_version: 2
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+requirements:
+- requirement_id: REQ-V7-001
+  requirement: 融合十二项能力
+  feature_id: FEAT-V7-001
+  acceptance_id: ACC-S2PAT02-CONTRACT
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PAT02
+- requirement_id: REQ-V7-002
+  requirement: Stage2继续且读取根合同
+  feature_id: FEAT-V7-002
+  acceptance_id: ACC-S2PAT04-CN-CI
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PAT04
+- requirement_id: REQ-V7-003
+  requirement: D1–D4 四数据源域
+  feature_id: FEAT-V7-003
+  acceptance_id: ACC-D1-D4
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PBT05
+  - S2PCT07
+  - S2PDT04
+  - S2PET04
+  - S2PFT05
+- requirement_id: REQ-V7-004
+  requirement: B1–B3 三主板块
+  feature_id: FEAT-V7-004
+  acceptance_id: ACC-S2PGT03-ROUTING
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PGT03
+- requirement_id: REQ-V7-005
+  requirement: B4–B6 三横切副板块
+  feature_id: FEAT-V7-005
+  acceptance_id: ACC-S2PGT03-ROUTING
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PGT03
+- requirement_id: REQ-V7-006
+  requirement: B2 合并工程/产品/产业
+  feature_id: FEAT-V7-006
+  acceptance_id: ACC-S2PKT03-M2
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PKT03
+- requirement_id: REQ-V7-007
+  requirement: 每日三加一邮件
+  feature_id: FEAT-V7-007
+  acceptance_id: ACC-S2PKT05-M4
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PKT05
+- requirement_id: REQ-V7-008
+  requirement: 邮件错峰和 M4 水位线
+  feature_id: FEAT-V7-008
+  acceptance_id: ACC-S2PKT05-M4
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PKT05
+- requirement_id: REQ-V7-009
+  requirement: 深度内容金标
+  feature_id: FEAT-V7-009
+  acceptance_id: ACC-S2PHT05-CONTENT-GATE
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PHT01
+  - S2PHT05
+- requirement_id: REQ-V7-010
+  requirement: 证据级别和反证
+  feature_id: FEAT-V7-010
+  acceptance_id: ACC-S2PHT04-ANTI-HYPE
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PGT01
+  - S2PHT04
+- requirement_id: REQ-V7-011
+  requirement: 个人影响和预计 ROI
+  feature_id: FEAT-V7-011
+  acceptance_id: ACC-S2PJT03-ROI
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PHT03
+  - S2PJT03
+- requirement_id: REQ-V7-012
+  requirement: 复习队列
+  feature_id: FEAT-V7-012
+  acceptance_id: ACC-S2PJT02-REVIEW
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PJT02
+- requirement_id: REQ-V7-013
+  requirement: 行动和能力资产
+  feature_id: FEAT-V7-013
+  acceptance_id: ACC-S2PJT03-ROI
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PJT03
+- requirement_id: REQ-V7-014
+  requirement: 周报
+  feature_id: FEAT-V7-014
+  acceptance_id: ACC-S2PJT04-WEEKLY
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PJT04
+- requirement_id: REQ-V7-015
+  requirement: 月报
+  feature_id: FEAT-V7-015
+  acceptance_id: ACC-S2PJT05-MONTHLY
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PJT05
+- requirement_id: REQ-V7-016
+  requirement: 中文用户中心
+  feature_id: FEAT-V7-016
+  acceptance_id: ACC-S2PIT05-THREE-BASE
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PIT01
+  - S2PIT05
+- requirement_id: REQ-V7-017
+  requirement: 一改四查三基
+  feature_id: FEAT-V7-017
+  acceptance_id: ACC-S2PIT05-THREE-BASE
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PIT01
+  - S2PIT05
+- requirement_id: REQ-V7-018
+  requirement: 真实状态数量和守恒
+  feature_id: FEAT-V7-018
+  acceptance_id: ACC-S2PIT04-LEDGER
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PIT02
+  - S2PIT04
+- requirement_id: REQ-V7-019
+  requirement: 全量模型参数可读
+  feature_id: FEAT-V7-019
+  acceptance_id: ACC-S2PIT03-SOURCE-MODEL
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PIT03
+- requirement_id: REQ-V7-020
+  requirement: CodexProject 全局中文门
+  feature_id: FEAT-V7-020
+  acceptance_id: ACC-S2PIT05-THREE-BASE
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PIT05
+- requirement_id: REQ-V7-021
+  requirement: 前沿 Delta 与信号共振
+  feature_id: FEAT-V7-021
+  acceptance_id: ACC-S2PGT04-DELTA-RESONANCE
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PGT04
+- requirement_id: REQ-V7-022
+  requirement: 预测账本
+  feature_id: FEAT-V7-022
+  acceptance_id: ACC-S3PCT01-PREDICTIONS
+  status: owner_required_pending_implementation
+  task_ids:
+  - S3PCT01
+- requirement_id: REQ-V7-023
+  requirement: 30 日重放和 2 日真实运行
+  feature_id: FEAT-V7-023
+  acceptance_id: ACC-S2PLT04-PRODUCTION
+  status: owner_required_pending_implementation
+  task_ids:
+  - S2PLT01
+  - S2PLT02
+- requirement_id: REQ-V7-024
+  requirement: 安全与不可信内容边界
+  feature_id: FEAT-V7-024
+  task_ids:
+  - S2PMT01
+  acceptance_id: ACC-S2PMT01-SECURITY
+  status: owner_required_pending_implementation
+- requirement_id: REQ-V7-025
+  requirement: 原子发布、备份与恢复
+  feature_id: FEAT-V7-025
+  task_ids:
+  - S2PMT02
+  acceptance_id: ACC-S2PMT02-ATOMIC-RECOVERY
+  status: owner_required_pending_implementation
+- requirement_id: REQ-V7-026
+  requirement: 并发 lease/fencing 与事务发件箱
+  feature_id: FEAT-V7-026
+  task_ids:
+  - S2PMT03
+  acceptance_id: ACC-S2PMT03-CONCURRENCY-OUTBOX
+  status: owner_required_pending_implementation
+- requirement_id: REQ-V7-027
+  requirement: 自动唤醒运行关闭清理
+  feature_id: FEAT-V7-027
+  task_ids:
+  - S2PMT04
+  acceptance_id: ACC-S2PMT04-LIFECYCLE
+  status: owner_required_pending_implementation
+- requirement_id: REQ-V7-028
+  requirement: 压力浸泡故障与时间测试
+  feature_id: FEAT-V7-028
+  task_ids:
+  - S2PMT05
+  acceptance_id: ACC-S2PMT05-STRESS-E2E
+  status: owner_required_pending_implementation
+- requirement_id: REQ-V7-029
+  requirement: 中文 UI 与安全交互完整性
+  feature_id: FEAT-V7-029
+  task_ids:
+  - S2PMT06
+  acceptance_id: ACC-S2PMT06-UX
+  status: owner_required_pending_implementation
+- requirement_id: REQ-V7-030
+  requirement: 独立复审与连续交接
+  feature_id: FEAT-V7-030
+  task_ids:
+  - S2PMT07
+  acceptance_id: ACC-S2PMT07-FINAL-REVIEW
+  status: owner_required_pending_implementation

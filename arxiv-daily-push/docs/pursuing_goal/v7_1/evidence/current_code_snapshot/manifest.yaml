@@ -1,0 +1,26 @@
+as_of: '2026-06-24'
+files:
+- file: lesson.py
+  sha256: 49266c3a115ace9d6e64953437e079769c3e8c5496c239db4e05c92ad0018e14
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: stage1_b1_report.py
+  sha256: 1103d661d5e4f6e1206dac8653754034dd56a0f32f366f0794b7c77137008107
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: stage1_runtime.py
+  sha256: d2b3138798fe29675335eed9b7e1d051473937f7005878e9aa17fa69512961d0
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: state_machine.py
+  sha256: b61ea7ee6a2c40f28178fab202f26e7e6f608cf4e7e55c723ea26c2158bbc1c8
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: storage.py
+  sha256: 6b85c3c82a626ff22f810ea42517f50458792432a96542b14d505c2bdf3d0590
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: production_scheduler.py
+  sha256: 332c565e402e8a82c9ba9a0bbbfb7f2707a76cbe24f5d7521d5218bc371cbd97
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: scheduled_execution.py
+  sha256: 0a2bdfa152678db6133def552189adb08c6573021e621903006042475f87d946
+  source: GitHub main raw snapshot reviewed on 2026-06-24
+- file: smtp_delivery.py
+  sha256: 4b1a568439b75ade230ab954e4cfd200ba6cfe5a2769f530a5c86902556217ce
+  source: GitHub main raw snapshot reviewed on 2026-06-24

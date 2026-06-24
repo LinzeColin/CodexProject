@@ -1,0 +1,24 @@
+﻿requirement_id,owner_requirement,feature_id,canonical_task_id,legacy_alias,config_or_schema,implementation_target,test_target,human_view,acceptance_id,fact_level,current_status
+REQ-V7-001,融合十二项能力,FEAT-V7-001,S2PAT02,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PAT02-CONTRACT,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-002,Stage2继续且读取根合同,FEAT-V7-002,S2PAT04,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PAT04-CN-CI,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-003,D1–D4 四数据源域,FEAT-V7-003,S2PBT05/S2PCT07/S2PDT04/S2PET04/S2PFT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-D1-D4,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-004,B1–B3 三主板块,FEAT-V7-004,S2PGT03,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PGT03-ROUTING,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-005,B4–B6 三横切副板块,FEAT-V7-005,S2PGT03,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PGT03-ROUTING,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-006,B2 合并工程/产品/产业,FEAT-V7-006,S2PKT03,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PKT03-M2,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-007,每日三加一邮件,FEAT-V7-007,S2PKT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PKT05-M4,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-008,邮件错峰和 M4 水位线,FEAT-V7-008,S2PKT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PKT05-M4,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-009,深度内容金标,FEAT-V7-009,S2PHT01/S2PHT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PHT05-CONTENT-GATE,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-010,证据级别和反证,FEAT-V7-010,S2PGT01/S2PHT04,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PHT04-ANTI-HYPE,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-011,个人影响和预计 ROI,FEAT-V7-011,S2PHT03/S2PJT03,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PJT03-ROI,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-012,复习队列,FEAT-V7-012,S2PJT02,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PJT02-REVIEW,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-013,行动和能力资产,FEAT-V7-013,S2PJT03,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PJT03-ROI,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-014,周报,FEAT-V7-014,S2PJT04,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PJT04-WEEKLY,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-015,月报,FEAT-V7-015,S2PJT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PJT05-MONTHLY,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-016,中文用户中心,FEAT-V7-016,S2PIT01/S2PIT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PIT05-THREE-BASE,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-017,一改四查三基,FEAT-V7-017,S2PIT01/S2PIT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PIT05-THREE-BASE,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-018,真实状态数量和守恒,FEAT-V7-018,S2PIT02/S2PIT04,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PIT04-LEDGER,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-019,全量模型参数可读,FEAT-V7-019,S2PIT03,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PIT03-SOURCE-MODEL,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-020,CodexProject 全局中文门,FEAT-V7-020,S2PIT05,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PIT05-THREE-BASE,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-021,前沿 Delta 与信号共振,FEAT-V7-021,S2PGT04,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PGT04-DELTA-RESONANCE,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-022,预测账本,FEAT-V7-022,S3PCT01,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S3PCT01-PREDICTIONS,OWNER_REQUIRED,pending_repository_merge
+REQ-V7-023,30 日重放和 2 日真实运行,FEAT-V7-023,S2PLT01/S2PLT02,,docs/governance/product_contract.yaml,由对应 Task 限定实现,由对应 Task 定义 focused test,功能清单;开发记录;模型参数文件;00_用户中心,ACC-S2PLT04-PRODUCTION,OWNER_REQUIRED,pending_repository_merge

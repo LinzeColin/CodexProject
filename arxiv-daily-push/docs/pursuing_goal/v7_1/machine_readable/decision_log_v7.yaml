@@ -1,0 +1,91 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+decisions:
+- decision_id: DEC-ADP-V7-001
+  title: 融合系统
+  decision: 多源采集、证据、深度理解、个人成长、邮件、复习、行动和经济转化属于同一系统。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-002
+  title: Stage2并行
+  decision: Stage 2 继续，Stage 1+ 根本优化并行。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-003
+  title: 四源
+  decision: 保留 D1–D4 四个数据源域。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-004
+  title: 三主三副
+  decision: 阅读结构为 B1–B3 主板块和 B4–B6 横切副板块。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-005
+  title: B2合并
+  decision: 工程/开源与产品/产业合并为 B2。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-006
+  title: 三加一邮件
+  decision: 每日 M1–M4 共四封邮件。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-007
+  title: 周月报告
+  decision: 每周和每月总结是正式产品。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-008
+  title: 中文全局
+  decision: 关键人类界面在 CodexProject 全局中文优先。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-009
+  title: 一改四查三基
+  decision: 保留一个编辑入口、四个查看面、三个根基文件。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-010
+  title: 真实状态
+  decision: 展示实际队列、讲解、发送、复习、行动和转化数量。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-011
+  title: 公开个人信息
+  decision: Owner 允许公开个人画像和邮箱。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-ADP-V7-012
+  title: 连接器解耦
+  decision: 连接器不得直接生成最终邮件。
+  status: owner_approved_pending_repository_merge
+  decided_at: '2026-06-24'
+  source: owner_conversation
+- decision_id: DEC-V7.1-001
+  date: '2026-06-24'
+  decision: 生产最终 Gate 从 S2PLT04 移至 S2PMT07；S2PL 只形成集成候选。
+  reason: 三轨审查发现安全、并发、自动生命周期、压力和 UI 验证缺口。
+  status: owner_required
+- decision_id: DEC-V7.1-002
+  date: '2026-06-24'
+  decision: Stage2 Shadow 来源开发可继续，但真实 SMTP、restore、scheduler install 和 DAILY_OPERATION
+    在 P0/P1 清零前禁止。
+  reason: 兼顾并行开发与生产安全。
+  status: owner_required
+- decision_id: DEC-V7.1-003
+  date: '2026-06-24'
+  decision: 新增 S2PM 七任务，覆盖安全、原子恢复、outbox、自动生命周期、压力故障、UI 和独立复审。
+  reason: 保证后续 Agent 可连续、稳定地接手并以运行证据验收。
+  status: owner_required
