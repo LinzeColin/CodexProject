@@ -1,0 +1,13 @@
+schema_version: 2
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+inherits: docs/pursuing_goal/v7_1/machine_readable/stop_codes_v7.yaml
+stop_codes:
+  BASELINE-CONFLICT: V7.1, V7.2, V1.1, owner requirement or repository fact conflicts are unresolved.
+  G-DRIFT: H/M dual-plane facts, generated views, three-base files, CURRENT pointer or receipts disagree.
+  TASK-MAPPING-UNKNOWN: canonical parent task, workstream id, alias or acceptance id is not resolved before implementation.
+  AGENT-REVIEW-FAIL: fewer than three independent agents reviewed, independence cannot be proven, or P0/P1 disagreement is unresolved.
+  PROVENANCE-MISSING: V1 email or receipt lacks required git, contract, prompt, renderer, model, evidence, run, artifact or html identity.
+  GOLD-GATE-FAIL: 10-item EMAIL_LEARNING_V1 final gold set is incomplete or below threshold.
+  SCOPE-ESCAPE: V1 work touches forbidden connectors, public schemas, DB, queue, scheduler, SMTP, backup/restore, 3+1 orchestration or unrelated governance.
+  CURRENT-POINTER-CONFLICT: more than one product contract claims to be CURRENT or contextual next-task fields overwrite the product-contract pointer.
+  REVALIDATION-MISSING: an active or completed Stage2 agent continues new work without a V7.2 revalidation receipt.

@@ -2965,7 +2965,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["schema_version"], "codexproject.project.v1")
         self.assertEqual(project["project_id"], "arxiv-daily-push")
         self.assertEqual(project["fact_level"], "EXTRACTED")
-        self.assertEqual(project["current_status"], "stage1_accepted_s2pct01_shadow_merged_s2pct02_next_no_formal_production")
+        self.assertEqual(
+            project["current_status"],
+            "stage1_accepted_v7_2_current_s2pct02_next_revalidation_required_no_formal_production",
+        )
         self.assertIn("Stage 1 B1/arXiv accepted", project["summary"])
         self.assertIn("S2PBT01/S2P1T01 bioRxiv/medRxiv", project["summary"])
         self.assertIn("S2PCT01 / legacy S2P2T01 Nature/top-journal", project["summary"])
@@ -3029,10 +3032,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "planned")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PCT01-POST-MERGE-STATUS")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PA-V7-2-CURRENT-CONTRACT")
         self.assertEqual(matrix["current_phase"], "S2PC")
-        self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED")
-        self.assertEqual(matrix["current_v7_task_id"], "S2PCT01")
+        self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT")
+        self.assertEqual(matrix["current_v7_task_id"], "S2PCT02")
         self.assertEqual(matrix["current_v6_task_id"], "S2P2T01")
         self.assertIn("S2PCT01 -> S2P2T01", matrix["current_v7_legacy_alias"])
         self.assertEqual(matrix["current_v7_shadow_source_task_id"], "S2PBT01")
@@ -3049,7 +3052,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(roadmap["current_stage_id"], "S2")
         self.assertEqual(roadmap["current_phase_id"], "S2PC")
         self.assertEqual(roadmap["current_task_id"], "S2PCT02")
-        self.assertEqual(roadmap["next_gate_id"], "S2PC-GATE-V7-CONTRACT-BLOCKED")
+        self.assertEqual(roadmap["next_gate_id"], "S2PC-GATE-V7-2-REVALIDATION")
         self.assertEqual(roadmap["total_estimated_hours"], 10.5)
         self.assertEqual(roadmap["completed_estimated_hours"], 8.5)
 
@@ -3079,7 +3082,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(science_task["legacy_alias"], "S2P2T02")
         self.assertEqual(science_task["status"], "planned")
         self.assertEqual(science_task["acceptance_ids"], ["ACC-S2PCT02-SCIENCE"])
-        self.assertIn("V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED", roadmap["stages"][0]["stop_conditions"])
+        self.assertIn("V7.2 current contract gate 或 agent revalidation 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED", roadmap["stages"][0]["stop_conditions"])
 
     def test_review9_s5pbt05_arxiv_events_preserve_truth_levels(self) -> None:
         events = [
@@ -3089,7 +3092,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             .splitlines()
             if line.strip()
         ]
-        self.assertEqual(len(events), 7)
+        self.assertEqual(len(events), 8)
         self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
         self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
         by_id = {event["event_id"]: event for event in events}
@@ -3101,6 +3104,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("Ready is not implemented", by_id["EVT-ADP-S2P1T01-READY-20260624-001"]["notes"])
         self.assertEqual(by_id["EVT-ADP-S2PBT01-REAL-REPLAY-SHADOW-20260624-001"]["fact_level"], "EXTRACTED")
         self.assertIn("formal production inclusion", by_id["EVT-ADP-S2PBT01-REAL-REPLAY-SHADOW-20260624-001"]["notes"])
+        self.assertEqual(by_id["EVT-ADP-V7-2-CURRENT-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("V7.1 remains read-only", by_id["EVT-ADP-V7-2-CURRENT-20260624-001"]["notes"])
         self.assertEqual(by_id["EVT-ADP-REVIEW9-S5PBT05-LOCAL"]["fact_level"], "PROPOSED")
         self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
 
@@ -5582,21 +5587,21 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-094")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-094")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-097")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-097")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
-            "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED",
+            "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT",
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json",
+            "governance/run_manifests/ADP-S2PAT06-V7-2-CURRENT-CONTRACT-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
         self.assertEqual(
             info["assurance"]["delivery_readiness"]["release_gate"],
-            "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED",
+            "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT",
         )
         self.assertFalse(info["latest_manifest"].get("production_acceptance_claimed", False))
         self.assertFalse(info["latest_event"]["production_schedule_enabled"])
@@ -5606,8 +5611,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
         self.assertIn("ADP-S1P5T05", rendered)
-        self.assertIn("V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED", rendered)
-        self.assertIn("S2P1T01", rendered)
+        self.assertIn("V7_2_PRODUCT_CONTRACT_CURRENT", rendered)
+        self.assertIn("V7.2", rendered)
+        self.assertIn("S2PCT02", rendered)
         self.assertIn("GitHub 只保留代码、PR/CI、证据、状态和备份角色", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)

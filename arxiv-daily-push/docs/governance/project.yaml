@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only shadow foundation 已合并到 main，下一入口为 S2PCT02 Science metadata-only shadow，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；V7.2 已作为当前产品合同发布到本分支，V7.1 保持只读历史基线，V1.1 EMAIL_LEARNING_V1 前台覆盖进入增量合同；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only shadow foundation 已合并到 main，下一入口为 S2PCT02 Science metadata-only shadow，但所有 Stage2 agent 必须先按 V7.2 复审已完成工作，且仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pct01_shadow_merged_s2pct02_next_no_formal_production"
+current_status: "stage1_accepted_v7_2_current_s2pct02_next_revalidation_required_no_formal_production"
 limitations:
   -
     statement: "364/364 active parameters 与 54/54 active formulas 为 MACHINE_VERIFIED；52 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
@@ -38,6 +38,14 @@ limitations:
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
       - "S2PCT02"
+  -
+    statement: "V7.2 是当前产品合同；V7.1 仍作为只读历史基线保留并继续 hash-check。所有 active/completed Stage2 agent 在继续新任务前必须先提交 V7.2 revalidation；EMAIL_LEARNING_V1 下一步是只读 T01 path audit，不能直接改生产邮件代码或公共 Schema。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ADP-OWNER-STATUS"
+      - "EVID-ADP-DELIVERY-TASKS"
+    unknown_task_ids:
+      - "S2PHT01V1.1-T01"
 features:
   -
     feature_id: "FEAT-ADP-001"

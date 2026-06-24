@@ -1,0 +1,59 @@
+schema_version: 1
+roadmap_version: ADP-ROADMAP-V7.2
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+project_id: arxiv-daily-push
+as_of: "2026-06-24"
+global_current_task: S2PCT02
+email_v1_workstream_next: S2PHT01V1.1-T01
+stage2_shadow_source_next: S2PCT02
+workstreams:
+  - workstream_id: V7_2_BASELINE_UPGRADE
+    status: published_on_branch_pending_pr_ci
+    scope: Merge valid V7.1 requirements with V1.1 increments, publish V7.2, and point CURRENT to V7.2.
+    completed_tasks:
+      - S2PHT01V1.1-T00
+    next_task: S2PHT01V1.1-T01
+    stop_gate: ADP_PRODUCT_CONTRACT_V7_2_CURRENT
+  - workstream_id: EMAIL_LEARNING_V1
+    status: awaiting_T01_read_only_exact_path_audit
+    canonical_parent_task: S2PKT01
+    canonical_parent_task_rationale: EMAIL_LEARNING_V1 is a visible email-frontstage contract and must eventually reconcile with the unified M1-M4 mail content contract while decoupling visible frontstage from backend ROI ledger dependencies.
+    alias_parent: S2PHT01V1.1
+    tasks:
+      - task_id: S2PHT01V1.1-T00
+        name: Three-agent independent review and dual-plane compatibility audit
+        status: completed
+        read_only: true
+        gate: EMAIL_V1_DUAL_PLANE_REAUDIT_ACCEPTED
+      - task_id: S2PHT01V1.1-T01
+        name: Read-only call-chain and exact H/M repository path audit
+        status: next
+        read_only: true
+        gate: EMAIL_V1_CALL_CHAIN_AND_PLANE_MAP_AUDITED
+        stop_conditions:
+          - TASK-MAPPING-UNKNOWN
+          - G-DRIFT
+          - SCOPE-ESCAPE
+      - task_id: S2PHT01V1.1-T02
+        name: Content object and prompt adaptation
+        status: blocked_until_T01
+        gate: EMAIL_V1_CONTENT_OBJECT_ACCEPTED
+      - task_id: S2PHT01V1.1-T03
+        name: Email rendering, ChatGPT fallback and provenance
+        status: blocked_until_T02
+        gate: EMAIL_V1_RENDERING_ACCEPTED
+      - task_id: S2PHT01V1.1-T04
+        name: 10 gold items, three-agent final review, dual-plane drift and regression
+        status: blocked_until_T03
+        gate: EMAIL_V1_TESTS_ACCEPTED
+      - task_id: S2PHT01V1.1-T05
+        name: Dual-plane repository update, acceptance evidence and continuous handoff
+        status: blocked_until_T04
+        gate: EMAIL_LEARNING_V1_ACCEPTED
+parallel_policy:
+  stage2_shadow_sources_may_continue: true
+  conditions:
+    - no_shared_v7_2_contract_file_conflict
+    - no_public_schema_change
+    - no_final_email_or_real_side_effects
+    - V7_2_revalidation_receipt_recorded

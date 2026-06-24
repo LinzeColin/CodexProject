@@ -98,6 +98,49 @@ def load_adp_v7_1_lock(project_root: Path) -> dict[str, Any] | None:
     return data if isinstance(data, dict) else None
 
 
+def load_adp_v7_2_current(project_root: Path) -> dict[str, Any] | None:
+    current_path = project_root / "docs" / "pursuing_goal" / "CURRENT.yaml"
+    lock_path = project_root / "docs" / "pursuing_goal" / "v7_2" / "V7_2_ROOT_LOCK.yaml"
+    if project_root.name != "arxiv-daily-push" or not current_path.is_file() or not lock_path.is_file():
+        return None
+    current = governance.load_yaml(current_path)
+    lock = governance.load_yaml(lock_path)
+    if not isinstance(current, dict) or not isinstance(lock, dict):
+        return None
+    return {"current": current, "lock": lock}
+
+
+def v7_2_current_summary_lines(bundle: dict[str, Any] | None) -> list[str]:
+    if not bundle:
+        return []
+    current = bundle.get("current") if isinstance(bundle.get("current"), dict) else {}
+    lock = bundle.get("lock") if isinstance(bundle.get("lock"), dict) else {}
+    contract = lock.get("current_contract") if isinstance(lock.get("current_contract"), dict) else {}
+    current_contract = current.get("current_product_contract") if isinstance(current.get("current_product_contract"), dict) else {}
+    previous = current.get("previous_read_only_contract") if isinstance(current.get("previous_read_only_contract"), dict) else {}
+    context = current.get("current_pointer_registry") if isinstance(current.get("current_pointer_registry"), dict) else {}
+    return [
+        "",
+        "## V7.2 CURRENT 产品合同",
+        "",
+        f"- contract_version: `{text_or_na(current_contract.get('version') or contract.get('contract_version'))}`",
+        f"- root_lock: `{text_or_na(current_contract.get('root_lock'))}`",
+        f"- product_contract: `{text_or_na(current_contract.get('product_contract'))}`",
+        f"- contract_sha256: `{text_or_na(contract.get('contract_sha256'))}`",
+        f"- roadmap_version: `{text_or_na(contract.get('roadmap_version'))}`",
+        f"- roadmap_sha256: `{text_or_na(contract.get('roadmap_sha256'))}`",
+        f"- migration_matrix_sha256: `{text_or_na(contract.get('migration_matrix_sha256'))}`",
+        f"- final_review_sha256: `{text_or_na(contract.get('final_review_sha256'))}`",
+        f"- previous_read_only_contract: `{text_or_na(previous.get('version'))}`",
+        f"- previous_read_only_root_lock: `{text_or_na(previous.get('root_lock'))}`",
+        f"- global_current_task: `{text_or_na(context.get('global_current_task'))}`",
+        f"- email_v1_workstream_next: `{text_or_na(context.get('email_v1_workstream_next'))}`",
+        f"- v7_contract_remediation_next: `{text_or_na(context.get('v7_contract_remediation_next'))}`",
+        f"- shadow_source_next: `{text_or_na(context.get('shadow_source_next'))}`",
+        f"- agent_revalidation_required: `{str(bool(current.get('agent_revalidation_required'))).lower()}`",
+    ]
+
+
 def v7_1_summary_lines(lock: dict[str, Any] | None) -> list[str]:
     if not lock:
         return []
@@ -112,7 +155,7 @@ def v7_1_summary_lines(lock: dict[str, Any] | None) -> list[str]:
         forbidden_items = [key for key, value in forbidden.items() if value is True]
     return [
         "",
-        "## V7.1 当前根治理锁",
+        "## V7.1 只读历史根治理锁",
         "",
         f"- contract_version: `{text_or_na(contract.get('contract_version'))}`",
         f"- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`",
@@ -127,7 +170,7 @@ def v7_1_summary_lines(lock: dict[str, Any] | None) -> list[str]:
         f"- stage2_final_task: `{text_or_na(stage2.get('final_task'))}`",
         f"- stage2_stop_gate: `{text_or_na(stage2.get('stop_gate'))}`",
         f"- stage2_integrated_production_accepted: `{str(bool(stage2.get('production_accepted'))).lower()}`",
-        f"- production_forbidden_until: `P0=0; P1=0; S2PMT07 independent review passed`",
+        f"- production_forbidden_until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`",
         f"- forbidden_actions: `{text_or_na(forbidden_items)}`",
     ]
 
@@ -284,7 +327,45 @@ def next_unique_task(roadmap: dict[str, Any]) -> str:
     return "none"
 
 
+def stop_gate_field(gate: dict[str, Any], primary: str, fallback: str | None = None) -> str:
+    value = gate.get(primary)
+    if fallback and value in (None, "", []):
+        value = gate.get(fallback)
+    return text_or_na(value)
+
+
+def stop_gate_failure_action(gate: dict[str, Any]) -> str:
+    value = gate.get("failure_action")
+    if value not in (None, "", []):
+        return text_or_na(value)
+    if gate:
+        return "block gated claim/action until pass conditions and evidence are satisfied"
+    return text_or_na(None)
+
+
+def task_test_results(task: dict[str, Any]) -> str:
+    value = task.get("test_results")
+    if value not in (None, "", []):
+        return text_or_na(value)
+    status = str(task.get("status") or "")
+    if status in {"planned", "proposed"}:
+        return "not executed yet; planned task only"
+    if status.startswith("blocked"):
+        return "not executed yet; blocked until prerequisite gate"
+    if governance.as_list(task.get("evidence_refs")):
+        return "not duplicated in roadmap; see evidence_refs"
+    return "not recorded in roadmap"
+
+
+def task_risks(task: dict[str, Any]) -> str:
+    value = task.get("risks")
+    if value in (None, "", []):
+        value = task.get("risk")
+    return text_or_na(value)
+
+
 def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any]) -> dict[str, Any]:
+    use_contextual_fallbacks = str(roadmap.get("project_id") or project_facts.get("project_id") or "") == "arxiv-daily-push"
     tasks = roadmap_tasks(roadmap)
     gates = roadmap_stop_gates(roadmap)
     project_evidence = [
@@ -299,7 +380,9 @@ def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any])
     gate_evidence_refs = {
         str(item)
         for gate in gates
-        for item in governance.as_list(gate.get("evidence"))
+        for item in governance.as_list(
+            gate.get("evidence") or (gate.get("evidence_refs") if use_contextual_fallbacks else None)
+        )
         if item
     }
     test_commands = [
@@ -328,6 +411,7 @@ def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any])
 
 
 def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
+    use_contextual_fallbacks = str(roadmap.get("project_id") or "") == "arxiv-daily-push"
     totals = roadmap_totals(roadmap)
     lines: list[str] = ["Stage -> Phase -> Task", ""]
     for stage in [item for item in governance.as_list(roadmap.get("stages")) if isinstance(item, dict)]:
@@ -349,9 +433,9 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                 f"- derived_percent: `{pct(stage_hours, totals['total'])}`",
                 f"- stop_conditions: `{text_or_na(stage.get('stop_conditions'))}`",
                 f"- stop_gate: `{text_or_na(stage_gate.get('gate_id'))}`",
-                f"- stop_gate_pass_criteria: `{text_or_na(stage_gate.get('pass_criteria'))}`",
-                f"- stop_gate_evidence: `{text_or_na(stage_gate.get('evidence'))}`",
-                f"- stop_gate_failure_action: `{text_or_na(stage_gate.get('failure_action'))}`",
+                f"- stop_gate_pass_criteria: `{stop_gate_field(stage_gate, 'pass_criteria', 'pass_conditions') if use_contextual_fallbacks else text_or_na(stage_gate.get('pass_criteria'))}`",
+                f"- stop_gate_evidence: `{stop_gate_field(stage_gate, 'evidence', 'evidence_refs') if use_contextual_fallbacks else text_or_na(stage_gate.get('evidence'))}`",
+                f"- stop_gate_failure_action: `{stop_gate_failure_action(stage_gate) if use_contextual_fallbacks else text_or_na(stage_gate.get('failure_action'))}`",
                 "",
             ]
         )
@@ -372,9 +456,9 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                     f"- derived_percent: `{pct(phase_hours, totals['total'])}`",
                     f"- stop_conditions: `{text_or_na(phase.get('stop_conditions'))}`",
                     f"- stop_gate: `{text_or_na(phase_gate.get('gate_id'))}`",
-                    f"- stop_gate_pass_criteria: `{text_or_na(phase_gate.get('pass_criteria'))}`",
-                    f"- stop_gate_evidence: `{text_or_na(phase_gate.get('evidence'))}`",
-                    f"- stop_gate_failure_action: `{text_or_na(phase_gate.get('failure_action'))}`",
+                    f"- stop_gate_pass_criteria: `{stop_gate_field(phase_gate, 'pass_criteria', 'pass_conditions') if use_contextual_fallbacks else text_or_na(phase_gate.get('pass_criteria'))}`",
+                    f"- stop_gate_evidence: `{stop_gate_field(phase_gate, 'evidence', 'evidence_refs') if use_contextual_fallbacks else text_or_na(phase_gate.get('evidence'))}`",
+                    f"- stop_gate_failure_action: `{stop_gate_failure_action(phase_gate) if use_contextual_fallbacks else text_or_na(phase_gate.get('failure_action'))}`",
                     "",
                     "| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |",
                     "|---|---|---|---:|---:|---|---|",
@@ -390,9 +474,9 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                 lines.extend(
                     [
                         f"- {text_or_na(task.get('task_id'))} test_commands: `{text_or_na(task.get('test_commands'))}`",
-                        f"- {text_or_na(task.get('task_id'))} test_results: `{text_or_na(task.get('test_results'))}`",
+                        f"- {text_or_na(task.get('task_id'))} test_results: `{task_test_results(task) if use_contextual_fallbacks else text_or_na(task.get('test_results'))}`",
                         f"- {text_or_na(task.get('task_id'))} evidence_refs: `{text_or_na(task.get('evidence_refs'))}`",
-                        f"- {text_or_na(task.get('task_id'))} risks: `{text_or_na(task.get('risks'))}`",
+                        f"- {text_or_na(task.get('task_id'))} risks: `{task_risks(task) if use_contextual_fallbacks else text_or_na(task.get('risks'))}`",
                         f"- {text_or_na(task.get('task_id'))} rollback: `{text_or_na(task.get('rollback'))}`",
                     ]
                 )
@@ -405,7 +489,9 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
     evidence = [item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)]
     totals = roadmap_totals(roadmap)
     summary = roadmap_fact_summary(project_facts, roadmap)
-    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
+    project_root = ROOT / str(project_facts.get("project_id") or "")
+    v72 = load_adp_v7_2_current(project_root)
+    lock = load_adp_v7_1_lock(project_root)
     lines = [
         "# 功能清单",
         "",
@@ -435,6 +521,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
         lines.append(
             f"| {text_or_na(feature.get('feature_id'))} | {text_or_na(feature.get('name'))} | {text_or_na(feature.get('status'))} | {text_or_na(feature.get('description'))} | {text_or_na(feature.get('fact_level'))} |"
         )
+    lines.extend(v7_2_current_summary_lines(v72))
     lines.extend(v7_1_summary_lines(lock))
     lines.extend(["", "## 证据", "", "| 证据 ID | 类型 | 引用 | 事实等级 |", "|---|---|---|---|"])
     for item in evidence:
@@ -448,7 +535,9 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
     ensure_product_roadmap(roadmap, target="project development record")
     totals = roadmap_totals(roadmap)
     summary = roadmap_fact_summary(project_facts, roadmap)
-    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
+    project_root = ROOT / str(project_facts.get("project_id") or "")
+    v72 = load_adp_v7_2_current(project_root)
+    lock = load_adp_v7_1_lock(project_root)
     lines = [
         "# 开发记录",
         "",
@@ -477,6 +566,7 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
         "",
     ]
     lines.extend(render_roadmap_body(roadmap))
+    lines.extend(v7_2_current_summary_lines(v72))
     lines.extend(v7_1_summary_lines(lock))
     lines.extend(["", "## 近期事件", "", "| 时间 | 类型 | 摘要 | 任务 | 事实等级 |", "|---|---|---|---|---|"])
     for event in events:
@@ -491,7 +581,9 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     formulas = [item for item in governance.as_list(project_facts.get("formulas")) if isinstance(item, dict)]
     parameters = [item for item in governance.as_list(project_facts.get("parameters")) if isinstance(item, dict)]
     summary = roadmap_fact_summary(project_facts, roadmap)
-    lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or "")) or {}
+    project_root = ROOT / str(project_facts.get("project_id") or "")
+    v72 = load_adp_v7_2_current(project_root)
+    lock = load_adp_v7_1_lock(project_root) or {}
     stage2 = lock.get("stage2_boundary") if isinstance(lock, dict) and isinstance(lock.get("stage2_boundary"), dict) else {}
     lines = [
         "# 模型参数文件",
@@ -514,12 +606,13 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
         f"- roadmap_gate_count: `{summary['roadmap_gate_count']}`",
         f"- evidence_status: `{text_or_na(project_facts.get('fact_level'))}`",
     ]
+    lines.extend(v7_2_current_summary_lines(v72))
     lines.extend(v7_1_summary_lines(lock))
     if lock:
         lines.extend(
             [
                 "",
-                "## V7.1 根治理说明",
+                "## V7.1 只读历史根治理说明",
                 "",
                 "- V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。",
                 "- `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。",

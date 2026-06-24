@@ -1,0 +1,43 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.2
+decisions:
+  - decision_id: DEC-ADP-V7-2-CURRENT-20260624
+    title: CURRENT product contract points to V7.2
+    status: accepted_on_branch_pending_pr_ci
+    supersedes:
+      - DEC-ADP-V7-1-AUDIT-LOCK-20260624
+    scope: product_contract_pointer
+    decision: docs/pursuing_goal/CURRENT.yaml is the single CURRENT product-contract pointer and points to ADP-PRODUCT-CONTRACT-V7.2.
+    evidence_refs:
+      - docs/pursuing_goal/CURRENT.yaml
+      - docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml
+  - decision_id: DEC-EMAIL-V1-FRONTSTAGE
+    title: EMAIL_LEARNING_V1 overrides V7.1 visible email frontstage
+    status: accepted
+    supersedes:
+      - DEC-ADP-V7-013 visible frontstage interpretation
+    scope: visible_email_frontstage_only
+    decision: V7.1 ROI, Delta, review, action and evidence capabilities remain available in backend ledgers, but the visible EMAIL_LEARNING_V1 frontstage must not render reading-time cards, decision cards, Frontier Delta, generic ROI, fixed action ladders, or generic question cards.
+    non_goals:
+      - no_3_plus_1_orchestration_change
+      - no_connector_change
+      - no_queue_database_scheduler_smtp_change
+      - no_public_schema_change
+    evidence_refs:
+      - docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml
+      - docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml
+  - decision_id: DEC-ADP-V7-2-DUAL-PLANE
+    title: H/M dual-plane authority and receipts are mandatory
+    status: accepted
+    scope: governance_and_migration
+    decision: V7.2 uses H/M authority boundaries, one-way bridges, plane_revision_id, apply/render/rollback receipts and G-DRIFT gates before EMAIL_LEARNING_V1 can be accepted.
+    evidence_refs:
+      - docs/pursuing_goal/v7_2/machine_readable/dual_plane_governance_v7_2.yaml
+  - decision_id: DEC-ADP-V7-2-AGENT-REVALIDATION
+    title: Stage2 agents must revalidate completed work before new tasks
+    status: accepted
+    scope: stage2_continuity
+    decision: Every active or completed Stage2 agent must read V7.2 and review its own completed work. Non-compliant work must be fixed before that agent continues new task work.
+    evidence_refs:
+      - docs/pursuing_goal/CURRENT.yaml
+      - docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md
