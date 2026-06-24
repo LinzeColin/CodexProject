@@ -5,13 +5,13 @@
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
 - current_stage: `S2`
-- current_phase: `S2PC`
-- current_task: `S2PCT07`
-- active_model_count: `59`
-- active_formula_count: `61`
-- active_parameter_count: `398`
+- current_phase: `S2PD`
+- current_task: `S2PDT01`
+- active_model_count: `60`
+- active_formula_count: `62`
+- active_parameter_count: `406`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
+- next_gate: `S2PD-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -24,9 +24,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT07`
+- stage2_current_task: `S2PDT01`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PCT07` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PDT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -573,6 +573,15 @@
 - parameter_refs: `PARAM-ADP-407, PARAM-ADP-408, PARAM-ADP-409, PARAM-ADP-410, PARAM-ADP-411, PARAM-ADP-412, PARAM-ADP-413, PARAM-ADP-414, PARAM-ADP-415`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT06-REPORTS`
 
+### MOD-ADP-060 S2PCT07 D2 source-domain qualification and cross-type calibration
+
+- purpose: `Calibrate D2 source-domain readiness across top-journal, engineering public-signal, and authoritative report shadow evidence while preserving production acceptance and transport gates as false.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-062`
+- parameter_refs: `PARAM-ADP-416, PARAM-ADP-417, PARAM-ADP-418, PARAM-ADP-419, PARAM-ADP-420, PARAM-ADP-421, PARAM-ADP-422, PARAM-ADP-423`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT07-D2`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -940,6 +949,12 @@
 - model_id: `MOD-ADP-059`
 - expression_or_pseudocode: `A S2PCT06 authoritative report source report passes only when the S2PCT05 engineering signal report passes, all required report types are observed, every report has a supported publisher type, verified publisher identity, declared interest relation, accepted evidence level, traceability to a known engineering signal and canonical paper, and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, paid API, paywall, and marketing-material acceptance side effects remain false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT06-REPORTS`
+
+### FORM-ADP-062
+
+- model_id: `MOD-ADP-060`
+- expression_or_pseudocode: `A S2PCT07 D2 source-domain qualification report passes only when S2PCT04, S2PCT05, and S2PCT06 upstream reports pass; top-journal, engineering-signal, and authoritative-report domains each have complete required type coverage; D2 replay has 30 unique passing dates with no future leakage or P0/P1 blockers; no-production shadow evidence covers at least 48 hours; correction and retraction forced events force review and update conclusion state; queue explanations cover selected, queued, and deferred decisions; type calibration has full required coverage and zero spread; and D2 source-domain acceptance, formal production inclusion, Stage2/integrated production, SMTP, Release, scheduler, queue mutation, schema migration, PDF/full-text, paid API, paywall bypass, and marketing-material acceptance remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT07-D2`
 
 ## 参数
 
@@ -1343,3 +1358,11 @@
 | PARAM-ADP-413 | S2PCT06_ALLOWED_INTEREST_RELATIONS | S2PCT06 accepted interest relations | independent_research;sponsor_disclosed;vendor_authored;product_owner_authored | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
 | PARAM-ADP-414 | S2PCT06_ALLOWED_EVIDENCE_LEVELS | S2PCT06 accepted evidence levels | primary_research_report;technical_whitepaper;methodology_note;product_technical_note | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
 | PARAM-ADP-415 | S2PCT06_LEDGER_FILENAME | S2PCT06 authoritative report ledger filename | stage2_s2pct06_authoritative_report_ledger.jsonl | EXTRACTED from stage2_sources.py constant and focused S2PCT06 tests | EXTRACTED |
+| PARAM-ADP-416 | S2PCT07_D2_QUALIFICATION_MODEL_ID | S2PCT07 D2 qualification model id | adp-s2pct07-d2-source-domain-qualification-v1 | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-417 | S2PCT07_ACCEPTANCE_ID | S2PCT07 acceptance id | ACC-S2PCT07-D2 | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-418 | S2PCT07_TASK_ID | S2PCT07 canonical task id | S2PCT07 | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-419 | S2PCT07_REQUIRED_DOMAINS | S2PCT07 required D2 source domains | top_journal;engineering_signal;authoritative_report | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-420 | S2PCT07_REQUIRED_REPLAY_DATES | S2PCT07 required D2 replay dates | 30 | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-421 | S2PCT07_REQUIRED_SHADOW_HOURS | S2PCT07 required no-production shadow hours | 48 | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-422 | S2PCT07_REQUIRED_FORCED_EVENT_TYPES | S2PCT07 required forced event types | correction;retraction | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-423 | S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES | S2PCT07 required queue explanation states | selected;queued;deferred | EXTRACTED from S2PCT07 code constant and focused tests | EXTRACTED |

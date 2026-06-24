@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
     run_s2pct04_top_journal_profile_shadow,
@@ -116,6 +117,7 @@ from .stage2_sources import (
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
     validate_s2pct04_top_journal_profile_report,
@@ -143,6 +145,15 @@ from .trial_start import build_trial_start_gate, validate_trial_start_report
 from .trial_start_workflow import build_trial_start_workflow_plan, validate_trial_start_workflow_plan
 from .video import VideoPlanError, generate_storyboard
 from .video import render_lightweight_mp4, validate_mp4_render_report
+
+
+def load_json_records(path: str | Path, key: str) -> list[dict[str, Any]]:
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if isinstance(data, dict):
+        data = data.get(key, [])
+    if not isinstance(data, list):
+        raise ValueError(f"{path} must contain a JSON list or an object with {key}")
+    return [item for item in data if isinstance(item, dict)]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -538,6 +549,23 @@ def build_parser() -> argparse.ArgumentParser:
     s2pct06_reports.add_argument("--technical-reports", required=True, help="Technical report metadata JSON list or object with reports.")
     s2pct06_reports.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pct06_reports.add_argument("--json", action="store_true", help="Print JSON authoritative report source report.")
+
+    s2pct07_qualification = subparsers.add_parser(
+        "stage2-d2-source-domain-qualification",
+        help="Run S2PCT07 D2 source-domain qualification and cross-type calibration evidence.",
+    )
+    s2pct07_qualification.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pct07_qualification.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pct07_qualification.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pct07_qualification.add_argument("--profile-report", required=True, help="Passing S2PCT04 profile report JSON.")
+    s2pct07_qualification.add_argument("--engineering-signal-report", required=True, help="Passing S2PCT05 engineering signal report JSON.")
+    s2pct07_qualification.add_argument("--authoritative-report", required=True, help="Passing S2PCT06 authoritative report JSON.")
+    s2pct07_qualification.add_argument("--replay-records", required=True, help="D2 replay records JSON list or object with replay_records.")
+    s2pct07_qualification.add_argument("--shadow-records", required=True, help="D2 shadow records JSON list or object with shadow_records.")
+    s2pct07_qualification.add_argument("--forced-event-records", required=True, help="Forced-event records JSON list or object with forced_event_records.")
+    s2pct07_qualification.add_argument("--queue-explanation-records", required=True, help="Queue explanation records JSON list or object with queue_explanation_records.")
+    s2pct07_qualification.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pct07_qualification.add_argument("--json", action="store_true", help="Print JSON qualification report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1670,6 +1698,33 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             print(f"- report_types_observed: {', '.join(report.get('report_types_observed', []))}")
             print(f"- authoritative_report_count: {report.get('authoritative_report_count')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-d2-source-domain-qualification":
+        report = run_s2pct07_d2_source_domain_qualification(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            profile_report=load_json_mapping(args.profile_report),
+            engineering_signal_report=load_json_mapping(args.engineering_signal_report),
+            authoritative_report=load_json_mapping(args.authoritative_report),
+            replay_records=load_json_records(args.replay_records, "replay_records"),
+            shadow_records=load_json_records(args.shadow_records, "shadow_records"),
+            forced_event_records=load_json_records(args.forced_event_records, "forced_event_records"),
+            queue_explanation_records=load_json_records(args.queue_explanation_records, "queue_explanation_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pct07_d2_source_domain_qualification_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- replay_gate: {report.get('replay_gate')}")
+            print(f"- shadow_gate: {report.get('shadow_gate')}")
+            print(f"- type_calibration_gate: {report.get('type_calibration_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

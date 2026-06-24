@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
     S2PCT04_JOURNAL_PROFILE_MODEL_ID,
@@ -23,6 +24,7 @@ from arxiv_daily_push.stage2_sources import (
     S2P2_TOP_JOURNAL_SHADOW_MODEL_ID,
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
+    build_s2pct07_d2_source_domain_qualification_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -32,6 +34,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2p1_preprint_promotion_report,
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
+    run_s2pct07_d2_source_domain_qualification,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -39,6 +42,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2p1_preprint_shadow_daily,
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
+    validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -145,6 +149,91 @@ def engineering_signal_report() -> dict:
 
 def authoritative_technical_reports() -> list:
     return json.loads(AUTHORITATIVE_TECHNICAL_REPORTS.read_text(encoding="utf-8"))["reports"]
+
+
+def authoritative_report() -> dict:
+    return build_s2pct06_authoritative_report_source_report(
+        generated_at=GENERATED_AT,
+        engineering_signal_report=engineering_signal_report(),
+        technical_reports=authoritative_technical_reports(),
+    )
+
+
+def d2_replay_records(start: date = date(2026, 5, 1), count: int = 30) -> list[dict]:
+    domains = ("top_journal", "engineering_signal", "authoritative_report")
+    return [
+        {
+            "as_of_date": (start + timedelta(days=offset)).isoformat(),
+            "domain": domains[offset % len(domains)],
+            "status": "pass",
+            "future_leakage_count": 0,
+            "p0_p1_blocker_count": 0,
+        }
+        for offset in range(count)
+    ]
+
+
+def d2_shadow_records() -> list[dict]:
+    return [
+        {
+            "domain": "top_journal",
+            "status": "pass",
+            "shadow_hours": 48,
+            "production_affected": False,
+            "real_smtp_sent": False,
+        },
+        {
+            "domain": "engineering_signal",
+            "status": "pass",
+            "shadow_hours": 48,
+            "production_affected": False,
+            "real_smtp_sent": False,
+        },
+        {
+            "domain": "authoritative_report",
+            "status": "pass",
+            "shadow_hours": 48,
+            "production_affected": False,
+            "real_smtp_sent": False,
+        },
+    ]
+
+
+def d2_forced_event_records() -> list[dict]:
+    return [
+        {
+            "event_type": "correction",
+            "status": "pass",
+            "forced_review_required": True,
+            "updated_conclusion_state": "requires_revision",
+        },
+        {
+            "event_type": "retraction",
+            "status": "pass",
+            "forced_review_required": True,
+            "updated_conclusion_state": "invalidated",
+        },
+    ]
+
+
+def d2_queue_explanation_records() -> list[dict]:
+    return [
+        {
+            "candidate_id": "candidate:selected",
+            "queue_state": "selected",
+            "explanation": "highest evidence quality and current decision value",
+        },
+        {
+            "candidate_id": "candidate:queued",
+            "queue_state": "queued",
+            "explanation": "valuable but not the top daily decision item",
+        },
+        {
+            "candidate_id": "candidate:deferred",
+            "queue_state": "deferred",
+            "explanation": "awaits forced-event or source-domain review",
+        },
+    ]
 
 
 def replay_batches(start: date, count: int = 30) -> dict:
@@ -438,6 +527,84 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertIn("publisher_identity_state is not accepted", " ".join(report["blocking_reasons"]))
         self.assertIn("interest_disclosure is required", " ".join(report["blocking_reasons"]))
         self.assertIn("related_signal_ids unknown", " ".join(report["blocking_reasons"]))
+
+    def test_s2pct07_d2_qualification_calibrates_domains_without_accepting_production(self) -> None:
+        report = build_s2pct07_d2_source_domain_qualification_report(
+            generated_at=GENERATED_AT,
+            profile_report=top_journal_profile_report(),
+            engineering_signal_report=engineering_signal_report(),
+            authoritative_report=authoritative_report(),
+            replay_records=d2_replay_records(),
+            shadow_records=d2_shadow_records(),
+            forced_event_records=d2_forced_event_records(),
+            queue_explanation_records=d2_queue_explanation_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PCT07_D2_QUALIFICATION_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PCT07-D2")
+        self.assertEqual(report["task_id"], "S2PCT07")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d2_source_domain_qualification_ready"])
+        self.assertEqual(report["upstream_gate"], "pass")
+        self.assertEqual(report["domain_coverage_gate"], "pass")
+        self.assertEqual(report["replay_gate"], "pass")
+        self.assertEqual(report["shadow_gate"], "pass")
+        self.assertEqual(report["forced_event_gate"], "pass")
+        self.assertEqual(report["queue_explanation_gate"], "pass")
+        self.assertEqual(report["type_calibration_gate"], "pass")
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["smtp_transport_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(validate_s2pct07_d2_source_domain_qualification_report(report))
+
+    def test_s2pct07_d2_qualification_blocks_short_replay_and_missing_queue_explanation(self) -> None:
+        queue_records = d2_queue_explanation_records()
+        queue_records[-1] = dict(queue_records[-1], explanation="")
+
+        report = build_s2pct07_d2_source_domain_qualification_report(
+            generated_at=GENERATED_AT,
+            profile_report=top_journal_profile_report(),
+            engineering_signal_report=engineering_signal_report(),
+            authoritative_report=authoritative_report(),
+            replay_records=d2_replay_records(count=29),
+            shadow_records=d2_shadow_records(),
+            forced_event_records=d2_forced_event_records(),
+            queue_explanation_records=queue_records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["replay_gate"], "blocked")
+        self.assertEqual(report["queue_explanation_gate"], "blocked")
+        self.assertFalse(report["d2_source_domain_accepted"])
+        self.assertIn("30 unique dates", " ".join(report["blocking_reasons"]))
+        self.assertIn("queue explanation records require", " ".join(report["blocking_reasons"]))
+
+    def test_s2pct07_d2_qualification_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pct07_d2_source_domain_qualification(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                profile_report=top_journal_profile_report(),
+                engineering_signal_report=engineering_signal_report(),
+                authoritative_report=authoritative_report(),
+                replay_records=d2_replay_records(),
+                shadow_records=d2_shadow_records(),
+                forced_event_records=d2_forced_event_records(),
+                queue_explanation_records=d2_queue_explanation_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pct07_d2_source_domain_qualification_report(report))
+            self.assertFalse(report["d2_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertTrue(Path(report["qualification_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pct07_d2_source_domain_qualification_report.json").is_file())
 
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -898,6 +1065,58 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["task_id"], "S2PCT06")
         self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["authoritative_report_count"], 4)
+
+    def test_cli_stage2_d2_source_domain_qualification_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            profile_report_path = Path(tmp) / "profile-report.json"
+            engineering_report_path = Path(tmp) / "engineering-report.json"
+            authoritative_report_path = Path(tmp) / "authoritative-report.json"
+            replay_records_path = Path(tmp) / "replay-records.json"
+            shadow_records_path = Path(tmp) / "shadow-records.json"
+            forced_event_records_path = Path(tmp) / "forced-event-records.json"
+            queue_records_path = Path(tmp) / "queue-records.json"
+            profile_report_path.write_text(json.dumps(top_journal_profile_report(), ensure_ascii=False), encoding="utf-8")
+            engineering_report_path.write_text(json.dumps(engineering_signal_report(), ensure_ascii=False), encoding="utf-8")
+            authoritative_report_path.write_text(json.dumps(authoritative_report(), ensure_ascii=False), encoding="utf-8")
+            replay_records_path.write_text(json.dumps({"replay_records": d2_replay_records()}, ensure_ascii=False), encoding="utf-8")
+            shadow_records_path.write_text(json.dumps({"shadow_records": d2_shadow_records()}, ensure_ascii=False), encoding="utf-8")
+            forced_event_records_path.write_text(json.dumps({"forced_event_records": d2_forced_event_records()}, ensure_ascii=False), encoding="utf-8")
+            queue_records_path.write_text(json.dumps({"queue_explanation_records": d2_queue_explanation_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-d2-source-domain-qualification",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--profile-report",
+                    str(profile_report_path),
+                    "--engineering-signal-report",
+                    str(engineering_report_path),
+                    "--authoritative-report",
+                    str(authoritative_report_path),
+                    "--replay-records",
+                    str(replay_records_path),
+                    "--shadow-records",
+                    str(shadow_records_path),
+                    "--forced-event-records",
+                    str(forced_event_records_path),
+                    "--queue-explanation-records",
+                    str(queue_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PCT07_D2_QUALIFICATION_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PCT07")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d2_source_domain_qualification_ready"])
+        self.assertFalse(payload["d2_source_domain_accepted"])
 
 
 if __name__ == "__main__":

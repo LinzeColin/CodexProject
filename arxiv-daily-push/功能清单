@@ -5,12 +5,12 @@
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
 - current_stage: `S2`
-- current_phase: `S2PC`
-- current_task: `S2PCT07`
-- progress: `90.24%`
+- current_phase: `S2PD`
+- current_task: `S2PDT01`
+- progress: `71.93%`
 - capability_count: `14`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
+- next_gate: `S2PD-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -42,9 +42,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT07`
+- stage2_current_task: `S2PDT01`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -77,3 +77,4 @@
 | EVID-ADP-S2PCT04-PROFILE | manifest | governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-ADP-S2PCT05-ENGINEERING | manifest | governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-ADP-S2PCT06-REPORTS | manifest | governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json | EXTRACTED |
+| EVID-ADP-S2PCT07-D2 | manifest | governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json | EXTRACTED |

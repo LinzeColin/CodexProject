@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence、S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence，以及 S2PCT06 权威研究机构、实验室和产业技术报告 shadow evidence 已完成，下一入口为 S2PCT07 D2 source-domain qualification，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence、S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence，S2PCT06 权威研究机构、实验室和产业技术报告 shadow evidence，以及 S2PCT07 D2 source-domain qualification readiness 已完成，下一入口为 S2PDT01/S2P3T01 中国官方核心数据源 shadow foundation，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pct06_authoritative_reports_shadow_complete_s2pct07_next_no_formal_production"
+current_status: "stage1_accepted_s2pct07_d2_qualification_ready_s2pdt01_next_no_formal_production"
 limitations:
   -
-    statement: "398/398 active parameters 与 61/61 active formulas 为 MACHINE_VERIFIED；59 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "406/406 semantically checked active parameters 与 62/62 active formulas 为 MACHINE_VERIFIED；60 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -31,15 +31,14 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence、S2PCT05 engineering public-signal shadow evidence 与 S2PCT06 authoritative report shadow evidence 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence、S2PCT05 engineering public-signal shadow evidence、S2PCT06 authoritative report shadow evidence 与 S2PCT07 D2 source-domain qualification readiness 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-ADP-S2PCT03-LANCET"
       - "EVID-ADP-S2PCT04-PROFILE"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
-    unknown_task_ids:
-      - "S2PCT07"
+    unknown_task_ids: []
 features:
   -
     feature_id: "FEAT-ADP-001"
@@ -2336,6 +2335,34 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-S2PCT06-REPORTS"
+  -
+    model_id: "MOD-ADP-060"
+    name: "S2PCT07 D2 source-domain qualification and cross-type calibration"
+    purpose: "Calibrate D2 source-domain readiness across top-journal, engineering public-signal, and authoritative report shadow evidence while preserving production acceptance and transport gates as false."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-062"
+    parameter_ids:
+      - "PARAM-ADP-416"
+      - "PARAM-ADP-417"
+      - "PARAM-ADP-418"
+      - "PARAM-ADP-419"
+      - "PARAM-ADP-420"
+      - "PARAM-ADP-421"
+      - "PARAM-ADP-422"
+      - "PARAM-ADP-423"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PCT07-D2"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -3328,6 +3355,21 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-ADP-S2PCT06-REPORTS"
+  -
+    formula_id: "FORM-ADP-062"
+    model_id: "MOD-ADP-060"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "A S2PCT07 D2 source-domain qualification report passes only when S2PCT04, S2PCT05, and S2PCT06 upstream reports pass; top-journal, engineering-signal, and authoritative-report domains each have complete required type coverage; D2 replay has 30 unique passing dates with no future leakage or P0/P1 blockers; no-production shadow evidence covers at least 48 hours; correction and retraction forced events force review and update conclusion state; queue explanations cover selected, queued, and deferred decisions; type calibration has full required coverage and zero spread; and D2 source-domain acceptance, formal production inclusion, Stage2/integrated production, SMTP, Release, scheduler, queue mutation, schema migration, PDF/full-text, paid API, paywall bypass, and marketing-material acceptance remain false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PCT07-D2"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -10897,6 +10939,110 @@ parameters:
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-416"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_D2_QUALIFICATION_MODEL_ID"
+    name: "S2PCT07 D2 qualification model id"
+    value: "adp-s2pct07-d2-source-domain-qualification-v1"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-417"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_ACCEPTANCE_ID"
+    name: "S2PCT07 acceptance id"
+    value: "ACC-S2PCT07-D2"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-418"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_TASK_ID"
+    name: "S2PCT07 canonical task id"
+    value: "S2PCT07"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-419"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_REQUIRED_DOMAINS"
+    name: "S2PCT07 required D2 source domains"
+    value: "top_journal;engineering_signal;authoritative_report"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-420"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_REQUIRED_REPLAY_DATES"
+    name: "S2PCT07 required D2 replay dates"
+    value: "30"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-421"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_REQUIRED_SHADOW_HOURS"
+    name: "S2PCT07 required no-production shadow hours"
+    value: "48"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-422"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_REQUIRED_FORCED_EVENT_TYPES"
+    name: "S2PCT07 required forced event types"
+    value: "correction;retraction"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-423"
+    model_id: "MOD-ADP-060"
+    formula_id: "FORM-ADP-062"
+    symbol: "S2PCT07_REQUIRED_QUEUE_EXPLANATION_STATES"
+    name: "S2PCT07 required queue explanation states"
+    value: "selected;queued;deferred"
+    source: "EXTRACTED from S2PCT07 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -10941,7 +11087,7 @@ validations:
     name: "Implementation congruence"
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    result: "398/398 active parameters and 61/61 active formulas are machine verified."
+    result: "406/406 semantically checked active parameters and 62/62 active formulas are machine verified."
     evidence_refs:
       - "EVID-ADP-ASSURANCE-STATUS"
       - "EVID-SEMANTIC-ADP-MANIFEST"
@@ -11075,6 +11221,11 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"
     fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PCT07-D2"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
+    fact_level: "EXTRACTED"
 delivery_readiness:
   status: "VERIFIED"
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
@@ -11082,16 +11233,16 @@ delivery_readiness:
   blocked_requirements: 0
   active_requirements: 10
   partial_requirements: 1
-  next_executable_task_id: "S2PCT07"
+  next_executable_task_id: "S2PDT01"
   next_executable_task_status: "planned"
 governance_counts:
-  active_models: 59
-  active_formulas: 61
-  active_parameters: 398
-  tasks_total: 72
+  active_models: 60
+  active_formulas: 62
+  active_parameters: 406
+  tasks_total: 76
   task_status_counts:
-    completed: 68
+    completed: 69
     blocked: 1
     deprecated: 1
     ready: 1
-    planned: 3
+    planned: 4

@@ -1,11 +1,11 @@
 schema_version: "codexproject.roadmap.v1"
 project_id: "arxiv-daily-push"
 current_stage_id: "S2"
-current_phase_id: "S2PC"
-current_task_id: "S2PCT07"
-next_gate_id: "S2PC-GATE-V7-CONTRACT-BLOCKED"
-total_estimated_hours: 20.5
-completed_estimated_hours: 18.5
+current_phase_id: "S2PD"
+current_task_id: "S2PDT01"
+next_gate_id: "S2PD-GATE-V7-CONTRACT-BLOCKED"
+total_estimated_hours: 28.5
+completed_estimated_hours: 20.5
 stages:
   -
     stage_id: "S2"
@@ -87,6 +87,7 @@ stages:
             - "S2PCT04/S2P2T04 profile relation evidence persisted"
             - "S2PCT05 engineering public-signal evidence persisted"
             - "S2PCT06 authoritative report evidence persisted"
+            - "S2PCT07 D2 source-domain qualification readiness evidence persisted"
             - "formal production flags remain false"
             - "V7.1 P0/P1 cleared and S2PMT07 independent review passes before acceptance"
           evidence_refs:
@@ -97,6 +98,7 @@ stages:
             - "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
             - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
             - "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"
+            - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
         tasks:
           -
             task_id: "S2PCT01"
@@ -225,7 +227,7 @@ stages:
             task_id: "S2PCT07"
             name: "D2 source-domain qualification and cross-type calibration"
             objective: "在 S2PCT01-S2PCT06 顶刊、工程公开信号和权威报告 shadow evidence 稳定后，校准 D2 来源域资格、跨类型覆盖和正式接入前阻断条件，同时保持 D2 source-domain acceptance 与 production inclusion false。"
-            status: "planned"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "9.76%"
             dependencies:
@@ -238,12 +240,105 @@ stages:
             acceptance_ids:
               - "ACC-S2PCT07-D2"
             test_commands:
-              - "planned: D2 qualification, cross-type coverage, source-domain blocker, and no-production-inclusion tests"
-              - "planned: semantic governance and changed-only project governance"
+              - "python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+              - "scripts/validate_semantic_extractors.py arxiv-daily-push"
+              - "scripts/validate_project_governance.py --project arxiv-daily-push"
+            evidence_refs:
+              - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
+              - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md"
+            risk: "顶刊、工程信号或报告证据被误判为正式 D2 source-domain acceptance、进入正式邮件或影响 Stage 1 arXiv 本地生产路径必须阻断。"
+            rollback: "Revert S2PCT07 D2 qualification code, tests, governance registrations, phase record, manifest, and rendered governance sync."
+      -
+        phase_id: "S2PD"
+        name: "D3 China official core data-source shadow foundation"
+        objective: "在 D2 source-domain qualification readiness 稳定后，推进中国官方核心数据源 shadow evidence，保持 no-send、no-production 和 Stage 1 arXiv accepted 边界。"
+        status: "in_progress"
+        stop_conditions:
+          - "把中国官方数据源 shadow 证据当作正式生产 inclusion"
+          - "启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion"
+          - "修改 Stage 1 arXiv 本地 accepted 生产路径"
+        stop_gate:
+          gate_id: "S2PD-GATE-V7-CONTRACT-BLOCKED"
+          status: "in_progress"
+          pass_conditions:
+            - "S2PDT01/S2P3T01 China official core source shadow evidence persisted"
+            - "formal production flags remain false"
+            - "V7.1 P0/P1 cleared and S2PMT07 independent review passes before acceptance"
+          evidence_refs:
+            - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+        tasks:
+          -
+            task_id: "S2PDT01"
+            legacy_alias: "S2P3T01"
+            name: "China official core data-source metadata-only no-send shadow foundation"
+            objective: "接入 D3 中国官方核心数据源的 metadata-only source gate、队列解释和 no-send shadow evidence，保持 Stage 1 arXiv accepted 与 D2 readiness 边界不回归。"
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "7.02%"
+            dependencies:
+              - "S2PCT07"
+            acceptance_ids:
+              - "ACC-S2PDT01-C0"
+            test_commands:
+              - "planned: China official core source adapter, source gate, queue explanation, no-send shadow, semantic governance, and project governance"
             evidence_refs:
               - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
-            risk: "顶刊、工程信号或报告证据被误判为正式 D2 source-domain acceptance、进入正式邮件或影响 Stage 1 arXiv 本地生产路径必须阻断。"
-            rollback: "Remove planned S2PCT07 governance entry if D2 qualification is deferred or superseded."
+            risk: "官方来源身份、许可证、地区/部委口径、时效或 no-send 边界错误时必须阻断；不得宣称 Stage2 production accepted。"
+            rollback: "Remove planned S2PDT01 governance entry if D3 source work is deferred or superseded."
+          -
+            task_id: "S2PDT02"
+            legacy_alias: "S2P3T02"
+            name: "China official policy and standards relation shadow"
+            objective: "在 S2PDT01 基础上校准政策、标准和科研公告关系，保持 no-send shadow 与 formal production false。"
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "7.02%"
+            dependencies:
+              - "S2PDT01"
+            acceptance_ids:
+              - "ACC-S2PDT02-CN-POLICY-STANDARDS"
+            test_commands:
+              - "planned: China policy/standards relation shadow and forced update tests"
+            evidence_refs:
+              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+            risk: "政策/标准关系被误写成论文证据或正式生产事实必须阻断。"
+            rollback: "Remove planned S2PDT02 governance entry if superseded."
+          -
+            task_id: "S2PDT03"
+            legacy_alias: "S2P3T03"
+            name: "China official source replay and shadow qualification"
+            objective: "完成中国官方数据源 replay、shadow、队列解释和 blocker 证据，保持 no-production side effects。"
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "7.02%"
+            dependencies:
+              - "S2PDT02"
+            acceptance_ids:
+              - "ACC-S2PDT03-CN-REPLAY-SHADOW"
+            test_commands:
+              - "planned: China official replay/shadow qualification tests"
+            evidence_refs:
+              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+            risk: "replay 日期、来源 freshness 或队列解释不足时必须阻断。"
+            rollback: "Remove planned S2PDT03 governance entry if superseded."
+          -
+            task_id: "S2PDT04"
+            legacy_alias: "S2P3T04"
+            name: "China official D3 source-domain readiness review"
+            objective: "综合中国官方核心数据源证据并生成 D3 readiness review，仍不进入正式生产。"
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "7.02%"
+            dependencies:
+              - "S2PDT03"
+            acceptance_ids:
+              - "ACC-S2PDT04-CN-READINESS"
+            test_commands:
+              - "planned: China official D3 readiness and no-production acceptance tests"
+            evidence_refs:
+              - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+            risk: "readiness 被误写为 production accepted 或 integrated accepted 必须阻断。"
+            rollback: "Remove planned S2PDT04 governance entry if superseded."
   -
     stage_id: "S5"
     name: "项目迁移与三文件重建"

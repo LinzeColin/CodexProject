@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-099"
-source_snapshot_hash: "sha256:0e43e5145d5d4fbea7f2e133e3139310abbf4eb78895722a62ec37604a99ce5f"
+as_of_event_id: "EVENT-20260624-ADP-100"
+source_snapshot_hash: "sha256:a5905e309339c084f94bef2e49c83e77864be6f9a46bff7d7b4d380dd31510ca"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T18:20:00+10:00"
+snapshot_event_time: "2026-06-24T19:10:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 398
-    total_active_parameters: 398
-    checked_active_formulas: 61
-    total_active_formulas: 61
+    checked_active_parameters: 406
+    total_active_parameters: 406
+    checked_active_formulas: 62
+    total_active_formulas: 62
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 398
-    total_active_parameters: 398
+    checked_active_parameters: 406
+    total_active_parameters: 406
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,7 +60,7 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 61
+    legacy_unbound_events: 62
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
@@ -79,48 +79,48 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PCT06"
+  current_v7_task_id: "S2PDT01"
 next_executable_task:
-  task_id: "S2PCT07"
+  task_id: "S2PDT01"
   status: "planned"
-  reason: "Calibrate D2 source-domain qualification across top-journal, engineering public-signal, and authoritative report shadow evidence before any formal production inclusion."
+  reason: "接入法律法规、人大、国务院、公报和两高，建立中国 C0 全国权威主干 metadata-only source-domain foundation。"
   acceptance_ids:
-    - "ACC-S2PCT07-D2"
+    - "ACC-S2PDT01-C0"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `planned: D2 source-domain qualification and cross-type calibration tests` and attach the listed evidence refs."
+  unblock_condition: "Run `planned: C0 authority source metadata and traceability tests` and attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
       reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
-  decision_id: "DEC-ADP-S2PCT07-D2-001"
+  decision_id: "DEC-ADP-S2PDT01-C0-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续 S2PCT07 D2 数据源域资格与跨类型校准，同时保持 D2 source-domain acceptance 与 production inclusion false，直到 replay/shadow/独立审查全部通过。"
-  question: "是否继续 S2PCT07 D2 数据源域资格与跨类型校准，同时保持 D2 source-domain acceptance 与 production inclusion false，直到 replay/shadow/独立审查全部通过。"
+  decision_question: "是否继续 S2PDT01 / legacy S2P3T01 中国 C0 全国权威主干 metadata-only source evidence，同时保持 D3 source-domain acceptance 与 production inclusion false。"
+  question: "是否继续 S2PDT01 / legacy S2P3T01 中国 C0 全国权威主干 metadata-only source evidence，同时保持 D3 source-domain acceptance 与 production inclusion false。"
   human_owner_role: "content_owner + product_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: continue S2PCT07 D2 qualification after completed top-journal, engineering, and report shadow evidence"
-  option_a: "继续 D2 30 日重放、2 日 Shadow、类型差异评分、强制事件和队列解释测试，不影响现有 arXiv 本地生产路径。"
-  option_b: "暂停在 S2PCT06，只保留报告来源 shadow evidence；风险更低但 D2 来源域资格仍未验证。"
-  option_c: "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
+  current_recommendation: "A: continue S2PDT01 China C0 national authoritative backbone after completed D2 qualification readiness"
+  option_a: "接入法律法规、人大、国务院、公报和两高的 metadata-only 官方来源骨架，保留机关、文号、附件和日期追踪，不影响 arXiv 本地生产路径。"
+  option_b: "暂停在 S2PCT07，只保留 D2 qualification readiness；风险更低但 D3 官方来源域不推进。"
+  option_c: "越过 D3 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
   options:
-    - "继续 D2 30 日重放、2 日 Shadow、类型差异评分、强制事件和队列解释测试，不影响现有 arXiv 本地生产路径。"
-    - "暂停在 S2PCT06，只保留报告来源 shadow evidence；风险更低但 D2 来源域资格仍未验证。"
-    - "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
-  estimated_effort: "P1/P2; 30-date D2 replay, two-day no-production shadow, cross-type calibration, queue explanation tests, semantic governance, changed-only project validation"
+    - "接入法律法规、人大、国务院、公报和两高的 metadata-only 官方来源骨架，保留机关、文号、附件和日期追踪，不影响 arXiv 本地生产路径。"
+    - "暂停在 S2PCT07，只保留 D2 qualification readiness；风险更低但 D3 官方来源域不推进。"
+    - "越过 D3 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
+  estimated_effort: "P1/P2; C0 source taxonomy, official-domain identity, document-number/date/attachment traceability, fixtures, semantic governance, changed-only project validation"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
-  expected_benefit: "把 D2 从单项 shadow evidence 推进到来源域级资格判断，明确顶刊、工程信号和报告来源之间的类型权重与失败边界。"
-  principal_risks: "30 日重放失败、类型权重失真、强制事件未传播、队列解释不透明、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "D2 replay report, 2-day shadow report, cross-type calibration report, forced-event tests, semantic extractor, project governance validator"
+  expected_benefit: "从 D2 科研/工程/报告来源推进到中国官方 C0 权威主干，为 B2/B3/B4/B5/B6 后续政策、法律、产业和科技金融阅读板块提供可审计来源基础。"
+  principal_risks: "转载冒充原始源、机关/文号/日期/附件不可追溯、官方域名误判、shadow 数据影响正式 arXiv 邮件"
+  evidence_required: "C0 source fixtures, official identity checks, document metadata traceability tests, semantic extractor, project governance validator"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "S2PCT06 authoritative report source coverage remains completed as no-send shadow evidence, but D2 source-domain acceptance remains unavailable."
-  unblock_task_id: "S2PCT07"
+  consequence_of_no_decision: "S2PCT07 D2 qualification readiness remains completed as no-production evidence, but D3 China official source-domain work remains unavailable."
+  unblock_task_id: "S2PDT01"
   acceptance_ids:
-    - "ACC-S2PCT07-D2"
+    - "ACC-S2PDT01-C0"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T18:20:00+10:00"
+  last_reviewed_at: "2026-06-24T19:10:00+10:00"

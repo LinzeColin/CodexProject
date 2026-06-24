@@ -3170,3 +3170,55 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PCT06-AUTHORITATIVE-REPORTS-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT06_AUTHORITATIVE_REPORTS_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-060"
+    name: "S2PCT07 D2 source-domain qualification and cross-type calibration"
+    kind: "deterministic source-domain qualification model"
+    purpose: "Calibrate D2 source-domain readiness across top-journal, engineering public-signal, and authoritative report shadow evidence while preserving production acceptance and transport gates as false."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct07-d2-source-domain-qualification-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-062"
+    parameter_ids:
+      - "PARAM-ADP-416"
+      - "PARAM-ADP-417"
+      - "PARAM-ADP-418"
+      - "PARAM-ADP-419"
+      - "PARAM-ADP-420"
+      - "PARAM-ADP-421"
+      - "PARAM-ADP-422"
+      - "PARAM-ADP-423"
+    inputs:
+      - "passing S2PCT04 profile report"
+      - "passing S2PCT05 engineering signal report"
+      - "passing S2PCT06 authoritative report"
+      - "D2 replay records"
+      - "D2 shadow records"
+      - "forced-event records"
+      - "queue explanation records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "D2 source-domain qualification report"
+      - "domain coverage matrix"
+      - "type calibration gate"
+      - "replay gate"
+      - "shadow gate"
+      - "forced-event gate"
+      - "queue explanation gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md"

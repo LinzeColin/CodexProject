@@ -3182,7 +3182,7 @@ tasks:
     objective: "Calibrate D2 source-domain qualification across top-journal, engineering public-signal, and authoritative report shadow evidence before any formal production inclusion."
     scope: "D2 source-domain readiness criteria, cross-type coverage, blocking reasons, replay/shadow acceptance policy, and no-production-inclusion tests."
     non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no production mail inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no PDF/full-text download, and no paid API use."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PCT01"
       - "S2PCT02"
@@ -3191,18 +3191,128 @@ tasks:
       - "S2PCT05"
       - "S2PCT06"
     required_files:
-      - "planned: D2 qualification code, fixtures, focused tests, and governance registrations"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
     acceptance_ids:
       - "ACC-S2PCT07-D2"
     test_commands:
-      - "planned: D2 source-domain qualification and cross-type calibration tests"
-      - "planned: semantic governance and changed-only project governance"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct07_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct07_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+    test_results:
+      - "focused Stage2 source tests: 31 OK"
+      - "S2PCT07 qualification gates passed for upstream, domain coverage, 30-date replay, 48h shadow, forced-event, queue explanation, and type calibration"
+      - "semantic extractor: semantic_formulas_checked 62, semantic_parameters_checked 406"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT07-D2-QUALIFICATION-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT07_D2_QUALIFICATION_EVIDENCE.md"
+    risk: "Top-journal, engineering signal, or report shadow evidence being treated as formal D2 source-domain acceptance or contaminating accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Revert S2PCT07 qualification additions in stage2_sources.py, CLI, tests, model/formula/parameter registries, phase record, manifest, event records, and root-lock pointer."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  -
+    task_id: "S2PDT01"
+    legacy_alias: "S2P3T01"
+    phase: "S2PD"
+    objective: "接入法律法规、人大、国务院、公报和两高，建立中国 C0 全国权威主干 metadata-only source-domain foundation。"
+    scope: "C0 national authority source taxonomy, official-domain identity, document number/date/attachment traceability, no-production shadow evidence, and governance registration."
+    non_scope: "No D3_CORE_SOURCE_DOMAIN_ACCEPTED, no Stage2 production acceptance, no SMTP send, no Release upload, no scheduler enablement, no bulk scraping, no PDF/full-text download, and no paid API use."
+    status: "planned"
+    dependencies:
+      - "S2PCT07"
+    required_files:
+      - "planned: S2PDT01 C0 source connector contract, fixtures, focused tests, and governance registrations"
+    acceptance_ids:
+      - "ACC-S2PDT01-C0"
+    test_commands:
+      - "planned: C0 authority source metadata and traceability tests"
     test_results:
       - "PENDING"
     evidence_refs:
       - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
-    risk: "Top-journal, engineering signal, or report shadow evidence being treated as formal D2 source-domain acceptance or contaminating accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
-    rollback: "Remove planned S2PCT07 governance entry if D2 qualification is deferred or superseded."
+    risk: "转载冒充原始源、机关/文号/日期/附件不可追溯，或 D3 shadow evidence 被误当作正式生产 inclusion 必须阻断。"
+    rollback: "Remove planned S2PDT01 governance entry if D3 C0 source-domain work is deferred or superseded."
+    target_version: "0.24.0"
+    completed_version: ""
+    unknown_task_ids: []
+  -
+    task_id: "S2PDT02"
+    legacy_alias: "S2P3T02"
+    phase: "S2PD"
+    objective: "覆盖宏观、科技、产业、金融、市场和重点行业部门，建立中国 C1 中央机关与重点部门 source map。"
+    scope: "C1 institution templates, aliases, industry mapping, official domain registry, metadata-only source evidence, and no-production tests."
+    non_scope: "No D3_CORE_SOURCE_DOMAIN_ACCEPTED, no production mail inclusion, no SMTP, no scheduler, no Release, no bulk scraping, no PDF/full-text download."
+    status: "planned"
+    dependencies:
+      - "S2PDT01"
+    required_files:
+      - "planned: S2PDT02 C1 department source map and tests"
+    acceptance_ids:
+      - "ACC-S2PDT02-C1"
+    test_commands:
+      - "planned: C1 department official-domain and alias tests"
+    test_results:
+      - "PENDING"
+    evidence_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+    risk: "部门清单缩水、人工逐源硬编码、别名映射错误或非官方域名污染 source map 必须阻断。"
+    rollback: "Remove planned S2PDT02 governance entry if D3 C1 work is deferred or superseded."
+    target_version: "0.24.0"
+    completed_version: ""
+    unknown_task_ids: []
+  -
+    task_id: "S2PDT03"
+    legacy_alias: "S2P3T03"
+    phase: "S2PD"
+    objective: "实现草案/正式、修订/废止、实施/解释关系，使法律状态变化能触发重评分和旧结论更新。"
+    scope: "Legal metadata status taxonomy, version/effectivity relations, repost relation guard, forced update tests, and no-production evidence."
+    non_scope: "No legal advice, no production inclusion, no SMTP, no scheduler, no Release, no paid API, no PDF/full-text bulk download."
+    status: "planned"
+    dependencies:
+      - "S2PDT01"
+      - "S2PDT02"
+    required_files:
+      - "planned: S2PDT03 legal metadata relation tests"
+    acceptance_ids:
+      - "ACC-S2PDT03-LEGAL"
+    test_commands:
+      - "planned: legal status/version/effectivity relation tests"
+    test_results:
+      - "PENDING"
+    evidence_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+    risk: "法律状态未知、日期混淆、转载关系误判或旧结论未更新必须阻断。"
+    rollback: "Remove planned S2PDT03 governance entry if legal metadata work is deferred or superseded."
+    target_version: "0.24.0"
+    completed_version: ""
+    unknown_task_ids: []
+  -
+    task_id: "S2PDT04"
+    legacy_alias: "S2P3T04"
+    phase: "S2PD"
+    objective: "完成 C0/C1 重放并路由到 B2/B3/B4/B5/B6，形成 D3 核心资格与阅读板块路由 evidence。"
+    scope: "D3 30-date replay, 2-day shadow, authority gate, board-routing explanations, and no-production inclusion tests."
+    non_scope: "No integrated production acceptance, no SMTP send, no scheduler enablement, no Release upload, no PDF/full-text bulk download, and no paid API use."
+    status: "planned"
+    dependencies:
+      - "S2PDT01"
+      - "S2PDT02"
+      - "S2PDT03"
+    required_files:
+      - "planned: S2PDT04 D3 replay/shadow/routing qualification tests"
+    acceptance_ids:
+      - "ACC-S2PDT04-D3-CORE"
+    test_commands:
+      - "planned: D3 replay shadow authority and board-routing tests"
+    test_results:
+      - "PENDING"
+    evidence_refs:
+      - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+    risk: "D3 replay failure、权威性不足、板块路由解释缺失或 shadow 数据影响正式 arXiv 邮件必须阻断。"
+    rollback: "Remove planned S2PDT04 governance entry if D3 core qualification is deferred or superseded."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []
