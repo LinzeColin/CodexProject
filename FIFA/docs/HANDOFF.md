@@ -8,7 +8,8 @@
 - 新增迁移交接：`docs/HANDOFF_20260624_MIGRATION.md`。
 - 新增清理审计：`ops/local_full_migration_backup_20260624.md`。
 - 新增 runtime 备份目录：`artifacts/backups/20260624/`，包含旧 workspace 的 `outputs/` 完整快照、SHA-256 manifest 和旧 root `HANDOFF.md`。
-- 删除策略：只有 GitHub commit/push 验证完成后，才删除旧 workspace `/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-fifa`；同一个 CodexProject worktree 内的 arxiv 未提交改动必须继续保留且不 stage。
+- 追加 residual 备份：`local_residual_fifa_files_20260624.tar.gz`，覆盖 Downloads 报告入口/assets、`2026 FIFA.xlsx`、LenovoPro14 FIFA 结果文件和早期 FIFA PDF 报告。
+- 删除策略：只有 GitHub commit/push 验证完成后，才删除旧 workspace、本机重复 `FIFA/` 副本和 residual 本地入口文件；同一个 CodexProject worktree 内的 arxiv 未提交改动必须继续保留且不 stage。
 
 更新时间：2026-06-15 20:45 AEST
 
