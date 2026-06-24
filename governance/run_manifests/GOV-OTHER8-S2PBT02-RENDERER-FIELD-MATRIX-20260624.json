@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PBT02-RENDERER-FIELD-MATRIX-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PBT02",
+  "acceptance_ids": [
+    "ACC-S2PBT02"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PBT02",
+  "generated_at": "2026-06-24T15:19:22+10:00",
+  "implementation_base_sha": "50d01b3b17d1b59309922e0a8f228b7e567a9d1a",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:7ad65e897880cf12eee0ba5818fabd30387b4c9ce085fbc480f5ffd58167dc05",
+  "changed_files_declared": [
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "EVA_OS/功能清单",
+    "EVA_OS/开发记录",
+    "EVA_OS/模型参数文件",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "OpMe_System/功能清单",
+    "OpMe_System/开发记录",
+    "OpMe_System/模型参数文件",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT02-RENDERER-FIELD-MATRIX-20260624.json"
+  ],
+  "changed_files_actual": [
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "EVA_OS/功能清单",
+    "EVA_OS/开发记录",
+    "EVA_OS/模型参数文件",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "OpMe_System/功能清单",
+    "OpMe_System/开发记录",
+    "OpMe_System/模型参数文件",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT02-RENDERER-FIELD-MATRIX-20260624.json"
+  ],
+  "required_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT02-RENDERER-FIELD-MATRIX-20260624.json"
+  ],
+  "updated_governance_files": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PBT02-RENDERER-FIELD-MATRIX-20260624.json"
+  ],
+  "change_classification": [
+    "renderer_field_matrix",
+    "owner_readable_canonical_projection",
+    "active_count_from_status",
+    "other8_s2pbt02"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Renderer now derives blockers, next task, gate count, test count, evidence count, active-only model/formula/parameter counts, and task detail fields from canonical project and roadmap facts.",
+  "target_projects": [
+    "Alpha",
+    "EVA_OS",
+    "FIFA",
+    "OpMe_System",
+    "OpenAIDatabase",
+    "PFI_BIG_DATA_SIMULATOR",
+    "Serenity-Alipay",
+    "whkmSalary"
+  ],
+  "excluded_projects": [
+    "EEI",
+    "arxiv-daily-push"
+  ],
+  "renderer_field_matrix": {
+    "功能清单": [
+      "blockers",
+      "next_unique_task",
+      "evidence_ref_count",
+      "roadmap_test_command_count",
+      "roadmap_gate_count"
+    ],
+    "开发记录": [
+      "roadmap_kind",
+      "blockers",
+      "next_unique_task",
+      "roadmap_task_count",
+      "roadmap_gate_count",
+      "roadmap_acceptance_count",
+      "roadmap_test_command_count",
+      "roadmap_evidence_ref_count",
+      "stop_gate_pass_criteria",
+      "stop_gate_evidence",
+      "stop_gate_failure_action",
+      "task test_commands/test_results/evidence_refs/risks/rollback"
+    ],
+    "模型参数文件": [
+      "active_model_count",
+      "active_formula_count",
+      "active_parameter_count",
+      "blockers",
+      "next_unique_task",
+      "evidence_ref_count",
+      "roadmap_test_command_count",
+      "roadmap_gate_count"
+    ]
+  },
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt02_renderer_derives_owner_fields_from_canonical_facts tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_renderer_writes_only_with_explicit_write_and_computes_percentages tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_check_render_is_read_only_and_reports_drift_and_refs tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat03_current_human_entries_pass_quality_contract -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py check-render --project <each target project>",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check",
+    "git diff --name-only HEAD -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S2PBT02 renderer focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "4 focused tests OK; synthetic renderer test proves blockers/next task/Gate/test/evidence fields and active-only counts are derived from canonical facts."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 10 registered projects validated with errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project <each target project>",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 8 target projects returned drift_count=0 and reference_issue_count=0 after explicit render --write."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0; selected_project_count=8; check_render.checked_count=8; zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors before manifest addition."
+    },
+    {
+      "command": "git diff --name-only HEAD -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No tracked diff under excluded projects EEI or arxiv-daily-push."
+    }
+  ],
+  "diagnostic_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests -q",
+      "exit_code": 1,
+      "result": "NOT_RERUN_IN_THIS_TASK_KNOWN_DIAGNOSTIC",
+      "observed": "Prior S2PBT01 diagnostic found an existing Serenity-Alipay semantic extractor registry mismatch in the full test class; S2PBT02 does not modify Serenity runtime or semantic extraction sources."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "EVA_OS/功能清单",
+    "EVA_OS/开发记录",
+    "EVA_OS/模型参数文件",
+    "FIFA/功能清单",
+    "FIFA/开发记录",
+    "FIFA/模型参数文件",
+    "OpMe_System/功能清单",
+    "OpMe_System/开发记录",
+    "OpMe_System/模型参数文件",
+    "OpenAIDatabase/功能清单",
+    "OpenAIDatabase/开发记录",
+    "OpenAIDatabase/模型参数文件",
+    "PFI/大数据模拟器/功能清单",
+    "PFI/大数据模拟器/开发记录",
+    "PFI/大数据模拟器/模型参数文件",
+    "Serenity-Alipay/功能清单",
+    "Serenity-Alipay/开发记录",
+    "Serenity-Alipay/模型参数文件",
+    "whkmSalary/功能清单",
+    "whkmSalary/开发记录",
+    "whkmSalary/模型参数文件",
+    "governance/run_manifests/GOV-OTHER8-S2PBT02-RENDERER-FIELD-MATRIX-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PBT02 renderer field matrix projects canonical blockers, next task, evidence, tests, parameters and gate fields into owner-readable views.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PBT02 removes hardcoded NOT_APPLICABLE summaries, derives owner decision fields from canonical facts, fixes active-only counts, and renders the upgraded fields into the 8 current-baseline target project human views.",
+  "rollback": "Revert scripts/lean_governance.py, the S2PBT02 focused test, the 8 target project rendered human entry files, and delete this manifest.",
+  "unresolved_risks": [
+    "S2 stage is not complete; S2PB still needs S2PBT03 no-op write implementation and S2PC still needs CI/hook/token budget stratification.",
+    "Pull-request workflow currently still runs the full governance test suite; the existing Serenity-Alipay semantic extractor mismatch remains a PR CI blocker until S2PC CI stratification or semantic registry remediation."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

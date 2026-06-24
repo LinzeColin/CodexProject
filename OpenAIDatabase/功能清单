@@ -9,9 +9,12 @@
 - current_task: `S5PBT03`
 - progress: `100.00%`
 - capability_count: `5`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S5PB-GATE-IN-PROGRESS`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- evidence_ref_count: `10`
+- roadmap_test_command_count: `3`
+- roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
 
 ## 功能概览

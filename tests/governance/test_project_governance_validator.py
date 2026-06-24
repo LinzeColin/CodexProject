@@ -6155,6 +6155,114 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 self.assertNotIn("portfolio_remediation", text)
                 self.assertNotIn("CodexProject_Other8_Remediation_Roadmap", text)
 
+    def test_other8_s2pbt02_renderer_derives_owner_fields_from_canonical_facts(self) -> None:
+        cli = load_lean_governance_module()
+        project = {
+            "project_id": "ProjectA",
+            "version": "0.1.0",
+            "fact_level": "VERIFIED",
+            "features": [],
+            "evidence_refs": [{"evidence_id": "EVID-A", "kind": "test", "ref": "tests/a.py", "fact_level": "VERIFIED"}],
+            "models": [
+                {"model_id": "MOD-A", "name": "Active model", "status": "active", "fact_level": "VERIFIED"},
+                {"model_id": "MOD-P", "name": "Planned model", "status": "planned", "fact_level": "PROPOSED"},
+            ],
+            "formulas": [
+                {"formula_id": "FORM-A", "status": "active", "fact_level": "VERIFIED"},
+                {"formula_id": "FORM-D", "status": "deprecated", "fact_level": "VERIFIED"},
+            ],
+            "parameters": [
+                {"parameter_id": "PARAM-A", "symbol": "x", "name": "Active parameter", "status": "active", "value": 7, "source": "canonical", "fact_level": "VERIFIED"},
+                {"parameter_id": "PARAM-P", "symbol": "y", "name": "Proposed parameter", "status": "proposed", "value": 9, "source": "proposal", "fact_level": "PROPOSED"},
+            ],
+        }
+        roadmap = {
+            "roadmap_kind": "product",
+            "current_stage_id": "S1",
+            "current_phase_id": "S1PA",
+            "current_task_id": "S1PAT02",
+            "next_gate_id": "S1PA-GATE",
+            "stages": [
+                {
+                    "stage_id": "S1",
+                    "name": "Stage One",
+                    "person_goal": "Ship",
+                    "status": "in_progress",
+                    "stop_conditions": ["stop"],
+                    "stop_gate": {
+                        "gate_id": "S1-GATE",
+                        "pass_criteria": ["stage pass"],
+                        "evidence": ["EVID-STAGE"],
+                        "failure_action": "blocked",
+                    },
+                    "phases": [
+                        {
+                            "phase_id": "S1PA",
+                            "name": "Phase A",
+                            "objective": "Do work",
+                            "status": "in_progress",
+                            "stop_conditions": ["phase stop"],
+                            "stop_gate": {
+                                "gate_id": "S1PA-GATE",
+                                "pass_criteria": ["phase pass"],
+                                "evidence": ["EVID-PHASE"],
+                                "failure_action": "remain_in_phase",
+                            },
+                            "tasks": [
+                                {
+                                    "task_id": "S1PAT01",
+                                    "name": "Done",
+                                    "status": "completed",
+                                    "estimated_hours": 1,
+                                    "dependencies": ["none"],
+                                    "acceptance_ids": ["ACC-A"],
+                                    "test_commands": ["pytest done"],
+                                    "test_results": ["pass"],
+                                    "evidence_refs": ["EVID-DONE"],
+                                    "risks": ["none"],
+                                    "rollback": "revert done",
+                                },
+                                {
+                                    "task_id": "S1PAT02",
+                                    "name": "Blocked item",
+                                    "status": "blocked",
+                                    "estimated_hours": 3,
+                                    "dependencies": ["S1PAT01"],
+                                    "acceptance_ids": ["ACC-B"],
+                                    "test_commands": ["pytest blocked"],
+                                    "test_results": ["pending blocker"],
+                                    "evidence_refs": ["EVID-BLOCKED"],
+                                    "risks": ["blocked risk"],
+                                    "rollback": "revert blocked",
+                                },
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+
+        feature_list = cli.render_feature_list(project, roadmap)
+        dev_record = cli.render_development_record(project, roadmap, [])
+        model_params = cli.render_model_parameters(project, roadmap)
+
+        for rendered in (feature_list, dev_record, model_params):
+            self.assertIn("blockers: `S1PAT02 Blocked item (blocked)`", rendered)
+            self.assertIn("next_unique_task: `S1PAT02 Blocked item (blocked)`", rendered)
+            self.assertIn("roadmap_test_command_count: `2`", rendered)
+            self.assertIn("roadmap_gate_count: `2`", rendered)
+            self.assertNotIn("blockers: `NOT_APPLICABLE`", rendered)
+            self.assertNotIn("next_unique_task: `NOT_APPLICABLE`", rendered)
+        self.assertIn("roadmap_kind: `product`", dev_record)
+        self.assertIn("stop_gate_pass_criteria: `stage pass`", dev_record)
+        self.assertIn("stop_gate_evidence: `EVID-PHASE`", dev_record)
+        self.assertIn("Task detail fields:", dev_record)
+        self.assertIn("S1PAT02 test_commands: `pytest blocked`", dev_record)
+        self.assertIn("S1PAT02 evidence_refs: `EVID-BLOCKED`", dev_record)
+        self.assertIn("active_model_count: `1`", model_params)
+        self.assertIn("active_formula_count: `1`", model_params)
+        self.assertIn("active_parameter_count: `1`", model_params)
+
 
 if __name__ == "__main__":
     unittest.main()

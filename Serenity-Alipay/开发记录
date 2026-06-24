@@ -10,9 +10,15 @@
 - total_hours: `32.00`
 - completed_hours: `32.00`
 - progress: `100.00%`
-- blockers: `NOT_APPLICABLE`
+- blockers: `none`
 - next_gate: `S4-GATE-PASSED`
-- next_unique_task: `NOT_APPLICABLE`
+- next_unique_task: `none`
+- roadmap_kind: `product`
+- roadmap_task_count: `8`
+- roadmap_gate_count: `4`
+- roadmap_acceptance_count: `8`
+- roadmap_test_command_count: `8`
+- roadmap_evidence_ref_count: `35`
 - evidence_status: `EXTRACTED`
 
 ## Roadmap
@@ -27,6 +33,9 @@ Stage -> Phase -> Task
 - derived_percent: `100.00%`
 - stop_conditions: `Pilot introduces business behavior change, Evidence-free model facts appear, Human files remain compatibility indexes after S4PB`
 - stop_gate: `S4-GATE`
+- stop_gate_pass_criteria: `All pilot acceptance checks pass, Owner explicitly accepts readability, Migration mode is reusable`
+- stop_gate_evidence: `pilot_PR, owner_acceptance, migration_playbook`
+- stop_gate_failure_action: `blocked`
 
 #### S4PA Directed fact extraction
 
@@ -36,12 +45,33 @@ Stage -> Phase -> Task
 - derived_percent: `43.75%`
 - stop_conditions: `Code/document contradiction is unmarked, Technology stack is written as a model parameter, Iteration or hour claims are invented`
 - stop_gate: `S4PA-GATE`
+- stop_gate_pass_criteria: `All active models have formulas or exact pseudocode, Parameters have source and code references, Roadmap satisfies ID and Gate rules`
+- stop_gate_evidence: `evidence_index, model_extraction, roadmap_draft`
+- stop_gate_failure_action: `remain_in_phase`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S4PAT01 | Bound read scope and create evidence index | completed | 4.00 | 12.50% | S3-GATE | ACC-S4PAT01 |
 | S4PAT02 | Extract models, formulas, parameters, and strategies | completed | 6.00 | 18.75% | S4PAT01 | ACC-S4PAT02 |
 | S4PAT03 | Reconstruct Roadmap and events honestly | completed | 4.00 | 12.50% | S4PAT01 | ACC-S4PAT03 |
+
+Task detail fields:
+
+- S4PAT01 test_commands: `See task run manifest and Project Governance CI.`
+- S4PAT01 test_results: `PASS evidence required before task is considered complete.`
+- S4PAT01 evidence_refs: `Serenity-Alipay/docs/governance/evidence_index.yaml, PR-95, ci_run:28027304921`
+- S4PAT01 risks: `Evidence scope must remain bounded.`
+- S4PAT01 rollback: `Delete evidence_index.yaml and its tests.`
+- S4PAT02 test_commands: `See task run manifest and Project Governance CI.`
+- S4PAT02 test_results: `PASS evidence required before task is considered complete.`
+- S4PAT02 evidence_refs: `Serenity-Alipay/docs/governance/model_extraction.yaml, PR-96, ci_run:28027843674`
+- S4PAT02 risks: `FORM-008 cap caveat must stay visible.`
+- S4PAT02 rollback: `Delete model_extraction.yaml and its tests.`
+- S4PAT03 test_commands: `See task run manifest and Project Governance CI.`
+- S4PAT03 test_results: `PASS evidence required before task is considered complete.`
+- S4PAT03 evidence_refs: `Serenity-Alipay/docs/governance/roadmap_draft.yaml, PR-97, ci_run:28028512167`
+- S4PAT03 risks: `Legacy pending events must not be promoted.`
+- S4PAT03 rollback: `Delete roadmap_draft.yaml and its tests.`
 
 #### S4PB Migration and generation
 
@@ -51,12 +81,33 @@ Stage -> Phase -> Task
 - derived_percent: `43.75%`
 - stop_conditions: `Focused tests fail, Generated files and canonical facts disagree`
 - stop_gate: `S4PB-GATE`
+- stop_gate_pass_criteria: `Target project validation passes, Three human files are byte-stable, Business tests do not regress`
+- stop_gate_evidence: `validation_output, focused_test_output, diff_summary`
+- stop_gate_failure_action: `remain_in_phase`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S4PBT01 | Create project.yaml, roadmap.yaml, events.jsonl | completed | 6.00 | 18.75% | S4PAT02, S4PAT03 | ACC-S4PBT01 |
 | S4PBT02 | Generate three Chinese human entry files | completed | 4.00 | 12.50% | S4PBT01 | ACC-S4PBT02 |
 | S4PBT03 | Run focused tests, validate, and drift check | completed | 4.00 | 12.50% | S4PBT02 | ACC-S4PBT03 |
+
+Task detail fields:
+
+- S4PBT01 test_commands: `See task run manifest and Project Governance CI.`
+- S4PBT01 test_results: `PASS evidence required before task is considered complete.`
+- S4PBT01 evidence_refs: `Serenity-Alipay/docs/governance/project.yaml, Serenity-Alipay/docs/governance/roadmap.yaml, Serenity-Alipay/docs/governance/events.jsonl`
+- S4PBT01 risks: `Canonical files must not invent iteration counts or unverified remote facts.`
+- S4PBT01 rollback: `Delete project.yaml, roadmap.yaml, and events.jsonl.`
+- S4PBT02 test_commands: `See task run manifest and Project Governance CI.`
+- S4PBT02 test_results: `PASS evidence required before task is considered complete.`
+- S4PBT02 evidence_refs: `Serenity-Alipay/功能清单, Serenity-Alipay/开发记录, Serenity-Alipay/模型参数文件`
+- S4PBT02 risks: `Generated files must not be compatibility indexes.`
+- S4PBT02 rollback: `Restore prior human files and rerun render.`
+- S4PBT03 test_commands: `See task run manifest and Project Governance CI.`
+- S4PBT03 test_results: `PASS: PR #98 Project Governance and main Project Governance CI succeeded.`
+- S4PBT03 evidence_refs: `governance/run_manifests/GOV-REVIEW9-S4PB-CANONICAL-RENDER-20260623.json, PR-98, ci_run:28029697002, main_ci_run:28029791587`
+- S4PBT03 risks: `PR/main CI still required before S4PB is fully complete.`
+- S4PBT03 rollback: `Remove S4PB canonical/render changes and tests.`
 
 #### S4PC Owner readability and cost acceptance
 
@@ -66,11 +117,27 @@ Stage -> Phase -> Task
 - derived_percent: `12.50%`
 - stop_conditions: `Owner cannot understand key model or next decision, Governance cost exceeds budget without approved exception`
 - stop_gate: `S4PC-GATE`
+- stop_gate_pass_criteria: `ROA checklist passes, Performance metrics meet target, Rollback path is executable`
+- stop_gate_evidence: `owner_review, performance_report, rollback_test`
+- stop_gate_failure_action: `remain_in_phase`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
 | S4PCT01 | Run two-minute Owner ROA review | completed | 2.00 | 6.25% | S4PBT03 | ACC-S4PCT01 |
 | S4PCT02 | Verify duration, token proxy, and rollback | completed | 2.00 | 6.25% | S4PCT01 | ACC-S4PCT02 |
+
+Task detail fields:
+
+- S4PCT01 test_commands: `See task run manifest and Project Governance CI.`
+- S4PCT01 test_results: `PASS: owner explicitly accepted S4PC readability in Codex thread on 2026-06-24.`
+- S4PCT01 evidence_refs: `Serenity-Alipay/docs/governance/owner_roa_review.yaml, codex-thread://owner-message/2026-06-24-s4pc-readability-acceptance`
+- S4PCT01 risks: `Owner acceptance may require edits to human files.`
+- S4PCT01 rollback: `Revert owner-review updates.`
+- S4PCT02 test_commands: `See task run manifest and Project Governance CI.`
+- S4PCT02 test_results: `PASS: duration/token proxy and rollback check recorded; owner acceptance recorded.`
+- S4PCT02 evidence_refs: `Serenity-Alipay/docs/governance/performance_report.yaml, Serenity-Alipay/docs/governance/rollback_test.yaml`
+- S4PCT02 risks: `Remote CI and rollback proof must be concrete.`
+- S4PCT02 rollback: `Revert S4PC evidence updates.`
 
 
 ## 近期事件

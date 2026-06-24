@@ -222,10 +222,108 @@ def roadmap_totals(roadmap: dict[str, Any]) -> dict[str, float]:
     return {"total": total, "completed": completed}
 
 
+def active_count(items: list[dict[str, Any]]) -> int:
+    return sum(1 for item in items if str(item.get("status") or "").lower() == "active")
+
+
+def roadmap_tasks(roadmap: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        task
+        for stage in governance.as_list(roadmap.get("stages"))
+        if isinstance(stage, dict)
+        for phase in governance.as_list(stage.get("phases"))
+        if isinstance(phase, dict)
+        for task in governance.as_list(phase.get("tasks"))
+        if isinstance(task, dict)
+    ]
+
+
+def roadmap_stop_gates(roadmap: dict[str, Any]) -> list[dict[str, Any]]:
+    gates: list[dict[str, Any]] = []
+    for stage in governance.as_list(roadmap.get("stages")):
+        if not isinstance(stage, dict):
+            continue
+        stage_gate = stage.get("stop_gate")
+        if isinstance(stage_gate, dict):
+            gates.append(stage_gate)
+        for phase in governance.as_list(stage.get("phases")):
+            if not isinstance(phase, dict):
+                continue
+            phase_gate = phase.get("stop_gate")
+            if isinstance(phase_gate, dict):
+                gates.append(phase_gate)
+    return gates
+
+
+def task_label(task: dict[str, Any]) -> str:
+    return f"{text_or_na(task.get('task_id'))} {text_or_na(task.get('name'))} ({text_or_na(task.get('status'))})"
+
+
+def roadmap_blockers(roadmap: dict[str, Any]) -> list[str]:
+    return [task_label(task) for task in roadmap_tasks(roadmap) if str(task.get("status") or "") == "blocked"]
+
+
+def next_unique_task(roadmap: dict[str, Any]) -> str:
+    terminal_states = {"completed", "rejected", "deprecated"}
+    tasks = roadmap_tasks(roadmap)
+    current_task_id = str(roadmap.get("current_task_id") or "")
+    for task in tasks:
+        if str(task.get("task_id") or "") == current_task_id and str(task.get("status") or "") not in terminal_states:
+            return task_label(task)
+    for task in tasks:
+        if str(task.get("status") or "") not in terminal_states:
+            return task_label(task)
+    return "none"
+
+
+def roadmap_fact_summary(project_facts: dict[str, Any], roadmap: dict[str, Any]) -> dict[str, Any]:
+    tasks = roadmap_tasks(roadmap)
+    gates = roadmap_stop_gates(roadmap)
+    project_evidence = [
+        item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)
+    ]
+    task_evidence_refs = {
+        str(item)
+        for task in tasks
+        for item in governance.as_list(task.get("evidence_refs"))
+        if item
+    }
+    gate_evidence_refs = {
+        str(item)
+        for gate in gates
+        for item in governance.as_list(gate.get("evidence"))
+        if item
+    }
+    test_commands = [
+        item
+        for task in tasks
+        for item in governance.as_list(task.get("test_commands"))
+        if item
+    ]
+    acceptance_ids = {
+        str(item)
+        for task in tasks
+        for item in governance.as_list(task.get("acceptance_ids"))
+        if item
+    }
+    blockers = roadmap_blockers(roadmap)
+    return {
+        "blockers": text_or_na(blockers) if blockers else "none",
+        "next_unique_task": next_unique_task(roadmap),
+        "roadmap_task_count": len(tasks),
+        "roadmap_gate_count": len(gates),
+        "roadmap_acceptance_count": len(acceptance_ids),
+        "roadmap_test_command_count": len(test_commands),
+        "roadmap_evidence_ref_count": len(task_evidence_refs | gate_evidence_refs),
+        "project_evidence_ref_count": len(project_evidence),
+    }
+
+
 def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
     totals = roadmap_totals(roadmap)
     lines: list[str] = ["Stage -> Phase -> Task", ""]
     for stage in [item for item in governance.as_list(roadmap.get("stages")) if isinstance(item, dict)]:
+        stage_gate = stage.get("stop_gate") if isinstance(stage.get("stop_gate"), dict) else {}
         stage_hours = sum(
             float(task.get("estimated_hours") or 0)
             for phase in governance.as_list(stage.get("phases"))
@@ -242,11 +340,15 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                 f"- derived_hours: `{stage_hours:.2f}`",
                 f"- derived_percent: `{pct(stage_hours, totals['total'])}`",
                 f"- stop_conditions: `{text_or_na(stage.get('stop_conditions'))}`",
-                f"- stop_gate: `{text_or_na((stage.get('stop_gate') or {}).get('gate_id'))}`",
+                f"- stop_gate: `{text_or_na(stage_gate.get('gate_id'))}`",
+                f"- stop_gate_pass_criteria: `{text_or_na(stage_gate.get('pass_criteria'))}`",
+                f"- stop_gate_evidence: `{text_or_na(stage_gate.get('evidence'))}`",
+                f"- stop_gate_failure_action: `{text_or_na(stage_gate.get('failure_action'))}`",
                 "",
             ]
         )
         for phase in [item for item in governance.as_list(stage.get("phases")) if isinstance(item, dict)]:
+            phase_gate = phase.get("stop_gate") if isinstance(phase.get("stop_gate"), dict) else {}
             phase_hours = sum(
                 float(task.get("estimated_hours") or 0)
                 for task in governance.as_list(phase.get("tasks"))
@@ -261,7 +363,10 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                     f"- derived_hours: `{phase_hours:.2f}`",
                     f"- derived_percent: `{pct(phase_hours, totals['total'])}`",
                     f"- stop_conditions: `{text_or_na(phase.get('stop_conditions'))}`",
-                    f"- stop_gate: `{text_or_na((phase.get('stop_gate') or {}).get('gate_id'))}`",
+                    f"- stop_gate: `{text_or_na(phase_gate.get('gate_id'))}`",
+                    f"- stop_gate_pass_criteria: `{text_or_na(phase_gate.get('pass_criteria'))}`",
+                    f"- stop_gate_evidence: `{text_or_na(phase_gate.get('evidence'))}`",
+                    f"- stop_gate_failure_action: `{text_or_na(phase_gate.get('failure_action'))}`",
                     "",
                     "| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |",
                     "|---|---|---|---:|---:|---|---|",
@@ -272,6 +377,17 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                 lines.append(
                     f"| {text_or_na(task.get('task_id'))} | {text_or_na(task.get('name'))} | {text_or_na(task.get('status'))} | {hours:.2f} | {pct(hours, totals['total'])} | {text_or_na(task.get('dependencies'))} | {text_or_na(task.get('acceptance_ids'))} |"
                 )
+            lines.extend(["", "Task detail fields:", ""])
+            for task in [item for item in governance.as_list(phase.get("tasks")) if isinstance(item, dict)]:
+                lines.extend(
+                    [
+                        f"- {text_or_na(task.get('task_id'))} test_commands: `{text_or_na(task.get('test_commands'))}`",
+                        f"- {text_or_na(task.get('task_id'))} test_results: `{text_or_na(task.get('test_results'))}`",
+                        f"- {text_or_na(task.get('task_id'))} evidence_refs: `{text_or_na(task.get('evidence_refs'))}`",
+                        f"- {text_or_na(task.get('task_id'))} risks: `{text_or_na(task.get('risks'))}`",
+                        f"- {text_or_na(task.get('task_id'))} rollback: `{text_or_na(task.get('rollback'))}`",
+                    ]
+                )
             lines.append("")
     return lines
 
@@ -280,6 +396,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
     features = [item for item in governance.as_list(project_facts.get("features")) if isinstance(item, dict)]
     evidence = [item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)]
     totals = roadmap_totals(roadmap)
+    summary = roadmap_fact_summary(project_facts, roadmap)
     lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
     lines = [
         "# 功能清单",
@@ -293,9 +410,12 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
         f"- current_task: `{text_or_na(roadmap.get('current_task_id'))}`",
         f"- progress: `{pct(totals['completed'], totals['total'])}`",
         f"- capability_count: `{len(features)}`",
-        "- blockers: `NOT_APPLICABLE`",
+        f"- blockers: `{summary['blockers']}`",
         f"- next_gate: `{text_or_na(roadmap.get('next_gate_id'))}`",
-        "- next_unique_task: `NOT_APPLICABLE`",
+        f"- next_unique_task: `{summary['next_unique_task']}`",
+        f"- evidence_ref_count: `{summary['project_evidence_ref_count']}`",
+        f"- roadmap_test_command_count: `{summary['roadmap_test_command_count']}`",
+        f"- roadmap_gate_count: `{summary['roadmap_gate_count']}`",
         f"- evidence_status: `{text_or_na(project_facts.get('fact_level'))}`",
         "",
         "## 功能概览",
@@ -319,6 +439,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
 def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> str:
     ensure_product_roadmap(roadmap, target="project development record")
     totals = roadmap_totals(roadmap)
+    summary = roadmap_fact_summary(project_facts, roadmap)
     lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or ""))
     lines = [
         "# 开发记录",
@@ -333,9 +454,15 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
         f"- total_hours: `{totals['total']:.2f}`",
         f"- completed_hours: `{totals['completed']:.2f}`",
         f"- progress: `{pct(totals['completed'], totals['total'])}`",
-        "- blockers: `NOT_APPLICABLE`",
+        f"- blockers: `{summary['blockers']}`",
         f"- next_gate: `{text_or_na(roadmap.get('next_gate_id'))}`",
-        "- next_unique_task: `NOT_APPLICABLE`",
+        f"- next_unique_task: `{summary['next_unique_task']}`",
+        f"- roadmap_kind: `{roadmap_kind(roadmap)}`",
+        f"- roadmap_task_count: `{summary['roadmap_task_count']}`",
+        f"- roadmap_gate_count: `{summary['roadmap_gate_count']}`",
+        f"- roadmap_acceptance_count: `{summary['roadmap_acceptance_count']}`",
+        f"- roadmap_test_command_count: `{summary['roadmap_test_command_count']}`",
+        f"- roadmap_evidence_ref_count: `{summary['roadmap_evidence_ref_count']}`",
         f"- evidence_status: `{text_or_na(project_facts.get('fact_level'))}`",
         "",
         "## Roadmap",
@@ -355,8 +482,9 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     models = [item for item in governance.as_list(project_facts.get("models")) if isinstance(item, dict)]
     formulas = [item for item in governance.as_list(project_facts.get("formulas")) if isinstance(item, dict)]
     parameters = [item for item in governance.as_list(project_facts.get("parameters")) if isinstance(item, dict)]
+    summary = roadmap_fact_summary(project_facts, roadmap)
     lock = load_adp_v7_1_lock(ROOT / str(project_facts.get("project_id") or "")) or {}
-    stage2 = lock.get("stage2_boundary") if isinstance(lock.get("stage2_boundary"), dict) else {}
+    stage2 = lock.get("stage2_boundary") if isinstance(lock, dict) and isinstance(lock.get("stage2_boundary"), dict) else {}
     lines = [
         "# 模型参数文件",
         "",
@@ -367,12 +495,15 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
         f"- current_stage: `{text_or_na(roadmap.get('current_stage_id'))}`",
         f"- current_phase: `{text_or_na(roadmap.get('current_phase_id'))}`",
         f"- current_task: `{text_or_na(roadmap.get('current_task_id'))}`",
-        f"- active_model_count: `{len(models)}`",
-        f"- active_formula_count: `{len(formulas)}`",
-        f"- active_parameter_count: `{len(parameters)}`",
-        "- blockers: `NOT_APPLICABLE`",
+        f"- active_model_count: `{active_count(models)}`",
+        f"- active_formula_count: `{active_count(formulas)}`",
+        f"- active_parameter_count: `{active_count(parameters)}`",
+        f"- blockers: `{summary['blockers']}`",
         f"- next_gate: `{text_or_na(roadmap.get('next_gate_id'))}`",
-        "- next_unique_task: `NOT_APPLICABLE`",
+        f"- next_unique_task: `{summary['next_unique_task']}`",
+        f"- evidence_ref_count: `{summary['project_evidence_ref_count']}`",
+        f"- roadmap_test_command_count: `{summary['roadmap_test_command_count']}`",
+        f"- roadmap_gate_count: `{summary['roadmap_gate_count']}`",
         f"- evidence_status: `{text_or_na(project_facts.get('fact_level'))}`",
     ]
     lines.extend(v7_1_summary_lines(lock))
