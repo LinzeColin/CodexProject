@@ -46,6 +46,7 @@
 - Fixed a T1302/T1308 workspace-layer hydration race in the production frontend: layer controls now stay disabled until `stateReady` and route through an explicit layer-to-lens mapping. Local G2 browser E2E regression and full 32-test Playwright suite pass; A203/A211 release blockers are unchanged and A209 continues in the background.
 
 - `EVENT-20260625-001`: Hardened A202 signed-decision/signed-intake exact coverage validation for duplicate, unknown and missing candidate/source/owner inputs; release readiness remains blocked pending real clearance, gold evidence and A209.
+- `EVENT-20260625-002`: Refreshed A209 clean-restart heartbeat and dependent release preflights to operator PID `82041`, watchdog PID `61030`, `9/288` windows PASS and `0` failed while keeping A209 and MVP release readiness blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

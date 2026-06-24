@@ -38,7 +38,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
       "target_windows": 288,
-      "windows_completed": 3,
+      "windows_completed": 9,
       "windows_failed": 0
     },
     "relationship_gold": {
@@ -59,7 +59,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-24T22:34:51Z",
+  "generated_at": "2026-06-24T23:14:54Z",
   "missing_external_inputs": [
     {
       "acceptance_id": "A202",
@@ -84,7 +84,7 @@
     {
       "acceptance_id": "A209",
       "input_id": "A209_24h_operator_soak_finalization",
-      "reason": "A209 finalization does not allow downstream refresh at 3/288 windows"
+      "reason": "A209 finalization does not allow downstream refresh at 9/288 windows"
     }
   ],
   "mvp_release_gate_refresh_allowed": false,
@@ -121,7 +121,7 @@
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "6a1005b7435fc882e27b04c17ca58126dd94b9f25f49d0c4179701578ccd1358",
     "operator_soak_finalization": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-    "operator_soak_finalization_sha256": "9aa29b281d3f004c4d6a8a63c86a542f80ca9855565bcade0521560c49154158",
+    "operator_soak_finalization_sha256": "8773b687f0e8b38fd6f2d8a61a440a78eab89cb05384a3b802d65dccbad94bd1",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "27b138a5f052a48357af9617ee912cc78ecde614a96a7d3076c74c7e01893535",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",

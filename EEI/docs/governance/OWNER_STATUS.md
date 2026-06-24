@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并记录 T1302/T1308 前端 hydration 回归修复和 T1301/A202 signed-decision 精确覆盖门禁强化，避免把 `MACHINE_VERIFIED`、UI 回归通过或格式齐全的签核包误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -73,12 +73,12 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - active_formulas: `11`
 - total_parameters: `85`
 - active_parameters: `85`
-- active_values_changed_by_this_view: `1`
+- active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1301-A202-SIGNED-COVERAGE-HARDENING-PENDING-CI`
+- release_gate: `TASK-T1307-A209-CURRENT-HEARTBEAT-SYNC-PENDING-CI`
 
 ## 14. Evidence Freshness
 
@@ -86,22 +86,22 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `14`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `61`
-- pending_or_stale_events: `81`
+- precommit_pending_events: `62`
+- pending_or_stale_events: `83`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `3`
+- unresolved_fact_ids: `5`
 
 ## 16. 技术元数据
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:d322066ededba3eb1bd029bf31d97bda694ba0a27c46706f2cd400516f97367b`
-- snapshot_event_time: `2026-06-24T21:59:29Z`
+- source_snapshot_hash: `sha256:3b9042281ac124c8d8f43be5f1be073d62f50bb0b18aedb008bc98a05342f2a2`
+- snapshot_event_time: `2026-06-24T23:10:41Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1301-A202-SIGNED-COVERAGE-HARDENING-PENDING-CI`
+- phase/gate: `C / TASK-T1307-A209-CURRENT-HEARTBEAT-SYNC-PENDING-CI`
 
 ## 17. Next Unique Task
 

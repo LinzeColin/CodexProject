@@ -1,80 +1,80 @@
 {
-  "a209_task_status_required": "IN_PROGRESS",
+  "schema_version": "eei-a209-operator-soak-background-heartbeat-v1",
+  "artifact_id": "t1307-a209-background-operator-soak-heartbeat",
+  "system_name": "EEI",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "task_id": "T1307",
   "acceptance_ids": [
     "A209"
   ],
-  "artifact_id": "t1307-a209-background-operator-soak-heartbeat",
-  "artifacts": {
-    "background_heartbeat_path": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_checkpoint_jsonl_present": true,
-    "operator_checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
-    "operator_log_path": "artifacts/tests/a209/t1307_operator_soak_24h.log",
-    "operator_output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
-    "operator_pid_path": "artifacts/tests/a209/t1307_operator_soak_24h.pid",
-    "operator_summary_json_present": false
-  },
+  "generated_at": "2026-06-24T23:10:35Z",
+  "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
+  "progress_status": "RUNNING_PARTIAL",
+  "release_gate_closed_by_background_heartbeat": false,
+  "a209_task_status_required": "IN_PROGRESS",
   "background_resolution_contract": {
+    "operator_process_status": "RUNNING",
+    "operator_pid": 82041,
+    "watchdog_process_status": "RUNNING",
+    "watchdog_pid": 61030,
+    "watchdog_pid_path": "artifacts/tests/a209/t1307_operator_soak_watchdog.pid",
     "auto_resume_expected": true,
     "double_start_prevention": "supervisor observes live operator PID and never replaces it",
-    "failed_window_policy": "operator intervention is required before any resume",
-    "operator_pid": 57281,
-    "operator_process_status": "RUNNING",
     "stale_pid_policy": "watchdog reports stale live PIDs; it does not kill them",
-    "watchdog_pid": 17163,
-    "watchdog_pid_path": "artifacts/tests/a209/t1307_operator_soak_watchdog.pid",
-    "watchdog_process_status": "RUNNING"
+    "failed_window_policy": "operator intervention is required before any resume"
   },
-  "generated_at": "2026-06-24T11:07:43Z",
+  "progress": {
+    "target_seconds": 86400.0,
+    "target_windows": 288,
+    "operator_window_seconds": 300.0,
+    "windows_completed": 9,
+    "windows_failed": 0,
+    "windows_remaining": 279,
+    "completed_duration_seconds": 2700.0,
+    "completion_percent": 3.12,
+    "latest_successful_window": {
+      "index": 9,
+      "status": "PASS",
+      "child_status": "PARTIAL",
+      "requested_duration_seconds": 300,
+      "measured_duration_seconds": 300,
+      "elapsed_wall_seconds": 301.4274,
+      "started_at": "2026-06-24T23:03:20Z",
+      "ended_at": "2026-06-24T23:08:21Z",
+      "output_path": "/private/tmp/eei-operator-soak-82041-9.json",
+      "browser_heap_growth_bytes": 166396,
+      "browser_dom_node_growth": 0,
+      "worker_jobs_completed": 12,
+      "worker_jobs_total": 12,
+      "worker_event_loop_lag_p95_ms": 2.2067
+    }
+  },
+  "artifacts": {
+    "operator_output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+    "operator_checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
+    "operator_pid_path": "artifacts/tests/a209/t1307_operator_soak_24h.pid",
+    "operator_log_path": "artifacts/tests/a209/t1307_operator_soak_24h.log",
+    "background_heartbeat_path": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "operator_summary_json_present": false,
+    "operator_checkpoint_jsonl_present": true
+  },
+  "supervisor_snapshot": {
+    "status": "observe_existing_run",
+    "launch_status": "NOT_REQUESTED",
+    "release_gate_closed_by_supervisor": false,
+    "resume_command": "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl --fail-on-budget --quiet",
+    "validate_command": "python scripts/validate_operator_soak_evidence.py validate",
+    "release_gate_command": "python scripts/validate_operator_soak_evidence.py validate --require-release-ready"
+  },
   "non_closure": [
     "does_not_close_A209_24h_operator_soak",
     "does_not_replace_validate_operator_soak_evidence",
     "does_not_replace_final_24h_summary_json",
     "does_not_replace_release_manager_activation"
   ],
-  "progress": {
-    "completed_duration_seconds": 900.0,
-    "completion_percent": 1.04,
-    "latest_successful_window": {
-      "browser_dom_node_growth": 0,
-      "browser_heap_growth_bytes": 154116,
-      "child_status": "PARTIAL",
-      "elapsed_wall_seconds": 304.0951,
-      "ended_at": "2026-06-24T11:07:16Z",
-      "index": 3,
-      "measured_duration_seconds": 300,
-      "output_path": "/private/tmp/eei-operator-soak-57281-3.json",
-      "requested_duration_seconds": 300,
-      "started_at": "2026-06-24T11:02:12Z",
-      "status": "PASS",
-      "worker_event_loop_lag_p95_ms": 4.8105,
-      "worker_jobs_completed": 12,
-      "worker_jobs_total": 12
-    },
-    "operator_window_seconds": 300.0,
-    "target_seconds": 86400.0,
-    "target_windows": 288,
-    "windows_completed": 3,
-    "windows_failed": 0,
-    "windows_remaining": 285
-  },
-  "progress_status": "RUNNING_PARTIAL",
-  "release_gate_closed_by_background_heartbeat": false,
   "rollback": [
     "Regenerate this heartbeat after the next supervisor check if stale.",
     "Do not stop or restart the operator soak from this heartbeat script.",
     "If validation reports operator intervention, inspect the checkpoint and log first."
-  ],
-  "schema_version": "eei-a209-operator-soak-background-heartbeat-v1",
-  "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
-  "supervisor_snapshot": {
-    "launch_status": "NOT_REQUESTED",
-    "release_gate_closed_by_supervisor": false,
-    "release_gate_command": "python scripts/validate_operator_soak_evidence.py validate --require-release-ready",
-    "resume_command": "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl --fail-on-budget --quiet",
-    "status": "observe_existing_run",
-    "validate_command": "python scripts/validate_operator_soak_evidence.py validate"
-  },
-  "system_en_name": "Enterprise Ecosystem Intelligence",
-  "system_name": "EEI",
-  "task_id": "T1307"
+  ]
 }
