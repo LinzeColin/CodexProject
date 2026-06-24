@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 60
-- formula_count: 62
-- parameter_count: 423
+- model_count: 61
+- formula_count: 63
+- parameter_count: 431
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -105,6 +105,11 @@ Fact levels follow `docs/governance/STANDARD.md`.
   propagation, queue explanations, and zero type-calibration spread while
   keeping D2 source-domain acceptance and all production flags false.
 
+- `S2PDT01` adds `MOD-ADP-061`. It validates China C0 national authority
+  metadata-only source taxonomy, official identity, document traceability, and
+  no-production boundaries after D2 qualification readiness while keeping D3
+  core source-domain acceptance and all production flags false.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -168,6 +173,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-058 | S2PCT05 engineering public-signal shadow | deterministic metadata-only engineering signal model | Validate official code repositories, releases, model cards, benchmark results, and standards/specifications linked to known papers while keeping all production flags false | active | adp-s2pct05-engineering-signals-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-059 | S2PCT06 authoritative report source shadow | deterministic metadata-only authoritative report model | Validate research institution, lab, industry technical report, and product technical note metadata linked to known engineering signals while keeping all production flags false | active | adp-s2pct06-authoritative-reports-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-060 | S2PCT07 D2 source-domain qualification and cross-type calibration | deterministic source-domain qualification model | Calibrate top-journal, engineering signal, and authoritative report shadow evidence with replay, shadow, forced-event, queue explanation, and type calibration gates while keeping D2 acceptance and production flags false | active | adp-s2pct07-d2-source-domain-qualification-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-061 | S2PDT01 China C0 national authority source foundation | deterministic official-source foundation model | Validate law/regulation, NPC, State Council, gazette, and Supreme Court/Procuratorate metadata-only official-source evidence with traceability and no-production gates | active | adp-s2pdt01-china-c0-source-foundation-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -270,6 +276,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-060 validates S2PCT05 engineering public-signal evidence across required signal-type coverage, officiality, version traceability, paper relation, reproducibility state, and disabled production/D2 side-effect flags.
 - FORM-ADP-061 validates S2PCT06 authoritative report source evidence across required report-type coverage, publisher type, publisher identity, interest relation, evidence level, engineering-signal traceability, canonical-paper traceability, and disabled production/D2 side-effect flags.
 - FORM-ADP-062 validates S2PCT07 D2 source-domain qualification readiness across upstream pass evidence, complete domain type coverage, 30-date replay, 48h shadow, forced-event propagation, selected/queued/deferred queue explanations, zero type-calibration spread, and disabled production/D2 acceptance flags.
+- FORM-ADP-063 validates S2PDT01 China C0 national authority metadata-only source foundation across upstream D2 qualification, required authority taxonomy, official identity, document traceability, metadata-only no-download boundaries, and disabled D3/production acceptance flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -342,6 +349,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PCT05 engineering public-signal parameters: PARAM-ADP-400 through PARAM-ADP-406.
 - Active S2PCT06 authoritative report source parameters: PARAM-ADP-407 through PARAM-ADP-415.
 - Active S2PCT07 D2 qualification parameters: PARAM-ADP-416 through PARAM-ADP-423.
+- Active S2PDT01 China C0 source parameters: PARAM-ADP-424 through PARAM-ADP-431.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
