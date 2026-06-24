@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "whkmSalary"
 project_name: "whkmSalary"
-summary: "whkmSalary 是 Streamlit 季度销售绩效工资计算器；当前事实只证明代码实现和 UI 默认值，不证明工资政策、法域、税务、舍入或真实算薪合规，且不得声明生产 payroll readiness。"
+summary: "whkmSalary 是 Streamlit 季度销售绩效工资计算器；S3PAT01 只证明 0/负工作日技术边界已改为显式拒绝，不证明工资政策、法域、税务、舍入或真实算薪合规，且不得声明生产 payroll readiness。"
 version: "0.0.0"
 fact_level: "EXTRACTED"
 owner_role: "payroll_owner + legal_or_policy_owner + product_owner"
@@ -97,7 +97,7 @@ features:
   -
     feature_id: "FEAT-WHKM-003"
     name: "结算、开票与回款时间评分边界"
-    description: "覆盖 score_settlement、score_invoice、score_payback；days=0 行为仍由 TASK-WHKM-B-001 跟踪。"
+    description: "覆盖 score_settlement、score_invoice、score_payback；days<1 现由代码显式拒绝，zero-day 业务含义仍由 TASK-WHKM-B-001 跟踪。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -118,11 +118,11 @@ features:
       - "PARAM-031"
       - "PARAM-032"
     code_refs:
-      - "whkmSalary/salary_logic.py:74"
-      - "whkmSalary/salary_logic.py:85"
-      - "whkmSalary/salary_logic.py:98"
+      - "whkmSalary/salary_logic.py:80"
+      - "whkmSalary/salary_logic.py:92"
+      - "whkmSalary/salary_logic.py:106"
     test_refs:
-      - "FOCUSED: salary_logic.calculate fixture"
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
       - "EVID-WHKM-PARAMETER-REGISTRY"
@@ -190,7 +190,7 @@ features:
   -
     feature_id: "FEAT-WHKM-005"
     name: "Streamlit 输入约束与默认值"
-    description: "覆盖 number_input/selectbox 默认值和 UI 约束；FORM-010 仍需 HUMAN_REVIEW_REQUIRED。"
+    description: "覆盖 number_input/selectbox 默认值和 UI 约束；settlement/invoice/payback day UI min_value 已改为 1，FORM-010 仍需 HUMAN_REVIEW_REQUIRED。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -220,11 +220,11 @@ models:
     model_id: "MOD-001"
     name: "Quarterly performance salary calculation"
     kind: "business_calculation_model"
-    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights."
+    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring."
     owner: "whkmSalary"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "salary-logic-v0"
+    model_version: "salary-logic-v0.0.1-boundary"
     assumptions:
       - "ASM-001"
       - "ASM-002"
@@ -331,10 +331,11 @@ models:
       - "total_salary"
       - "after_tax_salary"
     code_refs:
-      - "whkmSalary/salary_logic.py:134"
+      - "whkmSalary/salary_logic.py:74"
+      - "whkmSalary/salary_logic.py:143"
     test_refs:
-      - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
-      - "FOCUSED: salary_logic.calculate fixture"
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
+      - "FOCUSED: python -B -m py_compile whkmSalary\\salary_logic.py whkmSalary\\streamlit_app.py"
     evidence_refs:
       - "EVID-WHKM-MODEL-REGISTRY"
       - "EVID-WHKM-MODEL-SPEC"
@@ -342,11 +343,11 @@ models:
     model_id: "MOD-002"
     name: "Streamlit input constraints"
     kind: "deterministic_rule_engine"
-    purpose: "Constrain UI inputs before invoking salary calculation."
+    purpose: "Constrain UI inputs before invoking salary calculation; S3PAT01 sets settlement/invoice/payback UI min_value to 1 while defaults remain unchanged."
     owner: "whkmSalary"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "streamlit-input-v0"
+    model_version: "streamlit-input-v0.0.1-boundary"
     assumptions:
       - "ASM-001"
       - "ASM-002"
@@ -455,22 +456,23 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "score_settlement: days>60 -> -150; 20<=days<=60 -> min(100,100-(days-20)*5); 1<days<20 -> min(200,200-days*5); days==1 -> 200."
+    expression: "score_settlement: days<1 -> ValueError; days>60 -> -150; 20<=days<=60 -> min(100,100-(days-20)*5); 1<days<20 -> min(200,200-days*5); days==1 -> 200."
     constraints:
-      - "days=0 returns None in salary_logic and can break weighted calculation."
-    missing_policy: "No fallback for days=0; governance task TASK-WHKM-B-001 tracks boundary repair decision."
-    output_range: "float score or None for uncovered day value."
+      - "days=0 and negative direct calls raise ValueError before weighted calculation."
+      - "Business meaning of zero-day settlement remains owner-blocked under TASK-WHKM-B-001."
+    missing_policy: "No fallback score for days<1; S3PAT01 rejects invalid workday inputs to prevent None-weighted calculation."
+    output_range: "float score for days>=1; ValueError for days<1."
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
       - "whkmSalary/salary_logic.py::score_settlement"
-    implementation_fingerprint: "sha256:1036305a5adae6b4e8a9b053c9a2deb1e8572ef2eba5d2e1d0156beca0ab36a9"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
+    implementation_fingerprint: "sha256:5609fc84388a51349bb9f221f2904037b37502eb81c5bab211137b74e3fdd874"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:74"
+      - "whkmSalary/salary_logic.py:80"
     test_refs:
-      - "FOCUSED: salary_logic.calculate fixture"
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
@@ -480,22 +482,23 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "score_invoice: days>60 -> -200; 20<days<=60 -> min(0,-(days-20)*5); 5<days<=20 -> min(125,125-(days-5)*8); 1<days<=5 -> min(150,150-days*5); days==1 -> 150."
+    expression: "score_invoice: days<1 -> ValueError; days>60 -> -200; 20<days<=60 -> min(0,-(days-20)*5); 5<days<=20 -> min(125,125-(days-5)*8); 1<days<=5 -> min(150,150-days*5); days==1 -> 150."
     constraints:
-      - "days=0 returns None in salary_logic and can break weighted calculation."
-    missing_policy: "No fallback for days=0; governance task TASK-WHKM-B-001 tracks boundary repair decision."
-    output_range: "float score or None for uncovered day value."
+      - "days=0 and negative direct calls raise ValueError before weighted calculation."
+      - "Business meaning of zero-day invoice remains owner-blocked under TASK-WHKM-B-001."
+    missing_policy: "No fallback score for days<1; S3PAT01 rejects invalid workday inputs to prevent None-weighted calculation."
+    output_range: "float score for days>=1; ValueError for days<1."
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
       - "whkmSalary/salary_logic.py::score_invoice"
-    implementation_fingerprint: "sha256:4a5be16e31dc2a70a5671a4ffe13eb74b856a0119ffc394cf4c98f6931f2accc"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
+    implementation_fingerprint: "sha256:11f8a01506eafd9647933e72ba743b2b56c03f99d22e0d6b89af31d394e3721f"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:85"
+      - "whkmSalary/salary_logic.py:92"
     test_refs:
-      - "FOCUSED: salary_logic.calculate fixture"
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
@@ -505,22 +508,23 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "score_payback: days>60 -> min(-10,-10-(days-60)*2); 20<days<=60 -> min(150,150-(days-20)*4); 1<days<=20 -> min(200,200-days*2.5); days==1 -> 200."
+    expression: "score_payback: days<1 -> ValueError; days>60 -> min(-10,-10-(days-60)*2); 20<days<=60 -> min(150,150-(days-20)*4); 1<days<=20 -> min(200,200-days*2.5); days==1 -> 200."
     constraints:
-      - "days=0 returns None in salary_logic and can break weighted calculation."
-    missing_policy: "No fallback for days=0; governance task TASK-WHKM-B-001 tracks boundary repair decision."
-    output_range: "float score or None for uncovered day value."
+      - "days=0 and negative direct calls raise ValueError before weighted calculation."
+      - "Business meaning of zero-day payback remains owner-blocked under TASK-WHKM-B-001."
+    missing_policy: "No fallback score for days<1; S3PAT01 rejects invalid workday inputs to prevent None-weighted calculation."
+    output_range: "float score for days>=1; ValueError for days<1."
     open_task_ids:
       - "TASK-WHKM-B-001"
     implementation_refs:
       - "whkmSalary/salary_logic.py::score_payback"
-    implementation_fingerprint: "sha256:5174b1c05ee277b1a99c740539efe4e31213d12bc6830a9a368ecc491d0fb5fa"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
+    implementation_fingerprint: "sha256:410390f76c7ad32f7a070be1ba32f75bc8a45f198f32fc23df4003f8d294a96b"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:98"
+      - "whkmSalary/salary_logic.py:106"
     test_refs:
-      - "FOCUSED: salary_logic.calculate fixture"
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
@@ -2892,7 +2896,7 @@ strategies:
   -
     strategy_id: "STRAT-WHKM-003"
     name: "boundary_and_rounding_policy_review_required"
-    description: "days=0、negative direct-call、舍入和税后保留比例必须由工资/法务/产品 owner 决策。"
+    description: "代码已对 days<1 执行 fail-closed 拒绝；zero-day 业务含义、舍入和税后保留比例仍必须由工资/法务/产品 owner 决策。"
     status: "blocked"
     fact_level: "UNKNOWN"
     unknown_task_ids:
@@ -2960,9 +2964,17 @@ validations:
     fact_level: "PROPOSED"
     evidence_refs:
       - "EVID-REVIEW9-S5PAT04-MANIFEST"
+  -
+    validation_id: "VAL-WHKM-S3PAT01-BOUNDARY"
+    name: "S3PAT01 day input boundary rejection"
+    status: "PASS"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-WHKM-S3PAT01-BOUNDARY-LOG"
+      - "EVID-WHKM-S3PAT01-MANIFEST"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "GOV-SEMANTIC-WHKM-in-progress"
+  release_gate: "S3PA-WHKM-boundary-partial"
   blocker_ids:
     - "FACT-whkmSalary-EMPIRICAL-EVIDENCE"
     - "FACT-whkmSalary-IMPLEMENTATION-FORMULA-REVIEW"
@@ -2971,7 +2983,7 @@ delivery_readiness:
     - "GOV-SEMANTIC-WHKM-001"
     - "GOV-SEMANTIC-WHKM-001;TASK-WHKM-B-001"
     - "TASK-WHKM-B-001"
-  next_executable_task: "TASK-WHKM-B-001"
+  next_executable_task: "S3PA weight validation and rounding owner decision evidence"
   next_task_status: "blocked"
   owner_decision_required: true
   owner_decision_id: "DEC-whkmSalary-REVIEW8-001"
@@ -3035,3 +3047,13 @@ evidence_refs:
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-WHKM-S3PAT01-BOUNDARY-LOG"
+    kind: "stage_gate_evidence"
+    ref: "governance/stage_gates/s3pa/whkm_boundary_tests.log"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S3PAT01-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PAT01-WHKM-DAY-BOUNDARY-20260624.json"
+    fact_level: "EXTRACTED"

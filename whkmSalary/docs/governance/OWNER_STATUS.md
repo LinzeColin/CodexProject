@@ -6,7 +6,7 @@ whkmSalary 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。S3PAT01 只把结算、开票、回款工作日低于 1 的输入改为显式拒绝，消除了 `None` 进入加权计算的技术崩溃路径。
 
 ## 3. 为什么重要
 
@@ -58,7 +58,8 @@ whkmSalary remains FAILED and must not be used for production payroll.
 
 1. policy source evidence
 2. jurisdiction/effective date evidence
-3. payroll_owner + legal_or_policy_owner + product_owner must provide project-specific evidence before readiness can improve.
+3. zero-day work item business meaning and approved exception handling
+4. payroll_owner + legal_or_policy_owner + product_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
@@ -74,11 +75,12 @@ whkmSalary remains FAILED and must not be used for production payroll.
 - total_parameters: `80`
 - active_parameters: `80`
 - active_values_changed_by_this_view: `0`
+- S3PAT01 technical boundary: workday inputs below 1 are rejected in code/UI; this is not a payroll policy approval.
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `GOV-SEMANTIC-WHKM-in-progress`
+- release_gate: `S3PA-WHKM-boundary-partial`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +103,9 @@ whkmSalary remains FAILED and must not be used for production payroll.
 - snapshot_event_time: `2026-06-22T00:24:25Z`
 - generator_version: `4.0.0`
 - version: `0.0.0`
-- phase/gate: `B / GOV-SEMANTIC-WHKM-in-progress`
+- phase/gate: `B / S3PA-WHKM-boundary-partial`
 
 ## 17. Next Unique Task
 
 - task_id: `TASK-WHKM-B-001`
-- reason: Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence.
+- reason: Resolve salary policy source, jurisdiction, effective date, tax basis, zero-day business meaning, and rounding policy evidence.

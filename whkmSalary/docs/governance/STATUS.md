@@ -14,7 +14,7 @@
 - Project: `whkmSalary`
 - Path: `whkmSalary`
 - Product version: `0.0.0`
-- Phase/Gate: `B / GOV-SEMANTIC-WHKM-in-progress`
+- Phase/Gate: `B / S3PA-WHKM-boundary-partial`
 - Models/Formulas/Parameters total: `2 / 10 / 80`
 - Active formulas/parameters: `10 / 80`
 - Machine checked formulas/parameters: `9 / 78`
@@ -35,10 +35,16 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `GOV-SEMANTIC-WHKM-in-progress`
-- Next executable task: `TASK-WHKM-B-001`
+- Release gate: `S3PA-WHKM-boundary-partial`
+- Next executable task: `S3PA weight validation and rounding owner decision evidence`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `4`
 - Unresolved fact IDs: `7`
+
+## S3PAT01 Boundary Update
+
+- `score_settlement`, `score_invoice`, and `score_payback` now reject workday inputs below 1 with `ValueError` before weighted total calculation.
+- Streamlit settlement, invoice, and payback day inputs now use `min_value=1`; defaults remain `10`, `10`, and `30`.
+- Readiness remains `FAILED`; zero-day business meaning, policy source, tax basis, rounding, and payroll reconciliation remain blocked under `TASK-WHKM-B-001`.

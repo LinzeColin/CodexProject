@@ -36,13 +36,13 @@ col1, col2 = st.columns(2)
 with col1:
     margin = st.number_input("毛利率（如 0.25）", value=0.25, step=0.01, format="%.4f")
 with col2:
-    settlement_days = st.number_input("结算时间（工作日）", min_value=0, value=10, step=1)
+    settlement_days = st.number_input("结算时间（工作日）", min_value=1, value=10, step=1)
 
 col5, col6 = st.columns(2)
 with col5:
-    invoice_days = st.number_input("开票时间（工作日）", min_value=0, value=10, step=1)
+    invoice_days = st.number_input("开票时间（工作日）", min_value=1, value=10, step=1)
 with col6:
-    payback_days = st.number_input("回款时间（工作日）", min_value=0, value=30, step=1)
+    payback_days = st.number_input("回款时间（工作日）", min_value=1, value=30, step=1)
 
 col3, col4 = st.columns(2)
 with col3:

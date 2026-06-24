@@ -71,7 +71,14 @@ def score_margin(rate: float) -> float:
         return max(80, 80 + (rate - 0.5) * 500)
 
 
+def require_positive_workdays(days: int, field_name: str) -> int:
+    if days < 1:
+        raise ValueError(f"{field_name}必须 >= 1")
+    return days
+
+
 def score_settlement(days: int) -> float:
+    days = require_positive_workdays(days, "结算时间")
     if days > 60:
         return -150
     if 20 <= days <= 60:
@@ -83,6 +90,7 @@ def score_settlement(days: int) -> float:
 
 
 def score_invoice(days: int) -> float:
+    days = require_positive_workdays(days, "开票时间")
     if 60 < days:
         return -200
     if 20 < days <= 60:
@@ -96,6 +104,7 @@ def score_invoice(days: int) -> float:
 
 
 def score_payback(days: int) -> float:
+    days = require_positive_workdays(days, "回款时间")
     if days > 60:
         return min(-10, -10 - (days - 60) * 2)
     if 20 < days <= 60:
