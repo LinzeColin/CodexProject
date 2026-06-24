@@ -444,6 +444,57 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(scope["selected_project_count"], 2)
         self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
 
+    def test_other8_s2pct01_root_change_respects_configured_project_exclusions(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            projects_yaml = tmp_path / "governance" / "projects.yaml"
+            projects_yaml.parent.mkdir(parents=True)
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  changed_scope_excluded_projects:",
+                        "    - EEI",
+                        "    - arxiv-daily-push",
+                        "  required_files:",
+                        "    - scripts/lean_governance.py",
+                        "projects:",
+                        "  - project_id: A",
+                        "    path: A",
+                        "    ci_mode: required",
+                        "  - project_id: EEI",
+                        "    path: EEI",
+                        "    ci_mode: required",
+                        "  - project_id: arxiv-daily-push",
+                        "    path: arxiv-daily-push",
+                        "    ci_mode: required",
+                        "  - project_id: B",
+                        "    path: B",
+                        "    ci_mode: required",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(cli.governance, "git_changed_files", return_value=["scripts/lean_governance.py"]):
+                scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
+        self.assertTrue(scope["root_governance_changed"])
+        self.assertFalse(scope["all_projects_required"])
+        self.assertEqual(scope["root_scope_excluded_projects"], ["EEI", "arxiv-daily-push"])
+        self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
+
+    def test_other8_s2pct01_current_root_test_change_excludes_parallel_projects(self) -> None:
+        cli = load_lean_governance_module()
+        with patch.object(cli.governance, "git_changed_files", return_value=["tests/governance/test_project_governance_validator.py"]):
+            scope = cli.build_changed_scope("origin/main", ROOT, ROOT / "governance" / "projects.yaml")
+        selected_ids = {project["project_id"] for project in scope["selected_projects"]}
+        self.assertTrue(scope["root_governance_changed"])
+        self.assertFalse(scope["all_projects_required"])
+        self.assertEqual(scope["selected_project_count"], 8)
+        self.assertNotIn("EEI", selected_ids)
+        self.assertNotIn("arxiv-daily-push", selected_ids)
+
     def test_review9_s3_changed_scope_project_change_selects_only_matching_project(self) -> None:
         cli = load_lean_governance_module()
         with tempfile.TemporaryDirectory() as tmp:
