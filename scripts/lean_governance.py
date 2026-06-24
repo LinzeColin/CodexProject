@@ -666,6 +666,11 @@ def is_root_governance_change(path: str, root_required: set[str]) -> bool:
     return normalized in root_required or normalized.startswith(ROOT_GOVERNANCE_PREFIXES)
 
 
+def root_changed_scope_excluded_projects(config: dict[str, Any]) -> set[str]:
+    root_config = config.get("root_governance") if isinstance(config.get("root_governance"), dict) else {}
+    return {str(item) for item in governance.as_list(root_config.get("changed_scope_excluded_projects")) if item}
+
+
 def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
     config = governance.load_yaml(projects_file)
     if not isinstance(config, dict):
@@ -677,14 +682,20 @@ def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects
         for item in governance.as_list((config.get("root_governance") or {}).get("required_files"))
     }
     root_changed = any(is_root_governance_change(path, root_required) for path in changed)
-    selected = projects if root_changed else [project for project in projects if governance.project_matches_changed(project, changed)]
+    excluded = root_changed_scope_excluded_projects(config) if root_changed else set()
+    selected = (
+        [project for project in projects if str(project.get("project_id") or "") not in excluded]
+        if root_changed
+        else [project for project in projects if governance.project_matches_changed(project, changed)]
+    )
     return {
         "schema_version": 1,
         "command": "changed-scope",
         "base_ref": base_ref or "",
         "changed_files": changed,
         "root_governance_changed": root_changed,
-        "all_projects_required": root_changed,
+        "all_projects_required": bool(root_changed and not excluded),
+        "root_scope_excluded_projects": sorted(excluded),
         "selected_projects": [
             {
                 "project_id": str(project.get("project_id") or ""),

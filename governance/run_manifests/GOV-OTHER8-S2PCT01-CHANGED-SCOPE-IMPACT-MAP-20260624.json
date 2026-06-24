@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PCT01-CHANGED-SCOPE-IMPACT-MAP-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PCT01",
+  "acceptance_ids": [
+    "ACC-S2PCT01"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PCT01",
+  "generated_at": "2026-06-24T14:08:33+10:00",
+  "implementation_base_sha": "55ba4d1ef105b1990c2f6e4c795557ded0bac7b4",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:bc429df0d70651d5a5da7cadc68d650decde693480e2472ad9cc4481493d011f",
+  "changed_files_declared": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT01-CHANGED-SCOPE-IMPACT-MAP-20260624.json"
+  ],
+  "changed_files_actual": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT01-CHANGED-SCOPE-IMPACT-MAP-20260624.json"
+  ],
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT01-CHANGED-SCOPE-IMPACT-MAP-20260624.json"
+  ],
+  "updated_governance_files": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT01-CHANGED-SCOPE-IMPACT-MAP-20260624.json"
+  ],
+  "change_classification": [
+    "changed_scope_impact_map",
+    "other8_s2pct01",
+    "ci_cost_reduction",
+    "excluded_parallel_projects"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Changed-scope root governance selection now honors root_governance.changed_scope_excluded_projects so ordinary root/test changes skip EEI and arxiv-daily-push check-render work.",
+  "excluded_projects": [
+    "EEI",
+    "arxiv-daily-push"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_changed_scope_root_change_selects_all_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pct01_root_change_respects_configured_project_exclusions tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pct01_current_root_test_change_excludes_parallel_projects tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s3_changed_scope_project_change_selects_only_matching_project -q",
+    "python -B scripts/lean_governance.py changed-scope --base-ref HEAD",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...changed-scope S2PCT01 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "4 focused tests OK; default config without exclusions still supports all-project root scope, configured exclusions select only non-excluded projects, and project-local changes still select the matching project."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root_governance_changed=true; all_projects_required=false; selected_project_count=8; root_scope_excluded_projects=[EEI, arxiv-daily-push]."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0; selected_project_count=8; check_render.checked_count=8; zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors after manifest addition."
+    }
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PCT01-CHANGED-SCOPE-IMPACT-MAP-20260624.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PCT01 changed-scope root governance impact map excludes EEI and arxiv-daily-push from ordinary root/test PR checks.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PCT01 moves root governance/test changed-scope selection from unconditional all-project check-render to a configured impact map that skips parallel-review projects EEI and arxiv-daily-push for ordinary root/test development.",
+  "rollback": "Remove root_governance.changed_scope_excluded_projects, revert scripts/lean_governance.py changed-scope exclusion support, revert focused tests, and delete this manifest.",
+  "unresolved_risks": [
+    "S2 stage still needs final stage-level gate after all S2 tasks are committed."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

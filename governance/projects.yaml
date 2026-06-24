@@ -1,6 +1,9 @@
 governance_spec_version: "1.0.0"
 root_governance:
   ci_mode: "required"
+  changed_scope_excluded_projects:
+    - "EEI"
+    - "arxiv-daily-push"
   required_files:
     - "AGENTS.md"
     - "docs/governance/STANDARD.md"
