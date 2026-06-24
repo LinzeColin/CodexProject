@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT01`
-- total_hours: `8.50`
-- completed_hours: `6.50`
-- progress: `76.47%`
+- current_task: `S2PCT02`
+- total_hours: `10.50`
+- completed_hours: `8.50`
+- progress: `80.95%`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -23,8 +23,8 @@ Stage -> Phase -> Task
 
 - person_goal: `在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、ledger、邮件预览和 shadow 证据。`
 - status: `in_progress`
-- derived_hours: `4.50`
-- derived_percent: `52.94%`
+- derived_hours: `6.50`
+- derived_percent: `61.90%`
 - stop_conditions: `V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED, bioRxiv/medRxiv 或 Nature shadow 影响正式 arXiv 邮件, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
 - stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 
@@ -33,33 +33,34 @@ Stage -> Phase -> Task
 - objective: `将 legacy S2P1T01 作为 V7 alias S2PBT01 推进 bioRxiv/medRxiv metadata-only source evidence。`
 - status: `in_progress`
 - derived_hours: `2.50`
-- derived_percent: `29.41%`
+- derived_percent: `23.81%`
 - stop_conditions: `改写历史 task/event ID, 把 no-send evidence 当作 formal production inclusion, 发生 V6/V7 命名或合同冲突但未标记 R-CONFLICT`
 - stop_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PBT01 | bioRxiv 与 medRxiv no-send shadow source evidence | completed | 2.50 | 29.41% | ARXIV_PRODUCTION_ACCEPTED, ADP-S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
+| S2PBT01 | bioRxiv 与 medRxiv no-send shadow source evidence | completed | 2.50 | 23.81% | ARXIV_PRODUCTION_ACCEPTED, ADP-S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
 
 #### S2PC D2 Nature/top-journal shadow foundation
 
-- objective: `将 legacy S2P2T01 作为 V7.1 canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence。`
+- objective: `将 legacy S2P2T01 作为 V7.1 canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence，并继续到 S2PCT02 Science 主刊 metadata-only shadow。`
 - status: `in_progress`
-- derived_hours: `2.00`
-- derived_percent: `23.53%`
+- derived_hours: `4.00`
+- derived_percent: `38.10%`
 - stop_conditions: `把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction, 把 S2PCT01 shadow evidence 当作 D2 source-domain acceptance, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
 - stop_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PCT01 | Nature/top-journal metadata-only no-send shadow evidence | in_progress | 2.00 | 23.53% | S2PBT01 | ACC-S2PCT01-NATURE |
+| S2PCT01 | Nature/top-journal metadata-only no-send shadow evidence | completed | 2.00 | 19.05% | S2PBT01 | ACC-S2PCT01-NATURE |
+| S2PCT02 | Science main-journal metadata-only no-send shadow evidence | planned | 2.00 | 19.05% | S2PCT01 | ACC-S2PCT02-SCIENCE |
 
 ### S5 项目迁移与三文件重建
 
 - person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
 - status: `in_progress`
 - derived_hours: `4.00`
-- derived_percent: `47.06%`
+- derived_percent: `38.10%`
 - stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
 - stop_gate: `S5-GATE`
 
@@ -68,13 +69,13 @@ Stage -> Phase -> Task
 - objective: `收敛现有大量治理文档，保留有用事实并恢复三文件。`
 - status: `in_progress`
 - derived_hours: `4.00`
-- derived_percent: `47.06%`
+- derived_percent: `38.10%`
 - stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
 - stop_gate: `S5PB-GATE`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 47.06% | S5PBT04 | ACC-S5PBT05 |
+| S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 38.10% | S5PBT04 | ACC-S5PBT05 |
 
 
 ## V7.1 当前根治理锁

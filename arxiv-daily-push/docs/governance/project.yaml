@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence，当前入口为 S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only shadow foundation，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only shadow foundation 已合并到 main，下一入口为 S2PCT02 Science metadata-only shadow，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pct01_shadow_in_progress_no_formal_production"
+current_status: "stage1_accepted_s2pct01_shadow_merged_s2pct02_next_no_formal_production"
 limitations:
   -
-    statement: "359/359 active parameters 与 52/52 active formulas 为 MACHINE_VERIFIED；50 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "364/364 active parameters 与 54/54 active formulas 为 MACHINE_VERIFIED；52 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -31,13 +31,13 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；当前 S2PCT01 / legacy S2P2T01 Nature/top-journal 仍为 metadata-only no-send shadow，不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only no-send shadow foundation 已合并到 main，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
-      - "S2PCT01"
+      - "S2PCT02"
 features:
   -
     feature_id: "FEAT-ADP-001"
@@ -454,6 +454,26 @@ features:
       - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
   -
     feature_id: "FEAT-ADP-008"
+    name: "Stage 2 Nature/top-journal shadow source evidence"
+    description: "S2PCT01/S2P2T01 已完成 official Nature RSS metadata-only adapter、s41586 主刊 research article filter、top-journal SourceItem、separate shadow queue/ledger/email preview、live Nature no-send canary 和 PR #119 main merge；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。"
+    status: "completed"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-ADP-051"
+      - "MOD-ADP-052"
+    formula_ids:
+      - "FORM-ADP-053"
+      - "FORM-ADP-054"
+    parameter_ids:
+      - "PARAM-ADP-377"
+      - "PARAM-ADP-378"
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-380"
+      - "PARAM-ADP-381"
+    evidence_refs:
+      - "EVID-ADP-S2PCT01-NATURE"
+  -
+    feature_id: "FEAT-ADP-009"
     name: "Review9 Lean v2 owner-readable governance"
     description: "把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。"
     status: "proposed"
@@ -1974,6 +1994,55 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
+  -
+    model_id: "MOD-ADP-051"
+    name: "S2PCT01 Nature/top-journal metadata ingest"
+    purpose: "Fetch a small official public Nature RSS metadata window, filter to main-journal s41586 research article URLs, map records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-053"
+    parameter_ids:
+      - "PARAM-ADP-377"
+      - "PARAM-ADP-378"
+      - "PARAM-ADP-379"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PCT01-NATURE"
+  -
+    model_id: "MOD-ADP-052"
+    name: "S2PCT01 top-journal shadow daily path"
+    purpose: "Build a separate Nature/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2 production acceptance."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-054"
+    parameter_ids:
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-380"
+      - "PARAM-ADP-381"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PCT01-NATURE"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -2822,6 +2891,38 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
+  -
+    formula_id: "FORM-ADP-053"
+    model_id: "MOD-ADP-051"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "S2PCT01 Nature/top-journal ingest passes only when a supported top journal is Nature, the official public Nature RSS URL is used, max_records is within the canary limit, records are filtered to main-journal s41586 article URLs, duplicate source IDs are separated from new items, generated SourceItems validate, and PDF/full-text/bulk/paywall side effects remain disabled."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PCT01-NATURE"
+  -
+    formula_id: "FORM-ADP-054"
+    model_id: "MOD-ADP-052"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "A S2PCT01 top-journal shadow daily run builds ROI-ranked candidates from passing Nature SourceItems, selects one shadow daily input, updates a separate top-journal queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, or mutation of the accepted Stage 1 arXiv local production path."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PCT01-NATURE"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -9867,6 +9968,66 @@ parameters:
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-377"
+    model_id: "MOD-ADP-051"
+    formula_id: "FORM-ADP-053"
+    symbol: "TOP_JOURNAL_INGEST_MODEL_ID"
+    name: "Top-journal ingest model id"
+    value: "adp-stage2-top-journal-ingest-v1"
+    source: "EXTRACTED from top_journal_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-378"
+    model_id: "MOD-ADP-051"
+    formula_id: "FORM-ADP-053"
+    symbol: "TOP_JOURNAL_MAX_CANARY_RECORDS"
+    name: "Top-journal max canary records per call"
+    value: "10"
+    source: "EXTRACTED from top_journal_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-379"
+    model_id: "MOD-ADP-051"
+    formula_id: "FORM-ADP-053"
+    symbol: "SUPPORTED_TOP_JOURNALS"
+    name: "S2PCT01 supported top journals"
+    value: "nature"
+    source: "EXTRACTED from top_journal_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-380"
+    model_id: "MOD-ADP-052"
+    formula_id: "FORM-ADP-054"
+    symbol: "S2P2_QUEUE_FILENAME"
+    name: "S2PCT01 top-journal shadow queue filename"
+    value: "stage2_s2p2_top_journal_queue.json"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-381"
+    model_id: "MOD-ADP-052"
+    formula_id: "FORM-ADP-054"
+    symbol: "S2P2_LEDGER_FILENAME"
+    name: "S2PCT01 top-journal shadow ledger filename"
+    value: "stage2_s2p2_top_journal_ledger.jsonl"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -10011,6 +10172,11 @@ evidence_refs:
     ref: "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json"
     fact_level: "EXTRACTED"
   -
+    evidence_id: "EVID-ADP-S2PCT01-NATURE"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
+    fact_level: "EXTRACTED"
+  -
     evidence_id: "EVID-REVIEW9-S5PBT05-MANIFEST"
     kind: "manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
@@ -10022,16 +10188,16 @@ delivery_readiness:
   blocked_requirements: 0
   active_requirements: 9
   partial_requirements: 1
-  next_executable_task_id: "S2PCT01"
-  next_executable_task_status: "in_progress"
+  next_executable_task_id: "S2PCT02"
+  next_executable_task_status: "planned"
 governance_counts:
-  active_models: 50
-  active_formulas: 52
-  active_parameters: 359
-  tasks_total: 68
+  active_models: 52
+  active_formulas: 54
+  active_parameters: 364
+  tasks_total: 69
   task_status_counts:
-    completed: 63
+    completed: 64
     blocked: 1
     deprecated: 1
     ready: 1
-    planned: 2
+    planned: 3

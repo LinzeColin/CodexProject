@@ -8,9 +8,14 @@
   "phase": "S2PC",
   "generated_at": "2026-06-24T12:40:00+10:00",
   "actor": "Codex",
-  "status": "in_progress",
+  "status": "completed_shadow_foundation",
   "acceptance_claimed": false,
+  "shadow_foundation_evidence_completed": true,
+  "source_domain_acceptance_claimed": false,
+  "main_merge_commit": "047f45382fe1d0c259c87d60971295cb030f3c1b",
+  "pull_request": "https://github.com/LinzeColin/CodexProject/pull/119",
   "stage2_production_accepted": false,
+  "d2_source_domain_accepted": false,
   "integrated_production_accepted": false,
   "formal_production_inclusion": false,
   "github_cloud_schedule_enabled": false,
@@ -52,7 +57,8 @@
     "arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md",
     "arxiv-daily-push/tests/test_top_journal_adapter.py",
     "arxiv-daily-push/tests/test_stage2_sources.py",
-    "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml"
+    "arxiv-daily-push/tests/fixtures/nature_rss_sample.xml",
+    "https://github.com/LinzeColin/CodexProject/pull/119"
   ],
   "tests_run": [
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_pycache_s2p2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q",
@@ -65,7 +71,8 @@
     "S2P2 shadow daily persists separate queue, ledger, dry-run package, and email preview with production flags false",
     "live Nature RSS canary: batch_status pass, new_item_count 3, selected_source_id nature:s41586-026-10799-8, real_smtp_sent false, formal_production_inclusion false, queue/ledger/email preview paths exist under /tmp/adp_s2p2_nature_live_20260624",
     "V7.1 canonical mapping: S2PCT01 / legacy S2P2T01 / phase S2PC / acceptance ACC-S2PCT01-NATURE",
-    "D2 source-domain acceptance is not claimed; evidence remains focused tests plus live 3-record Nature canary"
+    "PR #119 merged to main@047f45382fe1d0c259c87d60971295cb030f3c1b with governance, stage1-bootstrap, live-all-arxiv-dry-run, real-arxiv-30-day-backfill, and classify checks success",
+    "S2PCT01 metadata-only no-send shadow foundation evidence is complete; D2 source-domain acceptance is not claimed"
   ],
   "blocking_gates": [
     "V7/root contract hash gate",

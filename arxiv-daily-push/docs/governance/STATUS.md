@@ -15,9 +15,9 @@
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
 - Phase/Gate: `S2PC / ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED`
-- Models/Formulas/Parameters total: `50 / 52 / 376`
-- Active formulas/parameters: `52 / 359`
-- Machine checked formulas/parameters: `52 / 359`
+- Models/Formulas/Parameters total: `52 / 54 / 381`
+- Active formulas/parameters: `54 / 364`
+- Machine checked formulas/parameters: `54 / 364`
 
 ## Assurance
 
@@ -45,9 +45,9 @@
 - Production-forbidden until: `P0=0; P1=0; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PCT01`
+- Next governance task: `S2PCT02`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `S2PCT01`
+- Next executable task: `S2PCT02`
 - Pending/stale events: `94`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
