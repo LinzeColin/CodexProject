@@ -8,8 +8,8 @@
   ],
   "iteration_id": "ITER-20260624-FIFA-S3PDT02",
   "generated_at": "2026-06-24T22:05:00+10:00",
-  "implementation_base_sha": "99a35f5eef9eca42536c22a5ba74c9122eb6879e",
-  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:3ed1a7fa93e297ade519295dcba9512d456d320641e593ff4a5af99a492196fa",
+  "implementation_base_sha": "9d6c314afa38bd1a1903fd5bbe0db586b842ea85",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:b4200a44dbaaf596c4ec1a865d21369c82d6d98ce4f5f37da1c800e1dc9ea5f4",
   "changed_files_declared": [
     "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json",
     "FIFA/CHANGELOG.md",
@@ -223,7 +223,7 @@
       "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B scripts\\lean_governance.py ci --changed-only --base-ref origin/main",
       "exit_code": 0,
       "result": "PASS",
-      "observed": "post-commit rerun passed; validation exit_code=0 and zero_diff.clean=true."
+      "observed": "post-rebase post-commit rerun passed; validation exit_code=0 and zero_diff.clean=true."
     }
   ],
   "evidence_refs": [
@@ -257,6 +257,6 @@
   },
   "binding_status": "COMMIT_BOUND",
   "ci_attestation_subject": "Other8 S3PDT02 FIFA fail-closed parse, validation, and export contract",
-  "ci_run_reference": "LOCAL_COMMIT_CHANGED_ONLY_CI_ORIGIN_MAIN_AND_PENDING_PR_GOVERNANCE_CI",
-  "binding_rationale": "Manifest records focused local commit evidence; final GitHub PR and main CI binding will be verified after PR merge."
+  "ci_run_reference": "LOCAL_REBASE_TO_9D6C314_POSTCOMMIT_CHANGED_ONLY_CI_PASSED_PENDING_PR_CI",
+  "binding_rationale": "Manifest records focused local evidence rebased onto the current baseline; final GitHub PR and main CI binding will be verified after PR merge."
 }

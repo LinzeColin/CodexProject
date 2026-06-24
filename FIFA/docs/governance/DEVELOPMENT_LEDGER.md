@@ -37,7 +37,7 @@ blockers: TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TA
 - Fact level: VERIFIED focused local
 - Version before: 0.1.0
 - Version after: 0.1.0
-- Base commit: 99a35f5eef9eca42536c22a5ba74c9122eb6879e
+- Base commit: 9d6c314afa38bd1a1903fd5bbe0db586b842ea85
 - Result commit: PENDING
 - Task IDs: S3PDT02, ACC-S3PDT02
 - Goal: make FIFA parse, validation, and export failures fail closed so blocked outputs cannot be mistaken for successful recommendation/report/baseline deliverables.
