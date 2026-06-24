@@ -3253,23 +3253,30 @@ tasks:
     objective: "覆盖宏观、科技、产业、金融、市场和重点行业部门，建立中国 C1 中央机关与重点部门 source map。"
     scope: "C1 institution templates, aliases, industry mapping, official domain registry, metadata-only source evidence, and no-production tests."
     non_scope: "No D3_CORE_SOURCE_DOMAIN_ACCEPTED, no production mail inclusion, no SMTP, no scheduler, no Release, no bulk scraping, no PDF/full-text download."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PDT01"
     required_files:
-      - "planned: S2PDT02 C1 department source map and tests"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
     acceptance_ids:
       - "ACC-S2PDT02-C1"
     test_commands:
-      - "planned: C1 department official-domain and alias tests"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt02_focus1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pdt02_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
     test_results:
-      - "PENDING"
+      - "focused Stage2 source tests: 39 OK"
+      - "semantic extractor: semantic_formulas_checked 64, semantic_parameters_checked 422"
     evidence_refs:
-      - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
+      - "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md"
     risk: "部门清单缩水、人工逐源硬编码、别名映射错误或非官方域名污染 source map 必须阻断。"
     rollback: "Remove planned S2PDT02 governance entry if D3 C1 work is deferred or superseded."
     target_version: "0.24.0"
-    completed_version: ""
+    completed_version: "0.24.0"
     unknown_task_ids: []
   -
     task_id: "S2PDT03"

@@ -612,6 +612,10 @@ def validate_arxiv_daily_push_v7_root_lock(
         ("S2PCT07", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2PDT01", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2P3T01", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2PDT02", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2P3T02", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2PDT03", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2P3T03", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("S2PBT01", project_agent, "arxiv-daily-push/AGENTS.md"),
     ):
         if needle not in text:
@@ -619,7 +623,7 @@ def validate_arxiv_daily_push_v7_root_lock(
 
     for rel_path in ("功能清单", "开发记录", "模型参数文件"):
         text = (project_path / rel_path).read_text(encoding="utf-8") if (project_path / rel_path).exists() else ""
-        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PCT02", "S2P2T02", "S2PCT03", "S2P2T03", "S2PCT04", "S2P2T04", "S2PCT05", "S2PCT06", "S2PCT07", "S2PDT01", "S2P3T01", "S2PBT01"):
+        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PCT02", "S2P2T02", "S2PCT03", "S2P2T03", "S2PCT04", "S2P2T04", "S2PCT05", "S2PCT06", "S2PCT07", "S2PDT01", "S2P3T01", "S2PDT02", "S2P3T02", "S2PDT03", "S2P3T03", "S2PBT01"):
             if needle not in text:
                 validation.add(required, scope, f"{rel_path} missing V7 lock reference: {needle}")
 
@@ -1140,7 +1144,12 @@ def validate_assurance_status(validation: Validation, project: dict[str, Any]) -
         validation.error(scope, f"{rel(path)} active formula count drift")
 
 
-def validate_root(validation: Validation, config: dict[str, Any]) -> None:
+def validate_root(
+    validation: Validation,
+    config: dict[str, Any],
+    scoped_projects: list[dict[str, Any]] | None = None,
+    validate_all_projects: bool = True,
+) -> None:
     root_config = config.get("root_governance") if isinstance(config, dict) else {}
     if not isinstance(root_config, dict):
         validation.error("root", "root_governance must be a mapping")
@@ -1157,15 +1166,17 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
             validation.error("root", f"Invalid JSON schema {rel(schema)}: {exc}")
 
     projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
+    projects_for_path_checks = projects if validate_all_projects else list(scoped_projects or [])
     validate_readme_project_list(validation, projects)
-    validate_projects_yaml_count_claims(validation, projects)
+    validate_projects_yaml_count_claims(validation, projects_for_path_checks)
     registered_paths = [str(project.get("path") or "").replace("\\", "/").rstrip("/") for project in projects]
     registered_ids = [str(project.get("project_id") or "") for project in projects]
-    actual_project_dirs = discover_project_dirs()
-    missing = [path for path in actual_project_dirs if path not in registered_paths]
-    if missing:
-        validation.error("root", "Project registry does not cover actual project directories: " + ", ".join(missing))
-    for project in projects:
+    if validate_all_projects:
+        actual_project_dirs = discover_project_dirs()
+        missing = [path for path in actual_project_dirs if path not in registered_paths]
+        if missing:
+            validation.error("root", "Project registry does not cover actual project directories: " + ", ".join(missing))
+    for project in projects_for_path_checks:
         scope = project_scope(project)
         path = str(project.get("path") or "").rstrip("/")
         ci_mode = str(project.get("ci_mode") or "")
@@ -1343,14 +1354,19 @@ def main(argv: list[str] | None = None) -> int:
         print_summary(validation, [])
         return 1
 
-    validate_root(validation, config)
-    project_files = [str(item) for item in as_list(config.get("project_governance_files"))]
     try:
         selected_projects = select_projects(config, args)
     except SystemExit as exc:
         validation.error("root", str(exc))
         print_summary(validation, [])
         return 1
+    validate_root(
+        validation,
+        config,
+        scoped_projects=selected_projects,
+        validate_all_projects=args.all,
+    )
+    project_files = [str(item) for item in as_list(config.get("project_governance_files"))]
 
     for project in selected_projects:
         validate_project(validation, project, project_files, args.mode)

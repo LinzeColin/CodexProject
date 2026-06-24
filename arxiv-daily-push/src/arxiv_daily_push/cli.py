@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
@@ -118,6 +119,7 @@ from .stage2_sources import (
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
@@ -580,6 +582,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pdt01_china_c0.add_argument("--authority-records", required=True, help="China C0 authority metadata JSON list or object with authority_records.")
     s2pdt01_china_c0.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pdt01_china_c0.add_argument("--json", action="store_true", help="Print JSON C0 source foundation report.")
+
+    s2pdt02_china_c1 = subparsers.add_parser(
+        "stage2-china-c1-department-source-map",
+        help="Run S2PDT02/S2P3T02 China C1 central department metadata-only source-map evidence.",
+    )
+    s2pdt02_china_c1.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pdt02_china_c1.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pdt02_china_c1.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pdt02_china_c1.add_argument("--c0-source-foundation-report", required=True, help="Passing S2PDT01 C0 source foundation report JSON.")
+    s2pdt02_china_c1.add_argument("--department-records", required=True, help="China C1 department metadata JSON list or object with department_records.")
+    s2pdt02_china_c1.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pdt02_china_c1.add_argument("--json", action="store_true", help="Print JSON C1 department source-map report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1761,6 +1775,29 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- authority_taxonomy_gate: {report.get('authority_taxonomy_gate')}")
             print(f"- official_identity_gate: {report.get('official_identity_gate')}")
             print(f"- document_traceability_gate: {report.get('document_traceability_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-china-c1-department-source-map":
+        report = run_s2pdt02_china_c1_department_source_map(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            c0_source_foundation_report=load_json_mapping(args.c0_source_foundation_report),
+            department_records=load_json_records(args.department_records, "department_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pdt02_china_c1_department_source_map_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- sector_coverage_gate: {report.get('sector_coverage_gate')}")
+            print(f"- official_identity_gate: {report.get('official_identity_gate')}")
+            print(f"- alias_gate: {report.get('alias_gate')}")
+            print(f"- industry_route_gate: {report.get('industry_route_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

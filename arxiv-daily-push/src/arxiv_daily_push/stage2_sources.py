@@ -158,6 +158,21 @@ S2PDT01_REQUIRED_AUTHORITY_TYPES = (
 S2PDT01_REQUIRED_TRACE_FIELDS = ("authority_name", "official_domain", "document_number", "published_date")
 S2PDT01_ALLOWED_IDENTITY_STATES = ("official_domain", "official_gazette", "official_publication_portal")
 S2PDT01_REPORT_FILENAME = "stage2_s2pdt01_china_c0_source_foundation_report.json"
+S2PDT02_CHINA_C1_SOURCE_MODEL_ID = "adp-s2pdt02-china-c1-department-source-map-v1"
+S2PDT02_ACCEPTANCE_ID = "ACC-S2PDT02-C1"
+S2PDT02_TASK_ID = "S2PDT02"
+S2PDT02_LEGACY_TASK_ID = "S2P3T02"
+S2PDT02_REQUIRED_SECTORS = (
+    "macro_policy",
+    "science_technology",
+    "industry_policy",
+    "finance",
+    "market_regulation",
+    "key_industry",
+)
+S2PDT02_REQUIRED_ROUTE_FIELDS = ("aliases", "industry_routes", "official_domain", "source_url")
+S2PDT02_ALLOWED_IDENTITY_STATES = ("official_domain", "official_publication_portal")
+S2PDT02_REPORT_FILENAME = "stage2_s2pdt02_china_c1_department_source_map_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -2273,6 +2288,224 @@ def validate_s2pdt01_china_c0_source_foundation_report(report: Mapping[str, Any]
     return errors
 
 
+def build_s2pdt02_china_c1_department_source_map_report(
+    *,
+    generated_at: str,
+    c0_source_foundation_report: Mapping[str, Any],
+    department_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build China C1 central department source-map evidence without production inclusion."""
+
+    c0_errors = validate_s2pdt01_china_c0_source_foundation_report(c0_source_foundation_report)
+    c0_gate = (
+        "pass"
+        if not c0_errors
+        and c0_source_foundation_report.get("status") == "pass"
+        and c0_source_foundation_report.get("d3_c0_source_foundation_ready") is True
+        else "blocked"
+    )
+    department_rows, department_errors = _s2pdt02_department_rows(department_records)
+    sector_gate = _s2pdt02_sector_gate(department_rows)
+    identity_gate = _s2pdt02_identity_gate(department_rows)
+    alias_gate = _s2pdt02_alias_gate(department_rows)
+    route_gate = _s2pdt02_route_gate(department_rows)
+    metadata_gate = _s2pdt02_metadata_gate(department_rows)
+    blocking_reasons = [
+        *c0_errors,
+        *department_errors,
+        *sector_gate["blocking_reasons"],
+        *identity_gate["blocking_reasons"],
+        *alias_gate["blocking_reasons"],
+        *route_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if c0_gate != "pass":
+        blocking_reasons.append("S2PDT02 requires passing S2PDT01 China C0 source foundation")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and c0_gate
+        == sector_gate["status"]
+        == identity_gate["status"]
+        == alias_gate["status"]
+        == route_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
+        "acceptance_id": S2PDT02_ACCEPTANCE_ID,
+        "task_id": S2PDT02_TASK_ID,
+        "legacy_task_id": S2PDT02_LEGACY_TASK_ID,
+        "phase": "S2PD",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_c0_source_foundation_gate": c0_gate,
+        "sector_coverage_gate": sector_gate["status"],
+        "official_identity_gate": identity_gate["status"],
+        "alias_gate": alias_gate["status"],
+        "industry_route_gate": route_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_sectors": list(S2PDT02_REQUIRED_SECTORS),
+        "sectors_observed": sector_gate["sectors_observed"],
+        "required_route_fields": list(S2PDT02_REQUIRED_ROUTE_FIELDS),
+        "department_records": department_rows,
+        "department_record_count": len(department_rows),
+        "sector_summary": sector_gate,
+        "identity_summary": identity_gate,
+        "alias_summary": alias_gate,
+        "route_summary": route_gate,
+        "metadata_summary": metadata_gate,
+        "d3_c1_department_source_map_ready": status == "pass",
+        "d3_core_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pdt02_china_c1_department_source_map(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    c0_source_foundation_report: Mapping[str, Any],
+    department_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PDT02 China C1 department source-map evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pdt02-china-c1-department-source-map"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pdt02_china_c1_department_source_map_report(
+        generated_at=generated_at,
+        c0_source_foundation_report=c0_source_foundation_report,
+        department_records=department_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "department_source_map_report_path": str(run_dir / "adp-s2pdt02-china-c1-department-source-map-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pdt02-china-c1-department-source-map-report.json", report)
+        _write_json(state / S2PDT02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pdt02_china_c1_department_source_map_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PDT02_CHINA_C1_SOURCE_MODEL_ID:
+        errors.append("S2PDT02 C1 model_id must be adp-s2pdt02-china-c1-department-source-map-v1")
+    if report.get("task_id") != S2PDT02_TASK_ID:
+        errors.append("S2PDT02 C1 task_id must be S2PDT02")
+    if report.get("legacy_task_id") != S2PDT02_LEGACY_TASK_ID:
+        errors.append("S2PDT02 C1 legacy_task_id must be S2P3T02")
+    if report.get("acceptance_id") != S2PDT02_ACCEPTANCE_ID:
+        errors.append("S2PDT02 C1 acceptance_id must be ACC-S2PDT02-C1")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PDT02 C1 status must be pass or blocked")
+    for key in (
+        "d3_core_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PDT02 C1 department source map")
+    records = report.get("department_records")
+    if not isinstance(records, list):
+        errors.append("S2PDT02 department_records must be a list")
+        records = []
+    observed = set(report.get("sectors_observed") or [])
+    missing = [sector for sector in S2PDT02_REQUIRED_SECTORS if sector not in observed]
+    if missing:
+        errors.append("S2PDT02 C1 sector coverage missing required sectors: " + ", ".join(missing))
+    source_ids: set[str] = set()
+    department_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"department_records[{index}] must be an object")
+            continue
+        source_id = str(record.get("source_id") or "")
+        department_id = str(record.get("department_id") or "")
+        if not source_id:
+            errors.append(f"department_records[{index}].source_id is required")
+        if source_id in source_ids:
+            errors.append(f"duplicate S2PDT02 source_id: {source_id}")
+        source_ids.add(source_id)
+        if not department_id:
+            errors.append(f"department_records[{index}].department_id is required")
+        if department_id in department_ids:
+            errors.append(f"duplicate S2PDT02 department_id: {department_id}")
+        department_ids.add(department_id)
+        if record.get("sector") not in S2PDT02_REQUIRED_SECTORS:
+            errors.append(f"department_records[{index}].sector is not supported")
+        if record.get("identity_state") not in S2PDT02_ALLOWED_IDENTITY_STATES:
+            errors.append(f"department_records[{index}].identity_state is not accepted")
+        if record.get("metadata_only") is not True:
+            errors.append(f"department_records[{index}].metadata_only must be true")
+        if record.get("pdf_downloaded") is not False:
+            errors.append(f"department_records[{index}].pdf_downloaded must be false")
+        if record.get("full_text_extracted") is not False:
+            errors.append(f"department_records[{index}].full_text_extracted must be false")
+        for field in ("department_name", "official_domain", "source_url"):
+            if not record.get(field):
+                errors.append(f"department_records[{index}].{field} is required")
+        for field in ("aliases", "industry_routes", "evidence_refs"):
+            if not record.get(field):
+                errors.append(f"department_records[{index}].{field} is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PDT02 C1 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_c0_source_foundation_gate",
+            "sector_coverage_gate",
+            "official_identity_gate",
+            "alias_gate",
+            "industry_route_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PDT02 C1 report requires {key}=pass")
+        if report.get("d3_c1_department_source_map_ready") is not True:
+            errors.append("passing S2PDT02 C1 report requires d3_c1_department_source_map_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -3836,6 +4069,141 @@ def _s2pdt01_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "status": "pass" if not reasons else "blocked",
         "metadata_only_record_count": len(rows) - len(violations),
         "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt02_department_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    source_ids: set[str] = set()
+    department_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"department_records[{index}] must be an object")
+            continue
+        source_id = str(record.get("source_id") or "").strip()
+        department_id = str(record.get("department_id") or "").strip()
+        official_domain = str(record.get("official_domain") or "").strip().lower()
+        source_url = str(record.get("source_url") or "").strip()
+        aliases = [str(alias).strip() for alias in record.get("aliases") or [] if str(alias).strip()]
+        industry_routes = [str(route).strip() for route in record.get("industry_routes") or [] if str(route).strip()]
+        board_routes = [str(route).strip() for route in record.get("board_routes") or [] if str(route).strip()]
+        row = {
+            "source_id": source_id,
+            "department_id": department_id,
+            "department_name": str(record.get("department_name") or "").strip(),
+            "sector": str(record.get("sector") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "aliases": aliases,
+            "industry_routes": industry_routes,
+            "board_routes": board_routes,
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not source_id:
+            errors.append(f"department_records[{index}].source_id is required")
+        if source_id in source_ids:
+            errors.append(f"duplicate S2PDT02 source_id: {source_id}")
+        source_ids.add(source_id)
+        if not department_id:
+            errors.append(f"department_records[{index}].department_id is required")
+        if department_id in department_ids:
+            errors.append(f"duplicate S2PDT02 department_id: {department_id}")
+        department_ids.add(department_id)
+        if official_domain and source_url and official_domain not in source_url.lower():
+            errors.append(f"department_records[{index}].source_url must contain official_domain")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT02 requires at least one C1 department record")
+    return rows, errors
+
+
+def _s2pdt02_sector_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("sector") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PDT02_REQUIRED_SECTORS) - observed)
+    unsupported = sorted(observed - set(S2PDT02_REQUIRED_SECTORS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT02 C1 sector coverage missing sectors: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PDT02 C1 sector coverage has unsupported sectors: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_sectors": list(S2PDT02_REQUIRED_SECTORS),
+        "sectors_observed": sorted(sector for sector in observed if sector),
+        "department_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt02_identity_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("identity_state") not in S2PDT02_ALLOWED_IDENTITY_STATES
+        or not str(row.get("official_domain") or "")
+        or not str(row.get("source_url") or "")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PDT02 C1 identity requires accepted identity_state, official_domain, and source_url")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_identity_states": list(S2PDT02_ALLOWED_IDENTITY_STATES),
+        "verified_department_count": len(rows) - len(invalid),
+        "department_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt02_alias_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing = [row for row in rows if not isinstance(row, Mapping) or not row.get("aliases")]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT02 C1 alias map requires at least one alias for every department")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "aliased_department_count": len(rows) - len(missing),
+        "department_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt02_route_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing = [row for row in rows if not isinstance(row, Mapping) or not row.get("industry_routes") or not row.get("board_routes")]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT02 C1 route map requires industry_routes and board_routes for every department")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "routed_department_count": len(rows) - len(missing),
+        "department_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt02_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PDT02 C1 records must be metadata-only with pdf_downloaded=false and full_text_extracted=false")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_department_count": len(rows) - len(violations),
+        "department_count": len(rows),
         "blocking_reasons": reasons,
     }
 

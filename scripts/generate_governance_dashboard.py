@@ -660,6 +660,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PDT01 China C0 foundation remains completed as no-production evidence, but C1 central department source-map work remains unavailable.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PDT03":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PDT03-LEGAL-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PDT03 / legacy S2P3T03 中国法律元数据、版本效力与转载关系 shadow，同时保持 D3 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PDT03 China legal metadata relation shadow after completed C0/C1 source map",
+                "option_a": "接入草案/正式、修订/废止、实施/解释、转载关系的 metadata-only 法律关系影子证据，保留旧结论更新边界，不影响 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PDT02，只保留 C0/C1 官方来源 map；风险更低但法律效力和转载关系不推进。",
+                "option_c": "越过法律关系 gate 或 V7/V7.2 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; legal status relation fixtures, version/effectivity mapping, reprint/original-source checks, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "把中国官方来源从部门 source map 推进到法律状态变化和转载关系可审计，为政策、法律和产业阅读板块提供旧结论更新基础。",
+                "risks": "转载冒充原始源、法律状态误判、旧结论未更新、shadow 数据影响正式 arXiv 邮件、V7.2 未合入前抢跑邮件/Schema",
+                "evidence": "legal metadata fixtures, effectivity/version relation tests, reprint relation tests, semantic extractor, project governance validator",
+                "priority": "P1",
+                "no_decision": "S2PDT02 / legacy S2P3T02 China C1 department source map remains completed as no-production evidence, but legal metadata relation work remains unavailable.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
@@ -1277,7 +1298,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         and existing_owner_decision_id == current_owner_decision_id
     ):
         for key, value in existing_owner_decision.items():
-            if value not in (None, ""):
+            if key not in owner_decision and value not in (None, ""):
                 owner_decision[key] = value
     if "decision_question" not in owner_decision and "question" in owner_decision:
         owner_decision["decision_question"] = owner_decision["question"]

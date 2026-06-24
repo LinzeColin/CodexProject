@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence、S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence，S2PCT06 权威研究机构、实验室和产业技术报告 shadow evidence，S2PCT07 D2 source-domain qualification readiness，以及 S2PDT01/S2P3T01 中国 C0 全国权威主干 metadata-only source foundation 已完成，下一入口为 S2PDT02/S2P3T02 中国 C1 中央机关与重点部门 source map，但仍不得宣称 Stage 2 或 integrated production accepted。"
-version: "0.23.0"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence、S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence，S2PCT06 权威研究机构、实验室和产业技术报告 shadow evidence，S2PCT07 D2 source-domain qualification readiness，S2PDT01/S2P3T01 中国 C0 全国权威主干 source foundation，以及 S2PDT02/S2P3T02 中国 C1 中央机关与重点部门 source map 已完成，下一入口为 S2PDT03/S2P3T03 中国法律元数据关系 shadow，但仍不得宣称 Stage 2 或 integrated production accepted。"
+version: "0.24.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pdt01_china_c0_source_foundation_complete_s2pdt02_next_no_formal_production"
+current_status: "stage1_accepted_s2pdt02_china_c1_department_source_map_complete_s2pdt03_next_no_formal_production"
 limitations:
   -
-    statement: "414/414 semantically checked active parameters 与 63/63 active formulas 为 MACHINE_VERIFIED；61 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "422/422 semantically checked active parameters 与 64/64 active formulas 为 MACHINE_VERIFIED；62 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -31,7 +31,7 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence、S2PCT05 engineering public-signal shadow evidence、S2PCT06 authoritative report shadow evidence、S2PCT07 D2 source-domain qualification readiness 与 S2PDT01/S2P3T01 中国 C0 全国权威主干 metadata-only source foundation 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D3_CORE_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence、S2PCT05 engineering public-signal shadow evidence、S2PCT06 authoritative report shadow evidence、S2PCT07 D2 source-domain qualification readiness、S2PDT01/S2P3T01 中国 C0 全国权威主干 metadata-only source foundation 与 S2PDT02/S2P3T02 中国 C1 中央机关 source map 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D3_CORE_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
@@ -2391,6 +2391,34 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-S2PDT01-C0"
+  -
+    model_id: "MOD-ADP-062"
+    name: "S2PDT02 China C1 central department source map"
+    purpose: "Validate China C1 central department metadata-only source map, aliases, industry and board routes, official identity, and no-production boundaries after S2PDT01 C0 source foundation."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-064"
+    parameter_ids:
+      - "PARAM-ADP-432"
+      - "PARAM-ADP-433"
+      - "PARAM-ADP-434"
+      - "PARAM-ADP-435"
+      - "PARAM-ADP-436"
+      - "PARAM-ADP-437"
+      - "PARAM-ADP-438"
+      - "PARAM-ADP-439"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PDT02-C1"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -3413,6 +3441,21 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-ADP-S2PDT01-C0"
+  -
+    formula_id: "FORM-ADP-064"
+    model_id: "MOD-ADP-062"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "A S2PDT02 China C1 department source-map report passes only when the S2PDT01 China C0 source foundation report passes; required C1 sectors are all observed; every department has accepted official identity, official domain, source URL, aliases, industry routes, board routes, evidence refs, and metadata-only no-download boundaries; and D3 core source-domain acceptance plus production side effects remain false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PDT02-C1"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -11190,6 +11233,110 @@ parameters:
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-432"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_CHINA_C1_SOURCE_MODEL_ID"
+    name: "S2PDT02 China C1 source model id"
+    value: "adp-s2pdt02-china-c1-department-source-map-v1"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-433"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_ACCEPTANCE_ID"
+    name: "S2PDT02 acceptance id"
+    value: "ACC-S2PDT02-C1"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-434"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_TASK_ID"
+    name: "S2PDT02 canonical task id"
+    value: "S2PDT02"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-435"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_LEGACY_TASK_ID"
+    name: "S2PDT02 legacy task id"
+    value: "S2P3T02"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-436"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_REQUIRED_SECTORS"
+    name: "S2PDT02 required C1 sectors"
+    value: "macro_policy;science_technology;industry_policy;finance;market_regulation;key_industry"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-437"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_REQUIRED_ROUTE_FIELDS"
+    name: "S2PDT02 required route fields"
+    value: "aliases;industry_routes;official_domain;source_url"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-438"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_ALLOWED_IDENTITY_STATES"
+    name: "S2PDT02 allowed official identity states"
+    value: "official_domain;official_publication_portal"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-439"
+    model_id: "MOD-ADP-062"
+    formula_id: "FORM-ADP-064"
+    symbol: "S2PDT02_REPORT_FILENAME"
+    name: "S2PDT02 China C1 report filename"
+    value: "stage2_s2pdt02_china_c1_department_source_map_report.json"
+    source: "EXTRACTED from S2PDT02 code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -11378,6 +11525,11 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
     fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PDT02-C1"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
+    fact_level: "EXTRACTED"
 delivery_readiness:
   status: "VERIFIED"
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
@@ -11385,16 +11537,16 @@ delivery_readiness:
   blocked_requirements: 0
   active_requirements: 10
   partial_requirements: 1
-  next_executable_task_id: "S2PDT02"
+  next_executable_task_id: "S2PDT03"
   next_executable_task_status: "planned"
 governance_counts:
-  active_models: 61
-  active_formulas: 63
-  active_parameters: 414
+  active_models: 62
+  active_formulas: 64
+  active_parameters: 422
   tasks_total: 76
   task_status_counts:
-    completed: 70
+    completed: 71
     blocked: 1
     deprecated: 1
     ready: 1
-    planned: 3
+    planned: 2

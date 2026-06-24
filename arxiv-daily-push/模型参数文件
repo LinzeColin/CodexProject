@@ -3,13 +3,13 @@
 ## 摘要
 
 - project_id: `arxiv-daily-push`
-- product_version: `0.23.0`
+- product_version: `0.24.0`
 - current_stage: `S2`
 - current_phase: `S2PD`
-- current_task: `S2PDT02`
-- active_model_count: `61`
-- active_formula_count: `63`
-- active_parameter_count: `414`
+- current_task: `S2PDT03`
+- active_model_count: `62`
+- active_formula_count: `64`
+- active_parameter_count: `422`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PD-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,9 +24,9 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PDT02`
+- stage2_current_task: `S2PDT03`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01; S2PDT02 -> S2P3T02`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04; S2PDT01 -> S2P3T01; S2PDT02 -> S2P3T02; S2PDT03 -> S2P3T03`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PDT02` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PDT03` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -591,6 +591,15 @@
 - parameter_refs: `PARAM-ADP-424, PARAM-ADP-425, PARAM-ADP-426, PARAM-ADP-427, PARAM-ADP-428, PARAM-ADP-429, PARAM-ADP-430, PARAM-ADP-431`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PDT01-C0`
 
+### MOD-ADP-062 S2PDT02 China C1 central department source map
+
+- purpose: `Validate China C1 central department metadata-only source map, aliases, industry and board routes, official identity, and no-production boundaries after S2PDT01 C0 source foundation.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-064`
+- parameter_refs: `PARAM-ADP-432, PARAM-ADP-433, PARAM-ADP-434, PARAM-ADP-435, PARAM-ADP-436, PARAM-ADP-437, PARAM-ADP-438, PARAM-ADP-439`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PDT02-C1`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -970,6 +979,12 @@
 - model_id: `MOD-ADP-061`
 - expression_or_pseudocode: `A S2PDT01 China C0 source foundation report passes only when the S2PCT07 D2 qualification report passes; required national authority types are all observed; every record has accepted official identity, official domain, source URL, authority name, document number, published date, attachment trace, evidence refs, and metadata-only no-download boundaries; and D3 core source-domain acceptance plus production side effects remain false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PDT01-C0`
+
+### FORM-ADP-064
+
+- model_id: `MOD-ADP-062`
+- expression_or_pseudocode: `A S2PDT02 China C1 department source-map report passes only when the S2PDT01 China C0 source foundation report passes; required C1 sectors are all observed; every department has accepted official identity, official domain, source URL, aliases, industry routes, board routes, evidence refs, and metadata-only no-download boundaries; and D3 core source-domain acceptance plus production side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PDT02-C1`
 
 ## 参数
 
@@ -1389,3 +1404,11 @@
 | PARAM-ADP-429 | S2PDT01_REQUIRED_TRACE_FIELDS | S2PDT01 required trace fields | authority_name;official_domain;document_number;published_date | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
 | PARAM-ADP-430 | S2PDT01_ALLOWED_IDENTITY_STATES | S2PDT01 allowed official identity states | official_domain;official_gazette;official_publication_portal | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
 | PARAM-ADP-431 | S2PDT01_REPORT_FILENAME | S2PDT01 China C0 report filename | stage2_s2pdt01_china_c0_source_foundation_report.json | EXTRACTED from S2PDT01 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-432 | S2PDT02_CHINA_C1_SOURCE_MODEL_ID | S2PDT02 China C1 source model id | adp-s2pdt02-china-c1-department-source-map-v1 | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-433 | S2PDT02_ACCEPTANCE_ID | S2PDT02 acceptance id | ACC-S2PDT02-C1 | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-434 | S2PDT02_TASK_ID | S2PDT02 canonical task id | S2PDT02 | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-435 | S2PDT02_LEGACY_TASK_ID | S2PDT02 legacy task id | S2P3T02 | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-436 | S2PDT02_REQUIRED_SECTORS | S2PDT02 required C1 sectors | macro_policy;science_technology;industry_policy;finance;market_regulation;key_industry | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-437 | S2PDT02_REQUIRED_ROUTE_FIELDS | S2PDT02 required route fields | aliases;industry_routes;official_domain;source_url | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-438 | S2PDT02_ALLOWED_IDENTITY_STATES | S2PDT02 allowed official identity states | official_domain;official_publication_portal | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
+| PARAM-ADP-439 | S2PDT02_REPORT_FILENAME | S2PDT02 China C1 report filename | stage2_s2pdt02_china_c1_department_source_map_report.json | EXTRACTED from S2PDT02 code constant and focused tests | EXTRACTED |
