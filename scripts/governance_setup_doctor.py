@@ -129,7 +129,7 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
         ),
         "setup_doctor_runs_in_ci": "scripts/governance_setup_doctor.py --json --check-github" in text,
-        "generated_assurance_views_checked": "ASSURANCE_STATUS.yaml" in text and "governance/binding_backlog.yaml" in text,
+        "generated_assurance_views_checked": "ASSURANCE_STATUS.yaml" in text and "--root-artifact-dir" in text and "governance-generated-views" in text,
         "required_failures_not_masked": re.search(r"(?m)^\s*continue-on-error\s*:", text) is None,
     }
     missing = sorted(name for name, ok in checks.items() if not ok)

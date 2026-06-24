@@ -154,10 +154,6 @@ def has_explicit_pending_rationale(event: dict[str, Any]) -> bool:
 
 
 ROOT_GENERATED_REL_PATHS = [
-    "README.md",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
-    "governance/binding_backlog.yaml",
 ]
 
 
@@ -409,8 +405,10 @@ def check_hook_and_ci(gate: Gate) -> None:
             gate.add("ERROR", "CI_ALL_QUALITY", "scheduled/manual all information-quality gate missing", workflow)
         if "--all --semantic --drift-report" not in text:
             gate.add("ERROR", "CI_DRIFT", "all semantic drift check missing", workflow)
-        if "OWNER_PORTFOLIO.md" not in text:
-            gate.add("ERROR", "CI_PORTFOLIO", "OWNER_PORTFOLIO drift check missing", workflow)
+        if "--root-artifact-dir" not in text or "governance-generated-views" not in text:
+            gate.add("ERROR", "CI_ROOT_ARTIFACT", "root generated views are not routed to CI artifacts", workflow)
+        if "GOVERNANCE_DASHBOARD.md OWNER_PORTFOLIO.md governance/binding_backlog.yaml" in text:
+            gate.add("ERROR", "CI_TRACKED_ROOT_GENERATED", "root generated views remain tracked drift targets", workflow)
         if re.search(r"(?m)^\s*continue-on-error\s*:", text):
             gate.add("ERROR", "CI_MASKING", "continue-on-error is not allowed", workflow)
 

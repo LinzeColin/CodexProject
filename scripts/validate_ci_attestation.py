@@ -45,9 +45,6 @@ def payload_hash(payload: dict[str, Any]) -> str:
 def generated_artifact_digest() -> str:
     paths = [
         ROOT / "README.md",
-        ROOT / "GOVERNANCE_DASHBOARD.md",
-        ROOT / "OWNER_PORTFOLIO.md",
-        ROOT / "governance" / "binding_backlog.yaml",
     ]
     paths.extend(sorted(ROOT.glob("*/docs/governance/ASSURANCE_STATUS.yaml")))
     paths.extend(sorted(ROOT.glob("*/docs/governance/STATUS.md")))

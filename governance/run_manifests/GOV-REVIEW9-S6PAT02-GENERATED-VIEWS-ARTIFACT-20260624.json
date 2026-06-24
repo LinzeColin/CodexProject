@@ -1,0 +1,261 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S6PAT02",
+  "acceptance_ids": [
+    "ACC-S6PAT02"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S6PAT02",
+  "generated_at": "2026-06-24T13:05:00+10:00",
+  "implementation_base_sha": "81b8b1012547c85678c8ab75807f1eb74fd1f6a7",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2d52f6279a179c306f1c9aa8c079bf49fbea90e7c1ab5cff452e3e1d999393ac",
+  "changed_files_declared": [
+    ".agents/skills/codex-dex/SKILL.md",
+    ".agents/skills/project-governance/SKILL.md",
+    ".github/workflows/project-governance.yml",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "governance/binding_backlog.yaml",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_ci_attestation.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".agents/skills/codex-dex/SKILL.md",
+    ".agents/skills/project-governance/SKILL.md",
+    ".github/workflows/project-governance.yml",
+    "GOVERNANCE_DASHBOARD.md",
+    "OWNER_PORTFOLIO.md",
+    "README.md",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "governance/binding_backlog.yaml",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_ci_attestation.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_stage6_s6pat02",
+    "generated_view_artifact_routing",
+    "tracked_root_generated_views_removed",
+    "no_project_fact_change",
+    "no_ci_required_mode_change",
+    "no_branch_protection_change"
+  ],
+  "model_delta": "NOT_CHANGED: root generated dashboards moved out of tracked source into on-demand CI artifacts only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, project model, formula, parameter, data, ci_mode required, or branch-protection change.",
+  "stage_gate_status": {
+    "S6PA-GATE": "IN_PROGRESS",
+    "S6-GATE": "IN_PROGRESS"
+  },
+  "generated_view_removal_summary": {
+    "removed_tracked_root_generated_files": [
+      {
+        "path": "GOVERNANCE_DASHBOARD.md",
+        "bytes": 2325,
+        "sha256": "3e597102e532d7c44b27306951ec0a4c008811a084a290e5d274ebf27ee081e5"
+      },
+      {
+        "path": "OWNER_PORTFOLIO.md",
+        "bytes": 14609,
+        "sha256": "0fefca55f25519004f1eb623ecf7b858acfb5c25fc8ee783978a531148f2cfca"
+      },
+      {
+        "path": "governance/binding_backlog.yaml",
+        "bytes": 2490,
+        "sha256": "f9d0e3f7bc9bb801cc9eedb07b6b8199fd869a5dbfa927b2efa20247a21cdf1e"
+      }
+    ],
+    "removed_file_count": 3,
+    "removed_git_blob_bytes": 19424,
+    "root_required_files_removed": true,
+    "readme_points_to_deleted_generated_views": false,
+    "generator_root_output_mode": "artifact_via_--root-artifact-dir",
+    "workflow_uploads_generated_views_artifact": true,
+    "project_status_views_remain_tracked": true,
+    "s6pat01_archive_manifest": "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json",
+    "s6pat01_archive_manifest_sha256": "96b6b25ab8a584b0bfb09c01a2b5bf943dece9a654f992147cbc4ae8c89210a5"
+  },
+  "reference_scan": {
+    "status": "NO_LIVE_OPERATIONAL_REFERENCES_TO_REMOVED_ROOT_GENERATED_FILES",
+    "removed_paths": [
+      "GOVERNANCE_DASHBOARD.md",
+      "OWNER_PORTFOLIO.md",
+      "governance/binding_backlog.yaml"
+    ],
+    "remaining_references_excluding_run_manifests_and_archive": {
+      "dashboard": {
+        "count": 90,
+        "counts": {
+          "historical_project_event_jsonl": 72,
+          "historical_project_ledger": 1,
+          "artifact_generator_output_name": 5,
+          "guard_string": 1,
+          "test_assertion": 11
+        },
+        "live": []
+      },
+      "portfolio": {
+        "count": 44,
+        "counts": {
+          "historical_project_event_jsonl": 27,
+          "artifact_generator_output_name": 5,
+          "guard_string": 3,
+          "test_assertion": 9
+        },
+        "live": []
+      },
+      "backlog": {
+        "count": 24,
+        "counts": {
+          "historical_project_event_jsonl": 16,
+          "artifact_generator_output_name": 1,
+          "guard_string": 1,
+          "test_assertion": 6
+        },
+        "live": []
+      }
+    },
+    "remaining_live_operational_reference_count": 0,
+    "preserved_history_policy": "Historical development_events and ledgers may still name the removed files as past changed_files; those records preserve governance truth and are not active generation dependencies."
+  },
+  "stage6_actions_performed": {
+    "root_generated_files_deleted_from_tracked_source": true,
+    "root_generated_views_routed_to_artifact": true,
+    "legacy_project_truth_files_moved": false,
+    "legacy_project_truth_files_deleted": false,
+    "ci_mode_required_enabled": false,
+    "branch_protection_changed": false
+  },
+  "next_required_tasks": [
+    "S6PAT03",
+    "S6PBT01",
+    "S6PBT02"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat02_root_generated_views_are_artifact_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat02_generator_exposes_root_artifact_mode tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat02_root_entry_is_human_maintained tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_information_quality_gate_reports_truth_without_pr_blocking_assumption tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review5_root_governance_change_requires_sync_markers tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review7_generated_views_reject_checkout_and_bare_pending -q",
+    "python -B scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir C:/Users/linze/Documents/Codex/2026-06-23/xian/work/s6pat02_generated_views",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S6PAT02/S6PAT01 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Post-amend focused set ran 5 tests in 8.526s; earlier S6PAT02 focused set ran 7 tests in 11.124s; OK."
+    },
+    {
+      "command": "python -B scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir C:/Users/linze/Documents/Codex/2026-06-23/xian/work/s6pat02_generated_views",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "root_output_mode=artifact; emitted README.md, GOVERNANCE_DASHBOARD.md, OWNER_PORTFOLIO.md, and governance/binding_backlog.yaml under the artifact directory without tracked root writes."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root governance diff only; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "duration_seconds=1.079; validation errors=0 warnings=0; rendered 10 selected projects with drift_count=0; zero_diff.clean=true."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Post-amend run: Ran 230 tests in 21.926s; OK. Output includes expected fixture stderr for the missing-base scenario."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parses as JSON."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json",
+    "governance/archive/review9_s6pat01_legacy_archive_manifest.csv",
+    ".github/workflows/project-governance.yml",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/validate_information_quality.py",
+    "scripts/validate_governance_sync.py",
+    "governance/projects.yaml",
+    "README.md",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S6PAT02 root generated views artifact routing and tracked-file removal",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_PASS_REMOTE_PR_CI_REQUIRED",
+  "summary": "S6PAT02 removes tracked root generated dashboard/portfolio/backlog files after S6PAT01 checksum binding, routes root generated views to CI artifacts, and leaves project truth files untouched. This moves governance calculation out of every development action while preserving historical truth references.",
+  "rollback": "Revert this task commit to restore tracked root generated files and previous generator/CI behavior. S6PAT01 archive manifest keeps deleted file checksums for audit.",
+  "unresolved_risks": [
+    "S6PA-GATE remains in_progress until S6PAT03 finishes README/link/reference cleanup for broader legacy governance paths.",
+    "Historical event and ledger references still name the removed files as past changed_files; they are retained as truth, not active dependencies.",
+    "Project-level generated status pages remain tracked until a later scoped task decides whether to artifact-route them."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage.",
+  "updated_governance_files": [
+    ".agents/skills/codex-dex/SKILL.md",
+    ".agents/skills/project-governance/SKILL.md",
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "docs/governance/CODEX_SETUP.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW9-S6PAT02-GENERATED-VIEWS-ARTIFACT-20260624.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/governance_setup_doctor.py",
+    "scripts/validate_ci_attestation.py",
+    "scripts/validate_governance_sync.py",
+    "scripts/validate_information_quality.py",
+    "tests/governance/test_project_governance_validator.py"
+  ]
+}

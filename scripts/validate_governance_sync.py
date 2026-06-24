@@ -66,8 +66,6 @@ ROOT_GOVERNANCE_PREFIXES = (
     ".codex/",
     ".github/workflows/project-governance.yml",
     "AGENTS.md",
-    "GOVERNANCE_DASHBOARD.md",
-    "OWNER_PORTFOLIO.md",
     "README.md",
     "docs/governance/",
     "governance/",
@@ -665,7 +663,6 @@ def root_sync_requirements(validation: SyncValidation, root_changes: list[str], 
     if manifest_only:
         return
     required_markers = {
-        "GOVERNANCE_DASHBOARD.md": (ROOT / "GOVERNANCE_DASHBOARD.md").is_file(),
         "run_manifest": any(path.startswith("governance/run_manifests/") and path.endswith(".json") for path in changed),
         "governance_tests": any(path.startswith("tests/governance/") for path in changed),
     }
