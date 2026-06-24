@@ -2942,8 +2942,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "evidence_passed_no_formal_production")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PBT01-POST-MERGE-GATE-SYNC")
-        self.assertEqual(matrix["current_phase"], "S2P1")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION")
+        self.assertEqual(matrix["current_phase"], "S2P2")
         self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
         self.assertEqual(matrix["review9_migration_iteration"], "ITER-20260624-REVIEW9-S5PBT05")
         self.assertEqual(matrix["review9_migration_phase"], "S5PB")
