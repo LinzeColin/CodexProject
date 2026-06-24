@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S6PBT01",
+  "acceptance_ids": [
+    "ACC-S6PBT01"
+  ],
+  "iteration_id": "ITER-20260624-REVIEW9-S6PBT01",
+  "generated_at": "2026-06-24T13:55:00+10:00",
+  "implementation_base_sha": "6cb76bf5bca0bf56a5d9e267c1cfc88570b25d58",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:22d1a9bffa9694716d5ba7c1d026b68e646488cd987e39d95b40b07be506ee09",
+  "changed_files_declared": [
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "review9_stage6_s6pbt01",
+    "ci_mode_required_enablement",
+    "all_registered_projects_migrated_to_lean_v2",
+    "per_project_advisory_rollback_available",
+    "no_branch_protection_change",
+    "no_product_runtime_change"
+  ],
+  "model_delta": "NOT_CHANGED: project ci_mode enforcement metadata only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product, model, formula, parameter, data, branch-protection, or runtime behavior change.",
+  "stage_gate_status": {
+    "S6PBT01": "IN_PROGRESS_PRECOMMIT",
+    "S6PB-GATE": "IN_PROGRESS",
+    "S6-GATE": "IN_PROGRESS"
+  },
+  "required_matrix": [
+    {
+      "project_id": "Alpha",
+      "path": "Alpha",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "EEI",
+      "path": "EEI",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "EVA_OS",
+      "path": "EVA_OS",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "FIFA",
+      "path": "FIFA",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "OpMe_System",
+      "path": "OpMe_System",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "OpenAIDatabase",
+      "path": "OpenAIDatabase",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "PFI_BIG_DATA_SIMULATOR",
+      "path": "PFI/大数据模拟器",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "Serenity-Alipay",
+      "path": "Serenity-Alipay",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "whkmSalary",
+      "path": "whkmSalary",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    },
+    {
+      "project_id": "arxiv-daily-push",
+      "path": "arxiv-daily-push",
+      "ci_mode_before": "advisory",
+      "ci_mode_after": "required",
+      "migration_version_before": "legacy-v1-pending-lean-v2",
+      "migration_version_after": "lean-v2",
+      "lean_v2_canonical_files_present": true,
+      "human_entry_files_present": true,
+      "rollback": "set this project ci_mode to advisory"
+    }
+  ],
+  "required_matrix_summary": {
+    "registered_project_count": 10,
+    "required_project_count": 10,
+    "advisory_project_count": 0,
+    "unmigrated_required_project_count": 0,
+    "single_project_rollback_supported": true
+  },
+  "branch_protection_scope": {
+    "changed": false,
+    "reason": "S6PBT02 requires owner/GitHub branch protection evidence and is not claimed in S6PBT01."
+  },
+  "next_required_tasks": [
+    "S6PBT02"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pbt01_all_migrated_projects_are_required tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s2_projects_registry_is_identity_only tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_required_mode_promotes_missing_file_warning_to_error -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+    "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json",
+    "git diff --check origin/main...HEAD"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest ...S6PBT01 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree post-commit run: 3 focused tests in 0.010s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root governance diff only; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Clean-tree post-commit run: duration_seconds=1.284; 10 selected projects all ci_mode=required; validation errors=0 warnings=0; zero_diff.clean=true."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "10 registered projects checked; errors=0 warnings=0."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/governance -p test_*.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ran 233 tests in 21.760s; OK. Output includes expected fixture stderr for the missing-base scenario."
+    },
+    {
+      "command": "python -m json.tool governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Manifest parses as JSON."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    }
+  ],
+  "evidence_refs": [
+    "governance/projects.yaml",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Review9 S6PBT01 project ci_mode required enablement",
+  "ci_run_reference": "LOCAL_PRECOMMIT_VALIDATION_PASS_REMOTE_PR_CI_REQUIRED",
+  "summary": "S6PBT01 enables ci_mode=required only for the 10 registered projects already migrated to Lean v2 and records a per-project rollback path to advisory.",
+  "rollback": "Revert this task commit, or for a single failing project set its ci_mode back to advisory while retaining lean-v2 migration metadata and this evidence manifest.",
+  "unresolved_risks": [
+    "S6PBT02 still needs owner/GitHub branch protection evidence and required-check configuration.",
+    "Branch protection is not changed by this commit.",
+    "Required mode makes future missing project governance files errors rather than advisory warnings."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage.",
+  "updated_governance_files": [
+    "governance/projects.yaml",
+    "governance/run_manifests/GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json",
+    "tests/governance/test_project_governance_validator.py"
+  ]
+}
