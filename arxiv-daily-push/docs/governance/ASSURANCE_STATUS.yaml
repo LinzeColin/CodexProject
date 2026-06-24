@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-S2PCT02-S2PDT04-CLEAN-BUNDLE-001"
-source_snapshot_hash: "sha256:8627b18bc859b92b859194db99d1b5faccd905fded531aebb0fbca82e101ed48"
+as_of_event_id: "EVENT-20260625-ADP-S2PHT01V1-1-T01-PATH-AUDIT-001"
+source_snapshot_hash: "sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T23:55:00+10:00"
+snapshot_event_time: "2026-06-25T07:01:22+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 60
+    legacy_unbound_events: 61
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT"
+  release_gate: "EMAIL_LEARNING_V1_T01_PATH_AUDIT_RECORDED_NO_IMPLEMENTATION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

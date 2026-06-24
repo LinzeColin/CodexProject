@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:8627b18bc859b92b859194db99d1b5faccd905fded531aebb0fbca82e101ed48`
-- snapshot_event_time: `2026-06-24T23:55:00+10:00`
+- source_snapshot_hash: `sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961`
+- snapshot_event_time: `2026-06-25T07:01:22+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PC / ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT`
+- Phase/Gate: `S2PH / EMAIL_LEARNING_V1_T01_PATH_AUDIT_RECORDED_NO_IMPLEMENTATION`
 - Models/Formulas/Parameters total: `64 / 66 / 458`
 - Active formulas/parameters: `66 / 441`
 - Machine checked formulas/parameters: `66 / 441`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_2_PRODUCT_CONTRACT_CURRENT`
+- Release gate: `EMAIL_LEARNING_V1_T01_PATH_AUDIT_RECORDED_NO_IMPLEMENTATION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8`
 - V7 roadmap hash: `fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PCT02`
 - Parallel shadow source task: `S2PBT01`
 - Next executable task: `ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037`
-- Pending/stale events: `99`
+- Pending/stale events: `100`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
-- Legacy unbound events: `60`
+- Legacy unbound events: `61`
 - Unresolved fact IDs: `0`
