@@ -70,3 +70,4 @@ Task detail fields:
 | 2026-06-21T13:31:42Z | semantic_extraction | Semantic extractors machine-verified 49 active parameters and 7 active formulas. | GOV-SEMANTIC-OPME-001 | RECONSTRUCTED |
 | 2026-06-22T00:24:25Z | owner_decision_required | Engineering, safety, and operations owners must decide whether to fund expert-labeled safety validation before operational use. | TASK-OPME-B-001 | UNKNOWN |
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PAT03 proposes OpMe_System Lean v2 canonical files and rendered Chinese human entry files. | S5PAT03 | PROPOSED |
+| 2026-06-24T20:15:00+10:00 | implementation | Other8 S3PCT01 adds OpMe lifecycle contract coverage and rebinds moved MOD-007 provider semantic anchors after db.py lifecycle changes without changing active parameter values. | S3PCT01 | VERIFIED |

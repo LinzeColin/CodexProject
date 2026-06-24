@@ -647,7 +647,7 @@ formulas:
       - "OpMe_System/backend/app/services/model_router.py::SYSTEM_PROMPT"
       - "OpMe_System/backend/app/services/db.py::init_db"
       - "OpMe_System/backend/app/services/db.py::get_model_configs"
-    implementation_fingerprint: "sha256:7569c8b96d17cc4ec822f2efbf1700392ad754cf84ff57d0b17aac6e0bed696c"
+    implementation_fingerprint: "sha256:46121492d79d4048fd6beda839966513d39b7917ba516aca5c607139ceb694cf"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
     verified_at: "2026-06-21T13:31:42Z"
     code_refs:
@@ -1901,7 +1901,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:105:4"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:116:4"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1910,7 +1910,7 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:105"
+      - "OpMe_System/backend/app/services/db.py:116"
     test_refs:
       - "OpMe_System/backend/tests/test_api.py:31"
     evidence_refs:
@@ -1928,7 +1928,7 @@ parameters:
     value: "20"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:106:4"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:117:4"
     extracted_value: "20"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1937,7 +1937,7 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:106"
+      - "OpMe_System/backend/app/services/db.py:117"
     test_refs:
       - "OpMe_System/backend/tests/test_api.py:31"
     evidence_refs:
@@ -1955,7 +1955,7 @@ parameters:
     value: "30"
     source: "EXTRACTED from code/config default"
     calibration_method: "NOT_APPLICABLE - code/config rule"
-    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:107:4"
+    source_selector: "python_ast_literal:OpMe_System/backend/app/services/db.py:118:4"
     extracted_value: "30"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "1fa711b5f480c78b2421d63bd9183939022d9ca0"
@@ -1964,7 +1964,7 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:107"
+      - "OpMe_System/backend/app/services/db.py:118"
     test_refs:
       - "OpMe_System/backend/tests/test_api.py:31"
     evidence_refs:
@@ -1991,7 +1991,7 @@ parameters:
     fact_level: "EXTRACTED"
     unknown_task_ids:
     code_refs:
-      - "OpMe_System/backend/app/services/db.py:102"
+      - "OpMe_System/backend/app/services/db.py:113"
     test_refs:
       - "OpMe_System/backend/tests/test_analysis.py:5"
     evidence_refs:

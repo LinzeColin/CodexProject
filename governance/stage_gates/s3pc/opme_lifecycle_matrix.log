@@ -1,0 +1,34 @@
+Other8 S3PCT01 OpMe lifecycle matrix
+generated_at: 2026-06-24T20:15:00+10:00
+project: OpMe_System
+task_id: S3PCT01
+acceptance_id: ACC-S3PCT01
+
+scope:
+- OpMe_System only.
+- EEI and arxiv-daily-push were not modified.
+- No real external account, production connection, provider API key, email, browser, or Docker runtime was used.
+
+checks:
+- shell_script_line_endings: PASS
+  evidence: OpMe_System/scripts/*.sh are LF and governed by .gitattributes.
+- shell_script_parse: PASS
+  evidence: bash -n run_local_services.sh stop_local_services.sh smoke_test.sh dev.sh.
+- dependency_fallback: PASS
+  evidence: runtime entrypoints now fail fast with explicit install commands instead of running pip/npm install during startup.
+- background_cleanup: PASS
+  evidence: stop_local_services.sh removes stale/invalid launcher PID files from an OPME_DATA_DIR temp runtime directory, accepts owned live processes by cmdline or /proc cwd, uses the npm marker for frontend.pid, and refuses to kill non-owned live PIDs.
+- persistence_recovery: PASS
+  evidence: test_lifecycle_contract.py initializes a temp SQLite runtime, creates a case, reopens it through a new connection, and verifies dashboard summary without writing project data/opme-test.sqlite.
+- prepared_dependency_api_tests: BLOCKED
+  evidence: test_analysis.py remains blocked in this Windows workspace by missing pydantic; test_api.py remains blocked by missing fastapi.
+
+focused_commands:
+- set PYTHONPATH=OpMe_System\\backend&& python -B -m unittest OpMe_System.backend.tests.test_lifecycle_contract -q
+- bash -n OpMe_System/scripts/run_local_services.sh OpMe_System/scripts/stop_local_services.sh OpMe_System/scripts/smoke_test.sh OpMe_System/scripts/dev.sh
+- set PYTHONPATH=OpMe_System\\backend&& python -B -m py_compile OpMe_System\\backend\\app\\core\\config.py OpMe_System\\backend\\app\\services\\db.py OpMe_System\\backend\\tests\\test_lifecycle_contract.py
+- set PYTHONPATH=OpMe_System\\backend&& python -B OpMe_System\\backend\\tests\\test_analysis.py
+
+result:
+- S3PCT01 lifecycle/dependency/persistence contract has focused local evidence.
+- Full backend API validation still requires a dependency-prepared environment.

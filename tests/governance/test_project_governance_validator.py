@@ -4511,6 +4511,54 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             manifest["unresolved_risks"],
         )
 
+    def test_other8_s3pct01_opme_lifecycle_manifest_and_gate_evidence(self) -> None:
+        lifecycle_log = ROOT / "governance" / "stage_gates" / "s3pc" / "opme_lifecycle_matrix.log"
+        self.assertTrue(lifecycle_log.is_file())
+        lifecycle_text = lifecycle_log.read_text(encoding="utf-8")
+        self.assertIn("S3PCT01", lifecycle_text)
+        self.assertIn("dependency_fallback: PASS", lifecycle_text)
+        self.assertIn("background_cleanup: PASS", lifecycle_text)
+        self.assertIn("persistence_recovery: PASS", lifecycle_text)
+        self.assertIn("prepared_dependency_api_tests: BLOCKED", lifecycle_text)
+        self.assertIn("pydantic", lifecycle_text)
+        self.assertIn("fastapi", lifecycle_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PCT01-OPME-LIFECYCLE-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "OpMe_System")
+        self.assertEqual(manifest["task_id"], "S3PCT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PCT01"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "OpMe_System/backend/app/core/config.py",
+            "OpMe_System/backend/app/services/db.py",
+            "OpMe_System/backend/tests/test_lifecycle_contract.py",
+            "OpMe_System/scripts/run_local_services.sh",
+            "OpMe_System/scripts/stop_local_services.sh",
+            "governance/stage_gates/s3pc/opme_lifecycle_matrix.log",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("Ran 4 tests", observed)
+        self.assertIn("No module named 'pydantic'", observed)
+        self.assertIn(
+            "Full backend API validation remains blocked until pydantic and fastapi are available in a dependency-prepared environment.",
+            manifest["unresolved_risks"],
+        )
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

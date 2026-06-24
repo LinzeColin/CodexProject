@@ -135,12 +135,11 @@ ensure_backend() {
   cd "$ROOT_DIR"
   log "Using python: $PYTHON_BIN"
   if [ ! -x ".venv/bin/python" ]; then
-    log "Creating Python virtual environment"
-    "$PYTHON_BIN" -m venv .venv
+    fail "后端依赖未安装。请先运行: cd '$ROOT_DIR' && python3 -m venv .venv && .venv/bin/python -m pip install -r backend/requirements.txt"
   fi
-  # Install is idempotent and keeps the app launch recoverable after cleanup.
-  log "Installing backend dependencies if needed"
-  .venv/bin/python -m pip install -r backend/requirements.txt >>"$LOG_FILE" 2>&1
+  if [ ! -x ".venv/bin/uvicorn" ]; then
+    fail "后端 uvicorn 不存在。请先运行: cd '$ROOT_DIR' && .venv/bin/python -m pip install -r backend/requirements.txt"
+  fi
 
   BACKEND_PORT="$(select_backend_port || true)"
   [ -n "$BACKEND_PORT" ] || fail "8000-8020 均不可用，无法启动后端"
@@ -162,8 +161,7 @@ ensure_frontend() {
   cd "$ROOT_DIR/frontend"
   log "Using npm: $NPM_BIN"
   if [ ! -d "node_modules" ]; then
-    log "Installing frontend dependencies"
-    "$NPM_BIN" install >>"$LOG_FILE" 2>&1
+    fail "前端依赖未安装。请先运行: cd '$ROOT_DIR/frontend' && npm install"
   fi
   FRONTEND_PORT="$(select_frontend_port "$BACKEND_PORT" || true)"
   [ -n "$FRONTEND_PORT" ] || fail "5173-5190 均不可用，无法启动前端"
