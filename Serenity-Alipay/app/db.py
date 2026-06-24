@@ -144,6 +144,40 @@ CREATE TABLE IF NOT EXISTS score_snapshot (
   hard_block_reason TEXT
 );
 
+CREATE TABLE IF NOT EXISTS asset_indicator_snapshot (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id TEXT NOT NULL,
+  asset_id TEXT NOT NULL,
+  metric_date TEXT NOT NULL,
+  alpha REAL,
+  beta REAL,
+  gamma REAL,
+  theta REAL,
+  vega REAL,
+  sharpe REAL,
+  sortino REAL,
+  calmar REAL,
+  treynor REAL,
+  negative_indicator_count INTEGER NOT NULL,
+  total_indicator_count INTEGER NOT NULL,
+  benchmark_code TEXT,
+  benchmark_label TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS asset_exclusion_event (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id TEXT NOT NULL,
+  asset_id TEXT NOT NULL,
+  rule_window_days INTEGER NOT NULL,
+  negative_count INTEGER NOT NULL,
+  threshold_count INTEGER NOT NULL,
+  total_count INTEGER NOT NULL,
+  action TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS recommendation_snapshot (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   run_id TEXT NOT NULL,
@@ -326,9 +360,10 @@ CREATE TABLE IF NOT EXISTS platform_trade_check_snapshot (
 
 def connect(db_path: Path) -> sqlite3.Connection:
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA busy_timeout = 30000")
     return conn
 
 

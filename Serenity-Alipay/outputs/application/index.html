@@ -356,7 +356,7 @@
     .pool-ranking-note { margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }
     .pool-table { min-width: 1040px; }
     .pool-metric-panel { margin-bottom: 16px; }
-    .pool-metric-table { min-width: 1860px; }
+    .pool-metric-table { min-width: 1760px; }
     .pool-metric-table th, .pool-metric-table td { font-size: 12px; }
     .metric-pair-stack { display: grid; gap: 6px; min-width: 250px; }
     .metric-pair-line { display: grid; grid-template-columns: 58px minmax(82px, 1fr) minmax(82px, 1fr); gap: 6px; align-items: center; line-height: 1.35; }
@@ -411,6 +411,33 @@
     }
     .pool-badge.holding { color: var(--hold); background: var(--hold-bg); border-color: var(--hold-border); }
     .pool-badge.observe { color: #6b4b11; background: #fff4d8; border-color: #ead59d; }
+    .pool-badge.expand { color: #075f6a; background: #e7f7f9; border-color: #b7e4e8; }
+    .expansion-candidate-panel { margin-bottom: 16px; }
+    .expansion-table { min-width: 1180px; }
+    .expansion-table th, .expansion-table td { font-size: 13px; }
+    .expansion-table th:nth-child(1),
+    .expansion-table td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 78px;
+      background: inherit;
+    }
+    .expansion-table th:nth-child(2),
+    .expansion-table td:nth-child(2) {
+      position: sticky;
+      left: 78px;
+      z-index: 2;
+      min-width: 300px;
+      background: inherit;
+      box-shadow: 1px 0 0 var(--line);
+    }
+    .expansion-table thead th:nth-child(1),
+    .expansion-table thead th:nth-child(2) { z-index: 3; background: var(--surface-2); }
+    .expansion-row td { background: #fbfeff; }
+    .expansion-row td:nth-child(1),
+    .expansion-row td:nth-child(2) { background: #fbfeff; }
+    .expansion-row small { display: block; margin-top: 6px; color: var(--muted); line-height: 1.4; }
     .badge {
       display: inline-flex;
       align-items: center;
@@ -865,8 +892,8 @@
     </header>
 
     <section class="metrics" aria-label="关键状态">
-      <div class="metric"><span>当前运行</span><strong>20260624 - 12:47 CST · 通过</strong></div>
-      <div class="metric"><span>当前持仓及时间</span><strong>20260624 - 12:47 CST</strong></div>
+      <div class="metric"><span>当前运行</span><strong>20260624 - 13:06 CST · 通过</strong></div>
+      <div class="metric"><span>当前持仓及时间</span><strong>20260624 - 13:06 CST</strong></div>
       <div class="metric"><span>需操作行为</span><strong data-action-level data-initial-value="保持当前持仓" data-previous-value="保持当前持仓">保持当前持仓</strong></div>
       <div class="metric"><span>候选池</span><strong>Top5 持仓 / Top6-10 观察</strong></div>
     </section>
@@ -877,7 +904,7 @@
       </div>
       <div class="actions">
         <article class="action-card">
-          <div><strong>基金库</strong><p>已入库 7 只基金；申赎、费率、状态。</p></div>
+          <div><strong>基金库</strong><p>已入库 14 只基金；申赎、费率、状态。</p></div>
           <button type="button" data-open-fund-library>查看基金</button>
         </article>
         <article class="action-card">
@@ -885,7 +912,7 @@
           <button type="button" data-open-usage-guide>打开说明</button>
         </article>
         <article class="action-card">
-          <div><strong>人工复核</strong><p>无打开项；保存到数据库。</p></div>
+          <div><strong>人工复核</strong><p>12 项待复核；保存到数据库。</p></div>
           <button type="button" data-open-review>处理复核</button>
         </article>
         <article class="action-card">
@@ -894,7 +921,7 @@
         </article>
         <article class="action-card">
           <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>
-          <a class="action" href="../../data/reports/sda_20260624T044701Z_r5_fdbe83e6_report.html">查看快照</a>
+          <a class="action" href="../../data/reports/sda_20260624T050607Z_r5_40a756d2_report.html">查看快照</a>
         </article>
       </div>
     </section>
@@ -902,11 +929,11 @@
     <section class="panel" style="margin-bottom:16px;">
       <h2>当前持仓建议</h2>
       <div class="legend"><span class="change up">增加/买入</span><span class="change down">减少/卖出</span><span class="change flat">维持</span></div>
-      <div class="discipline-list"><article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#1</span><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div><strong class="change flat">28.71%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 14:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:38 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#2</span><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div><strong class="change flat">23.39%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 14:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:38 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#3</span><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div><strong class="change flat">19.16%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 14:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:38 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#4</span><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div><strong class="change flat">15.84%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 14:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:38 AEST</span></div></article>
-<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#5</span><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div><strong class="change flat">12.91%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 14:47 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:38 AEST</span></div></article></div>
+      <div class="discipline-list"><article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#1</span><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div><strong class="change flat">28.71%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 15:06 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:57 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#2</span><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div><strong class="change flat">23.39%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 15:06 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:57 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#3</span><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div><strong class="change flat">19.16%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 15:06 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:57 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#4</span><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div><strong class="change flat">15.84%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 15:06 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:57 AEST</span></div></article>
+<article class="discipline-card flat"><div class="recommendation-head"><span class="recommendation-rank">#5</span><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div><strong class="change flat">12.91%</strong><div class="recommendation-meta"><span>最新更新时间 20260624 - 15:06 AEST</span><span>策略份额 · 维持 · 0.00%</span><span>相较对比时间 20260624 - 14:57 AEST</span></div></article></div>
     </section>
 
     <section class="home-grid">
@@ -925,18 +952,18 @@
                 <th>基金</th>
                 <th>等级</th>
                 <th>证据置信度</th>
-                <th>目标权重<span>20260624 - 12:47 CST</span></th>
-                <th>基准权重<span data-reference-head-time data-initial-value="按各基金首次入池时间" data-previous-value="20260624 - 12:38 CST">按各基金首次入池时间</span></th>
+                <th>目标权重<span>20260624 - 13:06 CST</span></th>
+                <th>基准权重<span data-reference-head-time data-initial-value="按各基金首次入池时间" data-previous-value="20260624 - 12:57 CST">按各基金首次入池时间</span></th>
                 <th>相对比例</th>
                 <th>动作</th>
                 <th>操作口径</th>
               </tr>
             </thead>
-            <tbody><tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>1</td><td><div class="fund-cell"><strong class="fund-code">008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.08</td><td><strong>28.71%</strong><span>目标时间：20260624 - 12:47 CST</span></td><td><strong data-reference-weight data-initial-value="28.71%" data-previous-value="28.71%">28.71%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:38 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>2</td><td><div class="fund-cell"><strong class="fund-code">011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div></td><td><span class="badge">可执行</span></td><td>87.75</td><td><strong>23.39%</strong><span>目标时间：20260624 - 12:47 CST</span></td><td><strong data-reference-weight data-initial-value="23.39%" data-previous-value="23.39%">23.39%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:38 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>3</td><td><div class="fund-cell"><strong class="fund-code">110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>87.02</td><td><strong>19.16%</strong><span>目标时间：20260624 - 12:47 CST</span></td><td><strong data-reference-weight data-initial-value="19.16%" data-previous-value="19.16%">19.16%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:38 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>4</td><td><div class="fund-cell"><strong class="fund-code">007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.45</td><td><strong>15.84%</strong><span>目标时间：20260624 - 12:47 CST</span></td><td><strong data-reference-weight data-initial-value="15.84%" data-previous-value="15.84%">15.84%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:38 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
-<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>5</td><td><div class="fund-cell"><strong class="fund-code">270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div></td><td><span class="badge">观察</span></td><td>88.75</td><td><strong>12.91%</strong><span>目标时间：20260624 - 12:47 CST</span></td><td><strong data-reference-weight data-initial-value="12.91%" data-previous-value="12.91%">12.91%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260612 - 17:30 CST" data-previous-value="上轮对比权重时间：20260624 - 12:38 CST">初始持仓权重时间：20260612 - 17:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr></tbody>
+            <tbody><tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>1</td><td><div class="fund-cell"><strong class="fund-code">008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.08</td><td><strong>28.71%</strong><span>目标时间：20260624 - 13:06 CST</span></td><td><strong data-reference-weight data-initial-value="28.71%" data-previous-value="28.71%">28.71%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:57 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>2</td><td><div class="fund-cell"><strong class="fund-code">011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div></td><td><span class="badge">可执行</span></td><td>87.75</td><td><strong>23.39%</strong><span>目标时间：20260624 - 13:06 CST</span></td><td><strong data-reference-weight data-initial-value="23.39%" data-previous-value="23.39%">23.39%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:57 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>3</td><td><div class="fund-cell"><strong class="fund-code">110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>87.02</td><td><strong>19.16%</strong><span>目标时间：20260624 - 13:06 CST</span></td><td><strong data-reference-weight data-initial-value="19.16%" data-previous-value="19.16%">19.16%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:57 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>4</td><td><div class="fund-cell"><strong class="fund-code">007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.45</td><td><strong>15.84%</strong><span>目标时间：20260624 - 13:06 CST</span></td><td><strong data-reference-weight data-initial-value="15.84%" data-previous-value="15.84%">15.84%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260613 - 06:00 CST" data-previous-value="上轮对比权重时间：20260624 - 12:57 CST">初始持仓权重时间：20260613 - 06:00 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr>
+<tr class="row-flat" data-reference-row data-initial-class="flat" data-previous-class="flat"><td>5</td><td><div class="fund-cell"><strong class="fund-code">270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div></td><td><span class="badge">观察</span></td><td>88.75</td><td><strong>12.91%</strong><span>目标时间：20260624 - 13:06 CST</span></td><td><strong data-reference-weight data-initial-value="12.91%" data-previous-value="12.91%">12.91%</strong><span data-reference-time data-initial-value="初始持仓权重时间：20260612 - 17:30 CST" data-previous-value="上轮对比权重时间：20260624 - 12:57 CST">初始持仓权重时间：20260612 - 17:30 CST</span></td><td><span class="change flat" data-relative-ratio data-initial-value="+0.00%" data-previous-value="+0.00%" data-initial-class="flat" data-previous-class="flat">+0.00%</span><span data-relative-action data-initial-value="维持" data-previous-value="维持">维持</span></td><td><span class="badge hold">维持</span></td><td>无需新增交易；继续按下一时段复核。</td></tr></tbody>
           </table>
         </div>
 
@@ -975,8 +1002,7 @@
               <th>动作/复核</th>
               <th>排序原因</th>
               <th>入池时间</th>
-              <th>净值截至</th>
-              <th>指标更新时间</th>
+              <th>指标数据日</th>
               <th>入池后涨跌幅</th>
               <th>近1个月</th>
               <th>近3个月</th>
@@ -986,13 +1012,61 @@
               <th>风险调整（日/周）</th>
             </tr>
           </thead>
-          <tbody><tr class="pool-row holding"><td><strong>#1</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.08</td><td>28.71%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 12:47 CST</td><td>-</td><td>1.92%</td><td>27.84%</td><td>37.97%</td><td>国证芯片</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 -0.00%</em><em>周均 -0.02%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 0.96</em><em>周频 0.96</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 -0.02%</em><em>周均 -0.11%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 1.92</em><em>周频 1.92</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 2.98</em><em>周频 2.98</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr>
-<tr class="pool-row holding"><td><strong>#2</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div></td><td><span class="badge">可执行</span></td><td>87.75</td><td>23.39%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 12:47 CST</td><td>-</td><td>-5.40%</td><td>18.37%</td><td>23.19%</td><td>中证人工智能</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.00%</em><em>周均 0.02%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 0.95</em><em>周频 0.95</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.02%</em><em>周均 0.08%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.19</em><em>周频 2.19</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 3.59</em><em>周频 3.59</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr>
-<tr class="pool-row holding"><td><strong>#3</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>87.02</td><td>19.16%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 12:47 CST</td><td>-</td><td>-2.39%</td><td>14.35%</td><td>20.99%</td><td>创业板指</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.01%</em><em>周均 0.03%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 0.95</em><em>周频 0.95</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.01%</em><em>周均 0.05%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.45</em><em>周频 2.45</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 4.33</em><em>周频 4.33</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr>
-<tr class="pool-row holding"><td><strong>#4</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.45</td><td>15.84%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>20260624 - 12:47 CST</td><td>-</td><td>3.54%</td><td>31.52%</td><td>45.58%</td><td>中证全指半导体</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 -0.00%</em><em>周均 -0.02%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 0.95</em><em>周频 0.95</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 -0.01%</em><em>周均 -0.07%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.07</em><em>周频 2.07</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 3.13</em><em>周频 3.13</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr>
-<tr class="pool-row holding"><td><strong>#5</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div></td><td><span class="badge">观察</span></td><td>88.75</td><td>12.91%</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td><td>20260612 - 17:30 CST</td><td>20260611</td><td>20260624 - 12:47 CST</td><td>-</td><td>-0.11%</td><td>16.27%</td><td>9.70%</td><td>纳指100</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 -0.01%</em><em>周均 -0.03%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.00</em><em>周频 1.00</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 -0.02%</em><em>周均 -0.10%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 1.56</em><em>周频 1.56</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 2.19</em><em>周频 2.19</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr>
-<tr class="pool-row observe"><td><strong>#6</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">018043</strong><button type="button" class="fund-link" data-fund-code="018043">天弘纳斯达克100指数发起(QDII)A</button></div></td><td><span class="badge">观察</span></td><td>88.98</td><td>0.00% · 观察</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td><td>20260614 - 14:58 CST</td><td>20260611</td><td>20260624 - 12:47 CST</td><td>-</td><td>-0.01%</td><td>15.64%</td><td>9.40%</td><td>纳指100</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 -0.00%</em><em>周均 -0.02%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 0.96</em><em>周频 0.96</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 -0.02%</em><em>周均 -0.08%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 1.60</em><em>周频 1.60</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 2.26</em><em>周频 2.26</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr>
-<tr class="pool-row observe"><td><strong>#7</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">013171</strong><button type="button" class="fund-link" data-fund-code="013171">华夏恒生互联网科技业ETF联接(QDII)A</button></div></td><td><span class="badge">观察</span></td><td>77.82</td><td>0.00% · 观察</td><td>维持</td><td>underperformed Shanghai Composite and S&amp;P 500 across windows</td><td>20260615 - 16:42 CST</td><td>20260612</td><td>20260624 - 12:47 CST</td><td>-</td><td>-9.82%</td><td>-13.71%</td><td>-24.53%</td><td>恒生科技ETF代理</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 -0.01%</em><em>周均 -0.07%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 0.98</em><em>周频 0.98</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -</em><em>周均 -</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 -0.19%</em><em>周均 -0.94%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 -</em><em>周频 -</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 -0.53</em><em>周频 -0.53</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 -1.00</em><em>周频 -1.00</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 -</em><em>周频 -</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 -</em><em>周均 -</em></span></div></td></tr></tbody>
+          <tbody><tr class="pool-row holding"><td><strong>#1</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">008887</strong><button type="button" class="fund-link" data-fund-code="008887">华夏国证半导体芯片ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.08</td><td>28.71%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>-</td><td>1.92%</td><td>27.84%</td><td>37.97%</td><td>沪指</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.50%</em><em>周均 2.52%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 2.06</em><em>周频 2.06</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -0.06</em><em>周均 -0.32</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.30%</em><em>周均 1.49%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 1.89</em><em>周频 1.89</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.35</em><em>周频 2.35</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 4.41</em><em>周频 4.41</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 7.35</em><em>周频 7.35</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.23%</em><em>周均 1.13%</em></span></div></td></tr>
+<tr class="pool-row holding"><td><strong>#2</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">011839</strong><button type="button" class="fund-link" data-fund-code="011839">天弘中证人工智能A</button></div></td><td><span class="badge">可执行</span></td><td>87.75</td><td>23.39%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>-</td><td>-5.40%</td><td>18.37%</td><td>23.19%</td><td>沪指</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.36%</em><em>周均 1.80%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.89</em><em>周频 1.89</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -0.04</em><em>周均 -0.20</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 -0.09%</em><em>周均 -0.45%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 1.33</em><em>周频 1.33</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.00</em><em>周频 2.00</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 4.05</em><em>周频 4.05</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 7.82</em><em>周频 7.82</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.17%</em><em>周均 0.87%</em></span></div></td></tr>
+<tr class="pool-row holding"><td><strong>#3</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">110026</strong><button type="button" class="fund-link" data-fund-code="110026">易方达创业板ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>87.02</td><td>19.16%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>-</td><td>-2.39%</td><td>14.35%</td><td>20.99%</td><td>沪指</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.28%</em><em>周均 1.41%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.46</em><em>周频 1.46</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -0.03</em><em>周均 -0.16</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.03%</em><em>周均 0.15%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 0.92</em><em>周频 0.92</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 1.90</em><em>周频 1.90</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 3.75</em><em>周频 3.75</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 8.17</em><em>周频 8.17</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.18%</em><em>周均 0.91%</em></span></div></td></tr>
+<tr class="pool-row holding"><td><strong>#4</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">007300</strong><button type="button" class="fund-link" data-fund-code="007300">国联安中证半导体ETF联接A</button></div></td><td><span class="badge">可执行</span></td><td>92.45</td><td>15.84%</td><td>维持</td><td>serenity judgment supported by evidence confidence</td><td>20260613 - 06:00 CST</td><td>20260612</td><td>-</td><td>3.54%</td><td>31.52%</td><td>45.58%</td><td>沪指</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.55%</em><em>周均 2.75%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 2.11</em><em>周频 2.11</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -0.06</em><em>周均 -0.32</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.34%</em><em>周均 1.68%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 1.87</em><em>周频 1.87</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.62</em><em>周频 2.62</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 4.67</em><em>周频 4.67</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 8.55</em><em>周频 8.55</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.24%</em><em>周均 1.21%</em></span></div></td></tr>
+<tr class="pool-row holding"><td><strong>#5</strong></td><td><span class="pool-badge holding">持仓池</span></td><td><div class="fund-cell"><strong class="fund-code">270042</strong><button type="button" class="fund-link" data-fund-code="270042">广发纳指100ETF联接(QDII)人民币A</button></div></td><td><span class="badge">观察</span></td><td>88.75</td><td>12.91%</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td><td>20260612 - 17:30 CST</td><td>20260611</td><td>-</td><td>-0.11%</td><td>16.27%</td><td>9.70%</td><td>标普500</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.08%</em><em>周均 0.42%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.38</em><em>周频 1.38</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 0.03</em><em>周均 0.14</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.04%</em><em>周均 0.18%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 0.48</em><em>周频 0.48</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.91</em><em>周频 2.91</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 4.29</em><em>周频 4.29</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 8.54</em><em>周频 8.54</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.10%</em><em>周均 0.49%</em></span></div></td></tr>
+<tr class="pool-row observe"><td><strong>#6</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">018043</strong><button type="button" class="fund-link" data-fund-code="018043">天弘纳斯达克100指数发起(QDII)A</button></div></td><td><span class="badge">观察</span></td><td>88.98</td><td>0.00% · 观察</td><td>维持</td><td>申购或赎回存在限额/受限约束；费用与赎回规则已记录，新增前需确认支付宝或官方交易额度</td><td>20260614 - 14:58 CST</td><td>20260611</td><td>-</td><td>-0.01%</td><td>15.64%</td><td>9.40%</td><td>标普500</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.08%</em><em>周均 0.41%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.32</em><em>周频 1.32</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 0.03</em><em>周均 0.13</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.04%</em><em>周均 0.20%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 0.41</em><em>周频 0.41</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 2.93</em><em>周频 2.93</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 4.32</em><em>周频 4.32</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 8.58</em><em>周频 8.58</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.09%</em><em>周均 0.47%</em></span></div></td></tr>
+<tr class="pool-row observe"><td><strong>#7</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">016668</strong><button type="button" class="fund-link" data-fund-code="016668">景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)</button></div></td><td><span class="badge">人工复核</span></td><td>69.46</td><td>0.00% · 观察</td><td>需人工复核</td><td>official source count below Action-Ready threshold</td><td>20260624 - 10:30 CST</td><td>20260622</td><td>-</td><td>-</td><td>-</td><td>-</td><td>标普500</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.55%</em><em>周均 2.75%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.98</em><em>周频 1.98</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -0.02</em><em>周均 -0.08</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.83%</em><em>周均 4.15%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 1.69</em><em>周频 1.69</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 5.10</em><em>周频 5.10</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 7.30</em><em>周频 7.30</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 23.92</em><em>周频 23.92</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.36%</em><em>周均 1.79%</em></span></div></td></tr>
+<tr class="pool-row observe"><td><strong>#8</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">501225</strong><button type="button" class="fund-link" data-fund-code="501225">景顺长城全球半导体芯片股票A(QDII-LOF)(人民币)</button></div></td><td><span class="badge">人工复核</span></td><td>69.48</td><td>0.00% · 观察</td><td>需人工复核</td><td>official source count below Action-Ready threshold</td><td>20260624 - 10:30 CST</td><td>20260622</td><td>-</td><td>-</td><td>-</td><td>-</td><td>标普500</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.55%</em><em>周均 2.75%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.98</em><em>周频 1.98</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 -0.02</em><em>周均 -0.08</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.83%</em><em>周均 4.16%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 1.69</em><em>周频 1.69</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 5.11</em><em>周频 5.11</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 7.32</em><em>周频 7.32</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 23.97</em><em>周频 23.97</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.36%</em><em>周均 1.79%</em></span></div></td></tr>
+<tr class="pool-row observe"><td><strong>#9</strong></td><td><span class="pool-badge observe">观察池</span></td><td><div class="fund-cell"><strong class="fund-code">017093</strong><button type="button" class="fund-link" data-fund-code="017093">景顺长城纳斯达克科技ETF联接(QDII)C人民币</button></div></td><td><span class="badge">观察</span></td><td>70.06</td><td>0.00% · 观察</td><td>需人工复核</td><td>official source count below Action-Ready threshold</td><td>20260624 - 13:06 CST</td><td>20260622</td><td>-</td><td>-</td><td>-</td><td>-</td><td>标普500</td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Alpha</strong><em>日均 0.17%</em><em>周均 0.86%</em></span><span class="metric-pair-line"><strong>Beta</strong><em>日频 1.63</em><em>周频 1.63</em></span><span class="metric-pair-line"><strong>Gamma</strong><em>日均 0.01</em><em>周均 0.05</em></span><span class="metric-pair-line"><strong>Theta</strong><em>日均 0.23%</em><em>周均 1.16%</em></span><span class="metric-pair-line"><strong>Vega</strong><em>日频 0.83</em><em>周频 0.83</em></span></div></td><td><div class="metric-pair-stack"><span class="metric-pair-line"><strong>Sharpe</strong><em>日频 3.76</em><em>周频 3.76</em></span><span class="metric-pair-line"><strong>Sortino</strong><em>日频 6.07</em><em>周频 6.07</em></span><span class="metric-pair-line"><strong>Calmar</strong><em>日频 12.54</em><em>周频 12.54</em></span><span class="metric-pair-line"><strong>Treynor</strong><em>日均 0.17%</em><em>周均 0.84%</em></span></div></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel expansion-candidate-panel" aria-label="扩容观察候选">
+      <h2>扩容观察候选</h2>
+      <p class="pool-ranking-note">每次刷新会先从全市场公开基金列表自动扩容高成长方向，再补 24 个月净值和申赎/费率规则。这里显示“新增发现但尚未必然进入 Top5”的候选，属于观察与后续排序对象，不等同于当前买入建议。</p>
+      <div class="table-wrap">
+        <table class="expansion-table">
+          <thead>
+            <tr>
+              <th>新增序号</th>
+              <th>基金</th>
+              <th>类型</th>
+              <th>主题分</th>
+              <th>命中主题</th>
+              <th>数据补齐</th>
+              <th>当前处置</th>
+              <th>来源</th>
+            </tr>
+          </thead>
+          <tbody><tr class="expansion-row"><td><strong>E1</strong></td><td><div class="fund-cell"><strong class="fund-code">016667</strong><button type="button" class="fund-link" data-fund-code="016667">景顺长城全球半导体芯片股票A(QDII-LOF)(美元现汇)</button></div></td><td>QDII-普通股票</td><td>19</td><td>半导体、芯片、QDII</td><td>24个月净值已补齐<br>自动补齐失败：&lt;urlopen error _ssl.c:993: The handshake operation timed out&gt;</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_016667.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E2</strong></td><td><div class="fund-cell"><strong class="fund-code">016668</strong><button type="button" class="fund-link" data-fund-code="016668">景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)</button></div></td><td>QDII-普通股票</td><td>19</td><td>半导体、芯片、QDII</td><td>24个月净值已补齐<br>自动补齐完成</td><td><span class="pool-badge expand">已进入当前排序 #7</span><br><small>已进入持仓池/观察池排序，按 Serenity 当前权重规则处理。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_016668.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E3</strong></td><td><div class="fund-cell"><strong class="fund-code">501225</strong><button type="button" class="fund-link" data-fund-code="501225">景顺长城全球半导体芯片股票A(QDII-LOF)(人民币)</button></div></td><td>QDII-普通股票</td><td>19</td><td>半导体、芯片、QDII</td><td>24个月净值已补齐<br>自动补齐完成</td><td><span class="pool-badge expand">已进入当前排序 #8</span><br><small>已进入持仓池/观察池排序，按 Serenity 当前权重规则处理。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_501225.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E4</strong></td><td><div class="fund-cell"><strong class="fund-code">000157</strong><button type="button" class="fund-link" data-fund-code="000157">富国全球科技互联网股票(QDII)A(后端)</button></div></td><td>QDII-普通股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>自动补齐完成</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_000157.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E5</strong></td><td><div class="fund-cell"><strong class="fund-code">013172</strong><button type="button" class="fund-link" data-fund-code="013172">华夏恒生互联网科技业ETF联接(QDII)C</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>24个月净值已补齐<br>自动补齐完成</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_013172.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E6</strong></td><td><div class="fund-cell"><strong class="fund-code">017091</strong><button type="button" class="fund-link" data-fund-code="017091">景顺长城纳斯达克科技ETF联接(QDII)A人民币</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>24个月净值已补齐<br>自动补齐失败：&lt;urlopen error _ssl.c:993: The handshake operation timed out&gt;</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_017091.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E7</strong></td><td><div class="fund-cell"><strong class="fund-code">017092</strong><button type="button" class="fund-link" data-fund-code="017092">景顺长城纳斯达克科技ETF联接(QDII)A美元现汇</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>24个月净值已补齐<br>自动补齐失败：&lt;urlopen error _ssl.c:993: The handshake operation timed out&gt;</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_017092.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E8</strong></td><td><div class="fund-cell"><strong class="fund-code">017093</strong><button type="button" class="fund-link" data-fund-code="017093">景顺长城纳斯达克科技ETF联接(QDII)C人民币</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>24个月净值已补齐<br>自动补齐完成</td><td><span class="pool-badge expand">已进入当前排序 #9</span><br><small>已进入持仓池/观察池排序，按 Serenity 当前权重规则处理。</small></td><td><a href="https://fundf10.eastmoney.com/jjfl_017093.html" target="_blank" rel="noreferrer">费率来源</a></td></tr>
+<tr class="expansion-row"><td><strong>E9</strong></td><td><div class="fund-cell"><strong class="fund-code">017894</strong><button type="button" class="fund-link" data-fund-code="017894">汇添富纳斯达克生物科技ETF发起式联接(QDII)人民币A</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E10</strong></td><td><div class="fund-cell"><strong class="fund-code">017895</strong><button type="button" class="fund-link" data-fund-code="017895">汇添富纳斯达克生物科技ETF发起式联接(QDII)人民币C</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E11</strong></td><td><div class="fund-cell"><strong class="fund-code">017951</strong><button type="button" class="fund-link" data-fund-code="017951">汇添富纳斯达克生物科技ETF发起式联接(QDII)美元现汇</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E12</strong></td><td><div class="fund-cell"><strong class="fund-code">017952</strong><button type="button" class="fund-link" data-fund-code="017952">汇添富纳斯达克生物科技ETF发起式联接(QDII)美元现钞</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E13</strong></td><td><div class="fund-cell"><strong class="fund-code">018475</strong><button type="button" class="fund-link" data-fund-code="018475">万家恒生互联网科技业ETF发起式联接(QDII)A</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E14</strong></td><td><div class="fund-cell"><strong class="fund-code">018476</strong><button type="button" class="fund-link" data-fund-code="018476">万家恒生互联网科技业ETF发起式联接(QDII)C</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E15</strong></td><td><div class="fund-cell"><strong class="fund-code">018523</strong><button type="button" class="fund-link" data-fund-code="018523">华泰紫金恒生互联网科技业指数型发起基金(QDII)A</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E16</strong></td><td><div class="fund-cell"><strong class="fund-code">018524</strong><button type="button" class="fund-link" data-fund-code="018524">华泰紫金恒生互联网科技业指数型发起基金(QDII)C</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E17</strong></td><td><div class="fund-cell"><strong class="fund-code">019118</strong><button type="button" class="fund-link" data-fund-code="019118">景顺长城纳斯达克科技ETF联接(QDII)E人民币</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、纳斯达克、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E18</strong></td><td><div class="fund-cell"><strong class="fund-code">019936</strong><button type="button" class="fund-link" data-fund-code="019936">华安恒生互联网科技业ETF发起式联接(QDII)A</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E19</strong></td><td><div class="fund-cell"><strong class="fund-code">019937</strong><button type="button" class="fund-link" data-fund-code="019937">华安恒生互联网科技业ETF发起式联接(QDII)C</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E20</strong></td><td><div class="fund-cell"><strong class="fund-code">022184</strong><button type="button" class="fund-link" data-fund-code="022184">富国全球科技互联网股票(QDII)C</button></div></td><td>QDII-普通股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E21</strong></td><td><div class="fund-cell"><strong class="fund-code">023764</strong><button type="button" class="fund-link" data-fund-code="023764">华夏恒生互联网科技业ETF发起式联接(QDII)D</button></div></td><td>指数型-海外股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E22</strong></td><td><div class="fund-cell"><strong class="fund-code">026228</strong><button type="button" class="fund-link" data-fund-code="026228">富国全球科技互联网股票(QDII)D</button></div></td><td>QDII-普通股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E23</strong></td><td><div class="fund-cell"><strong class="fund-code">100055</strong><button type="button" class="fund-link" data-fund-code="100055">富国全球科技互联网股票(QDII)A</button></div></td><td>QDII-普通股票</td><td>17</td><td>科技、互联网、QDII</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E24</strong></td><td><div class="fund-cell"><strong class="fund-code">012570</strong><button type="button" class="fund-link" data-fund-code="012570">建信恒生科技指数发起(QDII)A</button></div></td><td>指数型-海外股票</td><td>16</td><td>科技、QDII、恒生科技</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr>
+<tr class="expansion-row"><td><strong>E25</strong></td><td><div class="fund-cell"><strong class="fund-code">012571</strong><button type="button" class="fund-link" data-fund-code="012571">建信恒生科技指数发起(QDII)C</button></div></td><td>指数型-海外股票</td><td>16</td><td>科技、QDII、恒生科技</td><td>净值历史待补齐/沿用<br>规则待补齐</td><td><span class="pool-badge expand">扩容观察</span><br><small>已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。</small></td><td>-</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -1021,7 +1095,10 @@
                 <th>证据摘要</th>
               </tr>
             </thead>
-            <tbody><tr class="timeline-row-flat"><td><strong>20260624 - 12:47 CST</strong><span>澳洲：20260624 - 14:47 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+            <tbody><tr class="timeline-row-flat"><td><strong>20260624 - 13:06 CST</strong><span>澳洲：20260624 - 15:06 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260624 - 12:57 CST</strong><span>澳洲：20260624 - 14:57 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260624 - 12:53 CST</strong><span>澳洲：20260624 - 14:53 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
+<tr class="timeline-row-flat"><td><strong>20260624 - 12:47 CST</strong><span>澳洲：20260624 - 14:47 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260624 - 12:38 CST</strong><span>澳洲：20260624 - 14:38 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260624 - 12:37 CST</strong><span>澳洲：20260624 - 14:37 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260624 - 12:36 CST</strong><span>澳洲：20260624 - 14:36 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
@@ -1029,19 +1106,13 @@
 <tr class="timeline-row-flat"><td><strong>20260624 - 11:30 CST</strong><span>澳洲：20260624 - 13:30 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260624 - 10:47 CST</strong><span>澳洲：20260624 - 12:47 AEST</span></td><td>成功</td><td>通过</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
 <tr class="timeline-row-flat"><td><strong>20260624 - 10:30 CST</strong><span>澳洲：20260624 - 12:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-flat"><td><strong>20260624 - 09:30 CST</strong><span>澳洲：20260624 - 11:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-mixed"><td><strong>20260624 - 08:30 CST</strong><span>澳洲：20260624 - 10:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge mixed">买 2 / 卖 3</span></td><td><span class="timeline-count buy">买 2</span></td><td><span class="timeline-count sell">卖 3</span></td><td><div class="timeline-detail-lines"><span>易方达创业板ETF联接A 增加 +0.04%；</span><span>广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；</span><span>华夏国证半导体芯片ETF联接A 减少 -0.03%；</span><span>天弘中证人工智能A 减少 -0.02%</span></div></td></tr>
-<tr class="timeline-row-flat"><td><strong>20260623 - 17:30 CST</strong><span>澳洲：20260623 - 19:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge flat">维持</span></td><td><span class="timeline-count buy">买 0</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>Top5 目标权重无变化</span></div></td></tr>
-<tr class="timeline-row-buy"><td><strong>20260623 - 16:30 CST</strong><span>澳洲：20260623 - 18:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge buy">买入/增加 5</span></td><td><span class="timeline-count buy">买 5</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 新增 28.73%；</span><span>天弘中证人工智能A 新增 23.41%；</span><span>易方达创业板ETF联接A 新增 19.12%；</span><span>国联安中证半导体ETF联接A 新增 15.85%</span></div></td></tr></tbody>
+<tr class="timeline-row-buy"><td><strong>20260624 - 09:30 CST</strong><span>澳洲：20260624 - 11:30 AEST</span></td><td>降级</td><td>降级</td><td><span class="timeline-badge buy">买入/增加 5</span></td><td><span class="timeline-count buy">买 5</span></td><td><span class="timeline-count sell">卖 0</span></td><td><div class="timeline-detail-lines"><span>华夏国证半导体芯片ETF联接A 新增 28.71%；</span><span>天弘中证人工智能A 新增 23.39%；</span><span>易方达创业板ETF联接A 新增 19.16%；</span><span>国联安中证半导体ETF联接A 新增 15.84%</span></div></td></tr></tbody>
           </table>
         </div>
       </div>
       <div class="timeline-visual" data-timeline-view="visual" hidden>
         <div class="timeline-axis" aria-hidden="true"></div>
-        <div class="timeline-nodes"><article class="timeline-node buy"><div class="timeline-dot buy" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 16:30 CST</strong><span><span class="timeline-badge buy">买入/增加 5</span></span><small>华夏国证半导体芯片ETF联接A 新增 28.73%；天弘中证人工智能A 新增 23.41%；易方达创业板ETF联接A 新增 19.12%；国联安中证半导体ETF联接A 新增 15.85%</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260623 - 17:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
-<article class="timeline-node mixed"><div class="timeline-dot mixed" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 08:30 CST</strong><span><span class="timeline-badge mixed">买 2 / 卖 3</span></span><small>易方达创业板ETF联接A 增加 +0.04%；广发纳指100ETF联接(QDII)人民币A 增加 +0.03%；华夏国证半导体芯片ETF联接A 减少 -0.03%；天弘中证人工智能A 减少 -0.02%</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 09:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+        <div class="timeline-nodes"><article class="timeline-node buy"><div class="timeline-dot buy" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 09:30 CST</strong><span><span class="timeline-badge buy">买入/增加 5</span></span><small>华夏国证半导体芯片ETF联接A 新增 28.71%；天弘中证人工智能A 新增 23.39%；易方达创业板ETF联接A 新增 19.16%；国联安中证半导体ETF联接A 新增 15.84%</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 10:47 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 11:30 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
@@ -1049,7 +1120,10 @@
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:36 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:37 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
 <article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:38 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
-<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:47 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article></div>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:47 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:53 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 12:57 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article>
+<article class="timeline-node flat"><div class="timeline-dot flat" aria-hidden="true"></div><div class="timeline-node-card"><strong>20260624 - 13:06 CST</strong><span><span class="timeline-badge flat">维持</span></span><small>Top5 目标权重无变化</small></div></article></div>
       </div>
     </section>
     
@@ -1342,14 +1416,397 @@
         <button type="button" data-copy-review-log>复制复核记录</button>
         <button type="button" data-clear-review-log>清空复核记录</button>
       </div>
-      <div class="review-list"><div class="review-empty">当前没有待处理复核项；已处理记录保留在 SQLite 数据库和历史运行中。</div></div>
+      <div class="review-list">
+            <article class="review-item" data-review-item data-review-id="233" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>016668 · 景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：#7 · 等级：人工复核 · 证据置信度：69.46</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>official source count below Action-Ready threshold</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="234" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>501225 · 景顺长城全球半导体芯片股票A(QDII-LOF)(人民币)</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：#8 · 等级：人工复核 · 证据置信度：69.48</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>official source count below Action-Ready threshold</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="239" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>017093 · 景顺长城纳斯达克科技ETF联接(QDII)C人民币</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：#9 · 等级：观察 · 证据置信度：70.06</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>official source count below Action-Ready threshold</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="254" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>100055 · 富国全球科技互联网股票(QDII)A</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="253" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>026228 · 富国全球科技互联网股票(QDII)D</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="252" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>023764 · 华夏恒生互联网科技业ETF发起式联接(QDII)D</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="251" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>022184 · 富国全球科技互联网股票(QDII)C</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="250" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>019937 · 华安恒生互联网科技业ETF发起式联接(QDII)C</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="249" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>019936 · 华安恒生互联网科技业ETF发起式联接(QDII)A</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="248" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>019118 · 景顺长城纳斯达克科技ETF联接(QDII)E人民币</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="247" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>018524 · 华泰紫金恒生互联网科技业指数型发起基金(QDII)C</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            
+
+            <article class="review-item" data-review-item data-review-id="246" data-review-run-id="sda_20260624T050607Z_r5_40a756d2">
+              <div class="review-item-head">
+                <div>
+                  <strong>018523 · 华泰紫金恒生互联网科技业指数型发起基金(QDII)A</strong>
+                  <span>20260624 - 13:06 CST · open · sda_20260624T050607Z_r5_40a756d2</span>
+                  <span>基金分析排序：未进入当前分析排序 · 等级：阻断 · 证据置信度：15.00</span>
+                </div>
+                <span class="badge locked">No-New-Order</span>
+              </div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>candidate NAV history &lt; 24 months; not eligible for screening/action-ready pool</span>
+              </div>
+              <label>
+                <span>复核结果</span>
+                <select data-review-decision>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
+                </select>
+              </label>
+              <label>
+                <span>备注</span>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
+              </label>
+              <div class="review-item-actions">
+                <button type="button" data-save-review>保存复核</button>
+                <span data-review-state>未保存</span>
+              </div>
+            </article>
+            </div>
     </section>
   </div>
     
   <div class="toast" role="status" aria-live="polite" id="toast">完成</div>
   <script>
     const toast = document.getElementById("toast");
-    const fundLibrary = {"007300": {"code": "007300", "name": "国联安中证半导体ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "0.80%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 0.80%；100万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<365天 0.50%；N≥365天 0.00%", "feeScheduleAsOf": "2026-05-15", "feeScheduleNote": "A类前端法定费率；销售渠道可能有申购费折扣；执行前以支付宝交易确认页和国联安最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Guolianan product summary PDF + Eastmoney status + public sales disclosure", "sourceUrl": "https://pdf.dfcfw.com/pdf/H2_AN202605151822335541_1.pdf"}, "008887": {"code": "008887", "name": "华夏国证半导体芯片ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<50万元 1.20%；50万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；N≥7日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；销售渠道可能给申购费折扣；赎回按持有期限和先进先出口径匹配；执行前以支付宝交易确认页为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official fund page + CCB rule snapshot + Eastmoney NAV/status", "sourceUrl": "https://www.chinaamc.com/fund/008887/jijinfeilv.shtml?source=click"}, "011839": {"code": "011839", "name": "天弘中证人工智能A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<30天 0.30%；N≥30天 0.05%", "feeScheduleAsOf": "2025-06-27", "feeScheduleNote": "A类前端法定费率；同一交易日多笔申购按单笔申请分别适用分档；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong/CNInfo product document + Eastmoney NAV/status", "sourceUrl": "https://static.cninfo.com.cn/finalpage/2025-06-27/1224007185.PDF"}, "013171": {"code": "013171", "name": "华夏恒生互联网科技业ETF联接(QDII)A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<30日 0.50%；N≥30日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；申购可能受单日额度/港股节假日限制；执行前以支付宝交易确认页和华夏基金公告为准", "managementFee": "0.50%", "custodyFee": "0.15%", "salesServiceFee": "0.00%", "operatingFee": "0.65%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official page + AMC Fortune official page + public fee/status", "sourceUrl": "https://www.chinaamc.com/fund/013171/jijinfeilv.shtml?source=click"}, "018043": {"code": "018043", "name": "天弘纳斯达克100指数发起(QDII)A", "firstTop5Time": "20260615 - 12:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<180天 0.50%；180天≤N<365天 0.25%；N≥365天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；当前申购状态可能受额度/暂停影响；多源交叉验证含天弘官网、东方财富/天天基金、新浪和代销平台；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong official page + Eastmoney/Tiantian fee page + Sina fee/status + CCB/TTFund status + MooMoo QQQ proxy", "sourceUrl": "https://www.thfund.com.cn/fundinfo/018043"}, "110026": {"code": "110026", "name": "易方达创业板ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<500万元 0.50%；500万元≤M<1000万元 0.10%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "0天≤N≤6天 1.50%；7天≤N≤29天 0.50%；30天≤N≤179天 0.10%；N≥180天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；多次申购按单笔申购金额适用费率；执行前以支付宝交易确认页为准", "managementFee": "0.15%", "custodyFee": "0.05%", "salesServiceFee": "0.00%", "operatingFee": "0.20%", "minPurchaseAmount": "10.00", "sourceName": "E Fund official fund page + Eastmoney NAV/status", "sourceUrl": "https://www.efunds.com.cn/Mobile/fund/110026.shtml"}, "270042": {"code": "270042", "name": "广发纳指100ETF联接(QDII)人民币A", "firstTop5Time": "20260612 - 17:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 12:47 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.30%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.30%；100万元≤M<500万元 0.70%；500万元≤M<1000万元 0.20%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<365日 0.50%；1年≤N<2年 0.30%；N≥2年 0.00%", "feeScheduleAsOf": "2026-06-05", "feeScheduleNote": "QDII人民币A前端法定费率；申购可能受大额/额度限制；多源交叉验证含广发官网/产品概要、东方财富/天天基金、新浪和银行代销页；执行前以支付宝交易确认页和广发最新公告为准", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "GF official fund page/product summary + Eastmoney/Tiantian fee page + Sina fee page + CCB/ABC agency status + MooMoo QQQ proxy", "sourceUrl": "https://www.gffunds.com.cn/jjgg/flwj/202606/P020260605334092544639.pdf"}};
+    const fundLibrary = {"007300": {"code": "007300", "name": "国联安中证半导体ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "0.80%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 0.80%；100万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<365天 0.50%；N≥365天 0.00%", "feeScheduleAsOf": "2026-05-15", "feeScheduleNote": "A类前端法定费率；销售渠道可能有申购费折扣；执行前以支付宝交易确认页和国联安最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Guolianan product summary PDF + Eastmoney status + public sales disclosure", "sourceUrl": "https://pdf.dfcfw.com/pdf/H2_AN202605151822335541_1.pdf"}, "008887": {"code": "008887", "name": "华夏国证半导体芯片ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<50万元 1.20%；50万元≤M<200万元 0.90%；200万元≤M<500万元 0.60%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；N≥7日 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；销售渠道可能给申购费折扣；赎回按持有期限和先进先出口径匹配；执行前以支付宝交易确认页为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "ChinaAMC official fund page + CCB rule snapshot + Eastmoney NAV/status", "sourceUrl": "https://www.chinaamc.com/fund/008887/jijinfeilv.shtml?source=click"}, "011839": {"code": "011839", "name": "天弘中证人工智能A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<30天 0.30%；N≥30天 0.05%", "feeScheduleAsOf": "2025-06-27", "feeScheduleNote": "A类前端法定费率；同一交易日多笔申购按单笔申请分别适用分档；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong/CNInfo product document + Eastmoney NAV/status", "sourceUrl": "https://static.cninfo.com.cn/finalpage/2025-06-27/1224007185.PDF"}, "018043": {"code": "018043", "name": "天弘纳斯达克100指数发起(QDII)A", "firstTop5Time": "20260615 - 12:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<500万元 1.00%；M≥500万元 1000元/笔", "redemptionFeeSchedule": "N<7天 1.50%；7天≤N<180天 0.50%；180天≤N<365天 0.25%；N≥365天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "QDII A类前端法定费率；当前申购状态可能受额度/暂停影响；多源交叉验证含天弘官网、东方财富/天天基金、新浪和代销平台；执行前以支付宝交易确认页和天弘最新公告为准", "managementFee": "0.50%", "custodyFee": "0.10%", "salesServiceFee": "0.00%", "operatingFee": "0.60%", "minPurchaseAmount": "10.00", "sourceName": "Tianhong official page + Eastmoney/Tiantian fee page + Sina fee/status + CCB/TTFund status + MooMoo QQQ proxy", "sourceUrl": "https://www.thfund.com.cn/fundinfo/018043"}, "110026": {"code": "110026", "name": "易方达创业板ETF联接A", "firstTop5Time": "20260613 - 06:00 CST", "lastTop5EntryTime": "20260612 - 17:30 CST", "currentCandidateDays": "13 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.20%；100万元≤M<500万元 0.50%；500万元≤M<1000万元 0.10%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "0天≤N≤6天 1.50%；7天≤N≤29天 0.50%；30天≤N≤179天 0.10%；N≥180天 0.00%", "feeScheduleAsOf": "2026-06-12", "feeScheduleNote": "A类前端法定费率；多次申购按单笔申购金额适用费率；执行前以支付宝交易确认页为准", "managementFee": "0.15%", "custodyFee": "0.05%", "salesServiceFee": "0.00%", "operatingFee": "0.20%", "minPurchaseAmount": "10.00", "sourceName": "E Fund official fund page + Eastmoney NAV/status", "sourceUrl": "https://www.efunds.com.cn/Mobile/fund/110026.shtml"}, "270042": {"code": "270042", "name": "广发纳指100ETF联接(QDII)人民币A", "firstTop5Time": "20260612 - 17:30 CST", "lastTop5EntryTime": "20260615 - 17:00 CST", "currentCandidateDays": "10 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "limited", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+5", "subscriptionFee": "1.30%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "M<100万元 1.30%；100万元≤M<500万元 0.70%；500万元≤M<1000万元 0.20%；M≥1000万元 1000元/笔", "redemptionFeeSchedule": "N<7日 1.50%；7日≤N<365日 0.50%；1年≤N<2年 0.30%；N≥2年 0.00%", "feeScheduleAsOf": "2026-06-05", "feeScheduleNote": "QDII人民币A前端法定费率；申购可能受大额/额度限制；多源交叉验证含广发官网/产品概要、东方财富/天天基金、新浪和银行代销页；执行前以支付宝交易确认页和广发最新公告为准", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "GF official fund page/product summary + Eastmoney/Tiantian fee page + Sina fee page + CCB/ABC agency status + MooMoo QQQ proxy", "sourceUrl": "https://www.gffunds.com.cn/jjgg/flwj/202606/P020260605334092544639.pdf"}, "000157": {"code": "000157", "name": "富国全球科技互联网股票(QDII)A(后端)", "firstTop5Time": "-", "lastTop5EntryTime": "-", "currentCandidateDays": "-", "candidateStatus": "不在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+2", "subscriptionFee": "1.50%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "小于100万元 1.50%|0.15%；大于等于100万元，小于500万元 1.20%|0.12%；大于等于500万元 每笔1000元", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.75%；大于等于30天，小于365天 0.50%；大于等于365天，小于730天 0.30%；大于等于730天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "1.20%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.40%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_000157.html"}, "013172": {"code": "013172", "name": "华夏恒生互联网科技业ETF联接(QDII)C", "firstTop5Time": "-", "lastTop5EntryTime": "-", "currentCandidateDays": "-", "candidateStatus": "不在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "open", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+1", "subscriptionFee": "0.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "--- 0.00%", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.50%；大于等于30天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "0.50%", "custodyFee": "0.15%", "salesServiceFee": "0.30%", "operatingFee": "0.95%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_013172.html"}, "016668": {"code": "016668", "name": "景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)", "firstTop5Time": "20260624 - 12:53 CST", "lastTop5EntryTime": "20260624 - 12:53 CST", "currentCandidateDays": "1 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "closed", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+2", "subscriptionFee": "0.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "--- 0.00%", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.50%；大于等于30天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "1.20%", "custodyFee": "0.20%", "salesServiceFee": "0.40%", "operatingFee": "1.80%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_016668.html"}, "017093": {"code": "017093", "name": "景顺长城纳斯达克科技ETF联接(QDII)C人民币", "firstTop5Time": "20260624 - 13:06 CST", "lastTop5EntryTime": "20260624 - 13:06 CST", "currentCandidateDays": "1 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "closed", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+2", "subscriptionFee": "0.00%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "--- 0.00%", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.75%；大于等于30天，小于180天 0.50%；大于等于180天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.40%", "operatingFee": "1.40%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_017093.html"}, "501225": {"code": "501225", "name": "景顺长城全球半导体芯片股票A(QDII-LOF)(人民币)", "firstTop5Time": "20260624 - 12:53 CST", "lastTop5EntryTime": "20260624 - 12:53 CST", "currentCandidateDays": "1 天", "candidateStatus": "在当前候选池", "ruleSnapshotTime": "20260624 - 13:06 CST", "subscriptionStatus": "closed", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+2", "subscriptionFee": "1.50%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "小于100万元 1.50%|0.15%；大于等于100万元，小于300万元 1.00%|0.10%；大于等于300万元，小于500万元 0.50%|0.05%；大于等于500万元 每笔1000元", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.75%；大于等于30天，小于180天 0.50%；大于等于180天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "1.20%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.40%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_501225.html"}, "016667": {"code": "016667", "name": "景顺长城全球半导体芯片股票A(QDII-LOF)(美元现汇)", "firstTop5Time": "20260624 - 12:53 CST", "lastTop5EntryTime": "20260624 - 12:53 CST", "currentCandidateDays": "-", "candidateStatus": "不在当前候选池", "ruleSnapshotTime": "20260624 - 12:57 CST", "subscriptionStatus": "closed", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.60%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "小于20万美元 1.60%；大于等于20万美元，小于50万美元 1.10%；大于等于50万美元，小于100万美元 0.60%；大于等于100万美元 每笔200美元", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.75%；大于等于30天，小于180天 0.50%；大于等于180天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "1.20%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.40%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_016667.html"}, "017091": {"code": "017091", "name": "景顺长城纳斯达克科技ETF联接(QDII)A人民币", "firstTop5Time": "20260624 - 12:53 CST", "lastTop5EntryTime": "20260624 - 12:53 CST", "currentCandidateDays": "-", "candidateStatus": "不在当前候选池", "ruleSnapshotTime": "20260624 - 12:57 CST", "subscriptionStatus": "closed", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+2", "redeemLag": "T+2", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "小于100万元 1.20%|0.12%；大于等于100万元，小于200万元 0.80%|0.08%；大于等于200万元，小于500万元 0.40%|0.04%；大于等于500万元 每笔1000元", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.75%；大于等于30天，小于180天 0.50%；大于等于180天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_017091.html"}, "017092": {"code": "017092", "name": "景顺长城纳斯达克科技ETF联接(QDII)A美元现汇", "firstTop5Time": "-", "lastTop5EntryTime": "-", "currentCandidateDays": "-", "candidateStatus": "不在当前候选池", "ruleSnapshotTime": "20260624 - 12:57 CST", "subscriptionStatus": "closed", "redemptionStatus": "open", "cutoffTime": "15:00", "confirmLag": "T+1", "redeemLag": "T+3", "subscriptionFee": "1.20%", "redemptionFee": "1.50%", "subscriptionFeeSchedule": "小于20万美元 1.20%；大于等于20万美元，小于40万美元 0.80%；大于等于40万美元，小于100万美元 0.40%；大于等于100万美元 每笔150美元", "redemptionFeeSchedule": "小于7天 1.50%；大于等于7天，小于30天 0.75%；大于等于30天，小于180天 0.50%；大于等于180天 0.00%", "feeScheduleAsOf": "2026-06-24", "feeScheduleNote": "自动补齐自天天基金公开费率页；属于公开聚合源，执行前仍需支付宝或基金公司官方页确认。", "managementFee": "0.80%", "custodyFee": "0.20%", "salesServiceFee": "0.00%", "operatingFee": "1.00%", "minPurchaseAmount": "10.00", "sourceName": "Eastmoney/Tiantian Fund fee/status page", "sourceUrl": "https://fundf10.eastmoney.com/jjfl_017092.html"}};
     const showToast = (message) => {
       toast.textContent = message;
       toast.classList.add("show");
@@ -1547,7 +2004,46 @@
       if (!record) return "未保存";
       const savedAt = record.savedAt || record.saved_at || "";
       const label = record.outcomeLabel || record.decision || "";
+      if (record.refreshStatus === "running") {
+        return `已写入数据库 ${savedAt} · 正在重新运行 Serenity 全流程`;
+      }
       return `已保存到数据库 ${savedAt}${label ? ` · ${label}` : ""}`;
+    };
+    const waitForReviewRefresh = async (reviewId, state, button, originalText) => {
+      for (let attempt = 0; attempt < 30; attempt += 1) {
+        await new Promise((resolve) => window.setTimeout(resolve, 2000));
+        let log = {};
+        try {
+          log = await loadReviewLog();
+        } catch {
+          continue;
+        }
+        const record = log[reviewId];
+        if (!record || record.refreshStatus === "running") {
+          if (state) state.textContent = "已写入数据库，正在重新运行 Serenity 全流程";
+          continue;
+        }
+        if (state) state.textContent = reviewStateText(record);
+        if (record.refreshStatus === "error") {
+          if (button) {
+            button.disabled = false;
+            button.textContent = originalText || "保存复核";
+          }
+          showToast(record.refreshMessage || "已保存到数据库，但同步刷新失败");
+          return;
+        }
+        window.sessionStorage.setItem(
+          "serenityRefreshToast",
+          record.refreshMessage || "人工复核已保存到数据库，并已重新运行 Serenity 全流程"
+        );
+        reloadAfterServerUpdate();
+        return;
+      }
+      if (button) {
+        button.disabled = false;
+        button.textContent = originalText || "保存复核";
+      }
+      showToast("已写入数据库，后台刷新仍在运行；稍后请点击刷新查看最新结果");
     };
     const applyReviewLog = async () => {
       let log = {};
@@ -1587,11 +2083,16 @@
       button.addEventListener("click", async () => {
         const item = button.closest("[data-review-item]");
         if (!item) return;
+        const originalText = button.textContent;
         const decision = item.querySelector("[data-review-decision]");
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         const savedAt = formatReviewSavedAt();
         const outcome = normalizeReviewOutcome(decision ? decision.value : "observe_pool");
+        button.disabled = true;
+        button.textContent = "保存中";
+        if (state) state.textContent = "正在写入数据库...";
+        showToast("正在保存复核到数据库");
         const record = {
           review_id: item.dataset.reviewId || "",
           run_id: item.dataset.reviewRunId || "",
@@ -1603,8 +2104,16 @@
         try {
           const saved = await saveReviewRecord(record);
           if (state) state.textContent = reviewStateText(saved);
+          if (saved.refreshStatus === "running") {
+            button.textContent = "刷新中";
+            showToast("已写入数据库，正在重新运行 Serenity 全流程");
+            void waitForReviewRefresh(String(saved.review_id || record.review_id), state, button, originalText);
+            return;
+          }
           if (saved.refreshTriggered) {
             if (saved.refreshStatus === "error") {
+              button.disabled = false;
+              button.textContent = originalText;
               showToast(saved.refreshMessage || "已保存到数据库，但同步刷新失败");
             } else {
               window.sessionStorage.setItem(
@@ -1614,11 +2123,15 @@
               reloadAfterServerUpdate();
             }
           } else {
+            button.disabled = false;
+            button.textContent = originalText;
             showToast(`人工复核已保存到数据库：${saved.outcomeLabel || saved.decision || "已保存"}`);
           }
         } catch (error) {
           const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
           if (state) state.textContent = "保存失败，未写入数据库";
+          button.disabled = false;
+          button.textContent = originalText;
           showToast(message);
         }
       });

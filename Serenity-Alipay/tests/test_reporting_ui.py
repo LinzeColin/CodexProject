@@ -2,6 +2,7 @@ from pathlib import Path
 
 from app.core.reporting import render_markdown_report, render_offline_index
 from app.core.application_portal import (
+    PortalExpansionCandidate,
     PortalFundInfo,
     PortalHolding,
     PortalManualReviewItem,
@@ -443,8 +444,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             trigger_reason="serenity judgment supported by evidence confidence",
             review_text="维持",
             entry_time_bj="2026-06-13T06:00:00+08:00",
-            nav_as_of="20260614",
-            updated_at_bj="2026-06-15T14:00:00+08:00",
+            metric_data_date="20260614",
             since_entry_return=0.0234,
             return_1m=0.0521,
             return_3m=0.1188,
@@ -473,8 +473,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             trigger_reason="创业板成长弹性入选 Serenity Top5",
             review_text="维持",
             entry_time_bj="2026-06-13T06:00:00+08:00",
-            nav_as_of="20260614",
-            updated_at_bj="2026-06-15T14:00:00+08:00",
+            metric_data_date="20260614",
             since_entry_return=0.014,
             return_1m=0.041,
             return_3m=0.094,
@@ -503,8 +502,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             trigger_reason="fee/redemption/subscription status missing or closed",
             review_text="需人工复核",
             entry_time_bj="2026-06-14T14:58:15+08:00",
-            nav_as_of="20260614",
-            updated_at_bj="2026-06-15T14:00:00+08:00",
+            metric_data_date="20260614",
             since_entry_return=None,
             return_1m=0.031,
             return_3m=0.077,
@@ -521,6 +519,21 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             treynor=0.04,
         ),
     ]
+    expansion_candidates = [
+        PortalExpansionCandidate(
+            sequence=1,
+            code="016668",
+            name="景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)",
+            fund_type="QDII-普通股票",
+            theme_score=19,
+            matched_keywords=("半导体", "芯片", "QDII"),
+            nav_status="24个月净值已补齐",
+            rule_status="自动补齐完成",
+            current_status="扩容观察",
+            note="已被全市场扩容发现并补齐公开数据；尚未超过当前 Top5/观察池，后续刷新继续参与排序。",
+            source_url="https://fundf10.eastmoney.com/jjfl_016668.html",
+        )
+    ]
 
     html = render_application_portal(
         run,
@@ -533,6 +546,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
         manual_review_items=review_items,
         observation_pool=[observation_holding],
         pool_metrics=pool_metrics,
+        expansion_candidates=expansion_candidates,
     )
 
     assert "<h1>Serenity 每日分析</h1>" in html
@@ -544,7 +558,13 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "持仓池 / 观察池排序" not in html
     assert 'aria-label="持仓池与观察池排序"' not in html
     assert "持仓池表现指标" in html
-    assert html.index("<h2>当前持仓建议</h2>") < html.index("<h2>持仓建议</h2>") < html.index("<h2>持仓池表现指标</h2>")
+    assert "扩容观察候选" in html
+    assert "016668" in html
+    assert "景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)" in html
+    assert "24个月净值已补齐" in html
+    assert "自动补齐完成" in html
+    assert "尚未超过当前 Top5/观察池" in html
+    assert html.index("<h2>当前持仓建议</h2>") < html.index("<h2>持仓建议</h2>") < html.index("<h2>持仓池表现指标</h2>") < html.index("<h2>扩容观察候选</h2>")
     assert "动作/复核" in html
     assert "排序原因" in html
     assert "入池后涨跌幅" in html
@@ -558,7 +578,9 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "Theta" in html
     assert "Sharpe" in html
     assert "Sortino" in html
-    assert "指标更新时间" in html
+    assert "净值截至" not in html
+    assert "指标更新时间" not in html
+    assert "指标数据日" in html
     assert '<strong class="fund-code">110026</strong>' in html
     assert "易方达创业板ETF联接A" in html
     assert "中证全指半导体" in html
@@ -655,6 +677,11 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "人工复核已保存到数据库" in html
     assert "已保存到数据库" in html
     assert "保存复核必须写入本机 SQLite 数据库" in html
+    assert "正在写入数据库" in html
+    assert "保存中" in html
+    assert "刷新中" in html
+    assert "waitForReviewRefresh" in html
+    assert "后台刷新仍在运行" in html
     assert "本地服务未启动。请重新打开 Serenity 每日分析.app" in html
     assert "初始持仓权重" in html
     assert "上轮对比权重" in html
