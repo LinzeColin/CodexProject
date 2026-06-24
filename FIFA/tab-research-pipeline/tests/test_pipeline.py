@@ -1237,14 +1237,75 @@ South Africa
             output_dir = Path(tmp)
             raw_path = output_dir / "matches_raw.json"
             previous = output_dir / "previous_report_baseline.json"
+            public_source_audit = output_dir / "public_source_audit.json"
+            event_audit = output_dir / "event_audit.json"
             atomic_write_json(raw_path, full_matches_raw_fixture())
             atomic_write_json(previous, {"version": "fixture", "recommendations": []})
-            result = write_outputs(raw_path, Path(tmp), version="test", previous_baseline_path=previous)
+            atomic_write_json(public_source_audit, {"all_sources_ok": True, "ok_count": 3, "source_count": 3})
+            atomic_write_json(event_audit, {"all_feeds_ok": True, "ok_count": 1, "feed_count": 1, "flagged_item_count": 0})
+            result = write_outputs(
+                raw_path,
+                Path(tmp),
+                version="test",
+                previous_baseline_path=previous,
+                public_source_audit_path=public_source_audit,
+                event_audit_path=event_audit,
+            )
+            self.assertEqual(result["export_status"], "ready")
             self.assertIn("recommendations", result)
             self.assertIn("daily_compare", result)
             self.assertTrue((Path(tmp) / "tab_fifa_world_cup_matches_recommendations_test.json").exists())
             self.assertTrue((Path(tmp) / "automation_gate_test.json").exists())
             self.assertTrue((Path(tmp) / "previous_report_baseline_test.json").exists())
+
+    def test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            raw_path = output_dir / "matches_raw.json"
+            atomic_write_json(raw_path, full_matches_raw_fixture())
+
+            result = write_outputs(raw_path, output_dir, version="blocked")
+
+            self.assertEqual(result["export_status"], "failed_closed")
+            self.assertEqual(result["failure_stage"], "validation")
+            self.assertFalse(result["automation_gate"]["automation_ready"])
+            self.assertEqual(result["recommended_new_exposure_aud"], 0)
+            self.assertEqual(result["recommendations"], [])
+            self.assertTrue((output_dir / "automation_gate_blocked.json").exists())
+            self.assertTrue((output_dir / "tab_fifa_world_cup_matches_failed_closed_blocked.json").exists())
+            self.assertFalse((output_dir / "tab_fifa_world_cup_matches_recommendations_blocked.json").exists())
+            self.assertFalse((output_dir / "tab_fifa_world_cup_matches_blocked_pipeline_report.md").exists())
+            self.assertFalse((output_dir / "previous_report_baseline_blocked.json").exists())
+            self.assertTrue(any("Public source audit" in item for item in result["blocking_reasons"]))
+
+    def test_write_outputs_fails_closed_on_raw_parse_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            raw_path = output_dir / "broken_raw.json"
+            raw_path.write_text("{not json", encoding="utf-8")
+
+            result = write_outputs(raw_path, output_dir, version="parse-error")
+
+            self.assertEqual(result["export_status"], "failed_closed")
+            self.assertEqual(result["failure_stage"], "parse")
+            self.assertEqual(result["recommendations"], [])
+            self.assertTrue((output_dir / "tab_fifa_world_cup_matches_failed_closed_parse-error.json").exists())
+            self.assertFalse((output_dir / "tab_fifa_world_cup_matches_recommendations_parse-error.json").exists())
+            self.assertFalse((output_dir / "tab_fifa_world_cup_matches_parse-error_pipeline_report.md").exists())
+
+    def test_write_outputs_legacy_blocked_export_requires_explicit_flag(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp)
+            raw_path = output_dir / "matches_raw.json"
+            atomic_write_json(raw_path, full_matches_raw_fixture())
+
+            result = write_outputs(raw_path, output_dir, version="legacy", allow_blocked_export=True)
+
+            self.assertEqual(result["export_status"], "legacy_blocked_export")
+            self.assertFalse(result["automation_gate"]["automation_ready"])
+            self.assertTrue((output_dir / "tab_fifa_world_cup_matches_recommendations_legacy.json").exists())
+            self.assertTrue((output_dir / "tab_fifa_world_cup_matches_legacy_pipeline_report.md").exists())
+            self.assertTrue((output_dir / "previous_report_baseline_legacy.json").exists())
 
     def test_public_source_audit(self):
         sources = [

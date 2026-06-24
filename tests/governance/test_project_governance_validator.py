@@ -2405,7 +2405,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(len(project["features"]), 6)
         self.assertEqual(len(project["models"]), 11)
         self.assertEqual(len(project["formulas"]), 11)
-        self.assertEqual(len(project["parameters"]), 108)
+        self.assertEqual(len(project["parameters"]), 109)
         self.assertEqual(len(project["strategies"]), 3)
 
         model_ids = {item["model_id"] for item in project["models"]}
@@ -2413,7 +2413,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         parameter_ids = {item["parameter_id"] for item in project["parameters"]}
         self.assertEqual({f"MOD-{index:03d}" for index in range(1, 12)}, model_ids)
         self.assertEqual({f"FORM-{index:03d}" for index in range(1, 12)}, formula_ids)
-        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 109)}, parameter_ids)
+        self.assertEqual({f"PARAM-{index:03d}" for index in range(1, 109)} | {"PARAM-118"}, parameter_ids)
         self.assertNotIn("PARAM-109", parameter_ids)
 
         evidence_ids = {item["evidence_id"] for item in project["evidence_refs"]}
@@ -2427,7 +2427,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         parameter_semantic_counts = Counter(item["semantic_status"] for item in project["parameters"])
         formula_semantic_counts = Counter(item["semantic_status"] for item in project["formulas"])
         model_semantic_counts = Counter(item["semantic_status"] for item in project["models"])
-        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 91)
+        self.assertEqual(parameter_semantic_counts["MACHINE_VERIFIED"], 92)
         self.assertEqual(parameter_semantic_counts["HUMAN_REVIEW_REQUIRED"], 17)
         self.assertEqual(formula_semantic_counts["MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"], 10)
         self.assertEqual(formula_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
@@ -2435,7 +2435,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(model_semantic_counts["HUMAN_REVIEW_REQUIRED"], 1)
 
         limitations = " ".join(item["statement"] for item in project["limitations"])
-        self.assertIn("91/108 active parameters", limitations)
+        self.assertIn("92/109 active parameters", limitations)
         self.assertIn("17 个 active parameters", limitations)
         self.assertIn("delivery_readiness 仍为 UNVERIFIED", limitations)
         self.assertIn("不改 odds parsing", limitations)
@@ -2444,9 +2444,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["delivery_readiness"]["blocked_requirements"], 6)
 
         matrix = validator.load_yaml(ROOT / "FIFA" / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-REVIEW9-S5PBT02")
-        self.assertEqual(matrix["current_phase"], "S5PB")
-        self.assertEqual(matrix["current_gate"], "S5PB-GATE-IN-PROGRESS")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-FIFA-S3PDT02")
+        self.assertEqual(matrix["current_phase"], "S3PD")
+        self.assertEqual(matrix["current_gate"], "S3PD-GATE-IN-PROGRESS; S5PB-GATE-IN-PROGRESS")
 
     def test_review9_s5pbt02_fifa_roadmap_tracks_single_project_task(self) -> None:
         validator = load_validator_module()
@@ -4750,6 +4750,75 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("No module named pytest", observed)
         self.assertIn(
             "No real raw export, cookie, browser profile, plaintext secret, production private data, owner data ingestion, or delivery readiness approval is used or implied by S3PDT01.",
+            manifest["unresolved_risks"],
+        )
+
+    def test_other8_s3pdt02_fifa_fail_closed_manifest_and_gate_evidence(self) -> None:
+        gate_log = ROOT / "governance" / "stage_gates" / "s3pd" / "fifa_fail_closed_tests.log"
+        self.assertTrue(gate_log.is_file())
+        gate_text = gate_log.read_text(encoding="utf-8")
+        for required in {
+            "S3PDT02",
+            "parse_failure_default_failed_closed: PASS",
+            "validation_failure_default_failed_closed: PASS",
+            "blocked_export_no_recommendations_report_baseline: PASS",
+            "ready_export_writes_success_deliverables: PASS",
+            "legacy_blocked_export_requires_explicit_flag: PASS",
+            "cli_failed_closed_exit_nonzero: PASS",
+            "Ran 6 tests",
+            "No module named 'fcntl'",
+        }:
+            self.assertIn(required, gate_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "FIFA")
+        self.assertEqual(manifest["task_id"], "S3PDT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PDT02"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "FIFA/tab-research-pipeline/tab_research/pipeline.py",
+            "FIFA/tab-research-pipeline/run_pipeline.py",
+            "FIFA/tab-research-pipeline/tests/test_pipeline.py",
+            "FIFA/CHANGELOG.md",
+            "FIFA/docs/governance/DELIVERY_PLAN.md",
+            "FIFA/docs/governance/DEVELOPMENT_LEDGER.md",
+            "FIFA/docs/governance/MODEL_SPEC.md",
+            "FIFA/docs/governance/OWNER_STATUS.md",
+            "FIFA/docs/governance/STATUS.md",
+            "FIFA/docs/governance/TRACEABILITY_MATRIX.csv",
+            "FIFA/docs/governance/VERSION_MATRIX.yaml",
+            "FIFA/docs/governance/delivery_tasks.yaml",
+            "FIFA/docs/governance/development_events.jsonl",
+            "FIFA/docs/governance/events.jsonl",
+            "FIFA/docs/governance/formula_registry.yaml",
+            "FIFA/docs/governance/model_registry.yaml",
+            "FIFA/docs/governance/parameter_registry.csv",
+            "FIFA/功能清单",
+            "FIFA/开发记录",
+            "FIFA/模型参数文件",
+            "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("Ran 6 tests", observed)
+        self.assertIn("py_compile", observed)
+        self.assertIn("No module named 'fcntl'", observed)
+        self.assertIn(
+            "No real TAB public raw access, private My Bets snapshot, wagering action, Bet Slip mutation, owner authorization, or production delivery readiness is approved by S3PDT02.",
             manifest["unresolved_risks"],
         )
 

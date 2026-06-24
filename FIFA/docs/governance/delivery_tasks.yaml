@@ -283,6 +283,47 @@ tasks:
     rollback: "Keep MOD-011 deprecated and excluded from active execution claims."
     target_version: "0.1.0"
     completed_version: ""
+  - task_id: "S3PDT02"
+    phase: "S3PD"
+    objective: "Make FIFA parse, validation, and export failures fail closed so blocked outputs do not look like successful deliverables."
+    scope:
+      - "FIFA tab research pipeline output contract"
+      - "raw parse failure handling"
+      - "validation/automation gate failure handling"
+      - "focused synthetic unittest coverage"
+      - "S3PD fail-closed evidence log"
+    non_scope:
+      - "real TAB public raw access"
+      - "private My Bets snapshots"
+      - "wagering actions"
+      - "Bet Slip mutation"
+      - "owner production authorization"
+      - "delivery readiness approval"
+    status: "completed"
+    dependencies:
+      - "S3PDT01"
+    required_files:
+      - "FIFA/tab-research-pipeline/tab_research/pipeline.py"
+      - "FIFA/tab-research-pipeline/run_pipeline.py"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py"
+      - "governance/stage_gates/s3pd/fifa_fail_closed_tests.log"
+    acceptance_ids:
+      - "ACC-S3PDT02"
+    test_commands:
+      - "cd FIFA\\tab-research-pipeline && set PYTHONPATH=C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\test_stubs;.&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_on_raw_parse_error tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag"
+      - "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile FIFA\\tab-research-pipeline\\tab_research\\pipeline.py FIFA\\tab-research-pipeline\\run_pipeline.py FIFA\\tab-research-pipeline\\tests\\test_pipeline.py"
+    test_results:
+      - "exit 0; focused fail-closed unittest Ran 6 tests OK using a temporary Windows fcntl stub outside the repository."
+      - "exit 0; py_compile passed for pipeline.py, run_pipeline.py, and focused tests."
+      - "blocked locally without temporary stub because Windows bundled Python reports No module named 'fcntl' while repo io.py imports the Unix module."
+    evidence_refs:
+      - "governance/stage_gates/s3pd/fifa_fail_closed_tests.log"
+      - "governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json"
+    risk: "Legacy consumers may have depended on permissive blocked exports; S3PDT02 keeps that path only behind explicit allow_blocked_export=True and marks it as legacy_blocked_export."
+    rollback: "Revert pipeline fail-closed behavior, CLI nonzero exit, focused fail-closed tests, S3PD evidence, FIFA governance docs, rendered human entry files, root governance test, and run manifest."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    completed_commit: "PENDING"
   - task_id: "GOV-SEMANTIC-FIFA-001"
     phase: "B"
     objective: "Add extractors for parser constants, validation rules, and active governance formulas."
@@ -293,7 +334,7 @@ tasks:
     required_files: ["FIFA/docs/governance/parameter_registry.csv", "FIFA/docs/governance/formula_registry.yaml", "governance/projects.yaml"]
     acceptance_ids: ["ACC-SEMANTIC-FIFA-001"]
     test_commands: ["python3 scripts/validate_semantic_extractors.py FIFA", "python3 scripts/validate_project_governance.py --project FIFA --semantic", "python3 scripts/validate_project_governance.py --all --semantic --drift-report", "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic"]
-    test_results: ["exit 0; semantic_parameters_checked=91 semantic_formulas_checked=10", "exit 0; FIFA semantic validator errors 0 warnings 0", "exit 0; all-project semantic drift errors 0 warnings 0", "exit 0; changed-only enforce-sync semantic errors 0 warnings 0", "exit 0; governance tests 52 passed", "exit 0; FIFA Python py_compile, shell syntax, and node --check focused checks passed", "exit 1; FIFA unittest without Downloads app-entry fixture failed product_readiness present_required_column_count 0 != 21", "exit 0; FIFA unittest with 21-column temp HOME Downloads HTML fixture ran 206 tests OK using Codex bundled Python"]
+    test_results: ["exit 0; semantic_parameters_checked=92 semantic_formulas_checked=10 after S3PDT02 PARAM-118 registration", "exit 0; FIFA semantic validator errors 0 warnings 0", "exit 0; all-project semantic drift errors 0 warnings 0", "exit 0; changed-only enforce-sync semantic errors 0 warnings 0", "exit 0; governance tests 52 passed", "exit 0; FIFA Python py_compile, shell syntax, and node --check focused checks passed", "exit 1; FIFA unittest without Downloads app-entry fixture failed product_readiness present_required_column_count 0 != 21", "exit 0; FIFA unittest with 21-column temp HOME Downloads HTML fixture ran 206 tests OK using Codex bundled Python"]
     evidence_refs: ["FIFA/docs/governance/parameter_registry.csv", "FIFA/docs/governance/formula_registry.yaml", "governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json"]
     risk: "FIFA semantic coverage remains in_progress because 17 active parameters are deterministic but still require human semantic review or composite-rule extractor support."
     rollback: "Revert semantic columns/fields, reset governance/projects.yaml FIFA semantic_coverage to planned, and remove GOV-SEMANTIC-FIFA-EXTRACT-001 manifest if validation fails."

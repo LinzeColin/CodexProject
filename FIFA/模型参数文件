@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S5PB-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `10`
+- evidence_ref_count: `12`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -299,3 +299,4 @@
 | PARAM-106 | ARTIFACT_CHAIN_READY_RULE | Artifact chain readiness rule | latest_ready AND raw_ready AND output_safety AND artifact_safety AND no_report_index_issues | EXTRACTED from readiness summary | EXTRACTED |
 | PARAM-107 | EXPECTED_ARTIFACTS | Automation expected artifact list | 9 artifact names | EXTRACTED from automation_candidate | EXTRACTED |
 | PARAM-108 | TECHNICAL_PREFLIGHT_BLOCK_STATUS | Technical preflight blocked status | current_run_preflight_blocked | EXTRACTED from readiness_status | EXTRACTED |
+| PARAM-118 | ALLOW_BLOCKED_EXPORT | Explicit legacy blocked export flag | false | EXTRACTED from S3PDT02 fail-closed output contract | EXTRACTED |

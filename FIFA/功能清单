@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PB-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `10`
+- evidence_ref_count: `12`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -41,4 +41,6 @@
 | EVID-FIFA-DEVELOPMENT-EVENTS | file | FIFA/docs/governance/development_events.jsonl | RECONSTRUCTED |
 | EVID-FIFA-OWNER-STATUS | file | FIFA/docs/governance/OWNER_STATUS.md | EXTRACTED |
 | EVID-SEMANTIC-FIFA-MANIFEST | manifest | governance/run_manifests/GOV-SEMANTIC-FIFA-EXTRACT-001.json | EXTRACTED |
+| EVID-OTHER8-S3PDT02-FIFA-FAIL-CLOSED | stage_gate_log | governance/stage_gates/s3pd/fifa_fail_closed_tests.log | EXTRACTED |
+| EVID-OTHER8-S3PDT02-MANIFEST | manifest | governance/run_manifests/GOV-OTHER8-S3PDT02-FIFA-FAIL-CLOSED-20260624.json | EXTRACTED |
 | EVID-REVIEW9-S5PBT02-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json | PROPOSED |

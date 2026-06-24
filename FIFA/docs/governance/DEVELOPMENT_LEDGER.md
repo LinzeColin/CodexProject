@@ -2,21 +2,21 @@
 
 fact_level: EXTRACTED
 product_version: 0.1.0
-current_phase: B
-current_gate: GOV-SEMANTIC-FIFA-in-progress
-confirmed_iteration_count: 2
+current_phase: S3PD
+current_gate: S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress
+confirmed_iteration_count: 3
 reconstructed_event_count: 4
-current_task: GOV-SEMANTIC-FIFA-001 in_progress
+current_task: GOV-SEMANTIC-FIFA-001 in_progress; latest remediation task S3PDT02 completed
 blockers: TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TASK-FIFA-D-001, TASK-FIFA-D-002, TASK-FIFA-E-001, TASK-FIFA-E-002
 
 ## Current Status
 
 - Product version: `0.1.0` (EXTRACTED from `FIFA/tab-research-pipeline/package.json`)
 - Governance spec version: `1.0.0`
-- Confirmed iterations: `2`
+- Confirmed iterations: `3`
 - Reconstructed development events: `4`
 - Unknown historical periods: pre-monorepo project work before the available scoped Git log cannot be converted into confirmed iterations.
-- Business behavior delta: none in this governance baseline.
+- Business behavior delta: S3PDT02 changes the default matches export to fail closed on parse or validation/automation gate failure; it does not approve real TAB access, wagering, Bet Slip mutation, private snapshots, or delivery readiness.
 
 ## Phase Matrix
 
@@ -27,8 +27,34 @@ blockers: TASK-FIFA-B-001, TASK-FIFA-B-002, TASK-FIFA-C-001, TASK-FIFA-C-002, TA
 | C | Implementation | blocked | `TASK-FIFA-C-001`, `TASK-FIFA-C-002` require authorized/manual data paths |
 | D | Verification and hardening | blocked | `TASK-FIFA-D-001`, `TASK-FIFA-D-002` require private snapshot and manual signature |
 | E | Delivery and operation | blocked | `TASK-FIFA-E-001`, `TASK-FIFA-E-002` |
+| S3PD | Other8 privacy/data truth remediation | in_progress | `S3PDT02` completed focused local fail-closed evidence; full S3PD/S3 gates remain open |
 
 ## Iteration Records
+
+### ITER-20260624-FIFA-S3PDT02
+
+- Date: 2026-06-24
+- Fact level: VERIFIED focused local
+- Version before: 0.1.0
+- Version after: 0.1.0
+- Base commit: 9d6c314afa38bd1a1903fd5bbe0db586b842ea85
+- Result commit: PENDING
+- Task IDs: S3PDT02, ACC-S3PDT02
+- Goal: make FIFA parse, validation, and export failures fail closed so blocked outputs cannot be mistaken for successful recommendation/report/baseline deliverables.
+- Assumptions: synthetic raw parse and validation fixtures are sufficient to prove the default export contract; they do not prove TAB data truth, betting value, owner authorization, or delivery readiness.
+- Read files: FIFA README/AGENTS safety boundary, S3PD roadmap requirements, pipeline output code, focused tests, and FIFA governance ledgers.
+- Modified files: `pipeline.py`, `run_pipeline.py`, focused tests, S3PD fail-closed evidence, FIFA governance docs, rendered human entry files, root governance test, and run manifest.
+- Model changes: no probability, scoring, stake, bankroll, provider KPI, live board, raw refresh, or legacy softmax formula changed.
+- Parameter changes: no active parameter value changed.
+- Runtime behavior changes: default `write_outputs` now returns `export_status=failed_closed` and suppresses recommendation/report/baseline success deliverables when raw parse or validation/automation gates fail; legacy blocked export requires explicit `allow_blocked_export=True`.
+- Commands: focused 6-test fail-closed unittest with temporary Windows `fcntl` stub; py_compile for pipeline, CLI, and tests; root governance test; rendered governance checks; semantic extractor validation; changed-only governance validation.
+- Test results: focused unittest exit 0 with 6 tests OK; py_compile exit 0; default Windows import without temporary stub remains blocked by `No module named 'fcntl'`.
+- Success items: parse failure writes only explicit failed-closed JSON with zero executable exposure; validation failure writes failed-closed JSON plus automation gate and no fake success deliverables; ready export still writes normal success deliverables; legacy blocked export is opt-in and labelled.
+- Failure items: no real TAB public raw access, private My Bets snapshot, wagering action, Bet Slip mutation, owner authorization, or production delivery readiness was tested or approved.
+- Decisions: move fake-success prevention into default export behavior while preserving governance truth that FIFA remains unverified for data truth and delivery readiness.
+- Remaining risks: full S3PD/S3 gates remain open until dependent tasks and owner decisions are closed.
+- Rollback: revert S3PDT02 code, tests, evidence, governance docs, rendered human entry files, root governance test, and run manifest.
+- Next step: bind this focused evidence through PR CI and main CI before moving to the next stage task.
 
 ### ITER-20260621-FIFA-001
 

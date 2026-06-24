@@ -8,6 +8,7 @@ assumptions:
       - "FIFA/README.md"
       - "FIFA/AGENTS.md"
       - "FIFA/tab-research-pipeline/README.md"
+      - "governance/stage_gates/s3pd/fifa_fail_closed_tests.log"
     applies_to:
       - "MOD-001"
       - "MOD-002"
@@ -16,7 +17,7 @@ assumptions:
       - "MOD-009"
       - "MOD-010"
     violation_impact: "Using stale, private, or unauthorized data could create unsafe executable recommendations."
-    validation_method: "Run safety gates, raw refresh gates, and public artifact scans before publication."
+    validation_method: "Run safety gates, raw refresh gates, public artifact scans, and S3PDT02 fail-closed export tests before publication."
     status: "active"
     fact_level: "EXTRACTED"
   - assumption_id: "ASM-002"

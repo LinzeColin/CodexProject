@@ -1,7 +1,7 @@
 # FIFA Delivery Plan
 
 fact_level: EXTRACTED
-task_count: 10
+task_count: 11
 
 This delivery plan uses `docs/governance/delivery_tasks.yaml` as the machine source of truth. Markdown is an explanatory layer only.
 
@@ -22,6 +22,7 @@ This delivery plan uses `docs/governance/delivery_tasks.yaml` as the machine sou
 | ACC-FIFA-011 | Manual overlay publish preflight passes with matching signature. | blocked |
 | ACC-FIFA-012 | Recurring report generation is explicitly authorized and remains report-only. | blocked |
 | ACC-FIFA-013 | Legacy softmax model status is explicitly retained, migrated, or retired. | planned |
+| ACC-S3PDT02 | FIFA parse, validation, and export failures fail closed and do not publish fake success deliverables. | completed focused local; pending PR/main CI binding |
 
 ## Phase A: Discovery and Baseline
 
@@ -48,3 +49,7 @@ Acceptance: `ACC-FIFA-001` through `ACC-FIFA-005`.
 
 - `TASK-FIFA-E-001`: Authorize recurring report generation only after gates are ready. Status: `blocked`.
 - `TASK-FIFA-E-002`: Decide legacy softmax model lifecycle. Status: `planned`.
+
+## Stage S3PD: Other8 Remediation
+
+- `S3PDT02`: Make FIFA default parse/validation/export failures fail closed. Status: `completed`.

@@ -200,7 +200,7 @@ formulas:
       - "ASM-001"
       - "ASM-004"
     status: "active"
-    expression: "raw_refresh_health aggregates target blocker codes, refresh errors, diagnostics access-policy markers, batch readiness flags, and partial research refresh summary; access_policy_status blocks automated public raw refresh when ai_controlled_access_rejected appears."
+    expression: "raw_refresh_health aggregates target blocker codes, refresh errors, diagnostics access-policy markers, batch readiness flags, and partial research refresh summary; access_policy_status blocks automated public raw refresh when ai_controlled_access_rejected appears; write_outputs fails closed by default on parse or validation/automation gate failure and suppresses recommendation/report/baseline success deliverables."
     variables:
       - name: "raw_refresh_ready"
         data_type: "bool"
@@ -225,6 +225,7 @@ formulas:
     boundary_conditions: "Access Denied strings in validation errors or refresh errors are treated as ai_controlled_access_rejected."
     fallback: "Allowed recovery is limited to official/authorized feed, user export/import, or existing fresh partial raw for research-only diagnostics."
     code_refs:
+      - "FIFA/tab-research-pipeline/tab_research/pipeline.py:413"
       - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:145"
       - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:379"
       - "FIFA/tab-research-pipeline/tab_research/raw_refresh.py:436"
@@ -232,8 +233,10 @@ formulas:
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:7700"
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8893"
       - "FIFA/tab-research-pipeline/tests/test_pipeline.py:8912"
+      - "FIFA/tab-research-pipeline/tests/test_pipeline.py:1237"
     evidence_refs:
       - "FIFA/README.md"
+      - "governance/stage_gates/s3pd/fifa_fail_closed_tests.log"
     semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
     implementation_refs: ["FIFA/tab-research-pipeline/tab_research/raw_refresh.py::raw_refresh_health", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::raw_target_health", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::partial_research_refresh_summary", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::normalize_partial_research_refresh", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::raw_refresh_next_action", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::refresh_error_blocker_codes", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::diagnostics_has_ai_controlled_access_rejection", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::access_policy_status", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::looks_like_route_mismatch", "FIFA/tab-research-pipeline/tab_research/raw_refresh.py::looks_like_partial_coverage"]
     implementation_fingerprint: "sha256:09b375fdd8fb47fe19212fef29802dd2824653206ca9f11061ed7202dcb05adf"

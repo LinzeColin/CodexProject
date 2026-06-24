@@ -26,6 +26,10 @@ if __name__ == "__main__":
             public_source_audit_path=PUBLIC_SOURCE_AUDIT,
             event_audit_path=EVENT_AUDIT,
         )
+    if result.get("export_status") == "failed_closed":
+        print("export_status=failed_closed")
+        print(f"blocking_reasons={result.get('blocking_reasons', [])}")
+        raise SystemExit(2)
     print(f"recommendations={len(result['recommendations'])}")
     print(f"automation_ready={result['automation_gate']['automation_ready']}")
     print(f"daily_compare={result['daily_compare']['summary']}")

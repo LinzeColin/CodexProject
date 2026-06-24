@@ -1,0 +1,41 @@
+S3PDT02 FIFA fail-closed evidence
+generated_at: 2026-06-24T22:05:00+10:00
+task_id: S3PDT02
+acceptance_id: ACC-S3PDT02
+
+Contract:
+- parse_failure_default_failed_closed: PASS
+- validation_failure_default_failed_closed: PASS
+- blocked_export_no_recommendations_report_baseline: PASS
+- ready_export_writes_success_deliverables: PASS
+- legacy_blocked_export_requires_explicit_flag: PASS
+- cli_failed_closed_exit_nonzero: PASS (run_pipeline.py now exits 2 when write_outputs returns export_status=failed_closed)
+
+Focused fail-closed unittest command:
+cd FIFA\tab-research-pipeline
+set PYTHONPATH=C:\Users\linze\Documents\Codex\2026-06-23\xian\work\test_stubs;.&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_on_raw_parse_error tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag
+
+Observed:
+Ran 6 tests in 0.166s
+OK
+
+Syntax command:
+C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m py_compile FIFA\tab-research-pipeline\tab_research\pipeline.py FIFA\tab-research-pipeline\run_pipeline.py FIFA\tab-research-pipeline\tests\test_pipeline.py
+
+Observed:
+exit 0
+
+Windows local import blocker without temporary stub:
+C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_write_outputs
+blocked_local_platform_module: No module named 'fcntl'
+
+Behavior verified:
+- Raw parse failure writes only tab_fifa_world_cup_matches_failed_closed_<version>.json and returns recommended_new_exposure_aud 0 with empty recommendations and watchlist.
+- Validation/automation gate failure writes automation_gate_<version>.json plus failed-closed JSON and does not publish recommendations, Markdown report, or previous baseline success deliverables.
+- Ready export still writes recommendations, automation gate, report, and previous baseline deliverables when public source audit and event audit are both ready.
+- Legacy blocked export is available only through explicit allow_blocked_export=True and marks export_status=legacy_blocked_export.
+- CLI wrapper treats failed_closed as non-success and exits 2 after printing blocking reasons.
+
+Limits:
+- This proves default parse, validation, and export failure closure using synthetic fixtures only.
+- It does not approve real TAB public raw access, private My Bets snapshots, wagering actions, Bet Slip mutation, owner authorization, or production delivery readiness.

@@ -14,10 +14,10 @@
 - Project: `FIFA`
 - Path: `FIFA`
 - Product version: `0.1.0`
-- Phase/Gate: `B / GOV-SEMANTIC-FIFA-in-progress`
-- Models/Formulas/Parameters total: `11 / 11 / 117`
-- Active formulas/parameters: `10 / 108`
-- Machine checked formulas/parameters: `10 / 91`
+- Phase/Gate: `S3PD / S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress`
+- Models/Formulas/Parameters total: `11 / 11 / 118`
+- Active formulas/parameters: `10 / 109`
+- Machine checked formulas/parameters: `10 / 92`
 
 ## Assurance
 
@@ -35,10 +35,17 @@
 ## Delivery
 
 - Readiness: `UNVERIFIED`
-- Release gate: `GOV-SEMANTIC-FIFA-in-progress`
+- Release gate: `S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress`
+- Latest remediation task: `S3PDT02` completed with focused synthetic fail-closed evidence only
 - Next executable task: `TASK-FIFA-C-001`
 - Pending/stale events: `4`
 - Tree-bound events: `0`
 - Commit-bound events: `5`
 - Legacy unbound events: `3`
 - Unresolved fact IDs: `6`
+
+## Latest Other8 Evidence
+
+- `S3PDT02`: raw parse failure and validation/automation gate failure now fail closed by default and do not publish recommendation JSON, Markdown report, or previous baseline success deliverables.
+- Evidence ref: `governance/stage_gates/s3pd/fifa_fail_closed_tests.log`.
+- Boundary: synthetic fixtures only; no real TAB public raw access, private My Bets snapshot, wagering action, Bet Slip mutation, owner authorization, or production delivery-readiness approval was used or implied.
