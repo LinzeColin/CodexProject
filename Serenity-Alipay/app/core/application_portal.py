@@ -148,9 +148,13 @@ class PortalPoolMetric:
     benchmark_label: str
     alpha: float | None
     beta: float | None
+    gamma: float | None
     theta: float | None
+    vega: float | None
     sharpe: float | None
     sortino: float | None
+    calmar: float | None
+    treynor: float | None
 
 
 def _pct(value: float | None) -> str:
@@ -188,6 +192,72 @@ def _ratio(value: float | None) -> str:
     if value is None:
         return "-"
     return f"{value:.2f}"
+
+
+def _benchmark_display_label(value: str | None) -> str:
+    text = str(value or "-").strip()
+    return text.removeprefix("主题基准：") or "-"
+
+
+def _pct_pair_from_annualized(value: float | None) -> tuple[str, str]:
+    if value is None:
+        return "-", "-"
+    daily = value / TRADING_DAYS_PER_YEAR
+    weekly = daily * 5
+    return _pct(daily), _pct(weekly)
+
+
+def _pct_pair_from_daily(value: float | None) -> tuple[str, str]:
+    if value is None:
+        return "-", "-"
+    return _pct(value), _pct(value * 5)
+
+
+def _ratio_pair_same(value: float | None) -> tuple[str, str]:
+    text = _ratio(value)
+    return text, text
+
+
+def _metric_pair_line(label: str, left_label: str, left: str, right_label: str, right: str) -> str:
+    return (
+        '<span class="metric-pair-line">'
+        f"<strong>{_escape(label)}</strong>"
+        f"<em>{_escape(left_label)} {left}</em>"
+        f"<em>{_escape(right_label)} {right}</em>"
+        "</span>"
+    )
+
+
+def _greek_metric_cell(row: PortalPoolMetric) -> str:
+    alpha_daily, alpha_weekly = _pct_pair_from_annualized(row.alpha)
+    theta_daily, theta_weekly = _pct_pair_from_daily(row.theta)
+    gamma_daily, gamma_weekly = _ratio(row.gamma), _ratio(row.gamma * 5 if row.gamma is not None else None)
+    beta_daily, beta_weekly = _ratio_pair_same(row.beta)
+    vega_daily, vega_weekly = _ratio_pair_same(row.vega)
+    return (
+        '<div class="metric-pair-stack">'
+        + _metric_pair_line("Alpha", "日均", alpha_daily, "周均", alpha_weekly)
+        + _metric_pair_line("Beta", "日频", beta_daily, "周频", beta_weekly)
+        + _metric_pair_line("Gamma", "日均", gamma_daily, "周均", gamma_weekly)
+        + _metric_pair_line("Theta", "日均", theta_daily, "周均", theta_weekly)
+        + _metric_pair_line("Vega", "日频", vega_daily, "周频", vega_weekly)
+        + "</div>"
+    )
+
+
+def _risk_metric_cell(row: PortalPoolMetric) -> str:
+    sharpe_daily, sharpe_weekly = _ratio_pair_same(row.sharpe)
+    sortino_daily, sortino_weekly = _ratio_pair_same(row.sortino)
+    calmar_daily, calmar_weekly = _ratio_pair_same(row.calmar)
+    treynor_daily, treynor_weekly = _pct_pair_from_annualized(row.treynor)
+    return (
+        '<div class="metric-pair-stack">'
+        + _metric_pair_line("Sharpe", "日频", sharpe_daily, "周频", sharpe_weekly)
+        + _metric_pair_line("Sortino", "日频", sortino_daily, "周频", sortino_weekly)
+        + _metric_pair_line("Calmar", "日频", calmar_daily, "周频", calmar_weekly)
+        + _metric_pair_line("Treynor", "日均", treynor_daily, "周均", treynor_weekly)
+        + "</div>"
+    )
 
 
 def _escape(value: object) -> str:
@@ -867,6 +937,30 @@ def _entry_times_for_pool_rows(conn, rows: list[PortalHolding]) -> dict[tuple[st
     }
 
 
+def _latest_indicator_rows(conn, run_id: str | None, rows: list[PortalHolding]) -> dict[str, object]:
+    if not run_id or not rows:
+        return {}
+    codes = sorted({row.code for row in rows})
+    placeholders = ",".join("?" for _ in codes)
+    indicator_rows = conn.execute(
+        f"""
+        SELECT a.asset_code, i.*
+        FROM asset_indicator_snapshot i
+        JOIN asset_master a ON a.asset_id=i.asset_id
+        JOIN (
+          SELECT asset_id, MAX(metric_date) AS metric_date
+          FROM asset_indicator_snapshot
+          WHERE run_id=?
+          GROUP BY asset_id
+        ) latest ON latest.asset_id=i.asset_id AND latest.metric_date=i.metric_date
+        WHERE i.run_id=?
+          AND a.asset_code IN ({placeholders})
+        """,
+        tuple([run_id, run_id] + codes),
+    ).fetchall()
+    return {str(row["asset_code"]): row for row in indicator_rows}
+
+
 def _pool_performance_metric(
     row: PortalHolding,
     *,
@@ -876,6 +970,7 @@ def _pool_performance_metric(
     benchmark_returns_by_code: dict[str, dict[date, float]],
     candidate: Candidate | None,
     resolved_review_keys: set[tuple[str, str]],
+    indicator_row=None,
 ) -> PortalPoolMetric:
     points = price_history.get(row.code, [])
     entry_date = _beijing_date(entry_time_bj)
@@ -898,6 +993,23 @@ def _pool_performance_metric(
     )
     recent_aligned = aligned[-20:]
     theta = _mean([asset - benchmark for _, asset, benchmark in recent_aligned]) if len(recent_aligned) >= 5 else None
+    gamma = None
+    vega = None
+    calmar = None
+    treynor = None
+    sharpe = _sharpe(asset_returns) if len(asset_returns) >= 20 else None
+    sortino = _sortino(asset_returns) if len(asset_returns) >= 20 else None
+    if indicator_row is not None:
+        benchmark_label = f"主题基准：{indicator_row['benchmark_label'] or indicator_row['benchmark_code'] or '-'}"
+        alpha = indicator_row["alpha"]
+        beta = indicator_row["beta"]
+        gamma = indicator_row["gamma"]
+        theta = indicator_row["theta"]
+        vega = indicator_row["vega"]
+        sharpe = indicator_row["sharpe"]
+        sortino = indicator_row["sortino"]
+        calmar = indicator_row["calmar"]
+        treynor = indicator_row["treynor"]
     is_holding = row.rank <= 5
     needs_review = row.grade == "Manual Review" or row.action_label == "Manual Review"
     review_text = (
@@ -927,9 +1039,13 @@ def _pool_performance_metric(
         benchmark_label=benchmark_label,
         alpha=alpha,
         beta=beta,
+        gamma=gamma,
         theta=theta,
-        sharpe=_sharpe(asset_returns) if len(asset_returns) >= 20 else None,
-        sortino=_sortino(asset_returns) if len(asset_returns) >= 20 else None,
+        vega=vega,
+        sharpe=sharpe,
+        sortino=sortino,
+        calmar=calmar,
+        treynor=treynor,
     )
 
 
@@ -957,6 +1073,7 @@ def _pool_performance_metrics(
     benchmark_returns_by_code = _benchmark_returns_by_code(benchmark_history)
     candidates_by_code = {candidate.asset_code: candidate for candidate in candidates}
     entry_times = _entry_times_for_pool_rows(conn, sorted_rows)
+    indicator_rows = _latest_indicator_rows(conn, current_run.run_id if current_run else None, sorted_rows)
     updated_at_bj = current_run.run_time_bj if current_run else None
     resolved_review_keys = resolved_review_keys or set()
     metrics: list[PortalPoolMetric] = []
@@ -971,6 +1088,7 @@ def _pool_performance_metrics(
                 benchmark_returns_by_code=benchmark_returns_by_code,
                 candidate=candidates_by_code.get(row.code),
                 resolved_review_keys=resolved_review_keys,
+                indicator_row=indicator_rows.get(row.code),
             )
         )
     return metrics
@@ -1136,6 +1254,7 @@ def _holding_rows(
     target_time: str,
     baseline_time: str,
     previous_time: str,
+    initial_times_by_code: dict[str, str] | None = None,
 ) -> str:
     if not rows:
         return '<tr><td colspan="9">暂无可展示的持仓建议。</td></tr>'
@@ -1147,6 +1266,7 @@ def _holding_rows(
         previous_class, previous_ratio, previous_action = _relative_ratio(row.target_weight, previous_weight)
         initial_value = _pct(row.current_weight)
         previous_value = _pct(previous_weight)
+        initial_time = (initial_times_by_code or {}).get(row.code) or baseline_time
         cells.append(
             f'<tr class="row-{initial_class}" data-reference-row data-initial-class="{initial_class}" data-previous-class="{previous_class}">'
             f"<td>{row.rank}</td>"
@@ -1156,7 +1276,7 @@ def _holding_rows(
             f"<td><strong>{_pct(row.target_weight)}</strong><span>目标时间：{_escape(target_time)}</span></td>"
             "<td>"
             f'<strong data-reference-weight data-initial-value="{_escape(initial_value)}" data-previous-value="{_escape(previous_value)}">{_escape(initial_value)}</strong>'
-            f'<span data-reference-time data-initial-value="初始持仓权重时间：{_escape(baseline_time)}" data-previous-value="上轮对比权重时间：{_escape(previous_time)}">初始持仓权重时间：{_escape(baseline_time)}</span>'
+            f'<span data-reference-time data-initial-value="初始持仓权重时间：{_escape(initial_time)}" data-previous-value="上轮对比权重时间：{_escape(previous_time)}">初始持仓权重时间：{_escape(initial_time)}</span>'
             "</td>"
             "<td>"
             f'<span class="change {initial_class}" data-relative-ratio data-initial-value="{_escape(initial_ratio)}" data-previous-value="{_escape(previous_ratio)}" data-initial-class="{initial_class}" data-previous-class="{previous_class}">{_escape(initial_ratio)}</span>'
@@ -1205,7 +1325,7 @@ def _pool_rows(
 
 def _pool_metric_rows(metrics: list[PortalPoolMetric]) -> str:
     if not metrics:
-        return '<tr><td colspan="21">暂无可展示的持仓池/观察池表现指标；下一次全局数据刷新后会重新计算。</td></tr>'
+        return '<tr><td colspan="18">暂无可展示的持仓池/观察池表现指标；下一次全局数据刷新后会重新计算。</td></tr>'
     cells: list[str] = []
     for row in metrics:
         weight_text = _pct(row.target_weight) if row.pool_class == "holding" else "0.00% · 观察"
@@ -1226,12 +1346,9 @@ def _pool_metric_rows(metrics: list[PortalPoolMetric]) -> str:
             f"<td>{_pct(row.return_1m)}</td>"
             f"<td>{_pct(row.return_3m)}</td>"
             f"<td>{_pct(row.return_6m)}</td>"
-            f"<td>{_escape(row.benchmark_label)}</td>"
-            f"<td>{_pct(row.alpha)}</td>"
-            f"<td>{_ratio(row.beta)}</td>"
-            f"<td>{_pct(row.theta)}</td>"
-            f"<td>{_ratio(row.sharpe)}</td>"
-            f"<td>{_ratio(row.sortino)}</td>"
+            f"<td>{_escape(_benchmark_display_label(row.benchmark_label))}</td>"
+            f"<td>{_greek_metric_cell(row)}</td>"
+            f"<td>{_risk_metric_cell(row)}</td>"
             "</tr>"
         )
     return "\n".join(cells)
@@ -1524,6 +1641,7 @@ def _usage_guide_modal() -> str:
           <button type="button" data-guide-target="guide-selection">Skill 选股逻辑</button>
           <button type="button" data-guide-target="guide-admission">准入规则</button>
           <button type="button" data-guide-target="guide-exit">剔除规则</button>
+          <button type="button" data-guide-target="guide-indicators">指标说明</button>
           <button type="button" data-guide-target="guide-confidence">证据置信度</button>
           <button type="button" data-guide-target="guide-sources">数据源</button>
           <button type="button" data-guide-target="guide-weight">权重配置</button>
@@ -1582,14 +1700,33 @@ def _usage_guide_modal() -> str:
               <span class="guide-kicker">剔除</span>
               <h3>入池后的纪律规则</h3>
             </div>
-            <p class="guide-lead">剔除规则只约束已经进入持仓池或观察池的对象，不作为 Serenity 初始准入规则。</p>
+            <p class="guide-lead">剔除规则只约束已经进入持仓池或观察池的对象，不作为 Serenity 初始准入规则；只统计希腊字母指标和风险指标。</p>
             <div class="guide-steps">
-              <p><strong>六项跟踪</strong>每个交易日跟踪近 3 月收益、近 6 月收益、Alpha、Theta、Sharpe、Sortino 六项。Theta 在基金语境下按时间衰减/趋势退化指标解释，具体以系统计算字段为准。</p>
-              <p><strong>5 日剔除</strong>连续 5 个交易日共 30 个结果中，任意 20 项小于 0，则剔除或给出降权/清仓标签。</p>
-              <p><strong>10 日剔除</strong>连续 10 个交易日共 60 个结果中，任意 40 项小于 0，则剔除或给出降权/清仓标签。</p>
+              <p><strong>跟踪对象</strong>每个交易日计算 Alpha、Beta、Gamma、Theta、Vega、Sharpe、Sortino、Calmar、Treynor；当天可计算指标数量记为 x。</p>
+              <p><strong>5 日剔除</strong>连续 5 个交易日中，负项数量达到 ceil(80.00% * 5 * x) 时剔除或给出降权/清仓标签。</p>
+              <p><strong>10 日剔除</strong>连续 10 个交易日中，负项数量达到 ceil(60.00% * 10 * x) 时剔除或给出降权/清仓标签。</p>
               <p><strong>硬风险剔除</strong>MDD 达到 40.00%、7 日回撤恶化超过 5.00%、或单标过度放大连续 2 次，会触发风险纪律，优先输出减少、暂停新增、Block 或清仓标签。</p>
               <p><strong>数据异常剔除</strong>连续缺失净值/持仓超过 2 天、费率/赎回状态缺失、官方级来源少于 2 个或来源冲突时，不硬下买入结论，进入 Manual Review 或观察池。</p>
               <p><strong>重新进入</strong>被剔除对象解决当前问题后，或 14 天后重新满足 Serenity 标准和证据条件，才允许重新进入观察池；进入 Top5 仍由 Serenity 优先判断。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-indicators" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">指标</span>
+              <h3>希腊字母与风险指标</h3>
+            </div>
+            <p class="guide-lead">这些指标用于入池后纪律审计和剔除判断，不取代 Serenity 的准入判断；所有指标每日写入本机 SQLite。</p>
+            <div class="guide-steps">
+              <p><strong>Alpha</strong>公式：年化基金收益 - Beta x 年化基准收益；意义：剔除基准暴露后是否有正超额收益。</p>
+              <p><strong>Beta</strong>公式：Cov(基金日收益, 基准日收益) / Var(基准日收益)；意义：基金对主题/市场基准的方向敏感度。</p>
+              <p><strong>Gamma</strong>公式：本期 Beta - 上期 Beta；意义：基准敏感度是否继续放大或快速衰减。</p>
+              <p><strong>Theta</strong>公式：近 20 个净值点平均日超额收益；意义：本系统把它定义为时间衰减/趋势退化代理，不是期权定价 Theta。</p>
+              <p><strong>Vega</strong>公式：基金波动率 / 基准波动率 - 1；意义：相对基准的波动暴露是否过度放大。</p>
+              <p><strong>Sharpe</strong>公式：平均日收益 / 日收益标准差 x sqrt(252)；意义：单位总波动获得的年化收益。</p>
+              <p><strong>Sortino</strong>公式：平均日收益 / 下行日收益标准差 x sqrt(252)；意义：只惩罚下行波动后的收益质量。</p>
+              <p><strong>Calmar</strong>公式：年化收益 / 最大回撤；意义：承担回撤后是否仍有足够收益补偿。</p>
+              <p><strong>Treynor</strong>公式：(年化基金收益 - 年化基准收益) / Beta；意义：单位系统性风险获得的超额收益。</p>
             </div>
           </section>
 
@@ -1811,6 +1948,7 @@ def render_application_portal(
     manual_review_items: list[PortalManualReviewItem] | None = None,
     resolved_review_keys: set[tuple[str, str]] | None = None,
     pool_metrics: list[PortalPoolMetric] | None = None,
+    initial_reference_times_by_code: dict[str, str] | None = None,
 ) -> str:
     current_bj = (
         display_run_time_with_backfill_note(current_run.run_time_bj, current_run.created_at)
@@ -1879,11 +2017,27 @@ def render_application_portal(
                     benchmark_label="基准缺失",
                     alpha=None,
                     beta=None,
+                    gamma=None,
                     theta=None,
+                    vega=None,
                     sharpe=None,
                     sortino=None,
+                    calmar=None,
+                    treynor=None,
                 )
             )
+    initial_reference_times = {
+        code: _format_time(value, "Asia/Shanghai")
+        for code, value in (initial_reference_times_by_code or {}).items()
+        if value
+    }
+    if not initial_reference_times:
+        initial_reference_times = {
+            metric.code: _format_time(metric.entry_time_bj, "Asia/Shanghai")
+            for metric in pool_metric_rows
+            if metric.pool_class == "holding" and metric.entry_time_bj
+        }
+    initial_head_time = "按各基金首次入池时间" if initial_reference_times else baseline_bj
     review_count_text = f"{len(review_items)} 项待复核" if review_items else "无打开项"
     fund_count = len(fund_library or {})
     fund_count_text = f"已入库 {fund_count} 只基金" if fund_count else "暂无入库基金"
@@ -2001,7 +2155,7 @@ def render_application_portal(
       box-shadow: var(--shadow);
       min-width: 0;
     }}
-    .home-grid {{ display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; align-items: start; }}
+    .home-grid {{ display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }}
     .discipline-list {{ display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }}
     .discipline-card {{
       border: 1px solid var(--line);
@@ -2245,8 +2399,12 @@ def render_application_portal(
     .pool-ranking-note {{ margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }}
     .pool-table {{ min-width: 1040px; }}
     .pool-metric-panel {{ margin-bottom: 16px; }}
-    .pool-metric-table {{ min-width: 2140px; }}
+    .pool-metric-table {{ min-width: 1860px; }}
     .pool-metric-table th, .pool-metric-table td {{ font-size: 12px; }}
+    .metric-pair-stack {{ display: grid; gap: 6px; min-width: 250px; }}
+    .metric-pair-line {{ display: grid; grid-template-columns: 58px minmax(82px, 1fr) minmax(82px, 1fr); gap: 6px; align-items: center; line-height: 1.35; }}
+    .metric-pair-line strong {{ color: var(--ink); }}
+    .metric-pair-line em {{ font-style: normal; color: var(--muted); white-space: nowrap; }}
     .pool-metric-table th:nth-child(1),
     .pool-metric-table td:nth-child(1) {{
       position: sticky;
@@ -2807,13 +2965,13 @@ def render_application_portal(
                 <th>等级</th>
                 <th>证据置信度</th>
                 <th>目标权重<span>{_escape(current_bj)}</span></th>
-                <th>基准权重<span data-reference-head-time data-initial-value="{_escape(baseline_bj)}" data-previous-value="{_escape(previous_bj)}">{_escape(baseline_bj)}</span></th>
+                <th>基准权重<span data-reference-head-time data-initial-value="{_escape(initial_head_time)}" data-previous-value="{_escape(previous_bj)}">{_escape(initial_head_time)}</span></th>
                 <th>相对比例</th>
                 <th>动作</th>
                 <th>操作口径</th>
               </tr>
             </thead>
-            <tbody>{_holding_rows(current_holdings, previous_by_code=previous_by_code, target_time=current_bj, baseline_time=baseline_bj, previous_time=previous_bj)}</tbody>
+            <tbody>{_holding_rows(current_holdings, previous_by_code=previous_by_code, target_time=current_bj, baseline_time=baseline_bj, previous_time=previous_bj, initial_times_by_code=initial_reference_times)}</tbody>
           </table>
         </div>
 
@@ -2834,36 +2992,11 @@ def render_application_portal(
         </section>
       </div>
 
-      <aside class="panel">
-        <h2>时间与口径</h2>
-        <div class="timeline">
-          <div class="time-card">
-            <div class="label">当前持仓及时间</div>
-            <strong>{_escape(current_bj)}</strong>
-            <small>澳洲：{_escape(current_au)}<br>生成：{_escape(current_created)}</small>
-          </div>
-          <div class="time-card">
-            <div class="label">上轮持仓及时间</div>
-            <strong>{_escape(previous_bj)}</strong>
-            <small>澳洲：{_escape(previous_au)}<br>生成：{_escape(previous_created)}</small>
-          </div>
-          <div class="time-card">
-            <div class="label">基准权重时间</div>
-            <strong>{_escape(baseline_bj)}</strong>
-            <small>基准来自 Serenity baseline reference，不是支付宝真实账户持仓。</small>
-          </div>
-          <div class="time-card">
-            <div class="label">口径说明</div>
-            <strong>策略份额/权重</strong>
-            <small>页面里的“份额”指策略配置份额，即目标权重；支付宝持仓仅作为后续可选 overlay。</small>
-          </div>
-        </div>
-      </aside>
     </section>
 
     <section class="panel pool-metric-panel" aria-label="持仓池与观察池表现指标">
       <h2>持仓池表现指标</h2>
-      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池；观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。表内同时展示等级、证据置信度、策略份额、动作/复核、排序原因和收益/风险指标。每次全局数据刷新后按最新净值历史重新计算；入池后涨跌幅使用不可覆盖的首次入池时间，若入池后暂无新净值则显示为空值。Alpha/Beta 按基金主题选择专项或主题代理基准；主题源不可用时留空，不再用沪指/标普500通用降级基准凑数。Theta 为本表定义的近20个净值点日均超额收益，不是期权定价 Theta。</p>
+      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池；观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。表内同时展示等级、证据置信度、策略份额、动作/复核、排序原因和希腊字母/风险指标。每次全局数据刷新后按最新净值历史重新计算并写入数据库；入池后涨跌幅使用不可覆盖的首次入池时间，若入池后暂无新净值则显示为空值。Alpha/Treynor 的日均和周均由年化值折算；Theta 使用近20个净值点日均超额并折算周均，不是期权定价 Theta。</p>
       <div class="table-wrap">
         <table class="pool-metric-table">
           <thead>
@@ -2884,11 +3017,8 @@ def render_application_portal(
               <th>近3个月</th>
               <th>近6个月</th>
               <th>Alpha/Beta基准</th>
-              <th>Alpha（年化）</th>
-              <th>Beta</th>
-              <th>Theta（日均超额）</th>
-              <th>Sharpe</th>
-              <th>Sortino</th>
+              <th>希腊字母（日/周）</th>
+              <th>风险调整（日/周）</th>
             </tr>
           </thead>
           <tbody>{_pool_metric_rows(pool_metric_rows)}</tbody>

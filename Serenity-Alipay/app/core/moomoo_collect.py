@@ -224,7 +224,7 @@ def collect_moomoo_data(
                 kline_outputs.append({"symbol": symbol, "rows": len(rows), "path": str(path)})
     finally:
         quote_ctx.close()
-        if cleanup_auto_started and lifecycle.started_by_tool:
+        if cleanup_auto_started and lifecycle.started_by_tool and lifecycle.socket_is_reachable:
             cleanup_result = cleanup_started_processes(lifecycle)
 
     status = "success" if not errors else ("partial" if kline_outputs or snapshot_path else "failed")

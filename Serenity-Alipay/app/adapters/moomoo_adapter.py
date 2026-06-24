@@ -47,7 +47,7 @@ def healthcheck(
         )
         lifecycle_handle = lifecycle
         lifecycle_dict = lifecycle_to_dict(lifecycle)
-        cleanup_required = bool(not keep_auto_started_opend and lifecycle.started_by_tool)
+        cleanup_required = bool(not keep_auto_started_opend and lifecycle.started_by_tool and lifecycle.socket_is_reachable)
 
     sdk_available = importlib.util.find_spec("moomoo") is not None
     try:
