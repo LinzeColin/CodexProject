@@ -3267,3 +3267,49 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PDT01-CHINA-C0-SOURCE-FOUNDATION-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT01_CHINA_C0_SOURCE_FOUNDATION_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-062"
+    name: "S2PDT02 China C1 central department source map"
+    kind: "deterministic official-department source-map model"
+    purpose: "Validate China C1 central department metadata-only source map, aliases, industry and board routes, official identity, and no-production boundaries after S2PDT01 C0 source foundation."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt02-china-c1-department-source-map-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-064"
+    parameter_ids:
+      - "PARAM-ADP-432"
+      - "PARAM-ADP-433"
+      - "PARAM-ADP-434"
+      - "PARAM-ADP-435"
+      - "PARAM-ADP-436"
+      - "PARAM-ADP-437"
+      - "PARAM-ADP-438"
+      - "PARAM-ADP-439"
+    inputs:
+      - "passing S2PDT01 C0 source foundation report"
+      - "China C1 department metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China C1 department source-map report"
+      - "sector coverage gate"
+      - "official identity gate"
+      - "alias gate"
+      - "industry route gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT02-CHINA-C1-DEPARTMENT-SOURCE-MAP-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT02_CHINA_C1_DEPARTMENT_SOURCE_MAP_EVIDENCE.md"
