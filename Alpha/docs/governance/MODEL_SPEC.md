@@ -28,7 +28,7 @@ Legacy files `功能清单`, `开发记录`, and `模型参数文件` are compat
 | MOD-002 | Research risk score | risk_model | active | risk-score-v0 | `Alpha/backend/app/services/risk.py:22` |
 | MOD-003 | Pre-trade owner-review gate | deterministic_rule_engine | active | pre-trade-gate-v0 | `Alpha/backend/app/services/risk.py:40` |
 | MOD-004 | Live order policy and fail-closed broker | risk_model | active | live-policy-fail-closed-v0 | `Alpha/backend/app/services/policy.py:38`; `Alpha/backend/app/services/live_broker.py:19` |
-| MOD-005 | Paper trading loop | deterministic_workflow_model | active | paper-loop-v0.0.1-atomic-storage | `Alpha/backend/app/services/paper_trading_loop.py:42`; `Alpha/backend/app/services/paper_trading_loop.py:59` |
+| MOD-005 | Paper trading loop | deterministic_workflow_model | active | paper-loop-v0.0.3-shutdown-faults | `Alpha/backend/app/services/paper_trading_loop.py:42`; `Alpha/backend/app/services/paper_trading_loop.py:59`; `Alpha/backend/app/services/agent_runtime.py:58` |
 | MOD-006 | Paper broker accounting | business_calculation_model | active | paper-broker-v0.0.1-atomic-storage | `Alpha/backend/app/services/paper_broker.py:44`; `Alpha/backend/app/services/atomic_json_store.py:31` |
 | MOD-007 | Approval queue freshness | deterministic_rule_engine | active | approval-freshness-v0.0.1-atomic-storage | `Alpha/backend/app/services/approval_queue.py:19`; `Alpha/backend/app/services/atomic_json_store.py:31` |
 | MOD-008 | Strategy DSL safety validation | deterministic_rule_engine | active | strategy-dsl-v0 | `Alpha/backend/app/schemas/strategy_dsl.py:22` |
@@ -53,7 +53,7 @@ Formula details live in `formula_registry.yaml`. The active rules include:
 - `FORM-002`: risk score starts at 100 and subtracts penalties for drawdown, low trade count, and high turnover.
 - `FORM-003`: pre-trade gate rejects kill-switch, missing idempotency, invalid side, non-positive quantity/price/notional, missing max notional, and excessive notional.
 - `FORM-004`: live policy rejects unless every required live safety gate passes; `FailClosedLiveBroker` still rejects rather than submitting.
-- `FORM-005`: paper loop composes tournament, order intent, risk check, locked ticket queue enqueue, optional locked persisted paper fill, portfolio snapshot, and audit event. S3PBT02 records app-runtime lifecycle truth under MOD-005 without changing trading formula values.
+- `FORM-005`: paper loop composes tournament, order intent, risk check, locked ticket queue enqueue, optional locked persisted paper fill, portfolio snapshot, and audit event. S3PBT02 records app-runtime lifecycle truth and S3PBT03 records shutdown fault-injection behavior under MOD-005 without changing trading formula values.
 - `FORM-006`: paper broker updates cash and positions deterministically, rejects duplicate or invalid paper orders, and serializes persisted submit/save through locked atomic JSON writes.
 - `FORM-007`: approval freshness maps expiry timestamps to fresh/expired/unknown actionability.
 - `FORM-008`: strategy DSL validates payload ranges and MVP prohibitions.
@@ -76,7 +76,7 @@ Current methodology is deterministic and fixture-based:
 
 - Strategy candidates are simple momentum candidates across fixture symbols and lookbacks.
 - Risk scoring is threshold and penalty based.
-- Paper trading is deterministic workflow execution over fixture data and a local paper broker; S3PBT01 makes the persisted queue and paper broker files atomic and serialized.
+- Paper trading is deterministic workflow execution over fixture data and a local paper broker; S3PBT01 makes the persisted queue and paper broker files atomic and serialized, S3PBT02 makes app stop/PID lifecycle truth explicit, and S3PBT03 adds disk-error, forced-termination, stale-PID, and write-after-stop fault-injection evidence.
 - Live order submission is intentionally not implemented; fail-closed behavior is the active safety design.
 - Current validation is unit/fixture testing, not production broker or real-market validation.
 

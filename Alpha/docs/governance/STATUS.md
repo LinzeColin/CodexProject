@@ -14,7 +14,7 @@
 - Project: `Alpha`
 - Path: `Alpha`
 - Product version: `0.1.0`
-- Phase/Gate: `S3PB / S3PB-GATE-in-progress`
+- Phase/Gate: `S3PB / S3PB-GATE-complete-technical`
 - Models/Formulas/Parameters total: `9 / 9 / 55`
 - Active formulas/parameters: `9 / 55`
 - Machine checked formulas/parameters: `9 / 42`
@@ -35,8 +35,8 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S3PB-GATE-in-progress`
-- Next executable task: `S3PBT03`
+- Release gate: `S3PB-GATE-complete-technical`
+- Next executable task: `TASK-ALPHA-B-001`
 - Pending/stale events: `5`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
@@ -58,4 +58,12 @@
 - Scripts: start/stop scripts validate stale PID files, write PID atomically, escalate TERM to KILL after timeout, and preserve PID files if a process remains active.
 - Shell portability: `.gitattributes` pins `Alpha/scripts/*.sh` to LF so bash syntax checks remain stable under Windows `core.autocrlf=true`.
 - Local pytest: blocked by missing `pytest`; runtime/lifecycle tests were added but not executed by pytest in this environment.
-- Not covered: S3PBT03 disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.
+## S3PBT03 Shutdown Fault-Injection Update
+
+- Scope: disk replace failure, forced writer termination, stop-after-stopped writes, and stale-PID process reuse.
+- Result: S3PBT03 fault-injection unittest passed 5 tests without pytest.
+- Atomicity: injected replace failure and forced termination before replace both preserve the previous valid JSON target.
+- Runtime stop: a write-producing loop makes no further writes after `stop()` returns `stopped` and a wait window elapses.
+- Scripts: start/stop scripts now require active PID command identity to match the Alpha uvicorn dashboard before trusting or terminating a PID.
+- Local pytest: blocked by missing `pytest`; repository tests were added but not executed by pytest in this environment.
+- Still not covered: real uvicorn termination in this Windows workspace, production database durability, broker paper integration, production validation, or live trading readiness.

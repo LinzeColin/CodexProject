@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "Alpha"
 project_name: "Alpha"
-summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；S3PBT01 已把 ApprovalQueue/PaperBroker 本地 JSON 持久化改为锁定事务和原子替换；S3PBT02 已把 AutoPaperAgent 停止状态和 dashboard PID 生命周期改为保守可证；不声明实盘就绪。"
+summary: "本地优先个人量化工作台，用于研究、fixture 回测、paper trading、订单意图人工审批、broker-ready ticket、dashboard 可视化和 fail-closed 安全门禁；S3PBT01 已把 ApprovalQueue/PaperBroker 本地 JSON 持久化改为锁定事务和原子替换；S3PBT02 已把 AutoPaperAgent 停止状态和 dashboard PID 生命周期改为保守可证；S3PBT03 已补磁盘错误、强制终止、陈旧 PID 复用和 stop 后不写入故障注入；不声明实盘就绪。"
 version: "0.1.0"
 fact_level: "EXTRACTED"
 owner_role: "model_owner + risk_owner"
@@ -31,14 +31,14 @@ limitations:
       - "EVID-ALPHA-PARAMETER-REGISTRY"
     unknown_task_ids: []
   -
-    statement: "S3PBT01 证明本地 queue/broker JSON 持久化的原子性和并发序列化；S3PBT02 证明 AutoPaperAgent 停止状态不虚报和 dashboard PID 清理更保守；磁盘错误、崩溃恢复、陈旧 PID 进程复用、强制终止破坏和完整 stop 后不写入仍待 S3PBT03。"
+    statement: "S3PBT01 证明本地 queue/broker JSON 持久化的原子性和并发序列化；S3PBT02 证明 AutoPaperAgent 停止状态不虚报和 dashboard PID 清理更保守；S3PBT03 证明磁盘 replace 失败、强制终止、陈旧 PID 进程复用和 stop 后不写入的本地故障注入路径。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
       - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
-    unknown_task_ids:
-      - "S3PBT03"
+      - "EVID-ALPHA-S3PBT03-MANIFEST"
+    unknown_task_ids: []
 features:
   -
     feature_id: "FEAT-ALPHA-001"
@@ -2156,7 +2156,7 @@ strategies:
   -
     strategy_id: "STRAT-ALPHA-003"
     name: "deterministic paper loop over local state"
-    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录；S3PBT01 使 queue/broker 文件持久化原子化并串行化；S3PBT02 使 stop/drain/timeout 与 PID 清理状态更保守可证。"
+    description: "paper loop 和 paper broker 只更新本地模拟现金、持仓、ticket 和 audit 记录；S3PBT01 使 queue/broker 文件持久化原子化并串行化；S3PBT02 使 stop/drain/timeout 与 PID 清理状态更保守可证；S3PBT03 增加磁盘错误、强制终止、陈旧 PID 复用和 stop 后不写入故障注入证明。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -2180,6 +2180,7 @@ strategies:
       - "EVID-ALPHA-S3PBT01-ATOMIC-LOG"
       - "EVID-ALPHA-S3PBT01-CONCURRENCY-LOG"
       - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
+      - "EVID-ALPHA-S3PBT03-MANIFEST"
   -
     strategy_id: "STRAT-ALPHA-004"
     name: "DSL constraints keep MVP scope narrow"
@@ -2236,6 +2237,15 @@ validations:
     evidence_refs:
       - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
       - "EVID-ALPHA-S3PBT02-MANIFEST"
+  -
+    validation_id: "VAL-ALPHA-S3PBT03-SHUTDOWN-FAULTS"
+    scope: "Alpha shutdown fault injection and stale PID process-reuse protection"
+    method: "py_compile, bash -n for dashboard scripts, no-pytest fault-injection tests covering disk replace failure, forced child termination, no writes after stopped, reused PID archiving, and start script dashboard process identity checks."
+    status: "PASS_WITH_BLOCKED_PYTEST"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-ALPHA-S3PBT02-SHUTDOWN-LOG"
+      - "EVID-ALPHA-S3PBT03-MANIFEST"
 assurance_summary:
   structural_completeness: "VERIFIED"
   implementation_congruence: "PARTIAL"
@@ -2340,6 +2350,11 @@ evidence_refs:
     evidence_id: "EVID-ALPHA-S3PBT02-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ALPHA-S3PBT03-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json"
     fact_level: "EXTRACTED"
 legacy_refs:
   -

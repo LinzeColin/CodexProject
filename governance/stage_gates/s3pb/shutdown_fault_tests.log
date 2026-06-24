@@ -1,4 +1,4 @@
-S3PBT02 Alpha runtime lifecycle and shutdown evidence
+S3PBT02/S3PBT03 Alpha runtime lifecycle, shutdown, and fault-injection evidence
 date: 2026-06-24
 project: Alpha
 acceptance: ACC-S3PBT02
@@ -38,3 +38,44 @@ not_claimed:
 - S3PBT02 does not prove POSIX live process termination against a real uvicorn process in this Windows workspace.
 - S3PBT02 does not complete disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, or full write-after-stop fault injection; those remain S3PBT03.
 - No real broker path or live trading readiness is introduced.
+
+---
+
+S3PBT03 Alpha shutdown fault-injection evidence
+date: 2026-06-24
+project: Alpha
+acceptance: ACC-S3PBT03
+scope:
+- Disk-error injection around atomic JSON replace.
+- Crash/force-termination preservation of previous valid JSON.
+- Runtime stop followed by a no-write-after-stopped wait window.
+- Dashboard stale-PID process-reuse protection for start and stop scripts.
+
+commands:
+- python -B -m py_compile Alpha\backend\app\services\agent_runtime.py Alpha\backend\app\services\atomic_json_store.py Alpha\tests\test_shutdown_fault_injection.py Alpha\tests\test_agent_runtime.py Alpha\tests\test_lifecycle_scripts.py
+  result: PASS
+  observed: Python syntax/import bytecode compilation completed with exit 0.
+- /bin/bash -n Alpha/scripts/start_alpha_dashboard.sh
+  result: PASS
+  observed: start script parses with LF line endings.
+- /bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh
+  result: PASS
+  observed: stop script parses with LF line endings.
+- set PYTHONPATH=Alpha && python -B Alpha\tests\test_shutdown_fault_injection.py
+  result: PASS
+  observed: 5 tests passed; disk replace failure preserves existing JSON and removes temp file; forced child termination before replace preserves previous valid JSON; runtime stop produces no later writes; stop script archives a reused non-dashboard PID without killing the unrelated process; start script validates dashboard process identity.
+- python -B -m pytest Alpha\tests -k "concurrent or shutdown or pid" -q
+  result: NOT_RUN_LOCAL_TOOL_UNAVAILABLE
+  observed: local Python reports No module named pytest.
+
+implemented_controls:
+- atomic_json_store keeps the old committed JSON unless os.replace succeeds and removes failed temp files.
+- Force termination before replace cannot corrupt the committed target file because the target is only replaced at the final os.replace step.
+- AutoPaperAgentRuntime stop evidence covers a write-producing loop and verifies no writes occur after stopped is returned and a wait window has elapsed.
+- start_alpha_dashboard.sh and stop_alpha_dashboard.sh now require an active PID to match a uvicorn backend.app.main:app command before treating it as an Alpha dashboard process.
+- Reused PID files that point to unrelated active processes are archived as stale evidence instead of being trusted or killed.
+
+not_claimed:
+- S3PBT03 does not enable a real broker path, production database, or live trading readiness.
+- pytest remains unavailable in this local environment and must run in CI or a dependency-prepared environment.
+- The stale-PID dynamic check uses a disposable bash sleep process as the reused PID sentinel rather than a real uvicorn process.

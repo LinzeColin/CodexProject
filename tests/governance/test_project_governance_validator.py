@@ -7,6 +7,7 @@ import io
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -4339,6 +4340,51 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
         self.assertIn("S3PBT02 runtime lifecycle smoke: PASS", observed)
         self.assertIn("No module named pytest", observed)
+
+    def test_other8_s3pbt03_alpha_shutdown_faults_manifest_and_gate_evidence(self) -> None:
+        shutdown_log = ROOT / "governance" / "stage_gates" / "s3pb" / "shutdown_fault_tests.log"
+        self.assertTrue(shutdown_log.is_file())
+        shutdown_text = shutdown_log.read_text(encoding="utf-8")
+        self.assertIn("S3PBT03", shutdown_text)
+        self.assertIn("disk replace failure preserves existing JSON", shutdown_text)
+        self.assertIn("forced child termination before replace preserves previous valid JSON", shutdown_text)
+        self.assertIn("no later writes", shutdown_text)
+        self.assertIn("non-dashboard PID", shutdown_text)
+        self.assertIn("No module named pytest", shutdown_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "Alpha")
+        self.assertEqual(manifest["task_id"], "S3PBT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S3PBT03"])
+        self.assertIn(manifest["binding_status"], {"PRECOMMIT_TREE_BOUND", "COMMIT_BOUND"})
+        self.assertTrue(
+            manifest["content_tree_hash"] == "PENDING_PRECOMMIT_HASH"
+            or re.match(r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$", manifest["content_tree_hash"])
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "Alpha/scripts/start_alpha_dashboard.sh",
+            "Alpha/scripts/stop_alpha_dashboard.sh",
+            "Alpha/tests/test_shutdown_fault_injection.py",
+            "governance/stage_gates/s3pb/shutdown_fault_tests.log",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        observed = " ".join(str(item.get("observed", "")) for item in manifest["test_results"])
+        self.assertIn("Ran 5 tests; OK", observed)
+        self.assertIn("No module named pytest", observed)
+        self.assertIn(
+            "No real broker path, production database durability, or live trading readiness is approved.",
+            manifest["unresolved_risks"],
+        )
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

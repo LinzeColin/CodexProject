@@ -11,11 +11,11 @@ Append-only machine events: `development_events.jsonl`
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `S3PB`
-- Current gate: `S3PB-GATE-in-progress`
-- Confirmed iterations: 4
+- Current gate: `S3PB-GATE-complete-technical`
+- Confirmed iterations: 5
 - Reconstructed development events: 1
-- Current task: `S3PBT03`
-- Blockers: S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop behavior; live execution policy and production validation remain blocked under `TASK-ALPHA-B-001`.
+- Current task: `TASK-ALPHA-B-001`
+- Blockers: live execution policy, production market data, broker paper integration, multi-year validation, and cost/slippage calibration remain blocked under `TASK-ALPHA-B-001`.
 
 ## Phase Matrix
 
@@ -119,7 +119,29 @@ Do not infer iteration count from Git commit count.
 - Success criteria: stopped is reported only after the current runtime task drains; timeout is reported as `stop_timeout` with task still running; PID files are not deleted while a process remains active.
 - Remaining risks: real uvicorn process termination was not exercised in this Windows workspace; S3PBT03 still must prove disk-error, crash-recovery, stale-PID process-reuse, force-termination corruption, and full write-after-stop fault injection.
 - Rollback: revert S3PBT02 runtime/script/test/governance/evidence/rendered files and restore prior stop scripts; keep S3PBT01 atomic storage in place unless explicitly rolling back S3PB.
-- Next step: run changed-only governance/render gates, commit, and continue S3PBT03.
+- Next step: completed; S3PBT03 follows with shutdown fault-injection evidence.
+
+### `ITER-20260624-ALPHA-S3PBT03`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `HEAD`
+- Result commit: `PENDING`
+- Task IDs: `S3PBT03`, `ACC-S3PBT03`
+- Goal: close the S3PB shutdown/fault-injection gap for local JSON state, runtime stop behavior, and dashboard PID process identity without enabling live trading.
+- Assumptions: S3PBT03 covers local deterministic fault injection only; real uvicorn termination and production broker/database readiness remain separate work.
+- Files read: atomic JSON store, AutoPaperAgent runtime, dashboard lifecycle scripts, S3PBT01/S3PBT02 evidence, and Alpha governance registries.
+- Files changed: dashboard lifecycle scripts, shutdown fault-injection tests, S3PB shutdown evidence, run manifest, governance status/task files, model specs, traceability, and rendered Chinese human entry files.
+- Model changes: MOD-005 now records shutdown fault-injection evidence under `paper-loop-v0.0.3-shutdown-faults`; no trading formula or live broker model is enabled.
+- Parameter changes: no active parameter value changed.
+- Commands: `python -B -m py_compile ...`; `/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh`; `/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh`; `set PYTHONPATH=Alpha && python -B Alpha\tests\test_shutdown_fault_injection.py`; `python -B -m pytest Alpha\tests -k "concurrent or shutdown or pid" -q`.
+- Test results: py_compile exit 0; both bash syntax checks exit 0; S3PBT03 fault-injection unittest passed 5 tests; pytest blocked locally because pytest is not installed.
+- Success criteria: disk replace failure preserves prior JSON; forced termination before replace preserves prior valid JSON; `stop()` returns no later writes after stopped; reused non-dashboard PID files are archived and not killed; start script checks dashboard process identity.
+- Remaining risks: real uvicorn process termination was not exercised in this Windows workspace; pytest must run in CI or a dependency-prepared environment; Alpha live readiness remains blocked under `TASK-ALPHA-B-001`.
+- Rollback: revert S3PBT03 script/test/governance/evidence/rendered files and restore prior PID identity handling; keep S3PBT01/S3PBT02 unless rolling back all S3PB.
+- Next step: resume `TASK-ALPHA-B-001` only when owner supplies production validation and execution-policy decisions.
 
 ## Reconstructed Development Events
 
@@ -152,3 +174,8 @@ Do not infer iteration count from Git commit count.
 | `/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh` | PASS | S3PBT02 stop script syntax passed after LF enforcement |
 | `python -B C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\s3pbt02_alpha_lifecycle_smoke.py` | PASS | Graceful drain, stop_timeout truthfulness, no second cycle after stopped, PID atomic-write assertions, TERM-to-KILL assertions, and PID-preservation assertions passed |
 | `python -B -m pytest Alpha\\tests -k "runtime or lifecycle" -q` | BLOCKED | local tool unavailable: `No module named pytest` |
+| `python -B -m py_compile Alpha\\backend\\app\\services\\agent_runtime.py Alpha\\backend\\app\\services\\atomic_json_store.py Alpha\\tests\\test_shutdown_fault_injection.py Alpha\\tests\\test_agent_runtime.py Alpha\\tests\\test_lifecycle_scripts.py` | PASS | S3PBT03 syntax/import check exit 0 |
+| `/bin/bash -n Alpha/scripts/start_alpha_dashboard.sh` | PASS | S3PBT03 start script syntax passed |
+| `/bin/bash -n Alpha/scripts/stop_alpha_dashboard.sh` | PASS | S3PBT03 stop script syntax passed |
+| `set PYTHONPATH=Alpha && python -B Alpha\\tests\\test_shutdown_fault_injection.py` | PASS | 5 shutdown fault-injection tests passed |
+| `python -B -m pytest Alpha\\tests -k "concurrent or shutdown or pid" -q` | BLOCKED | local tool unavailable: `No module named pytest` |

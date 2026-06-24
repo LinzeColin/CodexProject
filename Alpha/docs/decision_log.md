@@ -63,3 +63,11 @@ Decision: `AutoPaperAgentRuntime.stop()` must wait for the current paper cycle t
 Reason: Cancelling an `asyncio.to_thread()` wait cannot stop the underlying Python worker thread, so claiming `stopped` on timeout can hide writes that are still in progress.
 
 Consequence: S3PBT02 records stopping state, last stopped time, and timeout count in the runtime snapshot. Dashboard start/stop scripts keep PID files until process exit is confirmed, escalating TERM to KILL only after a bounded wait.
+
+## 2026-06-24: Shutdown Faults Must Preserve Local State And PID Truth
+
+Decision: Atomic JSON writes must preserve the previous committed target on replace failure or forced writer termination, `AutoPaperAgentRuntime.stop()` must produce no further writes after it reports stopped, and dashboard lifecycle scripts must verify that a PID belongs to the Alpha uvicorn process before trusting or terminating it.
+
+Reason: S3PB must preserve governance truth during failures: a stale PID that points to an unrelated process is not dashboard evidence, and a failed local write must not corrupt paper queue or broker state.
+
+Consequence: S3PBT03 adds shutdown fault-injection tests for disk-error preservation, forced termination before replace, no write after stopped, reused PID archiving, and start script dashboard identity checks. This closes the S3PB technical fault-injection gate without enabling live broker execution or production readiness.

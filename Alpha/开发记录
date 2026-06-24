@@ -73,3 +73,4 @@ Task detail fields:
 | 2026-06-24T00:00:00+10:00 | lean_v2_migration | Review9 S5PAT01 created Alpha Lean v2 project, roadmap, and event canonical files and rendered three Chinese human entry files from canonical facts only. | S5PAT01 | PROPOSED |
 | 2026-06-24T00:00:00+10:00 | runtime_atomic_storage_hardening | S3PBT01 serializes queue and paper broker JSON persistence with file locks and atomic replace, with threaded and Windows cross-process smoke evidence. | S3PBT01 | EXTRACTED |
 | 2026-06-24T00:00:00+10:00 | runtime_lifecycle_hardening | S3PBT02 makes AutoPaperAgent stop status truthful and dashboard PID lifecycle cleanup conservative while keeping live trading disabled. | S3PBT02 | EXTRACTED |
+| 2026-06-24T00:00:00+10:00 | runtime_shutdown_fault_hardening | S3PBT03 proves local shutdown fault paths preserve committed JSON state and PID truth while keeping live trading disabled. | S3PBT03 | EXTRACTED |
