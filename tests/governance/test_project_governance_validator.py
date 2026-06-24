@@ -2088,16 +2088,24 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             .splitlines()
             if line.strip()
         ]
-        self.assertEqual(len(events), 4)
+        self.assertGreaterEqual(len(events), 4)
         self.assertEqual({event["schema_version"] for event in events}, {"codexproject.event.v1"})
-        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
+        self.assertTrue({event["fact_level"] for event in events}.issubset({"VERIFIED", "EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN"}))
         by_id = {event["event_id"]: event for event in events}
         self.assertEqual(by_id["EVT-WHKM-SEMANTIC-20260621-001"]["fact_level"], "RECONSTRUCTED")
         self.assertIn("Coverage remains in_progress", by_id["EVT-WHKM-SEMANTIC-20260621-001"]["notes"])
         self.assertEqual(by_id["EVT-WHKM-REVIEW8-OWNER-DECISION-20260622-001"]["fact_level"], "UNKNOWN")
         self.assertEqual(by_id["EVT-WHKM-REVIEW9-S5PAT04-LOCAL"]["fact_level"], "PROPOSED")
         self.assertIn("Must remain PROPOSED", by_id["EVT-WHKM-REVIEW9-S5PAT04-LOCAL"]["notes"])
-        self.assertFalse(any(event["runtime_behavior_changed"] for event in events))
+        s5_events = [
+            event
+            for event in events
+            if event["event_id"] != "EVT-WHKM-S3PAT01-BOUNDARY-20260624-001"
+        ]
+        self.assertFalse(any(event["runtime_behavior_changed"] for event in s5_events))
+        self.assertTrue(by_id["EVT-WHKM-S3PAT01-BOUNDARY-20260624-001"]["runtime_behavior_changed"])
+        self.assertEqual(by_id["EVT-WHKM-S3PAT01-BOUNDARY-20260624-001"]["fact_level"], "EXTRACTED")
+        self.assertIn("Technical fail-closed boundary only", by_id["EVT-WHKM-S3PAT01-BOUNDARY-20260624-001"]["notes"])
 
     def test_review9_s5pat04_whkm_human_files_render_without_drift(self) -> None:
         cli = load_lean_governance_module()
@@ -4075,6 +4083,46 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue(budget["ci_budget_telemetry"]["zero_diff_clean"])
         self.assertFalse(budget["risk_boundary"]["ordinary_pr_full_governance"])
         self.assertTrue(budget["risk_boundary"]["manual_all_full_governance"])
+
+    def test_other8_s3pat01_whkm_boundary_manifest_and_gate_evidence(self) -> None:
+        gate_log = ROOT / "governance" / "stage_gates" / "s3pa" / "whkm_boundary_tests.log"
+        self.assertTrue(gate_log.is_file())
+        gate_text = gate_log.read_text(encoding="utf-8")
+        self.assertIn("S3PAT01", gate_text)
+        self.assertIn("PASS: settlement_days, invoice_days, and payback_days reject 0", gate_text)
+        self.assertIn("NOT PROVEN: zero-day business meaning", gate_text)
+        self.assertIn("No module named pytest", gate_text)
+
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S3PAT01-WHKM-DAY-BOUNDARY-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "whkmSalary")
+        self.assertEqual(manifest["task_id"], "S3PAT01")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "governance/stage_gates/s3pa/whkm_boundary_tests.log",
+            "whkmSalary/salary_logic.py",
+            "whkmSalary/streamlit_app.py",
+            "whkmSalary/tests/test_salary_logic_boundaries.py",
+            "whkmSalary/docs/governance/formula_registry.yaml",
+            "whkmSalary/docs/governance/parameter_registry.csv",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertIn(
+            "Zero-day business meaning is not owner-confirmed.",
+            manifest["unresolved_risks"],
+        )
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

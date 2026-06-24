@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-PENDING-MAIN-MERGE`
 - next_unique_task: `none`
-- evidence_ref_count: `11`
+- evidence_ref_count: `13`
 - roadmap_test_command_count: `3`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -22,7 +22,7 @@
 
 ### MOD-001 Quarterly performance salary calculation
 
-- purpose: `Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights.`
+- purpose: `Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-001, FORM-002, FORM-003, FORM-004, FORM-005, FORM-006, FORM-007, FORM-008, FORM-009`
@@ -31,7 +31,7 @@
 
 ### MOD-002 Streamlit input constraints
 
-- purpose: `Constrain UI inputs before invoking salary calculation.`
+- purpose: `Constrain UI inputs before invoking salary calculation; S3PAT01 sets settlement/invoice/payback UI min_value to 1 while defaults remain unchanged.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-010`
@@ -61,19 +61,19 @@
 ### FORM-004
 
 - model_id: `MOD-001`
-- expression_or_pseudocode: `score_settlement: days>60 -> -150; 20<=days<=60 -> min(100,100-(days-20)*5); 1<days<20 -> min(200,200-days*5); days==1 -> 200.`
+- expression_or_pseudocode: `score_settlement: days<1 -> ValueError; days>60 -> -150; 20<=days<=60 -> min(100,100-(days-20)*5); 1<days<20 -> min(200,200-days*5); days==1 -> 200.`
 - evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-SEMANTIC-MANIFEST`
 
 ### FORM-005
 
 - model_id: `MOD-001`
-- expression_or_pseudocode: `score_invoice: days>60 -> -200; 20<days<=60 -> min(0,-(days-20)*5); 5<days<=20 -> min(125,125-(days-5)*8); 1<days<=5 -> min(150,150-days*5); days==1 -> 150.`
+- expression_or_pseudocode: `score_invoice: days<1 -> ValueError; days>60 -> -200; 20<days<=60 -> min(0,-(days-20)*5); 5<days<=20 -> min(125,125-(days-5)*8); 1<days<=5 -> min(150,150-days*5); days==1 -> 150.`
 - evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-SEMANTIC-MANIFEST`
 
 ### FORM-006
 
 - model_id: `MOD-001`
-- expression_or_pseudocode: `score_payback: days>60 -> min(-10,-10-(days-60)*2); 20<days<=60 -> min(150,150-(days-20)*4); 1<days<=20 -> min(200,200-days*2.5); days==1 -> 200.`
+- expression_or_pseudocode: `score_payback: days<1 -> ValueError; days>60 -> min(-10,-10-(days-60)*2); 20<days<=60 -> min(150,150-(days-20)*4); 1<days<=20 -> min(200,200-days*2.5); days==1 -> 200.`
 - evidence_refs: `EVID-WHKM-FORMULA-REGISTRY, EVID-WHKM-SEMANTIC-MANIFEST`
 
 ### FORM-007

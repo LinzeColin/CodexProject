@@ -70,3 +70,4 @@ Task detail fields:
 | 2026-06-21T12:45:05Z | semantic_extraction | Semantic extractors machine-verified 78 active parameters and 9 active formulas; PARAM-004, PARAM-005 and FORM-010 require human review. | GOV-SEMANTIC-WHKM-001 | RECONSTRUCTED |
 | 2026-06-22T00:24:25Z | owner_decision_required | Payroll, legal/policy, and product owners must provide authoritative policy, jurisdiction, tax, rounding, and reconciliation evidence before production payroll use. | TASK-WHKM-B-001 | UNKNOWN |
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PAT04 proposes whkmSalary Lean v2 canonical files and rendered Chinese human entry files. | S5PAT04 | PROPOSED |
+| 2026-06-24T00:00:00+10:00 | runtime_boundary_fix | S3PAT01 rejects settlement invoice and payback workday inputs below 1 before weighted salary calculation and sets matching Streamlit day input minimums to 1. | S3PAT01 | EXTRACTED |

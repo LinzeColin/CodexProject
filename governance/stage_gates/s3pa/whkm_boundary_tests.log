@@ -1,0 +1,27 @@
+S3PA whkmSalary boundary evidence
+Generated: 2026-06-24T00:00:00+10:00
+Task: S3PAT01
+Scope: whkmSalary workday boundary fail-closed behavior
+
+Conclusion:
+- PASS: settlement_days, invoice_days, and payback_days reject 0 and negative direct-call inputs with ValueError.
+- PASS: Streamlit settlement/invoice/payback day inputs now use min_value=1.
+- PASS: Existing one-day score boundaries remain stable.
+- NOT PROVEN: zero-day business meaning, payroll policy source, tax basis, rounding policy, and historical reconciliation.
+
+Commands:
+1. python -B -m unittest discover -s whkmSalary\tests -q
+   Result: PASS; Ran 3 tests; OK.
+
+2. python -B -m py_compile whkmSalary\salary_logic.py whkmSalary\streamlit_app.py whkmSalary\tests\test_salary_logic_boundaries.py
+   Result: PASS; exit 0.
+
+3. python -B scripts\validate_semantic_extractors.py whkmSalary
+   Result: PASS; {"semantic_formulas_checked": 9, "semantic_parameters_checked": 78}
+
+4. python -B -m pytest whkmSalary\tests -q
+   Result: NOT_RUN_LOCAL_TOOL_UNAVAILABLE; No module named pytest.
+
+Gate truth:
+- This file is evidence for the technical boundary only.
+- It is not a salary policy approval and does not change delivery readiness from FAILED.

@@ -94,29 +94,31 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     status: "active"
-    expression: "score_settlement: days>60 -> -150; 20<=days<=60 -> min(100,100-(days-20)*5); 1<days<20 -> min(200,200-days*5); days==1 -> 200."
+    expression: "score_settlement: days<1 -> ValueError; days>60 -> -150; 20<=days<=60 -> min(100,100-(days-20)*5); 1<days<20 -> min(200,200-days*5); days==1 -> 200."
     variables:
       - name: "days"
         data_type: "integer"
         unit: "working days"
-        input_domain: "UI min 0; salary_logic has no return for days=0"
+        input_domain: "integer working days; UI min 1; salary_logic rejects days<1"
     constraints:
-      - "days=0 returns None in salary_logic and can break weighted calculation."
-    missing_policy: "No fallback for days=0; governance task TASK-WHKM-B-001 tracks boundary repair decision."
-    output_range: "float score or None for uncovered day value."
+      - "days=0 and negative direct calls raise ValueError before weighted calculation."
+      - "Business meaning of zero-day settlement remains owner-blocked under TASK-WHKM-B-001."
+    missing_policy: "No fallback score for days<1; S3PAT01 rejects invalid workday inputs to prevent None-weighted calculation."
+    output_range: "float score for days>=1; ValueError for days<1."
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:74"
+      - "whkmSalary/salary_logic.py:80"
     test_refs:
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "whkmSalary/streamlit_app.py:39"
     implementation_refs: ["whkmSalary/salary_logic.py::score_settlement"]
-    implementation_fingerprint: "sha256:1036305a5adae6b4e8a9b053c9a2deb1e8572ef2eba5d2e1d0156beca0ab36a9"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:7466cf392e4c817484d21c22c767e0dd006b2ca2cb75d94e8816571f0a253dbf"
+    implementation_fingerprint: "sha256:5609fc84388a51349bb9f221f2904037b37502eb81c5bab211137b74e3fdd874"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:dd2fb5c19df6e10bb754548564c56765eeda78c97e73b81778b37d836bd4ffe6"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-005"
@@ -125,29 +127,31 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     status: "active"
-    expression: "score_invoice: days>60 -> -200; 20<days<=60 -> min(0,-(days-20)*5); 5<days<=20 -> min(125,125-(days-5)*8); 1<days<=5 -> min(150,150-days*5); days==1 -> 150."
+    expression: "score_invoice: days<1 -> ValueError; days>60 -> -200; 20<days<=60 -> min(0,-(days-20)*5); 5<days<=20 -> min(125,125-(days-5)*8); 1<days<=5 -> min(150,150-days*5); days==1 -> 150."
     variables:
       - name: "days"
         data_type: "integer"
         unit: "working days"
-        input_domain: "UI min 0; salary_logic has no return for days=0"
+        input_domain: "integer working days; UI min 1; salary_logic rejects days<1"
     constraints:
-      - "days=0 returns None in salary_logic and can break weighted calculation."
-    missing_policy: "No fallback for days=0; governance task TASK-WHKM-B-001 tracks boundary repair decision."
-    output_range: "float score or None for uncovered day value."
+      - "days=0 and negative direct calls raise ValueError before weighted calculation."
+      - "Business meaning of zero-day invoice remains owner-blocked under TASK-WHKM-B-001."
+    missing_policy: "No fallback score for days<1; S3PAT01 rejects invalid workday inputs to prevent None-weighted calculation."
+    output_range: "float score for days>=1; ValueError for days<1."
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:85"
+      - "whkmSalary/salary_logic.py:92"
     test_refs:
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "whkmSalary/streamlit_app.py:43"
     implementation_refs: ["whkmSalary/salary_logic.py::score_invoice"]
-    implementation_fingerprint: "sha256:4a5be16e31dc2a70a5671a4ffe13eb74b856a0119ffc394cf4c98f6931f2accc"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:4418f5c6550e92ac1e634a780398f9aa37afb89e8bd566a6ab4482719dc77b67"
+    implementation_fingerprint: "sha256:11f8a01506eafd9647933e72ba743b2b56c03f99d22e0d6b89af31d394e3721f"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:9daf74176d8928e26388104249cc3573bfe21a72eb3f6445dadf12c0f882295d"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-006"
@@ -156,29 +160,31 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     status: "active"
-    expression: "score_payback: days>60 -> min(-10,-10-(days-60)*2); 20<days<=60 -> min(150,150-(days-20)*4); 1<days<=20 -> min(200,200-days*2.5); days==1 -> 200."
+    expression: "score_payback: days<1 -> ValueError; days>60 -> min(-10,-10-(days-60)*2); 20<days<=60 -> min(150,150-(days-20)*4); 1<days<=20 -> min(200,200-days*2.5); days==1 -> 200."
     variables:
       - name: "days"
         data_type: "integer"
         unit: "working days"
-        input_domain: "UI min 0; salary_logic has no return for days=0"
+        input_domain: "integer working days; UI min 1; salary_logic rejects days<1"
     constraints:
-      - "days=0 returns None in salary_logic and can break weighted calculation."
-    missing_policy: "No fallback for days=0; governance task TASK-WHKM-B-001 tracks boundary repair decision."
-    output_range: "float score or None for uncovered day value."
+      - "days=0 and negative direct calls raise ValueError before weighted calculation."
+      - "Business meaning of zero-day payback remains owner-blocked under TASK-WHKM-B-001."
+    missing_policy: "No fallback score for days<1; S3PAT01 rejects invalid workday inputs to prevent None-weighted calculation."
+    output_range: "float score for days>=1; ValueError for days<1."
     open_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:98"
+      - "whkmSalary/salary_logic.py:106"
     test_refs:
+      - "FOCUSED: python -B -m unittest discover -s whkmSalary\\tests -q"
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "whkmSalary/streamlit_app.py:45"
     implementation_refs: ["whkmSalary/salary_logic.py::score_payback"]
-    implementation_fingerprint: "sha256:5174b1c05ee277b1a99c740539efe4e31213d12bc6830a9a368ecc491d0fb5fa"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
-    evidence_hash: "sha256:fd80b82ac60a743039a4dd30fe20b1761614f35231ddb785a304f596718693bd"
+    implementation_fingerprint: "sha256:410390f76c7ad32f7a070be1ba32f75bc8a45f198f32fc23df4003f8d294a96b"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
+    evidence_hash: "sha256:4d8ba4e4456c9ade3999e4b1b8586ef37e8a392b2121e100bbd1a2e6cbee7980"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
   - formula_id: "FORM-007"
@@ -289,6 +295,7 @@ formulas:
         input_domain: "0.0..1.0"
     constraints:
       - "UI constraints are not a substitute for salary_logic direct-call validation."
+      - "S3PAT01 changed settlement, invoice, and payback UI min_value from 0 to 1."
     missing_policy: "Streamlit supplies defaults; direct code callers may bypass UI constraints."
     output_range: "UI input values or displayed exception."
     code_refs:
