@@ -2065,3 +2065,23 @@ None for this new project baseline.
 - Remaining risks: S2PCT06 authoritative research institution and industry technical report framework is not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal source-domain or integrated production acceptance.
 - Rollback: Revert S2PCT05 code, fixture/tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync.
 - Next step: Implement S2PCT06 authoritative research institution and industry technical report framework with focused tests and governance validation.
+
+### `ITER-20260625-ADP-S2PF-S2PFT01-PROVINCIAL-COVERAGE`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PDT04 readiness manifest, mainland provincial template fixture rows, model/formula/parameter registry diff, and local S2PFT01 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 3845fa52a1ab2a41ecbf0a5ba4a57d802885a82a
+- Result commit: PENDING
+- Task IDs: `S2PFT01`, legacy alias `S2P5T01`; next task `S2PFT02`
+- Goal: Complete China mainland provincial-level template coverage after S2PDT04, register S2PFT01 governance entries, and preserve V7.2 no-production boundaries.
+- Files changed: S2PFT01 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-065` China provincial template coverage model.
+- Formula changes: Added `FORM-ADP-067` with machine-verifiable AST fingerprints bound to the S2PFT01 implementation.
+- Parameter changes: Added `PARAM-ADP-459` through `PARAM-ADP-468` for S2PFT01 model id, acceptance id, task ids, required mainland provincial IDs, locality types, core department roles, health tiers, identity states, and report filename.
+- Test results: focused Stage2 source tests 51 OK; full arxiv-daily-push unittest 278 OK; semantic extractor checked 67 formulas and 451 parameters; V7.2 contract validator PASS; project governance 0 errors/0 warnings; JSON/YAML/JSONL/CSV parse OK.
+- Decisions: `ACC-S2PFT01-PROVINCES` is accepted only as metadata-only provincial template coverage evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, Hong Kong/Macau profiles, city coverage, and special-zone discovery all remain false/disabled.
+- Remaining risks: S2PFT02 Hong Kong/Macau, S2PFT03 city coverage, S2PFT04 special-zone discovery, and S2PFT05 full D3 governance remain unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PFT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Next step: Run final render/changed-only validation, then open a clean PR for S2PFT01.

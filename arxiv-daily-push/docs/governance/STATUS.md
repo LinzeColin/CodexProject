@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PH / EMAIL_LEARNING_V1_T01_PATH_AUDIT_RECORDED_NO_IMPLEMENTATION`
-- Models/Formulas/Parameters total: `64 / 66 / 458`
-- Active formulas/parameters: `66 / 441`
-- Machine checked formulas/parameters: `66 / 441`
+- Phase/Gate: `S2PF / S2PFT01_PROVINCIAL_TEMPLATE_COVERAGE_READY_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `65 / 67 / 468`
+- Active formulas/parameters: `67 / 451`
+- Machine checked formulas/parameters: `67 / 451`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `EMAIL_LEARNING_V1_T01_PATH_AUDIT_RECORDED_NO_IMPLEMENTATION`
+- Release gate: `S2PFT01_PROVINCIAL_TEMPLATE_COVERAGE_READY_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8`
 - V7 roadmap hash: `fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56`
@@ -45,9 +45,9 @@
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PCT02`
+- Next governance task: `S2PFT02`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037`
+- Next executable task: `S2PFT02`
 - Pending/stale events: `100`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

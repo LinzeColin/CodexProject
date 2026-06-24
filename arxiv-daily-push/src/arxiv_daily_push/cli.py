@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pft01_china_provincial_template_coverage,
     run_s2pdt04_china_d3_readiness_review,
     run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
@@ -134,6 +135,7 @@ from .stage2_sources import (
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
+    validate_s2pft01_china_provincial_template_coverage_report,
 )
 from .storage import (
     inspect_database,
@@ -628,6 +630,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pdt04_china_readiness.add_argument("--board-route-records", required=True, help="D3 board route records JSON list or object with board_route_records.")
     s2pdt04_china_readiness.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pdt04_china_readiness.add_argument("--json", action="store_true", help="Print JSON D3 readiness review report.")
+
+    s2pft01_china_provinces = subparsers.add_parser(
+        "stage2-china-provincial-template-coverage",
+        help="Run S2PFT01/S2P5T01 mainland provincial template coverage and health-tier evidence.",
+    )
+    s2pft01_china_provinces.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pft01_china_provinces.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pft01_china_provinces.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pft01_china_provinces.add_argument("--d3-readiness-review-report", required=True, help="Passing S2PDT04 D3 readiness review report JSON.")
+    s2pft01_china_provinces.add_argument("--provincial-records", required=True, help="Mainland provincial records JSON list or object with provincial_records.")
+    s2pft01_china_provinces.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pft01_china_provinces.add_argument("--json", action="store_true", help="Print JSON provincial template coverage report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1883,6 +1897,29 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- d3_replay_gate: {report.get('d3_replay_gate')}")
             print(f"- d3_shadow_gate: {report.get('d3_shadow_gate')}")
             print(f"- board_routing_gate: {report.get('board_routing_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-china-provincial-template-coverage":
+        report = run_s2pft01_china_provincial_template_coverage(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            d3_readiness_review_report=load_json_mapping(args.d3_readiness_review_report),
+            provincial_records=load_json_records(args.provincial_records, "provincial_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pft01_china_provincial_template_coverage_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- provincial_coverage_gate: {report.get('provincial_coverage_gate')}")
+            print(f"- core_department_template_gate: {report.get('core_department_template_gate')}")
+            print(f"- health_tier_gate: {report.get('health_tier_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

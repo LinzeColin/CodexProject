@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 84
-- acceptance_count: 76
+- task_count: 85
+- acceptance_count: 77
 
 ## Delivery Tasks
 
@@ -100,6 +100,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PBT01 | S2PB | completed | ACC-S2PBT01-BIORXIV-MEDRXIV; ADP-ACC-S2P1T01-SOURCE-PROMOTION | V7.2-inherited name for the completed D1 bioRxiv/medRxiv no-send shadow evidence; no formal source production inclusion is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
 | S2PCT01 | S2PC | completed | ACC-S2PCT01-NATURE | V7.2-inherited D2 Nature/top-journal metadata-only shadow foundation merged in PR #119; legacy alias `S2P2T01`; no D2 source-domain acceptance or integrated production acceptance is claimed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119` |
 | S2PCT02 | S2PC | planned | ACC-S2PCT02-SCIENCE | Next V7.2 Science/main-journal metadata-only no-send shadow task; agent must record V7.2 revalidation before new work; no D2 source-domain acceptance, SMTP, Release, scheduler, PDF/full-text download, or paywall bypass is allowed | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml` |
+| S2PFT01 | S2PF | completed | ACC-S2PFT01-PROVINCES | China mainland provincial template coverage passed for 31 provincial-level IDs, locality types, core department roles, health tiers, official identity, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, HK/MO, city, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md`; `governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
