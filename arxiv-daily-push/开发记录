@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT03`
-- total_hours: `12.50`
-- completed_hours: `10.50`
-- progress: `84.00%`
+- current_task: `S2PCT04`
+- total_hours: `14.50`
+- completed_hours: `12.50`
+- progress: `86.21%`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -23,9 +23,9 @@ Stage -> Phase -> Task
 
 - person_goal: `在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、ledger、邮件预览和 shadow 证据。`
 - status: `in_progress`
-- derived_hours: `8.50`
-- derived_percent: `68.00%`
-- stop_conditions: `V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED, bioRxiv/medRxiv、Nature 或 Science shadow 影响正式 arXiv 邮件, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
+- derived_hours: `10.50`
+- derived_percent: `72.41%`
+- stop_conditions: `V7/root contract gate 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED, bioRxiv/medRxiv、Nature、Science 或 The Lancet shadow 影响正式 arXiv 邮件, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
 - stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 
 #### S2PB B1 preprint source shadow promotion
@@ -33,35 +33,36 @@ Stage -> Phase -> Task
 - objective: `将 legacy S2P1T01 作为 V7 alias S2PBT01 推进 bioRxiv/medRxiv metadata-only source evidence。`
 - status: `in_progress`
 - derived_hours: `2.50`
-- derived_percent: `20.00%`
+- derived_percent: `17.24%`
 - stop_conditions: `改写历史 task/event ID, 把 no-send evidence 当作 formal production inclusion, 发生 V6/V7 命名或合同冲突但未标记 R-CONFLICT`
 - stop_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PBT01 | bioRxiv 与 medRxiv no-send shadow source evidence | completed | 2.50 | 20.00% | ARXIV_PRODUCTION_ACCEPTED, ADP-S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
+| S2PBT01 | bioRxiv 与 medRxiv no-send shadow source evidence | completed | 2.50 | 17.24% | ARXIV_PRODUCTION_ACCEPTED, ADP-S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
 
 #### S2PC D2 top-journal metadata-only shadow foundation
 
 - objective: `将 legacy S2P2T01/S2P2T02 作为 V7.1 canonical S2PCT01/S2PCT02 推进 Nature 与 Science metadata-only no-send shadow evidence，并继续到 S2PCT03 The Lancet 主刊 metadata-only shadow。`
 - status: `in_progress`
-- derived_hours: `6.00`
-- derived_percent: `48.00%`
+- derived_hours: `8.00`
+- derived_percent: `55.17%`
 - stop_conditions: `把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction, 把 S2PCT01 shadow evidence 当作 D2 source-domain acceptance, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
 - stop_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PCT01 | Nature/top-journal metadata-only no-send shadow evidence | completed | 2.00 | 16.00% | S2PBT01 | ACC-S2PCT01-NATURE |
-| S2PCT02 | Science main-journal metadata-only no-send shadow evidence | completed | 2.00 | 16.00% | S2PCT01 | ACC-S2PCT02-SCIENCE |
-| S2PCT03 | The Lancet main-journal metadata-only no-send shadow evidence | planned | 2.00 | 16.00% | S2PCT02 | ACC-S2PCT03-LANCET |
+| S2PCT01 | Nature/top-journal metadata-only no-send shadow evidence | completed | 2.00 | 13.79% | S2PBT01 | ACC-S2PCT01-NATURE |
+| S2PCT02 | Science main-journal metadata-only no-send shadow evidence | completed | 2.00 | 13.79% | S2PCT01 | ACC-S2PCT02-SCIENCE |
+| S2PCT03 | The Lancet main-journal metadata-only no-send shadow evidence | completed | 2.00 | 13.79% | S2PCT02 | ACC-S2PCT03-LANCET |
+| S2PCT04 | Top-journal profile, publication relation, correction and retraction modeling | planned | 2.00 | 13.79% | S2PCT01, S2PCT02, S2PCT03 | ACC-S2PCT04-JOURNAL-PROFILE |
 
 ### S5 项目迁移与三文件重建
 
 - person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
 - status: `in_progress`
 - derived_hours: `4.00`
-- derived_percent: `32.00%`
+- derived_percent: `27.59%`
 - stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
 - stop_gate: `S5-GATE`
 
@@ -70,13 +71,13 @@ Stage -> Phase -> Task
 - objective: `收敛现有大量治理文档，保留有用事实并恢复三文件。`
 - status: `in_progress`
 - derived_hours: `4.00`
-- derived_percent: `32.00%`
+- derived_percent: `27.59%`
 - stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
 - stop_gate: `S5PB-GATE`
 
 | Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 32.00% | S5PBT04 | ACC-S5PBT05 |
+| S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 27.59% | S5PBT04 | ACC-S5PBT05 |
 
 
 ## V7.1 当前根治理锁
@@ -88,9 +89,9 @@ Stage -> Phase -> Task
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT03`
+- stage2_current_task: `S2PCT04`
 - stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04`
 - stage2_final_task: `S2PMT07`
 - stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - stage2_integrated_production_accepted: `false`
@@ -109,3 +110,4 @@ Stage -> Phase -> Task
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT05 proposes arxiv-daily-push Lean v2 canonical files and rendered Chinese human entry files while preserving legacy V6 roadmap anchor roadmap_sha256 76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10 and planned final production task S2P7T04 as historical context. | S5PBT05 | PROPOSED |
 | 2026-06-24T10:58:00+10:00 | stage2_preprint_shadow_evidence | S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only source path passed live canaries, fixture replay, and real no-send 30-date replay with 48h shadow evidence while preserving Stage 1 arXiv local production boundaries. | S2PBT01 | EXTRACTED |
 | 2026-06-24T14:58:00+10:00 | stage2_top_journal_shadow_evidence | S2PCT02/S2P2T02 Science metadata-only top-journal path passed fixture tests and live RSS no-send canary while preserving Stage 1 arXiv local production boundaries and routing next S2PC work to S2PCT03 The Lancet. | S2PCT02 | EXTRACTED |
+| 2026-06-24T16:00:00+10:00 | stage2_top_journal_shadow_evidence | S2PCT03/S2P2T03 The Lancet metadata-only top-journal medical path passed fixture tests and live RSS no-send canary while preserving Stage 1 arXiv local production boundaries and routing next S2PC work to S2PCT04 journal profile/correction/retraction modeling. | S2PCT03 | EXTRACTED |

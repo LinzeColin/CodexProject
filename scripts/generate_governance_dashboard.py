@@ -534,6 +534,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PCT02 Science remains completed as no-send shadow evidence, but D2 top-journal coverage stops before Lancet.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PCT04":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PCT04-JOURNAL-PROFILE-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PCT04 / legacy S2P2T04 顶刊 Profile、发表关系、更正撤回 metadata-only no-send shadow evidence，同时保持 D2 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PCT04 journal profile, publication relation, correction, and retraction modeling after completed Nature, Science, and Lancet shadow evidence",
+                "option_a": "继续顶刊文章 Profile taxonomy、发表关系图、更正/撤回强制事件和旧结论更新测试，不影响现有 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PCT03，只保留 Nature/Science/Lancet shadow evidence；风险更低但 D2 顶刊类型与撤回治理不完整。",
+                "option_c": "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; profile taxonomy, relation graph metadata, correction/retraction forced events, focused tests, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "在保持 arXiv 稳定运行的前提下，把 D2 top-journal shadow 从来源接入推进到文章类型、发表关系、纠错和撤回的可审计理解层。",
+                "risks": "更正/撤回未更新旧结论、新闻/社论 profile 误分类、DOI/profile 关系错误、许可/全文越权、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "profile taxonomy tests, publication relation fixtures, correction/retraction forced-event tests, semantic extractor, project governance validator, arXiv no-regression evidence",
+                "priority": "P1",
+                "no_decision": "S2PCT03 Lancet remains completed as no-send shadow evidence, but D2 top-journal work stops before profile/retraction modeling.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {

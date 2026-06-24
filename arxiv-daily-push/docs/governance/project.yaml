@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature 与 S2PCT02 Science metadata-only no-send shadow evidence 已完成，下一入口为 S2PCT03 The Lancet metadata-only shadow，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science 与 S2PCT03 The Lancet metadata-only no-send shadow evidence 已完成，下一入口为 S2PCT04 顶刊 Profile、发表关系、更正撤回，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pct02_science_shadow_complete_s2pct03_next_no_formal_production"
+current_status: "stage1_accepted_s2pct03_lancet_shadow_complete_s2pct04_next_no_formal_production"
 limitations:
   -
-    statement: "369/369 active parameters 与 56/56 active formulas 为 MACHINE_VERIFIED；54 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "376/376 active parameters 与 58/58 active formulas 为 MACHINE_VERIFIED；56 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -24,20 +24,21 @@ limitations:
     unknown_task_ids:
       - "LOCAL_SMTP_SMOKE"
   -
-    statement: "evidence_freshness 仍为 PARTIAL：0 tree-bound events、1 commit-bound event、55 legacy unbound events、38 precommit pending events；不能把所有历史事件写成 PR CI attested。"
+    statement: "evidence_freshness 仍为 PARTIAL：0 tree-bound events、1 commit-bound event、55 legacy unbound events、39 precommit pending events；不能把所有历史事件写成 PR CI attested。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-ASSURANCE-STATUS"
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature 与 S2PCT02 Science top-journal metadata-only no-send shadow evidence 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science 与 S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
+      - "EVID-ADP-S2PCT03-LANCET"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
-      - "S2PCT03"
+      - "S2PCT04"
 features:
   -
     feature_id: "FEAT-ADP-001"
@@ -495,6 +496,29 @@ features:
       - "EVID-ADP-S2PCT02-SCIENCE"
   -
     feature_id: "FEAT-ADP-010"
+    name: "Stage 2 The Lancet/top-journal medical shadow source evidence"
+    description: "S2PCT03/S2P2T03 已完成 official Lancet Online First RSS metadata-only adapter、current issue index cross-check、medical article type gate、PubMed DOI-query-ready relation metadata、separate Lancet shadow queue/ledger/email preview 和 live Lancet no-send canary；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。"
+    status: "completed"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-ADP-055"
+      - "MOD-ADP-056"
+    formula_ids:
+      - "FORM-ADP-057"
+      - "FORM-ADP-058"
+    parameter_ids:
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-387"
+      - "PARAM-ADP-388"
+      - "PARAM-ADP-389"
+      - "PARAM-ADP-390"
+      - "PARAM-ADP-391"
+      - "PARAM-ADP-392"
+      - "PARAM-ADP-393"
+    evidence_refs:
+      - "EVID-ADP-S2PCT03-LANCET"
+  -
+    feature_id: "FEAT-ADP-011"
     name: "Review9 Lean v2 owner-readable governance"
     description: "把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。"
     status: "proposed"
@@ -2113,6 +2137,57 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-S2PCT02-SCIENCE"
+  -
+    model_id: "MOD-ADP-055"
+    name: "S2PCT03 The Lancet metadata ingest"
+    purpose: "Fetch a small official public Lancet Online First RSS metadata window, classify medical article types, map eligible records into generic SourceItems, record DOI-query-ready PubMed relation metadata, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-057"
+    parameter_ids:
+      - "PARAM-ADP-379"
+      - "PARAM-ADP-387"
+      - "PARAM-ADP-388"
+      - "PARAM-ADP-389"
+      - "PARAM-ADP-390"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+      - "arxiv-daily-push/tests/fixtures/lancet_rss_sample.xml"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PCT03-LANCET"
+  -
+    model_id: "MOD-ADP-056"
+    name: "S2PCT03 The Lancet shadow daily path"
+    purpose: "Build a separate Lancet/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2/integrated production acceptance."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-058"
+    parameter_ids:
+      - "PARAM-ADP-391"
+      - "PARAM-ADP-392"
+      - "PARAM-ADP-393"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PCT03-LANCET"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -3025,6 +3100,38 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-ADP-S2PCT02-SCIENCE"
+  -
+    formula_id: "FORM-ADP-057"
+    model_id: "MOD-ADP-055"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "S2PCT03 Lancet ingest passes only when the official public Lancet Online First RSS feed is used, the current issue RSS is recorded as an index cross-check, DOI records canonicalize to 10.1016/S0140-6736 style identifiers, article types are classified into accepted medical research-grade types, generated SourceItems validate, duplicates are separated from new items, PubMed relation remains DOI-query-ready metadata, and PDF/full-text/bulk/paywall side effects remain disabled."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/top_journal_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_top_journal_adapter.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PCT03-LANCET"
+  -
+    formula_id: "FORM-ADP-058"
+    model_id: "MOD-ADP-056"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "A S2PCT03 Lancet shadow daily run builds ROI-ranked candidates from passing Lancet SourceItems, selects one shadow daily input, updates a separate Lancet queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, D2 source-domain acceptance, PubMed full-record harvesting, or mutation of the accepted Stage 1 arXiv local production path."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PCT03-LANCET"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -9877,7 +9984,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-361"
     model_id: "MOD-ADP-047"
@@ -9889,7 +9997,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-362"
     model_id: "MOD-ADP-047"
@@ -9901,7 +10010,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-363"
     model_id: "MOD-ADP-047"
@@ -9913,7 +10023,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-364"
     model_id: "MOD-ADP-048"
@@ -9925,7 +10036,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-365"
     model_id: "MOD-ADP-049"
@@ -9937,7 +10049,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-366"
     model_id: "MOD-ADP-048"
@@ -9949,7 +10062,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-367"
     model_id: "MOD-ADP-048"
@@ -9961,7 +10075,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-368"
     model_id: "MOD-ADP-048"
@@ -9973,7 +10088,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-369"
     model_id: "MOD-ADP-048"
@@ -9985,7 +10101,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-370"
     model_id: "MOD-ADP-049"
@@ -9997,7 +10114,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-371"
     model_id: "MOD-ADP-049"
@@ -10009,7 +10127,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-372"
     model_id: "MOD-ADP-050"
@@ -10021,7 +10140,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-373"
     model_id: "MOD-ADP-050"
@@ -10033,7 +10153,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-374"
     model_id: "MOD-ADP-050"
@@ -10045,7 +10166,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-375"
     model_id: "MOD-ADP-050"
@@ -10057,7 +10179,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-376"
     model_id: "MOD-ADP-050"
@@ -10069,7 +10192,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-377"
     model_id: "MOD-ADP-051"
@@ -10081,7 +10205,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-378"
     model_id: "MOD-ADP-051"
@@ -10093,19 +10218,21 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-379"
     model_id: "MOD-ADP-051"
     formula_id: "FORM-ADP-053"
     symbol: "SUPPORTED_TOP_JOURNALS"
     name: "Supported top journals for metadata-only shadow ingest"
-    value: "nature;science"
-    source: "EXTRACTED from top_journal_adapter.py"
+    value: "nature;science;lancet"
+    source: "EXTRACTED from top_journal_adapter.py constant after S2PCT03 Lancet enablement"
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-380"
     model_id: "MOD-ADP-052"
@@ -10117,7 +10244,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-381"
     model_id: "MOD-ADP-052"
@@ -10129,7 +10257,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-382"
     model_id: "MOD-ADP-053"
@@ -10141,7 +10270,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-383"
     model_id: "MOD-ADP-053"
@@ -10153,7 +10283,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-384"
     model_id: "MOD-ADP-054"
@@ -10165,7 +10296,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-385"
     model_id: "MOD-ADP-054"
@@ -10177,7 +10309,8 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
   -
     parameter_id: "PARAM-ADP-386"
     model_id: "MOD-ADP-054"
@@ -10189,7 +10322,99 @@ parameters:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-387"
+    model_id: "MOD-ADP-055"
+    formula_id: "FORM-ADP-057"
+    symbol: "LANCET_ONLINE_FIRST_RSS_URL"
+    name: "Lancet Online First official RSS feed URL"
+    value: "https://www.thelancet.com/rssfeed/lancet_online.xml"
+    source: "EXTRACTED from code constant, live canary, and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-388"
+    model_id: "MOD-ADP-055"
+    formula_id: "FORM-ADP-057"
+    symbol: "LANCET_CURRENT_RSS_URL"
+    name: "Lancet current issue official RSS feed URL"
+    value: "https://www.thelancet.com/rssfeed/lancet_current.xml"
+    source: "EXTRACTED from code constant, live header check, and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-389"
+    model_id: "MOD-ADP-055"
+    formula_id: "FORM-ADP-057"
+    symbol: "LANCET_ACCEPTED_ARTICLE_TYPES"
+    name: "Lancet accepted medical article type classifications"
+    value: "article;review;seminar;series;commission;clinical_rounds;viewpoint;perspective"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-390"
+    model_id: "MOD-ADP-055"
+    formula_id: "FORM-ADP-057"
+    symbol: "LANCET_PUBMED_DOI_QUERY_URL_TEMPLATE"
+    name: "Lancet PubMed DOI query URL template"
+    value: "https://pubmed.ncbi.nlm.nih.gov/?term={doi}%5Bdoi%5D"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-391"
+    model_id: "MOD-ADP-056"
+    formula_id: "FORM-ADP-058"
+    symbol: "S2PCT03_LANCET_SHADOW_MODEL_ID"
+    name: "S2PCT03 Lancet shadow model id"
+    value: "adp-s2pct03-lancet-shadow-daily-v1"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-392"
+    model_id: "MOD-ADP-056"
+    formula_id: "FORM-ADP-058"
+    symbol: "S2PCT03_QUEUE_FILENAME"
+    name: "S2PCT03 Lancet shadow queue filename"
+    value: "stage2_s2pct03_lancet_queue.json"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-393"
+    model_id: "MOD-ADP-056"
+    formula_id: "FORM-ADP-058"
+    symbol: "S2PCT03_LEDGER_FILENAME"
+    name: "S2PCT03 Lancet shadow ledger filename"
+    value: "stage2_s2pct03_lancet_ledger.jsonl"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -10348,14 +10573,19 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-ADP-S2PCT03-LANCET"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PCT03-LANCET-SHADOW-EVIDENCE-20260624.json"
+    fact_level: "EXTRACTED"
 delivery_readiness:
   status: "VERIFIED"
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
   owner_decision_required: true
   blocked_requirements: 0
-  active_requirements: 9
+  active_requirements: 10
   partial_requirements: 1
-  next_executable_task_id: "S2PCT03"
+  next_executable_task_id: "S2PCT04"
   next_executable_task_status: "planned"
 governance_counts:
   active_models: 54
