@@ -6,9 +6,9 @@
 - product version status: provisional
 - current phase: B - model and data specification
 - current gate: GOV-SEMANTIC-PFI-in-progress
-- confirmed iteration count: 3
+- confirmed iteration count: 4
 - reconstructed development event count: 1
-- current task: GOV-SEMANTIC-PFI-001 in progress
+- current task: GOV-SEMANTIC-PFI-001 in progress; latest remediation task S3PCT02 completed
 - blockers: `PARAM-110` and `PARAM-111` remain HUMAN_REVIEW_REQUIRED; calibration/source rationale gaps tracked by `TASK-PFI-B-001` through `TASK-PFI-B-010`
 
 Confirmed iterations are not inferred from commit count. The confirmed iterations in this ledger are the governance baseline creation event, the validation/promotion event, and the current semantic extractor rollout event.
@@ -96,6 +96,30 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 - remaining risks: line-literal selectors may need updates if implementation constants move without semantic content changes
 - rollback: revert this iteration's governance changes and reset PFI semantic coverage to planned
 - next step: run full PFI, all-project, changed-only, dashboard and governance test validation
+
+### ITER-20260624-PFI-S3PCT02
+
+- date: 2026-06-24
+- fact level: VERIFIED
+- version before: 0.1.0 provisional
+- version after: 0.1.0 provisional
+- base commit: 4cb93442724725c78a453cf18416e641c5d7463f
+- result commit: PENDING
+- task IDs: S3PCT02, ACC-S3PCT02
+- objective: verify PFI bounded multiprocess, temporary cache, SQLite warehouse, cancellation and resume lifecycle stability without live accounts or production data
+- assumptions: synthetic temp data, a bounded worker count and local SQLite artifacts are sufficient for S3PCT02 lifecycle proof; they do not prove strategy validity or production readiness
+- files read: PFI qbvs batch/cache/tasks/warehouse/CLI code, existing PFI tests, PFI governance docs, and Other8 S3PC evidence patterns
+- files changed: PFI qbvs task/CLI/warehouse lifecycle controls, S3PCT02 lifecycle unittest, S3PC evidence files, PFI governance docs, FORM-009 semantic fingerprint, and root governance manifest test
+- model changes: no strategy formula or model scoring behavior changed; FORM-009 registry was re-bound because task-manifest lifecycle behavior now records a cancelled status and run_control.json
+- parameter changes: no active parameter value changed
+- commands: bundled-python lifecycle unittest, py_compile for changed PFI code/tests, roadmap pytest command, semantic extractor validation, rendered governance checks and root governance tests
+- test results: lifecycle unittest exit 0 with 1 test OK; py_compile exit 0; roadmap pytest command blocked locally by missing pytest; semantic extractor required FORM-009 fingerprint/evidence_hash rebind after tasks.py AST changed
+- successes: temp SQLite connections are explicitly closed and temp DB unlink succeeds on Windows; cancel_after_tasks checkpoint can be resumed idempotently; ProcessPoolExecutor leaves zero new active children in focused test
+- failures: pytest is not installed in the bundled runtime, so the roadmap pytest command remains blocked locally
+- decisions: keep all lifecycle evidence synthetic and temporary; do not start live providers, production QuantLab writes or large pressure runs
+- remaining risks: OOS, multiple-testing controls, cost realism, owner signoff and live-account/provider validations remain unresolved under the existing PFI B-stage tasks
+- rollback: revert S3PCT02 code, tests, stage-gate evidence, rendered governance files, FORM-009 semantic rebind and run manifest
+- next step: continue to S3PCT03 for Serenity lifecycle/OpenD/package-atomicity cleanup
 
 ## Reconstructed Development Events
 

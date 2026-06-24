@@ -2,11 +2,13 @@
 
 ## 1. 当前结论
 
-PFI_BIG_DATA_SIMULATOR 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVERIFIED` / `UNVERIFIED`，交付状态为 `UNVERIFIED`；这不是生产上线声明。
+PFI_BIG_DATA_SIMULATOR 当前治理结论：实现一致性为 `PARTIAL`，运行生命周期为 `PARTIAL`，方法/实证为 `UNVERIFIED` / `UNVERIFIED`，交付状态为 `UNVERIFIED`；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+
+S3PCT02 增加了本地临时环境中的多进程、缓存、SQLite、取消和 resume 生命周期证据；它不使用真实外部账号、生产连接或大规模压力运行。
 
 ## 3. 为什么重要
 
@@ -43,7 +45,7 @@ PFI remains UNVERIFIED and cannot support strategy approval.
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
-- operational_validation: `FAILED`
+- operational_validation: `PARTIAL`
 - delivery_evidence: `UNVERIFIED`
 - evidence_freshness: `PARTIAL`
 - delivery_readiness: `UNVERIFIED`
@@ -58,11 +60,12 @@ PFI remains UNVERIFIED and cannot support strategy approval.
 
 1. two implementation parameters need review
 2. calibration evidence
-3. model_owner + risk_owner + research_owner must provide project-specific evidence before readiness can improve.
+3. roadmap pytest command needs a dependency-prepared environment because local bundled Python has no pytest
+4. model_owner + risk_owner + research_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: pre-registration, OOS metrics, corrected significance, sensitivity results
+- evidence_required: pre-registration, OOS metrics, corrected significance, sensitivity results, dependency-prepared pytest run if S3PCT02 is promoted beyond local lifecycle proof
 - principal_risks: data mining, survivor bias, underestimated costs, resource blowups
 - generated_from_refs: `PFI/大数据模拟器/docs/governance/ASSURANCE_STATUS.yaml, PFI/大数据模拟器/docs/governance/delivery_tasks.yaml`
 

@@ -427,3 +427,37 @@ tasks:
     target_version: "0.1.0"
     completed_version: ""
     completed_commit: ""
+  - task_id: "S3PCT02"
+    phase: "S3PC"
+    objective: "Verify PFI bounded multiprocess, cache, SQLite, cancel and resume lifecycle stability without live accounts or production data."
+    scope: ["bounded ProcessPoolExecutor smoke", "temporary OHLCV cache", "temporary SQLite warehouse", "cancel_after_tasks checkpoint", "resume idempotence", "focused lifecycle unittest"]
+    non_scope: ["strategy validity approval", "production QuantLab writes", "live provider/account connections", "large pressure runs", "owner signoff"]
+    status: "completed"
+    dependencies: ["S2PCT03"]
+    required_files:
+      - "PFI/大数据模拟器/qbvs/tasks.py"
+      - "PFI/大数据模拟器/qbvs/warehouse.py"
+      - "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py"
+      - "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv"
+      - "governance/stage_gates/s3pc/pfi_process_cleanup.log"
+      - "governance/stage_gates/s3pc/pfi_persistence_recovery.log"
+    acceptance_ids: ["ACC-S3PCT02"]
+    test_commands:
+      - "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B PFI\\大数据模拟器\\tests\\test_s3pct02_lifecycle.py"
+      - "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m py_compile PFI\\大数据模拟器\\qbvs\\tasks.py PFI\\大数据模拟器\\qbvs\\cli.py PFI\\大数据模拟器\\qbvs\\warehouse.py PFI\\大数据模拟器\\tests\\test_s3pct02_lifecycle.py"
+      - "set PYTHONPATH=PFI\\大数据模拟器&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m pytest PFI\\大数据模拟器\\tests -q"
+    test_results:
+      - "exit 0; lifecycle unittest Ran 1 test OK, covering bounded workers, temp cache, cancel/resume, SQLite import/export/unlink, and active_children cleanup."
+      - "exit 0; py_compile OK."
+      - "blocked locally; bundled runtime reports No module named pytest, so roadmap pytest command requires a dependency-prepared environment."
+    evidence_refs:
+      - "PFI/大数据模拟器/tests/test_s3pct02_lifecycle.py"
+      - "governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv"
+      - "governance/stage_gates/s3pc/pfi_process_cleanup.log"
+      - "governance/stage_gates/s3pc/pfi_persistence_recovery.log"
+      - "governance/run_manifests/GOV-OTHER8-S3PCT02-PFI-LIFECYCLE-20260624.json"
+    risk: "Focused local lifecycle passes with synthetic temporary data only; pytest and any large-scale/live account validation require a dependency-prepared environment and explicit owner approval."
+    rollback: "Revert S3PCT02 code, tests, stage-gate evidence, rendered governance files, FORM-009 semantic rebind, and run manifest."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    completed_commit: "PENDING"

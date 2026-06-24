@@ -137,6 +137,11 @@ def main() -> int:
     run_manifest_parser.add_argument("--output-dir", type=Path, default=Path("runs/task_manifest_run"))
     run_manifest_parser.add_argument("--min-quality-score", type=float)
     run_manifest_parser.add_argument("--skip-low-quality", action="store_true")
+    run_manifest_parser.add_argument(
+        "--cancel-after-tasks",
+        type=int,
+        help="Stop launching new uncached tasks after this many attempts; rerun with resume to continue.",
+    )
 
     cache_csv_parser = sub.add_parser("cache-csv", help="Normalize one CSV into the reusable OHLCV cache.")
     cache_csv_parser.add_argument("--csv", type=Path, required=True)
@@ -548,6 +553,7 @@ def main() -> int:
             resume=not args.no_resume,
             min_quality_score=args.min_quality_score,
             skip_low_quality=args.skip_low_quality,
+            cancel_after_tasks=args.cancel_after_tasks,
         )
         build_pdf_report(
             run_dir / "Behavior_Strategy_Task_Run_Report.pdf",

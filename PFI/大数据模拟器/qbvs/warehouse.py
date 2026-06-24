@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 from typing import Any
 
@@ -16,95 +17,96 @@ SCHEMA_VERSION = 1
 def init_warehouse(db_path: Path | str) -> Path:
     path = Path(db_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(path) as conn:
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS meta (
-                key TEXT PRIMARY KEY,
-                value TEXT NOT NULL
+    with closing(sqlite3.connect(path)) as conn:
+        with conn:
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS meta (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                )
+                """
             )
-            """
-        )
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS runs (
-                run_dir TEXT PRIMARY KEY,
-                validation_results_path TEXT,
-                strategy_summary_path TEXT,
-                task_status_path TEXT,
-                pdf_count INTEGER DEFAULT 0,
-                imported_at TEXT DEFAULT CURRENT_TIMESTAMP
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS runs (
+                    run_dir TEXT PRIMARY KEY,
+                    validation_results_path TEXT,
+                    strategy_summary_path TEXT,
+                    task_status_path TEXT,
+                    pdf_count INTEGER DEFAULT 0,
+                    imported_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+                """
             )
-            """
-        )
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS validation_results (
-                row_id TEXT PRIMARY KEY,
-                run_dir TEXT NOT NULL,
-                strategy_id TEXT,
-                symbol TEXT,
-                market TEXT,
-                window_label TEXT,
-                start TEXT,
-                end TEXT,
-                passes_user_floor INTEGER,
-                total_return_gap REAL,
-                annualized_return_gap REAL,
-                drawdown_improvement REAL,
-                strategy_total_return REAL,
-                buy_hold_total_return REAL,
-                strategy_max_drawdown REAL,
-                buy_hold_max_drawdown REAL,
-                strategy_var_5 REAL,
-                strategy_cvar_5 REAL,
-                quality_score REAL,
-                quality_grade TEXT,
-                task_id TEXT,
-                error TEXT,
-                raw_json TEXT NOT NULL
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS validation_results (
+                    row_id TEXT PRIMARY KEY,
+                    run_dir TEXT NOT NULL,
+                    strategy_id TEXT,
+                    symbol TEXT,
+                    market TEXT,
+                    window_label TEXT,
+                    start TEXT,
+                    end TEXT,
+                    passes_user_floor INTEGER,
+                    total_return_gap REAL,
+                    annualized_return_gap REAL,
+                    drawdown_improvement REAL,
+                    strategy_total_return REAL,
+                    buy_hold_total_return REAL,
+                    strategy_max_drawdown REAL,
+                    buy_hold_max_drawdown REAL,
+                    strategy_var_5 REAL,
+                    strategy_cvar_5 REAL,
+                    quality_score REAL,
+                    quality_grade TEXT,
+                    task_id TEXT,
+                    error TEXT,
+                    raw_json TEXT NOT NULL
+                )
+                """
             )
-            """
-        )
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS strategy_summaries (
-                row_id TEXT PRIMARY KEY,
-                run_dir TEXT NOT NULL,
-                strategy_id TEXT,
-                samples INTEGER,
-                pass_rate REAL,
-                avg_total_gap REAL,
-                avg_annualized_gap REAL,
-                avg_drawdown_improvement REAL,
-                avg_var_5 REAL,
-                avg_cvar_5 REAL,
-                raw_json TEXT NOT NULL
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS strategy_summaries (
+                    row_id TEXT PRIMARY KEY,
+                    run_dir TEXT NOT NULL,
+                    strategy_id TEXT,
+                    samples INTEGER,
+                    pass_rate REAL,
+                    avg_total_gap REAL,
+                    avg_annualized_gap REAL,
+                    avg_drawdown_improvement REAL,
+                    avg_var_5 REAL,
+                    avg_cvar_5 REAL,
+                    raw_json TEXT NOT NULL
+                )
+                """
             )
-            """
-        )
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS strategy_market_summary (
-                strategy_id TEXT NOT NULL,
-                market TEXT NOT NULL,
-                samples INTEGER,
-                pass_rate REAL,
-                avg_total_gap REAL,
-                avg_annualized_gap REAL,
-                avg_drawdown_improvement REAL,
-                avg_var_5 REAL,
-                avg_cvar_5 REAL,
-                updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (strategy_id, market)
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS strategy_market_summary (
+                    strategy_id TEXT NOT NULL,
+                    market TEXT NOT NULL,
+                    samples INTEGER,
+                    pass_rate REAL,
+                    avg_total_gap REAL,
+                    avg_annualized_gap REAL,
+                    avg_drawdown_improvement REAL,
+                    avg_var_5 REAL,
+                    avg_cvar_5 REAL,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (strategy_id, market)
+                )
+                """
             )
-            """
-        )
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_results_strategy_market ON validation_results(strategy_id, market)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_results_symbol ON validation_results(symbol)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_results_quality ON validation_results(quality_score)")
-        conn.execute("INSERT OR REPLACE INTO meta(key, value) VALUES('schema_version', ?)", (str(SCHEMA_VERSION),))
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_results_strategy_market ON validation_results(strategy_id, market)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_results_symbol ON validation_results(symbol)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_results_quality ON validation_results(quality_score)")
+            conn.execute("INSERT OR REPLACE INTO meta(key, value) VALUES('schema_version', ?)", (str(SCHEMA_VERSION),))
     return path
 
 
@@ -114,54 +116,55 @@ def import_runs_to_warehouse(runs_dir: Path | str, db_path: Path | str) -> dict[
     run_count = 0
     result_rows = 0
     summary_rows = 0
-    with sqlite3.connect(db) as conn:
-        for result_path in sorted(root.glob("**/validation_results.csv")):
-            run_dir = result_path.parent
-            summary_path = run_dir / "strategy_summary.csv"
-            status_path = run_dir / "task_status.csv"
-            pdf_count = len(list(run_dir.glob("*.pdf")))
-            conn.execute(
-                """
-                INSERT OR REPLACE INTO runs(run_dir, validation_results_path, strategy_summary_path, task_status_path, pdf_count)
-                VALUES (?, ?, ?, ?, ?)
-                """,
-                (
-                    str(run_dir),
-                    str(result_path),
-                    str(summary_path) if summary_path.exists() else "",
-                    str(status_path) if status_path.exists() else "",
-                    pdf_count,
-                ),
-            )
-            run_count += 1
-            results = _read_csv_safely(result_path)
-            for index, row in results.iterrows():
+    with closing(sqlite3.connect(db)) as conn:
+        with conn:
+            for result_path in sorted(root.glob("**/validation_results.csv")):
+                run_dir = result_path.parent
+                summary_path = run_dir / "strategy_summary.csv"
+                status_path = run_dir / "task_status.csv"
+                pdf_count = len(list(run_dir.glob("*.pdf")))
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO validation_results(
-                        row_id, run_dir, strategy_id, symbol, market, window_label, start, end,
-                        passes_user_floor, total_return_gap, annualized_return_gap, drawdown_improvement,
-                        strategy_total_return, buy_hold_total_return, strategy_max_drawdown, buy_hold_max_drawdown,
-                        strategy_var_5, strategy_cvar_5, quality_score, quality_grade, task_id, error, raw_json
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT OR REPLACE INTO runs(run_dir, validation_results_path, strategy_summary_path, task_status_path, pdf_count)
+                    VALUES (?, ?, ?, ?, ?)
                     """,
-                    _result_tuple(str(run_dir), index, row),
+                    (
+                        str(run_dir),
+                        str(result_path),
+                        str(summary_path) if summary_path.exists() else "",
+                        str(status_path) if status_path.exists() else "",
+                        pdf_count,
+                    ),
                 )
-                result_rows += 1
-            if summary_path.exists():
-                summaries = _read_csv_safely(summary_path)
-                for index, row in summaries.iterrows():
+                run_count += 1
+                results = _read_csv_safely(result_path)
+                for index, row in results.iterrows():
                     conn.execute(
                         """
-                        INSERT OR REPLACE INTO strategy_summaries(
-                            row_id, run_dir, strategy_id, samples, pass_rate, avg_total_gap,
-                            avg_annualized_gap, avg_drawdown_improvement, avg_var_5, avg_cvar_5, raw_json
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT OR REPLACE INTO validation_results(
+                            row_id, run_dir, strategy_id, symbol, market, window_label, start, end,
+                            passes_user_floor, total_return_gap, annualized_return_gap, drawdown_improvement,
+                            strategy_total_return, buy_hold_total_return, strategy_max_drawdown, buy_hold_max_drawdown,
+                            strategy_var_5, strategy_cvar_5, quality_score, quality_grade, task_id, error, raw_json
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
-                        _summary_tuple(str(run_dir), index, row),
+                        _result_tuple(str(run_dir), index, row),
                     )
-                    summary_rows += 1
-        refresh_warehouse_market_summary(conn)
+                    result_rows += 1
+                if summary_path.exists():
+                    summaries = _read_csv_safely(summary_path)
+                    for index, row in summaries.iterrows():
+                        conn.execute(
+                            """
+                            INSERT OR REPLACE INTO strategy_summaries(
+                                row_id, run_dir, strategy_id, samples, pass_rate, avg_total_gap,
+                                avg_annualized_gap, avg_drawdown_improvement, avg_var_5, avg_cvar_5, raw_json
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            _summary_tuple(str(run_dir), index, row),
+                        )
+                        summary_rows += 1
+            refresh_warehouse_market_summary(conn)
     return {"runs": run_count, "validation_results": result_rows, "strategy_summaries": summary_rows}
 
 
@@ -196,7 +199,7 @@ def export_warehouse_tables(db_path: Path | str, output_dir: Path | str) -> dict
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     paths = {}
-    with sqlite3.connect(db_path) as conn:
+    with closing(sqlite3.connect(db_path)) as conn:
         for table in ["runs", "validation_results", "strategy_summaries", "strategy_market_summary"]:
             frame = pd.read_sql_query(f"SELECT * FROM {table}", conn)
             path = output / f"{table}.csv"
@@ -206,7 +209,7 @@ def export_warehouse_tables(db_path: Path | str, output_dir: Path | str) -> dict
 
 
 def warehouse_stats(db_path: Path | str) -> dict[str, Any]:
-    with sqlite3.connect(db_path) as conn:
+    with closing(sqlite3.connect(db_path)) as conn:
         tables = ["runs", "validation_results", "strategy_summaries", "strategy_market_summary"]
         stats = {}
         for table in tables:

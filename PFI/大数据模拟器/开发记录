@@ -70,3 +70,4 @@ Task detail fields:
 | 2026-06-22T00:24:25Z | assurance_status_generation | Review6 generated ASSURANCE_STATUS and owner/engineering views while preserving PFI delivery readiness as UNVERIFIED. | GOV-REVIEW6-FINAL-PORTFOLIO-001 | EXTRACTED |
 | 2026-06-22T00:24:25Z | owner_decision_required | Model, risk and research owners must validate OOS, multiple-testing controls, costs and robustness before ranking strategy claims. | TASK-PFI-B-001 | UNKNOWN |
 | 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT04 proposes PFI Lean v2 canonical files and rendered Chinese human entry files. | S5PBT04 | PROPOSED |
+| 2026-06-24T22:00:00+10:00 | implementation | Other8 S3PCT02 adds PFI bounded multiprocess, temp cache, SQLite close/unlink, cancel and resume lifecycle evidence without live accounts or production data. | S3PCT02 | VERIFIED |

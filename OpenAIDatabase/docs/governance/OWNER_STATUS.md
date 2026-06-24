@@ -6,7 +6,7 @@ OpenAIDatabase 当前治理结论：实现一致性为 `PARTIAL`，方法/实证
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 或 S3PDT01 合成隐私测试误读为模型有效、安全记忆运行或可上线。
 
 ## 3. 为什么重要
 
@@ -43,7 +43,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
-- operational_validation: `FAILED`
+- operational_validation: `FAILED` (S3PDT01 synthetic privacy import/redaction/Git leakage/deletion recovery contracts passed, but production privacy safety remains unverified)
 - delivery_evidence: `FAILED`
 - evidence_freshness: `PARTIAL`
 - delivery_readiness: `FAILED`
@@ -59,6 +59,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 1. remaining semantic review
 2. calibration/source evidence
 3. privacy_owner + product_owner must provide project-specific evidence before readiness can improve.
+4. S3PDT01 uses synthetic data only and does not replace owner-approved gold-set leakage testing.
 
 ## 11. Evidence Required To Unblock
 
@@ -79,6 +80,8 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
 - release_gate: `GOV-SEMANTIC-OAIDB-in-progress`
+- latest_remediation_task: `S3PDT01`
+- latest_remediation_result: synthetic privacy-boundary contracts passed; no delivery readiness promotion
 
 ## 14. Evidence Freshness
 
