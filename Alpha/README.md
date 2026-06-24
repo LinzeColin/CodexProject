@@ -31,6 +31,15 @@ App-format launchers are installed at:
 /Applications/Alpha.app
 ```
 
+## Historical outputs and handoff
+
+Tracked patch bundles, repository-local launchers, and the reconstructed
+handoff that previously lived under `Alpha/outputs/` and `Alpha/HANDOFF.md`
+are archived under `governance/archive/other8_wave1_pending/Alpha/`.
+The one-version compatibility map is `docs/structure_migration_map.md`.
+Future runtime output should stay untracked under `Alpha/outputs/`,
+`Alpha/runtime/`, or external local app paths.
+
 Open:
 
 ```text

@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S5PA-GATE-IN-PROGRESS`
 - next_unique_task: `none`
-- evidence_ref_count: `20`
+- evidence_ref_count: `22`
 - roadmap_test_command_count: `1`
 - roadmap_gate_count: `2`
 - evidence_status: `EXTRACTED`
@@ -33,7 +33,7 @@
 | 证据 ID | 类型 | 引用 | 事实等级 |
 |---|---|---|---|
 | EVID-ALPHA-README | owner | Alpha/README.md | EXTRACTED |
-| EVID-ALPHA-HANDOFF | owner | Alpha/HANDOFF.md | RECONSTRUCTED |
+| EVID-ALPHA-HANDOFF | archived_owner | governance/archive/other8_wave1_pending/Alpha/HANDOFF.md | RECONSTRUCTED |
 | EVID-ALPHA-MODEL-SPEC | legacy_governance | Alpha/docs/governance/MODEL_SPEC.md | EXTRACTED |
 | EVID-ALPHA-MODEL-REGISTRY | legacy_governance | Alpha/docs/governance/model_registry.yaml | EXTRACTED |
 | EVID-ALPHA-FORMULA-REGISTRY | legacy_governance | Alpha/docs/governance/formula_registry.yaml | EXTRACTED |
@@ -52,3 +52,5 @@
 | EVID-ALPHA-S3PBT02-SHUTDOWN-LOG | stage_gate_evidence | governance/stage_gates/s3pb/shutdown_fault_tests.log | EXTRACTED |
 | EVID-ALPHA-S3PBT02-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PBT02-ALPHA-RUNTIME-LIFECYCLE-20260624.json | EXTRACTED |
 | EVID-ALPHA-S3PBT03-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json | EXTRACTED |
+| EVID-OTHER8-S4PBT01-STRUCTURE-MAP | stage_gate_evidence | Alpha/docs/structure_migration_map.md | EXTRACTED |
+| EVID-OTHER8-S4PBT01-MANIFEST | run_manifest | governance/run_manifests/GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625.json | EXTRACTED |

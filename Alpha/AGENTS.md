@@ -35,7 +35,12 @@ Local-only state is not authoritative except:
 
 ## Required Handoff Discipline
 
-Update `HANDOFF.md` when goals, state, decisions, validation, or next steps change. Update `docs/decision_log.md` for durable product or safety decisions.
+The historical root `HANDOFF.md` has been archived by S4PBT01 at
+`governance/archive/other8_wave1_pending/Alpha/HANDOFF.md`. Do not recreate a
+root handoff file for routine work. Keep current owner-facing state in
+`开发记录`, canonical facts in `docs/governance/project.yaml`,
+`docs/governance/roadmap.yaml`, and `docs/governance/events.jsonl`, and durable
+product or safety decisions in `docs/decision_log.md`.
 
 Every implementation run should report:
 
