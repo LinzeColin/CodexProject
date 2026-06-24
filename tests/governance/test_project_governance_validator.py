@@ -3164,6 +3164,61 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["stage6_actions_performed"]["legacy_files_archived_or_deleted"])
         self.assertIn("Stage 6 may start", manifest["summary"])
 
+    def test_review9_s6pat01_archive_manifest_records_legacy_checksums(self) -> None:
+        archive_path = ROOT / "governance" / "archive" / "review9_s6pat01_legacy_archive_manifest.csv"
+        with archive_path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+
+        self.assertEqual(len(rows), 160)
+        counts = Counter(row["category"] for row in rows)
+        self.assertEqual(counts["project_v1_governance_file"], 150)
+        self.assertEqual(counts["root_legacy_governance_script"], 7)
+        self.assertEqual(counts["root_generated_or_status_view"], 3)
+        self.assertGreater(sum(int(row["active_reference_count"]) for row in rows), 0)
+
+        for row in rows:
+            source = ROOT / row["source_path"]
+            self.assertTrue(source.is_file(), row["source_path"])
+            blob = subprocess.run(
+                ["git", "show", f"HEAD:{row['source_path']}"],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            ).stdout
+            observed = hashlib.sha256(blob).hexdigest()
+            self.assertEqual(len(blob), int(row["size_bytes"]), row["source_path"])
+            self.assertEqual(observed, row["sha256"], row["source_path"])
+            self.assertIn("retain_in_place", row["archive_action"])
+            self.assertIn("OWNER_APPROVAL", row["retention_until"])
+
+    def test_review9_s6pat01_manifest_blocks_moves_while_references_are_active(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        self.assertEqual(manifest["project_id"], "CodexProject")
+        self.assertEqual(manifest["task_id"], "S6PAT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PAT01"])
+        self.assertEqual(manifest["stage_gate_status"]["S6PA-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["legacy_archive_summary"]["candidate_files"], 160)
+        self.assertEqual(manifest["legacy_archive_summary"]["project_v1_governance_files"], 150)
+        self.assertEqual(manifest["legacy_archive_summary"]["root_legacy_governance_scripts"], 7)
+        self.assertEqual(manifest["legacy_archive_summary"]["root_generated_or_status_views"], 3)
+        self.assertEqual(manifest["legacy_archive_summary"]["archive_manifest_sha256"], "96b6b25ab8a584b0bfb09c01a2b5bf943dece9a654f992147cbc4ae8c89210a5")
+        self.assertEqual(manifest["reference_scan"]["status"], "ACTIVE_REFERENCES_FOUND")
+        self.assertGreater(manifest["reference_scan"]["active_reference_rows"], 0)
+        self.assertFalse(manifest["stage6_actions_performed"]["legacy_files_moved"])
+        self.assertFalse(manifest["stage6_actions_performed"]["legacy_files_deleted"])
+        self.assertFalse(manifest["stage6_actions_performed"]["ci_mode_required_enabled"])
+        self.assertIn("S6PAT02", manifest["next_required_tasks"])
+        self.assertIn("S6PAT03", manifest["next_required_tasks"])
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
