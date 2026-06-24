@@ -43,6 +43,7 @@
 - Added `PARAM-082` and traceability coverage for the invariant A209 heartbeat policy `counts_as_release_ready=false`, so partial heartbeat evidence cannot be misread as release closure.
 - Recorded the Codex crash/local-record recovery audit: Git and Chronicle evidence survived, the old A209 run reached `135/288`, and the attempted resume failed at `2026-06-24T10:43:46Z` because the fixed Playwright browser path was missing.
 - Repaired the A209 browser runtime, preserved the failed resumed chain as incident evidence, restarted a clean 24h attempt, and refreshed point-in-time working-tree heartbeat evidence to `3/288` clean-restart windows PASS with operator PID `57281` and watchdog PID `17163`.
+- Fixed a T1302/T1308 workspace-layer hydration race in the production frontend: layer controls now stay disabled until `stateReady` and route through an explicit layer-to-lens mapping. Local G2 browser E2E regression and full 32-test Playwright suite pass; A203/A211 release blockers are unchanged and A209 continues in the background.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

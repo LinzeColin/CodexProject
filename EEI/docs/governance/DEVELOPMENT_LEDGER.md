@@ -11,11 +11,34 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T904-A026-A027-GOVERNANCE-SYNC-IN-PROGRESS`
+- Current gate: `TASK-T1302-T1308-A211-FRONTEND-HYDRATION-CI-REPAIR-PENDING-CI`
 - Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T904 A026/A027 production gold-set governance traceability sync`
+- Current task: `TASK-T1302/T1308 workspace-layer hydration CI repair`
 - Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. This run hardens the A026/A027 production gold-set path so repository fixture refs and fixture labelers are rejected when `production_gold_set=true`; it still does not supply real production labels. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the previous CI-attested heartbeat at commit `7afcb9da0f31b26e33b935ac9e843f2eafd8bdcd` records `128/288` PASS, but the post-crash resume failed because the fixed Playwright browser path was missing. The clean restarted attempt now records operator PID `57281`, watchdog PID `17163`, `3/288` successful windows and `release_gate_closed_by_background_heartbeat=false`; the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+
+## ITER-20260624-034 - T1302/T1308 workspace-layer hydration CI repair
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `c34ca0785d612e0f8d1730de75f82772af468f85`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1302`, `TASK-T1308`
+- Goal: bind the production frontend workspace-layer hydration race fix to governance after Project Governance required companion files for `apps/web/src/app/page.tsx`.
+- Assumptions: `c34ca078` contains the product-code fix; this iteration records the audit trail, parameter binding and CI repair without changing scoring, graph traversal, source publication, release-manager activation or A209 status.
+- Files changed: `EEI/apps/web/src/app/page.tsx`, `EEI/CHANGELOG.md`, `EEI/docs/governance/MODEL_SPEC.md`, `EEI/docs/governance/model_registry.yaml`, `EEI/docs/governance/formula_registry.yaml`, `EEI/docs/governance/parameter_registry.csv`, `EEI/docs/governance/DEVELOPMENT_LEDGER.md`, `EEI/docs/governance/OWNER_STATUS.md`, `EEI/docs/governance/STATUS.md`, `EEI/docs/governance/TRACEABILITY_MATRIX.csv`, `EEI/docs/governance/VERSION_MATRIX.yaml`, `EEI/docs/governance/delivery_tasks.yaml`, `EEI/docs/governance/development_events.jsonl`.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, threshold value, API schema or data-ingestion behavior changed; MOD-012 now records the UI hydration guard as an operational control.
+- Parameter changes: added `PARAM-084` / `visual.workspace_layer_hydration_guard` to machine-bind `disabled={!stateReady || lensForWorkspaceLayer(item.key) === null}` in `page.tsx`.
+- Commands run: target G2 browser regression, web typecheck, full Playwright E2E with two workers, semantic extractor validation, clean-worktree changed-only governance reproduction, and `git diff --check -- EEI`.
+- Test results: local target `home.spec.ts -g "exposes eight company layers"` PASS; local web typecheck PASS; local full Playwright E2E PASS with 32/32 tests at two workers; semantic extractor PASS with `84` active parameters and `11` active formulas; clean temporary worktree Project Governance changed-only semantic PASS with `errors=0` and `warnings=0`; Project Governance for `c34ca078` initially failed because governance companion files were missing.
+- Successes: workspace layer controls no longer click before React state hydration and unsupported layer-to-lens mappings remain disabled.
+- Failures: remote Project Governance and EEI validation rerun for this companion sync is still pending; no A202/A203/A204/A205/A209/A210 release gate was closed.
+- Decisions: keep A203 `IN_PROGRESS`; keep A211 as already closed production frontend scope with regression evidence; keep A209 as the separate background 24h stability gate.
+- Remaining risks: GitHub Actions must still prove the companion sync remotely; A209 can still fail before 288/288 windows.
+- Rollback: revert `PARAM-084`, this event and companion governance edits, then restore the prior `page.tsx` behavior only if the hydration race fix is superseded; do not stop the live A209 watchdog/operator unless its checkpoint proves failure or staleness.
+- Next step: run changed-only governance and semantic validation with base `c34ca078`, commit, push and verify CI while A209 continues in background.
 
 ## ITER-20260624-033 - T904/A026-A027 production gold-set governance traceability sync
 

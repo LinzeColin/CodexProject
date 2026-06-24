@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并记录 T1302/T1308 前端 hydration 回归修复，避免把 `MACHINE_VERIFIED` 或 UI 回归通过误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (83/83 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (84/84 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,8 +71,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `83`
-- active_parameters: `83`
+- total_parameters: `84`
+- active_parameters: `84`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -98,10 +98,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - source_base_commit: `d80785a099d1ff7f16798381c3716e8793b2ffae`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
 - source_snapshot_hash: `sha256:d322066ededba3eb1bd029bf31d97bda694ba0a27c46706f2cd400516f97367b`
-- snapshot_event_time: `2026-06-24T12:06:46Z`
+- snapshot_event_time: `2026-06-24T21:21:40Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T904-A026-A027-GOVERNANCE-SYNC-IN-PROGRESS`
+- phase/gate: `C / TASK-T1302-T1308-A211-FRONTEND-HYDRATION-CI-REPAIR-PENDING-CI`
 
 ## 17. Next Unique Task
 

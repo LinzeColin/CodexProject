@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 83
+- parameter_count: 84
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -487,16 +487,16 @@ Machine source: `formula_registry.yaml`. Legacy `F-*` IDs are preserved as `lega
 - Model: `MOD-012`
 - Status: `active`
 - Mathematical formula or exact pseudocode: `value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured.`
-- Natural language explanation: Operational deterministic lookup for threshold, motion, visual, refresh, calibration and gold-quality gate parameters without a scoring formula.
+- Natural language explanation: Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard and gold-quality gate parameters without a scoring formula.
 - Variables: configured_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); default_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); min_value (number|string|boolean, parameter_specific, catalog constraint); max_value (number|string|boolean, parameter_specific, catalog constraint)
 - Output range: parameter_specific
 - Normalization: NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation.
-- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days; gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass; gold-label intake templates must remain non-closure evidence
+- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days; workspace layer controls must remain disabled until stateReady and a supported layer-to-lens mapping exists; gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass; gold-label intake templates must remain non-closure evidence
 - Missing data handling: fallback_to_default_or_UNKNOWN_with_task
 - Boundary conditions: respect per-variable input domain and configured min/max bounds; invalid configuration fails validation.
 - Fallback: use configured default or previous valid snapshot; Unavailable values remain disclosed and task-linked.
-- Implementation position: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json, EEI/config/ui/motion-tokens.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_model_config.py:validate_motion_tokens, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py
-- Test position: EEI/scripts/validate_model_config.py, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py
+- Implementation position: EEI/data/parameter_catalog.csv:43-84, EEI/apps/web/src/app/page.tsx, EEI/config/thresholds/default-v2.json, EEI/config/ui/motion-tokens.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_model_config.py:validate_motion_tokens, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py
+- Test position: EEI/tests/e2e/home.spec.ts, EEI/scripts/validate_model_config.py, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py
 
 ## D. Parameters
 

@@ -30,9 +30,9 @@ parameter_profile_versions:
   release-decision-intake: "1"
   release-decision-bundle: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260624-033"
+current_iteration: "ITER-20260624-034"
 current_phase: "C"
-current_gate: "TASK-T904-A026-A027-GOVERNANCE-SYNC-IN-PROGRESS"
+current_gate: "TASK-T1302-T1308-A211-FRONTEND-HYDRATION-CI-REPAIR-PENDING-CI"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"
