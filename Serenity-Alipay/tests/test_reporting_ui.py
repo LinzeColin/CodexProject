@@ -273,7 +273,7 @@ def test_application_bundle_has_custom_icon(tmp_path: Path):
     assert "seq 8765 8795" in launcher
     assert "seq 1 60" in launcher
     assert 'open "$BOOTSTRAP"' in launcher
-    assert 'open "$URL"' not in launcher
+    assert 'open "$URL"' in launcher
     assert "--connect-timeout 0.2 --max-time 0.5" in launcher
     assert f'open "{portal_path.resolve()}"' not in launcher
     assert icon.exists()
