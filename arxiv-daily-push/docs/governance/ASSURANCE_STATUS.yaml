@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 364
-    total_active_parameters: 364
-    checked_active_formulas: 54
-    total_active_formulas: 54
+    checked_active_parameters: 441
+    total_active_parameters: 441
+    checked_active_formulas: 66
+    total_active_formulas: 66
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 364
-    total_active_parameters: 364
+    checked_active_parameters: 441
+    total_active_parameters: 441
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:

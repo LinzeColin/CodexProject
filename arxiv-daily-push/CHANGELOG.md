@@ -2,6 +2,8 @@
 
 ## Unreleased - 2026-06-24
 
+- Completed `S2PDT04` / legacy `S2P3T04` China official D3 readiness review evidence without granting D3 source-domain production acceptance.
+- Added `adp stage2-china-d3-readiness-review`, 30-date replay, 2-day shadow, authority, B2-B6 board-routing, metadata-only/no-production gates, model/formula/parameter governance registrations, V7.2 revalidation receipt, and S2PDT04 manifest/phase evidence while keeping D3 core acceptance, Stage 2 production acceptance, SMTP, Release, schedule, queue mutation, public schema migration, PDF/full-text download, paid API use, paywall bypass, V7.1 CURRENT switching, V7.2 mail/schema pre-run, and production inclusion disabled.
 - Completed `S2PDT03` / legacy `S2P3T03` China legal metadata, version/effectivity, reprint relation, and old-conclusion update shadow evidence.
 - Added `adp stage2-china-legal-metadata-relation-shadow`, legal status and relation fixtures, legal status taxonomy/version effectivity/reprint relation/forced update/metadata-only gates, model/formula/parameter governance registrations, and S2PDT03 manifest/phase evidence while keeping legal advice, D3 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, queue mutation, schema migration, PDF/full-text download, paid API use, paywall bypass, V7.1 CURRENT switching, V7.2 mail/schema pre-run, and production inclusion disabled.
 - Advanced V7.1 root routing to `S2PDT04` / legacy `S2P3T04` China official D3 source-domain readiness review.

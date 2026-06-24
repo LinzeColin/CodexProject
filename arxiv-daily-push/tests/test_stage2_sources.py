@@ -13,6 +13,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PDT04_D3_READINESS_MODEL_ID,
     S2PDT03_LEGAL_METADATA_MODEL_ID,
     S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
     S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
@@ -28,6 +29,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pdt04_china_d3_readiness_review_report,
     build_s2pdt03_china_legal_metadata_relation_shadow_report,
     build_s2pdt02_china_c1_department_source_map_report,
     build_s2pdt01_china_c0_source_foundation_report,
@@ -41,6 +43,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pdt04_china_d3_readiness_review,
     run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
@@ -52,6 +55,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pdt04_china_d3_readiness_review_report,
     validate_s2pdt03_china_legal_metadata_relation_shadow_report,
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
@@ -643,6 +647,119 @@ def china_prior_conclusion_records() -> list[dict]:
             "update_required": True,
             "rescore_required": True,
             "evidence_refs": ["fixture:prior-repealed"],
+        },
+    ]
+
+
+def china_legal_metadata_relation_report() -> dict:
+    return build_s2pdt03_china_legal_metadata_relation_shadow_report(
+        generated_at=GENERATED_AT,
+        c1_department_source_map_report=china_c1_department_source_map_report(),
+        legal_records=china_legal_records(),
+        relation_records=china_legal_relation_records(),
+        prior_conclusion_records=china_prior_conclusion_records(),
+    )
+
+
+def china_d3_replay_records(start: date = date(2026, 5, 1), count: int = 30) -> list[dict]:
+    boards = ("B2_policy", "B3_frontier", "B4_industry", "B5_macro", "B6_risk")
+    return [
+        {
+            "as_of_date": (start + timedelta(days=offset)).isoformat(),
+            "source_domain": "d3_china_official",
+            "status": "pass",
+            "future_leakage_count": 0,
+            "p0_p1_blocker_count": 0,
+            "authority_gate": "pass",
+            "board_route_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "formal_production_inclusion": False,
+            "evidence_refs": [f"fixture:d3-replay:{boards[offset % len(boards)]}:{offset + 1:02d}"],
+        }
+        for offset in range(count)
+    ]
+
+
+def china_d3_shadow_records() -> list[dict]:
+    return [
+        {
+            "shadow_date": "2026-06-23",
+            "source_domain": "d3_china_official",
+            "status": "pass",
+            "shadow_hours": 24,
+            "authority_gate": "pass",
+            "board_route_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "formal_production_inclusion": False,
+            "d3_core_source_domain_accepted": False,
+            "evidence_refs": ["fixture:d3-shadow:day-1"],
+        },
+        {
+            "shadow_date": "2026-06-24",
+            "source_domain": "d3_china_official",
+            "status": "pass",
+            "shadow_hours": 24,
+            "authority_gate": "pass",
+            "board_route_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "formal_production_inclusion": False,
+            "d3_core_source_domain_accepted": False,
+            "evidence_refs": ["fixture:d3-shadow:day-2"],
+        },
+    ]
+
+
+def china_d3_board_route_records() -> list[dict]:
+    return [
+        {
+            "board_id": "B2_policy",
+            "source_ids": ["china-c0:state-council:policy-notice", "china-c1:macro:ndrc"],
+            "route_explanation": "National policy notices and C1 policy departments route to the policy board.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b2"],
+        },
+        {
+            "board_id": "B3_frontier",
+            "source_ids": ["china-c1:science:most"],
+            "route_explanation": "Science and technology ministry updates route to frontier intelligence.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b3"],
+        },
+        {
+            "board_id": "B4_industry",
+            "source_ids": ["china-c1:industry:miit", "china-c1:key-industry:nea"],
+            "route_explanation": "Industry and key-sector official records route to industry intelligence.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b4"],
+        },
+        {
+            "board_id": "B5_macro",
+            "source_ids": ["china-c1:macro:ndrc", "china-c1:finance:pboc"],
+            "route_explanation": "Macro and finance official records route to macro-finance reading.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b5"],
+        },
+        {
+            "board_id": "B6_risk",
+            "source_ids": ["china-c1:market:samr", "cn-law:legacy-market-rule-repealed"],
+            "route_explanation": "Market regulation, repeal, and legal-change records route to risk review.",
+            "authority_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d3-route:b6"],
         },
     ]
 
@@ -1261,6 +1378,91 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["schema_migration_allowed"])
             self.assertTrue(Path(report["legal_metadata_relation_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json").is_file())
+
+    def test_s2pdt04_china_d3_readiness_validates_replay_shadow_routes_without_production(self) -> None:
+        report = build_s2pdt04_china_d3_readiness_review_report(
+            generated_at=GENERATED_AT,
+            c0_source_foundation_report=china_c0_source_foundation_report(),
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_metadata_relation_report=china_legal_metadata_relation_report(),
+            replay_records=china_d3_replay_records(),
+            shadow_records=china_d3_shadow_records(),
+            board_route_records=china_d3_board_route_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PDT04_D3_READINESS_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PDT04-D3-CORE")
+        self.assertEqual(report["task_id"], "S2PDT04")
+        self.assertEqual(report["legacy_task_id"], "S2P3T04")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d3_core_readiness_review_ready"])
+        self.assertEqual(report["upstream_source_evidence_gate"], "pass")
+        self.assertEqual(report["d3_replay_gate"], "pass")
+        self.assertEqual(report["d3_shadow_gate"], "pass")
+        self.assertEqual(report["authority_gate"], "pass")
+        self.assertEqual(report["board_routing_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(len(report["replay_dates_observed"]), 30)
+        self.assertEqual(len(report["shadow_dates_observed"]), 2)
+        self.assertTrue(set(report["required_board_ids"]).issubset(set(report["board_ids_observed"])))
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_1_current_switched"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(validate_s2pdt04_china_d3_readiness_review_report(report))
+
+    def test_s2pdt04_china_d3_readiness_blocks_short_replay_missing_board_and_shadow_side_effects(self) -> None:
+        shadow_records = china_d3_shadow_records()
+        shadow_records[0] = dict(shadow_records[0], production_affected=True, real_smtp_sent=True)
+        board_routes = [record for record in china_d3_board_route_records() if record["board_id"] != "B6_risk"]
+
+        report = build_s2pdt04_china_d3_readiness_review_report(
+            generated_at=GENERATED_AT,
+            c0_source_foundation_report=china_c0_source_foundation_report(),
+            c1_department_source_map_report=china_c1_department_source_map_report(),
+            legal_metadata_relation_report=china_legal_metadata_relation_report(),
+            replay_records=china_d3_replay_records(count=29),
+            shadow_records=shadow_records,
+            board_route_records=board_routes,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["d3_replay_gate"], "blocked")
+        self.assertEqual(report["d3_shadow_gate"], "blocked")
+        self.assertEqual(report["board_routing_gate"], "blocked")
+        self.assertFalse(report["d3_core_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("30 distinct", joined)
+        self.assertIn("send SMTP", joined)
+        self.assertIn("B6_risk", joined)
+
+    def test_s2pdt04_china_d3_readiness_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pdt04_china_d3_readiness_review(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                c0_source_foundation_report=china_c0_source_foundation_report(),
+                c1_department_source_map_report=china_c1_department_source_map_report(),
+                legal_metadata_relation_report=china_legal_metadata_relation_report(),
+                replay_records=china_d3_replay_records(),
+                shadow_records=china_d3_shadow_records(),
+                board_route_records=china_d3_board_route_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pdt04_china_d3_readiness_review_report(report))
+            self.assertFalse(report["d3_core_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["d3_readiness_review_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pdt04_china_d3_readiness_review_report.json").is_file())
 
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1882,6 +2084,58 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["legacy_task_id"], "S2P3T03")
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d3_legal_metadata_relation_shadow_ready"])
+        self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_china_d3_readiness_review_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            c0_report_path = Path(tmp) / "c0-source-foundation-report.json"
+            c1_report_path = Path(tmp) / "c1-department-source-map-report.json"
+            legal_report_path = Path(tmp) / "legal-metadata-relation-report.json"
+            replay_records_path = Path(tmp) / "d3-replay-records.json"
+            shadow_records_path = Path(tmp) / "d3-shadow-records.json"
+            board_route_records_path = Path(tmp) / "d3-board-route-records.json"
+            c0_report_path.write_text(json.dumps(china_c0_source_foundation_report(), ensure_ascii=False), encoding="utf-8")
+            c1_report_path.write_text(json.dumps(china_c1_department_source_map_report(), ensure_ascii=False), encoding="utf-8")
+            legal_report_path.write_text(json.dumps(china_legal_metadata_relation_report(), ensure_ascii=False), encoding="utf-8")
+            replay_records_path.write_text(json.dumps({"replay_records": china_d3_replay_records()}, ensure_ascii=False), encoding="utf-8")
+            shadow_records_path.write_text(json.dumps({"shadow_records": china_d3_shadow_records()}, ensure_ascii=False), encoding="utf-8")
+            board_route_records_path.write_text(
+                json.dumps({"board_route_records": china_d3_board_route_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-china-d3-readiness-review",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--c0-source-foundation-report",
+                    str(c0_report_path),
+                    "--c1-department-source-map-report",
+                    str(c1_report_path),
+                    "--legal-metadata-relation-report",
+                    str(legal_report_path),
+                    "--replay-records",
+                    str(replay_records_path),
+                    "--shadow-records",
+                    str(shadow_records_path),
+                    "--board-route-records",
+                    str(board_route_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PDT04_D3_READINESS_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PDT04")
+        self.assertEqual(payload["legacy_task_id"], "S2P3T04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d3_core_readiness_review_ready"])
         self.assertFalse(payload["d3_core_source_domain_accepted"])
 
 

@@ -3363,3 +3363,54 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PDT03-CHINA-LEGAL-METADATA-RELATION-EVIDENCE-20260624.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT03_CHINA_LEGAL_METADATA_RELATION_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-064"
+    name: "S2PDT04 China D3 readiness review"
+    kind: "deterministic D3 readiness review model"
+    purpose: "Validate China official D3 core replay, shadow, authority, board routing, and metadata-only no-production readiness after S2PDT01 C0, S2PDT02 C1, and S2PDT03 legal metadata evidence."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pdt04-china-d3-readiness-review-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-066"
+    parameter_ids:
+      - "PARAM-ADP-450"
+      - "PARAM-ADP-451"
+      - "PARAM-ADP-452"
+      - "PARAM-ADP-453"
+      - "PARAM-ADP-454"
+      - "PARAM-ADP-455"
+      - "PARAM-ADP-456"
+      - "PARAM-ADP-457"
+      - "PARAM-ADP-458"
+    inputs:
+      - "passing S2PDT01 C0 source foundation report"
+      - "passing S2PDT02 C1 department source-map report"
+      - "passing S2PDT03 legal metadata relation shadow report"
+      - "China D3 replay records"
+      - "China D3 shadow records"
+      - "China D3 board route records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "China D3 readiness review report"
+      - "30-date replay gate"
+      - "2-day shadow gate"
+      - "authority gate"
+      - "board routing gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PDT04-CHINA-D3-READINESS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PDT04_CHINA_D3_READINESS_EVIDENCE.md"

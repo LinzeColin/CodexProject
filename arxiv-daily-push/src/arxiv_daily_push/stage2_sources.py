@@ -183,6 +183,15 @@ S2PDT03_REQUIRED_DATE_FIELDS = ("published_date", "effective_date")
 S2PDT03_REQUIRED_FORCED_UPDATE_FIELDS = ("update_required", "rescore_required", "updated_state")
 S2PDT03_ALLOWED_IDENTITY_STATES = ("official_domain", "official_gazette", "official_publication_portal")
 S2PDT03_REPORT_FILENAME = "stage2_s2pdt03_china_legal_metadata_relation_shadow_report.json"
+S2PDT04_D3_READINESS_MODEL_ID = "adp-s2pdt04-china-d3-readiness-review-v1"
+S2PDT04_ACCEPTANCE_ID = "ACC-S2PDT04-D3-CORE"
+S2PDT04_TASK_ID = "S2PDT04"
+S2PDT04_LEGACY_TASK_ID = "S2P3T04"
+S2PDT04_REQUIRED_REPLAY_DATES = 30
+S2PDT04_REQUIRED_SHADOW_DAYS = 2
+S2PDT04_REQUIRED_BOARD_IDS = ("B2_policy", "B3_frontier", "B4_industry", "B5_macro", "B6_risk")
+S2PDT04_REQUIRED_ROUTE_FIELDS = ("board_id", "source_ids", "route_explanation", "authority_gate", "metadata_only")
+S2PDT04_REPORT_FILENAME = "stage2_s2pdt04_china_d3_readiness_review_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -2781,6 +2790,301 @@ def validate_s2pdt03_china_legal_metadata_relation_shadow_report(report: Mapping
     return errors
 
 
+def build_s2pdt04_china_d3_readiness_review_report(
+    *,
+    generated_at: str,
+    c0_source_foundation_report: Mapping[str, Any],
+    c1_department_source_map_report: Mapping[str, Any],
+    legal_metadata_relation_report: Mapping[str, Any],
+    replay_records: Sequence[Mapping[str, Any]],
+    shadow_records: Sequence[Mapping[str, Any]],
+    board_route_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build China D3 core replay/shadow/routing readiness without production inclusion."""
+
+    c0_errors = validate_s2pdt01_china_c0_source_foundation_report(c0_source_foundation_report)
+    c1_errors = validate_s2pdt02_china_c1_department_source_map_report(c1_department_source_map_report)
+    legal_errors = validate_s2pdt03_china_legal_metadata_relation_shadow_report(legal_metadata_relation_report)
+    c0_gate = (
+        "pass"
+        if not c0_errors
+        and c0_source_foundation_report.get("status") == "pass"
+        and c0_source_foundation_report.get("d3_c0_source_foundation_ready") is True
+        else "blocked"
+    )
+    c1_gate = (
+        "pass"
+        if not c1_errors
+        and c1_department_source_map_report.get("status") == "pass"
+        and c1_department_source_map_report.get("d3_c1_department_source_map_ready") is True
+        else "blocked"
+    )
+    legal_gate = (
+        "pass"
+        if not legal_errors
+        and legal_metadata_relation_report.get("status") == "pass"
+        and legal_metadata_relation_report.get("d3_legal_metadata_relation_shadow_ready") is True
+        else "blocked"
+    )
+    replay_rows, replay_errors = _s2pdt04_replay_rows(replay_records)
+    shadow_rows, shadow_errors = _s2pdt04_shadow_rows(shadow_records)
+    route_rows, route_errors = _s2pdt04_board_route_rows(board_route_records)
+    replay_gate = _s2pdt04_replay_gate(replay_rows)
+    shadow_gate = _s2pdt04_shadow_gate(shadow_rows)
+    authority_gate = _s2pdt04_authority_gate(replay_rows, shadow_rows, route_rows)
+    route_gate = _s2pdt04_board_routing_gate(route_rows)
+    metadata_gate = _s2pdt04_metadata_gate(replay_rows, shadow_rows, route_rows)
+    upstream_gate = "pass" if c0_gate == c1_gate == legal_gate == "pass" else "blocked"
+    blocking_reasons = [
+        *c0_errors,
+        *c1_errors,
+        *legal_errors,
+        *replay_errors,
+        *shadow_errors,
+        *route_errors,
+        *replay_gate["blocking_reasons"],
+        *shadow_gate["blocking_reasons"],
+        *authority_gate["blocking_reasons"],
+        *route_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if upstream_gate != "pass":
+        blocking_reasons.append("S2PDT04 requires passing S2PDT01 C0, S2PDT02 C1, and S2PDT03 legal metadata reports")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == replay_gate["status"]
+        == shadow_gate["status"]
+        == authority_gate["status"]
+        == route_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PDT04_D3_READINESS_MODEL_ID,
+        "acceptance_id": S2PDT04_ACCEPTANCE_ID,
+        "task_id": S2PDT04_TASK_ID,
+        "legacy_task_id": S2PDT04_LEGACY_TASK_ID,
+        "phase": "S2PD",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_source_evidence_gate": upstream_gate,
+        "upstream_c0_source_foundation_gate": c0_gate,
+        "upstream_c1_department_source_map_gate": c1_gate,
+        "upstream_legal_metadata_relation_gate": legal_gate,
+        "d3_replay_gate": replay_gate["status"],
+        "d3_shadow_gate": shadow_gate["status"],
+        "authority_gate": authority_gate["status"],
+        "board_routing_gate": route_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_replay_dates": S2PDT04_REQUIRED_REPLAY_DATES,
+        "replay_dates_observed": replay_gate["replay_dates_observed"],
+        "required_shadow_days": S2PDT04_REQUIRED_SHADOW_DAYS,
+        "shadow_dates_observed": shadow_gate["shadow_dates_observed"],
+        "required_board_ids": list(S2PDT04_REQUIRED_BOARD_IDS),
+        "board_ids_observed": route_gate["board_ids_observed"],
+        "required_route_fields": list(S2PDT04_REQUIRED_ROUTE_FIELDS),
+        "replay_records": replay_rows,
+        "shadow_records": shadow_rows,
+        "board_route_records": route_rows,
+        "replay_record_count": len(replay_rows),
+        "shadow_record_count": len(shadow_rows),
+        "board_route_record_count": len(route_rows),
+        "replay_summary": replay_gate,
+        "shadow_summary": shadow_gate,
+        "authority_summary": authority_gate,
+        "board_routing_summary": route_gate,
+        "metadata_summary": metadata_gate,
+        "d3_core_readiness_review_ready": status == "pass",
+        "d3_core_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "v7_1_current_switched": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pdt04_china_d3_readiness_review(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    c0_source_foundation_report: Mapping[str, Any],
+    c1_department_source_map_report: Mapping[str, Any],
+    legal_metadata_relation_report: Mapping[str, Any],
+    replay_records: Sequence[Mapping[str, Any]],
+    shadow_records: Sequence[Mapping[str, Any]],
+    board_route_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PDT04 China D3 readiness review evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pdt04-china-d3-readiness-review"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pdt04_china_d3_readiness_review_report(
+        generated_at=generated_at,
+        c0_source_foundation_report=c0_source_foundation_report,
+        c1_department_source_map_report=c1_department_source_map_report,
+        legal_metadata_relation_report=legal_metadata_relation_report,
+        replay_records=replay_records,
+        shadow_records=shadow_records,
+        board_route_records=board_route_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "d3_readiness_review_report_path": str(run_dir / "adp-s2pdt04-china-d3-readiness-review-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pdt04-china-d3-readiness-review-report.json", report)
+        _write_json(state / S2PDT04_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pdt04_china_d3_readiness_review_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PDT04_D3_READINESS_MODEL_ID:
+        errors.append("S2PDT04 D3 readiness model_id must be adp-s2pdt04-china-d3-readiness-review-v1")
+    if report.get("task_id") != S2PDT04_TASK_ID:
+        errors.append("S2PDT04 D3 readiness task_id must be S2PDT04")
+    if report.get("legacy_task_id") != S2PDT04_LEGACY_TASK_ID:
+        errors.append("S2PDT04 D3 readiness legacy_task_id must be S2P3T04")
+    if report.get("acceptance_id") != S2PDT04_ACCEPTANCE_ID:
+        errors.append("S2PDT04 D3 readiness acceptance_id must be ACC-S2PDT04-D3-CORE")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PDT04 D3 readiness status must be pass or blocked")
+    for key in (
+        "d3_core_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "v7_1_current_switched",
+        "v7_2_mail_or_schema_prerun",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PDT04 D3 readiness review")
+    replay_records = report.get("replay_records")
+    if not isinstance(replay_records, list):
+        errors.append("S2PDT04 replay_records must be a list")
+        replay_records = []
+    shadow_records = report.get("shadow_records")
+    if not isinstance(shadow_records, list):
+        errors.append("S2PDT04 shadow_records must be a list")
+        shadow_records = []
+    route_records = report.get("board_route_records")
+    if not isinstance(route_records, list):
+        errors.append("S2PDT04 board_route_records must be a list")
+        route_records = []
+    observed_dates = set(report.get("replay_dates_observed") or [])
+    if len(observed_dates) < S2PDT04_REQUIRED_REPLAY_DATES:
+        errors.append("S2PDT04 replay coverage requires at least 30 distinct dates")
+    observed_shadow_dates = set(report.get("shadow_dates_observed") or [])
+    if len(observed_shadow_dates) < S2PDT04_REQUIRED_SHADOW_DAYS:
+        errors.append("S2PDT04 shadow coverage requires at least 2 distinct dates")
+    observed_boards = set(report.get("board_ids_observed") or [])
+    missing_boards = [board for board in S2PDT04_REQUIRED_BOARD_IDS if board not in observed_boards]
+    if missing_boards:
+        errors.append("S2PDT04 board routing missing required boards: " + ", ".join(missing_boards))
+    for index, record in enumerate(replay_records):
+        if not isinstance(record, Mapping):
+            errors.append(f"replay_records[{index}] must be an object")
+            continue
+        if not _is_iso_date(str(record.get("as_of_date") or "")):
+            errors.append(f"replay_records[{index}].as_of_date must be YYYY-MM-DD")
+        if record.get("status") != "pass":
+            errors.append(f"replay_records[{index}].status must be pass")
+        for key in ("future_leakage_count", "p0_p1_blocker_count"):
+            if int(record.get(key) or 0) != 0:
+                errors.append(f"replay_records[{index}].{key} must be 0")
+        for key in ("authority_gate", "board_route_gate"):
+            if record.get(key) != "pass":
+                errors.append(f"replay_records[{index}].{key} must be pass")
+        if record.get("metadata_only") is not True:
+            errors.append(f"replay_records[{index}].metadata_only must be true")
+    for index, record in enumerate(shadow_records):
+        if not isinstance(record, Mapping):
+            errors.append(f"shadow_records[{index}] must be an object")
+            continue
+        if not _is_iso_date(str(record.get("shadow_date") or "")):
+            errors.append(f"shadow_records[{index}].shadow_date must be YYYY-MM-DD")
+        if record.get("status") != "pass":
+            errors.append(f"shadow_records[{index}].status must be pass")
+        if record.get("production_affected") is not False:
+            errors.append(f"shadow_records[{index}].production_affected must be false")
+        if record.get("real_smtp_sent") is not False:
+            errors.append(f"shadow_records[{index}].real_smtp_sent must be false")
+    for index, record in enumerate(route_records):
+        if not isinstance(record, Mapping):
+            errors.append(f"board_route_records[{index}] must be an object")
+            continue
+        for field in S2PDT04_REQUIRED_ROUTE_FIELDS:
+            if field not in record:
+                errors.append(f"board_route_records[{index}].{field} is required")
+        if record.get("board_id") not in S2PDT04_REQUIRED_BOARD_IDS:
+            errors.append(f"board_route_records[{index}].board_id is not supported")
+        if not record.get("source_ids"):
+            errors.append(f"board_route_records[{index}].source_ids is required")
+        if not record.get("route_explanation"):
+            errors.append(f"board_route_records[{index}].route_explanation is required")
+        if record.get("authority_gate") != "pass":
+            errors.append(f"board_route_records[{index}].authority_gate must be pass")
+        if record.get("metadata_only") is not True:
+            errors.append(f"board_route_records[{index}].metadata_only must be true")
+        if record.get("production_affected") is not False:
+            errors.append(f"board_route_records[{index}].production_affected must be false")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PDT04 D3 readiness report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_source_evidence_gate",
+            "d3_replay_gate",
+            "d3_shadow_gate",
+            "authority_gate",
+            "board_routing_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PDT04 D3 readiness report requires {key}=pass")
+        if report.get("d3_core_readiness_review_ready") is not True:
+            errors.append("passing S2PDT04 D3 readiness report requires d3_core_readiness_review_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -4781,6 +5085,232 @@ def _s2pdt03_metadata_gate(
         "metadata_only_legal_record_count": len(legal_rows) - len(legal_violations),
         "metadata_only_relation_record_count": len(relation_rows) - len(relation_violations),
         "evidence_backed_record_count": len(legal_rows) + len(relation_rows) - len(evidence_missing),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt04_replay_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"replay_records[{index}] must be an object")
+            continue
+        row = {
+            "as_of_date": str(record.get("as_of_date") or "").strip(),
+            "source_domain": str(record.get("source_domain") or record.get("domain") or "d3_china_official").strip(),
+            "status": str(record.get("status") or "").strip(),
+            "future_leakage_count": int(record.get("future_leakage_count") or 0),
+            "p0_p1_blocker_count": int(record.get("p0_p1_blocker_count") or 0),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "board_route_gate": str(record.get("board_route_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "formal_production_inclusion": record.get("formal_production_inclusion") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not _is_iso_date(row["as_of_date"]):
+            errors.append(f"replay_records[{index}].as_of_date must be YYYY-MM-DD")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT04 requires at least one replay record")
+    return rows, errors
+
+
+def _s2pdt04_shadow_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"shadow_records[{index}] must be an object")
+            continue
+        row = {
+            "shadow_date": str(record.get("shadow_date") or record.get("date") or "").strip(),
+            "source_domain": str(record.get("source_domain") or record.get("domain") or "d3_china_official").strip(),
+            "status": str(record.get("status") or "").strip(),
+            "shadow_hours": int(record.get("shadow_hours") or 24),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "board_route_gate": str(record.get("board_route_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "formal_production_inclusion": record.get("formal_production_inclusion") is True,
+            "d3_core_source_domain_accepted": record.get("d3_core_source_domain_accepted") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not _is_iso_date(row["shadow_date"]):
+            errors.append(f"shadow_records[{index}].shadow_date must be YYYY-MM-DD")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT04 requires at least one shadow record")
+    return rows, errors
+
+
+def _s2pdt04_board_route_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    board_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"board_route_records[{index}] must be an object")
+            continue
+        board_id = str(record.get("board_id") or "").strip()
+        row = {
+            "board_id": board_id,
+            "source_ids": list(record.get("source_ids") or []),
+            "route_explanation": str(record.get("route_explanation") or "").strip(),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not board_id:
+            errors.append(f"board_route_records[{index}].board_id is required")
+        if board_id in board_ids:
+            errors.append(f"duplicate S2PDT04 board_id: {board_id}")
+        board_ids.add(board_id)
+        rows.append(row)
+    if not rows:
+        errors.append("S2PDT04 requires at least one board route record")
+    return rows, errors
+
+
+def _s2pdt04_replay_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    dates = sorted({str(row.get("as_of_date") or "") for row in rows if isinstance(row, Mapping) and _is_iso_date(str(row.get("as_of_date") or ""))})
+    bad_status = [row for row in rows if not isinstance(row, Mapping) or row.get("status") != "pass"]
+    leakage = [row for row in rows if not isinstance(row, Mapping) or int(row.get("future_leakage_count") or 0) != 0]
+    blockers = [row for row in rows if not isinstance(row, Mapping) or int(row.get("p0_p1_blocker_count") or 0) != 0]
+    production = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("production_affected") is not False
+        or row.get("formal_production_inclusion") is not False
+    ]
+    reasons: list[str] = []
+    if len(dates) < S2PDT04_REQUIRED_REPLAY_DATES:
+        reasons.append("S2PDT04 D3 replay requires at least 30 distinct as-of dates")
+    if bad_status:
+        reasons.append("S2PDT04 D3 replay records must all status=pass")
+    if leakage:
+        reasons.append("S2PDT04 D3 replay requires future_leakage_count=0")
+    if blockers:
+        reasons.append("S2PDT04 D3 replay requires p0_p1_blocker_count=0")
+    if production:
+        reasons.append("S2PDT04 D3 replay must not affect production or formal inclusion")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_replay_dates": S2PDT04_REQUIRED_REPLAY_DATES,
+        "replay_dates_observed": dates,
+        "replay_date_count": len(dates),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt04_shadow_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    dates = sorted({str(row.get("shadow_date") or "") for row in rows if isinstance(row, Mapping) and _is_iso_date(str(row.get("shadow_date") or ""))})
+    bad_status = [row for row in rows if not isinstance(row, Mapping) or row.get("status") != "pass"]
+    production = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+        or row.get("formal_production_inclusion") is not False
+        or row.get("d3_core_source_domain_accepted") is not False
+    ]
+    reasons: list[str] = []
+    if len(dates) < S2PDT04_REQUIRED_SHADOW_DAYS:
+        reasons.append("S2PDT04 D3 shadow requires at least 2 distinct shadow dates")
+    if bad_status:
+        reasons.append("S2PDT04 D3 shadow records must all status=pass")
+    if production:
+        reasons.append("S2PDT04 D3 shadow must not affect production, send SMTP, or accept D3 core")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_shadow_days": S2PDT04_REQUIRED_SHADOW_DAYS,
+        "shadow_dates_observed": dates,
+        "shadow_day_count": len(dates),
+        "shadow_record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt04_authority_gate(
+    replay_rows: Sequence[Mapping[str, Any]],
+    shadow_rows: Sequence[Mapping[str, Any]],
+    route_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    records = [*replay_rows, *shadow_rows, *route_rows]
+    bad_authority = [
+        row
+        for row in records
+        if not isinstance(row, Mapping) or row.get("authority_gate") != "pass" or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if bad_authority:
+        reasons.append("S2PDT04 authority gate requires authority_gate=pass and evidence_refs on replay, shadow, and board routes")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "authority_checked_record_count": len(records) - len(bad_authority),
+        "record_count": len(records),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt04_board_routing_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("board_id") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PDT04_REQUIRED_BOARD_IDS) - observed)
+    unsupported = sorted(observed - set(S2PDT04_REQUIRED_BOARD_IDS))
+    incomplete = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or not row.get("source_ids")
+        or not row.get("route_explanation")
+        or row.get("authority_gate") != "pass"
+        or row.get("metadata_only") is not True
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PDT04 board routing missing required boards: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PDT04 board routing has unsupported boards: " + ", ".join(unsupported))
+    if incomplete:
+        reasons.append("S2PDT04 board routes require source_ids, route_explanation, authority_gate=pass, and metadata_only=true")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_board_ids": list(S2PDT04_REQUIRED_BOARD_IDS),
+        "board_ids_observed": sorted(board for board in observed if board),
+        "route_record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pdt04_metadata_gate(
+    replay_rows: Sequence[Mapping[str, Any]],
+    shadow_rows: Sequence[Mapping[str, Any]],
+    route_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    records = [*replay_rows, *shadow_rows, *route_rows]
+    violations = [
+        row
+        for row in records
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+    ]
+    evidence_missing = [row for row in records if not isinstance(row, Mapping) or not row.get("evidence_refs")]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PDT04 D3 readiness records must be metadata-only and production_affected=false")
+    if evidence_missing:
+        reasons.append("S2PDT04 D3 readiness records require evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(records) - len(violations),
+        "evidence_backed_record_count": len(records) - len(evidence_missing),
+        "record_count": len(records),
         "blocking_reasons": reasons,
     }
 
