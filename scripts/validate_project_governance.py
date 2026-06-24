@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import fnmatch
+import hashlib
 import json
 import os
 import re
@@ -438,6 +439,157 @@ def check_semantic_coverage_task_binding(
         validation.add(required, scope, f"semantic_coverage.machine_verified requires task {task_id} to be completed")
     if status in {"planned", "in_progress", "blocked"} and task_status in {"completed", "rejected", "deprecated"}:
         validation.add(required, scope, f"semantic_coverage.{status} cannot point to terminal task {task_id} with status {task_status}")
+
+
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def validate_arxiv_daily_push_v7_root_lock(
+    validation: Validation,
+    project_path: Path,
+    parsed: dict[str, Any],
+    required: bool,
+    scope: str,
+) -> None:
+    if project_path.name != "arxiv-daily-push":
+        return
+
+    v7_root = project_path / "docs" / "pursuing_goal" / "v7_1"
+    files = {
+        "lock": v7_root / "V7_1_ROOT_LOCK.yaml",
+        "contract_hash": v7_root / "CONTRACT_HASH.txt",
+        "product_contract": v7_root / "machine_readable" / "product_contract_v7.yaml",
+        "decision_log": v7_root / "machine_readable" / "decision_log_v7.yaml",
+        "requirements": v7_root / "machine_readable" / "requirements_v7.yaml",
+        "stop_codes": v7_root / "machine_readable" / "stop_codes_v7.yaml",
+        "audit_findings": v7_root / "machine_readable" / "audit_findings_v7_1.yaml",
+        "merge_policy": v7_root / "machine_readable" / "merge_policy_v7_1.yaml",
+        "lifecycle": v7_root / "machine_readable" / "operational_lifecycle_v7_1.yaml",
+        "roadmap": v7_root / "ROADMAP" / "roadmap_v7.yaml",
+        "roadmap_human": v7_root / "ROADMAP" / "ARXIV_DAILY_PUSH_ROADMAP_V7_1_CN.md",
+    }
+    missing = [name for name, path in files.items() if not check_file_nonempty(validation, path, required, scope)]
+    if missing:
+        return
+
+    try:
+        lock = load_yaml(files["lock"])
+        hash_contract = files["contract_hash"].read_text(encoding="utf-8").strip()
+    except Exception as exc:
+        validation.add(required, scope, f"V7 root lock parse failure: {exc}")
+        return
+
+    if not isinstance(lock, dict):
+        validation.add(required, scope, "V7_1_ROOT_LOCK.yaml must be a mapping")
+        return
+    if lock.get("status") != "repository_locked_pending_pr_ci":
+        validation.add(required, scope, f"V7_ROOT_LOCK status is not repository_locked_pending_pr_ci: {lock.get('status')}")
+    if lock.get("project_id") != "arxiv-daily-push":
+        validation.add(required, scope, "V7_ROOT_LOCK project_id must be arxiv-daily-push")
+
+    expected_contract_version = "ADP-PRODUCT-CONTRACT-V7.1"
+    expected_roadmap_version = "ADP-ROADMAP-V7.1"
+    contract = lock.get("current_contract") if isinstance(lock.get("current_contract"), dict) else {}
+    product_hash = sha256_file(files["product_contract"])
+    roadmap_hash = sha256_file(files["roadmap"])
+    audit_hash = sha256_file(files["audit_findings"])
+    if contract.get("contract_version") != expected_contract_version:
+        validation.add(required, scope, "V7 lock contract_version mismatch")
+    if contract.get("roadmap_version") != expected_roadmap_version:
+        validation.add(required, scope, "V7 lock roadmap_version mismatch")
+    if contract.get("contract_sha256") != product_hash:
+        validation.add(required, scope, "V7 product_contract_sha256 does not match repository file")
+    if contract.get("roadmap_sha256") != roadmap_hash:
+        validation.add(required, scope, "V7 roadmap_sha256 does not match repository file")
+    if contract.get("audit_version") != "ADP-PARALLEL-AUDIT-V7.1":
+        validation.add(required, scope, "V7 lock audit_version mismatch")
+    if contract.get("audit_findings_sha256") != audit_hash:
+        validation.add(required, scope, "V7 audit_findings_sha256 does not match repository file")
+    if isinstance(hash_contract, str):
+        if hash_contract.strip() != product_hash:
+            validation.add(required, scope, "CONTRACT_HASH.txt product hash does not match repository file")
+    elif isinstance(hash_contract, dict):
+        if hash_contract.get("product_contract_sha256") != product_hash:
+            validation.add(required, scope, "CONTRACT_HASH.txt product hash does not match repository file")
+    else:
+        validation.add(required, scope, "CONTRACT_HASH.txt must be the product contract SHA256 or a mapping")
+
+    product_text = files["product_contract"].read_text(encoding="utf-8")
+    roadmap_text = files["roadmap"].read_text(encoding="utf-8")
+    if f"contract_version: {expected_contract_version}" not in product_text:
+        validation.add(required, scope, "product_contract_v7.yaml contract_version mismatch")
+    if "stage2_continues_in_parallel: true" not in product_text:
+        validation.add(required, scope, "V7 product contract must preserve stage2_continues_in_parallel=true")
+    if f"roadmap_version: {expected_roadmap_version}" not in roadmap_text:
+        validation.add(required, scope, "roadmap_v7.yaml roadmap_version mismatch")
+
+    stage1 = lock.get("stage1_boundary") if isinstance(lock.get("stage1_boundary"), dict) else {}
+    if stage1.get("accepted_gate") != "ARXIV_PRODUCTION_ACCEPTED" or stage1.get("status") != "maintained":
+        validation.add(required, scope, "V7 lock must maintain ARXIV_PRODUCTION_ACCEPTED")
+    if stage1.get("must_not_regress") is not True:
+        validation.add(required, scope, "V7 lock must set stage1_boundary.must_not_regress=true")
+
+    stage2 = lock.get("stage2_boundary") if isinstance(lock.get("stage2_boundary"), dict) else {}
+    if stage2.get("stop_gate") != "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION":
+        validation.add(required, scope, "V7 lock Stage2 stop_gate mismatch")
+    if stage2.get("production_accepted") is not False:
+        validation.add(required, scope, "V7 lock must keep Stage2 production_accepted=false")
+    if stage2.get("current_task_id") != "S2PAT05":
+        validation.add(required, scope, "V7 lock current_task_id must be S2PAT05")
+    if stage2.get("current_shadow_source_task") != "S2PBT01":
+        validation.add(required, scope, "V7 lock current_shadow_source_task must be S2PBT01")
+    if stage2.get("final_task") != "S2PMT07":
+        validation.add(required, scope, "V7 lock final_task must be S2PMT07")
+    aliases = stage2.get("legacy_aliases") if isinstance(stage2.get("legacy_aliases"), dict) else {}
+    if aliases.get("S2PBT01") != "S2P1T01":
+        validation.add(required, scope, "V7 lock must map S2PBT01 to legacy S2P1T01")
+    tasks = [task for task in parsed.get("tasks", []) if isinstance(task, dict)]
+    s2pat05 = next((task for task in tasks if str(task.get("task_id") or "") == "S2PAT05"), None)
+    if not s2pat05:
+        validation.add(required, scope, "delivery_tasks.yaml must contain V7.1 task S2PAT05")
+    else:
+        acceptance_ids = {str(item) for item in as_list(s2pat05.get("acceptance_ids")) if item}
+        if "ACC-S2PAT05-AUDIT-LOCK" not in acceptance_ids:
+            validation.add(required, scope, "S2PAT05 missing ACC-S2PAT05-AUDIT-LOCK")
+    s2pbt01 = next((task for task in tasks if str(task.get("task_id") or "") == "S2PBT01"), None)
+    if not s2pbt01:
+        validation.add(required, scope, "delivery_tasks.yaml must contain V7 task S2PBT01")
+    else:
+        if str(s2pbt01.get("status") or "") not in {"ready", "in_progress", "completed"}:
+            validation.add(required, scope, "S2PBT01 must be ready, in_progress, or completed")
+        acceptance_ids = {str(item) for item in as_list(s2pbt01.get("acceptance_ids")) if item}
+        if "ACC-S2PBT01-BIORXIV-MEDRXIV" not in acceptance_ids:
+            validation.add(required, scope, "S2PBT01 missing ACC-S2PBT01-BIORXIV-MEDRXIV")
+
+    root_agent = (ROOT / "AGENTS.md").read_text(encoding="utf-8") if (ROOT / "AGENTS.md").exists() else ""
+    project_agent = (project_path / "AGENTS.md").read_text(encoding="utf-8") if (project_path / "AGENTS.md").exists() else ""
+    for needle, text, label in (
+        ("V*_ROOT_LOCK.yaml", root_agent, "root AGENTS.md"),
+        ("docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("INTEGRATED_PRODUCTION_ACCEPTED ->", project_agent, "arxiv-daily-push/AGENTS.md"),
+        ("S2PBT01", project_agent, "arxiv-daily-push/AGENTS.md"),
+    ):
+        if needle not in text:
+            validation.add(required, scope, f"{label} missing V7 reference: {needle}")
+
+    for rel_path in ("功能清单", "开发记录", "模型参数文件"):
+        text = (project_path / rel_path).read_text(encoding="utf-8") if (project_path / rel_path).exists() else ""
+        for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PBT01"):
+            if needle not in text:
+                validation.add(required, scope, f"{rel_path} missing V7 lock reference: {needle}")
+
+    matrix = parsed.get("version_matrix") if isinstance(parsed.get("version_matrix"), dict) else {}
+    if matrix.get("current_v7_contract_version") != expected_contract_version:
+        validation.add(required, scope, "VERSION_MATRIX.yaml missing current_v7_contract_version")
+    if matrix.get("current_v7_task_id") != "S2PAT05":
+        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PAT05")
+    if matrix.get("current_v7_shadow_source_task_id") != "S2PBT01":
+        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_shadow_source_task_id must be S2PBT01")
+    if matrix.get("current_v7_final_task_id") != "S2PMT07":
+        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_final_task_id must be S2PMT07")
+    if matrix.get("stage1_acceptance_gate") != "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED":
+        validation.add(required, scope, "VERSION_MATRIX.yaml must preserve ARXIV_PRODUCTION_ACCEPTED_MAINTAINED")
 
 
 def rel(path: Path) -> str:
@@ -1005,6 +1157,7 @@ def validate_project(
     check_manual_counts(validation, project_path, parsed, required, scope)
     validate_assurance_status(validation, project)
     check_semantic_coverage_task_binding(validation, project, parsed, required, scope)
+    validate_arxiv_daily_push_v7_root_lock(validation, project_path, parsed, required, scope)
 
 
 ZERO_SHA = "0" * 40

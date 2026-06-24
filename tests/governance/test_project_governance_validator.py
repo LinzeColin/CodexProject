@@ -2942,9 +2942,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(project["delivery_readiness"]["next_executable_task_status"], "evidence_passed_no_formal_production")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION")
-        self.assertEqual(matrix["current_phase"], "S2P2")
-        self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260624-ADP-S2PA-V7-1-PARALLEL-AUDIT-ROOT-LOCK")
+        self.assertEqual(matrix["current_phase"], "S2PA")
+        self.assertEqual(matrix["current_gate"], "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED")
+        self.assertEqual(matrix["current_v7_task_id"], "S2PAT05")
+        self.assertEqual(matrix["current_v7_shadow_source_task_id"], "S2PBT01")
+        self.assertEqual(matrix["current_v7_final_task_id"], "S2PMT07")
         self.assertEqual(matrix["review9_migration_iteration"], "ITER-20260624-REVIEW9-S5PBT05")
         self.assertEqual(matrix["review9_migration_phase"], "S5PB")
         self.assertEqual(matrix["review9_migration_gate"], "S5PB-GATE-IN-PROGRESS")
@@ -3166,6 +3169,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_review9_s6pat01_archive_manifest_records_legacy_checksums(self) -> None:
         archive_path = ROOT / "governance" / "archive" / "review9_s6pat01_legacy_archive_manifest.csv"
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-REVIEW9-S6PAT01-LEGACY-ARCHIVE-MANIFEST-20260624.json"
+            ).read_text(encoding="utf-8")
+        )
+        snapshot_ref = manifest["implementation_base_sha"]
         with archive_path.open(encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle))
 
@@ -3187,14 +3199,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 self.assertEqual(row["category"], "root_generated_or_status_view", row["source_path"])
                 self.assertIn("s6pat02_generated_view_removal", row["archive_action"])
                 continue
-            if row["source_path"] in later_changed and row["category"] in {
-                "root_legacy_governance_script",
-                "root_generated_or_status_view",
-            }:
+            if row["source_path"] in later_changed:
+                self.assertIn(row["category"], {"root_legacy_governance_script", "root_generated_or_status_view"})
                 continue
             self.assertTrue(source.is_file(), row["source_path"])
             blob = subprocess.run(
-                ["git", "show", f"HEAD:{row['source_path']}"],
+                ["git", "show", f"{snapshot_ref}:{row['source_path']}"],
                 cwd=ROOT,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -3269,8 +3279,34 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(len(projects), 10)
         for project in projects:
             self.assertEqual(set(project), {"project_id", "path", "ci_mode", "migration"})
-            self.assertEqual(project["ci_mode"], "advisory")
-            self.assertEqual(project["migration"], {"version": "legacy-v1-pending-lean-v2"})
+            self.assertEqual(project["ci_mode"], "required")
+            self.assertEqual(project["migration"], {"version": "lean-v2"})
+
+    def test_review9_s6pbt01_all_migrated_projects_are_required(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+        self.assertEqual(len(projects), 10)
+
+        manifest_path = ROOT / "governance" / "run_manifests" / "GOV-REVIEW9-S6PBT01-REQUIRED-CI-MODE-20260624.json"
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        matrix = {row["project_id"]: row for row in manifest["required_matrix"]}
+        self.assertEqual(set(matrix), {project["project_id"] for project in projects})
+
+        for project in projects:
+            project_id = project["project_id"]
+            project_root = ROOT / project["path"]
+            self.assertEqual(project["ci_mode"], "required", project_id)
+            self.assertEqual(project["migration"], {"version": "lean-v2"}, project_id)
+            self.assertTrue((project_root / "docs" / "governance" / "project.yaml").is_file(), project_id)
+            self.assertTrue((project_root / "docs" / "governance" / "roadmap.yaml").is_file(), project_id)
+            self.assertTrue((project_root / "docs" / "governance" / "events.jsonl").is_file(), project_id)
+            for human_file in ("功能清单", "开发记录", "模型参数文件"):
+                self.assertTrue((project_root / human_file).is_file(), f"{project_id}:{human_file}")
+            self.assertEqual(matrix[project_id]["ci_mode_after"], "required")
+            self.assertEqual(matrix[project_id]["migration_version_after"], "lean-v2")
+            self.assertEqual(matrix[project_id]["rollback"], "set this project ci_mode to advisory")
 
     def test_review9_s2_projects_registry_rejects_computed_fields(self) -> None:
         validator = load_validator_module()
@@ -4790,7 +4826,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(task_by_id["S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE"]["status"], "completed")
         self.assertEqual(task_by_id["S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001"]["status"], "completed")
         self.assertEqual(task_by_id["ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP"]["status"], "completed")
-        self.assertEqual(task_by_id["S2P1T01"]["status"], "in_progress")
+        self.assertEqual(task_by_id["S2PAT05"]["status"], "completed")
+        self.assertEqual(task_by_id["S2PBT01"]["status"], "in_progress")
+        self.assertEqual(task_by_id["S2P1T01"]["status"], "deprecated")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"]["status"], "planned")
         self.assertEqual(task_by_id["ADP-PHASE12-EMAIL-DECISION-UI-V2-038"]["status"], "planned")
 
@@ -4815,19 +4853,22 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         project = next(project for project in config["projects"] if project["project_id"] == "arxiv-daily-push")
         info = dashboard.load_project(project)
-        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-092")
-        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-092")
+        self.assertEqual(info["latest_event"]["event_id"], "EVENT-20260624-ADP-V7-1-AUDIT-LOCK-001")
+        self.assertEqual(info["assurance"]["as_of_event_id"], "EVENT-20260624-ADP-V7-1-AUDIT-LOCK-001")
         self.assertEqual(info["product_version"], "0.23.0")
         self.assertEqual(
             info["current_gate"],
-            "ARXIV_PRODUCTION_ACCEPTED",
+            "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED",
         )
         self.assertEqual(
             info["latest_manifest"]["_path"].replace("\\", "/"),
-            "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json",
+            "governance/run_manifests/ADP-S2PA-V7-1-PARALLEL-AUDIT-ROOT-LOCK-20260624.json",
         )
         self.assertEqual(info["assurance"]["delivery_readiness"]["status"], "VERIFIED")
-        self.assertEqual(info["current_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertEqual(
+            info["assurance"]["delivery_readiness"]["release_gate"],
+            "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED",
+        )
         self.assertFalse(info["latest_manifest"].get("production_acceptance_claimed", False))
         self.assertFalse(info["latest_event"]["production_schedule_enabled"])
         self.assertFalse(info["latest_event"]["real_smtp_sent"])
@@ -4835,7 +4876,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         rendered = dashboard.render_owner_status(info)
         self.assertIn("0.23.0", rendered)
         self.assertIn("ARXIV_PRODUCTION_ACCEPTED", rendered)
-        self.assertIn("S2P2 / ARXIV_PRODUCTION_ACCEPTED", rendered)
+        self.assertIn("ADP-S1P5T05", rendered)
+        self.assertIn("V7_1_PRODUCT_CONTRACT_AND_AUDIT_LOCKED", rendered)
+        self.assertIn("S2P1T01", rendered)
         self.assertIn("GitHub 只保留代码、PR/CI、证据、状态和备份角色", rendered)
         self.assertNotIn("是否继续执行 S1-07", rendered)
         self.assertNotIn("是否继续执行 S1-08", rendered)
@@ -4849,7 +4892,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         dashboard = load_dashboard_module()
         config = dashboard.structural.load_yaml(ROOT / "governance" / "projects.yaml")
         expected = {
-            "arxiv-daily-push": "S2P1T01",
+            "arxiv-daily-push": "S2PBT01",
             "OpenAIDatabase": "TASK-OAI-B-001",
             "PFI_BIG_DATA_SIMULATOR": "TASK-PFI-B-001",
             "whkmSalary": "TASK-WHKM-B-001",
@@ -5724,6 +5767,57 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(manifest["human_review_required_parameters"], 0)
         self.assertEqual(manifest["semantic_formulas_checked"], 31)
         self.assertEqual(manifest["human_review_required_formulas"], 0)
+
+    def test_adp_v7_1_root_lock_hashes_stage_gates_and_aliases_are_machine_checkable(self) -> None:
+        validator = load_validator_module()
+        v7_root = ROOT / "arxiv-daily-push" / "docs" / "pursuing_goal" / "v7_1"
+        lock = validator.load_yaml(v7_root / "V7_1_ROOT_LOCK.yaml")
+        contract_hash = (v7_root / "CONTRACT_HASH.txt").read_text(encoding="utf-8").strip()
+
+        product_contract = v7_root / "machine_readable" / "product_contract_v7.yaml"
+        roadmap = v7_root / "ROADMAP" / "roadmap_v7.yaml"
+        audit = v7_root / "machine_readable" / "audit_findings_v7_1.yaml"
+        product_digest = hashlib.sha256(product_contract.read_bytes()).hexdigest()
+        roadmap_digest = hashlib.sha256(roadmap.read_bytes()).hexdigest()
+        audit_digest = hashlib.sha256(audit.read_bytes()).hexdigest()
+
+        self.assertEqual(lock["status"], "repository_locked_pending_pr_ci")
+        self.assertEqual(lock["current_contract"]["contract_version"], "ADP-PRODUCT-CONTRACT-V7.1")
+        self.assertEqual(lock["current_contract"]["contract_sha256"], product_digest)
+        self.assertEqual(contract_hash, product_digest)
+        self.assertEqual(lock["current_contract"]["roadmap_version"], "ADP-ROADMAP-V7.1")
+        self.assertEqual(lock["current_contract"]["roadmap_sha256"], roadmap_digest)
+        self.assertEqual(lock["current_contract"]["audit_version"], "ADP-PARALLEL-AUDIT-V7.1")
+        self.assertEqual(lock["current_contract"]["audit_findings_sha256"], audit_digest)
+        self.assertEqual(lock["stage1_boundary"]["accepted_gate"], "ARXIV_PRODUCTION_ACCEPTED")
+        self.assertTrue(lock["stage1_boundary"]["must_not_regress"])
+        self.assertEqual(lock["stage2_boundary"]["stop_gate"], "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION")
+        self.assertFalse(lock["stage2_boundary"]["production_accepted"])
+        self.assertEqual(lock["stage2_boundary"]["current_task_id"], "S2PAT05")
+        self.assertEqual(lock["stage2_boundary"]["current_shadow_source_task"], "S2PBT01")
+        self.assertEqual(lock["stage2_boundary"]["final_task"], "S2PMT07")
+        self.assertEqual(lock["stage2_boundary"]["legacy_aliases"]["S2PBT01"], "S2P1T01")
+        self.assertIn("P0 findings are zero", lock["production_forbidden_until"])
+        self.assertIn("P1 findings are zero", lock["production_forbidden_until"])
+
+    def test_adp_v7_1_root_lock_is_enforced_by_project_validator_and_human_entries(self) -> None:
+        result = run_validator("--project", "arxiv-daily-push")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("errors: 0", result.stdout)
+
+        for relative in ("功能清单", "开发记录", "模型参数文件"):
+            text = (ROOT / "arxiv-daily-push" / relative).read_text(encoding="utf-8")
+            self.assertIn("ADP-PRODUCT-CONTRACT-V7.1", text)
+            self.assertIn("V7_1_ROOT_LOCK.yaml", text)
+            self.assertIn("ARXIV_PRODUCTION_ACCEPTED", text)
+            self.assertIn("S2PAT05", text)
+            self.assertIn("S2PBT01", text)
+            self.assertIn("S2PMT07", text)
+
+        status = (ROOT / "arxiv-daily-push" / "docs" / "governance" / "STATUS.md").read_text(encoding="utf-8")
+        self.assertIn("ARXIV_PRODUCTION_ACCEPTED_MAINTAINED", status)
+        self.assertIn("INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION", status)
+        self.assertIn("Stage 2 integrated accepted: `false`", status)
 
     def test_review9_information_quality_gate_reports_truth_without_pr_blocking_assumption(self) -> None:
         quality = load_information_quality_module()

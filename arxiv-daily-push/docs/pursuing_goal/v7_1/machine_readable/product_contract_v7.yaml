@@ -1,0 +1,181 @@
+schema_version: 1
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+as_of: '2026-06-24'
+status: parallel_audit_completed_remediation_required_before_production
+project_id: arxiv-daily-push
+north_star: 以可审计证据和低注意力成本，持续产生知识、能力、决策、行动资产和可核验经济转化。
+required_capabilities:
+- multi_source_collection
+- source_and_evidence_governance
+- deep_understanding
+- personal_frontier_intelligence
+- report_generation
+- three_plus_one_daily_email
+- chinese_human_interface
+- review_and_memory
+- action_and_capability_assets
+- expected_and_actual_roi
+- weekly_summary
+- monthly_summary
+- security_and_untrusted_content_boundary
+- transactional_outbox_and_idempotent_delivery
+- atomic_backup_restore_and_artifact_publish
+- lease_fencing_and_concurrency_control
+- automatic_wake_run_drain_shutdown_cleanup
+- load_stress_soak_chaos_and_time_testing
+- safe_interactive_controls_and_traceable_ui
+- continuous_handoff_and_independent_review
+source_domains:
+  D1: 研究、预印本与医学索引
+  D2: 权威发表、工程开源与产业技术报告
+  D3: 中国官方政策、法律、科技、产业和经济
+  D4: 美国官方科技、法律、金融、宏观和技术政策
+reading_boards:
+  B1:
+    name: 科学与理论前沿
+    type: primary
+  B2:
+    name: 工程、产品与产业前沿
+    type: primary
+  B3:
+    name: 政策、资本与地缘前沿
+    type: primary
+  B4:
+    name: 社会与时代变化
+    type: cross_cutting
+  B5:
+    name: 风险、反证与失败
+    type: cross_cutting
+  B6:
+    name: 个人机会、能力与经济转化
+    type: cross_cutting
+mail_products:
+  M1:
+    boards:
+    - B1
+    - B4
+    - B5
+    - B6
+    earliest_send: 07:30 Australia/Sydney
+  M2:
+    boards:
+    - B2
+    - B4
+    - B5
+    - B6
+    earliest_send: 11:30 Australia/Sydney
+  M3:
+    boards:
+    - B3
+    - B4
+    - B5
+    - B6
+    earliest_send: 17:00 Australia/Sydney
+  M4:
+    boards:
+    - B1
+    - B2
+    - B3
+    - B4
+    - B5
+    - B6
+    earliest_send: 21:30 Australia/Sydney
+    requires_terminal:
+    - M1
+    - M2
+    - M3
+weekly_schedule: Sunday 22:00 Australia/Sydney
+monthly_schedule: day 1 09:00 Australia/Sydney for previous calendar month
+human_interface:
+  language: zh-CN-first
+  one_edit_directory: 00_用户中心/00_只改这里
+  four_inspect_views:
+  - 01_运行任务与真实队列总控台.md
+  - 02_数据源与阅读板块健康.md
+  - 03_模型评分参数与全量队列.md
+  - 04_内容邮件复习行动与ROI总账.md
+  three_base_files:
+  - 功能清单
+  - 开发记录
+  - 模型参数文件
+review_defaults_days:
+- 1
+- 3
+- 7
+- 14
+- 30
+- 90
+content_quality_weights:
+  evidence_completeness: 25
+  depth_and_mechanism: 20
+  frontier_delta: 15
+  personal_relevance: 15
+  cross_source_synthesis: 10
+  actionability: 10
+  chinese_clarity: 5
+content_publish_threshold: 80
+hard_quality_gates:
+- critical_claim_evidence_binding_100_percent
+- zero_unlabelled_inference
+- evidence_level_visible
+- counterargument_or_failure_condition_present
+- personal_value_and_action_present
+owner_public_data_decision:
+  profile_and_email_may_be_public: true
+  credentials_tokens_passwords_may_be_public: false
+connector_rule: connectors_must_not_generate_final_email
+stage2_continues_in_parallel: true
+schedule_contract:
+  timezone: Australia/Sydney
+  storage_timezone: UTC
+  cycle_id: local_business_date + contract_version + schedule_revision
+  misfire_policy: catch_up_within_configured_window_once
+  dst_policy: explicit_fold_and_gap_policy_required
+  m4_waterline:
+    key: cycle_id
+    terminal_states:
+    - SUCCESS
+    - NO_MATERIAL_UPDATE
+    - DEGRADED_WITH_REASON
+    - FAILED_WITH_REASON
+    deadline_required: true
+    late_arrival_revision_policy_required: true
+operational_lifecycle:
+  states:
+  - STOPPED
+  - STARTING
+  - RECOVERING
+  - LEADER
+  - RUNNING
+  - DRAINING
+  - CHECKPOINTING
+  - CLEANING
+  - STOPPED
+  - FAILED
+  shutdown_order:
+  - stop_new_claims
+  - finish_or_requeue_inflight
+  - flush_outbox_state
+  - checkpoint_database
+  - persist_runtime_receipt
+  - safe_cache_cleanup
+  - optional_backup
+  - release_lease
+  - exit
+  external_effect_semantics: at_least_once_transport_with_application_idempotency_and_transactional_outbox
+security_baseline:
+  source_content: UNTRUSTED_DATA
+  allowed_url_schemes:
+  - https
+  restore_paths_must_stay_under_backup_root: true
+  atomic_publish_required: true
+  secret_values_forbidden_in_repo_and_logs: true
+  dependency_and_action_pinning_required: true
+state_model_policy: ingestion/evidence/analysis/queue/delivery/review/action/asset/conversion
+  are orthogonal ledgers; do not force one linear state
+production_stop_gate:
+  requires_zero_open:
+  - P0
+  - P1
+  required_task: S2PMT07
+  gate: INTEGRATED_PRODUCTION_ACCEPTED

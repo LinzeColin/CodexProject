@@ -1,0 +1,84 @@
+schema_version: 1
+source_to_board:
+  D1:
+    primary:
+    - B1
+    - B2
+    conditional:
+    - B3
+    mandatory_checks:
+    - B4
+    - B5
+    - B6
+  D2:
+    primary:
+    - B1
+    - B2
+    conditional:
+    - B3
+    mandatory_checks:
+    - B4
+    - B5
+    - B6
+  D3:
+    primary:
+    - B3
+    conditional:
+    - B1
+    - B2
+    mandatory_checks:
+    - B4
+    - B5
+    - B6
+  D4:
+    primary:
+    - B2
+    - B3
+    conditional:
+    - B1
+    mandatory_checks:
+    - B4
+    - B5
+    - B6
+board_to_mail:
+  B1: M1
+  B2: M2
+  B3: M3
+  B4:
+  - M1
+  - M2
+  - M3
+  - M4
+  B5:
+  - M1
+  - M2
+  - M3
+  - M4
+  B6:
+  - M1
+  - M2
+  - M3
+  - M4
+mail_terminal_states:
+- SUCCESS
+- NO_MATERIAL_UPDATE
+- DEGRADED_WITH_REASON
+- FAILED_WITH_REASON
+contract_version: ADP-PRODUCT-CONTRACT-V7.1
+orthogonal_state_ledgers:
+- ingestion
+- evidence
+- analysis
+- queue
+- report
+- delivery
+- review
+- action
+- asset
+- conversion
+- runtime_lifecycle
+external_side_effect_boundary:
+  email: transactional_outbox
+  filesystem: staging+fsync+atomic_replace
+  restore: validate_temp+backup_old+atomic_replace
+  scheduler: adapter+install_receipt+uninstall_receipt

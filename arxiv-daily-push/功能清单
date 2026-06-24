@@ -27,6 +27,24 @@
 | FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | evidence_passed_no_formal_production | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
 | FEAT-ADP-008 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
 
+## V7.1 当前根治理锁
+
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
+- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- contract_sha256: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
+- roadmap_version: `ADP-ROADMAP-V7.1`
+- roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
+- audit_version: `ADP-PARALLEL-AUDIT-V7.1`
+- stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
+- stage2_current_task: `S2PAT05`
+- stage2_shadow_source_task: `S2PBT01`
+- legacy_alias: `S2PBT01 -> S2P1T01`
+- stage2_final_task: `S2PMT07`
+- stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- stage2_integrated_production_accepted: `false`
+- production_forbidden_until: `P0=0; P1=0; S2PMT07 independent review passed`
+- forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
+
 ## 证据
 
 | 证据 ID | 类型 | 引用 | 事实等级 |
