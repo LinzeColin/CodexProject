@@ -3090,6 +3090,78 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("evidence_freshness remains PARTIAL", " ".join(manifest["unresolved_risks"]))
         self.assertIn("S2P1T01 is ready but not implemented", " ".join(manifest["unresolved_risks"]))
 
+    def test_review9_s5_gate_all_projects_have_lean_v2_owner_entries(self) -> None:
+        validator = load_validator_module()
+        cli = load_lean_governance_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+
+        self.assertEqual(len(projects), 10)
+        for project in projects:
+            project_id = project["project_id"]
+            project_root = ROOT / project["path"]
+            governance_root = project_root / "docs" / "governance"
+            for relative in ("project.yaml", "roadmap.yaml", "events.jsonl"):
+                self.assertTrue((governance_root / relative).is_file(), f"{project_id}: missing {relative}")
+
+            result = cli.check_render_project_files(project_root)
+            self.assertEqual(result["drift_count"], 0, f"{project_id}: {result['drift']}")
+            self.assertEqual(result["reference_issue_count"], 0, f"{project_id}: {result['reference_issues']}")
+
+            for filename in ("功能清单", "开发记录", "模型参数文件"):
+                text = (project_root / filename).read_text(encoding="utf-8")
+                self.assertTrue(text.startswith("# "), f"{project_id}: {filename} is not a readable document")
+                self.assertNotIn("docs/governance/", text.splitlines()[0], f"{project_id}: {filename} is an index page")
+                self.assertGreater(len(text), 800, f"{project_id}: {filename} is too thin for owner review")
+
+            roadmap = validator.load_yaml(governance_root / "roadmap.yaml")
+            self.assertTrue(roadmap["stages"], f"{project_id}: roadmap has no stages")
+            self.assertIn("Stage -> Phase -> Task", (project_root / "开发记录").read_text(encoding="utf-8"))
+
+    def test_review9_s5_gate_manifest_closes_stage5_without_promoting_required(self) -> None:
+        manifest_path = ROOT / "governance" / "run_manifests" / "GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["project_id"], "CodexProject")
+        self.assertEqual(manifest["task_id"], "S5-GATE")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5-GATE", "ACC-S5PB-GATE"])
+        self.assertEqual(manifest["binding_status"], "PRECOMMIT_TREE_BOUND")
+        self.assertEqual(manifest["stage_gate_status"]["S5PB-GATE"], "PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S5-GATE"], "PASSED")
+        self.assertEqual(manifest["next_allowed_stage"], "S6")
+        self.assertEqual(manifest["project_acceptance_totals"], {"accepted_projects": 10, "registered_projects": 10})
+
+        expected_projects = {
+            "Alpha": ("S5PAT01", 103),
+            "EVA_OS": ("S5PAT02", 104),
+            "OpMe_System": ("S5PAT03", 106),
+            "whkmSalary": ("S5PAT04", 108),
+            "EEI": ("S5PBT01", 109),
+            "FIFA": ("S5PBT02", 111),
+            "OpenAIDatabase": ("S5PBT03", 112),
+            "PFI_BIG_DATA_SIMULATOR": ("S5PBT04", 113),
+            "Serenity-Alipay": ("S4PC", 101),
+            "arxiv-daily-push": ("S5PBT05", 115),
+        }
+        matrix = {row["project_id"]: row for row in manifest["project_acceptance_matrix"]}
+        self.assertEqual(set(matrix), set(expected_projects))
+        for project_id, (task_id, pr_number) in expected_projects.items():
+            row = matrix[project_id]
+            self.assertEqual(row["task_id"], task_id)
+            self.assertEqual(row["owner_account"], "LinzeColin")
+            self.assertEqual(row["owner_signoff_pr"], pr_number)
+            self.assertTrue(row["lean_v2_canonical_files"])
+            self.assertTrue(row["owner_readable_entries"])
+            self.assertEqual(row["render_drift_count"], 0)
+
+        for path in manifest["s5_task_manifests"]:
+            self.assertTrue((ROOT / path).is_file(), path)
+        self.assertTrue(manifest["daily_compute_contract"]["changed_only_ci"])
+        self.assertTrue(manifest["daily_compute_contract"]["full_semantic_sweeps_manual_only"])
+        self.assertFalse(manifest["stage6_actions_performed"]["ci_mode_required_enabled"])
+        self.assertFalse(manifest["stage6_actions_performed"]["legacy_files_archived_or_deleted"])
+        self.assertIn("Stage 6 may start", manifest["summary"])
+
     def test_review9_s2_projects_registry_is_identity_only(self) -> None:
         validator = load_validator_module()
         config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
