@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S2PAT01-ROOT-README-FAST-GATE-20260624",
+  "project_id": "CodexProject",
+  "task_id": "S2PAT01",
+  "acceptance_ids": [
+    "ACC-S2PAT01"
+  ],
+  "iteration_id": "ITER-20260624-OTHER8-S2PAT01",
+  "generated_at": "2026-06-24T13:45:00+10:00",
+  "implementation_base_sha": "e25be8d65e67fe89af18e18e1562191a60066449",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f0cc37d71b96e8f68639a759e90a4e5e8358ad9d921ea66f4909215550f1327c",
+  "changed_files_declared": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT01-ROOT-README-FAST-GATE-20260624.json"
+  ],
+  "changed_files_actual": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT01-ROOT-README-FAST-GATE-20260624.json"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT01-ROOT-README-FAST-GATE-20260624.json"
+  ],
+  "updated_governance_files": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT01-ROOT-README-FAST-GATE-20260624.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "other8_s2pat01",
+    "read_only_fast_gate_documentation",
+    "write_generator_artifact_boundary"
+  ],
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Root README and generated README template now separate ordinary read-only changed-scope CI from write-mode artifact generation.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat01_root_readme_uses_read_only_fast_gate -q",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat03_generated_readme_entry_matches_lean_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat01_root_readme_uses_read_only_fast_gate -q",
+    "python -B scripts/lean_governance.py baseline --all",
+    "git diff --check",
+    "python -B scripts/lean_governance.py validate --changed-only --base-ref HEAD",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat01_root_readme_uses_read_only_fast_gate -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Focused root README fast-gate contract test passed."
+    },
+    {
+      "command": "python -B -m unittest ...generated/root README entry and S2PAT01 focused tests... -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "3 focused root README tests OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py baseline --all",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All 10 registered projects reported complete Lean v2 baseline files."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors after manifest addition."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --base-ref HEAD",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Root-only changed governance validation returned errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD~1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Committed-tree changed-only CI returned errors=0 warnings=0, check-render drift=0 across 10 selected projects, and zero_diff.clean=true."
+    }
+  ],
+  "evidence_refs": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S2PAT01-ROOT-README-FAST-GATE-20260624.json",
+    ".git/codex-review/other8-s1pc-e25be8d6/consolidated_findings.json"
+  ],
+  "binding_status": "COMMIT_BOUND",
+  "ci_attestation_subject": "Other8 S2PAT01 root README separates ordinary read-only PR fast gate from write-mode generated governance artifacts.",
+  "ci_run_reference": "LOCAL_COMMITTED_TREE_CI_PASS_ZERO_DIFF_TRUE",
+  "summary": "S2PAT01 updates the root README and generated README template so ordinary development uses read-only changed-scope governance CI, while write-mode dashboard generation is documented only for scheduled/manual/release artifact evidence.",
+  "rollback": "Revert README.md, scripts/generate_governance_dashboard.py, the focused governance test, and this run manifest.",
+  "unresolved_risks": [
+    "S2PAT02 still needs the eight target project README Chinese navigation correction.",
+    "S2PCT01 still needs changed-scope impact-map tightening so ordinary non-product work does not select excluded projects."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
