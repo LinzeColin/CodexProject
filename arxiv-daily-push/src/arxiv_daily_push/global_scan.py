@@ -480,6 +480,12 @@ def validate_all_arxiv_daily_input_report(report: Mapping[str, Any]) -> list[str
     return errors
 
 
+def candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at: str) -> tuple[dict[str, Any] | None, list[str]]:
+    """Convert a validated SourceItem into a ranked candidate for queue previews."""
+
+    return _candidate_from_source_item(source_item, generated_at=generated_at)
+
+
 def normalize_candidate_queue(queue: Mapping[str, Any] | None, *, generated_at: str) -> dict[str, Any]:
     raw_items = queue.get("items") if isinstance(queue, Mapping) else []
     items = []
@@ -818,20 +824,15 @@ def _daily_scan_blockers(scan: Mapping[str, Any]) -> list[str]:
 def _candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at: str) -> tuple[dict[str, Any] | None, list[str]]:
     errors = validate_source_item(source_item)
     source_id = str(source_item.get("source_id") or "")
-    arxiv = (source_item.get("metadata") or {}).get("arxiv") if isinstance(source_item.get("metadata"), Mapping) else {}
-    if not isinstance(arxiv, Mapping):
-        errors.append("SourceItem.metadata.arxiv must be an object")
-        arxiv = {}
-    summary = _clean_text(str(arxiv.get("summary") or ""))
+    profile = _source_profile(source_item)
+    summary = profile["summary"]
     if not summary:
-        errors.append(f"{source_id or 'source item'} missing arXiv Atom summary")
+        errors.append(f"{source_id or 'source item'} missing source abstract/summary")
     if errors:
         return None, errors
-    claims = _claims_from_source_item(source_item, summary=summary, generated_at=generated_at)
-    signals = _roi_signals(source_item, summary)
+    claims = _claims_from_source_item(source_item, profile=profile, generated_at=generated_at)
+    signals = _roi_signals(source_item, profile=profile)
     total = round(sum(float(signals[name]) * weight for name, weight in ROI_COMPONENT_WEIGHTS.items()), 4)
-    primary_category = str(arxiv.get("primary_category") or "")
-    categories = [str(category) for category in arxiv.get("categories") or [] if category]
     return (
         {
             "candidate_id": f"candidate:{source_id}",
@@ -839,8 +840,8 @@ def _candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at:
             "stable_id": source_item.get("stable_id", ""),
             "title": source_item.get("title", ""),
             "canonical_url": source_item.get("canonical_url", ""),
-            "primary_category": primary_category,
-            "categories": categories,
+            "primary_category": profile["primary_category"],
+            "categories": profile["categories"],
             "source_item": dict(source_item),
             "evidence_claims": claims,
             "roi_signals": signals,
@@ -867,27 +868,30 @@ def _live_dry_run_blockers(failed: Sequence[Mapping[str, Any]]) -> list[str]:
     return reasons
 
 
-def _claims_from_source_item(source_item: Mapping[str, Any], *, summary: str, generated_at: str) -> list[dict[str, Any]]:
+def _claims_from_source_item(source_item: Mapping[str, Any], *, profile: Mapping[str, Any], generated_at: str) -> list[dict[str, Any]]:
     source_id = str(source_item["source_id"])
     stable_url = str(source_item["canonical_url"])
-    arxiv = (source_item.get("metadata") or {}).get("arxiv", {})
-    primary_category = str(arxiv.get("primary_category") or "") if isinstance(arxiv, Mapping) else ""
+    summary = str(profile.get("summary") or "")
+    primary_category = str(profile.get("primary_category") or "")
+    source_label = str(profile.get("source_label") or "source")
+    summary_section = str(profile.get("summary_section") or "abstract")
+    category_section = str(profile.get("category_section") or "metadata")
     claims = [
         {
             "claim_id": f"claim:{source_id}:abstract-summary",
             "source_id": source_id,
             "claim_type": "author_claim",
             "priority": "P0",
-            "statement": f"The arXiv Atom summary states: {summary}",
+            "statement": f"The {source_label} abstract/summary states: {summary}",
             "locator": {
                 "locator_type": "abstract",
                 "stable_url": stable_url,
-                "section": "abstract",
+                "section": summary_section,
                 "quote": summary,
             },
             "support_status": "supported",
             "extracted_at": generated_at,
-            "notes": "Generated from arXiv Atom <summary>; not a peer-review, PDF, or independent result claim.",
+            "notes": f"Generated from {source_label} metadata; not a peer-review, PDF, full-text, or independent result claim.",
         }
     ]
     if primary_category:
@@ -897,11 +901,11 @@ def _claims_from_source_item(source_item: Mapping[str, Any], *, summary: str, ge
                 "source_id": source_id,
                 "claim_type": "metadata",
                 "priority": "P1",
-                "statement": f"The arXiv Atom metadata lists primary category {primary_category}.",
+                "statement": f"The {source_label} metadata lists primary category {primary_category}.",
                 "locator": {
                     "locator_type": "metadata",
                     "stable_url": stable_url,
-                    "section": "arxiv:primary_category",
+                    "section": category_section,
                     "quote": primary_category,
                 },
                 "support_status": "supported",
@@ -911,13 +915,10 @@ def _claims_from_source_item(source_item: Mapping[str, Any], *, summary: str, ge
     return claims
 
 
-def _roi_signals(source_item: Mapping[str, Any], summary: str) -> dict[str, float]:
-    arxiv = (source_item.get("metadata") or {}).get("arxiv", {})
-    categories = []
-    primary = ""
-    if isinstance(arxiv, Mapping):
-        primary = str(arxiv.get("primary_category") or "")
-        categories = [str(category) for category in arxiv.get("categories") or [] if category]
+def _roi_signals(source_item: Mapping[str, Any], *, profile: Mapping[str, Any]) -> dict[str, float]:
+    summary = str(profile.get("summary") or "")
+    categories = [str(category) for category in profile.get("categories") or [] if category]
+    primary = str(profile.get("primary_category") or "")
     text = " ".join([str(source_item.get("title") or ""), summary, " ".join(categories), primary]).lower()
     relevance = min(1.0, 0.35 + _keyword_score(text, _RELEVANCE_KEYWORDS, per_hit=0.08))
     learning = min(1.0, 0.40 + _keyword_score(text, _LEARNING_KEYWORDS, per_hit=0.07) + _length_bonus(summary))
@@ -946,10 +947,11 @@ def _daily_input_from_selection(
 ) -> dict[str, Any]:
     source_item = dict(selected["source_item"])
     stable_id = _safe_id(str(source_item.get("stable_id") or selected.get("source_id") or "unknown"))
+    namespace = _source_namespace(source_item)
     queue_items = queue.get("items") if isinstance(queue.get("items"), list) else []
     return {
-        "run_id": f"daily:{date}:arxiv:{stable_id}",
-        "publication_id": f"pub:daily:{date}:arxiv:{stable_id}",
+        "run_id": f"daily:{date}:{namespace}:{stable_id}",
+        "publication_id": f"pub:daily:{date}:{namespace}:{stable_id}",
         "date": date,
         "generated_at": generated_at,
         "timezone": timezone,
@@ -994,12 +996,10 @@ def _daily_email(
     generated_at: str,
 ) -> EmailNotification:
     source_item = daily_input.get("source_item") if isinstance(daily_input.get("source_item"), Mapping) else {}
-    arxiv = (source_item.get("metadata") or {}).get("arxiv") if isinstance(source_item.get("metadata"), Mapping) else {}
-    if not isinstance(arxiv, Mapping):
-        arxiv = {}
-    category = str(arxiv.get("primary_category") or "")
+    profile = _source_profile(source_item)
+    category = str(profile.get("primary_category") or "")
     title = str(source_item.get("title") or "arXiv Daily Push")
-    project_label, group_label = _human_arxiv_labels(category)
+    project_label, group_label = _human_source_labels(source_item, category)
     frontstage = _frontstage_from_lesson(lesson, title=title)
     top_queue = queue_summary.get("top_queued") if isinstance(queue_summary.get("top_queued"), list) else []
     queue_items = _email_queue_items(top_queue, selected_category=category)
@@ -1410,6 +1410,8 @@ def _category_groups(categories: Sequence[str]) -> list[str]:
         prefix = str(category).split(".")[0]
         if prefix in {"astro-ph", "cond-mat", "gr-qc", "hep-ex", "hep-lat", "hep-ph", "hep-th", "math-ph", "nlin", "nucl-ex", "nucl-th", "physics", "quant-ph"}:
             groups.append("physics")
+        elif prefix in {"biorxiv", "medrxiv", "biology", "biochemistry", "bioengineering", "bioinformatics", "medicine", "epidemiology"}:
+            groups.append("life_science_preprint")
         elif prefix:
             groups.append(prefix)
     return groups
@@ -1451,6 +1453,71 @@ def _daily_email_subject(*, date: str, project_label: str, group_label: str, tit
             _human_email_theme(title),
         ]
     )
+
+
+def _source_profile(source_item: Mapping[str, Any]) -> dict[str, Any]:
+    metadata = source_item.get("metadata") if isinstance(source_item.get("metadata"), Mapping) else {}
+    arxiv = metadata.get("arxiv") if isinstance(metadata.get("arxiv"), Mapping) else {}
+    if isinstance(arxiv, Mapping) and arxiv:
+        primary = str(arxiv.get("primary_category") or "")
+        categories = [str(category) for category in arxiv.get("categories") or [] if category]
+        return {
+            "source_family": "arxiv",
+            "source_label": "arXiv Atom",
+            "summary": _clean_text(str(arxiv.get("summary") or "")),
+            "summary_section": "atom:summary",
+            "primary_category": primary,
+            "categories": categories,
+            "category_section": "arxiv:primary_category",
+            "server": "arxiv",
+        }
+    preprint = metadata.get("preprint") if isinstance(metadata.get("preprint"), Mapping) else {}
+    if isinstance(preprint, Mapping) and preprint:
+        server = str(preprint.get("server") or "preprint").lower()
+        category = _clean_text(str(preprint.get("category") or ""))
+        type_label = _clean_text(str(preprint.get("type") or ""))
+        categories = [item for item in (category, type_label, server) if item]
+        return {
+            "source_family": "preprint",
+            "source_label": "bioRxiv/medRxiv",
+            "summary": _clean_text(str(preprint.get("abstract") or "")),
+            "summary_section": "preprint.abstract",
+            "primary_category": category or server,
+            "categories": categories,
+            "category_section": "preprint.category",
+            "server": server,
+        }
+    return {
+        "source_family": str(source_item.get("source_type") or "unknown"),
+        "source_label": str(source_item.get("source_type") or "source"),
+        "summary": "",
+        "summary_section": "abstract",
+        "primary_category": "",
+        "categories": [],
+        "category_section": "metadata",
+        "server": "",
+    }
+
+
+def _source_namespace(source_item: Mapping[str, Any]) -> str:
+    profile = _source_profile(source_item)
+    family = str(profile.get("source_family") or source_item.get("source_type") or "source")
+    server = str(profile.get("server") or "")
+    if family == "preprint" and server:
+        return _safe_id(server)
+    return _safe_id(family)
+
+
+def _human_source_labels(source_item: Mapping[str, Any], primary_category: str) -> tuple[str, str]:
+    profile = _source_profile(source_item)
+    if profile.get("source_family") == "preprint":
+        server = str(profile.get("server") or "").lower()
+        if server == "biorxiv":
+            return "arXiv Research Frontiers", "bioRxiv Life Science"
+        if server == "medrxiv":
+            return "arXiv Research Frontiers", "medRxiv Medicine"
+        return "arXiv Research Frontiers", "Preprint"
+    return _human_arxiv_labels(primary_category)
 
 
 def _human_arxiv_labels(primary_category: str) -> tuple[str, str]:

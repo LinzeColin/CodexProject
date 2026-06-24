@@ -1,0 +1,28 @@
+{
+  "messages": [
+    {
+      "status": "ok",
+      "interval": "1d",
+      "cursor": 0,
+      "count": 1
+    }
+  ],
+  "collection": [
+    {
+      "doi": "10.1101/2026.06.23.770001",
+      "title": "Clinical risk benchmark for policy automation and market health decisions",
+      "authors": "Cara Clinician; Dan Analyst",
+      "author_corresponding": "Cara Clinician",
+      "author_corresponding_institution": "Example Hospital",
+      "date": "2026-06-23",
+      "version": "2",
+      "type": "new results",
+      "license": "cc_by_nc_nd",
+      "category": "health policy",
+      "jats xml path": "/content/10.1101/2026.06.23.770001v2.source.xml",
+      "abstract": "This preprint presents an evaluation framework for clinical risk, policy automation, healthcare market efficiency, privacy, security, cost optimization, and explainable deployment decisions. The benchmark emphasizes reproducible statistics and failure conditions.",
+      "published": "NA",
+      "server": "medrxiv"
+    }
+  ]
+}

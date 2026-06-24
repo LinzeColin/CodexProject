@@ -4,14 +4,14 @@
 
 - project_id: `arxiv-daily-push`
 - product_version: `0.23.0`
-- current_stage: `S5`
-- current_phase: `S5PB`
-- current_task: `S5PBT05`
-- active_model_count: `46`
-- active_formula_count: `48`
-- active_parameter_count: `342`
+- current_stage: `S2`
+- current_phase: `S2PB`
+- current_task: `S2PBT01`
+- active_model_count: `50`
+- active_formula_count: `52`
+- active_parameter_count: `359`
 - blockers: `NOT_APPLICABLE`
-- next_gate: `S5PB-GATE-IN-PROGRESS`
+- next_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
 - evidence_status: `EXTRACTED`
 
@@ -431,6 +431,42 @@
 - parameter_refs: `PARAM-ADP-352, PARAM-ADP-353, PARAM-ADP-354, PARAM-ADP-355, PARAM-ADP-356, PARAM-ADP-357, PARAM-ADP-358, PARAM-ADP-359`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
 
+### MOD-ADP-047 Stage 2 bioRxiv/medRxiv preprint metadata ingest
+
+- purpose: `Fetch bounded public bioRxiv/medRxiv details API metadata and map it into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-049`
+- parameter_refs: `PARAM-ADP-360, PARAM-ADP-361, PARAM-ADP-362, PARAM-ADP-363`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### MOD-ADP-048 S2P1T01 preprint source promotion gate
+
+- purpose: `Require bioRxiv and medRxiv identity, version, license, 30-date replay, and 48h shadow evidence before any formal production inclusion.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-050`
+- parameter_refs: `PARAM-ADP-364, PARAM-ADP-366, PARAM-ADP-367, PARAM-ADP-368, PARAM-ADP-369`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### MOD-ADP-049 S2P1 preprint shadow daily path
+
+- purpose: `Build separate bioRxiv/medRxiv daily input, queue, ledger, report, and email preview artifacts in no-send shadow mode without affecting Stage 1 arXiv local production.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-051`
+- parameter_refs: `PARAM-ADP-365, PARAM-ADP-370, PARAM-ADP-371`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### MOD-ADP-050 S2P1T01 preprint replay and 48h shadow evidence
+
+- purpose: `Run 30 historical bioRxiv/medRxiv preprint dates through the no-send shadow path, persist local queue/ledger/report/email preview artifacts, build 48h shadow evidence, and keep Stage 2 production acceptance false.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-052`
+- parameter_refs: `PARAM-ADP-372, PARAM-ADP-373, PARAM-ADP-374, PARAM-ADP-375, PARAM-ADP-376`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -720,6 +756,30 @@
 - model_id: `MOD-ADP-046`
 - expression_or_pseudocode: `S1P5T03 real arXiv as-of replay passes only when exactly 30 historical as-of dates are replayed from arXiv Atom submittedDate windows, every day produces a daily_input, B1 teaching report, Chinese email preview, and queue ledger, all selected source IDs are real arXiv IDs, selected arXiv published/updated timestamps are not after the as-of date, lead papers are unique, queue-before and previous queue-after hashes match across the whole run, unsupported P0/P1 claim count is zero, and production side effects remain disabled.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-049
+
+- model_id: `MOD-ADP-047`
+- expression_or_pseudocode: `Stage 2 preprint SourceBatch passes only for metadata-only biorxiv or medrxiv details API records that map to valid preprint SourceItems with no PDF, full-text, bulk harvest, SMTP, Release, scheduler, video, or production side effects.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### FORM-ADP-050
+
+- model_id: `MOD-ADP-048`
+- expression_or_pseudocode: `S2P1T01 preprint source promotion passes only when both servers pass source gates, replay proves at least 30 unique historical dates with no leakage or duplicate lead, shadow proves at least 48 hours, and all formal production side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### FORM-ADP-051
+
+- model_id: `MOD-ADP-049`
+- expression_or_pseudocode: `S2P1 preprint shadow daily builds ROI-ranked candidates, selected daily input, separate queue, separate ledger, and plain/HTML email previews without SMTP, Release, GitHub schedule, production inclusion, video, or mutation of Stage 1 arXiv state.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### FORM-ADP-052
+
+- model_id: `MOD-ADP-050`
+- expression_or_pseudocode: `S2P1T01 replay-shadow evidence passes only when 30 historical as-of dates produce passing no-send shadow daily runs, persisted queue/ledger/report/email artifacts, unique selected source and canonical IDs, no future leakage, no P0/P1 blockers, no queue continuity breaks, shadow_hours >= 48, and all production side effects false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
 
 ## 参数
 
@@ -1067,3 +1127,20 @@
 | PARAM-ADP-357 | STAGE1_REAL_REPLAY_DEFAULT_MAX_RESULTS | Stage 1 real arXiv replay default max results per date window | 10 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
 | PARAM-ADP-358 | STAGE1_REAL_REPLAY_ARTIFACT_FILE_COUNT | Stage 1 real arXiv replay aggregate artifact file count | 7 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
 | PARAM-ADP-359 | STAGE1_REAL_REPLAY_QUERY_POLICY | Stage 1 real arXiv replay query policy | submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359] | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-360 | PREPRINT_INGEST_MODEL_ID | Stage 2 preprint ingest model id | adp-stage2-preprint-ingest-v1 | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-361 | SUPPORTED_PREPRINT_SERVERS | Supported Stage 2 preprint servers | biorxiv;medrxiv | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-362 | PREPRINT_MAX_CANARY_RECORDS | Preprint ingest canary max records | 10 | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-363 | PREPRINT_DETAILS_BASE_URL | Preprint details API base URL | https://api.biorxiv.org/details | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-364 | S2P1_PREPRINT_PROMOTION_MODEL_ID | S2P1 preprint promotion gate model id | adp-s2p1-preprint-source-promotion-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-365 | S2P1_PREPRINT_SHADOW_MODEL_ID | S2P1 preprint shadow daily model id | adp-s2p1-preprint-shadow-daily-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-366 | S2P1_ACCEPTANCE_ID | S2P1 source promotion acceptance id | ADP-ACC-S2P1T01-SOURCE-PROMOTION | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-367 | S2P1_REQUIRED_SERVERS | S2P1 required preprint servers | biorxiv;medrxiv | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-368 | S2P1_REPLAY_REQUIRED_DATES | S2P1 terminal replay required dates | 30 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-369 | S2P1_SHADOW_REQUIRED_HOURS | S2P1 shadow-mode required hours | 48 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-370 | S2P1_QUEUE_FILENAME | S2P1 shadow queue filename | stage2_s2p1_preprint_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-371 | S2P1_LEDGER_FILENAME | S2P1 shadow ledger filename | stage2_s2p1_preprint_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-372 | S2P1_PREPRINT_REPLAY_MODEL_ID | S2P1 preprint replay aggregate model id | adp-s2p1-preprint-terminal-replay-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-373 | S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID | S2P1 preprint shadow evidence model id | adp-s2p1-preprint-shadow-evidence-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-374 | S2P1_REPLAY_REPORT_FILENAME | S2P1 replay report filename | stage2_s2p1_preprint_replay_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-375 | S2P1_SHADOW_EVIDENCE_FILENAME | S2P1 48h shadow evidence filename | stage2_s2p1_preprint_shadow_48h_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-376 | S2P1_PROMOTION_REPORT_FILENAME | S2P1 promotion report filename | stage2_s2p1_preprint_promotion_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |

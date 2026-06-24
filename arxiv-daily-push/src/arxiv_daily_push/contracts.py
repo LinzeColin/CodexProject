@@ -15,6 +15,7 @@ from typing import Any
 
 SOURCE_TYPES = {
     "arxiv",
+    "preprint",
     "rss",
     "github",
     "standard",

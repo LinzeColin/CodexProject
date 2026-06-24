@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；本迁移保留 Stage 1 accepted 与 Stage 2 S2P1T01 ready 的治理真相，同时保留 evidence_freshness PARTIAL、真实本地生产烟测和 bioRxiv/medRxiv source gate 尚未完成的事实。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 adapter、gate、queue/ledger/email preview、30-date real no-send replay 和 48h shadow evidence，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_stage2_ready"
+current_status: "stage1_accepted_s2pbt01_evidence_passed_no_formal_production"
 limitations:
   -
     statement: "342/342 active parameters 与 48/48 active formulas 为 MACHINE_VERIFIED；46 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
@@ -31,13 +31,13 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2P1T01 bioRxiv/medRxiv source promotion 只是 ready/next task；本迁移不实现新来源、不改变 arXiv accepted path、不启用生产 schedule、SMTP、Release、video 或运行行为。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay，但 V7/root contract gates 未完成前，不能纳入正式生产、不能启用 SMTP/Release/GitHub schedule/video，也不能宣称 STAGE2_PRODUCTION_ACCEPTED 或 INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
-      - "S2P1T01"
+      - "S2PBT01"
 features:
   -
     feature_id: "FEAT-ADP-001"
@@ -396,14 +396,22 @@ features:
       - "EVID-ADP-TEST10"
   -
     feature_id: "FEAT-ADP-007"
-    name: "Stage 2 source promotion readiness"
-    description: "下一任务是 S2P1T01 bioRxiv/medRxiv source promotion；必须 shadow-mode、fixture、replay 和 arXiv no-regression 后才能推进。"
-    status: "ready"
+    name: "Stage 2 bioRxiv/medRxiv shadow source evidence"
+    description: "S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。"
+    status: "evidence_passed_no_formal_production"
     fact_level: "EXTRACTED"
     model_ids:
       - "MOD-ADP-038"
+      - "MOD-ADP-047"
+      - "MOD-ADP-048"
+      - "MOD-ADP-049"
+      - "MOD-ADP-050"
     formula_ids:
       - "FORM-ADP-038"
+      - "FORM-ADP-049"
+      - "FORM-ADP-050"
+      - "FORM-ADP-051"
+      - "FORM-ADP-052"
     parameter_ids:
       - "PARAM-ADP-260"
       - "PARAM-ADP-261"
@@ -422,9 +430,28 @@ features:
       - "PARAM-ADP-274"
       - "PARAM-ADP-275"
       - "PARAM-ADP-276"
+      - "PARAM-ADP-360"
+      - "PARAM-ADP-361"
+      - "PARAM-ADP-362"
+      - "PARAM-ADP-363"
+      - "PARAM-ADP-364"
+      - "PARAM-ADP-365"
+      - "PARAM-ADP-366"
+      - "PARAM-ADP-367"
+      - "PARAM-ADP-368"
+      - "PARAM-ADP-369"
+      - "PARAM-ADP-370"
+      - "PARAM-ADP-371"
+      - "PARAM-ADP-372"
+      - "PARAM-ADP-373"
+      - "PARAM-ADP-374"
+      - "PARAM-ADP-375"
+      - "PARAM-ADP-376"
     evidence_refs:
       - "EVID-ADP-OWNER-STATUS"
       - "EVID-ADP-DELIVERY-TASKS"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+      - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
   -
     feature_id: "FEAT-ADP-008"
     name: "Review9 Lean v2 owner-readable governance"
@@ -1846,6 +1873,107 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-DEVELOPMENT-EVENTS"
+  -
+    model_id: "MOD-ADP-047"
+    name: "Stage 2 bioRxiv/medRxiv preprint metadata ingest"
+    purpose: "Fetch bounded public bioRxiv/medRxiv details API metadata and map it into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-049"
+    parameter_ids:
+      - "PARAM-ADP-360"
+      - "PARAM-ADP-361"
+      - "PARAM-ADP-362"
+      - "PARAM-ADP-363"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/preprint_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+      - "arxiv-daily-push/schemas/source_batch.schema.json"
+      - "arxiv-daily-push/schemas/source_item.schema.json"
+    test_refs:
+      - "arxiv-daily-push/tests/test_preprint_adapter.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+  -
+    model_id: "MOD-ADP-048"
+    name: "S2P1T01 preprint source promotion gate"
+    purpose: "Require bioRxiv and medRxiv identity, version, license, 30-date replay, and 48h shadow evidence before any formal production inclusion."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-050"
+    parameter_ids:
+      - "PARAM-ADP-364"
+      - "PARAM-ADP-366"
+      - "PARAM-ADP-367"
+      - "PARAM-ADP-368"
+      - "PARAM-ADP-369"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+  -
+    model_id: "MOD-ADP-049"
+    name: "S2P1 preprint shadow daily path"
+    purpose: "Build separate bioRxiv/medRxiv daily input, queue, ledger, report, and email preview artifacts in no-send shadow mode without affecting Stage 1 arXiv local production."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-051"
+    parameter_ids:
+      - "PARAM-ADP-365"
+      - "PARAM-ADP-370"
+      - "PARAM-ADP-371"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+  -
+    model_id: "MOD-ADP-050"
+    name: "S2P1T01 preprint replay and 48h shadow evidence"
+    purpose: "Run 30 historical bioRxiv/medRxiv preprint dates through the no-send shadow path, persist local queue/ledger/report/email preview artifacts, build 48h shadow evidence, and keep Stage 2 production acceptance false."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-052"
+    parameter_ids:
+      - "PARAM-ADP-372"
+      - "PARAM-ADP-373"
+      - "PARAM-ADP-374"
+      - "PARAM-ADP-375"
+      - "PARAM-ADP-376"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -2632,6 +2760,68 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-ADP-MANIFEST"
+  -
+    formula_id: "FORM-ADP-049"
+    model_id: "MOD-ADP-047"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Stage 2 preprint SourceBatch passes only for metadata-only biorxiv or medrxiv details API records that map to valid preprint SourceItems with no PDF, full-text, bulk harvest, SMTP, Release, scheduler, video, or production side effects."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/preprint_adapter.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_preprint_adapter.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+  -
+    formula_id: "FORM-ADP-050"
+    model_id: "MOD-ADP-048"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "S2P1T01 preprint source promotion passes only when both servers pass source gates, replay proves at least 30 unique historical dates with no leakage or duplicate lead, shadow proves at least 48 hours, and all formal production side effects remain false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+  -
+    formula_id: "FORM-ADP-051"
+    model_id: "MOD-ADP-049"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "S2P1 preprint shadow daily builds ROI-ranked candidates, selected daily input, separate queue, separate ledger, and plain/HTML email previews without SMTP, Release, GitHub schedule, production inclusion, video, or mutation of Stage 1 arXiv state."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/global_scan.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_global_scan.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2P1T01-PREPRINT"
+  -
+    formula_id: "FORM-ADP-052"
+    model_id: "MOD-ADP-050"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "S2P1T01 replay-shadow evidence passes only when 30 historical as-of dates produce passing no-send shadow daily runs, persisted queue/ledger/report/email artifacts, unique selected source and canonical IDs, no future leakage, no P0/P1 blockers, no queue continuity breaks, shadow_hours >= 48, and all production side effects false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -9473,6 +9663,210 @@ parameters:
     evidence_refs:
       - "EVID-ADP-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-ADP-MANIFEST"
+  -
+    parameter_id: "PARAM-ADP-360"
+    model_id: "MOD-ADP-047"
+    formula_id: "FORM-ADP-049"
+    symbol: "PREPRINT_INGEST_MODEL_ID"
+    name: "Stage 2 preprint ingest model id"
+    value: "adp-stage2-preprint-ingest-v1"
+    source: "EXTRACTED from preprint_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-361"
+    model_id: "MOD-ADP-047"
+    formula_id: "FORM-ADP-049"
+    symbol: "SUPPORTED_PREPRINT_SERVERS"
+    name: "Supported Stage 2 preprint servers"
+    value: "biorxiv;medrxiv"
+    source: "EXTRACTED from preprint_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-362"
+    model_id: "MOD-ADP-047"
+    formula_id: "FORM-ADP-049"
+    symbol: "PREPRINT_MAX_CANARY_RECORDS"
+    name: "Preprint ingest canary max records"
+    value: "10"
+    source: "EXTRACTED from preprint_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-363"
+    model_id: "MOD-ADP-047"
+    formula_id: "FORM-ADP-049"
+    symbol: "PREPRINT_DETAILS_BASE_URL"
+    name: "Preprint details API base URL"
+    value: "https://api.biorxiv.org/details"
+    source: "EXTRACTED from preprint_adapter.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-364"
+    model_id: "MOD-ADP-048"
+    formula_id: "FORM-ADP-050"
+    symbol: "S2P1_PREPRINT_PROMOTION_MODEL_ID"
+    name: "S2P1 preprint promotion gate model id"
+    value: "adp-s2p1-preprint-source-promotion-v1"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-365"
+    model_id: "MOD-ADP-049"
+    formula_id: "FORM-ADP-051"
+    symbol: "S2P1_PREPRINT_SHADOW_MODEL_ID"
+    name: "S2P1 preprint shadow daily model id"
+    value: "adp-s2p1-preprint-shadow-daily-v1"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-366"
+    model_id: "MOD-ADP-048"
+    formula_id: "FORM-ADP-050"
+    symbol: "S2P1_ACCEPTANCE_ID"
+    name: "S2P1 source promotion acceptance id"
+    value: "ADP-ACC-S2P1T01-SOURCE-PROMOTION"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-367"
+    model_id: "MOD-ADP-048"
+    formula_id: "FORM-ADP-050"
+    symbol: "S2P1_REQUIRED_SERVERS"
+    name: "S2P1 required preprint servers"
+    value: "biorxiv;medrxiv"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-368"
+    model_id: "MOD-ADP-048"
+    formula_id: "FORM-ADP-050"
+    symbol: "S2P1_REPLAY_REQUIRED_DATES"
+    name: "S2P1 terminal replay required dates"
+    value: "30"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-369"
+    model_id: "MOD-ADP-048"
+    formula_id: "FORM-ADP-050"
+    symbol: "S2P1_SHADOW_REQUIRED_HOURS"
+    name: "S2P1 shadow-mode required hours"
+    value: "48"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-370"
+    model_id: "MOD-ADP-049"
+    formula_id: "FORM-ADP-051"
+    symbol: "S2P1_QUEUE_FILENAME"
+    name: "S2P1 shadow queue filename"
+    value: "stage2_s2p1_preprint_queue.json"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-371"
+    model_id: "MOD-ADP-049"
+    formula_id: "FORM-ADP-051"
+    symbol: "S2P1_LEDGER_FILENAME"
+    name: "S2P1 shadow ledger filename"
+    value: "stage2_s2p1_preprint_ledger.jsonl"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-372"
+    model_id: "MOD-ADP-050"
+    formula_id: "FORM-ADP-052"
+    symbol: "S2P1_PREPRINT_REPLAY_MODEL_ID"
+    name: "S2P1 preprint replay aggregate model id"
+    value: "adp-s2p1-preprint-terminal-replay-v1"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-373"
+    model_id: "MOD-ADP-050"
+    formula_id: "FORM-ADP-052"
+    symbol: "S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID"
+    name: "S2P1 preprint shadow evidence model id"
+    value: "adp-s2p1-preprint-shadow-evidence-v1"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-374"
+    model_id: "MOD-ADP-050"
+    formula_id: "FORM-ADP-052"
+    symbol: "S2P1_REPLAY_REPORT_FILENAME"
+    name: "S2P1 replay report filename"
+    value: "stage2_s2p1_preprint_replay_report.json"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-375"
+    model_id: "MOD-ADP-050"
+    formula_id: "FORM-ADP-052"
+    symbol: "S2P1_SHADOW_EVIDENCE_FILENAME"
+    name: "S2P1 48h shadow evidence filename"
+    value: "stage2_s2p1_preprint_shadow_48h_report.json"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
+  -
+    parameter_id: "PARAM-ADP-376"
+    model_id: "MOD-ADP-050"
+    formula_id: "FORM-ADP-052"
+    symbol: "S2P1_PROMOTION_REPORT_FILENAME"
+    name: "S2P1 promotion report filename"
+    value: "stage2_s2p1_preprint_promotion_report.json"
+    source: "EXTRACTED from stage2_sources.py"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs: ["EVID-ADP-PARAMETER-REGISTRY"]
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -9495,12 +9889,13 @@ strategies:
   -
     strategy_id: "STRAT-ADP-003"
     name: "Stage 2 source promotion via shadow-mode gate"
-    status: "ready"
+    status: "evidence_passed_no_formal_production"
     fact_level: "EXTRACTED"
-    summary: "bioRxiv/medRxiv promotion must preserve accepted arXiv path and pass source adapter tests, fixture parse, replay/shadow evidence and no-regression checks."
+    summary: "bioRxiv/medRxiv promotion has passed adapter tests, live canaries, fixture replay/shadow and one real no-send 30-date replay, while preserving the accepted arXiv path; formal production inclusion remains blocked by V7/root contract gates."
     evidence_refs:
       - "EVID-ADP-OWNER-STATUS"
       - "EVID-ADP-DELIVERY-TASKS"
+      - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
 validations:
   -
     validation_id: "VAL-ADP-001"
@@ -9531,13 +9926,14 @@ validations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
   -
     validation_id: "VAL-ADP-004"
-    name: "Next executable task"
-    status: "ready"
+    name: "S2PBT01/S2P1T01 source evidence gate"
+    status: "PASS_NO_FORMAL_PRODUCTION"
     fact_level: "EXTRACTED"
-    result: "S2P1T01 is ready with owner decision required for bioRxiv/medRxiv source promotion."
+    result: "S2PBT01/S2P1T01 passed metadata-only adapter, shadow daily, fixture replay, and real no-send 30-date replay gates; formal production inclusion remains false."
     evidence_refs:
       - "EVID-ADP-OWNER-STATUS"
       - "EVID-ADP-DELIVERY-TASKS"
+      - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
 evidence_refs:
   -
     evidence_id: "EVID-ADP-MODEL-REGISTRY"
@@ -9605,6 +10001,16 @@ evidence_refs:
     ref: "governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json"
     fact_level: "EXTRACTED"
   -
+    evidence_id: "EVID-ADP-S2P1T01-PREPRINT"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json"
+    fact_level: "EXTRACTED"
+  -
     evidence_id: "EVID-REVIEW9-S5PBT05-MANIFEST"
     kind: "manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
@@ -9616,12 +10022,12 @@ delivery_readiness:
   blocked_requirements: 0
   active_requirements: 9
   partial_requirements: 1
-  next_executable_task_id: "S2P1T01"
-  next_executable_task_status: "ready"
+  next_executable_task_id: "S2PBT01/S2P1T01"
+  next_executable_task_status: "evidence_passed_no_formal_production"
 governance_counts:
-  active_models: 46
-  active_formulas: 48
-  active_parameters: 342
+  active_models: 50
+  active_formulas: 52
+  active_parameters: 359
   tasks_total: 68
   task_status_counts:
     completed: 63

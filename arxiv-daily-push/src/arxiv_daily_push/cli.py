@@ -62,6 +62,7 @@ from .scheduled_execution import (
     validate_scheduled_execution_report,
 )
 from .simulation import run_two_day_simulation, validate_two_day_simulation_report
+from .preprint_adapter import fetch_preprint_details_with_curl, ingest_latest_preprints, validate_preprint_source_batch
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .source_registry import (
     build_source_registry_report,
@@ -98,6 +99,13 @@ from .stage1_runtime import (
     run_tick,
     run_watchdog,
     validate_stage1_runtime_report,
+)
+from .stage2_sources import (
+    build_s2p1_preprint_replay_shadow_evidence,
+    build_s2p1_preprint_promotion_report,
+    run_s2p1_preprint_shadow_daily,
+    validate_s2p1_preprint_replay_shadow_report,
+    validate_s2p1_shadow_report,
 )
 from .storage import (
     inspect_database,
@@ -382,6 +390,50 @@ def build_parser() -> argparse.ArgumentParser:
     fetch_arxiv.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
     fetch_arxiv.add_argument("--seen-source-id", action="append", default=[], help="Previously published source_id to exclude.")
     fetch_arxiv.add_argument("--json", action="store_true", help="Print JSON source batch.")
+
+    fetch_preprint = subparsers.add_parser("fetch-preprint-latest", help="Fetch latest bioRxiv/medRxiv metadata SourceItems.")
+    fetch_preprint.add_argument("--server", choices=("biorxiv", "medrxiv"), required=True, help="Preprint server to query.")
+    fetch_preprint.add_argument("--interval", default="1d", help="API interval: Nd, N, DOI, or YYYY-MM-DD/YYYY-MM-DD.")
+    fetch_preprint.add_argument("--cursor", type=int, default=0, help="bioRxiv/medRxiv API cursor.")
+    fetch_preprint.add_argument("--max-records", type=int, default=3, help="Small metadata result window to keep.")
+    fetch_preprint.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
+    fetch_preprint.add_argument("--seen-source-id", action="append", default=[], help="Previously processed source_id to exclude.")
+    fetch_preprint.add_argument("--fetcher", choices=("urllib", "curl"), default="urllib", help="Real metadata fetch implementation.")
+    fetch_preprint.add_argument("--json", action="store_true", help="Print JSON source batch.")
+
+    s2p1_gate = subparsers.add_parser("stage2-preprint-gate", help="Evaluate S2P1T01 bioRxiv/medRxiv source promotion gates.")
+    s2p1_gate.add_argument("--biorxiv-batch", required=True, help="bioRxiv preprint source batch JSON.")
+    s2p1_gate.add_argument("--medrxiv-batch", required=True, help="medRxiv preprint source batch JSON.")
+    s2p1_gate.add_argument("--replay-report", help="Optional 30-day terminal replay report JSON.")
+    s2p1_gate.add_argument("--shadow-report", help="Optional 48h shadow report JSON.")
+    s2p1_gate.add_argument("--generated-at", required=True, help="Gate report timestamp.")
+    s2p1_gate.add_argument("--json", action="store_true", help="Print JSON gate report.")
+
+    s2p1_shadow = subparsers.add_parser("stage2-preprint-shadow-daily", help="Run one no-send S2P1 bioRxiv/medRxiv shadow daily preview.")
+    s2p1_shadow.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2p1_shadow.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2p1_shadow.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2p1_shadow.add_argument("--biorxiv-batch", required=True, help="bioRxiv preprint source batch JSON.")
+    s2p1_shadow.add_argument("--medrxiv-batch", required=True, help="medRxiv preprint source batch JSON.")
+    s2p1_shadow.add_argument("--queue-path", help="Optional existing S2P1 preprint queue JSON.")
+    s2p1_shadow.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2p1_shadow.add_argument("--json", action="store_true", help="Print JSON shadow report.")
+
+    s2p1_replay = subparsers.add_parser(
+        "stage2-preprint-replay-shadow",
+        help="Run S2P1T01 30-date bioRxiv/medRxiv replay plus 48h no-production shadow evidence.",
+    )
+    s2p1_replay.add_argument("--state-dir", required=True, help="Local ADP state directory for replay queue, ledger, and reports.")
+    s2p1_replay.add_argument("--generated-at", required=True, help="Replay evidence timestamp.")
+    s2p1_replay.add_argument("--start-date", help="First historical as-of date. Defaults from --end-date/--count.")
+    s2p1_replay.add_argument("--end-date", help="Last historical as-of date. Defaults to generated-at date.")
+    s2p1_replay.add_argument("--count", type=int, default=30, help="Number of historical as-of dates to replay.")
+    s2p1_replay.add_argument("--lookback-days", type=int, default=7, help="Trailing preprint date window per as-of date.")
+    s2p1_replay.add_argument("--max-records", type=int, default=3, help="Small metadata result window per server/date.")
+    s2p1_replay.add_argument("--fetcher", choices=("urllib", "curl"), default="curl", help="Real metadata fetch implementation.")
+    s2p1_replay.add_argument("--polite-delay-seconds", type=float, default=1.0, help="Delay between historical API windows.")
+    s2p1_replay.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2p1_replay.add_argument("--json", action="store_true", help="Print JSON replay/shadow report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1238,6 +1290,107 @@ def main(argv: list[str] | None = None) -> int:
             for reason in batch["blocking_reasons"]:
                 print(f"- {reason}")
         return 0 if batch["status"] == "pass" else 2
+    if args.command == "fetch-preprint-latest":
+        preprint_fetcher = fetch_preprint_details_with_curl if args.fetcher == "curl" else None
+        batch = ingest_latest_preprints(
+            server=args.server,
+            interval=args.interval,
+            cursor=args.cursor,
+            max_records=args.max_records,
+            generated_at=args.generated_at,
+            seen_source_ids=args.seen_source_id,
+            fetcher=preprint_fetcher,
+        )
+        errors = validate_preprint_source_batch(batch)
+        if args.json:
+            print(json.dumps(batch, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(batch["status"])
+            print(f"- server: {batch.get('server')}")
+            print(f"- new_item_count: {batch.get('new_item_count')}")
+            for reason in batch.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if batch["status"] == "pass" and not errors else 2
+    if args.command == "stage2-preprint-gate":
+        source_batches = {
+            "biorxiv": load_json_mapping(args.biorxiv_batch),
+            "medrxiv": load_json_mapping(args.medrxiv_batch),
+        }
+        replay_report = load_json_mapping(args.replay_report) if args.replay_report else None
+        shadow_report = load_json_mapping(args.shadow_report) if args.shadow_report else None
+        report = build_s2p1_preprint_promotion_report(
+            generated_at=args.generated_at,
+            source_batches=source_batches,
+            replay_report=replay_report,
+            shadow_report=shadow_report,
+        )
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "stage2-preprint-shadow-daily":
+        source_batches = {
+            "biorxiv": load_json_mapping(args.biorxiv_batch),
+            "medrxiv": load_json_mapping(args.medrxiv_batch),
+        }
+        queue = load_json_mapping(args.queue_path) if args.queue_path else None
+        report = run_s2p1_preprint_shadow_daily(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            source_batches=source_batches,
+            queue=queue,
+            write=not args.no_write,
+        )
+        errors = validate_s2p1_shadow_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-preprint-replay-shadow":
+        preprint_fetcher = fetch_preprint_details_with_curl if args.fetcher == "curl" else None
+        report = build_s2p1_preprint_replay_shadow_evidence(
+            state_dir=args.state_dir,
+            generated_at=args.generated_at,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            count=args.count,
+            lookback_days=args.lookback_days,
+            max_records=args.max_records,
+            fetcher=preprint_fetcher,
+            write=not args.no_write,
+            polite_delay_seconds=args.polite_delay_seconds,
+        )
+        errors = validate_s2p1_preprint_replay_shadow_report(report) if report.get("status") == "pass" else []
+        if errors:
+            report = {**report, "status": "blocked", "blocking_reasons": sorted(set([*report.get("blocking_reasons", []), *errors]))}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            replay_report = report.get("replay_report") if isinstance(report.get("replay_report"), dict) else {}
+            shadow_report = report.get("shadow_report") if isinstance(report.get("shadow_report"), dict) else {}
+            print(report["status"])
+            print(f"- success_count: {replay_report.get('success_count')}/{replay_report.get('required_replay_count')}")
+            print(f"- unique_date_count: {replay_report.get('unique_date_count')}")
+            print(f"- duplicate_selected_count: {replay_report.get('duplicate_selected_count')}")
+            print(f"- future_leakage_count: {replay_report.get('future_leakage_count')}")
+            print(f"- p0_p1_blocker_count: {replay_report.get('p0_p1_blocker_count')}")
+            print(f"- shadow_hours: {shadow_report.get('shadow_hours')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)

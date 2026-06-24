@@ -8,7 +8,7 @@
     "source_id": {"type": "string", "minLength": 1},
     "source_type": {
       "type": "string",
-      "enum": ["arxiv", "rss", "github", "standard", "industry_report", "web", "book", "course", "podcast", "user_document"]
+      "enum": ["arxiv", "preprint", "rss", "github", "standard", "industry_report", "web", "book", "course", "podcast", "user_document"]
     },
     "source_adapter": {"type": "string", "minLength": 1},
     "stable_id": {"type": "string", "minLength": 1},

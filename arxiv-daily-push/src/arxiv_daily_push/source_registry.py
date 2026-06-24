@@ -20,6 +20,10 @@ STAGE1_ACTIVE_SOURCE_ID = "SRC-ARXIV"
 STAGE1_ACTIVE_ADAPTER_ID = "arxiv.atom.v1"
 STAGE1_MAX_CANARY_RESULTS = 10
 STAGE1_ALLOWED_ENABLED_SOURCE_IDS = ("SRC-ARXIV",)
+STAGE2_PREPRINT_SOURCE_ADAPTERS = {
+    "SRC-BIORXIV": ("preprint", "biorxiv.details.v1"),
+    "SRC-MEDRXIV": ("preprint", "medrxiv.details.v1"),
+}
 CONNECTOR_REQUIRED_OUTPUT_CONTRACTS = ("SourceItem", "SourceBatch")
 CONNECTOR_FAIL_CLOSED_REASONS = (
     "network_error",
@@ -166,6 +170,22 @@ def validate_source_registry_report(
 def _source_descriptor(source: Mapping[str, Any]) -> dict[str, Any]:
     source_id = str(source.get("source_id") or "")
     is_arxiv = source_id == STAGE1_ACTIVE_SOURCE_ID
+    is_stage2_preprint = source_id in STAGE2_PREPRINT_SOURCE_ADAPTERS
+    source_type = "arxiv" if is_arxiv else STAGE2_PREPRINT_SOURCE_ADAPTERS[source_id][0] if is_stage2_preprint else "planned"
+    source_adapter = (
+        STAGE1_ACTIVE_ADAPTER_ID
+        if is_arxiv
+        else STAGE2_PREPRINT_SOURCE_ADAPTERS[source_id][1]
+        if is_stage2_preprint
+        else "DEFERRED_UNTIL_STAGE2_PROMOTION"
+    )
+    connector_status = (
+        "active"
+        if is_arxiv and source.get("enabled") is True
+        else "stage2_test_ready"
+        if is_stage2_preprint
+        else "deferred"
+    )
     return {
         "source_id": source_id,
         "board_id": str(source.get("board_id") or ""),
@@ -176,9 +196,9 @@ def _source_descriptor(source: Mapping[str, Any]) -> dict[str, Any]:
         "frequency": str(source.get("frequency") or ""),
         "weight": int(source.get("weight") or 0),
         "health_status": str(source.get("health_status") or ""),
-        "source_type": "arxiv" if is_arxiv else "planned",
-        "source_adapter": STAGE1_ACTIVE_ADAPTER_ID if is_arxiv else "DEFERRED_UNTIL_STAGE2_PROMOTION",
-        "connector_status": "active" if is_arxiv and source.get("enabled") is True else "deferred",
+        "source_type": source_type,
+        "source_adapter": source_adapter,
+        "connector_status": connector_status,
     }
 
 
