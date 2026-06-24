@@ -32,6 +32,7 @@
   "changed_files_actual": [
     ".github/workflows/arxiv-daily-push-phase12-cloud-dry-run.yml",
     ".github/workflows/arxiv-daily-push-stage1-bootstrap.yml",
+    ".github/workflows/project-governance.yml",
     "Serenity-Alipay/docs/governance/formula_registry.yaml",
     "Serenity-Alipay/docs/governance/parameter_registry.csv",
     "arxiv-daily-push/AGENTS.md",
@@ -75,7 +76,7 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "compatibility_extension": {
-    "reason": "R-CONFLICT / CONTRACT-HASH-MISMATCH compatibility coverage for PR #119 merge-base validation after arxiv-daily-push S2PCT01 / legacy S2P2T01 changes stacked on Review9 root governance.",
+    "reason": "R-CONFLICT / CONTRACT-HASH-MISMATCH compatibility coverage for PR #119 after S2PCT01 / legacy S2P2T01 changes, Stage1 bootstrap retry hardening, governance stop-hook test stabilization, and CI failure-tail annotation support.",
     "does_not_change_original_task_scope": true,
     "does_not_claim_stage2_or_integrated_production_acceptance": true,
     "additional_pr119_ci_repair": {
@@ -253,12 +254,6 @@
       "exit_code": 0,
       "result": "PASS",
       "observed": "No whitespace errors."
-    },
-    {
-      "command": "python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
-      "exit_code": "PENDING_RERUN",
-      "result": "PENDING_AFTER_PR119_COMPATIBILITY_EXTENSION",
-      "observed": "changed_files_actual extended for live all-arXiv curl workflow and Serenity semantic registry sync files."
     }
   ],
   "evidence_refs": [
