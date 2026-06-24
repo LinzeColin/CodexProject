@@ -37,11 +37,11 @@ def resolve_weights(
     - 否则根据 province 在 projects 中自动匹配（含 ALIASES 兼容）
     """
     if weights is not None:
-        return {str(k): float(v) for k, v in dict(weights).items()}
+        return validate_weights(weights)
     if province is not None:
         key = ALIASES.get(province, province)
         if key in projects:
-            return {str(k): float(v) for k, v in projects[key].items()}
+            return validate_weights(projects[key])
     raise ValueError(
         "未找到权重：请传入 weights，或传入 province（可选：{}）".format(
             "、".join(projects.keys())
@@ -175,7 +175,7 @@ def calculate(
     breakdown: List[Dict[str, Any]] = []
     weighted_total = 0.0
     for k, s in scores.items():
-        w = float(weights.get(k, 0))
+        w = float(weights[k])
         ws = s * w
         weighted_total += ws
         breakdown.append({
@@ -199,3 +199,27 @@ def calculate(
         total_salary=total_salary,
         after_tax_salary=after_tax_salary,
     )
+
+
+WEIGHT_KEYS = ("业绩", "毛利率", "结算率", "开票率", "回款率", "审计偏差", "客情成本")
+WEIGHT_TOTAL = 1.0
+WEIGHT_TOTAL_TOLERANCE = 1e-9
+
+
+def validate_weights(weights: Mapping[str, float]) -> Dict[str, float]:
+    from math import isfinite
+
+    normalized = {str(k): float(v) for k, v in dict(weights).items()}
+    expected = set(WEIGHT_KEYS)
+    actual = set(normalized)
+    missing = sorted(expected - actual)
+    extra = sorted(actual - expected)
+    if missing or extra:
+        raise ValueError(f"权重键不完整：缺少 {missing or '无'}，多余 {extra or '无'}")
+    invalid = [key for key, value in normalized.items() if not isfinite(value) or value < 0]
+    if invalid:
+        raise ValueError(f"权重必须为非负有限数：{', '.join(sorted(invalid))}")
+    total = sum(normalized.values())
+    if abs(total - WEIGHT_TOTAL) > WEIGHT_TOTAL_TOLERANCE:
+        raise ValueError(f"权重合计必须等于 {WEIGHT_TOTAL:g}，当前为 {total:.12g}")
+    return normalized

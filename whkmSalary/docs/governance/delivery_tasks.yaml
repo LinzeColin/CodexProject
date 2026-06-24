@@ -113,3 +113,19 @@ tasks:
     rollback: "Revert S3PAT01 code/tests/governance files and restore day input min_value=0 only if owner chooses the prior behavior explicitly."
     target_version: "0.0.0"
     completed_version: "0.0.0"
+  - task_id: "S3PAT02"
+    phase: "S3PA"
+    objective: "Use one province-weight source and reject incomplete, extra, negative, non-finite, or non-1.0-total weights before weighted salary calculation."
+    scope: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_weights.py", "whkmSalary governance weight metadata"]
+    non_scope: ["salary policy approval", "weight recalibration", "rounding policy", "tax basis", "real payroll data"]
+    status: "completed"
+    dependencies: ["S3PAT01"]
+    required_files: ["whkmSalary/salary_logic.py", "whkmSalary/streamlit_app.py", "whkmSalary/tests/test_salary_logic_weights.py", "governance/stage_gates/s3pa/whkm_weight_tests.log"]
+    acceptance_ids: ["ACC-S3PAT02-WHKM-WEIGHT-GATE"]
+    test_commands: ["python -B -m unittest discover -s whkmSalary\\\\tests -q", "python -B -m py_compile whkmSalary\\\\salary_logic.py whkmSalary\\\\streamlit_app.py whkmSalary\\\\tests\\\\test_salary_logic_weights.py", "python -B scripts\\\\validate_semantic_extractors.py whkmSalary", "python -B -m pytest whkmSalary\\\\tests -q"]
+    test_results: ["unittest exit 0; 6 tests OK", "py_compile exit 0", "semantic extractor exit 0; semantic_parameters_checked=78 semantic_formulas_checked=9", "pytest unavailable locally: No module named pytest"]
+    evidence_refs: ["whkmSalary/tests/test_salary_logic_weights.py", "governance/stage_gates/s3pa/whkm_weight_tests.log", "governance/run_manifests/GOV-OTHER8-S3PAT02-WHKM-WEIGHT-GATE-20260624.json"]
+    risk: "This proves a code-level invariant for the current weights only; it does not prove that the weight policy or 1.0 total rule is owner-approved."
+    rollback: "Revert S3PAT02 code/tests/governance files and restore Streamlit local province weights only if owner explicitly chooses duplicated UI weights."
+    target_version: "0.0.0"
+    completed_version: "0.0.0"

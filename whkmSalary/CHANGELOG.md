@@ -2,6 +2,9 @@
 
 ## Unreleased - 2026-06-24
 
+- S3PAT02 consolidates Streamlit province weights to the `salary_logic.projects` single source.
+- Added runtime validation that weight keys exactly match the salary metrics, all values are finite and non-negative, and the total equals 1.0 before weighted salary calculation.
+- Added focused tests for configured project weights, explicit invalid weights, and UI single-source weight usage; weight policy approval remains blocked under `TASK-WHKM-B-001`.
 - S3PAT01 rejects settlement, invoice, and payback workday inputs below 1 in `salary_logic.py` to prevent `None` entering weighted salary calculation.
 - Set the Streamlit settlement, invoice, and payback day inputs to `min_value=1`; existing defaults remain unchanged.
 - Added boundary tests for zero/negative direct calls and preserved owner blockers for zero-day business meaning, policy source, rounding, tax, and payroll readiness.

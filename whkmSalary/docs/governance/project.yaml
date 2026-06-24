@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "whkmSalary"
 project_name: "whkmSalary"
-summary: "whkmSalary 是 Streamlit 季度销售绩效工资计算器；S3PAT01 只证明 0/负工作日技术边界已改为显式拒绝，不证明工资政策、法域、税务、舍入或真实算薪合规，且不得声明生产 payroll readiness。"
+summary: "whkmSalary 是 Streamlit 季度销售绩效工资计算器；S3PAT01 证明 0/负工作日技术边界已改为显式拒绝，S3PAT02 证明权重单一来源和键/非负/总和技术校验已落地；二者都不证明工资政策、权重依据、法域、税务、舍入或真实算薪合规，且不得声明生产 payroll readiness。"
 version: "0.0.0"
 fact_level: "EXTRACTED"
 owner_role: "payroll_owner + legal_or_policy_owner + product_owner"
@@ -50,7 +50,7 @@ features:
       - "PARAM-004"
       - "PARAM-005"
     code_refs:
-      - "whkmSalary/salary_logic.py:134"
+      - "whkmSalary/salary_logic.py:143"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -129,7 +129,7 @@ features:
   -
     feature_id: "FEAT-WHKM-004"
     name: "审计偏差、客情成本与省份权重"
-    description: "覆盖 audit/customer score 函数以及新疆、山东、青海、湖北、华中区域的权重表和别名解析。"
+    description: "覆盖 audit/customer score 函数以及新疆、山东、青海、湖北、华中区域的权重表、别名解析和 S3PAT02 权重校验。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -180,6 +180,7 @@ features:
       - "PARAM-071"
     code_refs:
       - "whkmSalary/salary_logic.py:15"
+      - "whkmSalary/salary_logic.py:209"
       - "whkmSalary/salary_logic.py:109"
       - "whkmSalary/salary_logic.py:117"
     test_refs:
@@ -190,7 +191,7 @@ features:
   -
     feature_id: "FEAT-WHKM-005"
     name: "Streamlit 输入约束与默认值"
-    description: "覆盖 number_input/selectbox 默认值和 UI 约束；settlement/invoice/payback day UI min_value 已改为 1，FORM-010 仍需 HUMAN_REVIEW_REQUIRED。"
+    description: "覆盖 number_input/selectbox 默认值和 UI 约束；settlement/invoice/payback day UI min_value 已改为 1，Streamlit 省份和权重使用 salary_logic.projects 单一来源，FORM-010 仍需 HUMAN_REVIEW_REQUIRED。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -208,8 +209,8 @@ features:
       - "PARAM-079"
       - "PARAM-080"
     code_refs:
-      - "whkmSalary/streamlit_app.py:32"
-      - "whkmSalary/streamlit_app.py:57"
+      - "whkmSalary/streamlit_app.py:17"
+      - "whkmSalary/streamlit_app.py:58"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -220,11 +221,11 @@ models:
     model_id: "MOD-001"
     name: "Quarterly performance salary calculation"
     kind: "business_calculation_model"
-    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring."
+    purpose: "Calculate quarterly performance score, performance pay, pre-tax total salary, and after-tax retained salary from sales metrics and validated province weights; S3PAT01 rejects settlement/invoice/payback workday inputs below 1 before scoring, and S3PAT02 rejects invalid weight keys, values, or totals."
     owner: "whkmSalary"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "salary-logic-v0.0.1-boundary"
+    model_version: "salary-logic-v0.0.2-weight-validation"
     assumptions:
       - "ASM-001"
       - "ASM-002"
@@ -343,11 +344,11 @@ models:
     model_id: "MOD-002"
     name: "Streamlit input constraints"
     kind: "deterministic_rule_engine"
-    purpose: "Constrain UI inputs before invoking salary calculation; S3PAT01 sets settlement/invoice/payback UI min_value to 1 while defaults remain unchanged."
+    purpose: "Constrain UI inputs before invoking salary calculation; S3PAT01 sets settlement/invoice/payback UI min_value to 1 while defaults remain unchanged, and S3PAT02 uses salary_logic.projects as the single province-weight source."
     owner: "whkmSalary"
     status: "active"
     fact_level: "EXTRACTED"
-    model_version: "streamlit-input-v0.0.1-boundary"
+    model_version: "streamlit-input-v0.0.2-single-source-weight"
     assumptions:
       - "ASM-001"
       - "ASM-002"
@@ -368,8 +369,8 @@ models:
     outputs:
       - "validated inputs passed to calculate or displayed exception"
     code_refs:
-      - "whkmSalary/streamlit_app.py:26"
-      - "whkmSalary/streamlit_app.py:32"
+      - "whkmSalary/streamlit_app.py:17"
+      - "whkmSalary/streamlit_app.py:23"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -382,25 +383,31 @@ formulas:
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"
-    expression: "resolve_weights uses explicit weights first; otherwise maps province through ALIASES and projects; missing province/weights raises ValueError."
+    expression: "resolve_weights validates explicit weights first; otherwise maps province through ALIASES and projects, then validates selected project weights; missing, incomplete, extra, negative, non-finite, or non-1.0-total weights raise ValueError."
     constraints:
-      - "Province weights must sum to 1.0 per active weight group."
-    missing_policy: "Missing weights and unrecognized province raise ValueError."
+      - "Weight keys must exactly match WEIGHT_KEYS; values must be finite and non-negative."
+      - "Province weights must sum to 1.0 within WEIGHT_TOTAL_TOLERANCE."
+    missing_policy: "Missing weights, unrecognized province, incomplete keys, extra keys, negative/non-finite weights, and non-1.0 totals raise ValueError."
     output_range: "dict of metric weights."
     open_task_ids:
     implementation_refs:
       - "whkmSalary/salary_logic.py::projects"
       - "whkmSalary/salary_logic.py::ALIASES"
+      - "whkmSalary/salary_logic.py::WEIGHT_KEYS"
+      - "whkmSalary/salary_logic.py::WEIGHT_TOTAL"
+      - "whkmSalary/salary_logic.py::WEIGHT_TOTAL_TOLERANCE"
       - "whkmSalary/salary_logic.py::resolve_weights"
-    implementation_fingerprint: "sha256:e9de0af407516aa287104dc42d83c84ce1894b185e08b850a6f779b4608a4d2d"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
+      - "whkmSalary/salary_logic.py::validate_weights"
+    implementation_fingerprint: "sha256:ca988c0931f1bf65e6e49a61f39245683fac9826cfcf970bf593768bb44408cc"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
       - "whkmSalary/salary_logic.py:30"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
+      - "EVID-WHKM-S3PAT02-WEIGHT-LOG"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
   -
     formula_id: "FORM-002"
@@ -586,7 +593,7 @@ formulas:
     constraints:
       - "year_target > 0 and quarter_actual > 0."
       - "Policy source for tax_keep_rate is UNKNOWN and task-linked."
-    missing_policy: "Missing or invalid year_target and quarter_actual raise ValueError; other direct missing inputs are Python errors."
+    missing_policy: "Missing or invalid year_target and quarter_actual raise ValueError; weights are resolved and validated before weighted_total calculation."
     output_range: "CalcResult with salary floats; no explicit cap."
     open_task_ids:
       - "TASK-WHKM-B-001"
@@ -594,15 +601,16 @@ formulas:
       - "whkmSalary/salary_logic.py::BASE_MONTHLY"
       - "whkmSalary/salary_logic.py::PERF_QUARTER_POOL"
       - "whkmSalary/salary_logic.py::calculate"
-    implementation_fingerprint: "sha256:3c6886e11e49cce2975bfd505857620df64378c947af45e44c91955a64c52f4c"
-    last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
-    verified_at: "2026-06-21T12:45:05Z"
+    implementation_fingerprint: "sha256:ac5ac264f3c3c92bfe04715ddab762d8ccb940b4a01413dfcdffde82cf088395"
+    last_verified_commit: "HEAD"
+    verified_at: "2026-06-24T00:00:00+10:00"
     code_refs:
-      - "whkmSalary/salary_logic.py:134"
+      - "whkmSalary/salary_logic.py:143"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
+      - "EVID-WHKM-S3PAT02-WEIGHT-LOG"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
   -
     formula_id: "FORM-010"
@@ -613,6 +621,8 @@ formulas:
     expression: "Streamlit constrains some inputs via number_input min/max/defaults and passes selected province weights into calculate."
     constraints:
       - "UI constraints are not a substitute for salary_logic direct-call validation."
+      - "S3PAT01 changed settlement, invoice, and payback UI min_value from 0 to 1."
+      - "S3PAT02 removed the duplicate Streamlit province_weights table and uses salary_logic.projects as the single weight source."
     missing_policy: "Streamlit supplies defaults; direct code callers may bypass UI constraints."
     output_range: "UI input values or displayed exception."
     open_task_ids:
@@ -622,12 +632,13 @@ formulas:
     last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     verified_at: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
     code_refs:
-      - "whkmSalary/streamlit_app.py:32"
-      - "whkmSalary/streamlit_app.py:57"
+      - "whkmSalary/streamlit_app.py:17"
+      - "whkmSalary/streamlit_app.py:58"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
       - "EVID-WHKM-FORMULA-REGISTRY"
+      - "EVID-WHKM-S3PAT02-WEIGHT-LOG"
       - "EVID-WHKM-SEMANTIC-MANIFEST"
 parameters:
   -
@@ -708,7 +719,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/salary_logic.py:145"
+      - "whkmSalary/salary_logic.py:154"
     test_refs:
       - "FOCUSED: salary_logic.calculate fixture"
     evidence_refs:
@@ -2632,7 +2643,7 @@ parameters:
     value: "5000000.0"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:32:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:23:3"
     extracted_value: "5000000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2642,7 +2653,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:32"
+      - "whkmSalary/streamlit_app.py:23"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2660,7 +2671,7 @@ parameters:
     value: "250000.0"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:33:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:24:3"
     extracted_value: "250000"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2670,7 +2681,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:33"
+      - "whkmSalary/streamlit_app.py:24"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2688,7 +2699,7 @@ parameters:
     value: "0.25"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:37:2"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:28:2"
     extracted_value: "0.25"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2698,7 +2709,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:37"
+      - "whkmSalary/streamlit_app.py:28"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2716,7 +2727,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:39:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:30:3"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2726,7 +2737,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:39"
+      - "whkmSalary/streamlit_app.py:30"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2744,7 +2755,7 @@ parameters:
     value: "10"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:43:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:34:3"
     extracted_value: "10"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2754,7 +2765,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:43"
+      - "whkmSalary/streamlit_app.py:34"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2772,7 +2783,7 @@ parameters:
     value: "30"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:45:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:36:3"
     extracted_value: "30"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2782,7 +2793,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:45"
+      - "whkmSalary/streamlit_app.py:36"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2800,7 +2811,7 @@ parameters:
     value: "0.01"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:49:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:40:3"
     extracted_value: "0.01"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2810,7 +2821,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:49"
+      - "whkmSalary/streamlit_app.py:40"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2828,7 +2839,7 @@ parameters:
     value: "0.01"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:51:3"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:42:3"
     extracted_value: "0.01"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2838,7 +2849,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:51"
+      - "whkmSalary/streamlit_app.py:42"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2856,7 +2867,7 @@ parameters:
     value: "0.97"
     source: "EXTRACTED from code constant"
     calibration_method: "UNKNOWN (TASK-WHKM-B-001: policy/source calibration not evidenced)"
-    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:53:4"
+    source_selector: "python_ast_literal:whkmSalary/streamlit_app.py:44:4"
     extracted_value: "0.97"
     semantic_status: "MACHINE_VERIFIED"
     last_verified_commit: "5712cb6666d2abf5c9426d4ad282899774090a85"
@@ -2866,7 +2877,7 @@ parameters:
     unknown_task_ids:
       - "TASK-WHKM-B-001"
     code_refs:
-      - "whkmSalary/streamlit_app.py:53"
+      - "whkmSalary/streamlit_app.py:44"
     test_refs:
       - "FOCUSED: python -m compileall salary_logic.py streamlit_app.py"
     evidence_refs:
@@ -2972,9 +2983,17 @@ validations:
     evidence_refs:
       - "EVID-WHKM-S3PAT01-BOUNDARY-LOG"
       - "EVID-WHKM-S3PAT01-MANIFEST"
+  -
+    validation_id: "VAL-WHKM-S3PAT02-WEIGHT"
+    name: "S3PAT02 single-source weight validation"
+    status: "PASS"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-WHKM-S3PAT02-WEIGHT-LOG"
+      - "EVID-WHKM-S3PAT02-MANIFEST"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "S3PA-WHKM-boundary-partial"
+  release_gate: "S3PA-WHKM-weight-validation-partial"
   blocker_ids:
     - "FACT-whkmSalary-EMPIRICAL-EVIDENCE"
     - "FACT-whkmSalary-IMPLEMENTATION-FORMULA-REVIEW"
@@ -2983,7 +3002,7 @@ delivery_readiness:
     - "GOV-SEMANTIC-WHKM-001"
     - "GOV-SEMANTIC-WHKM-001;TASK-WHKM-B-001"
     - "TASK-WHKM-B-001"
-  next_executable_task: "S3PA weight validation and rounding owner decision evidence"
+  next_executable_task: "S3PA rounding policy and owner decision evidence"
   next_task_status: "blocked"
   owner_decision_required: true
   owner_decision_id: "DEC-whkmSalary-REVIEW8-001"
@@ -3056,4 +3075,14 @@ evidence_refs:
     evidence_id: "EVID-WHKM-S3PAT01-MANIFEST"
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-OTHER8-S3PAT01-WHKM-DAY-BOUNDARY-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S3PAT02-WEIGHT-LOG"
+    kind: "stage_gate_evidence"
+    ref: "governance/stage_gates/s3pa/whkm_weight_tests.log"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-WHKM-S3PAT02-MANIFEST"
+    kind: "run_manifest"
+    ref: "governance/run_manifests/GOV-OTHER8-S3PAT02-WHKM-WEIGHT-GATE-20260624.json"
     fact_level: "EXTRACTED"
