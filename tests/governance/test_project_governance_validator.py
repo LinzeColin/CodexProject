@@ -7,6 +7,7 @@ import io
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -5813,9 +5814,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         product_contract = v7_root / "machine_readable" / "product_contract_v7.yaml"
         roadmap = v7_root / "ROADMAP" / "roadmap_v7.yaml"
         audit = v7_root / "machine_readable" / "audit_findings_v7_1.yaml"
-        product_digest = hashlib.sha256(product_contract.read_bytes()).hexdigest()
-        roadmap_digest = hashlib.sha256(roadmap.read_bytes()).hexdigest()
-        audit_digest = hashlib.sha256(audit.read_bytes()).hexdigest()
+        product_digest = validator.sha256_file(product_contract)
+        roadmap_digest = validator.sha256_file(roadmap)
+        audit_digest = validator.sha256_file(audit)
 
         self.assertEqual(lock["status"], "repository_locked_pending_pr_ci")
         self.assertEqual(lock["current_contract"]["contract_version"], "ADP-PRODUCT-CONTRACT-V7.1")
@@ -5835,6 +5836,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(lock["stage2_boundary"]["legacy_aliases"]["S2PBT01"], "S2P1T01")
         self.assertIn("P0 findings are zero", lock["production_forbidden_until"])
         self.assertIn("P1 findings are zero", lock["production_forbidden_until"])
+
+    def test_adp_v7_1_hashing_normalizes_windows_line_endings(self) -> None:
+        validator = load_validator_module()
+        tmp = Path(tempfile.mkdtemp(prefix="codex-adp-v71-hash-"))
+        try:
+            sample = tmp / "sample.yaml"
+            sample.write_bytes(b"contract_version: ADP-PRODUCT-CONTRACT-V7.1\r\nstatus: locked\r\n")
+            expected = hashlib.sha256(
+                b"contract_version: ADP-PRODUCT-CONTRACT-V7.1\nstatus: locked\n"
+            ).hexdigest()
+            self.assertEqual(validator.sha256_file(sample), expected)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_adp_v7_1_root_lock_is_enforced_by_project_validator_and_human_entries(self) -> None:
         result = run_validator("--project", "arxiv-daily-push")
