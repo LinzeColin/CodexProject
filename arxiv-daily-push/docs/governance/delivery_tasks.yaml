@@ -3103,23 +3103,62 @@ tasks:
     objective: "Add engineering open-source, code, benchmark, model-card, release, and standards public-signal framework after top-journal profile/relation evidence is stable, before any formal D2 production inclusion."
     scope: "Engineering signal taxonomy, officiality checks, repository/version/paper relation metadata, reproducibility state, focused tests, and governance registration."
     non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no production mail inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no PDF/full-text download, and no paid API use."
-    status: "planned"
+    status: "completed"
     dependencies:
       - "S2PCT04"
     required_files:
-      - "planned: engineering signal code, fixtures, focused tests, and governance registrations"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md"
+      - "arxiv-daily-push/docs/governance/model_registry.yaml"
+      - "arxiv-daily-push/docs/governance/formula_registry.yaml"
+      - "arxiv-daily-push/docs/governance/parameter_registry.csv"
+      - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
     acceptance_ids:
       - "ACC-S2PCT05-ENGINEERING-SIGNALS"
     test_commands:
-      - "planned: engineering signal profile and officiality tests"
-      - "planned: repository/version/paper relation tests"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_top_journal_adapter.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pct05_cli PYTHONPATH=arxiv-daily-push/src python3 -c 'from arxiv_daily_push.cli import main; raise SystemExit(main())' -- stage2-engineering-signals-shadow --state-dir /tmp/adp_s2pct05_cli/state --date 2026-06-24 --generated-at 2026-06-24T09:30:00+10:00 --profile-report /tmp/adp_s2pct05_cli/profile_report.json --engineering-signals arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json --no-write --json"
+    test_results:
+      - "focused Stage2/top-journal tests: 36 tests OK"
+      - "S2PCT05 engineering signal report observed official_code_repository, official_release, model_card, benchmark_result, and standard_or_spec"
+      - "officiality_gate=pass, version_traceability_gate=pass, paper_relation_gate=pass, reproducibility_state_gate=pass"
+      - "shadow persistence writes report and five ledger rows with all production flags false"
+      - "CLI fixture canary: status pass, validation_errors empty, engineering_signal_count 5, all production flags false"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md"
+      - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+    risk: "Unofficial mirrors, repository-paper relation errors, unverifiable versions, marketing pages masquerading as engineering evidence, or engineering shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Revert S2PCT05 engineering signal additions in stage2_sources.py, CLI, fixture/tests, phase record, governance registrations, manifest, and event."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  -
+    task_id: "S2PCT06"
+    phase: "S2PC"
+    objective: "Add authoritative research institution and industry technical report framework after engineering public-signal evidence is stable, before any formal D2 production inclusion."
+    scope: "Report type taxonomy, publishing organization identity, interest relation metadata, evidence-level classification, focused tests, and governance registration."
+    non_scope: "No D2_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no production mail inclusion, no SMTP send, no Release upload, no GitHub cloud production schedule, no PDF/full-text download, and no paid API use."
+    status: "planned"
+    dependencies:
+      - "S2PCT05"
+    required_files:
+      - "planned: report source code, fixtures, focused tests, and governance registrations"
+    acceptance_ids:
+      - "ACC-S2PCT06-REPORTS"
+    test_commands:
+      - "planned: report type, organization identity, interest relation, and evidence-level tests"
       - "planned: semantic governance and changed-only project governance"
     test_results:
       - "PENDING"
     evidence_refs:
       - "arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml"
-    risk: "Unofficial mirrors, repository-paper relation errors, unverifiable versions, marketing pages masquerading as engineering evidence, or engineering shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
-    rollback: "Remove planned S2PCT05 governance entry if engineering signal implementation is deferred or superseded."
+    risk: "Marketing material masquerading as research, source identity errors, opaque interest relationships, or report shadow contamination of accepted arXiv mail must block this task. P0/P1 and S2PMT07 still block D2/source-domain and integrated production acceptance."
+    rollback: "Remove planned S2PCT06 governance entry if report framework implementation is deferred or superseded."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

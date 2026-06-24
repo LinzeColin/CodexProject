@@ -1,14 +1,14 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence 与 S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence 已完成，下一入口为 S2PCT05 工程开源、代码、基准和标准公开信号框架，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet metadata-only no-send shadow evidence，S2PCT04 顶刊 Profile、发表关系、更正撤回 shadow evidence，以及 S2PCT05 工程开源、代码、基准、模型卡、发布和标准公开信号 shadow evidence 已完成，下一入口为 S2PCT06 权威研究机构与产业技术报告框架，但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_s2pct04_profile_shadow_complete_s2pct05_next_no_formal_production"
+current_status: "stage1_accepted_s2pct05_engineering_signals_shadow_complete_s2pct06_next_no_formal_production"
 limitations:
   -
-    statement: "382/382 active parameters 与 59/59 active formulas 为 MACHINE_VERIFIED；57 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
+    statement: "389/389 active parameters 与 60/60 active formulas 为 MACHINE_VERIFIED；58 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
@@ -31,7 +31,7 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence 与 S2PCT04 profile/relation/correction/retraction shadow evidence 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 Nature、S2PCT02 Science、S2PCT03 The Lancet top-journal metadata-only no-send shadow evidence、S2PCT04 profile/relation/correction/retraction shadow evidence 与 S2PCT05 engineering public-signal shadow evidence 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
@@ -39,7 +39,7 @@ limitations:
       - "EVID-ADP-S2PCT04-PROFILE"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
-      - "S2PCT05"
+      - "S2PCT06"
 features:
   -
     feature_id: "FEAT-ADP-001"
@@ -537,6 +537,26 @@ features:
       - "PARAM-ADP-399"
     evidence_refs:
       - "EVID-ADP-S2PCT04-PROFILE"
+  -
+    feature_id: "FEAT-ADP-013"
+    name: "Stage 2 engineering public-signal shadow evidence"
+    description: "S2PCT05 已完成工程开源、官方发布、模型卡、基准结果和标准/规范信号 taxonomy，官方性、版本、论文关系和复现状态门禁均为 metadata-only no-send shadow evidence；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。"
+    status: "completed"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-ADP-058"
+    formula_ids:
+      - "FORM-ADP-060"
+    parameter_ids:
+      - "PARAM-ADP-400"
+      - "PARAM-ADP-401"
+      - "PARAM-ADP-402"
+      - "PARAM-ADP-403"
+      - "PARAM-ADP-404"
+      - "PARAM-ADP-405"
+      - "PARAM-ADP-406"
+    evidence_refs:
+      - "EVID-ADP-S2PCT05-ENGINEERING"
   -
     feature_id: "FEAT-ADP-011"
     name: "Review9 Lean v2 owner-readable governance"
@@ -2236,6 +2256,34 @@ models:
     evidence_refs:
       - "EVID-ADP-MODEL-REGISTRY"
       - "EVID-ADP-S2PCT04-PROFILE"
+  -
+    model_id: "MOD-ADP-058"
+    name: "S2PCT05 engineering public-signal shadow"
+    purpose: "Build a metadata-only no-send engineering signal report from official code repositories, releases, model cards, benchmark results, and standards/specifications linked to known S2PCT04 canonical papers without claiming D2/Stage2/integrated production acceptance."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "EXTRACTED"
+    formula_ids:
+      - "FORM-ADP-060"
+    parameter_ids:
+      - "PARAM-ADP-400"
+      - "PARAM-ADP-401"
+      - "PARAM-ADP-402"
+      - "PARAM-ADP-403"
+      - "PARAM-ADP-404"
+      - "PARAM-ADP-405"
+      - "PARAM-ADP-406"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+    evidence_refs:
+      - "EVID-ADP-MODEL-REGISTRY"
+      - "EVID-ADP-S2PCT05-ENGINEERING"
 formulas:
   -
     formula_id: "FORM-ADP-001"
@@ -3196,6 +3244,22 @@ formulas:
     evidence_refs:
       - "EVID-ADP-FORMULA-REGISTRY"
       - "EVID-ADP-S2PCT04-PROFILE"
+  -
+    formula_id: "FORM-ADP-060"
+    model_id: "MOD-ADP-058"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "A S2PCT05 engineering signal report passes only when the S2PCT04 profile report passes, all required signal types are observed, every signal traces to a known canonical paper, officiality/version/relation/reproducibility gates pass, and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, paid API, and paywall side effects remain false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+    evidence_refs:
+      - "EVID-ADP-FORMULA-REGISTRY"
+      - "EVID-ADP-S2PCT05-ENGINEERING"
 parameters:
   -
     parameter_id: "PARAM-ADP-001"
@@ -10557,6 +10621,97 @@ parameters:
     semantic_status: "MACHINE_VERIFIED"
     evidence_refs:
       - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-400"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_ENGINEERING_SIGNAL_MODEL_ID"
+    name: "S2PCT05 engineering signal model id"
+    value: "adp-s2pct05-engineering-signals-v1"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-401"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_REQUIRED_SIGNAL_TYPES"
+    name: "S2PCT05 required engineering signal types"
+    value: "official_code_repository;official_release;model_card;benchmark_result;standard_or_spec"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-402"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_ALLOWED_RELATION_TYPES"
+    name: "S2PCT05 allowed paper relation types"
+    value: "implements_paper;version_of;documents_model;evaluates;standardizes"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-403"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_ALLOWED_OFFICIALITY_STATES"
+    name: "S2PCT05 accepted officiality states"
+    value: "official;publisher_linked;standards_body"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-404"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_ALLOWED_REPRODUCIBILITY_STATES"
+    name: "S2PCT05 accepted reproducibility states"
+    value: "reproducible;partial;claimed;not_applicable"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-405"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_LEDGER_FILENAME"
+    name: "S2PCT05 engineering signal ledger filename"
+    value: "stage2_s2pct05_engineering_signal_ledger.jsonl"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
+  -
+    parameter_id: "PARAM-ADP-406"
+    model_id: "MOD-ADP-058"
+    formula_id: "FORM-ADP-060"
+    symbol: "S2PCT05_ACCEPTANCE_ID"
+    name: "S2PCT05 acceptance id"
+    value: "ACC-S2PCT05-ENGINEERING-SIGNALS"
+    source: "EXTRACTED from code constant and focused tests"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-ADP-PARAMETER-REGISTRY"
 strategies:
   -
     strategy_id: "STRAT-ADP-001"
@@ -10725,6 +10880,11 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
     fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PCT05-ENGINEERING"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
+    fact_level: "EXTRACTED"
 delivery_readiness:
   status: "VERIFIED"
   release_gate: "ARXIV_PRODUCTION_ACCEPTED"
@@ -10732,15 +10892,15 @@ delivery_readiness:
   blocked_requirements: 0
   active_requirements: 10
   partial_requirements: 1
-  next_executable_task_id: "S2PCT05"
+  next_executable_task_id: "S2PCT06"
   next_executable_task_status: "planned"
 governance_counts:
-  active_models: 57
-  active_formulas: 59
-  active_parameters: 382
-  tasks_total: 70
+  active_models: 58
+  active_formulas: 60
+  active_parameters: 389
+  tasks_total: 71
   task_status_counts:
-    completed: 66
+    completed: 67
     blocked: 1
     deprecated: 1
     ready: 1

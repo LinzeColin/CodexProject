@@ -81,6 +81,26 @@ S2PCT04_REQUIRED_JOURNALS = ("nature", "science", "lancet")
 S2PCT04_REQUIRED_PROFILE_KINDS = ("research", "review", "editorial", "news", "correction", "retraction")
 S2PCT04_FORCED_EVENT_TYPES = ("correction", "retraction")
 S2PCT04_LEDGER_FILENAME = "stage2_s2pct04_profile_ledger.jsonl"
+S2PCT05_ENGINEERING_SIGNAL_MODEL_ID = "adp-s2pct05-engineering-signals-v1"
+S2PCT05_ACCEPTANCE_ID = "ACC-S2PCT05-ENGINEERING-SIGNALS"
+S2PCT05_TASK_ID = "S2PCT05"
+S2PCT05_REQUIRED_SIGNAL_TYPES = (
+    "official_code_repository",
+    "official_release",
+    "model_card",
+    "benchmark_result",
+    "standard_or_spec",
+)
+S2PCT05_ALLOWED_RELATION_TYPES = (
+    "implements_paper",
+    "version_of",
+    "documents_model",
+    "evaluates",
+    "standardizes",
+)
+S2PCT05_ALLOWED_OFFICIALITY_STATES = ("official", "publisher_linked", "standards_body")
+S2PCT05_ALLOWED_REPRODUCIBILITY_STATES = ("reproducible", "partial", "claimed", "not_applicable")
+S2PCT05_LEDGER_FILENAME = "stage2_s2pct05_engineering_signal_ledger.jsonl"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -1331,6 +1351,211 @@ def validate_s2pct04_top_journal_profile_report(report: Mapping[str, Any]) -> li
     return errors
 
 
+def build_s2pct05_engineering_signal_report(
+    *,
+    generated_at: str,
+    profile_report: Mapping[str, Any],
+    engineering_signals: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build metadata-only public engineering signal evidence after S2PCT04."""
+
+    profile_errors = validate_s2pct04_top_journal_profile_report(profile_report)
+    profile_gate = "pass" if not profile_errors and profile_report.get("status") == "pass" else "blocked"
+    known_documents = _s2pct05_known_documents(profile_report)
+    normalized_signals, signal_reports, signal_errors = _s2pct05_normalize_engineering_signals(
+        engineering_signals,
+        known_documents=known_documents,
+        generated_at=generated_at,
+    )
+    observed_signal_types = sorted({str(signal.get("signal_type") or "") for signal in normalized_signals if signal.get("signal_type")})
+    missing_signal_types = [signal_type for signal_type in S2PCT05_REQUIRED_SIGNAL_TYPES if signal_type not in observed_signal_types]
+    duplicate_signal_ids = _duplicate_values(str(signal.get("signal_id") or "") for signal in normalized_signals)
+    officiality_errors = _s2pct05_officiality_errors(normalized_signals) + [
+        reason for reason in signal_errors if "officiality" in reason
+    ]
+    version_errors = _s2pct05_version_errors(normalized_signals) + [
+        reason for reason in signal_errors if "version_reference" in reason
+    ]
+    relation_errors = _s2pct05_relation_errors(normalized_signals, known_documents) + [
+        reason for reason in signal_errors if "canonical_document_id" in reason or "paper_relation_type" in reason
+    ]
+    reproducibility_errors = _s2pct05_reproducibility_errors(normalized_signals) + [
+        reason for reason in signal_errors if "reproducibility" in reason or "metric_name" in reason
+    ]
+    officiality_gate = "pass" if not officiality_errors else "blocked"
+    version_gate = "pass" if not version_errors else "blocked"
+    relation_gate = "pass" if not relation_errors else "blocked"
+    reproducibility_gate = "pass" if not reproducibility_errors else "blocked"
+    blocking_reasons = list(profile_errors) + signal_errors
+    if profile_gate != "pass":
+        blocking_reasons.append("S2PCT04 profile report must pass before S2PCT05 engineering signals")
+    if missing_signal_types:
+        blocking_reasons.append("missing required engineering signal types: " + ", ".join(missing_signal_types))
+    if duplicate_signal_ids:
+        blocking_reasons.append("duplicate engineering signal ids: " + ", ".join(duplicate_signal_ids))
+    for gate_errors in (officiality_errors, version_errors, relation_errors, reproducibility_errors):
+        for reason in gate_errors:
+            if reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+    taxonomy_gate = "pass" if not missing_signal_types and not duplicate_signal_ids else "blocked"
+    status = (
+        "pass"
+        if not blocking_reasons
+        and profile_gate == taxonomy_gate == officiality_gate == version_gate == relation_gate == reproducibility_gate == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
+        "acceptance_id": S2PCT05_ACCEPTANCE_ID,
+        "task_id": S2PCT05_TASK_ID,
+        "phase": "S2PC",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "profile_gate": profile_gate,
+        "engineering_signal_taxonomy_gate": taxonomy_gate,
+        "officiality_gate": officiality_gate,
+        "version_traceability_gate": version_gate,
+        "paper_relation_gate": relation_gate,
+        "reproducibility_state_gate": reproducibility_gate,
+        "required_signal_types": list(S2PCT05_REQUIRED_SIGNAL_TYPES),
+        "signal_types_observed": observed_signal_types,
+        "engineering_signal_count": len(normalized_signals),
+        "known_document_count": len(known_documents),
+        "signal_reports": signal_reports,
+        "engineering_signals": normalized_signals,
+        "formal_production_inclusion": False,
+        "d2_source_domain_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def run_s2pct05_engineering_signal_shadow(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    profile_report: Mapping[str, Any],
+    engineering_signals: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PCT05 metadata-only engineering signal evidence."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pct05-engineering-signals-shadow"
+    ledger_path = state / S2PCT05_LEDGER_FILENAME
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pct05_engineering_signal_report(
+        generated_at=generated_at,
+        profile_report=profile_report,
+        engineering_signals=engineering_signals,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "engineering_signal_report_path": str(run_dir / "adp-s2pct05-engineering-signal-report.json"),
+            "engineering_signal_ledger_path": str(ledger_path),
+            "engineering_signal_ledger_row_count": len(report.get("engineering_signals") or []),
+        }
+    )
+    if write:
+        for row in report.get("engineering_signals") or []:
+            if isinstance(row, Mapping):
+                _append_jsonl(ledger_path, row)
+    return _write_or_return_s2pct05(report, run_dir, write=write)
+
+
+def validate_s2pct05_engineering_signal_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PCT05_ENGINEERING_SIGNAL_MODEL_ID:
+        errors.append("S2PCT05 engineering signal report model_id must be adp-s2pct05-engineering-signals-v1")
+    if report.get("task_id") != S2PCT05_TASK_ID:
+        errors.append("S2PCT05 engineering signal report task_id must be S2PCT05")
+    if report.get("acceptance_id") != S2PCT05_ACCEPTANCE_ID:
+        errors.append("S2PCT05 engineering signal report acceptance_id must be ACC-S2PCT05-ENGINEERING-SIGNALS")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PCT05 engineering signal report status must be pass or blocked")
+    for key in (
+        "formal_production_inclusion",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PCT05 engineering signal shadow")
+    signals = report.get("engineering_signals")
+    if not isinstance(signals, list):
+        errors.append("S2PCT05 engineering_signals must be a list")
+        signals = []
+    observed = set(report.get("signal_types_observed") or [])
+    missing = [signal_type for signal_type in S2PCT05_REQUIRED_SIGNAL_TYPES if signal_type not in observed]
+    if missing:
+        errors.append("S2PCT05 signal taxonomy missing required types: " + ", ".join(missing))
+    signal_ids: set[str] = set()
+    for index, signal in enumerate(signals):
+        if not isinstance(signal, Mapping):
+            errors.append(f"engineering_signals[{index}] must be an object")
+            continue
+        signal_id = str(signal.get("signal_id") or "")
+        if not signal_id:
+            errors.append(f"engineering_signals[{index}].signal_id is required")
+        if signal_id in signal_ids:
+            errors.append(f"duplicate S2PCT05 signal_id: {signal_id}")
+        signal_ids.add(signal_id)
+        if signal.get("signal_type") not in S2PCT05_REQUIRED_SIGNAL_TYPES:
+            errors.append(f"engineering_signals[{index}].signal_type is not supported")
+        if signal.get("metadata_only") is not True:
+            errors.append(f"engineering_signals[{index}].metadata_only must be true")
+        if signal.get("officiality_state") not in S2PCT05_ALLOWED_OFFICIALITY_STATES:
+            errors.append(f"engineering_signals[{index}].officiality_state is not accepted")
+        if signal.get("paper_relation_type") not in S2PCT05_ALLOWED_RELATION_TYPES:
+            errors.append(f"engineering_signals[{index}].paper_relation_type is not supported")
+        if not signal.get("canonical_document_id"):
+            errors.append(f"engineering_signals[{index}].canonical_document_id is required")
+        if not signal.get("version_reference"):
+            errors.append(f"engineering_signals[{index}].version_reference is required")
+        if signal.get("reproducibility_state") not in S2PCT05_ALLOWED_REPRODUCIBILITY_STATES:
+            errors.append(f"engineering_signals[{index}].reproducibility_state is invalid")
+        if not signal.get("evidence_refs"):
+            errors.append(f"engineering_signals[{index}].evidence_refs is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PCT05 engineering signal report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "profile_gate",
+            "engineering_signal_taxonomy_gate",
+            "officiality_gate",
+            "version_traceability_gate",
+            "paper_relation_gate",
+            "reproducibility_state_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PCT05 engineering signal report requires {key}=pass")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -2067,6 +2292,233 @@ def _write_or_return_s2pct04(report: dict[str, Any], run_dir: Path, *, write: bo
         report_path = Path(str(normalized.get("profile_report_path") or run_dir / "adp-s2pct04-top-journal-profile-report.json"))
         _write_json(report_path, normalized)
     return normalized
+
+
+def _write_or_return_s2pct05(report: dict[str, Any], run_dir: Path, *, write: bool) -> dict[str, Any]:
+    normalized = dict(report)
+    for key in (
+        "formal_production_inclusion",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+    ):
+        normalized.setdefault(key, False)
+    normalized["validation_errors"] = validate_s2pct05_engineering_signal_report(normalized)
+    if write:
+        report_path = Path(str(normalized.get("engineering_signal_report_path") or run_dir / "adp-s2pct05-engineering-signal-report.json"))
+        _write_json(report_path, normalized)
+    return normalized
+
+
+def _s2pct05_known_documents(profile_report: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    documents: dict[str, Mapping[str, Any]] = {}
+    for profile in profile_report.get("source_profiles") or []:
+        if not isinstance(profile, Mapping):
+            continue
+        canonical_id = str(profile.get("canonical_document_id") or "")
+        if canonical_id:
+            documents[canonical_id] = profile
+    return documents
+
+
+def _s2pct05_normalize_engineering_signals(
+    engineering_signals: Sequence[Mapping[str, Any]],
+    *,
+    known_documents: Mapping[str, Mapping[str, Any]],
+    generated_at: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+    normalized: list[dict[str, Any]] = []
+    reports: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, signal in enumerate(engineering_signals):
+        if not isinstance(signal, Mapping):
+            reason = f"engineering_signals[{index}] must be an object"
+            reports.append({"index": index, "status": "blocked", "blocking_reasons": [reason]})
+            errors.append(reason)
+            continue
+        item = _s2pct05_normalize_signal(signal, generated_at=generated_at)
+        item_errors = _s2pct05_signal_errors(item, known_documents=known_documents)
+        reports.append(
+            {
+                "signal_id": item.get("signal_id", ""),
+                "signal_type": item.get("signal_type", ""),
+                "status": "blocked" if item_errors else "pass",
+                "blocking_reasons": item_errors,
+            }
+        )
+        errors.extend(item_errors)
+        if not item_errors:
+            normalized.append(item)
+    return normalized, reports, errors
+
+
+def _s2pct05_normalize_signal(signal: Mapping[str, Any], *, generated_at: str) -> dict[str, Any]:
+    signal_type = _s2pct05_signal_type(str(signal.get("signal_type") or signal.get("type") or ""))
+    canonical_id = str(signal.get("canonical_document_id") or signal.get("paper_canonical_document_id") or "")
+    url = _s2pct05_signal_url(signal)
+    version_reference = _s2pct05_version_reference(signal)
+    signal_id = str(signal.get("signal_id") or "")
+    if not signal_id and signal_type and canonical_id:
+        signal_id = f"eng-signal:{signal_type}:{_safe_id(canonical_id)}:{_safe_id(version_reference or url or 'unversioned')}"
+    return {
+        "signal_id": signal_id,
+        "signal_type": signal_type,
+        "title": str(signal.get("title") or signal.get("name") or ""),
+        "canonical_document_id": canonical_id,
+        "paper_relation_type": _profile_token(str(signal.get("paper_relation_type") or signal.get("relation_type") or "")),
+        "provider": str(signal.get("provider") or signal.get("publisher") or signal.get("organization") or ""),
+        "source_url": url,
+        "repository_url": str(signal.get("repository_url") or ""),
+        "version_reference": version_reference,
+        "release_tag": str(signal.get("release_tag") or ""),
+        "commit_sha": str(signal.get("commit_sha") or ""),
+        "benchmark_name": str(signal.get("benchmark_name") or ""),
+        "metric_name": str(signal.get("metric_name") or ""),
+        "standard_id": str(signal.get("standard_id") or ""),
+        "officiality_state": _profile_token(str(signal.get("officiality_state") or signal.get("officiality_verdict") or "")),
+        "officiality_evidence_type": _profile_token(str(signal.get("officiality_evidence_type") or "")),
+        "reproducibility_state": _profile_token(str(signal.get("reproducibility_state") or "")),
+        "reproducibility_evidence": str(signal.get("reproducibility_evidence") or ""),
+        "metadata_only": True,
+        "production_eligible": False,
+        "generated_at": generated_at,
+        "evidence_refs": list(signal.get("evidence_refs") or []),
+    }
+
+
+def _s2pct05_signal_errors(signal: Mapping[str, Any], *, known_documents: Mapping[str, Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    signal_id = str(signal.get("signal_id") or "engineering-signal")
+    signal_type = str(signal.get("signal_type") or "")
+    canonical_id = str(signal.get("canonical_document_id") or "")
+    if not signal.get("signal_id"):
+        errors.append(f"{signal_id}: signal_id is required")
+    if signal_type not in S2PCT05_REQUIRED_SIGNAL_TYPES:
+        errors.append(f"{signal_id}: signal_type is not supported")
+    if not canonical_id:
+        errors.append(f"{signal_id}: canonical_document_id is required")
+    elif canonical_id not in known_documents:
+        errors.append(f"{signal_id}: canonical_document_id is unknown: {canonical_id}")
+    if signal.get("paper_relation_type") not in S2PCT05_ALLOWED_RELATION_TYPES:
+        errors.append(f"{signal_id}: paper_relation_type is not supported")
+    if signal.get("officiality_state") not in S2PCT05_ALLOWED_OFFICIALITY_STATES:
+        errors.append(f"{signal_id}: officiality_state is not accepted")
+    if not signal.get("source_url"):
+        errors.append(f"{signal_id}: source_url is required")
+    if not signal.get("version_reference"):
+        errors.append(f"{signal_id}: version_reference is required")
+    if signal.get("reproducibility_state") not in S2PCT05_ALLOWED_REPRODUCIBILITY_STATES:
+        errors.append(f"{signal_id}: reproducibility_state is invalid")
+    if not signal.get("evidence_refs"):
+        errors.append(f"{signal_id}: evidence_refs are required")
+    errors.extend(_s2pct05_type_specific_errors(signal))
+    return errors
+
+
+def _s2pct05_type_specific_errors(signal: Mapping[str, Any]) -> list[str]:
+    signal_id = str(signal.get("signal_id") or "engineering-signal")
+    signal_type = str(signal.get("signal_type") or "")
+    errors: list[str] = []
+    if signal_type == "official_code_repository" and not signal.get("repository_url"):
+        errors.append(f"{signal_id}: official_code_repository requires repository_url")
+    if signal_type == "official_release" and not signal.get("release_tag"):
+        errors.append(f"{signal_id}: official_release requires release_tag")
+    if signal_type == "model_card" and "model" not in str(signal.get("source_url") or "").lower():
+        errors.append(f"{signal_id}: model_card source_url must identify a model-card or model page")
+    if signal_type == "benchmark_result" and not signal.get("benchmark_name"):
+        errors.append(f"{signal_id}: benchmark_result requires benchmark_name")
+    if signal_type == "standard_or_spec" and not signal.get("standard_id"):
+        errors.append(f"{signal_id}: standard_or_spec requires standard_id")
+    return errors
+
+
+def _s2pct05_signal_type(raw: str) -> str:
+    token = _profile_token(raw)
+    aliases = {
+        "code": "official_code_repository",
+        "code_repository": "official_code_repository",
+        "repository": "official_code_repository",
+        "repo": "official_code_repository",
+        "official_repo": "official_code_repository",
+        "release": "official_release",
+        "official_release": "official_release",
+        "modelcard": "model_card",
+        "model_card": "model_card",
+        "benchmark": "benchmark_result",
+        "benchmark_result": "benchmark_result",
+        "standard": "standard_or_spec",
+        "standards": "standard_or_spec",
+        "spec": "standard_or_spec",
+        "specification": "standard_or_spec",
+        "standard_or_spec": "standard_or_spec",
+    }
+    return aliases.get(token, token)
+
+
+def _s2pct05_signal_url(signal: Mapping[str, Any]) -> str:
+    for key in ("source_url", "url", "repository_url", "release_url", "model_card_url", "benchmark_url", "standard_url"):
+        value = str(signal.get(key) or "")
+        if value:
+            return value
+    return ""
+
+
+def _s2pct05_version_reference(signal: Mapping[str, Any]) -> str:
+    for key in ("version_reference", "release_tag", "version", "model_card_version", "standard_version", "commit_sha"):
+        value = str(signal.get(key) or "")
+        if value:
+            return value
+    return ""
+
+
+def _s2pct05_officiality_errors(signals: Sequence[Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    for signal in signals:
+        if signal.get("officiality_state") not in S2PCT05_ALLOWED_OFFICIALITY_STATES:
+            errors.append(f"{signal.get('signal_id', 'engineering-signal')}: officiality_state is not accepted")
+        if not signal.get("officiality_evidence_type"):
+            errors.append(f"{signal.get('signal_id', 'engineering-signal')}: officiality_evidence_type is required")
+    return errors
+
+
+def _s2pct05_version_errors(signals: Sequence[Mapping[str, Any]]) -> list[str]:
+    return [
+        f"{signal.get('signal_id', 'engineering-signal')}: version_reference is required"
+        for signal in signals
+        if not signal.get("version_reference")
+    ]
+
+
+def _s2pct05_relation_errors(
+    signals: Sequence[Mapping[str, Any]],
+    known_documents: Mapping[str, Mapping[str, Any]],
+) -> list[str]:
+    errors: list[str] = []
+    for signal in signals:
+        canonical_id = str(signal.get("canonical_document_id") or "")
+        if canonical_id not in known_documents:
+            errors.append(f"{signal.get('signal_id', 'engineering-signal')}: canonical_document_id is unknown: {canonical_id}")
+        if signal.get("paper_relation_type") not in S2PCT05_ALLOWED_RELATION_TYPES:
+            errors.append(f"{signal.get('signal_id', 'engineering-signal')}: paper_relation_type is not supported")
+    return errors
+
+
+def _s2pct05_reproducibility_errors(signals: Sequence[Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    for signal in signals:
+        if signal.get("reproducibility_state") not in S2PCT05_ALLOWED_REPRODUCIBILITY_STATES:
+            errors.append(f"{signal.get('signal_id', 'engineering-signal')}: reproducibility_state is invalid")
+        if signal.get("signal_type") == "benchmark_result" and not signal.get("metric_name"):
+            errors.append(f"{signal.get('signal_id', 'engineering-signal')}: benchmark_result requires metric_name")
+    return errors
 
 
 def _top_journal_profiles_from_batches(
