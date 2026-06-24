@@ -20,8 +20,21 @@ from .contracts import stable_content_hash, validate_source_item
 TOP_JOURNAL_INGEST_MODEL_ID = "adp-stage2-top-journal-ingest-v1"
 NATURE_RSS_URL = "https://www.nature.com/nature.rss"
 NATURE_RESEARCH_ARTICLES_URL = "https://www.nature.com/nature/research-articles"
+SCIENCE_RSS_URL = "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+SCIENCE_TABLE_OF_CONTENTS_URL = "https://www.science.org/loi/science?af=R"
 TOP_JOURNAL_MAX_CANARY_RECORDS = 10
-SUPPORTED_TOP_JOURNALS = ("nature",)
+SUPPORTED_TOP_JOURNALS = ("nature", "science")
+SCIENCE_ACCEPTED_ARTICLE_TYPES = ("research_article", "report", "review", "perspective")
+_SCIENCE_ARTICLE_TYPE_MAP = {
+    "research article": "research_article",
+    "report": "report",
+    "review": "review",
+    "perspective": "perspective",
+}
+_JOURNAL_DISPLAY_NAMES = {
+    "nature": "Nature",
+    "science": "Science",
+}
 
 RSS_NS = "{http://purl.org/rss/1.0/}"
 DC_NS = "{http://purl.org/dc/elements/1.1/}"
@@ -43,7 +56,7 @@ TopJournalFetcher = Callable[[TopJournalQuery], str]
 def normalize_top_journal(journal: str) -> str:
     normalized = str(journal or "").strip().lower()
     if normalized not in SUPPORTED_TOP_JOURNALS:
-        raise TopJournalAdapterError("journal must be nature")
+        raise TopJournalAdapterError("journal must be one of: " + ", ".join(SUPPORTED_TOP_JOURNALS))
     return normalized
 
 
@@ -51,6 +64,8 @@ def build_top_journal_rss_url(query: TopJournalQuery) -> str:
     journal = normalize_top_journal(query.journal)
     if journal == "nature":
         return NATURE_RSS_URL
+    if journal == "science":
+        return SCIENCE_RSS_URL
     raise TopJournalAdapterError("unsupported top journal")
 
 
@@ -168,9 +183,9 @@ def ingest_latest_top_journal(
         "request": {
             "url": request_url,
             "max_records": max_records,
-            "official_research_page": NATURE_RESEARCH_ARTICLES_URL if source_journal == "nature" else "",
+            "official_research_page": _official_top_journal_page(source_journal),
         },
-        "source_policy": _source_policy(max_records=max_records),
+        "source_policy": _source_policy(max_records=max_records, journal=source_journal),
         "seen_source_ids": sorted(seen),
         "duplicate_source_ids": duplicate_ids,
         "source_items": source_items,
@@ -191,7 +206,7 @@ def validate_top_journal_source_batch(batch: Mapping[str, Any]) -> list[str]:
     try:
         normalize_top_journal(journal)
     except TopJournalAdapterError:
-        errors.append("top-journal source batch journal must be nature")
+        errors.append("top-journal source batch journal must be one of: " + ", ".join(SUPPORTED_TOP_JOURNALS))
     if status == "blocked" and not batch.get("blocking_reasons"):
         errors.append("blocked top-journal source batch requires blocking_reasons")
     policy = batch.get("source_policy")
@@ -208,6 +223,8 @@ def validate_top_journal_source_batch(batch: Mapping[str, Any]) -> list[str]:
             errors.append("top-journal ingest must not bypass paywalls")
         if int(policy.get("max_records_per_call") or 0) > TOP_JOURNAL_MAX_CANARY_RECORDS:
             errors.append(f"top-journal max_records_per_call must be <= {TOP_JOURNAL_MAX_CANARY_RECORDS}")
+        if policy.get("undocumented_endpoint_allowed") is not False:
+            errors.append("top-journal ingest must not use undocumented endpoints")
     seen_source_ids: set[str] = set()
     seen_canonical_ids: set[str] = set()
     for index, item in enumerate(batch.get("source_items") or []):
@@ -219,6 +236,14 @@ def validate_top_journal_source_batch(batch: Mapping[str, Any]) -> list[str]:
         if source_id in seen_source_ids:
             errors.append(f"duplicate source_id in top-journal batch: {source_id}")
         seen_source_ids.add(source_id)
+        if journal and item.get("source_adapter") != f"{journal}.rss.v1":
+            errors.append(f"source_items[{index}].source_adapter must be {journal}.rss.v1")
+        top_journal = item.get("metadata", {}).get("top_journal", {}) if isinstance(item.get("metadata"), Mapping) else {}
+        if isinstance(top_journal, Mapping):
+            if journal and top_journal.get("journal_id") != journal:
+                errors.append(f"source_items[{index}].metadata.top_journal.journal_id must be {journal}")
+            if journal == "science" and top_journal.get("article_type") not in SCIENCE_ACCEPTED_ARTICLE_TYPES:
+                errors.append(f"source_items[{index}] Science article_type must be one of {list(SCIENCE_ACCEPTED_ARTICLE_TYPES)}")
         canonical_id = _canonical_document_id(item)
         if canonical_id in seen_canonical_ids:
             errors.append(f"duplicate canonical_document_id in top-journal batch: {canonical_id}")
@@ -239,8 +264,12 @@ def _rss_item_to_source_item(
     request_url: str,
 ) -> dict[str, Any] | None:
     link = _clean_text(_child_text(node, f"{RSS_NS}link"))
-    article_id = _nature_article_id(link)
+    article_id = _top_journal_article_id(node, journal=journal, link=link)
     if not article_id:
+        return None
+    article_type_raw = _clean_text(_child_text(node, f"{DC_NS}type"))
+    article_type = _top_journal_article_type(journal=journal, raw_type=article_type_raw)
+    if not article_type:
         return None
     title = _clean_text(_child_text(node, f"{RSS_NS}title"))
     if not title:
@@ -252,19 +281,22 @@ def _rss_item_to_source_item(
     stable_id = article_id.lower()
     source_id = f"{journal}:{stable_id}"
     canonical_document_id = f"{journal}:{stable_id}"
+    display_name = _JOURNAL_DISPLAY_NAMES[journal]
+    official_page = _official_top_journal_page(journal)
     metadata = {
         "top_journal": {
-            "journal": "Nature",
+            "journal": display_name,
             "journal_id": journal,
             "article_id": stable_id,
-            "article_family": "nature_main_journal",
-            "article_type": "research_article_feed_item",
+            "article_family": f"{journal}_main_journal",
+            "article_type": article_type,
+            "article_type_raw": article_type_raw,
             "publication_date": publication_date,
             "summary": summary,
             "summary_fallback": "rss_title" if not description else "rss_description",
             "authors": authors,
-            "rss_url": request_url or NATURE_RSS_URL,
-            "official_research_page": NATURE_RESEARCH_ARTICLES_URL,
+            "rss_url": request_url or build_top_journal_rss_url(TopJournalQuery(journal=journal)),
+            "official_research_page": official_page,
         },
         "identity": {
             "canonical_document_id": canonical_document_id,
@@ -281,14 +313,14 @@ def _rss_item_to_source_item(
         "canonical_url": link,
         "metadata": metadata,
         "content_refs": [
-            {"ref_id": "metadata", "ref_type": "rss", "uri": request_url or NATURE_RSS_URL},
+            {"ref_id": "metadata", "ref_type": "rss", "uri": request_url or build_top_journal_rss_url(TopJournalQuery(journal=journal))},
             {"ref_id": "article_landing_page", "ref_type": "html", "uri": link},
         ],
         "license": {
             "status": "rights_reserved_metadata_and_link_only",
             "usage": "metadata_and_link_only_no_fulltext_download",
         },
-        "evidence_refs": [link, request_url or NATURE_RSS_URL, NATURE_RESEARCH_ARTICLES_URL],
+        "evidence_refs": [link, request_url or build_top_journal_rss_url(TopJournalQuery(journal=journal)), official_page],
     }
 
 
@@ -313,9 +345,9 @@ def _blocked_batch(
         "request": {
             "url": request_url,
             "max_records": TOP_JOURNAL_MAX_CANARY_RECORDS,
-            "official_research_page": NATURE_RESEARCH_ARTICLES_URL if normalized_journal == "nature" else "",
+            "official_research_page": _official_top_journal_page(normalized_journal),
         },
-        "source_policy": _source_policy(max_records=TOP_JOURNAL_MAX_CANARY_RECORDS),
+        "source_policy": _source_policy(max_records=TOP_JOURNAL_MAX_CANARY_RECORDS, journal=normalized_journal),
         "seen_source_ids": [],
         "duplicate_source_ids": [],
         "source_items": source_items or [],
@@ -325,7 +357,7 @@ def _blocked_batch(
     }
 
 
-def _source_policy(*, max_records: int) -> dict[str, Any]:
+def _source_policy(*, max_records: int, journal: str = "nature") -> dict[str, Any]:
     return {
         "network_fetch_enabled": True,
         "pdf_download_enabled": False,
@@ -334,8 +366,8 @@ def _source_policy(*, max_records: int) -> dict[str, Any]:
         "paywall_bypass_allowed": False,
         "undocumented_endpoint_allowed": False,
         "max_records_per_call": int(max_records),
-        "official_rss_url": NATURE_RSS_URL,
-        "official_research_page": NATURE_RESEARCH_ARTICLES_URL,
+        "official_rss_url": _official_top_journal_rss_url(journal),
+        "official_research_page": _official_top_journal_page(journal),
     }
 
 
@@ -347,6 +379,47 @@ def _child_text(node: ET.Element, path: str) -> str:
 def _nature_article_id(url: str) -> str:
     match = re.search(r"/articles/(s41586-[A-Za-z0-9._-]+)", url)
     return match.group(1).lower() if match else ""
+
+
+def _top_journal_article_id(node: ET.Element, *, journal: str, link: str) -> str:
+    if journal == "nature":
+        return _nature_article_id(link)
+    if journal == "science":
+        return _science_article_doi(node, link=link)
+    return ""
+
+
+def _science_article_doi(node: ET.Element, *, link: str) -> str:
+    identifier = _clean_text(_child_text(node, f"{DC_NS}identifier"))
+    match = re.search(r"doi:(10\.1126/science\.[A-Za-z0-9._-]+)", identifier, flags=re.IGNORECASE)
+    if match:
+        return match.group(1).lower()
+    match = re.search(r"/doi/(?:abs|full)/(10\.1126/science\.[A-Za-z0-9._-]+)", link, flags=re.IGNORECASE)
+    return match.group(1).lower() if match else ""
+
+
+def _top_journal_article_type(*, journal: str, raw_type: str) -> str:
+    if journal == "nature":
+        return "research_article_feed_item"
+    if journal == "science":
+        return _SCIENCE_ARTICLE_TYPE_MAP.get(_clean_text(raw_type).lower(), "")
+    return ""
+
+
+def _official_top_journal_rss_url(journal: str) -> str:
+    if journal == "nature":
+        return NATURE_RSS_URL
+    if journal == "science":
+        return SCIENCE_RSS_URL
+    return ""
+
+
+def _official_top_journal_page(journal: str) -> str:
+    if journal == "nature":
+        return NATURE_RESEARCH_ARTICLES_URL
+    if journal == "science":
+        return SCIENCE_TABLE_OF_CONTENTS_URL
+    return ""
 
 
 def _canonical_document_id(item: Mapping[str, Any]) -> str:

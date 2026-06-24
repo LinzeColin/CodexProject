@@ -513,6 +513,27 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "Stage 1 local production prep remains complete, but Stage 2 does not begin.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PCT03":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PCT03-LANCET-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PCT03 / legacy S2P2T03 The Lancet 主刊 metadata-only no-send shadow evidence，同时保持 D2 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PCT03 Lancet metadata-only shadow after completed Nature and Science shadow evidence",
+                "option_a": "继续 The Lancet metadata-only adapter、医学文章类型门、PubMed/Online First 关系门和 no-send shadow daily，不影响现有 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PCT02，只保留 Nature/Science shadow evidence；风险更低但 D2 顶刊覆盖不完整。",
+                "option_c": "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; source adapter, fixtures, article-type gates, shadow queue/ledger/email preview, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "在保持 arXiv 稳定运行的前提下，逐步把 D2 top-journal shadow 从 Nature/Science 扩展到医学顶刊 The Lancet。",
+                "risks": "医学文章类型误判、PubMed/Online First 关系错误、重复 DOI、许可/全文越权、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "Lancet source adapter tests, fixture parse, no-send shadow report, semantic extractor, project governance validator, arXiv no-regression evidence",
+                "priority": "P1",
+                "no_decision": "S2PCT02 Science remains completed as no-send shadow evidence, but D2 top-journal coverage stops before Lancet.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {
@@ -1122,9 +1143,11 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         "generated_from_refs": [f"{project.get('path')}/docs/governance/ASSURANCE_STATUS.yaml", f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
         "last_reviewed_at": max_event_time(events),
     }
-    for key, value in existing_owner_decision.items():
-        if value not in (None, ""):
-            owner_decision[key] = value
+    existing_owner_task = str(existing_owner_decision.get("unblock_task_id") or "")
+    if not existing_owner_task or existing_owner_task == str(next_task.get("task_id") or ""):
+        for key, value in existing_owner_decision.items():
+            if value not in (None, ""):
+                owner_decision[key] = value
     if "decision_question" not in owner_decision and "question" in owner_decision:
         owner_decision["decision_question"] = owner_decision["question"]
     if "question" not in owner_decision and "decision_question" in owner_decision:
