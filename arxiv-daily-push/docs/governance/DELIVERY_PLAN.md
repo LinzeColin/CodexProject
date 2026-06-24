@@ -19,8 +19,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 68
-- acceptance_count: 61
+- task_count: 69
+- acceptance_count: 62
 
 ## Delivery Tasks
 
@@ -90,6 +90,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041 | S1-A | deprecated | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | Owner superseded the GitHub cloud scheduled-production path with local Mac + Codex/local runner; GitHub remains code, PR/CI, evidence, status, and backup only | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP | S1-A | completed | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | local-runner daily/preflight, queue/ledger/report/email preview persistence, launchd package draft, and 2026-06-30 migration runbook pass focused tests without real SMTP send or GitHub cloud schedule | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
 | S2P1T01 | S2P1 | ready | ADP-ACC-S2P1T01-SOURCE-PROMOTION | next executable Stage 2 task: promote bioRxiv and medRxiv through source-level gates without regressing accepted all-arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
+| S2P2T01 | S2P2 | in_progress | ADP-ACC-S2P2T01-TOP-JOURNAL-SHADOW | Nature official RSS metadata-only top-journal shadow foundation with separate no-send queue/ledger/email preview; no production inclusion | `docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 27934320671 exposed front-stage quality defects; email now removes Release landing-page reading entry, demotes video to optional file link, and MP4 transcript hides ROI score | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | planned | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | V2 decision-first email adds the owner subject contract, Chinese plain text plus responsive HTML, read/skim/skip cues, optional MP4 link card, q-fin candidate filtering, feedback actions, and no user-visible Claim Ledger, ROI score, or numeric `x/5` score label | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |

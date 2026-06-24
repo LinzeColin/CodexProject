@@ -63,6 +63,7 @@ from .scheduled_execution import (
 )
 from .simulation import run_two_day_simulation, validate_two_day_simulation_report
 from .preprint_adapter import fetch_preprint_details_with_curl, ingest_latest_preprints, validate_preprint_source_batch
+from .top_journal_adapter import fetch_top_journal_rss_with_curl, ingest_latest_top_journal, validate_top_journal_source_batch
 from .source_ingest import ingest_latest_arxiv, validate_source_batch
 from .source_registry import (
     build_source_registry_report,
@@ -103,9 +104,11 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
+    validate_s2p2_top_journal_shadow_report,
 )
 from .storage import (
     inspect_database,
@@ -401,6 +404,14 @@ def build_parser() -> argparse.ArgumentParser:
     fetch_preprint.add_argument("--fetcher", choices=("urllib", "curl"), default="urllib", help="Real metadata fetch implementation.")
     fetch_preprint.add_argument("--json", action="store_true", help="Print JSON source batch.")
 
+    fetch_top_journal = subparsers.add_parser("fetch-top-journal-latest", help="Fetch latest top-journal public RSS metadata SourceItems.")
+    fetch_top_journal.add_argument("--journal", choices=("nature",), default="nature", help="Top journal to query.")
+    fetch_top_journal.add_argument("--max-records", type=int, default=3, help="Small metadata result window to keep.")
+    fetch_top_journal.add_argument("--generated-at", required=True, help="Fetch timestamp used for SourceItems and batch evidence.")
+    fetch_top_journal.add_argument("--seen-source-id", action="append", default=[], help="Previously processed source_id to exclude.")
+    fetch_top_journal.add_argument("--fetcher", choices=("urllib", "curl"), default="urllib", help="Real metadata fetch implementation.")
+    fetch_top_journal.add_argument("--json", action="store_true", help="Print JSON source batch.")
+
     s2p1_gate = subparsers.add_parser("stage2-preprint-gate", help="Evaluate S2P1T01 bioRxiv/medRxiv source promotion gates.")
     s2p1_gate.add_argument("--biorxiv-batch", required=True, help="bioRxiv preprint source batch JSON.")
     s2p1_gate.add_argument("--medrxiv-batch", required=True, help="medRxiv preprint source batch JSON.")
@@ -434,6 +445,15 @@ def build_parser() -> argparse.ArgumentParser:
     s2p1_replay.add_argument("--polite-delay-seconds", type=float, default=1.0, help="Delay between historical API windows.")
     s2p1_replay.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2p1_replay.add_argument("--json", action="store_true", help="Print JSON replay/shadow report.")
+
+    s2p2_shadow = subparsers.add_parser("stage2-top-journal-shadow-daily", help="Run one no-send S2P2 Nature shadow daily preview.")
+    s2p2_shadow.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2p2_shadow.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2p2_shadow.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2p2_shadow.add_argument("--nature-batch", required=True, help="Nature RSS source batch JSON.")
+    s2p2_shadow.add_argument("--queue-path", help="Optional existing S2P2 top-journal queue JSON.")
+    s2p2_shadow.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2p2_shadow.add_argument("--json", action="store_true", help="Print JSON shadow report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1313,6 +1333,27 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if batch["status"] == "pass" and not errors else 2
+    if args.command == "fetch-top-journal-latest":
+        top_journal_fetcher = fetch_top_journal_rss_with_curl if args.fetcher == "curl" else None
+        batch = ingest_latest_top_journal(
+            journal=args.journal,
+            max_records=args.max_records,
+            generated_at=args.generated_at,
+            seen_source_ids=args.seen_source_id,
+            fetcher=top_journal_fetcher,
+        )
+        errors = validate_top_journal_source_batch(batch)
+        if args.json:
+            print(json.dumps(batch, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(batch["status"])
+            print(f"- journal: {batch.get('journal')}")
+            print(f"- new_item_count: {batch.get('new_item_count')}")
+            for reason in batch.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if batch["status"] == "pass" and not errors else 2
     if args.command == "stage2-preprint-gate":
         source_batches = {
             "biorxiv": load_json_mapping(args.biorxiv_batch),
@@ -1386,6 +1427,27 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- future_leakage_count: {replay_report.get('future_leakage_count')}")
             print(f"- p0_p1_blocker_count: {replay_report.get('p0_p1_blocker_count')}")
             print(f"- shadow_hours: {shadow_report.get('shadow_hours')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-top-journal-shadow-daily":
+        source_batches = {"nature": load_json_mapping(args.nature_batch)}
+        queue = load_json_mapping(args.queue_path) if args.queue_path else None
+        report = run_s2p2_top_journal_shadow_daily(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            source_batches=source_batches,
+            queue=queue,
+            write=not args.no_write,
+        )
+        errors = validate_s2p2_top_journal_shadow_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

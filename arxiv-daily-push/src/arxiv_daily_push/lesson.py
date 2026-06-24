@@ -172,6 +172,15 @@ def _source_profile(source_item: Mapping[str, Any]) -> dict[str, str]:
             "primary_category": _clean_text(str(preprint.get("category") or server)),
             "evidence_label": f"摘要级 {server} 来源元数据",
         }
+    top_journal = metadata.get("top_journal") if isinstance(metadata.get("top_journal"), Mapping) else {}
+    if isinstance(top_journal, Mapping) and top_journal:
+        journal = str(top_journal.get("journal") or "顶级期刊").strip()
+        article_type = _clean_text(str(top_journal.get("article_type") or "research article"))
+        return {
+            "summary": _clean_text(str(top_journal.get("summary") or "")),
+            "primary_category": _clean_text(f"{journal} {article_type}"),
+            "evidence_label": f"摘要级 {journal} RSS/Research Articles 元数据",
+        }
     return {"summary": "", "primary_category": "", "evidence_label": "摘要级来源元数据"}
 
 

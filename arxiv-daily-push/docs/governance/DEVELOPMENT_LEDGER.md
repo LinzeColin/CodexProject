@@ -9,12 +9,12 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2P1
+- Current phase: S2P2
 - Current gate: ARXIV_PRODUCTION_ACCEPTED
-- Confirmed iteration count: 90
+- Confirmed iteration count: 91
 - Reconstructed event count: 0
-- Current task: `S2PBT01/S2P1T01`; legacy `S2P1T01` is treated as V7 alias `S2PBT01`. bioRxiv/medRxiv metadata-only preprint source promotion foundation is implemented, live-canary tested, has a deterministic replay/shadow builder, and one local real no-send 30-date replay passed. Stage 2 is not accepted.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. `S2PBT01/S2P1T01` remains blocked on V7 root contract, AGENTS, three baseline files, and CI contract hash gate before any formal source production inclusion. Real local SMTP production still requires owner-controlled local env/Keychain smoke; GitHub cloud scheduled production remains disabled and is not the daily production runner. Stage 2 Stop Gate remains `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
+- Current task: `S2P2T01`; legacy `S2P1T01` is treated as V7 alias `S2PBT01`. bioRxiv/medRxiv metadata-only preprint evidence has passed with no formal production inclusion. S2P2T01 now adds Nature official RSS metadata-only no-send shadow foundation for Board 2 top journals. Stage 2 is not accepted.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. `S2P2T01` is no-send shadow only and remains blocked on V7 root contract, AGENTS, three baseline files, and CI contract hash gate before any formal source production inclusion. Real local SMTP production still requires owner-controlled local env/Keychain smoke; GitHub cloud scheduled production remains disabled and is not the daily production runner. Stage 2 Stop Gate remains `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
 
 ## Phase Matrix
 
@@ -27,8 +27,32 @@ The append-only machine record is `development_events.jsonl`.
 | E | Weekly/monthly trial, all-arXiv queue delivery, and production handoff | completed | Phase 11 production gates plus Phase 12 all-arXiv scan, candidate queue, ROI ranking, daily lead, text-only teaching email gate, and production blockers documented | `docs/phase_records/PHASE_11.md`; `docs/phase_records/PHASE_11_TRIAL_EVIDENCE_VALIDATOR.md`; `docs/phase_records/PHASE_11_PRODUCTION_PREFLIGHT.md`; `docs/phase_records/PHASE_11_LIVE_ARXIV_INGEST.md`; `docs/phase_records/PHASE_11_SMTP_DELIVERY.md`; `docs/phase_records/PHASE_11_RELEASE_DELIVERY.md`; `docs/phase_records/PHASE_11_PRODUCTION_SCHEDULER.md`; `docs/phase_records/PHASE_11_SCHEDULED_EXECUTION_DRIVER.md`; `docs/phase_records/PHASE_11_DAILY_INPUT_BUILDER.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_UPDATE.md`; `docs/phase_records/PHASE_11_TRIAL_LEDGER_STATE.md`; `docs/phase_records/PHASE_11_TRIAL_OPS_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_REPLAY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RECOVERY_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_RESOURCE_EVIDENCE.md`; `docs/phase_records/PHASE_11_TRIAL_START_GATE.md`; `docs/phase_records/PHASE_11_TRIAL_START_WORKFLOW.md`; `docs/phase_records/PHASE_11_PRODUCTION_LAUNCH_READINESS.md`; `docs/phase_records/PHASE_11_POST_MERGE_LAUNCH_AUDIT.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_READINESS.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_TEMPLATE.md`; `docs/phase_records/PHASE_11_PRODUCTION_REFS_GITHUB_DISCOVERY.md`; `docs/phase_records/PHASE_11_TRIAL_START_LAUNCH_PREFLIGHT.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_WORKFLOW.md`; `docs/phase_records/PHASE_11_PROVISIONING_AUDIT_REVIEW.md`; `docs/phase_records/PHASE_11_TWO_DAY_SIMULATION.md`; `docs/phase_records/PHASE_12_ALL_ARXIV_QUEUE_DELIVERY.md` |
 | S1-A | Review8 V5 Stage 1 Window A | completed | Baseline lock, owner controls, unified local data model, arXiv connector contract, queue/content ledger, B1 report/email text interface, runtime recovery, migration package, post-migration bootstrap, 30 historical B1 previews, live arXiv preflight, controlled SMTP refs, accelerated real-arXiv acceptance artifact, test10 SMTP proof, and local production/migration prep within Stage 1 limits | `docs/pursuing_goal/BASELINE_LOCK.md`; `docs/phase_records/PHASE_S1_11_HISTORICAL_B1_PREVIEWS.md`; `docs/phase_records/PHASE_S1_12_LIVE_PREFLIGHT.md`; `governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json`; `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
+| S2P2 | Board 2 top-journal shadow foundation | in_progress | Add top-journal metadata-only no-send shadow path without formal production inclusion | `docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260624-ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from Nature RSS adapter code, fixture tests, Stage 2 shadow daily tests, phase record, and run manifest.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: d1c1654d15bd7818a2e0915926a1ef592245ce24
+- Result commit: PENDING
+- Task IDs: `S2P2T01`
+- Goal: Add Board 2 top-journal metadata-only no-send shadow foundation using official public Nature RSS.
+- Assumptions: This is not formal production inclusion and cannot claim `STAGE2_PRODUCTION_ACCEPTED` or `INTEGRATED_PRODUCTION_ACCEPTED`.
+- Files changed: Nature adapter, Stage 2 shadow runner, CLI commands, global source labeling, lesson source profile, Nature RSS fixture/tests, phase record, delivery task, event, manifest, and owner/status sync.
+- Model changes: Added S2P2T01 no-send top-journal ingest/shadow model path in code; formal semantic registry expansion remains pending V7/root contract formalization.
+- Formula changes: No production formula changed; S2P2T01 reuses existing ROI queue and dry-run delivery contracts with side effects false.
+- Parameter changes: Added code-level Nature RSS URL, main-journal filter, and S2P2 queue/ledger filename constants.
+- Commands run: focused S2P2/top-journal, Stage2, lesson, and global scan tests.
+- Test results: Focused S2P2/top-journal and Stage2 tests 14 OK; expanded focused tests 32 OK; JSONL parse pass; git diff check pass.
+- Successes: Nature RSS fixture filters `d41586` news items, admits only `s41586` main-journal research articles, and persists separate no-send queue/ledger/email preview artifacts.
+- Decisions: Do not enable SMTP, Release, GitHub cloud schedule, video, PDF/full-text, paywall bypass, or formal source production inclusion.
+- Remaining risks: V7/root contract and CI hash gate still block formal source inclusion; Nature RSS metadata is not full-text extraction.
+- Rollback: Revert S2P2 adapter, shadow runner/CLI/lesson/global scan changes, tests/fixture, phase record, task/event/manifest, and status sync.
+- Next step: Run a live Nature RSS canary and then reconcile V7/root contract gate before any formal Stage 2 production decision.
 
 ### `ITER-20260624-ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE`
 
