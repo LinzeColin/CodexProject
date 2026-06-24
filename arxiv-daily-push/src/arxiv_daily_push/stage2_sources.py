@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 import time
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from datetime import date as Date
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -73,6 +73,14 @@ S2PCT03_LEGACY_TASK_ID = "S2P2T03"
 S2PCT03_REQUIRED_JOURNALS = ("lancet",)
 S2PCT03_QUEUE_FILENAME = "stage2_s2pct03_lancet_queue.json"
 S2PCT03_LEDGER_FILENAME = "stage2_s2pct03_lancet_ledger.jsonl"
+S2PCT04_JOURNAL_PROFILE_MODEL_ID = "adp-s2pct04-top-journal-profile-v1"
+S2PCT04_ACCEPTANCE_ID = "ACC-S2PCT04-JOURNAL-PROFILE"
+S2PCT04_TASK_ID = "S2PCT04"
+S2PCT04_LEGACY_TASK_ID = "S2P2T04"
+S2PCT04_REQUIRED_JOURNALS = ("nature", "science", "lancet")
+S2PCT04_REQUIRED_PROFILE_KINDS = ("research", "review", "editorial", "news", "correction", "retraction")
+S2PCT04_FORCED_EVENT_TYPES = ("correction", "retraction")
+S2PCT04_LEDGER_FILENAME = "stage2_s2pct04_profile_ledger.jsonl"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -1110,6 +1118,219 @@ def validate_s2pct03_lancet_shadow_report(report: Mapping[str, Any]) -> list[str
     return errors
 
 
+def build_s2pct04_top_journal_profile_report(
+    *,
+    generated_at: str,
+    source_batches: Mapping[str, Mapping[str, Any]],
+    publication_events: Sequence[Mapping[str, Any]] = (),
+    prior_profile_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build metadata-only profile/relation evidence across completed D2 top journals."""
+
+    source_profiles, relation_edges, source_reports, source_errors = _top_journal_profiles_from_batches(
+        source_batches,
+        generated_at=generated_at,
+    )
+    known_targets = {str(profile.get("canonical_document_id") or "") for profile in source_profiles}
+    prior_index = _prior_profile_state_index(prior_profile_state)
+    known_targets.update(prior_index)
+    event_profiles, event_edges, forced_updates, event_reports, event_errors = _top_journal_profiles_from_publication_events(
+        publication_events,
+        generated_at=generated_at,
+        known_targets=known_targets,
+        prior_index=prior_index,
+    )
+    profiles = source_profiles + event_profiles
+    relation_edges = relation_edges + event_edges
+    observed_profile_kinds = sorted({str(profile.get("profile_kind") or "") for profile in profiles if profile.get("profile_kind")})
+    missing_profile_kinds = [kind for kind in S2PCT04_REQUIRED_PROFILE_KINDS if kind not in observed_profile_kinds]
+    duplicate_profile_ids = _duplicate_values(str(profile.get("profile_id") or "") for profile in profiles)
+    relation_errors = _publication_relation_errors(profiles, relation_edges)
+    forced_event_errors = _forced_event_update_errors(event_profiles, forced_updates)
+    blocking_reasons = source_errors + event_errors + relation_errors + forced_event_errors
+    if missing_profile_kinds:
+        blocking_reasons.append(f"missing required top-journal profile kinds: {', '.join(missing_profile_kinds)}")
+    if duplicate_profile_ids:
+        blocking_reasons.append("duplicate top-journal profile ids: " + ", ".join(duplicate_profile_ids))
+    taxonomy_gate = "pass" if not missing_profile_kinds and not duplicate_profile_ids else "blocked"
+    relation_gate = "pass" if not relation_errors and relation_edges else "blocked"
+    forced_gate = "pass" if not forced_event_errors and _forced_event_kinds(forced_updates) == set(S2PCT04_FORCED_EVENT_TYPES) else "blocked"
+    if forced_gate == "blocked" and not forced_event_errors:
+        blocking_reasons.append("correction and retraction forced-event updates are both required")
+    status = "pass" if not blocking_reasons and taxonomy_gate == relation_gate == forced_gate == "pass" else "blocked"
+    return {
+        "model_id": S2PCT04_JOURNAL_PROFILE_MODEL_ID,
+        "acceptance_id": S2PCT04_ACCEPTANCE_ID,
+        "task_id": S2PCT04_TASK_ID,
+        "legacy_task_id": S2PCT04_LEGACY_TASK_ID,
+        "phase": "S2PC",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "profile_taxonomy_gate": taxonomy_gate,
+        "publication_relation_gate": relation_gate,
+        "forced_event_update_gate": forced_gate,
+        "required_profile_kinds": list(S2PCT04_REQUIRED_PROFILE_KINDS),
+        "profile_kinds_observed": observed_profile_kinds,
+        "source_reports": source_reports,
+        "event_reports": event_reports,
+        "source_profile_count": len(source_profiles),
+        "publication_event_count": len(publication_events),
+        "relation_edge_count": len(relation_edges),
+        "forced_event_update_count": len(forced_updates),
+        "source_profiles": profiles,
+        "publication_relation_edges": relation_edges,
+        "forced_event_updates": forced_updates,
+        "formal_production_inclusion": False,
+        "d2_source_domain_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "production_affected": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def run_s2pct04_top_journal_profile_shadow(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    source_batches: Mapping[str, Mapping[str, Any]],
+    publication_events: Sequence[Mapping[str, Any]] = (),
+    prior_profile_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PCT04 metadata-only top-journal profile/relation evidence."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pct04-top-journal-profile-shadow"
+    ledger_path = state / S2PCT04_LEDGER_FILENAME
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pct04_top_journal_profile_report(
+        generated_at=generated_at,
+        source_batches=source_batches,
+        publication_events=publication_events,
+        prior_profile_state=prior_profile_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "profile_report_path": str(run_dir / "adp-s2pct04-top-journal-profile-report.json"),
+            "profile_ledger_path": str(ledger_path),
+            "profile_ledger_row_count": len(report.get("forced_event_updates") or []),
+        }
+    )
+    if write:
+        for row in report.get("forced_event_updates") or []:
+            if isinstance(row, Mapping):
+                _append_jsonl(ledger_path, row)
+    return _write_or_return_s2pct04(report, run_dir, write=write)
+
+
+def validate_s2pct04_top_journal_profile_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PCT04_JOURNAL_PROFILE_MODEL_ID:
+        errors.append("S2PCT04 profile report model_id must be adp-s2pct04-top-journal-profile-v1")
+    if report.get("task_id") != S2PCT04_TASK_ID:
+        errors.append("S2PCT04 profile report task_id must be S2PCT04")
+    if report.get("legacy_task_id") != S2PCT04_LEGACY_TASK_ID:
+        errors.append("S2PCT04 profile report legacy_task_id must be S2P2T04")
+    if report.get("acceptance_id") != S2PCT04_ACCEPTANCE_ID:
+        errors.append("S2PCT04 profile report acceptance_id must be ACC-S2PCT04-JOURNAL-PROFILE")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PCT04 profile report status must be pass or blocked")
+    for key in (
+        "formal_production_inclusion",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "production_affected",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PCT04 top-journal profile shadow")
+    profiles = report.get("source_profiles")
+    edges = report.get("publication_relation_edges")
+    updates = report.get("forced_event_updates")
+    if not isinstance(profiles, list):
+        errors.append("S2PCT04 source_profiles must be a list")
+        profiles = []
+    if not isinstance(edges, list):
+        errors.append("S2PCT04 publication_relation_edges must be a list")
+        edges = []
+    if not isinstance(updates, list):
+        errors.append("S2PCT04 forced_event_updates must be a list")
+        updates = []
+    observed = set(report.get("profile_kinds_observed") or [])
+    missing = [kind for kind in S2PCT04_REQUIRED_PROFILE_KINDS if kind not in observed]
+    if missing:
+        errors.append("S2PCT04 profile taxonomy missing required kinds: " + ", ".join(missing))
+    profile_ids: set[str] = set()
+    for index, profile in enumerate(profiles):
+        if not isinstance(profile, Mapping):
+            errors.append(f"source_profiles[{index}] must be an object")
+            continue
+        profile_id = str(profile.get("profile_id") or "")
+        if not profile_id:
+            errors.append(f"source_profiles[{index}].profile_id is required")
+        if profile_id in profile_ids:
+            errors.append(f"duplicate S2PCT04 profile_id: {profile_id}")
+        profile_ids.add(profile_id)
+        if profile.get("metadata_only") is not True:
+            errors.append(f"source_profiles[{index}].metadata_only must be true")
+        if profile.get("profile_kind") not in S2PCT04_REQUIRED_PROFILE_KINDS:
+            errors.append(f"source_profiles[{index}].profile_kind is not supported")
+        if not profile.get("canonical_document_id"):
+            errors.append(f"source_profiles[{index}].canonical_document_id is required")
+        if profile.get("profile_kind") in S2PCT04_FORCED_EVENT_TYPES and not profile.get("target_canonical_document_id"):
+            errors.append(f"source_profiles[{index}] forced event requires target_canonical_document_id")
+    for index, edge in enumerate(edges):
+        if not isinstance(edge, Mapping):
+            errors.append(f"publication_relation_edges[{index}] must be an object")
+            continue
+        if not edge.get("relation_type"):
+            errors.append(f"publication_relation_edges[{index}].relation_type is required")
+        if not edge.get("source_canonical_document_id"):
+            errors.append(f"publication_relation_edges[{index}].source_canonical_document_id is required")
+        if edge.get("target_required") is True and not edge.get("target_canonical_document_id"):
+            errors.append(f"publication_relation_edges[{index}] required target_canonical_document_id is missing")
+        if edge.get("metadata_only") is not True:
+            errors.append(f"publication_relation_edges[{index}].metadata_only must be true")
+    update_kinds = _forced_event_kinds(updates)
+    if update_kinds != set(S2PCT04_FORCED_EVENT_TYPES):
+        errors.append("S2PCT04 forced_event_updates must include correction and retraction")
+    for index, update in enumerate(updates):
+        if not isinstance(update, Mapping):
+            errors.append(f"forced_event_updates[{index}] must be an object")
+            continue
+        if update.get("event_type") not in S2PCT04_FORCED_EVENT_TYPES:
+            errors.append(f"forced_event_updates[{index}].event_type must be correction or retraction")
+        if not update.get("target_canonical_document_id"):
+            errors.append(f"forced_event_updates[{index}].target_canonical_document_id is required")
+        if update.get("forced_review_required") is not True:
+            errors.append(f"forced_event_updates[{index}].forced_review_required must be true")
+        if update.get("updated_conclusion_state") not in {"requires_revision", "invalidated"}:
+            errors.append(f"forced_event_updates[{index}].updated_conclusion_state is invalid")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PCT04 profile report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in ("profile_taxonomy_gate", "publication_relation_gate", "forced_event_update_gate"):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PCT04 profile report requires {key}=pass")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -1825,6 +2046,371 @@ def _write_or_return_s2pct03(report: dict[str, Any], run_dir: Path, *, write: bo
     if write:
         _write_json(run_dir / "adp-s2pct03-lancet-shadow-report.json", normalized)
     return normalized
+
+
+def _write_or_return_s2pct04(report: dict[str, Any], run_dir: Path, *, write: bool) -> dict[str, Any]:
+    normalized = dict(report)
+    for key in (
+        "formal_production_inclusion",
+        "d2_source_domain_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "production_affected",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+    ):
+        normalized.setdefault(key, False)
+    normalized["validation_errors"] = validate_s2pct04_top_journal_profile_report(normalized)
+    if write:
+        report_path = Path(str(normalized.get("profile_report_path") or run_dir / "adp-s2pct04-top-journal-profile-report.json"))
+        _write_json(report_path, normalized)
+    return normalized
+
+
+def _top_journal_profiles_from_batches(
+    source_batches: Mapping[str, Mapping[str, Any]],
+    *,
+    generated_at: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+    profiles: list[dict[str, Any]] = []
+    relation_edges: list[dict[str, Any]] = []
+    source_reports: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for journal in S2PCT04_REQUIRED_JOURNALS:
+        batch = source_batches.get(journal)
+        if not isinstance(batch, Mapping):
+            reason = f"{journal}: missing completed top-journal source batch for S2PCT04 profile modeling"
+            source_reports.append({"journal": journal, "status": "blocked", "blocking_reasons": [reason]})
+            errors.append(reason)
+            continue
+        batch_errors = validate_top_journal_source_batch(batch)
+        blocked = bool(batch_errors or batch.get("status") == "blocked")
+        source_reports.append(
+            {
+                "journal": journal,
+                "status": "blocked" if blocked else "pass",
+                "source_item_count": len(batch.get("source_items") or []),
+                "new_item_count": int(batch.get("new_item_count") or 0),
+                "blocking_reasons": batch_errors or list(batch.get("blocking_reasons") or []),
+            }
+        )
+        if blocked:
+            errors.extend(f"{journal}: {reason}" for reason in (batch_errors or batch.get("blocking_reasons") or []))
+            continue
+        for source_item in batch.get("source_items") or []:
+            if not isinstance(source_item, Mapping):
+                continue
+            profile, edge, profile_errors = _top_journal_profile_from_source_item(source_item, generated_at=generated_at)
+            errors.extend(profile_errors)
+            if profile_errors:
+                continue
+            profiles.append(profile)
+            relation_edges.append(edge)
+    return profiles, relation_edges, source_reports, errors
+
+
+def _top_journal_profile_from_source_item(
+    source_item: Mapping[str, Any],
+    *,
+    generated_at: str,
+) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
+    errors: list[str] = []
+    metadata = source_item.get("metadata") if isinstance(source_item.get("metadata"), Mapping) else {}
+    top_journal = metadata.get("top_journal") if isinstance(metadata.get("top_journal"), Mapping) else {}
+    if not isinstance(top_journal, Mapping) or not top_journal:
+        return {}, {}, [f"{source_item.get('source_id', 'source')}: top_journal metadata missing"]
+    canonical_id = _canonical_document_id(source_item)
+    source_id = str(source_item.get("source_id") or canonical_id)
+    article_type = str(top_journal.get("article_type") or "")
+    profile_kind = _top_journal_profile_kind(article_type)
+    if not profile_kind:
+        errors.append(f"{source_id}: unsupported top-journal profile article_type {article_type!r}")
+    journal = str(top_journal.get("journal_id") or "")
+    if journal not in S2PCT04_REQUIRED_JOURNALS:
+        errors.append(f"{source_id}: journal must be one of {list(S2PCT04_REQUIRED_JOURNALS)}")
+    profile = {
+        "profile_id": f"profile:{canonical_id}",
+        "source_id": source_id,
+        "canonical_document_id": canonical_id,
+        "journal": journal,
+        "journal_display": str(top_journal.get("journal") or journal),
+        "title": str(source_item.get("title") or ""),
+        "article_type": article_type,
+        "article_type_raw": str(top_journal.get("article_type_raw") or article_type),
+        "profile_kind": profile_kind,
+        "profile_role": _top_journal_profile_role(profile_kind),
+        "publication_status": "active",
+        "generated_at": generated_at,
+        "metadata_only": True,
+        "production_eligible": False,
+        "evidence_refs": list(source_item.get("evidence_refs") or []),
+    }
+    relation = {
+        "edge_id": f"relation:{canonical_id}:original-publication",
+        "relation_type": "original_publication",
+        "source_canonical_document_id": canonical_id,
+        "target_canonical_document_id": canonical_id,
+        "target_required": False,
+        "event_type": "original_publication",
+        "metadata_only": True,
+        "evidence_refs": list(source_item.get("evidence_refs") or []),
+    }
+    return profile, relation, errors
+
+
+def _top_journal_profiles_from_publication_events(
+    publication_events: Sequence[Mapping[str, Any]],
+    *,
+    generated_at: str,
+    known_targets: set[str],
+    prior_index: Mapping[str, Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+    profiles: list[dict[str, Any]] = []
+    relation_edges: list[dict[str, Any]] = []
+    forced_updates: list[dict[str, Any]] = []
+    event_reports: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, event in enumerate(publication_events):
+        if not isinstance(event, Mapping):
+            reason = f"publication_events[{index}] must be an object"
+            event_reports.append({"index": index, "status": "blocked", "blocking_reasons": [reason]})
+            errors.append(reason)
+            continue
+        profile, edge, profile_errors = _top_journal_profile_from_publication_event(
+            event,
+            generated_at=generated_at,
+            known_targets=known_targets,
+        )
+        event_reports.append(
+            {
+                "event_id": str(event.get("event_id") or event.get("source_id") or f"publication-event-{index}"),
+                "status": "blocked" if profile_errors else "pass",
+                "profile_kind": profile.get("profile_kind", ""),
+                "relation_type": edge.get("relation_type", ""),
+                "blocking_reasons": profile_errors,
+            }
+        )
+        errors.extend(profile_errors)
+        if profile_errors:
+            continue
+        profiles.append(profile)
+        relation_edges.append(edge)
+        if profile.get("profile_kind") in S2PCT04_FORCED_EVENT_TYPES:
+            forced_updates.append(_forced_event_update_from_profile(profile, prior_index=prior_index))
+    return profiles, relation_edges, forced_updates, event_reports, errors
+
+
+def _top_journal_profile_from_publication_event(
+    event: Mapping[str, Any],
+    *,
+    generated_at: str,
+    known_targets: set[str],
+) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
+    errors: list[str] = []
+    event_id = str(event.get("event_id") or event.get("source_id") or "")
+    source_id = str(event.get("source_id") or event_id)
+    canonical_id = str(event.get("canonical_document_id") or source_id)
+    journal = str(event.get("journal") or "")
+    title = str(event.get("title") or "")
+    article_type = str(event.get("article_type") or event.get("event_type") or event.get("profile_kind") or "")
+    profile_kind = _top_journal_profile_kind(article_type)
+    target_id = str(event.get("target_canonical_document_id") or "")
+    relation_type = str(event.get("relation_type") or _default_relation_type(profile_kind))
+    target_required = relation_type != "original_publication" or profile_kind in S2PCT04_FORCED_EVENT_TYPES
+    if not event_id:
+        errors.append("publication event requires event_id or source_id")
+    if journal not in S2PCT04_REQUIRED_JOURNALS:
+        errors.append(f"{event_id or source_id}: journal must be one of {list(S2PCT04_REQUIRED_JOURNALS)}")
+    if not canonical_id:
+        errors.append(f"{event_id or source_id}: canonical_document_id is required")
+    if not title:
+        errors.append(f"{event_id or source_id}: title is required")
+    if not profile_kind:
+        errors.append(f"{event_id or source_id}: unsupported publication event article_type {article_type!r}")
+    if target_required and not target_id:
+        errors.append(f"{event_id or source_id}: target_canonical_document_id is required for {relation_type}")
+    if target_id and target_id not in known_targets:
+        errors.append(f"{event_id or source_id}: target_canonical_document_id is unknown: {target_id}")
+    profile = {
+        "profile_id": f"profile:{canonical_id}",
+        "event_id": event_id,
+        "source_id": source_id,
+        "canonical_document_id": canonical_id,
+        "target_canonical_document_id": target_id,
+        "journal": journal,
+        "journal_display": str(event.get("journal_display") or journal.title()),
+        "title": title,
+        "article_type": _profile_token(article_type),
+        "article_type_raw": article_type,
+        "profile_kind": profile_kind,
+        "profile_role": _top_journal_profile_role(profile_kind),
+        "publication_status": profile_kind if profile_kind in S2PCT04_FORCED_EVENT_TYPES else "active",
+        "generated_at": generated_at,
+        "observed_at": str(event.get("observed_at") or generated_at),
+        "metadata_only": True,
+        "production_eligible": False,
+        "evidence_refs": list(event.get("evidence_refs") or []),
+    }
+    edge = {
+        "edge_id": f"relation:{canonical_id}:{relation_type}:{target_id or canonical_id}",
+        "event_id": event_id,
+        "relation_type": relation_type,
+        "source_canonical_document_id": canonical_id,
+        "target_canonical_document_id": target_id or canonical_id,
+        "target_required": target_required,
+        "event_type": profile_kind,
+        "metadata_only": True,
+        "evidence_refs": list(event.get("evidence_refs") or []),
+    }
+    return profile, edge, errors
+
+
+def _top_journal_profile_kind(article_type: str) -> str:
+    token = _profile_token(article_type)
+    if token in {"research", "research_article", "research_article_feed_item", "report", "article", "articles"}:
+        return "research"
+    if token in {"review", "seminar", "series", "commission", "commissions", "clinical_rounds"}:
+        return "review"
+    if token in {"editorial", "commentary", "opinion", "perspective", "perspectives", "viewpoint", "viewpoints"}:
+        return "editorial"
+    if token in {"news", "news_feature", "news_and_views", "news_analysis"}:
+        return "news"
+    if token in {"correction", "corrigendum", "erratum", "addendum"}:
+        return "correction"
+    if token in {"retraction", "retracted", "withdrawal", "withdrawn"}:
+        return "retraction"
+    return ""
+
+
+def _top_journal_profile_role(profile_kind: str) -> str:
+    return {
+        "research": "primary_evidence_candidate",
+        "review": "synthesis_context_candidate",
+        "editorial": "opinion_or_context_not_primary_evidence",
+        "news": "secondary_news_context_not_primary_evidence",
+        "correction": "forced_revision_event",
+        "retraction": "forced_invalidation_event",
+    }.get(profile_kind, "unknown")
+
+
+def _default_relation_type(profile_kind: str) -> str:
+    if profile_kind == "correction":
+        return "corrects"
+    if profile_kind == "retraction":
+        return "retracts"
+    if profile_kind in {"editorial", "news"}:
+        return "discusses"
+    return "original_publication"
+
+
+def _prior_profile_state_index(prior_profile_state: Mapping[str, Any] | None) -> dict[str, Mapping[str, Any]]:
+    if not isinstance(prior_profile_state, Mapping):
+        return {}
+    raw_items: list[Any] = []
+    if isinstance(prior_profile_state.get("items"), list):
+        raw_items = list(prior_profile_state["items"])
+    elif prior_profile_state.get("canonical_document_id"):
+        raw_items = [prior_profile_state]
+    else:
+        raw_items = [value for value in prior_profile_state.values() if isinstance(value, Mapping)]
+    index: dict[str, Mapping[str, Any]] = {}
+    for item in raw_items:
+        if not isinstance(item, Mapping):
+            continue
+        canonical_id = str(item.get("canonical_document_id") or item.get("source_id") or "")
+        if canonical_id:
+            index[canonical_id] = item
+    return index
+
+
+def _forced_event_update_from_profile(profile: Mapping[str, Any], *, prior_index: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    event_type = str(profile.get("profile_kind") or "")
+    target_id = str(profile.get("target_canonical_document_id") or "")
+    prior = prior_index.get(target_id, {})
+    invalidating = event_type == "retraction"
+    return {
+        "update_id": f"forced-update:{event_type}:{_safe_id(target_id)}:{_safe_id(str(profile.get('event_id') or profile.get('source_id') or 'event'))}",
+        "model_id": S2PCT04_JOURNAL_PROFILE_MODEL_ID,
+        "acceptance_id": S2PCT04_ACCEPTANCE_ID,
+        "task_id": S2PCT04_TASK_ID,
+        "legacy_task_id": S2PCT04_LEGACY_TASK_ID,
+        "event_id": str(profile.get("event_id") or profile.get("source_id") or ""),
+        "event_type": event_type,
+        "event_canonical_document_id": str(profile.get("canonical_document_id") or ""),
+        "target_canonical_document_id": target_id,
+        "prior_conclusion_state": str(prior.get("conclusion_state") or prior.get("publication_status") or "active_or_unknown"),
+        "updated_conclusion_state": "invalidated" if invalidating else "requires_revision",
+        "publication_status": "retracted" if invalidating else "corrected",
+        "forced_review_required": True,
+        "allowed_action": "remove_or_mark_invalid_before_reuse" if invalidating else "revise_existing_summary_before_reuse",
+        "metadata_only": True,
+        "generated_at": str(profile.get("generated_at") or ""),
+    }
+
+
+def _publication_relation_errors(profiles: Sequence[Mapping[str, Any]], relation_edges: Sequence[Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    edge_sources = {str(edge.get("source_canonical_document_id") or "") for edge in relation_edges if isinstance(edge, Mapping)}
+    for profile in profiles:
+        canonical_id = str(profile.get("canonical_document_id") or "")
+        if canonical_id and canonical_id not in edge_sources:
+            errors.append(f"{canonical_id}: missing publication relation edge")
+    for edge in relation_edges:
+        if not isinstance(edge, Mapping):
+            errors.append("publication relation edge must be an object")
+            continue
+        if not edge.get("relation_type"):
+            errors.append("publication relation edge missing relation_type")
+        if edge.get("target_required") is True and not edge.get("target_canonical_document_id"):
+            errors.append(f"{edge.get('edge_id', 'relation')}: missing required target_canonical_document_id")
+        if edge.get("metadata_only") is not True:
+            errors.append(f"{edge.get('edge_id', 'relation')}: relation edge must be metadata_only")
+    return errors
+
+
+def _forced_event_update_errors(
+    event_profiles: Sequence[Mapping[str, Any]],
+    forced_updates: Sequence[Mapping[str, Any]],
+) -> list[str]:
+    errors: list[str] = []
+    update_keys = {
+        (str(update.get("event_type") or ""), str(update.get("target_canonical_document_id") or ""))
+        for update in forced_updates
+        if isinstance(update, Mapping)
+    }
+    for profile in event_profiles:
+        profile_kind = str(profile.get("profile_kind") or "")
+        if profile_kind not in S2PCT04_FORCED_EVENT_TYPES:
+            continue
+        target_id = str(profile.get("target_canonical_document_id") or "")
+        if not target_id:
+            errors.append(f"{profile.get('event_id', 'forced-event')}: forced event target missing")
+            continue
+        if (profile_kind, target_id) not in update_keys:
+            errors.append(f"{profile.get('event_id', 'forced-event')}: forced event update not generated")
+    return errors
+
+
+def _forced_event_kinds(updates: Sequence[Mapping[str, Any]]) -> set[str]:
+    return {str(update.get("event_type") or "") for update in updates if isinstance(update, Mapping) and update.get("event_type")}
+
+
+def _duplicate_values(values: Iterable[str]) -> list[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for value in values:
+        if not value:
+            continue
+        if value in seen:
+            duplicates.add(value)
+        seen.add(value)
+    return sorted(duplicates)
+
+
+def _profile_token(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", str(value or "").strip().lower()).strip("_")
 
 
 def _replay_gate(report: Mapping[str, Any] | None) -> dict[str, Any]:
