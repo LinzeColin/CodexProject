@@ -1,11 +1,13 @@
+from datetime import date
 from pathlib import Path
 
 from app.core.holdings_discovery import discover_holdings
 from tests.helpers import temp_settings
 
 
-def test_discover_holdings_converts_quantlab_candidate(tmp_path: Path):
+def test_discover_holdings_converts_quantlab_candidate(monkeypatch, tmp_path: Path):
     settings = temp_settings(tmp_path)
+    monkeypatch.setattr("app.core.holdings_discovery._today", lambda settings: date(2026, 6, 12))
     source_dir = tmp_path / "source"
     source_dir.mkdir()
     csv_path = source_dir / "HoldingsBook.csv"
@@ -37,8 +39,9 @@ def test_discover_holdings_converts_quantlab_candidate(tmp_path: Path):
     assert "source/HoldingsBook.csv" in markdown
 
 
-def test_discover_holdings_review_matrix_flags_special_funds(tmp_path: Path):
+def test_discover_holdings_review_matrix_flags_special_funds(monkeypatch, tmp_path: Path):
     settings = temp_settings(tmp_path)
+    monkeypatch.setattr("app.core.holdings_discovery._today", lambda settings: date(2026, 6, 12))
     source_dir = tmp_path / "source"
     source_dir.mkdir()
     csv_path = source_dir / "HoldingsBook.csv"

@@ -37,15 +37,17 @@ def _write_production_mail_plist(settings: Settings) -> tuple[Path, bool, str]:
     if not data:
         return destination, False, "source launchd plist missing or invalid"
     env = data.get("EnvironmentVariables")
-    if not isinstance(env, dict):
-        env = {}
-    env["SERENITY_MAIL_SEND_ENABLED"] = "true"
-    env["SERENITY_DRY_RUN"] = "false"
-    data["EnvironmentVariables"] = env
+    if isinstance(env, dict):
+        env.pop("SERENITY_MAIL_SEND_ENABLED", None)
+        env.pop("SERENITY_DRY_RUN", None)
+        if env:
+            data["EnvironmentVariables"] = env
+        else:
+            data.pop("EnvironmentVariables", None)
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("wb") as handle:
         plistlib.dump(data, handle, sort_keys=False)
-    return destination, True, "production-mail plist template generated; not installed"
+    return destination, True, "production launchd review copy generated with command-driven mail semantics; not installed"
 
 
 def _write_markdown(path: Path, result: dict[str, object], settings: Settings) -> None:
@@ -69,7 +71,7 @@ def _write_markdown(path: Path, result: dict[str, object], settings: Settings) -
         str(result["real_send_smoke_command"]),
         "```",
         "",
-        "Install the production-mail launchd plist only after the real-send smoke succeeds:",
+        "Install or reload the launchd plist after the real-send smoke succeeds if you need to refresh the installed job:",
         "",
         "```bash",
         str(result["install_production_plist_command"]),
@@ -86,6 +88,7 @@ def _write_markdown(path: Path, result: dict[str, object], settings: Settings) -
         "- This command does not send mail.",
         "- This command does not install or reload launchd.",
         "- This command does not place trades.",
+        "- The launchd template and automation command share the same command-driven production mail semantics; no separate env flip is required.",
         "- Current production remains blocked until data gates pass and a real-send smoke is explicitly approved.",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -104,20 +107,16 @@ def build_mail_unlock_check(settings: Settings) -> dict[str, object]:
     )
     status = "pass" if workflow_ready else "blocked"
     real_send_smoke_command = (
-        "SERENITY_MAIL_SEND_ENABLED=true python -m app.cli mail-smoke "
+        "python -m app.cli mail-smoke "
         "--send --confirm-real-send SEND --require-send-ready --json"
     )
     install_production_plist_command = (
-        "cp outputs/implementation/com.serenity.daily-analysis.production-mail.plist "
+        "cp outputs/implementation/com.serenity.daily-analysis.plist "
         "~/Library/LaunchAgents/com.serenity.daily-analysis.plist && "
         "plutil -lint ~/Library/LaunchAgents/com.serenity.daily-analysis.plist && "
         "launchctl kickstart -k \"gui/$(id -u)/com.serenity.daily-analysis\""
     )
-    rollback_command = (
-        "cp outputs/implementation/com.serenity.daily-analysis.plist "
-        "~/Library/LaunchAgents/com.serenity.daily-analysis.plist && "
-        "launchctl kickstart -k \"gui/$(id -u)/com.serenity.daily-analysis\""
-    )
+    rollback_command = "echo 'No launchd rollback needed; the base plist already uses command-driven production semantics.'"
     output_dir = settings.root_dir / "outputs" / "preflight"
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / "mail_unlock_check_latest.json"

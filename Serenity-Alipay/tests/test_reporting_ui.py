@@ -7,9 +7,208 @@ from app.core.application_portal import (
     PortalManualReviewItem,
     PortalRun,
     PortalTimelineEvent,
+    _manual_review_items,
+    _relative_ratio,
     _write_app_bundle,
+    render_downloads_entry,
     render_application_portal,
 )
+from app.db import connect, init_db
+from tests.helpers import temp_settings
+
+
+def test_relative_ratio_uses_one_percent_action_threshold():
+    assert _relative_ratio(0.201, 0.2) == ("flat", "+0.50%", "维持")
+    assert _relative_ratio(0.203, 0.2) == ("up", "+1.50%", "增加/买入")
+    assert _relative_ratio(0.197, 0.2) == ("down", "-1.50%", "减少/卖出")
+
+
+def test_manual_review_items_hide_already_processed_same_asset_reason(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    reason = "fee/redemption/subscription status missing or closed"
+    with connect(settings.db_path) as conn:
+        conn.executemany(
+            """
+            INSERT INTO asset_master (
+              asset_id, asset_code, asset_name, asset_type, market, fund_company,
+              risk_level, is_excluded, exclusion_reason
+            )
+            VALUES (?, ?, ?, 'fund', 'CN', NULL, NULL, 0, NULL)
+            """,
+            [
+                ("270042", "270042", "广发纳指100ETF联接(QDII)人民币A"),
+                ("018043", "018043", "天弘纳斯达克100指数发起(QDII)A"),
+            ],
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (1, 'sda_old', '270042', ?, 'No-New-Order', 'open', '2026-06-14T10:00:00+00:00')
+            """,
+            (reason,),
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_decision (
+              review_id, run_id, decision, outcome, outcome_label, system_disposition,
+              refresh_triggered, refresh_status, refresh_message, refresh_run_id,
+              note, saved_at, created_at, updated_at
+            )
+            VALUES (
+              1, 'sda_old', '放入观察池继续观察', 'observe_pool', '放入观察池继续观察', '',
+              1, 'pass', '目前更新到最新时间 20260614 - 20:22 AEST 保持当前持仓', 'sda_new',
+              '', '20260614 - 20:22 AEST', '2026-06-14T10:22:00+00:00', '2026-06-14T10:22:00+00:00'
+            )
+            """
+        )
+        conn.executemany(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (?, 'sda_new', ?, ?, 'No-New-Order', 'open', ?)
+            """,
+            [
+                (2, "270042", reason, "2026-06-14T10:23:00+00:00"),
+                (3, "018043", reason, "2026-06-14T10:23:00+00:00"),
+                (4, "270042", "new source conflict", "2026-06-14T10:23:00+00:00"),
+            ],
+        )
+
+        items = _manual_review_items(conn, "sda_new")
+
+    assert [(item.review_id, item.code, item.reason) for item in items] == [
+        (4, "270042", "new source conflict"),
+        (3, "018043", reason),
+    ]
+
+
+def test_manual_review_items_do_not_fallback_to_old_open_queue(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO asset_master (
+              asset_id, asset_code, asset_name, asset_type, market, fund_company,
+              risk_level, is_excluded, exclusion_reason
+            )
+            VALUES ('270042', '270042', '广发纳指100ETF联接(QDII)人民币A', 'fund', 'CN', NULL, NULL, 0, NULL)
+            """
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (
+              20, 'sda_old', '270042',
+              'fee/redemption/subscription status missing or closed',
+              'No-New-Order', 'open', '2026-06-15T08:28:35+00:00'
+            )
+            """
+        )
+
+        items = _manual_review_items(conn, "sda_latest_without_review")
+
+    assert items == []
+
+
+def test_manual_review_exclude_result_expires_after_fourteen_days(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    reason = "fee/redemption/subscription status missing or closed"
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO asset_master (
+              asset_id, asset_code, asset_name, asset_type, market, fund_company,
+              risk_level, is_excluded, exclusion_reason
+            )
+            VALUES ('270042', '270042', '广发纳指100ETF联接(QDII)人民币A', 'fund', 'CN', NULL, NULL, 0, NULL)
+            """
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (10, 'sda_old', '270042', ?, 'No-New-Order', 'open', '2026-06-01T00:00:00+00:00')
+            """,
+            (reason,),
+        )
+        conn.execute(
+            """
+            INSERT INTO manual_review_decision (
+              review_id, run_id, decision, outcome, outcome_label, system_disposition,
+              refresh_triggered, refresh_status, refresh_message, refresh_run_id,
+              note, saved_at, created_at, updated_at
+            )
+            VALUES (
+              10, 'sda_old', '剔除这一轮观察池', 'exclude_current_observation', '剔除这一轮观察池', '',
+              1, 'pass', '目前更新到最新时间 20260601 - 10:00 AEST 保持当前持仓', 'sda_old_next',
+              '', '20260601 - 10:00 AEST', '2026-06-01T00:00:00+00:00', '2026-06-01T00:00:00+00:00'
+            )
+            """
+        )
+        conn.executemany(
+            """
+            INSERT INTO manual_review_queue (
+              id, run_id, asset_id, reason, action_blocked, status, created_at
+            )
+            VALUES (?, 'sda_new', '270042', ?, 'No-New-Order', 'open', ?)
+            """,
+            [
+                (11, reason, "2026-06-10T00:00:00+00:00"),
+                (12, reason, "2026-06-20T00:00:00+00:00"),
+            ],
+        )
+
+        items = _manual_review_items(conn, "sda_new")
+
+    assert [(item.review_id, item.code) for item in items] == [(12, "270042")]
+
+
+def test_pool_rows_show_processed_review_as_observing():
+    reason = "fee/redemption/subscription status missing or closed"
+    run = PortalRun(
+        run_id="sda_test_r7",
+        slot="R7",
+        run_time_bj="2026-06-15T14:00:00+08:00",
+        run_time_au="2026-06-15T16:00:00+10:00",
+        created_at="2026-06-15T06:00:00+00:00",
+        status="degraded",
+        quality="manual_review",
+        notification_status=None,
+        report_path="data/reports/sda_test_r7_report.md",
+        html_path="data/reports/sda_test_r7_report.html",
+    )
+    observation = PortalHolding(
+        rank=6,
+        code="018043",
+        name="天弘纳斯达克100指数发起(QDII)A",
+        grade="Manual Review",
+        score=80.1,
+        target_weight=0.0,
+        current_weight=0.0,
+        action_label="Manual Review",
+        trigger_reason=reason,
+    )
+
+    html = render_application_portal(
+        run,
+        [],
+        None,
+        [],
+        observation_pool=[observation],
+        resolved_review_keys={("018043", reason)},
+    )
+
+    assert "已复核/观察中" in html
+    assert "需人工复核" not in html
 
 
 def test_offline_index_has_search_filters_and_copy_feedback_hooks():
@@ -38,6 +237,20 @@ def test_offline_index_has_search_filters_and_copy_feedback_hooks():
     assert "../../outputs/application/index.html" in html
 
 
+def test_downloads_entry_polls_local_service_before_redirect(tmp_path: Path):
+    portal_path = tmp_path / "index.html"
+    portal_path.write_text("<html></html>", encoding="utf-8")
+
+    html = render_downloads_entry(portal_path)
+
+    assert "正在启动本地服务" in html
+    assert "firstHealthyOrigin" in html
+    assert "http://127.0.0.1:${port}" in html
+    assert "/api/health" in html
+    assert "window.location.replace" in html
+    assert "8765,8766" in html
+
+
 def test_application_bundle_has_custom_icon(tmp_path: Path):
     app_path = tmp_path / "Serenity 每日分析.app"
     portal_path = tmp_path / "index.html"
@@ -49,10 +262,20 @@ def test_application_bundle_has_custom_icon(tmp_path: Path):
     pkginfo = app_path / "Contents" / "PkgInfo"
     icon = app_path / "Contents" / "Resources" / "SerenityIcon.icns"
     preview = app_path.parent / "serenity-app-icon.png"
+    executable = app_path / "Contents" / "MacOS" / "open-serenity"
+    launcher = executable.read_text(encoding="utf-8")
     assert "<key>CFBundleIconFile</key>" in info
     assert "<string>SerenityIcon</string>" in info
     assert "local.serenity.daily-analysis." in info
     assert pkginfo.read_text(encoding="ascii") == "APPL????"
+    assert 'SERVER_PID="$!"' in launcher
+    assert 'wait "$SERVER_PID"' in launcher
+    assert "seq 8765 8795" in launcher
+    assert "seq 1 60" in launcher
+    assert 'open "$BOOTSTRAP"' in launcher
+    assert 'open "$URL"' not in launcher
+    assert "--connect-timeout 0.2 --max-time 0.5" in launcher
+    assert f'open "{portal_path.resolve()}"' not in launcher
     assert icon.exists()
     assert icon.stat().st_size > 1024
     assert preview.exists()
@@ -82,6 +305,17 @@ def test_application_portal_homepage_is_chinese_and_position_first():
         current_weight=0.209267,
         action_label="Maintain",
         trigger_reason="serenity judgment supported by evidence confidence",
+    )
+    observation_holding = PortalHolding(
+        rank=6,
+        code="018043",
+        name="天弘纳斯达克100指数发起(QDII)A",
+        grade="Manual Review",
+        score=68.25,
+        target_weight=0.0,
+        current_weight=0.0,
+        action_label="Manual Review",
+        trigger_reason="fee/redemption/subscription status missing or closed",
     )
 
     previous_holding = PortalHolding(
@@ -189,6 +423,9 @@ def test_application_portal_homepage_is_chinese_and_position_first():
             action_blocked="No-New-Order",
             status="open",
             created_at="20260613 - 14:00 CST",
+            analysis_rank=6,
+            analysis_grade="Manual Review",
+            analysis_score=68.25,
         )
     ]
 
@@ -201,6 +438,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
         fund_library={"007300": fund_info},
         run_timeline=timeline_events,
         manual_review_items=review_items,
+        observation_pool=[observation_holding],
     )
 
     assert "<h1>Serenity 每日分析</h1>" in html
@@ -208,20 +446,28 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "Top5 discipline（策略份额）" not in html
     assert "当前持仓建议" in html
     assert "20260615 - 14:00 CST · 通过" in html
+    assert "Top5 持仓 / Top6-10 观察" in html
+    assert "持仓池 / 观察池排序" in html
+    assert "#1" in html
+    assert "#6" in html
+    assert "持仓池" in html
+    assert "观察池" in html
+    assert "同一 Serenity 基金分析排序" in html
+    assert "观察池只进入跟踪和人工复核队列" in html
     assert "验证回填，生成时间" not in html
     assert "最新更新时间 20260613 - 10:00 AEST" in html
     assert "相较对比时间 20260613 - 09:29 AEST" in html
     assert "运行 ID：" not in html
-    assert 'fetch("/api/refresh"' in html
+    assert 'fetchApiJson("/api/refresh"' in html
     assert "持仓建议" in html
     assert "当前持仓及时间" in html
     assert "上轮持仓及时间" in html
     assert "申购费分档规则" in html
     assert "赎回费分档规则" in html
-    assert "支付宝交易可用性" in html
-    assert "MooMoo交易可用性" in html
-    assert "平台交易备注" in html
-    assert "不支持支付宝或MooMoo交易不能单独排除候选" in html
+    assert "支付宝交易可用性" not in html
+    assert "MooMoo交易可用性" not in html
+    assert "平台交易备注" not in html
+    assert "不支持支付宝或MooMoo交易不能单独排除候选" not in html
     assert "M<100万元 0.80%" in html
     assert "N<7天 1.50%" in html
     assert "当前/上轮持仓对比" not in html
@@ -252,21 +498,31 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert 'data-open-review' in html
     assert 'id="review-modal" hidden' in html
     assert "天弘纳斯达克100指数发起(QDII)A" in html
-    assert "保持禁止新增" in html
-    assert "需要补证据" in html
-    assert "确认观察" in html
-    assert "已人工处理" in html
+    assert "为什么需要人工复核" in html
+    assert "fee/redemption/subscription status missing or closed" in html
+    assert "基金分析排序：#6" in html
+    assert "证据置信度：68.25" in html
+    assert "放入观察池继续观察" in html
+    assert "剔除这一轮观察池" in html
+    assert "进入 Top 5 候选操作池" in html
+    assert "保存后立即新增一次真实 Serenity run" in html
+    assert "保存后立即运行一次 Serenity 全流程" in html
     assert "data-save-review" in html
     assert 'data-review-run-id="sda_test_r7"' in html
     assert "data-copy-review-log" in html
-    assert "serenityManualReview.v1.cache" in html
-    assert 'fetch("/api/manual-review"' in html
+    assert "serenityManualReview.v1.cache" not in html
+    assert "localStorage" not in html
+    assert "临时保存" not in html
+    assert "临时缓存" not in html
+    assert 'fetchApiJson("/api/manual-review"' in html
     assert "保存复核" in html
     assert "保存本地复核" not in html
     assert "清空复核记录" in html
     assert "清空本地复核" not in html
     assert "人工复核已保存到数据库" in html
     assert "已保存到数据库" in html
+    assert "保存复核必须写入本机 SQLite 数据库" in html
+    assert "本地服务未启动。请重新打开 Serenity 每日分析.app" in html
     assert "初始持仓权重" in html
     assert "上轮对比权重" in html
     assert "相对比例" in html
@@ -277,6 +533,15 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert 'data-previous-value="18.93%"' in html
     assert 'data-previous-value="+10.57%"' in html
     assert "需操作的行为" in html
+    assert "跟随上方“基准权重口径”切换" in html
+    assert "与持仓建议表的相对比例动作保持一致" in html
+    assert 'data-action-level data-initial-value="保持当前持仓" data-previous-value="需人工确认增配"' in html
+    assert 'data-action-count data-initial-value="0 项变化" data-previous-value="增加/买入 1 项；减少/卖出 0 项"' in html
+    assert "持仓建议表当前基准口径下全部为维持；无需新增申购、赎回、增配或减配。" in html
+    assert "国联安中证半导体ETF联接A：增加/买入 +10.57%" in html
+    assert "立即动作" not in html
+    assert html.index("<strong>基金库</strong>") < html.index("<strong>使用说明</strong>") < html.index("<strong>人工复核</strong>") < html.index("<strong>报告</strong>") < html.index("<strong>当前快照</strong>")
+    assert html.count("<h2>操作入口</h2>") == 1
     assert "不建议因为本轮结果新增申购或赎回" not in html
     assert "所有申购、赎回、增配、减配都必须在支付宝或对应官方平台人工确认后执行" not in html
     assert "增加/买入" in html
@@ -309,7 +574,7 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "查看报告" in html
     assert "查看快照" in html
     assert "查看基金" in html
-    assert "查看说明" in html
+    assert "打开说明" in html
     assert "处理复核" in html
     assert "保存到数据库" in html
     assert "复制预检命令" not in html
@@ -323,12 +588,20 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert 'id="fund-library-modal" hidden' in html
     assert 'id="fund-library-body"' in html
     assert 'data-fund-library-mode="gallery"' in html
-    assert 'data-fund-library-mode="table"' in html
-    assert 'data-fund-library-view="gallery"' in html
-    assert 'data-fund-library-view="table" hidden' in html
+    assert 'data-fund-library-mode="table">表格' in html
+    assert 'data-fund-library-view="gallery" hidden' in html
+    assert 'data-fund-library-view="table" hidden' not in html
     assert 'id="fund-library-table-body"' in html
     assert "fundLibraryTableBody" in html
     assert "fundLibrarySummaryLabels" in html
+    assert "fundLibraryTableColumns" in html
+    assert "formatFeeSchedule" in html
+    assert "fee-schedule-cell" in html
+    assert 'setFundLibraryMode("table")' in html
+    assert 'setFundLibraryMode("gallery")' not in html
+    assert ".fund-library-table th:nth-child(1)" in html
+    assert "left: 92px" in html
+    assert "white-space: pre-line" in html
     assert '#fund-library-modal { z-index: 32; }' in html
     assert '#fund-modal { z-index: 36; }' in html
     assert 'data-close-fund-button' in html
@@ -342,26 +615,36 @@ def test_application_portal_homepage_is_chinese_and_position_first():
     assert "使用说明" in html
     assert 'data-open-usage-guide' in html
     assert 'id="usage-guide-modal" hidden' in html
+    assert 'data-guide-target="guide-selection"' in html
+    assert 'data-guide-section' in html
+    assert "先看结论，再追溯原因" in html
+    assert "持有期</strong>1个月-1年" in html
     assert "Skill 选股逻辑" in html
     assert "不是先拿一张规则表机械筛选" in html
-    assert "如何挑选：先看高成长主题是否仍有景气度" in html
-    assert "怎么挑选：先按产业链卡点、稀缺层、主题暴露" in html
-    assert "为什么挑选：Top5 先由 Serenity 判断决定，不由 Score 机械排序" in html
-    assert "为什么调仓：当新一轮证据显示产业链强弱" in html
-    assert "思考公示方式：页面展示证据置信度、等级、目标权重、基准权重" in html
+    assert "未来 1个月-1年最值得承担高波动" in html
+    assert "如何挑选</strong>先看高成长主题是否仍有景气度" in html
+    assert "怎么挑选</strong>按产业链卡点、稀缺层、主题暴露" in html
+    assert "为什么挑选</strong>Top5 先由 Serenity 判断决定，不由 Score 机械排序" in html
+    assert "为什么调仓</strong>当产业链强弱、资金方向、风险回撤" in html
+    assert "页面公开证据置信度、等级、目标权重、基准权重" in html
     assert "ConfidenceScore = Data 25 + Timeliness 15 + Source 15 + Return 15 + Risk 20 + Executable 10" in html
+    assert "return_windows 缺失按关键缺失处理" in html
+    assert "Return = 15 x 跑赢次数 / 8" in html
+    assert "比较 1个月、3个月、1年、10交易日" in html
     assert "SerenityRank_i = 产业链卡点优先级 + 主题暴露 + 场外可执行性" in html
     assert "ConfidenceModifier_i = 0.85 + 0.15 x ConfidenceScore_i / 100" in html
     assert "低 Serenity 优先级标的不会仅凭更高 ConfidenceScore 超过高优先级标的" in html
     assert "RawWeight_i = Score_i / sum(Top5 Score)" not in html
     assert "Deviation = TargetWeight - BaselineWeight" in html
-    assert "凭什么：先确认数据质量通过、基金申赎和费率可执行" in html
-    assert "为什么：偏离不是账户盈亏" in html
-    assert "怎么做：|Deviation| &lt;= 1.00%：维持" in html
-    assert "做多少：策略调整份额 = TargetWeight - BaselineWeight" in html
-    assert "为什么做这么多：TargetWeight 已由 Serenity 优先级" in html
-    assert "为什么 1.00% 内维持" in html
+    assert "凭什么</strong>先确认数据质量通过、基金申赎和费率可执行" in html
+    assert "为什么</strong>偏离不是账户盈亏" in html
+    assert "怎么做</strong>|Deviation| &lt;= 1.00%：维持" in html
+    assert "做多少</strong>策略调整份额 = TargetWeight - BaselineWeight" in html
+    assert "为什么做这么多</strong>TargetWeight 已由 Serenity 优先级" in html
+    assert "为什么 1.00% 内维持</strong>" in html
     assert "|Deviation| <= 5.00%" not in html
+    assert "1-3 个月" not in html
+    assert "跑赢次数 / 6" not in html
     assert "所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认" in html
     assert "0.80%" in html
     assert "无自动交易" in html
@@ -380,7 +663,7 @@ def test_markdown_report_uses_standard_display_time_format():
         "pass",
         "available",
         [],
-        {"Shanghai Composite": {"1m": 0.01, "3m": 0.02, "10d": 0.03}},
+        {"Shanghai Composite": {"1m": 0.01, "3m": 0.02, "12m": 0.04, "10d": 0.03}},
         "notification",
     )
 
@@ -390,3 +673,5 @@ def test_markdown_report_uses_standard_display_time_format():
     assert "- 澳洲时间：20260615 - 16:00 AEST" in markdown
     assert "Serenity 每日分析正式报告" in markdown
     assert "Run Status" not in markdown
+    assert "| 基准 | 1个月 | 3个月 | 1年 | 最近10交易日 |" in markdown
+    assert "| 沪指 | 1.00% | 2.00% | 4.00% | 3.00% |" in markdown

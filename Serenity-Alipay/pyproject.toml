@@ -3,7 +3,9 @@ name = "serenity-daily-analysis"
 version = "0.1.0"
 description = "Local-first dry-run MVP for Serenity Daily Analysis."
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+  "pypdf>=4.0.0",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

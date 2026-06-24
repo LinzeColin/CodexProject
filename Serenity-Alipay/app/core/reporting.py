@@ -344,13 +344,13 @@ def render_markdown_report(
         f"- 澳洲时间：{format_display_time(run_time_au, 'Australia/Sydney')}",
         f"- 运行状态：{_zh_status(status)}",
         f"- 数据质量：{_zh_data_quality(data_quality_status)}",
-        f"- MooMoo/OpenD：{_zh_moomoo_status(moomoo_status)}",
+        f"- MooMoo/moomoo_OpenD：{_zh_moomoo_status(moomoo_status)}",
         "- 交易边界：仅输出研究结论、纪律标签和通知；不自动下单，不提交申购或赎回。",
         f"- 执行锁：{execution_status}",
         f"- 当前禁止动作：{prohibited_action}",
         "- 建议金额：0.00",
         "- 建议份额：0",
-        "- 基准目标：目标与沪指、标普500进行 1个月、3个月、最近10交易日收益对比；不承诺未来一定跑赢。",
+        "- 基准目标：目标与沪指、标普500进行 1个月、3个月、1年、最近10交易日收益对比；不承诺未来一定跑赢。",
         "- 纪律基准：首个合格运行从 0.00% 参考权重开始；后续运行相对上一轮 Serenity 基准调整，不把真实支付宝仓位当作 baseline。",
         "",
         "## Top5 候选池",
@@ -381,14 +381,14 @@ def render_markdown_report(
             "",
             "## 基准收益对比",
             "",
-            "| 基准 | 1个月 | 3个月 | 最近10交易日 |",
-            "|---|---:|---:|---:|",
+            "| 基准 | 1个月 | 3个月 | 1年 | 最近10交易日 |",
+            "|---|---:|---:|---:|---:|",
         ]
     )
     for name, returns in benchmark_returns.items():
         benchmark_name = {"Shanghai Composite": "沪指", "S&P 500": "标普500"}.get(name, name)
         lines.append(
-            f"| {benchmark_name} | {pct(returns.get('1m'))} | {pct(returns.get('3m'))} | {pct(returns.get('10d'))} |"
+            f"| {benchmark_name} | {pct(returns.get('1m'))} | {pct(returns.get('3m'))} | {pct(returns.get('12m'))} | {pct(returns.get('10d'))} |"
         )
 
     lines.extend(

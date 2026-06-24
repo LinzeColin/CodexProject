@@ -9,18 +9,19 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from app.config import Settings
-from app.core.run_visibility import display_run_time_with_backfill_note
+from app.core.run_visibility import display_run_time_with_backfill_note, is_future_controlled_backfill
 from app.core.time_display import format_display_time, parse_datetime
 from app.db import connect, init_db
 
 
 APP_BUNDLE_NAME = "Serenity 每日分析.app"
 APP_ICON_BASENAME = "SerenityIcon"
+RELATIVE_ACTION_THRESHOLD = 0.01
 
 
 @dataclass(frozen=True)
@@ -48,6 +49,15 @@ class PortalHolding:
     current_weight: float
     action_label: str
     trigger_reason: str
+
+
+@dataclass(frozen=True)
+class PortalActionSummary:
+    level: str
+    count: str
+    boundary: str
+    detail: str
+    tone: str
 
 
 @dataclass(frozen=True)
@@ -108,6 +118,9 @@ class PortalManualReviewItem:
     action_blocked: str
     status: str
     created_at: str
+    analysis_rank: int | None = None
+    analysis_grade: str | None = None
+    analysis_score: float | None = None
 
 
 def _pct(value: float | None) -> str:
@@ -258,28 +271,15 @@ def _latest_runs(conn, limit: int = 2) -> list[PortalRun]:
         FROM run_log
         WHERE schedule_slot LIKE 'R%'
           AND report_path IS NOT NULL
-          AND status='success'
-          AND data_quality_status='pass'
-        ORDER BY created_at DESC, rowid DESC
+        ORDER BY run_time_bj DESC, created_at DESC, rowid DESC
         LIMIT ?
         """,
         (fetch_limit,),
     ).fetchall()
-    rows = _dedupe_runs_by_display_time(rows)[:limit]
-    if not rows:
-        rows = conn.execute(
-            """
-            SELECT run_id, schedule_slot, run_time_bj, run_time_au, created_at, status,
-                   data_quality_status, notification_status, report_path, offline_html_path
-            FROM run_log
-            WHERE schedule_slot LIKE 'R%'
-              AND report_path IS NOT NULL
-            ORDER BY created_at DESC, rowid DESC
-            LIMIT ?
-            """,
-            (fetch_limit,),
-        ).fetchall()
-        rows = _dedupe_runs_by_display_time(rows)[:limit]
+    visible_rows = [
+        row for row in rows if not is_future_controlled_backfill(row["run_time_bj"], row["created_at"])
+    ]
+    rows = _dedupe_runs_by_display_time(visible_rows or rows)[:limit]
     return [
         PortalRun(
             run_id=row["run_id"],
@@ -297,7 +297,7 @@ def _latest_runs(conn, limit: int = 2) -> list[PortalRun]:
     ]
 
 
-def _holdings_for_run(conn, run_id: str) -> list[PortalHolding]:
+def _recommendations_for_run(conn, run_id: str, min_rank: int = 1, max_rank: int = 5) -> list[PortalHolding]:
     rows = conn.execute(
         """
         SELECT r.rank, a.asset_code, a.asset_name, s.grade, s.total_score,
@@ -306,10 +306,10 @@ def _holdings_for_run(conn, run_id: str) -> list[PortalHolding]:
         JOIN asset_master a ON a.asset_id=r.asset_id
         JOIN score_snapshot s ON s.run_id=r.run_id AND s.asset_id=r.asset_id
         WHERE r.run_id=?
-          AND r.rank BETWEEN 1 AND 5
+          AND r.rank BETWEEN ? AND ?
         ORDER BY r.rank ASC
         """,
-        (run_id,),
+        (run_id, min_rank, max_rank),
     ).fetchall()
     return [
         PortalHolding(
@@ -327,40 +327,114 @@ def _holdings_for_run(conn, run_id: str) -> list[PortalHolding]:
     ]
 
 
+def _holdings_for_run(conn, run_id: str) -> list[PortalHolding]:
+    return _recommendations_for_run(conn, run_id, 1, 5)
+
+
+def _manual_review_decision_rows(conn) -> list:
+    return conn.execute(
+        """
+        SELECT COALESCE(q.asset_id, '') AS asset_id,
+               COALESCE(a.asset_code, '') AS asset_code,
+               COALESCE(q.reason, '') AS reason,
+               COALESCE(d.outcome, '') AS outcome,
+               COALESCE(d.refresh_status, '') AS refresh_status,
+               d.updated_at
+        FROM manual_review_decision d
+        LEFT JOIN manual_review_queue q ON q.id=d.review_id
+        LEFT JOIN asset_master a ON a.asset_id=q.asset_id
+        WHERE COALESCE(q.reason, '') <> ''
+        ORDER BY d.updated_at DESC
+        """
+    ).fetchall()
+
+
+def _decision_is_successful(decision) -> bool:
+    refresh_status = str(decision["refresh_status"] or "")
+    return not refresh_status or refresh_status == "pass"
+
+
+def _decision_suppresses_created_at(decision, created_at: str | None) -> bool:
+    if not _decision_is_successful(decision):
+        return False
+    outcome = str(decision["outcome"] or "")
+    if outcome == "exclude_current_observation":
+        decided_at = parse_datetime(str(decision["updated_at"] or ""))
+        queue_created_at = parse_datetime(str(created_at or ""))
+        if not decided_at or not queue_created_at:
+            return True
+        return queue_created_at <= decided_at + timedelta(days=14)
+    return outcome in {"observe_pool", "promote_top5_candidate_pool"}
+
+
+def _manual_review_row_is_resolved(row, decisions: list) -> bool:
+    asset_id = str(row["asset_id"] or "")
+    reason = str(row["reason"] or "")
+    return any(
+        str(decision["asset_id"] or "") == asset_id
+        and str(decision["reason"] or "") == reason
+        and _decision_suppresses_created_at(decision, str(row["created_at"] or ""))
+        for decision in decisions
+    )
+
+
+def _resolved_review_code_reason_keys(conn) -> set[tuple[str, str]]:
+    keys: set[tuple[str, str]] = set()
+    now = datetime.now().astimezone()
+    for decision in _manual_review_decision_rows(conn):
+        if not _decision_is_successful(decision):
+            continue
+        code = str(decision["asset_code"] or "")
+        reason = str(decision["reason"] or "")
+        if not code or not reason:
+            continue
+        outcome = str(decision["outcome"] or "")
+        if outcome == "exclude_current_observation":
+            decided_at = parse_datetime(str(decision["updated_at"] or ""))
+            if decided_at and now > decided_at.astimezone(now.tzinfo) + timedelta(days=14):
+                continue
+        elif outcome not in {"observe_pool", "promote_top5_candidate_pool"}:
+            continue
+        keys.add((code, reason))
+    return keys
+
+
 def _manual_review_items(conn, run_id: str | None, limit: int = 12) -> list[PortalManualReviewItem]:
+    def fetch_rows(where_sql: str, params_sql: list[object], query_limit: int):
+        return conn.execute(
+            f"""
+            SELECT m.id, m.run_id, m.asset_id, COALESCE(a.asset_code, '-') AS asset_code,
+                   COALESCE(a.asset_name, '未指定标的') AS asset_name,
+                   m.reason, m.action_blocked, m.status, m.created_at,
+                   r.rank AS analysis_rank, s.grade AS analysis_grade, s.total_score AS analysis_score
+            FROM manual_review_queue m
+            LEFT JOIN asset_master a ON a.asset_id=m.asset_id
+            LEFT JOIN recommendation_snapshot r ON r.run_id=m.run_id AND r.asset_id=m.asset_id
+            LEFT JOIN score_snapshot s ON s.run_id=m.run_id AND s.asset_id=m.asset_id
+            WHERE {where_sql}
+            ORDER BY {order}
+            LIMIT ?
+            """,
+            tuple(params_sql + [query_limit]),
+        ).fetchall()
+
+    def unresolved(rows):
+        decisions = _manual_review_decision_rows(conn)
+        return [row for row in rows if not _manual_review_row_is_resolved(row, decisions)]
+
     params: list[object] = []
     where = "m.status='open'"
-    order = "m.created_at DESC, m.id DESC"
+    order = "COALESCE(r.rank, 999), m.created_at DESC, m.id DESC"
     if run_id:
         where = "m.run_id=? AND m.status='open'"
         params.append(run_id)
-    rows = conn.execute(
-        f"""
-        SELECT m.id, m.run_id, COALESCE(a.asset_code, '-') AS asset_code,
-               COALESCE(a.asset_name, '未指定标的') AS asset_name,
-               m.reason, m.action_blocked, m.status, m.created_at
-        FROM manual_review_queue m
-        LEFT JOIN asset_master a ON a.asset_id=m.asset_id
-        WHERE {where}
-        ORDER BY {order}
-        LIMIT ?
-        """,
-        tuple(params + [limit]),
-    ).fetchall()
-    if not rows and run_id:
-        rows = conn.execute(
-            """
-            SELECT m.id, m.run_id, COALESCE(a.asset_code, '-') AS asset_code,
-                   COALESCE(a.asset_name, '未指定标的') AS asset_name,
-                   m.reason, m.action_blocked, m.status, m.created_at
-            FROM manual_review_queue m
-            LEFT JOIN asset_master a ON a.asset_id=m.asset_id
-            WHERE m.status='open'
-            ORDER BY m.created_at DESC, m.id DESC
-            LIMIT ?
-            """,
-            (limit,),
-        ).fetchall()
+    query_limit = max(limit * 5, limit)
+    rows = fetch_rows(where, params, query_limit)
+    filtered_rows = unresolved(rows)
+    if rows and not filtered_rows:
+        rows = []
+    elif filtered_rows:
+        rows = filtered_rows[:limit]
     return [
         PortalManualReviewItem(
             review_id=int(row["id"]),
@@ -371,6 +445,9 @@ def _manual_review_items(conn, run_id: str | None, limit: int = 12) -> list[Port
             action_blocked=row["action_blocked"],
             status=row["status"],
             created_at=_format_time(row["created_at"], "Asia/Shanghai"),
+            analysis_rank=int(row["analysis_rank"]) if row["analysis_rank"] is not None else None,
+            analysis_grade=row["analysis_grade"],
+            analysis_score=float(row["analysis_score"]) if row["analysis_score"] is not None else None,
         )
         for row in rows
     ]
@@ -424,11 +501,24 @@ def _candidate_pool_meta(
         SELECT r.run_id, a.asset_code
         FROM recommendation_snapshot r
         JOIN asset_master a ON a.asset_id=r.asset_id
-        WHERE r.rank BETWEEN 1 AND 5
+        WHERE r.rank BETWEEN 1 AND 10
           AND a.asset_code IN ({placeholders})
         """,
         tuple(asset_codes),
     ).fetchall()
+    entry_rows = conn.execute(
+        f"""
+        SELECT a.asset_code, e.pool_kind, e.first_run_time_bj
+        FROM asset_pool_entry e
+        JOIN asset_master a ON a.asset_id=e.asset_id
+        WHERE e.pool_kind IN ('candidate_pool', 'holding_pool')
+          AND a.asset_code IN ({placeholders})
+        """,
+        tuple(asset_codes),
+    ).fetchall()
+    immutable_entries: dict[str, dict[str, str]] = {}
+    for row in entry_rows:
+        immutable_entries.setdefault(str(row["asset_code"]), {})[str(row["pool_kind"])] = str(row["first_run_time_bj"])
     present_by_run: dict[str, set[str]] = {}
     for row in occurrence_rows:
         present_by_run.setdefault(row["run_id"], set()).add(row["asset_code"])
@@ -459,7 +549,7 @@ def _candidate_pool_meta(
                 candidate_days = max((end_date - start_date).days + 1, 1)
 
         meta[code] = {
-            "first_top5_time_bj": first_seen,
+            "first_top5_time_bj": immutable_entries.get(code, {}).get("holding_pool") or first_seen,
             "last_seen_time_bj": last_seen,
             "last_top5_entry_time_bj": last_entry,
             "current_candidate_days": candidate_days,
@@ -678,11 +768,12 @@ def _relative_ratio(current: float | None, reference: float | None) -> tuple[str
             return "flat", "0.00%", "维持"
         return "up", "新增", "新增/买入"
     ratio = current_value / float(reference) - 1.0
-    if ratio > 0.000001:
-        return "up", f"+{ratio * 100:.2f}%", "增加/买入"
-    if ratio < -0.000001:
-        return "down", f"{ratio * 100:.2f}%", "减少/卖出"
-    return "flat", "0.00%", "维持"
+    ratio_text = f"{ratio * 100:+.2f}%"
+    if ratio > RELATIVE_ACTION_THRESHOLD:
+        return "up", ratio_text, "增加/买入"
+    if ratio < -RELATIVE_ACTION_THRESHOLD:
+        return "down", ratio_text, "减少/卖出"
+    return "flat", ratio_text, "维持"
 
 
 def _fund_button(row: PortalHolding) -> str:
@@ -727,6 +818,40 @@ def _holding_rows(
             "</td>"
             f"<td><span class=\"badge {_escape(_action_badge_class(row.action_label))}\">{_escape(_zh_action(row.action_label))}</span></td>"
             f"<td>{_escape(_operation_text(row.action_label))}</td>"
+            "</tr>"
+        )
+    return "\n".join(cells)
+
+
+def _pool_rows(
+    holding_pool: list[PortalHolding],
+    observation_pool: list[PortalHolding],
+    resolved_review_keys: set[tuple[str, str]] | None = None,
+) -> str:
+    resolved_review_keys = resolved_review_keys or set()
+    rows = sorted([*holding_pool, *observation_pool], key=lambda item: item.rank)
+    if not rows:
+        return '<tr><td colspan="8">暂无持仓池或观察池排序数据；下一次真实刷新后会生成最新排序。</td></tr>'
+    cells: list[str] = []
+    for row in rows:
+        is_holding = row.rank <= 5
+        pool_label = "持仓池" if is_holding else "观察池"
+        pool_class = "holding" if is_holding else "observe"
+        weight_text = _pct(row.target_weight) if is_holding else "0.00% · 观察"
+        needs_review = row.grade == "Manual Review" or row.action_label == "Manual Review"
+        review_text = "已复核/观察中" if needs_review and (row.code, row.trigger_reason) in resolved_review_keys else (
+            "需人工复核" if needs_review else _zh_action(row.action_label)
+        )
+        cells.append(
+            f'<tr class="pool-row {pool_class}">'
+            f"<td><strong>#{row.rank}</strong></td>"
+            f'<td><span class="pool-badge {pool_class}">{pool_label}</span></td>'
+            f"<td><strong>{_escape(row.code)}</strong>{_fund_button(row)}</td>"
+            f"<td><span class=\"badge\">{_escape(_zh_grade(row.grade))}</span></td>"
+            f"<td>{_score(row.score)}</td>"
+            f"<td>{_escape(weight_text)}</td>"
+            f"<td>{_escape(review_text)}</td>"
+            f"<td>{_escape(row.trigger_reason)}</td>"
             "</tr>"
         )
     return "\n".join(cells)
@@ -875,7 +1000,7 @@ def _run_timeline_panel(events: list[PortalTimelineEvent]) -> str:
 
 def _manual_review_modal(items: list[PortalManualReviewItem]) -> str:
     if not items:
-        cards = '<div class="review-empty">当前没有打开状态的人工复核项。</div>'
+        cards = '<div class="review-empty">当前没有待处理复核项；已处理记录保留在 SQLite 数据库和历史运行中。</div>'
     else:
         cards = "\n".join(
             f"""
@@ -884,22 +1009,25 @@ def _manual_review_modal(items: list[PortalManualReviewItem]) -> str:
                 <div>
                   <strong>{_escape(item.code)} · {_escape(item.name)}</strong>
                   <span>{_escape(item.created_at)} · {_escape(item.status)} · {_escape(item.run_id)}</span>
+                  <span>基金分析排序：{_escape('#' + str(item.analysis_rank) if item.analysis_rank is not None else '未进入当前分析排序')} · 等级：{_escape(_zh_grade(item.analysis_grade or '-'))} · 证据置信度：{_escape(_score(item.analysis_score))}</span>
                 </div>
                 <span class="badge locked">{_escape(item.action_blocked)}</span>
               </div>
-              <div class="review-reason">{_escape(item.reason)}</div>
+              <div class="review-reason">
+                <strong>为什么需要人工复核</strong>
+                <span>{_escape(item.reason)}</span>
+              </div>
               <label>
-                <span>复核动作</span>
+                <span>复核结果</span>
                 <select data-review-decision>
-                  <option value="保持禁止新增">保持禁止新增</option>
-                  <option value="需要补证据">需要补证据</option>
-                  <option value="确认观察">确认观察</option>
-                  <option value="已人工处理">已人工处理</option>
+                  <option value="observe_pool">放入观察池继续观察</option>
+                  <option value="exclude_current_observation">剔除这一轮观察池</option>
+                  <option value="promote_top5_candidate_pool">进入 Top 5 候选操作池</option>
                 </select>
               </label>
               <label>
                 <span>备注</span>
-                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率或暂不处理原因"></textarea>
+                <textarea data-review-note rows="3" placeholder="记录你核对的来源、平台交易页、费率、状态或操作理由"></textarea>
               </label>
               <div class="review-item-actions">
                 <button type="button" data-save-review>保存复核</button>
@@ -916,9 +1044,23 @@ def _manual_review_modal(items: list[PortalManualReviewItem]) -> str:
       <div class="modal-top">
         <div>
           <h2 id="review-modal-title">人工复核</h2>
-          <div class="subtitle">复核记录会保存到本机 SQLite 数据库；静态入口离线时临时缓存到浏览器。</div>
+          <div class="subtitle">复核记录实时保存到本机 SQLite 数据库；不做浏览器端保存。</div>
         </div>
         <button type="button" data-close-review>关闭</button>
+      </div>
+      <div class="review-result-guide" aria-label="复核结果含义">
+        <article>
+          <strong>放入观察池继续观察</strong>
+          <p>保存后立即新增一次真实 Serenity run；对象继续观察，后续满足 Serenity 标准和条件后更新进持仓建议，不满足则继续观察，直到不再满足观察池标准后移出。</p>
+        </article>
+        <article>
+          <strong>剔除这一轮观察池</strong>
+          <p>保存后立即新增一次真实 Serenity run；对象本轮移除，当前问题解决后，或 14 天后再次满足 Serenity 标准和条件时，才允许重新进入观察池。</p>
+        </article>
+        <article>
+          <strong>进入 Top 5 候选操作池</strong>
+          <p>保存后立即运行一次 Serenity 全流程，并同步更新首页持仓建议、报告、数据库和全局展示数据。</p>
+        </article>
       </div>
       <div class="review-toolbar">
         <button type="button" data-copy-review-log>复制复核记录</button>
@@ -943,17 +1085,16 @@ def _fund_library_modal() -> str:
         <button type="button" data-close-fund-library>关闭</button>
       </div>
       <div class="view-switch fund-library-view-switch" aria-label="基金库视图切换">
-        <button type="button" class="active" data-fund-library-mode="gallery">Gallery</button>
-        <button type="button" data-fund-library-mode="table">Table</button>
+        <button type="button" class="active" data-fund-library-mode="table">表格</button>
+        <button type="button" data-fund-library-mode="gallery">卡片</button>
       </div>
-      <div class="fund-library-grid" id="fund-library-body" data-fund-library-view="gallery"></div>
-      <div class="table-wrap fund-library-table-view" data-fund-library-view="table" hidden>
+      <div class="fund-library-grid" id="fund-library-body" data-fund-library-view="gallery" hidden></div>
+      <div class="table-wrap fund-library-table-view" data-fund-library-view="table">
         <table class="fund-library-table">
           <thead>
             <tr>
               <th>代码</th>
               <th>基金名称</th>
-              <th>首次进入策略 Top5</th>
               <th>上次进入候选池时间</th>
               <th>当前进入候选池天数</th>
               <th>当前状态</th>
@@ -974,10 +1115,6 @@ def _fund_library_modal() -> str:
               <th>销售服务费</th>
               <th>合计运营费（年）</th>
               <th>最低申购金额</th>
-              <th>来源名称</th>
-              <th>来源类型</th>
-              <th>来源优先级</th>
-              <th>来源链接</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -997,119 +1134,169 @@ def _usage_guide_modal() -> str:
       <div class="modal-top">
         <div>
           <h2 id="usage-guide-modal-title">使用说明</h2>
-          <div class="subtitle">说明 Skill 选股逻辑、策略口径、权重配置公式和持仓调整纪律；本说明不构成自动交易指令。</div>
+          <div class="subtitle">用来解释 Serenity 为什么挑选、为什么调仓、怎么计算权重；Score 只表示证据置信度。</div>
         </div>
         <button type="button" data-close-usage-guide>关闭</button>
       </div>
-      <div class="guide-grid">
-        <article class="guide-section">
-          <h3>Skill 选股逻辑</h3>
-          <p>Serenity 不是先拿一张规则表机械筛选，而是先建立“未来 1-3 个月最可能获得资金和业绩弹性的高成长方向”假设，再用证据验证这个假设能否落到可执行的场外基金上。</p>
-          <ul>
-            <li>如何挑选：先看高成长主题是否仍有景气度、资金关注和可解释的上涨来源，再把主题映射到能在场外买到的基金，而不是直接从基金列表里随便排序。</li>
-            <li>怎么挑选：先按产业链卡点、稀缺层、主题暴露和 1-3 个月资金弹性形成 Serenity 优先级，再映射到能在场外买到的基金。</li>
-            <li>为什么挑选：Top5 先由 Serenity 判断决定，不由 Score 机械排序；如果一只基金分数高但不在更关键的产业链位置，它不能越过更高 Serenity 优先级。</li>
-            <li>为什么调仓：当新一轮证据显示产业链强弱、资金方向、风险回撤、费用/申赎状态或 Top5 排名发生变化，系统会把它解释为原 baseline 假设需要修正，并输出增配、减少、暂停新增或维持。</li>
-            <li>思考公示方式：页面展示证据置信度、等级、目标权重、基准权重、相对比例、费用状态、基金库证据和运行时间线，让用户能看到“为什么是这只、为什么是这个权重、为什么现在动或不动”。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>证据置信度</h3>
-          <p><code>ConfidenceScore = Data 25 + Timeliness 15 + Source 15 + Return 15 + Risk 20 + Executable 10</code></p>
-          <ul>
-            <li>证据置信度不是选股主排序，只回答“Serenity 判断有多少数据支持、能不能执行”。</li>
-            <li>Data = max(0, 25 - 8 x 缺失字段数)。</li>
-            <li>Timeliness = 净值/持仓缺失不超过 2 天得 15，否则 0。</li>
-            <li>Source = 官方级来源至少 2 个且无冲突得 15；至少 1 个得 7.5；否则 0。</li>
-            <li>Return = 15 x 跑赢次数 / 6，比较窗口为 1 个月、3 个月、10 交易日，对照沪指和标普 500。</li>
-            <li>Risk = MDD 小于 40.00% 才计分；回撤修复时间达到 365 天会强制压低风险分。</li>
-            <li>Executable = 申购/赎回开放且费率分档完整才得 10，否则 0。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>等级与策略口径</h3>
-          <ul>
-            <li>ConfidenceScore >= 85：Action-Ready，说明 Serenity 判断的证据和执行条件足够强。</li>
-            <li>70-84：Watch，Serenity 判断可保留，但证据或执行条件需要继续观察。</li>
-            <li>55-69：Manual Review，必须人工复核后处理。</li>
-            <li>&lt;55：Block/skip，不执行调仓建议。</li>
-            <li>MDD >= 40.00%、保守类资产、来源冲突、关键费率缺失会触发硬降级。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>权重配置公式</h3>
-          <p><code>SerenityRank_i = 产业链卡点优先级 + 主题暴露 + 场外可执行性</code></p>
-          <p><code>ConfidenceModifier_i = 0.85 + 0.15 x ConfidenceScore_i / 100</code></p>
-          <p><code>RawWeight_i = SerenityBase_i x ConfidenceModifier_i</code></p>
-          <p><code>Capped_i = min(normalize(RawWeight_i), 30.00%)</code></p>
-          <p><code>TargetWeight_i = Capped_i / sum(Capped)</code></p>
-          <ul>
-            <li>仅非 Block 候选参与 Top5；排序优先服从 Serenity 判断，证据置信度只做辅助修正。</li>
-            <li>低 Serenity 优先级标的不会仅凭更高 ConfidenceScore 超过高优先级标的。</li>
-            <li>目标权重是策略份额，不是支付宝真实账户仓位。</li>
-            <li>首轮基准从 0.00% 开始；后续运行相对上一轮 Serenity baseline 比较。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>持仓调整逻辑</h3>
-          <p>这里不是把 Deviation 翻译成买卖术语，而是说明系统如何从 Serenity 新判断推导到人工操作建议。</p>
-          <ul>
-            <li><code>Deviation = TargetWeight - BaselineWeight</code>。</li>
-            <li>凭什么：先确认数据质量通过、基金申赎和费率可执行、候选没有 Block，再比较新一轮 Serenity 目标权重和上一轮 Serenity baseline。</li>
-            <li>为什么：偏离不是账户盈亏，而是 Serenity 对产业链优先级、主题弹性、风险和执行条件的最新判断相对旧 baseline 的变化。</li>
-            <li>怎么做：|Deviation| &lt;= 1.00%：维持；Deviation &gt; 1.00% 且 Action-Ready：增配；非 Action-Ready：暂停新增或人工复核；Deviation &lt; -1.00%：减少；Block：阻断或清仓标签。</li>
-            <li>做多少：策略调整份额 = TargetWeight - BaselineWeight；若需要换算金额，人工按“计划投入资金 x |Deviation|”在支付宝或官方平台确认，系统不自动下单。</li>
-            <li>为什么做这么多：TargetWeight 已由 Serenity 优先级、证据置信度修正、30.00% 单标上限和归一化约束计算完成；Deviation 是把旧 baseline 调到新目标所需的最小策略差额。</li>
-            <li>为什么 1.00% 内维持：小于等于 1.00% 的变化通常不足以覆盖确认成本、申赎费、净值时差和短时噪声，除非同时触发风险硬门槛。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>重平衡触发</h3>
-          <ul>
-            <li>单标偏离超过 1.00% 会触发纪律事件。</li>
-            <li>Top5 变动率超过 20.00%、新增 1 只、替换 2 只会触发复核。</li>
-            <li>关键字段变化超过 1σ 会触发 regime check。</li>
-            <li>同日、前一日、前一周、前一月都会生成对比快照。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>人工复核与降级</h3>
-          <ul>
-            <li>连续缺失净值/持仓超过 2 天，进入 Manual Review。</li>
-            <li>申购费、赎回费、申购状态、赎回状态或费率分档缺失，暂停新增。</li>
-            <li>官方级来源少于 2 个或来源冲突，不能 Action-Ready。</li>
-            <li>执行锁开启时，只输出研究排序和纪律标签，不给新增订单。</li>
-          </ul>
-        </article>
-        <article class="guide-section">
-          <h3>如何使用</h3>
-          <ul>
-            <li>先看“当前持仓建议”，确认最新时间和动作颜色。</li>
-            <li>再看“持仓建议”表，切换初始持仓权重或上轮对比权重。</li>
-            <li>点击“基金库”核对申赎状态和费用分档。</li>
-            <li>若出现人工复核，先补证据或记录复核结论，再考虑平台操作。</li>
-            <li>所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</li>
-          </ul>
-        </article>
+      <div class="guide-layout">
+        <nav class="guide-nav" aria-label="使用说明目录">
+          <button type="button" class="active" data-guide-target="guide-overview">阅读顺序</button>
+          <button type="button" data-guide-target="guide-selection">Skill 选股逻辑</button>
+          <button type="button" data-guide-target="guide-confidence">证据置信度</button>
+          <button type="button" data-guide-target="guide-weight">权重配置</button>
+          <button type="button" data-guide-target="guide-discipline">调仓纪律</button>
+          <button type="button" data-guide-target="guide-review">复核与边界</button>
+        </nav>
+        <div class="guide-content">
+          <section class="guide-hero" id="guide-overview" data-guide-section>
+            <div>
+              <span class="guide-kicker">默认阅读顺序</span>
+              <h3>先看结论，再追溯原因。</h3>
+              <p>首页只保留关键动作；这块说明专门回答“为什么是这只基金、为什么是这个权重、为什么现在动或不动”。</p>
+            </div>
+            <div class="guide-summary">
+              <span><strong>持有期</strong>1个月-1年</span>
+              <span><strong>排序口径</strong>Serenity 优先</span>
+              <span><strong>Score 角色</strong>置信度/说服力</span>
+              <span><strong>执行边界</strong>人工确认</span>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-selection" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第一层</span>
+              <h3>Skill 选股逻辑</h3>
+            </div>
+            <p class="guide-lead">Serenity 不是先拿一张规则表机械筛选，而是先形成“未来 1个月-1年最值得承担高波动的高成长方向”判断，再检查这个判断能否落到可执行的场外基金上。</p>
+            <div class="guide-steps">
+              <p><strong>如何挑选</strong>先看高成长主题是否仍有景气度、资金关注和可解释的上涨来源，再把主题映射到能在场外买到的基金。</p>
+              <p><strong>怎么挑选</strong>按产业链卡点、稀缺层、主题暴露、资金弹性和执行可得性形成 Serenity 优先级。</p>
+              <p><strong>为什么挑选</strong>Top5 先由 Serenity 判断决定，不由 Score 机械排序；低 Serenity 优先级标的不会仅凭更高 ConfidenceScore 超过高优先级标的。</p>
+              <p><strong>为什么调仓</strong>当产业链强弱、资金方向、风险回撤、费用/申赎状态或 Top5 排名改变，系统会视为旧 baseline 需要修正。</p>
+            </div>
+            <div class="guide-callout">页面公开证据置信度、等级、目标权重、基准权重、相对比例、费用状态、基金库证据和运行时间线，方便追溯每一次建议。</div>
+          </section>
+
+          <section class="guide-section" id="guide-confidence" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第二层</span>
+              <h3>证据置信度</h3>
+            </div>
+            <p class="guide-lead">Score 不替代 Serenity 判断，只回答“这次判断有多少数据支持、是否足够可执行”。</p>
+            <div class="guide-formula">ConfidenceScore = Data 25 + Timeliness 15 + Source 15 + Return 15 + Risk 20 + Executable 10</div>
+            <div class="guide-steps">
+              <p><strong>Data</strong>普通关键字段缺失按项扣分；return_windows 缺失按关键缺失处理，最高扣 20 分并触发复核。</p>
+              <p><strong>Timeliness</strong>净值/持仓缺失不超过 2 天得分，否则进入时间完整性降级。</p>
+              <p><strong>Source</strong>官方级来源至少 2 个且无冲突才完整得分；来源冲突优先解释冲突。</p>
+              <p><strong>Return</strong>Return = 15 x 跑赢次数 / 8；比较 1个月、3个月、1年、10交易日，对照沪指和标普500。</p>
+              <p><strong>Risk</strong>MDD 小于 40.00% 才可继续；回撤修复时间达到 365 天会强制压低风险分。</p>
+              <p><strong>Executable</strong>申购/赎回开放且费率分档完整才完整得分。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-weight" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第三层</span>
+              <h3>权重配置</h3>
+            </div>
+            <div class="guide-formula">SerenityRank_i = 产业链卡点优先级 + 主题暴露 + 场外可执行性</div>
+            <div class="guide-formula">ConfidenceModifier_i = 0.85 + 0.15 x ConfidenceScore_i / 100</div>
+            <div class="guide-formula">RawWeight_i = SerenityBase_i x ConfidenceModifier_i</div>
+            <div class="guide-formula">Capped_i = min(normalize(RawWeight_i), 30.00%)</div>
+            <div class="guide-formula">TargetWeight_i = Capped_i / sum(Capped)</div>
+            <div class="guide-steps">
+              <p><strong>排序</strong>仅非 Block 候选进入 Top5；排序优先服从 Serenity，ConfidenceScore 只做辅助修正。</p>
+              <p><strong>权重</strong>目标权重是策略份额，不是支付宝真实账户仓位。</p>
+              <p><strong>基准</strong>首轮基准从 0.00% 开始；后续运行相对上一轮 Serenity baseline 比较。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-discipline" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第四层</span>
+              <h3>持仓调整逻辑</h3>
+            </div>
+            <p class="guide-lead">这里不是把 Deviation 翻译成买卖术语，而是说明系统如何从 Serenity 新判断推导到人工操作建议。</p>
+            <div class="guide-formula">Deviation = TargetWeight - BaselineWeight</div>
+            <div class="guide-steps">
+              <p><strong>凭什么</strong>先确认数据质量通过、基金申赎和费率可执行、候选没有 Block，再比较新一轮 Serenity 目标权重和上一轮 Serenity baseline。</p>
+              <p><strong>为什么</strong>偏离不是账户盈亏，而是 Serenity 对产业链优先级、主题弹性、风险和执行条件的最新判断相对旧 baseline 的变化。</p>
+              <p><strong>怎么做</strong>|Deviation| &lt;= 1.00%：维持；Deviation &gt; 1.00% 且 Action-Ready：增配；非 Action-Ready：暂停新增或人工复核；Deviation &lt; -1.00%：减少；Block：阻断或清仓标签。</p>
+              <p><strong>做多少</strong>策略调整份额 = TargetWeight - BaselineWeight；若需要换算金额，人工按“计划投入资金 x |Deviation|”在支付宝或官方平台确认。</p>
+              <p><strong>为什么做这么多</strong>TargetWeight 已由 Serenity 优先级、证据置信度修正、30.00% 单标上限和归一化约束计算完成；Deviation 是把旧 baseline 调到新目标所需的最小策略差额。</p>
+              <p><strong>为什么 1.00% 内维持</strong>小于等于 1.00% 的变化通常不足以覆盖确认成本、申赎费、净值时差和短时噪声，除非同时触发风险硬门槛。</p>
+            </div>
+          </section>
+
+          <section class="guide-section" id="guide-review" data-guide-section>
+            <div class="guide-section-title">
+              <span class="guide-kicker">第五层</span>
+              <h3>重平衡、复核与边界</h3>
+            </div>
+            <div class="guide-steps">
+              <p><strong>重平衡</strong>单标偏离超过 1.00%、Top5 变动率超过 20.00%、新增 1 只、替换 2 只或关键字段变化超过 1σ，会触发纪律事件。</p>
+              <p><strong>人工复核</strong>连续缺失净值/持仓超过 2 天、费率分档缺失、官方级来源少于 2 个或来源冲突，会进入 Manual Review。</p>
+              <p><strong>为什么需要复核</strong>每个复核对象都会显示进入复核的具体原因，例如费率/申赎状态缺失、来源冲突、净值或持仓时间滞后、数据质量不足或执行条件不明确。</p>
+              <p><strong>放入观察池继续观察</strong>保存复核后立即新增一次真实 Serenity run；对象继续保留在观察池，后续满足 Serenity 标准和条件后更新进持仓建议，不满足则继续观察，直到不再满足观察池标准后移出。</p>
+              <p><strong>剔除这一轮观察池</strong>保存复核后立即新增一次真实 Serenity run；对象从本轮观察池移除，当前问题解决后，或 14 天后再次满足 Serenity 标准和条件时，才允许重新进入观察池。</p>
+              <p><strong>进入 Top 5 候选操作池</strong>保存复核后立即运行一次 Serenity 全流程，同步刷新首页持仓建议、报告、数据库和全局展示数据。</p>
+              <p><strong>保存处置</strong>保存复核必须写入本机 SQLite 数据库；页面不会把复核保存在浏览器端。</p>
+              <p><strong>执行边界</strong>执行锁开启时，只输出研究排序和纪律标签；所有真实申购、赎回、增配、减配都必须在支付宝或官方平台人工确认。</p>
+              <p><strong>使用顺序</strong>先看“当前持仓建议”，再看“持仓建议”表里的基准权重口径；需要追溯费用和申赎状态时进入“基金库”。</p>
+            </div>
+          </section>
+        </div>
       </div>
     </section>
   </div>
     """
 
 
-def _action_summary(rows: list[PortalHolding], previous: list[PortalHolding]) -> tuple[str, str, str]:
+def _relative_action_summary(
+    rows: list[PortalHolding],
+    reference_weights: dict[str, float | None],
+) -> PortalActionSummary:
     if not rows:
-        return "无数据", "等待下一轮运行", "暂无建议行，不能生成操作动作。"
-    previous_by_code = {row.code: row for row in previous}
-    changed = [
-        (row, _change(row.target_weight, previous_by_code.get(row.code).target_weight if previous_by_code.get(row.code) else None))
-        for row in rows
-    ]
-    actionable = [item for item in changed if item[1][0] in {"up", "down"} or item[0].action_label not in {"Maintain"}]
-    if not actionable:
-        return "无需交易", "全部维持", "当前 Top5 策略份额暂无变化。"
-    labels = ", ".join(f"{row.code} {change[2]} {change[1]}" for row, change in actionable)
-    return "需要人工确认", f"{len(actionable)} 项变化", labels
+        return PortalActionSummary(
+            level="无数据",
+            count="等待下一轮",
+            boundary="不输出操作",
+            detail="暂无持仓建议行，不能生成操作动作。",
+            tone="flat",
+        )
+    changes: list[tuple[PortalHolding, str, str, str]] = []
+    for row in rows:
+        change_class, ratio, action = _relative_ratio(row.target_weight, reference_weights.get(row.code))
+        if change_class in {"up", "down"}:
+            changes.append((row, change_class, ratio, action))
+    if not changes:
+        return PortalActionSummary(
+            level="保持当前持仓",
+            count="0 项变化",
+            boundary="无需新增操作",
+            detail="持仓建议表当前基准口径下全部为维持；无需新增申购、赎回、增配或减配。",
+            tone="flat",
+        )
+
+    buy_count = sum(1 for _, change_class, _, _ in changes if change_class == "up")
+    sell_count = sum(1 for _, change_class, _, _ in changes if change_class == "down")
+    if buy_count and sell_count:
+        level = "需人工确认再平衡"
+        tone = "mixed"
+    elif buy_count:
+        level = "需人工确认增配"
+        tone = "up"
+    else:
+        level = "需人工确认减配"
+        tone = "down"
+    detail = "\n".join(f"{row.name}：{action} {ratio}" for row, _, ratio, action in changes)
+    return PortalActionSummary(
+        level=level,
+        count=f"增加/买入 {buy_count} 项；减少/卖出 {sell_count} 项",
+        boundary="支付宝/官方平台人工确认",
+        detail=detail,
+        tone=tone,
+    )
 
 
 def _default_alipay_trade_status(subscription_status: str | None, redemption_status: str | None) -> str:
@@ -1163,10 +1350,6 @@ def _fund_library_json(fund_library: dict[str, PortalFundInfo]) -> str:
             "cutoffTime": info.cutoff_time or "-",
             "confirmLag": info.confirm_lag or "-",
             "redeemLag": info.redeem_lag or "-",
-            "alipayTradeStatus": info.alipay_trade_status
-            or _default_alipay_trade_status(info.subscription_status, info.redemption_status),
-            "moomooTradeStatus": info.moomoo_trade_status or _default_moomoo_trade_status(),
-            "platformTradeNote": info.platform_trade_note or _default_platform_trade_note(),
             "subscriptionFee": _fee(info.subscription_fee),
             "redemptionFee": _fee(info.redemption_fee),
             "subscriptionFeeSchedule": subscription_schedule,
@@ -1179,8 +1362,6 @@ def _fund_library_json(fund_library: dict[str, PortalFundInfo]) -> str:
             "operatingFee": _fee(operating_fee),
             "minPurchaseAmount": _amount(info.min_purchase_amount),
             "sourceName": info.source_name or "-",
-            "sourceType": info.source_type or "-",
-            "sourcePriority": info.source_priority if info.source_priority is not None else "-",
             "sourceUrl": info.source_url or "-",
         }
     return json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -1192,10 +1373,12 @@ def render_application_portal(
     previous_run: PortalRun | None,
     previous_holdings: list[PortalHolding],
     *,
+    observation_pool: list[PortalHolding] | None = None,
     baseline_time_bj: str | None = None,
     fund_library: dict[str, PortalFundInfo] | None = None,
     run_timeline: list[PortalTimelineEvent] | None = None,
     manual_review_items: list[PortalManualReviewItem] | None = None,
+    resolved_review_keys: set[tuple[str, str]] | None = None,
 ) -> str:
     current_bj = (
         display_run_time_with_backfill_note(current_run.run_time_bj, current_run.created_at)
@@ -1210,17 +1393,26 @@ def render_application_portal(
     previous_created = _format_time(previous_run.created_at, "Asia/Shanghai") if previous_run else "-"
     previous_updated_au = _format_compact_time(previous_run.created_at, "Australia/Sydney") if previous_run else "-"
     baseline_bj = _format_time(baseline_time_bj or (previous_run.run_time_bj if previous_run else None), "Asia/Shanghai")
-    action_level, action_count, action_detail = _action_summary(current_holdings, previous_holdings)
+    previous_by_code = {row.code: row for row in previous_holdings}
+    initial_action_summary = _relative_action_summary(
+        current_holdings,
+        {row.code: row.current_weight for row in current_holdings},
+    )
+    previous_action_summary = _relative_action_summary(
+        current_holdings,
+        {code: row.target_weight for code, row in previous_by_code.items()},
+    )
     latest_run_time = current_bj
     report_href = _portal_relative_href("data/reports/index.html", "../../data/reports/index.html")
     snapshot_href = _portal_relative_href(
         current_run.html_path if current_run else None,
         report_href,
     )
-    previous_by_code = {row.code: row for row in previous_holdings}
     fund_json = _fund_library_json(fund_library or {})
     timeline_events = run_timeline or []
     review_items = manual_review_items or []
+    resolved_review_keys = resolved_review_keys or set()
+    observation_rows = observation_pool or []
     review_count_text = f"{len(review_items)} 项待复核" if review_items else "无打开项"
     fund_count = len(fund_library or {})
     fund_count_text = f"已入库 {fund_count} 只基金" if fund_count else "暂无入库基金"
@@ -1560,6 +1752,24 @@ def render_application_portal(
     .row-up td {{ background: #fffaf8; }}
     .row-down td {{ background: #f7fcf8; }}
     .row-flat td {{ background: #f6fbff; }}
+    .pool-ranking-panel {{ margin-bottom: 16px; }}
+    .pool-ranking-note {{ margin: 6px 0 12px; color: var(--muted); line-height: 1.5; font-size: 13px; }}
+    .pool-table {{ min-width: 1040px; }}
+    .pool-row.holding td {{ background: #f8fbff; }}
+    .pool-row.observe td {{ background: #fbfcfb; }}
+    .pool-badge {{
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }}
+    .pool-badge.holding {{ color: var(--hold); background: var(--hold-bg); border-color: var(--hold-border); }}
+    .pool-badge.observe {{ color: #6b4b11; background: #fff4d8; border-color: #ead59d; }}
     .badge {{
       display: inline-flex;
       align-items: center;
@@ -1580,17 +1790,58 @@ def render_application_portal(
     .change.up {{ color: var(--buy); background: #fde9e6; }}
     .change.down {{ color: var(--sell); background: #e8f5ed; }}
     .change.flat {{ color: var(--hold); background: var(--hold-bg); }}
-    .action-summary {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 16px 0; }}
+    .change.mixed {{
+      color: #783b12;
+      background: linear-gradient(90deg, #fde9e6 0, #fde9e6 50%, #e8f5ed 50%, #e8f5ed 100%);
+      border: 1px solid #ead1c2;
+    }}
+    .action-decision {{
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: grid;
+      gap: 12px;
+    }}
+    .action-decision-head {{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }}
+    .action-decision-head h2 {{ margin: 0; }}
+    .action-decision-head small {{
+      display: block;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.45;
+    }}
+    .action-decision-grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }}
     .action-box {{
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 14px;
       background: #fbfcfb;
-      min-height: 110px;
+      min-height: 88px;
     }}
     .action-box span {{ color: var(--muted); display: block; font-size: 13px; }}
-    .action-box strong {{ display: block; margin-top: 8px; font-size: 19px; }}
+    .action-box strong {{ display: block; margin-top: 8px; font-size: 17px; line-height: 1.3; }}
+    .action-detail {{
+      margin: 0;
+      border-left: 3px solid var(--accent);
+      padding: 8px 0 8px 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }}
     .actions {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }}
+    .top-actions {{ margin: 16px 0; }}
+    .top-actions .actions {{ margin-top: 0; }}
     .action-card {{
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -1621,6 +1872,22 @@ def render_application_portal(
     }}
     .review-panel {{ width: min(900px, 100%); }}
     .modal-top {{ display: flex; justify-content: space-between; gap: 12px; align-items: start; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 12px; }}
+    .review-result-guide {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }}
+    .review-result-guide article {{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f8faf9;
+      padding: 11px;
+      display: grid;
+      gap: 6px;
+    }}
+    .review-result-guide strong {{ font-size: 13px; }}
+    .review-result-guide p {{ margin: 0; color: var(--muted); line-height: 1.45; font-size: 12px; }}
     .review-toolbar {{ display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }}
     .review-list {{ display: grid; gap: 10px; }}
     .review-empty {{ color: var(--muted); border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px; background: #fbfcfb; }}
@@ -1640,7 +1907,8 @@ def render_application_portal(
     }}
     .review-item-head strong, .review-item-head span {{ overflow-wrap: anywhere; }}
     .review-item-head span, .review-reason, .review-item-actions span {{ color: var(--muted); line-height: 1.45; }}
-    .review-reason {{ border-left: 3px solid var(--danger); padding-left: 10px; }}
+    .review-reason {{ border-left: 3px solid var(--danger); padding-left: 10px; display: grid; gap: 3px; }}
+    .review-reason strong {{ color: var(--ink); font-size: 13px; }}
     .review-item label {{ display: grid; gap: 5px; color: var(--muted); font-size: 13px; }}
     .review-item select, .review-item textarea {{
       width: 100%;
@@ -1653,32 +1921,143 @@ def render_application_portal(
     }}
     .review-item textarea {{ resize: vertical; min-height: 76px; }}
     .review-item-actions {{ display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }}
-    .guide-panel {{ width: min(1060px, 100%); }}
-    .guide-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }}
-    .guide-section {{
+    .guide-panel {{ width: min(1080px, 100%); }}
+    .guide-layout {{
+      display: grid;
+      grid-template-columns: 184px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }}
+    .guide-nav {{
+      position: sticky;
+      top: 0;
+      display: grid;
+      gap: 6px;
+      align-self: start;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fbfcfb;
-      padding: 12px;
+      padding: 8px;
     }}
-    .guide-section h3 {{ margin: 0 0 8px; font-size: 16px; }}
-    .guide-section p {{ margin: 8px 0; color: var(--muted); line-height: 1.55; }}
-    .guide-section ul {{ margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.55; }}
-    .guide-section li + li {{ margin-top: 5px; }}
-    .guide-section code {{
-      display: inline-block;
-      max-width: 100%;
+    .guide-nav button {{
+      width: 100%;
+      justify-content: flex-start;
+      background: transparent;
+      border-color: transparent;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 10px;
+    }}
+    .guide-nav button.active {{
+      background: #eaf3f9;
+      border-color: #bed7e7;
+      color: var(--ink);
+    }}
+    .guide-content {{ display: grid; gap: 12px; }}
+    .guide-hero {{
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f8faf8;
+      padding: 14px;
+    }}
+    .guide-hero h3, .guide-section h3 {{ margin: 0; font-size: 17px; line-height: 1.35; }}
+    .guide-hero p, .guide-lead {{
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }}
+    .guide-summary {{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }}
+    .guide-summary span {{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 9px;
+      color: var(--muted);
+      line-height: 1.35;
+      min-height: 58px;
+    }}
+    .guide-summary strong {{ display: block; color: var(--ink); margin-bottom: 4px; }}
+    .guide-section {{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 14px;
+      scroll-margin-top: 16px;
+    }}
+    .guide-section-title {{
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }}
+    .guide-kicker {{
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 999px;
+      background: #eaf3f9;
+      color: #24546b;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }}
+    .guide-steps {{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }}
+    .guide-steps p {{
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfb;
+      padding: 10px;
+      color: var(--muted);
+      line-height: 1.55;
       overflow-wrap: anywhere;
-      white-space: normal;
+    }}
+    .guide-steps strong {{
+      display: block;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }}
+    .guide-callout {{
+      margin-top: 10px;
+      border-left: 3px solid var(--accent);
       background: #eef3ef;
       color: var(--ink);
       border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 2px 5px;
+      border-left-color: var(--accent);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      line-height: 1.55;
+    }}
+    .guide-formula {{
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #eef3ef;
+      color: var(--ink);
+      padding: 9px 10px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      white-space: normal;
     }}
-    .fund-library-panel {{ width: min(1080px, 100%); }}
+    .fund-library-panel {{ width: min(1180px, 100%); }}
     .fund-library-view-switch {{ margin: 0 0 12px; }}
     .fund-library-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }}
     .fund-library-card {{
@@ -1719,12 +2098,26 @@ def render_application_portal(
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }}
-    .fund-library-table-view {{ max-height: 560px; overflow: auto; }}
-    .fund-library-table {{ min-width: 3200px; }}
+    .fund-library-schedule strong {{ display: block; color: var(--ink); margin-bottom: 4px; }}
+    .fund-library-schedule span {{ display: block; margin-top: 6px; white-space: pre-line; }}
+    .fund-library-table-view {{
+      max-height: min(640px, 72vh);
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }}
+    .fund-library-table {{
+      min-width: 2460px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }}
     .fund-library-table th {{
       position: sticky;
       top: 0;
-      z-index: 1;
+      z-index: 3;
+      background: #eef3ef;
+      box-shadow: 0 1px 0 var(--line);
     }}
     .fund-library-table td {{
       min-width: 112px;
@@ -1733,14 +2126,40 @@ def render_application_portal(
       overflow-wrap: anywhere;
       line-height: 1.45;
       font-size: 12px;
+      background: var(--surface);
     }}
-    .fund-library-table td:nth-child(1) {{ min-width: 86px; }}
-    .fund-library-table td:nth-child(2) {{ min-width: 220px; font-weight: 800; color: var(--ink); }}
-    .fund-library-table td:nth-child(14),
-    .fund-library-table td:nth-child(16),
-    .fund-library-table td:nth-child(18),
-    .fund-library-table td:nth-child(24),
-    .fund-library-table td:nth-child(27) {{ min-width: 260px; }}
+    .fund-library-table tbody tr:nth-child(even) td {{ background: #fbfcfb; }}
+    .fund-library-table th:nth-child(1),
+    .fund-library-table td:nth-child(1) {{
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      min-width: 92px;
+      max-width: 92px;
+    }}
+    .fund-library-table th:nth-child(2),
+    .fund-library-table td:nth-child(2) {{
+      position: sticky;
+      left: 92px;
+      z-index: 2;
+      min-width: 260px;
+      max-width: 260px;
+      font-weight: 800;
+      color: var(--ink);
+      box-shadow: 8px 0 14px -14px rgba(19, 32, 39, 0.48);
+    }}
+    .fund-library-table th:nth-child(1),
+    .fund-library-table th:nth-child(2) {{
+      z-index: 5;
+    }}
+    .fund-library-table td.fee-schedule-cell {{
+      min-width: 300px;
+      max-width: 340px;
+      white-space: pre-line;
+      line-height: 1.55;
+    }}
+    .fund-library-table td.fee-note-cell {{ min-width: 260px; max-width: 320px; }}
+    .fund-field strong.multi-line-value {{ white-space: pre-line; line-height: 1.55; }}
     .fund-library-empty {{ color: var(--muted); border: 1px dashed var(--line); border-radius: var(--radius); padding: 14px; background: #fbfcfb; }}
     .fund-fields {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }}
     .fund-field {{ border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; background: #fbfcfb; }}
@@ -1771,8 +2190,11 @@ def render_application_portal(
       .topbar, .home-grid {{ grid-template-columns: 1fr; }}
       .topbar {{ padding-right: 86px; }}
       .gate {{ min-width: 0; }}
-      .metrics, .action-summary {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .metrics, .action-decision-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .actions {{ grid-template-columns: 1fr; }}
+      .guide-layout {{ grid-template-columns: 1fr; }}
+      .guide-nav {{ position: static; grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+      .guide-nav button {{ justify-content: center; text-align: center; }}
     }}
     @media (max-width: 560px) {{
       .shell {{ padding: 18px 12px 32px; }}
@@ -1780,7 +2202,8 @@ def render_application_portal(
       h1 {{ font-size: 24px; }}
       .section-head {{ align-items: stretch; flex-direction: column; }}
       .view-switch {{ width: 100%; }}
-      .metrics, .action-summary, .discipline-list, .fund-fields, .fund-library-grid, .fund-library-meta, .guide-grid, .review-item-head {{ grid-template-columns: 1fr; }}
+      .metrics, .action-decision-grid, .discipline-list, .fund-fields, .fund-library-grid, .fund-library-meta, .guide-hero, .guide-summary, .guide-steps, .review-item-head, .review-result-guide {{ grid-template-columns: 1fr; }}
+      .guide-nav {{ grid-template-columns: 1fr; }}
       button, a.action {{ width: 100%; }}
       .fund-link {{ width: auto; }}
     }}
@@ -1803,14 +2226,64 @@ def render_application_portal(
     <section class="metrics" aria-label="关键状态">
       <div class="metric"><span>当前运行</span><strong>{_escape(latest_run_time)} · {_escape(_zh_status(current_run.quality if current_run else '-'))}</strong></div>
       <div class="metric"><span>当前持仓及时间</span><strong>{_escape(current_bj)}</strong></div>
-      <div class="metric"><span>需操作行为</span><strong>{_escape(action_level)}</strong></div>
-      <div class="metric"><span>候选池</span><strong>Top5 混合</strong></div>
+      <div class="metric"><span>需操作行为</span><strong data-action-level data-initial-value="{_escape(initial_action_summary.level)}" data-previous-value="{_escape(previous_action_summary.level)}">{_escape(initial_action_summary.level)}</strong></div>
+      <div class="metric"><span>候选池</span><strong>Top5 持仓 / Top6-10 观察</strong></div>
+    </section>
+
+    <section class="panel top-actions" aria-label="操作入口">
+      <div class="section-head">
+        <h2>操作入口</h2>
+      </div>
+      <div class="actions">
+        <article class="action-card">
+          <div><strong>基金库</strong><p>{_escape(fund_count_text)}；申赎、费率、状态。</p></div>
+          <button type="button" data-open-fund-library>查看基金</button>
+        </article>
+        <article class="action-card">
+          <div><strong>使用说明</strong><p>选股、权重、调仓原因。</p></div>
+          <button type="button" data-open-usage-guide>打开说明</button>
+        </article>
+        <article class="action-card">
+          <div><strong>人工复核</strong><p>{_escape(review_count_text)}；保存到数据库。</p></div>
+          <button type="button" data-open-review>处理复核</button>
+        </article>
+        <article class="action-card">
+          <div><strong>报告</strong><p>查看最新结果和历史归档。</p></div>
+          <a class="action primary" href="{report_href}">查看报告</a>
+        </article>
+        <article class="action-card">
+          <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>
+          <a class="action" href="{_escape(snapshot_href)}">查看快照</a>
+        </article>
+      </div>
     </section>
 
     <section class="panel" style="margin-bottom:16px;">
       <h2>当前持仓建议</h2>
       <div class="legend"><span class="change up">增加/买入</span><span class="change down">减少/卖出</span><span class="change flat">维持</span></div>
       <div class="discipline-list">{_discipline_cards(current_holdings, previous_holdings, latest_time=current_updated_au, comparison_time=previous_updated_au)}</div>
+    </section>
+
+    <section class="panel pool-ranking-panel" aria-label="持仓池与观察池排序">
+      <h2>持仓池 / 观察池排序</h2>
+      <p class="pool-ranking-note">同一 Serenity 基金分析排序：#1-#5 为持仓池，#6-#10 为观察池。观察池只进入跟踪和人工复核队列，不作为当前目标配置权重。</p>
+      <div class="table-wrap">
+        <table class="pool-table">
+          <thead>
+            <tr>
+              <th>基金分析排序</th>
+              <th>池</th>
+              <th>基金</th>
+              <th>等级</th>
+              <th>证据置信度</th>
+              <th>策略份额</th>
+              <th>动作/复核</th>
+              <th>排序原因</th>
+            </tr>
+          </thead>
+          <tbody>{_pool_rows(current_holdings, observation_rows, resolved_review_keys)}</tbody>
+        </table>
+      </div>
     </section>
 
     <section class="home-grid">
@@ -1840,15 +2313,21 @@ def render_application_portal(
           </table>
         </div>
 
-        <section class="action-summary" aria-label="需操作的行为">
-          <div class="action-box"><span>立即动作</span><strong>{_escape(action_level)}</strong></div>
-          <div class="action-box"><span>动作数量</span><strong>{_escape(action_count)}</strong></div>
-          <div class="action-box"><span>执行边界</span><strong>人工确认</strong></div>
+        <section class="action-decision" aria-label="需操作的行为">
+          <div class="action-decision-head">
+            <div>
+              <h2>需操作的行为</h2>
+              <small>跟随上方“基准权重口径”切换；与持仓建议表的相对比例动作保持一致。</small>
+            </div>
+            <strong class="change {initial_action_summary.tone}" data-action-level data-action-class data-initial-value="{_escape(initial_action_summary.level)}" data-previous-value="{_escape(previous_action_summary.level)}" data-initial-class="{_escape(initial_action_summary.tone)}" data-previous-class="{_escape(previous_action_summary.tone)}">{_escape(initial_action_summary.level)}</strong>
+          </div>
+          <div class="action-decision-grid">
+            <div class="action-box"><span>基准口径</span><strong data-action-reference data-initial-value="初始持仓权重" data-previous-value="上轮对比权重">初始持仓权重</strong></div>
+            <div class="action-box"><span>变化数量</span><strong data-action-count data-initial-value="{_escape(initial_action_summary.count)}" data-previous-value="{_escape(previous_action_summary.count)}">{_escape(initial_action_summary.count)}</strong></div>
+            <div class="action-box"><span>执行边界</span><strong data-action-boundary data-initial-value="{_escape(initial_action_summary.boundary)}" data-previous-value="{_escape(previous_action_summary.boundary)}">{_escape(initial_action_summary.boundary)}</strong></div>
+          </div>
+          <p class="action-detail" data-action-detail data-initial-value="{_escape(initial_action_summary.detail)}" data-previous-value="{_escape(previous_action_summary.detail)}">{_escape(initial_action_summary.detail)}</p>
         </section>
-        <div class="panel" style="box-shadow:none;background:#fbfcfb;">
-          <h2>需操作的行为</h2>
-          <p style="margin:0;color:var(--muted);line-height:1.6;">{_escape(action_detail)}</p>
-        </div>
       </div>
 
       <aside class="panel">
@@ -1879,32 +2358,6 @@ def render_application_portal(
     </section>
 
     {_run_timeline_panel(timeline_events)}
-
-    <section class="panel" style="margin-top:16px;">
-      <h2>操作入口</h2>
-      <div class="actions">
-        <article class="action-card">
-          <div><strong>报告</strong><p>查看最新结果和历史归档。</p></div>
-          <a class="action primary" href="{report_href}">查看报告</a>
-        </article>
-        <article class="action-card">
-          <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>
-          <a class="action" href="{_escape(snapshot_href)}">查看快照</a>
-        </article>
-        <article class="action-card">
-          <div><strong>基金库</strong><p>{_escape(fund_count_text)}；申赎、费率、状态。</p></div>
-          <button type="button" data-open-fund-library>查看基金</button>
-        </article>
-        <article class="action-card">
-          <div><strong>使用说明</strong><p>策略、权重、调仓纪律。</p></div>
-          <button type="button" data-open-usage-guide>查看说明</button>
-        </article>
-        <article class="action-card">
-          <div><strong>人工复核</strong><p>{_escape(review_count_text)}；保存到数据库。</p></div>
-          <button type="button" data-open-review>处理复核</button>
-        </article>
-      </div>
-    </section>
 
     <section class="panel" style="margin-top:16px;">
       <h2>执行边界</h2>
@@ -1954,33 +2407,66 @@ def render_application_portal(
       window.sessionStorage.removeItem("serenityRefreshToast");
       showToast(pendingRefreshToast);
     }}
+    const localServiceOrigins = Array.from({{ length: 31 }}, (_, index) => `http://127.0.0.1:${{8765 + index}}`);
+    let activeServiceOrigin = window.location.protocol === "http:" ? window.location.origin : localServiceOrigins[0];
+    const localServiceRequiredMessage = "本地服务未启动。请重新打开 Serenity 每日分析.app，或稍等几秒后再试。";
+    const candidateServiceOrigins = () => {{
+      const origins = [];
+      if (window.location.protocol === "http:" || window.location.protocol === "https:") origins.push(window.location.origin);
+      origins.push(activeServiceOrigin, ...localServiceOrigins);
+      return [...new Set(origins.filter(Boolean))];
+    }};
+    const fetchApiJson = async (path, options = {{}}) => {{
+      let lastError = null;
+      for (const origin of candidateServiceOrigins()) {{
+        try {{
+          const response = await fetch(`${{origin}}${{path}}`, options);
+          const raw = await response.text();
+          let data = {{}};
+          try {{
+            data = raw ? JSON.parse(raw) : {{}};
+          }} catch {{
+            lastError = new Error(localServiceRequiredMessage);
+            continue;
+          }}
+          if (!Object.prototype.hasOwnProperty.call(data, "status")) {{
+            lastError = new Error(localServiceRequiredMessage);
+            continue;
+          }}
+          activeServiceOrigin = origin;
+          return {{ response, data, origin }};
+        }} catch (error) {{
+          lastError = error;
+        }}
+      }}
+      throw lastError || new Error(localServiceRequiredMessage);
+    }};
+    const reloadAfterServerUpdate = (origin = activeServiceOrigin) => {{
+      window.setTimeout(() => {{
+        const targetOrigin = origin || activeServiceOrigin || localServiceOrigins[0];
+        if (window.location.protocol === "file:" || window.location.origin !== targetOrigin) {{
+          window.location.href = `${{targetOrigin}}/`;
+        }} else {{
+          window.location.reload();
+        }}
+      }}, 500);
+    }};
     document.querySelectorAll("[data-refresh]").forEach((button) => {{
       button.addEventListener("click", async () => {{
         const original = button.textContent;
         button.disabled = true;
         button.textContent = "更新中";
-        showToast("正在同步最新信息");
-        if (window.location.protocol === "file:") {{
-          showToast("当前为静态入口，已重新载入本地页面");
-          window.setTimeout(() => window.location.reload(), 900);
-          window.setTimeout(() => {{
-            button.disabled = false;
-            button.textContent = original;
-          }}, 1000);
-          return;
-        }}
+        showToast("正在运行 Serenity 全流程并同步最新信息");
         try {{
-          const response = await fetch("/api/refresh", {{ method: "POST" }});
-          const data = await response.json();
+          const {{ response, data, origin }} = await fetchApiJson("/api/refresh", {{ method: "POST" }});
           if (!response.ok || data.status !== "pass") {{
             throw new Error(data.message || "刷新失败");
           }}
           window.sessionStorage.setItem("serenityRefreshToast", data.message);
-          window.location.reload();
+          reloadAfterServerUpdate(origin);
         }} catch (error) {{
-          const message = error && error.message ? error.message : "当前为静态入口，已重新载入本地页面";
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : localServiceRequiredMessage;
           showToast(message);
-          window.setTimeout(() => window.location.reload(), 900);
         }} finally {{
           window.setTimeout(() => {{
             button.disabled = false;
@@ -2013,6 +2499,14 @@ def render_application_portal(
         node.classList.remove("up", "down", "flat");
         node.classList.add(nextClass);
       }});
+      document.querySelectorAll("[data-action-level], [data-action-reference], [data-action-count], [data-action-boundary], [data-action-detail]").forEach((node) => {{
+        node.textContent = node.dataset[`${{mode}}Value`] || "-";
+      }});
+      document.querySelectorAll("[data-action-class]").forEach((node) => {{
+        const nextClass = node.dataset[`${{mode}}Class`] || "flat";
+        node.classList.remove("up", "down", "flat", "mixed");
+        node.classList.add(nextClass);
+      }});
     }};
     document.querySelectorAll("[data-reference-mode]").forEach((button) => {{
       button.addEventListener("click", () => {{
@@ -2041,73 +2535,44 @@ def render_application_portal(
     setTimelineMode("table");
 
     const reviewModal = document.getElementById("review-modal");
-    const reviewStorageKey = "serenityManualReview.v1.cache";
-    const reviewApiBacked = () => window.location.protocol !== "file:";
-    const readReviewCache = () => {{
-      try {{
-        return JSON.parse(window.localStorage.getItem(reviewStorageKey) || "{{}}");
-      }} catch {{
-        return {{}};
-      }}
+    const reviewDatabaseRequiredMessage = "本地服务未启动。请重新打开 Serenity 每日分析.app；复核必须实时写入数据库。";
+    const reviewOutcomeLabels = {{
+      observe_pool: "放入观察池继续观察",
+      exclude_current_observation: "剔除这一轮观察池",
+      promote_top5_candidate_pool: "进入 Top 5 候选操作池",
     }};
-    const writeReviewCache = (log) => {{
-      try {{
-        window.localStorage.setItem(reviewStorageKey, JSON.stringify(log));
-      }} catch {{
-        /* 静态入口缓存失败时不阻断页面主流程。 */
-      }}
+    const reviewOutcomeKeysByLabel = Object.fromEntries(
+      Object.entries(reviewOutcomeLabels).map(([key, label]) => [label, key])
+    );
+    const reviewApiBacked = () => true;
+    const normalizeReviewOutcome = (value) => {{
+      if (reviewOutcomeLabels[value]) return value;
+      if (reviewOutcomeKeysByLabel[value]) return reviewOutcomeKeysByLabel[value];
+      return "observe_pool";
     }};
     const loadReviewLog = async () => {{
-      if (!reviewApiBacked()) {{
-        return readReviewCache();
+      const {{ response, data }} = await fetchApiJson("/api/manual-review", {{ method: "GET" }});
+      if (!response.ok || data.status !== "pass") {{
+        throw new Error(data.message || "读取复核失败");
       }}
-      try {{
-        const response = await fetch("/api/manual-review", {{ method: "GET" }});
-        const data = await response.json();
-        if (!response.ok || data.status !== "pass") {{
-          throw new Error(data.message || "读取复核失败");
-        }}
-        const records = data.records || {{}};
-        writeReviewCache(records);
-        return records;
-      }} catch {{
-        return readReviewCache();
-      }}
+      return data.records || {{}};
     }};
     const saveReviewRecord = async (record) => {{
-      const key = String(record.review_id || "");
-      if (!reviewApiBacked()) {{
-        const cache = readReviewCache();
-        cache[key] = {{ ...record, source: "local" }};
-        writeReviewCache(cache);
-        return cache[key];
-      }}
-      const response = await fetch("/api/manual-review", {{
+      const {{ response, data }} = await fetchApiJson("/api/manual-review", {{
         method: "POST",
         headers: {{ "Content-Type": "application/json" }},
         body: JSON.stringify(record),
       }});
-      const data = await response.json();
       if (!response.ok || data.status !== "pass") {{
         throw new Error(data.message || "保存复核失败");
       }}
-      const saved = data.record || {{ ...record, source: "sqlite" }};
-      const cache = readReviewCache();
-      cache[key] = saved;
-      writeReviewCache(cache);
-      return saved;
+      return data.record || {{ ...record, source: "sqlite" }};
     }};
     const clearReviewRecords = async () => {{
-      if (!reviewApiBacked()) {{
-        window.localStorage.removeItem(reviewStorageKey);
-        return {{ status: "pass", source: "local" }};
-      }}
-      const response = await fetch("/api/manual-review", {{ method: "DELETE" }});
-      const data = await response.json();
+      const {{ response, data }} = await fetchApiJson("/api/manual-review", {{ method: "DELETE" }});
       if (!response.ok || data.status !== "pass") {{
         throw new Error(data.message || "清空复核失败");
       }}
-      window.localStorage.removeItem(reviewStorageKey);
       return data;
     }};
     const formatReviewSavedAt = () => {{
@@ -2127,21 +2592,28 @@ def render_application_portal(
     const reviewStateText = (record) => {{
       if (!record) return "未保存";
       const savedAt = record.savedAt || record.saved_at || "";
-      return record.source === "sqlite" ? `已保存到数据库 ${{savedAt}}` : `已临时保存 ${{savedAt}}`;
+      const label = record.outcomeLabel || record.decision || "";
+      return `已保存到数据库 ${{savedAt}}${{label ? ` · ${{label}}` : ""}}`;
     }};
     const applyReviewLog = async () => {{
-      const log = await loadReviewLog();
+      let log = {{}};
+      try {{
+        log = await loadReviewLog();
+      }} catch (error) {{
+        const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
+        showToast(message);
+      }}
       document.querySelectorAll("[data-review-item]").forEach((item) => {{
         const record = log[item.dataset.reviewId || ""];
         const decision = item.querySelector("[data-review-decision]");
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         if (record) {{
-          if (decision) decision.value = record.decision || decision.value;
+          if (decision) decision.value = normalizeReviewOutcome(record.outcome || record.decision || decision.value);
           if (note) note.value = record.note || "";
           if (state) state.textContent = reviewStateText(record);
         }} else if (state) {{
-          state.textContent = "未保存";
+          state.textContent = reviewApiBacked() ? "未保存" : "数据库入口不可用";
         }}
       }});
     }};
@@ -2165,35 +2637,53 @@ def render_application_portal(
         const note = item.querySelector("[data-review-note]");
         const state = item.querySelector("[data-review-state]");
         const savedAt = formatReviewSavedAt();
+        const outcome = normalizeReviewOutcome(decision ? decision.value : "observe_pool");
         const record = {{
           review_id: item.dataset.reviewId || "",
           run_id: item.dataset.reviewRunId || "",
-          decision: decision ? decision.value : "保持禁止新增",
+          outcome,
+          decision: reviewOutcomeLabels[outcome],
           note: note ? note.value : "",
           savedAt,
         }};
         try {{
           const saved = await saveReviewRecord(record);
           if (state) state.textContent = reviewStateText(saved);
-          showToast(saved.source === "sqlite" ? "人工复核已保存到数据库" : "当前为静态入口，已临时保存到浏览器");
+          if (saved.refreshTriggered) {{
+            if (saved.refreshStatus === "error") {{
+              showToast(saved.refreshMessage || "已保存到数据库，但同步刷新失败");
+            }} else {{
+              window.sessionStorage.setItem(
+                "serenityRefreshToast",
+                saved.refreshMessage || "人工复核已保存到数据库，并已重新运行 Serenity 全流程"
+              );
+              reloadAfterServerUpdate();
+            }}
+          }} else {{
+            showToast(`人工复核已保存到数据库：${{saved.outcomeLabel || saved.decision || "已保存"}}`);
+          }}
         }} catch (error) {{
-          const cache = readReviewCache();
-          cache[String(record.review_id || "")] = {{ ...record, source: "local" }};
-          writeReviewCache(cache);
-          if (state) state.textContent = reviewStateText(cache[String(record.review_id || "")]);
-          const message = error && error.message ? error.message : "数据库保存失败";
-          showToast(`${{message}}，已临时缓存到浏览器`);
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
+          if (state) state.textContent = "保存失败，未写入数据库";
+          showToast(message);
         }}
       }});
     }});
     document.querySelectorAll("[data-copy-review-log]").forEach((button) => {{
       button.addEventListener("click", async () => {{
-        const log = await loadReviewLog();
+        let log = {{}};
+        try {{
+          log = await loadReviewLog();
+        }} catch (error) {{
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
+          showToast(message);
+        }}
         const lines = Array.from(document.querySelectorAll("[data-review-item]")).map((item) => {{
           const id = item.dataset.reviewId || "";
           const title = item.querySelector(".review-item-head strong")?.textContent?.trim() || id;
           const reason = item.querySelector(".review-reason")?.textContent?.trim() || "-";
-          const decision = item.querySelector("[data-review-decision]")?.value || log[id]?.decision || "保持禁止新增";
+          const outcome = normalizeReviewOutcome(item.querySelector("[data-review-decision]")?.value || log[id]?.outcome || log[id]?.decision);
+          const decision = reviewOutcomeLabels[outcome];
           const note = item.querySelector("[data-review-note]")?.value || log[id]?.note || "";
           return `#${{id}} ${{title}} | 决策:${{decision}} | 原因:${{reason}} | 备注:${{note || "-"}}`;
         }});
@@ -2223,12 +2713,12 @@ def render_application_portal(
             const state = item.querySelector("[data-review-state]");
             const decision = item.querySelector("[data-review-decision]");
             if (note) note.value = "";
-            if (decision) decision.value = "保持禁止新增";
+            if (decision) decision.value = "observe_pool";
             if (state) state.textContent = "未保存";
           }});
-          showToast(result.source === "local" ? "临时复核记录已清空" : "数据库复核记录已清空");
+          showToast("数据库复核记录已清空");
         }} catch (error) {{
-          const message = error && error.message ? error.message : "清空复核失败";
+          const message = error && error.message && error.message !== "Failed to fetch" ? error.message : reviewDatabaseRequiredMessage;
           showToast(message);
         }}
       }});
@@ -2236,8 +2726,15 @@ def render_application_portal(
     void applyReviewLog();
 
     const usageGuideModal = document.getElementById("usage-guide-modal");
+    const guideNavButtons = Array.from(document.querySelectorAll("[data-guide-target]"));
+    const setActiveGuideTarget = (targetId) => {{
+      guideNavButtons.forEach((button) => {{
+        button.classList.toggle("active", button.dataset.guideTarget === targetId);
+      }});
+    }};
     const openUsageGuide = () => {{
       if (usageGuideModal) usageGuideModal.hidden = false;
+      setActiveGuideTarget("guide-overview");
       showToast("已打开使用说明");
     }};
     const closeUsageGuide = () => {{
@@ -2249,6 +2746,15 @@ def render_application_portal(
     document.querySelectorAll("[data-close-usage-guide]").forEach((button) => {{
       button.addEventListener("click", closeUsageGuide);
     }});
+    guideNavButtons.forEach((button) => {{
+      button.addEventListener("click", () => {{
+        const targetId = button.dataset.guideTarget;
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (!target) return;
+        setActiveGuideTarget(targetId);
+        target.scrollIntoView({{ block: "start", behavior: "smooth" }});
+      }});
+    }});
 
     const modal = document.getElementById("fund-modal");
     const modalTitle = document.getElementById("fund-modal-title");
@@ -2259,6 +2765,19 @@ def render_application_portal(
     const fundLibraryBody = document.getElementById("fund-library-body");
     const fundLibraryTableBody = document.getElementById("fund-library-table-body");
     let fundDetailOpenedFromLibrary = false;
+    const formatFeeSchedule = (value) => {{
+      const raw = String(value ?? "-").trim();
+      if (!raw || raw === "-") return "-";
+      return raw
+        .split(/[；;]/)
+        .map((part) => part.trim())
+        .filter(Boolean)
+        .join("\\n");
+    }};
+    const formatFundValue = (key, value) => {{
+      if (key.includes("Schedule")) return formatFeeSchedule(value);
+      return String(value ?? "-");
+    }};
     const fieldLabels = [
       ["首次进入策略 Top5", "firstTop5Time"],
       ["上次进入候选池时间", "lastTop5EntryTime"],
@@ -2270,9 +2789,6 @@ def render_application_portal(
       ["交易截止时间", "cutoffTime"],
       ["确认周期", "confirmLag"],
       ["赎回到账", "redeemLag"],
-      ["支付宝交易可用性", "alipayTradeStatus"],
-      ["MooMoo交易可用性", "moomooTradeStatus"],
-      ["平台交易备注", "platformTradeNote"],
       ["申购费（基础/最高）", "subscriptionFee"],
       ["申购费分档规则", "subscriptionFeeSchedule"],
       ["赎回费（基础/最高）", "redemptionFee"],
@@ -2285,15 +2801,36 @@ def render_application_portal(
       ["合计运营费（年）", "operatingFee"],
       ["最低申购金额", "minPurchaseAmount"],
       ["来源名称", "sourceName"],
-      ["来源类型", "sourceType"],
-      ["来源优先级", "sourcePriority"],
       ["来源链接", "sourceUrl"]
+    ];
+    const fundLibraryTableColumns = [
+      ["代码", "code"],
+      ["基金名称", "name"],
+      ["上次进入候选池时间", "lastTop5EntryTime"],
+      ["当前进入候选池天数", "currentCandidateDays"],
+      ["当前状态", "candidateStatus"],
+      ["费用/状态快照时间", "ruleSnapshotTime"],
+      ["申购状态", "subscriptionStatus"],
+      ["赎回状态", "redemptionStatus"],
+      ["交易截止时间", "cutoffTime"],
+      ["确认周期", "confirmLag"],
+      ["赎回到账", "redeemLag"],
+      ["申购费（基础/最高）", "subscriptionFee"],
+      ["申购费分档规则", "subscriptionFeeSchedule"],
+      ["赎回费（基础/最高）", "redemptionFee"],
+      ["赎回费分档规则", "redemptionFeeSchedule"],
+      ["费率规则时间", "feeScheduleAsOf"],
+      ["费率口径说明", "feeScheduleNote"],
+      ["管理费（年）", "managementFee"],
+      ["托管费（年）", "custodyFee"],
+      ["销售服务费", "salesServiceFee"],
+      ["合计运营费（年）", "operatingFee"],
+      ["最低申购金额", "minPurchaseAmount"],
     ];
     const fundLibrarySummaryLabels = [
       ["当前状态", "candidateStatus"],
+      ["费用快照", "ruleSnapshotTime"],
       ["入池天数", "currentCandidateDays"],
-      ["支付宝交易可用性", "alipayTradeStatus"],
-      ["MooMoo交易可用性", "moomooTradeStatus"],
       ["申购状态", "subscriptionStatus"],
       ["赎回状态", "redemptionStatus"],
       ["申购费", "subscriptionFee"],
@@ -2332,7 +2869,10 @@ def render_application_portal(
           const labelNode = document.createElement("span");
           labelNode.textContent = label;
           const valueNode = document.createElement("strong");
-          valueNode.textContent = String(info[key] ?? "-");
+          valueNode.textContent = formatFundValue(key, info[key]);
+          if (key.includes("Schedule")) {{
+            valueNode.classList.add("multi-line-value");
+          }}
           if (valueNode.textContent.includes("未提供完整")) {{
             field.classList.add("warning");
           }}
@@ -2368,7 +2908,7 @@ def render_application_portal(
         if (fundLibraryTableBody) {{
           const row = document.createElement("tr");
           const cell = document.createElement("td");
-          cell.colSpan = fieldLabels.length + 3;
+          cell.colSpan = fundLibraryTableColumns.length + 1;
           cell.textContent = "当前没有已入库基金信息。";
           row.appendChild(cell);
           fundLibraryTableBody.appendChild(row);
@@ -2410,20 +2950,33 @@ def render_application_portal(
 
         const schedule = document.createElement("div");
         schedule.className = "fund-library-schedule";
-        schedule.textContent = `申购费分档：${{info.subscriptionFeeSchedule || "-"}}\\n赎回费分档：${{info.redemptionFeeSchedule || "-"}}\\n支付宝交易：${{info.alipayTradeStatus || "-"}}\\nMooMoo交易：${{info.moomooTradeStatus || "-"}}\\n来源：${{info.sourceName || "-"}}`;
+        schedule.innerHTML = "";
+        [
+          ["申购费分档", formatFeeSchedule(info.subscriptionFeeSchedule)],
+          ["赎回费分档", formatFeeSchedule(info.redemptionFeeSchedule)],
+          ["费率说明", info.feeScheduleNote || "-"],
+        ].forEach(([label, value]) => {{
+          const labelNode = document.createElement("strong");
+          labelNode.textContent = label;
+          const valueNode = document.createElement("span");
+          valueNode.textContent = String(value || "-");
+          schedule.appendChild(labelNode);
+          schedule.appendChild(valueNode);
+        }});
         card.appendChild(schedule);
         fundLibraryBody.appendChild(card);
 
         if (fundLibraryTableBody) {{
           const row = document.createElement("tr");
-          const values = [
-            info.code || "-",
-            info.name || "-",
-            ...fieldLabels.map(([, key]) => info[key] ?? "-")
-          ];
-          values.forEach((value) => {{
+          fundLibraryTableColumns.forEach(([, key]) => {{
             const cell = document.createElement("td");
-            cell.textContent = String(value);
+            cell.textContent = formatFundValue(key, info[key]);
+            if (key.includes("Schedule")) {{
+              cell.classList.add("fee-schedule-cell");
+            }}
+            if (key === "feeScheduleNote") {{
+              cell.classList.add("fee-note-cell");
+            }}
             row.appendChild(cell);
           }});
           const actionCell = document.createElement("td");
@@ -2442,7 +2995,7 @@ def render_application_portal(
     }};
     const openFundLibrary = () => {{
       renderFundLibrary();
-      setFundLibraryMode("gallery");
+      setFundLibraryMode("table");
       if (fundLibraryModal) fundLibraryModal.hidden = false;
       showToast("已打开基金库");
     }};
@@ -2456,7 +3009,7 @@ def render_application_portal(
       button.addEventListener("click", closeFundLibrary);
     }});
     document.querySelectorAll("[data-fund-library-mode]").forEach((button) => {{
-      button.addEventListener("click", () => setFundLibraryMode(button.dataset.fundLibraryMode || "gallery"));
+      button.addEventListener("click", () => setFundLibraryMode(button.dataset.fundLibraryMode || "table"));
     }});
     document.querySelectorAll("[data-fund-code]").forEach((button) => {{
       button.addEventListener("click", () => openFundModal(button.dataset.fundCode, {{ fromLibrary: false }}));
@@ -2484,13 +3037,13 @@ def render_application_portal(
 
 def render_downloads_entry(portal_path: Path) -> str:
     portal_url = portal_path.resolve().as_uri()
+    ports = ",".join(str(port) for port in range(8765, 8796))
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="1; url={_escape(portal_url)}">
-  <title>打开 Serenity 每日分析</title>
+  <title>正在启动 Serenity 每日分析</title>
   <style>
     :root {{
       --page: #f5f7f4;
@@ -2517,6 +3070,23 @@ def render_downloads_entry(portal_path: Path) -> str:
     }}
     h1 {{ margin: 0; font-size: 28px; letter-spacing: 0; }}
     p {{ color: var(--muted); line-height: 1.55; }}
+    .status {{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-weight: 700;
+      margin: 12px 0;
+    }}
+    .spinner {{
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(11, 111, 123, 0.18);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }}
+    @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
     a {{
       min-height: 38px;
       border: 1px solid var(--accent);
@@ -2540,10 +3110,68 @@ def render_downloads_entry(portal_path: Path) -> str:
   <main>
     <section class="panel">
       <h1>Serenity 每日分析</h1>
-      <p>正在打开本地应用首页。若没有自动跳转，请使用下方按钮。</p>
-      <p><a href="{_escape(portal_url)}">打开本地应用</a></p>
+      <div class="status"><span class="spinner" aria-hidden="true"></span><span id="status">正在启动本地服务...</span></div>
+      <p>通常几秒内会自动打开首页；服务启动后会跳转到可实时刷新和写入数据库的入口。</p>
+      <p><a id="retry" href="#">立即重试</a></p>
     </section>
   </main>
+  <script>
+    const ports = [{ports}];
+    const staticPortalUrl = "{_escape(portal_url)}";
+    const statusNode = document.getElementById("status");
+    const retry = document.getElementById("retry");
+    let attempt = 0;
+    const checkOrigin = async (origin) => {{
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), 450);
+      try {{
+        const response = await fetch(`${{origin}}/api/health`, {{
+          cache: "no-store",
+          signal: controller.signal,
+        }});
+        if (!response.ok) return false;
+        const data = await response.json();
+        return data && data.status === "ok";
+      }} catch {{
+        return false;
+      }} finally {{
+        window.clearTimeout(timer);
+      }}
+    }};
+    const firstHealthyOrigin = () => new Promise((resolve) => {{
+      let remaining = ports.length;
+      for (const port of ports) {{
+        const origin = `http://127.0.0.1:${{port}}`;
+        checkOrigin(origin).then((healthy) => {{
+          if (healthy) {{
+            resolve(origin);
+            return;
+          }}
+          remaining -= 1;
+          if (remaining <= 0) resolve(null);
+        }});
+      }}
+    }});
+    const findService = async () => {{
+      attempt += 1;
+      statusNode.textContent = `正在启动本地服务... 第 ${{attempt}} 次检查`;
+      const origin = await firstHealthyOrigin();
+      if (origin) {{
+        statusNode.textContent = "服务已启动，正在打开首页...";
+        window.location.replace(`${{origin}}/`);
+        return;
+      }}
+      if (attempt >= 60) {{
+        statusNode.textContent = "服务仍在启动；请稍等或重新打开 Serenity 每日分析.app。";
+      }}
+      window.setTimeout(findService, 650);
+    }};
+    retry.addEventListener("click", (event) => {{
+      event.preventDefault();
+      void findService();
+    }});
+    void findService();
+  </script>
 </body>
 </html>
 """
@@ -2593,7 +3221,7 @@ def _write_app_bundle(app_path: Path, portal_path: Path, root_dir: Path) -> None
     )
     (contents_dir / "PkgInfo").write_text("APPL????", encoding="ascii")
     _write_app_icon(contents_dir, app_path.parent)
-    portal_target = str(portal_path.resolve()).replace('"', '\\"')
+    bootstrap_target = str((portal_path.parent / "downloads-entry.html").resolve()).replace('"', '\\"')
     root_target = str(root_dir.resolve()).replace('"', '\\"')
     python_target = sys.executable.replace('"', '\\"')
     executable = macos_dir / "open-serenity"
@@ -2601,24 +3229,49 @@ def _write_app_bundle(app_path: Path, portal_path: Path, root_dir: Path) -> None
         f"""#!/bin/sh
 ROOT="{root_target}"
 PYTHON="{python_target}"
+BOOTSTRAP="{bootstrap_target}"
 PORT="${{SERENITY_APP_PORT:-8765}}"
 URL="http://127.0.0.1:$PORT/"
 HEALTH="http://127.0.0.1:$PORT/api/health"
 LOG_DIR="$HOME/Library/Logs/SerenityDailyAnalysis"
 LOG_FILE="$LOG_DIR/application-server.log"
+SERVER_PID=""
 mkdir -p "$LOG_DIR"
 cd "$ROOT" || exit 1
-if ! /usr/bin/curl -fsS "$HEALTH" >/dev/null 2>&1; then
-  "$PYTHON" -m app.cli application-server --host 127.0.0.1 --port "$PORT" >> "$LOG_FILE" 2>&1 &
-  for _ in 1 2 3 4 5; do
-    /usr/bin/curl -fsS "$HEALTH" >/dev/null 2>&1 && break
-    sleep 0.4
+open "$BOOTSTRAP" >/dev/null 2>&1 || true
+is_serenity_health() {{
+  /usr/bin/curl --connect-timeout 0.2 --max-time 0.5 -fsS "$1" 2>/dev/null | /usr/bin/grep -q '"status": "ok"'
+}}
+if ! is_serenity_health "$HEALTH"; then
+  for CANDIDATE in "$PORT" $(seq 8765 8795); do
+    CANDIDATE_HEALTH="http://127.0.0.1:$CANDIDATE/api/health"
+    if is_serenity_health "$CANDIDATE_HEALTH"; then
+      PORT="$CANDIDATE"
+      break
+    fi
+    if ! /usr/bin/nc -z 127.0.0.1 "$CANDIDATE" >/dev/null 2>&1; then
+      PORT="$CANDIDATE"
+      break
+    fi
+  done
+  URL="http://127.0.0.1:$PORT/"
+  HEALTH="http://127.0.0.1:$PORT/api/health"
+fi
+if ! is_serenity_health "$HEALTH"; then
+  "$PYTHON" -m app.cli application-server --host 127.0.0.1 --port "$PORT" --disable-autoscheduler >> "$LOG_FILE" 2>&1 </dev/null &
+  SERVER_PID="$!"
+  for _ in $(seq 1 60); do
+    is_serenity_health "$HEALTH" && break
+    sleep 0.5
   done
 fi
-if /usr/bin/curl -fsS "$HEALTH" >/dev/null 2>&1; then
-  open "$URL"
+if is_serenity_health "$HEALTH"; then
+  true
 else
-  open "{portal_target}"
+  /usr/bin/osascript -e 'display notification "本地服务启动失败，请查看 ~/Library/Logs/SerenityDailyAnalysis/application-server.log" with title "Serenity 每日分析"' >/dev/null 2>&1 || true
+fi
+if [ -n "$SERVER_PID" ]; then
+  wait "$SERVER_PID"
 fi
 """,
         encoding="utf-8",
@@ -2865,21 +3518,24 @@ def _write_app_icon(contents_dir: Path, output_dir: Path) -> None:
     )
 
 
-def build_application_portal(settings: Settings) -> dict[str, object]:
+def build_application_portal(settings: Settings, *, install_apps: bool = True) -> dict[str, object]:
     init_db(settings.db_path)
     with connect(settings.db_path) as conn:
         runs = _latest_runs(conn, limit=12)
         current_run = runs[0] if runs else None
         previous_run = runs[1] if len(runs) > 1 else None
-        current_holdings = _holdings_for_run(conn, current_run.run_id) if current_run else []
+        current_pool = _recommendations_for_run(conn, current_run.run_id, 1, 10) if current_run else []
+        current_holdings = [row for row in current_pool if row.rank <= 5]
+        observation_pool = [row for row in current_pool if 6 <= row.rank <= 10]
         previous_holdings = _holdings_for_run(conn, previous_run.run_id) if previous_run else []
         run_timeline = _run_timeline_events(conn, runs)
         manual_review_items = _manual_review_items(conn, current_run.run_id if current_run else None)
+        resolved_review_keys = _resolved_review_code_reason_keys(conn)
         baseline_time_bj = _baseline_reference_time(conn, current_run.run_id if current_run else None)
         fund_library = _fund_library_for_run(
             conn,
             current_run.run_id if current_run else None,
-            current_holdings + previous_holdings,
+            current_holdings + observation_pool + previous_holdings,
         )
 
     output_dir = settings.root_dir / "outputs" / "application"
@@ -2895,18 +3551,22 @@ def build_application_portal(settings: Settings) -> dict[str, object]:
             current_holdings,
             previous_run,
             previous_holdings,
+            observation_pool=observation_pool,
             baseline_time_bj=baseline_time_bj,
             fund_library=fund_library,
             run_timeline=run_timeline,
             manual_review_items=manual_review_items,
+            resolved_review_keys=resolved_review_keys,
         ),
         encoding="utf-8",
     )
     downloads_entry_path.write_text(render_downloads_entry(portal_path), encoding="utf-8")
-    _write_app_bundle(app_bundle_path, portal_path, settings.root_dir)
-    _install_app_bundle(app_bundle_path, downloads_app_path)
-    _install_app_bundle(app_bundle_path, applications_app_path)
-    legacy_removed = _cleanup_legacy_downloads_entries(settings.root_dir)
+    legacy_removed: list[str] = []
+    if install_apps:
+        _write_app_bundle(app_bundle_path, portal_path, settings.root_dir)
+        _install_app_bundle(app_bundle_path, downloads_app_path)
+        _install_app_bundle(app_bundle_path, applications_app_path)
+        legacy_removed = _cleanup_legacy_downloads_entries(settings.root_dir)
     return {
         "status": "pass",
         "portal_path": str(portal_path),

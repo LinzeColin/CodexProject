@@ -69,16 +69,17 @@ def _settings():
 
 def test_max_drawdown_40_percent_blocks():
     points = [
-        PricePoint("FUNDX", __import__("datetime").date(2026, 1, 1), 1.0),
-        PricePoint("FUNDX", __import__("datetime").date(2026, 2, 1), 1.2),
-        PricePoint("FUNDX", __import__("datetime").date(2026, 3, 1), 0.70),
+        PricePoint("FUNDX", date(2024, 1, 1) + timedelta(days=idx), 1.0)
+        for idx in range(760)
     ]
+    points[500] = PricePoint("FUNDX", points[500].date, 1.2)
+    points[520] = PricePoint("FUNDX", points[520].date, 0.70)
     result = score_candidate(
         _candidate(),
         _rule(),
         calculate_metrics(points),
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
         _settings(),
     )
     assert result.grade == "Block"
@@ -88,16 +89,16 @@ def test_max_drawdown_40_percent_blocks():
 
 def test_recovery_365_days_hard_downgrades():
     points = [
-        PricePoint("FUNDX", __import__("datetime").date(2025, 1, 1), 1.4),
-        PricePoint("FUNDX", __import__("datetime").date(2025, 1, 2), 1.0),
-        PricePoint("FUNDX", __import__("datetime").date(2026, 1, 3), 1.2),
+        PricePoint("FUNDX", date(2024, 1, 1), 1.4),
+        PricePoint("FUNDX", date(2024, 1, 2), 1.0),
+        PricePoint("FUNDX", date(2026, 1, 3), 1.2),
     ]
     result = score_candidate(
         _candidate(),
         _rule(),
         calculate_metrics(points),
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
         _settings(),
     )
     assert result.grade in {"Manual Review", "Block"}
@@ -107,16 +108,15 @@ def test_recovery_365_days_hard_downgrades():
 
 def test_aggregated_fallback_cannot_be_action_ready():
     points = [
-        PricePoint("FUNDX", __import__("datetime").date(2026, 3, 1), 1.0),
-        PricePoint("FUNDX", __import__("datetime").date(2026, 5, 1), 1.2),
-        PricePoint("FUNDX", __import__("datetime").date(2026, 6, 1), 1.4),
+        PricePoint("FUNDX", date(2024, 1, 1) + timedelta(days=idx), 1.0 + idx * 0.001)
+        for idx in range(760)
     ]
     result = score_candidate(
         _candidate(fallback_aggregated=True),
         _rule(),
         calculate_metrics(points),
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
         _settings(),
     )
     assert result.grade != "Action-Ready"
@@ -126,7 +126,7 @@ def test_aggregated_fallback_cannot_be_action_ready():
 def test_platform_trade_status_is_advisory_only():
     points = [
         PricePoint("FUNDX", date(2026, 1, 1) + timedelta(days=idx), 1.0 + idx * 0.01)
-        for idx in range(120)
+        for idx in range(760)
     ]
     result = score_candidate(
         _candidate(),
@@ -136,8 +136,8 @@ def test_platform_trade_status_is_advisory_only():
             platform_trade_note="只作交易路径建议，不参与候选池排除",
         ),
         calculate_metrics(points),
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
-        {"1m": 0.01, "3m": 0.02, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
         _settings(),
     )
 
@@ -145,3 +145,67 @@ def test_platform_trade_status_is_advisory_only():
     assert result.action_label == "Increase"
     assert "alipay_trade_status" not in result.missing_fields
     assert "moomoo_trade_status" not in result.missing_fields
+
+
+def test_limited_subscription_with_complete_fee_rules_is_not_missing_fee_manual_review():
+    points = [
+        PricePoint("FUNDX", date(2024, 1, 1) + timedelta(days=idx), 1.0 + idx * 0.01)
+        for idx in range(760)
+    ]
+    result = score_candidate(
+        _candidate(),
+        _rule(subscription_status="limited", redemption_status="open"),
+        calculate_metrics(points),
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        _settings(),
+    )
+
+    assert result.manual_review_required is False
+    assert result.grade == "Watch"
+    assert result.action_label == "Pause New"
+    assert result.executable_score == 7.0
+    assert "subscription_status" not in result.missing_fields
+    assert "redemption_status" not in result.missing_fields
+    assert "subscription_fee_schedule" not in result.missing_fields
+    assert "fee/redemption/subscription status missing or closed" not in result.trigger_reason
+
+
+def test_closed_subscription_still_requires_manual_review():
+    points = [
+        PricePoint("FUNDX", date(2024, 1, 1) + timedelta(days=idx), 1.0 + idx * 0.01)
+        for idx in range(760)
+    ]
+    result = score_candidate(
+        _candidate(),
+        _rule(subscription_status="closed", redemption_status="open"),
+        calculate_metrics(points),
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        _settings(),
+    )
+
+    assert result.manual_review_required is True
+    assert result.action_label == "Pause New"
+    assert result.executable_score == 0.0
+    assert "关闭/未知" in result.trigger_reason
+
+
+def test_missing_24_month_nav_history_prevents_action_ready():
+    points = [
+        PricePoint("FUNDX", date(2026, 1, 1) + timedelta(days=idx), 1.0 + idx * 0.01)
+        for idx in range(120)
+    ]
+    result = score_candidate(
+        _candidate(),
+        _rule(),
+        calculate_metrics(points),
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        {"1m": 0.01, "3m": 0.02, "12m": 0.03, "10d": 0.01},
+        _settings(),
+    )
+
+    assert result.grade == "Block"
+    assert result.action_label == "Block"
+    assert "nav_history_24m" in result.missing_fields
+    assert "24 months" in result.trigger_reason

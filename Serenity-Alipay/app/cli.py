@@ -14,6 +14,7 @@ from app.core.application_portal import build_application_portal
 from app.core.benchmark_smoke import run_benchmark_smoke
 from app.core.candidate_normalizer import normalize_candidates
 from app.core.completion_audit import run_completion_audit
+from app.core.fund_nav_history_collector import collect_fund_nav_history
 from app.core.fund_rule_normalizer import normalize_fund_rules
 from app.core.holdings_discovery import discover_holdings
 from app.core.history_integrity import run_history_integrity
@@ -23,11 +24,11 @@ from app.core.intake_promoter import promote_intake_pack
 from app.core.mail_smoke import run_mail_smoke
 from app.core.mail_unlock_check import build_mail_unlock_check
 from app.core.moomoo_collect import KLINE_TYPES, collect_moomoo_data
-from app.core.moomoo_lifecycle import cleanup_started_processes, ensure_opend, lifecycle_to_dict
 from app.core.moomoo_smoke import run_moomoo_smoke
 from app.core.notification import notify_run
 from app.core.packaging import build_delivery_package
 from app.core.pipeline import import_alipay_csv, run_slot
+from app.core.platform_trade_checker import run_platform_trade_check
 from app.core.preflight import run_preflight
 from app.core.production_intake_pack import build_production_intake_pack
 from app.core.production_action_queue import build_production_action_queue
@@ -46,6 +47,10 @@ def _print_result(result: dict[str, object], as_json: bool = False) -> None:
         return
     for key, value in result.items():
         print(f"{key}: {value}")
+
+
+def _runtime_settings(settings, *, dry_run: bool, send_mail: bool):
+    return settings.with_runtime_mail_intent(dry_run=dry_run, send_mail=send_mail)
 
 
 def cmd_doctor(args: argparse.Namespace) -> int:
@@ -87,9 +92,10 @@ def cmd_import_alipay(args: argparse.Namespace) -> int:
 def cmd_run(args: argparse.Namespace) -> int:
     settings = load_settings()
     dry_run = bool(args.dry_run or (settings.dry_run_default and not args.no_dry_run))
+    runtime_settings = _runtime_settings(settings, dry_run=dry_run, send_mail=args.send_mail)
     if args.at:
         raise SystemExit("--at is reserved for the scheduler-ready interface; use --slot for MVP Phases 0-2")
-    result = run_slot(settings, args.slot, dry_run=dry_run, send_mail=args.send_mail)
+    result = run_slot(runtime_settings, args.slot, dry_run=dry_run, send_mail=args.send_mail)
     _print_result(result, args.json)
     return 0
 
@@ -144,7 +150,8 @@ def cmd_notify(args: argparse.Namespace) -> int:
     if not run_id:
         raise SystemExit("No report run found. Run one slot first.")
     dry_run = bool(args.dry_run or (settings.dry_run_default and not args.no_dry_run))
-    result = notify_run(settings, run_id, dry_run=dry_run, send_mail=args.send_mail, local=args.local)
+    runtime_settings = _runtime_settings(settings, dry_run=dry_run, send_mail=args.send_mail)
+    result = notify_run(runtime_settings, run_id, dry_run=dry_run, send_mail=args.send_mail, local=args.local)
     _print_result(result, args.json)
     return 0
 
@@ -188,7 +195,8 @@ def cmd_automation_tick(args: argparse.Namespace) -> int:
 def cmd_preflight(args: argparse.Namespace) -> int:
     settings = load_settings()
     scan_paths = [Path(path).expanduser() for path in args.scan_path]
-    result = run_preflight(settings, scan_paths=scan_paths)
+    runtime_settings = _runtime_settings(settings, dry_run=False, send_mail=args.send_mail)
+    result = run_preflight(runtime_settings, scan_paths=scan_paths)
     _print_result(result, args.json)
     if args.require_production and not result["production_ready"]:
         return 2
@@ -247,14 +255,23 @@ def cmd_application_portal(args: argparse.Namespace) -> int:
 
 def cmd_application_server(args: argparse.Namespace) -> int:
     settings = load_settings()
-    serve_application(settings, host=args.host, port=args.port)
+    serve_application(
+        settings,
+        host=args.host,
+        port=args.port,
+        ttl_seconds=args.ttl_seconds,
+        enable_autoscheduler=not args.disable_autoscheduler,
+        autoscheduler_interval_seconds=args.autoscheduler_interval_seconds,
+        autoscheduler_initial_delay_seconds=args.autoscheduler_initial_delay_seconds,
+    )
     return 0
 
 
 def cmd_mail_smoke(args: argparse.Namespace) -> int:
     settings = load_settings()
+    runtime_settings = _runtime_settings(settings, dry_run=False, send_mail=args.send)
     result = run_mail_smoke(
-        settings,
+        runtime_settings,
         send=args.send,
         confirm_real_send=args.confirm_real_send or "",
         title=args.title,
@@ -279,31 +296,16 @@ def cmd_mail_unlock_check(args: argparse.Namespace) -> int:
 
 def cmd_moomoo_smoke(args: argparse.Namespace) -> int:
     settings = load_settings()
-    lifecycle = None
-    cleanup = None
-    if args.auto_start_opend:
-        lifecycle = ensure_opend(
-            settings,
-            host=args.host,
-            port=args.port,
-            timeout=args.timeout,
-            auto_start=True,
-            cleanup_if_started=not args.keep_auto_started_opend,
-            wait_seconds=args.opend_wait_seconds,
-            include_user_codex=not args.no_user_codex_scan,
-        )
     result = run_moomoo_smoke(
         settings,
         host=args.host,
         port=args.port,
         timeout=args.timeout,
         include_user_codex=not args.no_user_codex_scan,
+        auto_start_opend=args.auto_start_opend,
+        keep_auto_started_opend=args.keep_auto_started_opend,
+        opend_wait_seconds=args.opend_wait_seconds,
     )
-    if lifecycle:
-        result["opend_lifecycle"] = lifecycle_to_dict(lifecycle)
-        if not args.keep_auto_started_opend and lifecycle.started_by_tool:
-            cleanup = cleanup_started_processes(lifecycle)
-            result["cleanup"] = cleanup
     _print_result(result, args.json)
     if args.require_ready and not result["production_ready_for_moomoo_data"]:
         return 2
@@ -322,8 +324,8 @@ def cmd_collect_moomoo(args: argparse.Namespace) -> int:
         port=args.port,
         include_snapshot=not args.no_snapshot,
         include_kline=not args.no_kline,
-        auto_start_opend=not args.no_auto_start_opend,
-        cleanup_auto_started=not args.keep_auto_started_opend,
+        auto_start_opend=args.auto_start_opend,
+        cleanup_auto_started=args.cleanup_auto_started_opend,
         opend_wait_seconds=args.opend_wait_seconds,
     )
     _print_result(result, args.json)
@@ -340,8 +342,8 @@ def cmd_benchmark_smoke(args: argparse.Namespace) -> int:
         end=args.end,
         host=args.host,
         port=args.port,
-        auto_start_opend=not args.no_auto_start_opend,
-        cleanup_auto_started=not args.keep_auto_started_opend,
+        auto_start_opend=args.auto_start_opend,
+        cleanup_auto_started=args.cleanup_auto_started_opend,
         opend_wait_seconds=args.opend_wait_seconds,
     )
     _print_result(result, args.json)
@@ -471,6 +473,38 @@ def cmd_source_evidence_audit(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_platform_trade_check(args: argparse.Namespace) -> int:
+    settings = load_settings()
+    result = run_platform_trade_check(
+        settings,
+        asset_codes=args.asset_code,
+        limit=args.limit,
+        timeout_seconds=args.timeout_seconds,
+        write_db=not args.no_sqlite,
+    )
+    _print_result(result, args.json)
+    if args.require_pass and result["status"] != "pass":
+        return 2
+    return 0
+
+
+def cmd_collect_fund_nav_history(args: argparse.Namespace) -> int:
+    settings = load_settings()
+    result = collect_fund_nav_history(
+        settings,
+        asset_codes=args.asset_code,
+        start_date=args.start,
+        end_date=args.end,
+        timeout_seconds=args.timeout_seconds,
+        workers=args.workers,
+        apply=args.apply,
+    )
+    _print_result(result, args.json)
+    if args.require_pass and result["status"] != "pass":
+        return 2
+    return 0
+
+
 def cmd_promote_intake_pack(args: argparse.Namespace) -> int:
     settings = load_settings()
     scan_paths = [Path(path).expanduser() for path in args.scan_path]
@@ -554,7 +588,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--at")
     run.add_argument("--dry-run", action="store_true")
     run.add_argument("--no-dry-run", action="store_true")
-    run.add_argument("--send-mail", action="store_true", help="Attempt Apple Mail send only when not dry-run and enabled by env")
+    run.add_argument("--send-mail", action="store_true", help="Enable real Apple Mail send intent when not dry-run")
     run.add_argument("--json", action="store_true")
     run.set_defaults(func=cmd_run)
 
@@ -589,7 +623,7 @@ def build_parser() -> argparse.ArgumentParser:
     auto_tick.add_argument("--allow-duplicate", action="store_true")
     auto_tick.add_argument("--dry-run", action="store_true")
     auto_tick.add_argument("--no-dry-run", action="store_true")
-    auto_tick.add_argument("--send-mail", action="store_true", help="Attempt Apple Mail send only when production-ready and not dry-run")
+    auto_tick.add_argument("--send-mail", action="store_true", help="Enable real Apple Mail send intent when production-ready and not dry-run")
     auto_tick.add_argument("--local", action="store_true", help="Send local macOS notification only when production-ready and not dry-run")
     auto_tick.add_argument("--scan-path", action="append", default=[], help="Optional filename-only scan for likely Alipay/fund files")
     auto_tick.add_argument("--require-production", action="store_true", help="Exit non-zero when due-slot preflight is not production-ready")
@@ -599,6 +633,7 @@ def build_parser() -> argparse.ArgumentParser:
     preflight = sub.add_parser("preflight", help="Run production readiness checks")
     preflight.add_argument("--json", action="store_true")
     preflight.add_argument("--scan-path", action="append", default=[], help="Optional filename-only scan for likely Alipay/fund files")
+    preflight.add_argument("--send-mail", action="store_true", help="Evaluate readiness for a runtime that intends real Apple Mail delivery")
     preflight.add_argument("--require-production", action="store_true", help="Exit non-zero when production blockers remain")
     preflight.set_defaults(func=cmd_preflight)
 
@@ -633,10 +668,33 @@ def build_parser() -> argparse.ArgumentParser:
     application_server = sub.add_parser("application-server", help="Run the local Serenity application server with refresh API")
     application_server.add_argument("--host", default="127.0.0.1")
     application_server.add_argument("--port", type=int, default=8765)
+    application_server.add_argument(
+        "--ttl-seconds",
+        type=int,
+        default=None,
+        help="Auto-stop the local server after this many seconds. Defaults to SERENITY_APPLICATION_SERVER_TTL_SECONDS or disabled; use 0 to disable.",
+    )
+    application_server.add_argument(
+        "--disable-autoscheduler",
+        action="store_true",
+        help="Disable the in-process Serenity autoscheduler.",
+    )
+    application_server.add_argument(
+        "--autoscheduler-interval-seconds",
+        type=int,
+        default=None,
+        help="Seconds between automatic automation-tick checks. Defaults to SERENITY_APP_AUTOSCHEDULER_INTERVAL_SECONDS or 60.",
+    )
+    application_server.add_argument(
+        "--autoscheduler-initial-delay-seconds",
+        type=int,
+        default=None,
+        help="Delay before the first automatic automation-tick check. Defaults to SERENITY_APP_AUTOSCHEDULER_INITIAL_DELAY_SECONDS or 3.",
+    )
     application_server.set_defaults(func=cmd_application_server)
 
     mail_smoke = sub.add_parser("mail-smoke", help="Controlled Apple Mail draft/send readiness smoke")
-    mail_smoke.add_argument("--send", action="store_true", help="Attempt real Apple Mail send only when env and confirmation allow it")
+    mail_smoke.add_argument("--send", action="store_true", help="Attempt real Apple Mail send when confirmation allows it")
     mail_smoke.add_argument("--confirm-real-send", help="Must be exactly SEND when --send is used")
     mail_smoke.add_argument("--require-send-ready", action="store_true", help="Exit non-zero unless production mail send config is ready")
     mail_smoke.add_argument("--title", help="Optional smoke email subject")
@@ -644,12 +702,12 @@ def build_parser() -> argparse.ArgumentParser:
     mail_smoke.add_argument("--json", action="store_true")
     mail_smoke.set_defaults(func=cmd_mail_smoke)
 
-    mail_unlock = sub.add_parser("mail-unlock-check", help="Generate controlled Apple Mail production-send unlock checklist and launchd template")
-    mail_unlock.add_argument("--require-workflow-ready", action="store_true", help="Exit non-zero unless draft, Apple Mail, recipient, and production-mail plist template are ready")
+    mail_unlock = sub.add_parser("mail-unlock-check", help="Generate controlled Apple Mail production-send checklist and launchd review copy")
+    mail_unlock.add_argument("--require-workflow-ready", action="store_true", help="Exit non-zero unless draft, Apple Mail, recipient, and launchd review copy are ready")
     mail_unlock.add_argument("--json", action="store_true")
     mail_unlock.set_defaults(func=cmd_mail_unlock_check)
 
-    moomoo_smoke = sub.add_parser("moomoo-smoke", help="Diagnose moomoo/OpenD socket, SDK, and local workbench readiness")
+    moomoo_smoke = sub.add_parser("moomoo-smoke", help="Diagnose moomoo_OpenD socket, SDK, and local workbench readiness")
     moomoo_smoke.add_argument("--json", action="store_true")
     moomoo_smoke.add_argument("--host", default="127.0.0.1")
     moomoo_smoke.add_argument("--port", type=int, default=11111)
@@ -657,8 +715,10 @@ def build_parser() -> argparse.ArgumentParser:
     moomoo_smoke.add_argument("--no-user-codex-scan", action="store_true", help="Only inspect this workspace for a workbench")
     moomoo_smoke.add_argument("--auto-start-opend", action="store_true", help="Start OpenD from a discovered workbench if the socket is closed")
     moomoo_smoke.add_argument("--keep-auto-started-opend", action="store_true", help="Do not close OpenD if this command had to start it")
+    moomoo_smoke.add_argument("--cleanup-auto-started-opend", action="store_false", dest="keep_auto_started_opend", help=argparse.SUPPRESS)
     moomoo_smoke.add_argument("--opend-wait-seconds", type=float, default=20.0)
     moomoo_smoke.add_argument("--require-ready", action="store_true", help="Exit non-zero when socket or SDK is not ready")
+    moomoo_smoke.set_defaults(keep_auto_started_opend=False)
     moomoo_smoke.set_defaults(func=cmd_moomoo_smoke)
 
     collect_moomoo = sub.add_parser("collect-moomoo", help="Collect read-only moomoo snapshot and historical K-line data")
@@ -670,23 +730,29 @@ def build_parser() -> argparse.ArgumentParser:
     collect_moomoo.add_argument("--port", type=int, default=11111)
     collect_moomoo.add_argument("--no-snapshot", action="store_true")
     collect_moomoo.add_argument("--no-kline", action="store_true")
-    collect_moomoo.add_argument("--no-auto-start-opend", action="store_true", help="Fail instead of starting OpenD when the socket is closed")
-    collect_moomoo.add_argument("--keep-auto-started-opend", action="store_true", help="Do not close OpenD if this command had to start it")
+    collect_moomoo.add_argument("--auto-start-opend", action="store_true", help="Start OpenD when the socket is closed; enabled by default")
+    collect_moomoo.add_argument("--cleanup-auto-started-opend", action="store_true", help="Close only OpenD processes started by this command; enabled by default")
+    collect_moomoo.add_argument("--no-auto-start-opend", action="store_false", dest="auto_start_opend", help=argparse.SUPPRESS)
+    collect_moomoo.add_argument("--keep-auto-started-opend", action="store_false", dest="cleanup_auto_started_opend", help=argparse.SUPPRESS)
     collect_moomoo.add_argument("--opend-wait-seconds", type=float, default=20.0)
     collect_moomoo.add_argument("--require-success", action="store_true", help="Exit non-zero if any symbol/scope fails")
     collect_moomoo.add_argument("--json", action="store_true")
+    collect_moomoo.set_defaults(auto_start_opend=True, cleanup_auto_started_opend=True)
     collect_moomoo.set_defaults(func=cmd_collect_moomoo)
 
     benchmark = sub.add_parser("benchmark-smoke", help="Validate benchmark source readiness for Shanghai Composite and S&P 500")
-    benchmark.add_argument("--start", help="History start date YYYY-MM-DD; defaults to a dynamic 103-day lookback from the latest Beijing weekday")
+    benchmark.add_argument("--start", help="History start date YYYY-MM-DD; defaults to a dynamic 396-day lookback from the latest Beijing weekday")
     benchmark.add_argument("--end", help="History end date YYYY-MM-DD; defaults to the latest Beijing weekday")
     benchmark.add_argument("--host", default="127.0.0.1")
     benchmark.add_argument("--port", type=int, default=11111)
-    benchmark.add_argument("--no-auto-start-opend", action="store_true")
-    benchmark.add_argument("--keep-auto-started-opend", action="store_true")
+    benchmark.add_argument("--auto-start-opend", action="store_true", help="Start OpenD when the socket is closed; enabled by default")
+    benchmark.add_argument("--cleanup-auto-started-opend", action="store_true", help="Close only OpenD processes started by this command; enabled by default")
+    benchmark.add_argument("--no-auto-start-opend", action="store_false", dest="auto_start_opend", help=argparse.SUPPRESS)
+    benchmark.add_argument("--keep-auto-started-opend", action="store_false", dest="cleanup_auto_started_opend", help=argparse.SUPPRESS)
     benchmark.add_argument("--opend-wait-seconds", type=float, default=20.0)
     benchmark.add_argument("--require-production", action="store_true", help="Exit non-zero unless both exact benchmark sources are ready")
     benchmark.add_argument("--json", action="store_true")
+    benchmark.set_defaults(auto_start_opend=True, cleanup_auto_started_opend=True)
     benchmark.set_defaults(func=cmd_benchmark_smoke)
 
     validate = sub.add_parser("validate-intake", help="Validate production intake files and write gap reports")
@@ -763,6 +829,32 @@ def build_parser() -> argparse.ArgumentParser:
     evidence_audit.add_argument("--require-pass", action="store_true", help="Exit non-zero when any evidence reference is invalid")
     evidence_audit.add_argument("--json", action="store_true")
     evidence_audit.set_defaults(func=cmd_source_evidence_audit)
+
+    platform_trade = sub.add_parser(
+        "platform-trade-check",
+        help="Fetch Alipay/official fund pages and archive advisory-only buy/sell availability evidence",
+    )
+    platform_trade.add_argument("--asset-code", action="append", help="Fund code to check; repeat for multiple")
+    platform_trade.add_argument("--limit", type=int, help="Limit checked rows for controlled production smoke")
+    platform_trade.add_argument("--timeout-seconds", type=float, default=8.0)
+    platform_trade.add_argument("--no-sqlite", action="store_true", help="Write files only; do not append SQLite evidence rows")
+    platform_trade.add_argument("--require-pass", action="store_true", help="Exit non-zero when any row needs manual review")
+    platform_trade.add_argument("--json", action="store_true")
+    platform_trade.set_defaults(func=cmd_platform_trade_check)
+
+    fund_nav_history = sub.add_parser(
+        "collect-fund-nav-history",
+        help="Fetch 24-month candidate fund NAV history and optionally apply it to data/manual/price_history.csv",
+    )
+    fund_nav_history.add_argument("--asset-code", action="append", help="Fund code to fetch; repeat for multiple")
+    fund_nav_history.add_argument("--start", help="Start date YYYY-MM-DD; default is >24-month lookback")
+    fund_nav_history.add_argument("--end", help="End date YYYY-MM-DD; default is current Beijing date")
+    fund_nav_history.add_argument("--timeout-seconds", type=float, default=12.0)
+    fund_nav_history.add_argument("--workers", type=int, default=8, help="Concurrent page workers per fund")
+    fund_nav_history.add_argument("--apply", action="store_true", help="Replace data/manual/price_history.csv after writing a backup")
+    fund_nav_history.add_argument("--require-pass", action="store_true", help="Exit non-zero unless all candidates have 24-month NAV history")
+    fund_nav_history.add_argument("--json", action="store_true")
+    fund_nav_history.set_defaults(func=cmd_collect_fund_nav_history)
 
     promote_pack = sub.add_parser("promote-intake-pack", help="Validate and optionally promote filled intake pack CSVs into production inputs")
     promote_pack.add_argument("--pack-dir", help="Defaults to outputs/intake_pack")

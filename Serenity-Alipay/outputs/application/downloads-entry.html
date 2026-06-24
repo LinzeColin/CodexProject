@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="1; url=file:///Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html">
-  <title>打开 Serenity 每日分析</title>
+  <title>正在启动 Serenity 每日分析</title>
   <style>
     :root {
       --page: #f5f7f4;
@@ -31,6 +30,23 @@
     }
     h1 { margin: 0; font-size: 28px; letter-spacing: 0; }
     p { color: var(--muted); line-height: 1.55; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-weight: 700;
+      margin: 12px 0;
+    }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(11, 111, 123, 0.18);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     a {
       min-height: 38px;
       border: 1px solid var(--accent);
@@ -54,9 +70,67 @@
   <main>
     <section class="panel">
       <h1>Serenity 每日分析</h1>
-      <p>正在打开本地应用首页。若没有自动跳转，请使用下方按钮。</p>
-      <p><a href="file:///Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html">打开本地应用</a></p>
+      <div class="status"><span class="spinner" aria-hidden="true"></span><span id="status">正在启动本地服务...</span></div>
+      <p>通常几秒内会自动打开首页；服务启动后会跳转到可实时刷新和写入数据库的入口。</p>
+      <p><a id="retry" href="#">立即重试</a></p>
     </section>
   </main>
+  <script>
+    const ports = [8765,8766,8767,8768,8769,8770,8771,8772,8773,8774,8775,8776,8777,8778,8779,8780,8781,8782,8783,8784,8785,8786,8787,8788,8789,8790,8791,8792,8793,8794,8795];
+    const staticPortalUrl = "file:///Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html";
+    const statusNode = document.getElementById("status");
+    const retry = document.getElementById("retry");
+    let attempt = 0;
+    const checkOrigin = async (origin) => {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), 450);
+      try {
+        const response = await fetch(`${origin}/api/health`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!response.ok) return false;
+        const data = await response.json();
+        return data && data.status === "ok";
+      } catch {
+        return false;
+      } finally {
+        window.clearTimeout(timer);
+      }
+    };
+    const firstHealthyOrigin = () => new Promise((resolve) => {
+      let remaining = ports.length;
+      for (const port of ports) {
+        const origin = `http://127.0.0.1:${port}`;
+        checkOrigin(origin).then((healthy) => {
+          if (healthy) {
+            resolve(origin);
+            return;
+          }
+          remaining -= 1;
+          if (remaining <= 0) resolve(null);
+        });
+      }
+    });
+    const findService = async () => {
+      attempt += 1;
+      statusNode.textContent = `正在启动本地服务... 第 ${attempt} 次检查`;
+      const origin = await firstHealthyOrigin();
+      if (origin) {
+        statusNode.textContent = "服务已启动，正在打开首页...";
+        window.location.replace(`${origin}/`);
+        return;
+      }
+      if (attempt >= 60) {
+        statusNode.textContent = "服务仍在启动；请稍等或重新打开 Serenity 每日分析.app。";
+      }
+      window.setTimeout(findService, 650);
+    };
+    retry.addEventListener("click", (event) => {
+      event.preventDefault();
+      void findService();
+    });
+    void findService();
+  </script>
 </body>
 </html>

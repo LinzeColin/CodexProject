@@ -258,7 +258,7 @@ def _benchmark_upgrade_rows(settings: Settings) -> list[ActionQueueRow]:
                     required_evidence=f"Upgrade {name} history from public aggregation fallback to MooMoo or official index/exchange evidence when available.",
                     target_file="data/manual/benchmark_price_history.csv",
                     target_field="source_name; source_type; source_priority; url_or_path; evidence_level; as_of",
-                    preferred_source="MooMoo/OpenD > official exchange/index provider > public aggregation fallback.",
+                    preferred_source="MooMoo/moomoo_OpenD > official exchange/index provider > public aggregation fallback.",
                     suggested_evidence_filename=f"outputs/intake_pack/evidence/{_slug(code)}_benchmark_sources_YYYY-MM-DD.pdf-or-url-list",
                     status="optional_quality_upgrade; current production gate may still pass with warning-only fallback",
                     reason=f"{name} still uses public aggregation fallback; benchmark source priority should be upgraded when exact official/MooMoo history is available.",

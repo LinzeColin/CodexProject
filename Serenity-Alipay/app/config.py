@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 
@@ -10,6 +10,16 @@ def _bool_env(name: str, default: bool) -> bool:
     if value is None:
         return default
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _float_env(name: str, default: float) -> float:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except ValueError:
+        return default
 
 
 @dataclass(frozen=True)
@@ -36,6 +46,11 @@ class Settings:
     top5_change_rate_threshold: float = 0.20
     drawdown_7d_worsen_threshold: float = 0.05
     min_official_sources_action_ready: int = 2
+    min_candidate_nav_history_months: int = 24
+    min_candidate_nav_history_span_days: int = 730
+    opend_auto_start_enabled: bool = True
+    opend_keep_auto_started: bool = False
+    opend_wait_seconds: float = 45.0
 
     @classmethod
     def load(cls, root_dir: Path | None = None) -> "Settings":
@@ -55,6 +70,9 @@ class Settings:
             fallback_aggregated_enabled=_bool_env("SERENITY_FALLBACK_AGGREGATED", True),
             mail_send_enabled=_bool_env("SERENITY_MAIL_SEND_ENABLED", False),
             secret_storage_enabled=_bool_env("SERENITY_SECRET_STORAGE_ENABLED", False),
+            opend_auto_start_enabled=_bool_env("SERENITY_OPEND_AUTO_START", True),
+            opend_keep_auto_started=_bool_env("SERENITY_OPEND_KEEP_AUTO_STARTED", False),
+            opend_wait_seconds=_float_env("SERENITY_OPEND_WAIT_SECONDS", 45.0),
         )
 
     def ensure_dirs(self) -> None:
@@ -67,6 +85,11 @@ class Settings:
             self.exports_dir,
         ]:
             path.mkdir(parents=True, exist_ok=True)
+
+    def with_runtime_mail_intent(self, *, dry_run: bool, send_mail: bool) -> "Settings":
+        if self.mail_send_enabled or dry_run or not send_mail:
+            return self
+        return replace(self, mail_send_enabled=True)
 
 
 def load_settings() -> Settings:

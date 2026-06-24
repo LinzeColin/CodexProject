@@ -152,6 +152,7 @@ def _collect_rows(settings: Settings, *, pack_dir: Path | None = None) -> list[E
     benchmark_path = settings.manual_dir / "benchmark_price_history.csv"
     if not benchmark_path.exists():
         benchmark_path = settings.manual_dir / "price_history.csv"
+    price_history_path = settings.manual_dir / "price_history.csv"
 
     for row in _read_csv(fund_path):
         raw = str(row.get("url_or_path", ""))
@@ -183,6 +184,27 @@ def _collect_rows(settings: Settings, *, pack_dir: Path | None = None) -> list[E
                 raw_value=raw,
                 evidence_ref=raw.strip(),
                 base_dir=source_base_dir,
+            )
+        )
+
+    seen_nav: set[tuple[str, str]] = set()
+    for row in _read_csv(price_history_path):
+        asset_code = str(row.get("asset_code", ""))
+        raw = str(row.get("url_or_path", ""))
+        key = (asset_code, raw)
+        if key in seen_nav:
+            continue
+        seen_nav.add(key)
+        rows.append(
+            _make_row(
+                settings,
+                area="candidate_nav_history",
+                row_id=asset_code,
+                field="url_or_path",
+                source_file=price_history_path,
+                raw_value=raw,
+                evidence_ref=raw.strip(),
+                base_dir=settings.root_dir,
             )
         )
 

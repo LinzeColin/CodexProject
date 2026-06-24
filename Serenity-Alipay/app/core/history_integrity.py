@@ -24,6 +24,7 @@ PROTECTED_TABLES = (
     "baseline_snapshot",
     "score_snapshot",
     "recommendation_snapshot",
+    "asset_pool_entry",
     "comparison_snapshot",
     "audit_log",
     "notification_log",
@@ -35,6 +36,7 @@ PROTECTED_TABLES = (
     "rebalance_event_log",
     "automation_tick_log",
     "source_evidence_audit_snapshot",
+    "platform_trade_check_snapshot",
 )
 
 PROTECTED_FILE_PATTERNS = (
