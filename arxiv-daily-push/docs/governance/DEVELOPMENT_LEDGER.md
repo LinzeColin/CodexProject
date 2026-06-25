@@ -2663,3 +2663,23 @@ None for this new project baseline.
 - Rollback: Revert S2PKT03 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT03_M2_MAIL.md`; `governance/run_manifests/ADP-S2PKT03-M2-MAIL-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run final validation, commit, push, and open PR for S2PKT03.
+
+### `ITER-20260626-ADP-S2PK-S2PKT04-M3-MAIL`
+
+- Timestamp: `2026-06-26T09:20:00+10:00`
+- Fact level: EXTRACTED from S2PKT01/S2PHT05/S2PIT04/S2PJT03 dependency receipts, M3 mail fixture, model/formula/parameter registry diff, and local S2PKT04 validation.
+- Base commit: `df078a406189223397cbabcac646a25ddcea0f39`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PK
+- Task IDs: `S2PKT04`; acceptance `ACC-S2PKT04-M3`.
+- Goal: Complete local M3 policy, capital, and geopolitical frontier mail evidence while preserving V7.2 no-production boundaries.
+- Files changed: S2PKT04 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-092` M3 mail evidence model.
+- Formula changes: Added `FORM-ADP-094` with machine-verifiable AST fingerprints bound to the S2PKT04 implementation.
+- Parameter changes: Added `PARAM-ADP-737` through `PARAM-ADP-746` for S2PKT04 M3 identifiers, required sections, required action windows, gates, side-effect flags, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 162 OK; full arxiv-daily-push unittest 391 OK; full semantic extractor checked 94 formulas / 729 parameters with legacy non-current formula fingerprint drift caused by cli.py::main changes; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS.
+- Decisions: `ACC-S2PKT04-M3` is accepted only as local M3 mail evidence. Runtime mail template/frontstage changes, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, Stage 2 production acceptance, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: Downstream S2PK M4 orchestration still needs explicit no-production gates. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PKT04 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT04_M3_MAIL.md`; `governance/run_manifests/ADP-S2PKT04-M3-MAIL-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PKT04.
