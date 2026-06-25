@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexProject M1 Review Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review_id",
+    "round",
+    "agent_role",
+    "baseline_sha",
+    "run_mode",
+    "repository_write_delta",
+    "commands_run",
+    "tests_not_run",
+    "findings",
+    "summary"
+  ],
+  "properties": {
+    "review_id": { "type": "string", "minLength": 1 },
+    "round": { "type": "integer", "enum": [1, 2] },
+    "agent_role": { "type": "string", "minLength": 1 },
+    "baseline_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "run_mode": { "type": "string", "const": "read_only" },
+    "repository_write_delta": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["tracked_diff"],
+      "properties": {
+        "tracked_diff": { "type": "string" }
+      }
+    },
+    "commands_run": { "type": "array" },
+    "tests_not_run": { "type": "array" },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "finding.schema.json" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

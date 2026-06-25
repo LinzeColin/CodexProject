@@ -1,0 +1,196 @@
+{
+  "review_id": "M1-20260625-R1-A2",
+  "round": 1,
+  "agent_role": "Agent 2 runtime_stress_lifecycle_cache_evidence",
+  "baseline_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [
+    "原始报告为只读审查输出；未运行项保留在 finding.required_tests。"
+  ],
+  "findings": [
+    {
+      "finding_id": "M1-R1-A2-001",
+      "round": 1,
+      "agent_role": "Agent 2 runtime_stress_lifecycle_cache_evidence",
+      "category": "cache_zero_write",
+      "title": "Full governance test step can write pytest and Python caches inside the checkout",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": ".github/workflows/project-governance.yml:48-58",
+          "result": "The scheduled/manual-all test step runs python3 -m pytest tests/governance -q or python3 -m unittest discover directly from the repository checkout."
+        },
+        {
+          "kind": "source",
+          "reference": ".github/workflows/project-governance.yml:52,105-106",
+          "result": "Only the log file and generated dashboard output are redirected to RUNNER_TEMP; no Python bytecode or pytest cache location is redirected."
+        },
+        {
+          "kind": "command",
+          "reference": ".github/workflows/project-governance.yml",
+          "result": "No PYTHONDONTWRITEBYTECODE, PYTHONPYCACHEPREFIX, PYTEST_ADDOPTS, or -p no:cacheprovider controls were present; pytest/unittest commands were present on lines 55 and 57.",
+          "command": "Node targeted search for PYTHONDONTWRITEBYTECODE, PYTHONPYCACHEPREFIX, cacheprovider, pytest, unittest"
+        },
+        {
+          "kind": "source",
+          "reference": "docs/governance/STANDARD.md:171-185,355-358",
+          "result": "The standard says READ_ONLY/REVIEW/CI/Hook writes are prohibited and read-only modes, CI, and Hook must write nothing."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN: Running the default workflow pytest/unittest command was intentionally skipped because it is the suspected cache-writing action under RUN_MODE=READ_ONLY.",
+        "Static reproduction: inspect .github/workflows/project-governance.yml and verify the test step lacks PYTHONDONTWRITEBYTECODE=1, PYTHONPYCACHEPREFIX outside the checkout, and pytest cacheprovider disablement.",
+        "After a fix, run the scheduled/manual-all test command in a clean checkout and assert git status --porcelain --untracked-files=all remains empty while caches, if any, are under RUNNER_TEMP."
+      ],
+      "impact": "The full governance path is documented as non-writing, but the test runner can create .pytest_cache and __pycache__ in the repository checkout. That weakens zero-write evidence and can pollute later changed-scope or dirty-tree checks, especially in local or reused workspaces.",
+      "recommended_fix": "At workflow/job level set PYTHONDONTWRITEBYTECODE=1 and PYTHONPYCACHEPREFIX to a RUNNER_TEMP directory, disable pytest cache with PYTEST_ADDOPTS=-p no:cacheprovider or an explicit pytest flag, and add a final git status --porcelain --untracked-files=all assertion for the full governance path.",
+      "required_tests": [
+        "NOT_RUN: default pytest/unittest cache-write reproduction in the repository checkout, skipped due READ_ONLY.",
+        "Add/extend a workflow text test asserting PYTHONDONTWRITEBYTECODE, PYTHONPYCACHEPREFIX, and pytest cacheprovider disablement are present for the full governance test step.",
+        "Add a CI/local integration check that runs the full governance test command with cache controls and verifies git status --porcelain --untracked-files=all is empty."
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A2-002",
+      "round": 1,
+      "agent_role": "Agent 2 runtime_stress_lifecycle_cache_evidence",
+      "category": "concurrency_cancellation_evidence_preservation",
+      "title": "Workflow-level cancellation can preempt scheduled or manual full-governance evidence runs",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": ".github/workflows/project-governance.yml:7-9,33-35",
+          "result": "The workflow has schedule and workflow_dispatch triggers but uses one concurrency group based only on github.ref with cancel-in-progress: true."
+        },
+        {
+          "kind": "source",
+          "reference": ".github/workflows/project-governance.yml:73-82,91-118",
+          "result": "Short PR/push changed-only runs and long schedule/manual all runs share the same workflow-level cancellation policy even though only the latter produce full governance/generated-view/attestation evidence."
+        },
+        {
+          "kind": "source",
+          "reference": ".github/workflows/project-governance.yml:108-141",
+          "result": "Generated views and CI attestation are uploaded only after successful full runs; a canceled full run has no guaranteed final artifact."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN: Did not trigger GitHub Actions runs in READ_ONLY mode.",
+        "On the same ref, start a manual workflow_dispatch scope=all run, then push to the same ref or start another run before it completes; with the current group project-governance-${{ github.ref }}, the in-progress full run is eligible for cancellation.",
+        "Observe whether generated governance views or attestation artifacts are absent after cancellation."
+      ],
+      "impact": "A main push or another same-ref run can cancel scheduled/manual full governance before it uploads generated views or attestation. This can starve lifecycle evidence and makes nightly/manual proof unreliable under active development.",
+      "recommended_fix": "Split concurrency by event and scope, or disable cancel-in-progress for schedule and workflow_dispatch scope=all. For example, use separate groups for changed-only fast gates and full evidence gates, and keep cancellation only for PR/push fast gates.",
+      "required_tests": [
+        "Add a workflow text test that scheduled/manual all runs do not share a cancelable concurrency group with PR/push changed-only runs.",
+        "NOT_RUN: live GitHub cancellation race test, skipped because triggering workflows is prohibited in READ_ONLY.",
+        "After fixing, perform a controlled workflow_dispatch scope=all plus push overlap test and verify the full run either completes or preserves a cancellation artifact/summary."
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A2-003",
+      "round": 1,
+      "agent_role": "Agent 2 runtime_stress_lifecycle_cache_evidence",
+      "category": "timeout_lifecycle",
+      "title": "Diff-selection git subprocesses lack per-command timeouts",
+      "severity": "P3",
+      "confidence": "high",
+      "merge_blocking": false,
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "scripts/validate_project_governance.py:1408-1464",
+          "result": "git_ref_exists and git_changed_files call subprocess.run/check_output for rev-parse, diff, and ls-files without timeout arguments."
+        },
+        {
+          "kind": "source",
+          "reference": "scripts/lean_governance.py:814-826",
+          "result": "git_status_porcelain already uses timeout=5.0, showing the codebase has a local pattern for bounded git calls that diff selection does not follow."
+        },
+        {
+          "kind": "source",
+          "reference": ".github/workflows/project-governance.yml:39-40",
+          "result": "The workflow has only a coarse 10 minute job timeout, so a hung diff-selection command can consume the whole job without structured validator output."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN: Did not simulate a hung git binary or repository lock in READ_ONLY mode.",
+        "Patch or monkeypatch subprocess.check_output in git_changed_files to raise TimeoutExpired and observe current code has no explicit timeout handling path.",
+        "Run changed-only validation against a repository state where git diff or git ls-files hangs; the current implementation depends on the outer job timeout."
+      ],
+      "impact": "Cancellation and timeout behavior is too coarse for the first diff-selection step. If git blocks, the governance command may hang until the whole CI job is killed, losing structured JSON/log evidence and slowing PR feedback.",
+      "recommended_fix": "Introduce a shared bounded git helper with a small timeout for rev-parse, diff, and ls-files. Convert timeout, missing base, and command failure into explicit validation errors surfaced in the JSON/summary instead of relying on the workflow job timeout.",
+      "required_tests": [
+        "Add unit tests monkeypatching subprocess.run/check_output to raise TimeoutExpired for git_ref_exists and git_changed_files, asserting nonzero validation and a clear error message.",
+        "Add a test proving valid git commands still return the same changed-file set within the timeout helper.",
+        "NOT_RUN: real hung-git stress test, skipped under READ_ONLY."
+      ],
+      "status": "PROPOSED"
+    },
+    {
+      "finding_id": "M1-R1-A2-004",
+      "round": 1,
+      "agent_role": "Agent 2 runtime_stress_lifecycle_cache_evidence",
+      "category": "project_selection_result_validity",
+      "title": "changed-scope diagnostic command reports success for an unresolved base ref",
+      "severity": "P3",
+      "confidence": "high",
+      "merge_blocking": false,
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "scripts/lean_governance.py:974-1009,1047-1050",
+          "result": "build_changed_scope returns a JSON summary and main returns 0 without checking whether an explicit base_ref resolved."
+        },
+        {
+          "kind": "source",
+          "reference": "scripts/validate_project_governance.py:1438-1450",
+          "result": "git_changed_files only adds the base diff if git_ref_exists(explicit_base) is true; an unresolved explicit base silently falls through to local working-tree changes."
+        },
+        {
+          "kind": "command",
+          "reference": "dynamic read-only command",
+          "result": "Exited successfully and printed changed_files=[], selected_project_count=0, total_project_count=10 for an impossible base ref.",
+          "command": "python scripts/lean_governance.py changed-scope --base-ref refs/heads/__codex_missing_base_ref__"
+        },
+        {
+          "kind": "command",
+          "reference": "dynamic read-only control",
+          "result": "The actual ci entrypoint returned status=1 and embedded validation.exit_code=1, so the defect is limited to the changed-scope diagnostic path rather than the workflow ci gate.",
+          "command": "Node spawnSync python scripts/lean_governance.py ci --changed-only --base-ref refs/heads/__codex_missing_base_ref__"
+        }
+      ],
+      "reproduction": [
+        "Run: python scripts/lean_governance.py changed-scope --base-ref refs/heads/__codex_missing_base_ref__. The command prints selected_project_count=0 instead of failing or marking base_ref_resolved=false.",
+        "Control: run the ci entrypoint with the same base ref; it fails through enforce-sync, proving the diagnostic command and CI command disagree on result validity."
+      ],
+      "impact": "Manual operators and review agents can misread an unresolved diff base as a genuine 0-project changed-scope result. That undermines stress testing of 0/1/multi-project selection even though the main CI entrypoint catches the same case.",
+      "recommended_fix": "Make changed-scope validate an explicit base_ref before computing selected projects. If unresolved, return nonzero and include a structured base_ref_resolved=false error; alternatively delegate base validation to the same helper used by enforce-sync.",
+      "required_tests": [
+        "Add a unit test for lean_governance changed-scope with an explicit missing base ref that expects nonzero or a structured unresolved-base error.",
+        "Keep the existing ci missing-base test/control to ensure ci and changed-scope agree on result validity.",
+        "Run the fixed command against a real base ref and verify selected_project_count remains correct for 0, 1, and multiple project changes."
+      ],
+      "status": "VERIFIED"
+    }
+  ],
+  "summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 2,
+    "P3": 2,
+    "merge_blocking": false,
+    "sanitized_from": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/round1/agent2.json"
+  }
+}

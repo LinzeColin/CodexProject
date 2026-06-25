@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "candidate_id": "M1-S-SHADOW-GOVERNANCE-ACCELERATION",
+  "status": "CANDIDATE_FOR_ROUND2_ATTACK_ONLY",
+  "decision_scope": "非实施许可；供 S2 三 Agent 对抗复审。",
+  "objective": "保留治理真相与现有权威链，把重复治理计算、完整 JSON 与运行遥测从普通开发动作的 stdout/人工阅读路径中移出，降低 token 与重跑成本。",
+  "invariants": [
+    "legacy validator remains sole authoritative pass/fail until later parity gates",
+    "不新增 CURRENT.md、SHIP.md、projectctl.py 或新的 current truth",
+    "双平面与三个中文人类入口保持；开发记录 Roadmap 合同不削弱",
+    "Project Governance workflow/job required-check 身份、contents: read、full/nightly/release gate 不变",
+    "READ_ONLY/PLAN/CI tracked 写入为 0",
+    "未知路径或 Git/base/diff 错误 fail-closed",
+    "禁止写入 EEI/arxiv 和所有项目业务目录"
+  ],
+  "proposed_shadow_features": [
+    "check plan: 说明 changed paths 触发哪些检查及升级原因",
+    "pre/post zero-write: 检测验证器新增 tracked 写入；CI 保持严格 clean-start",
+    "compact stdout: 普通 fast gate 摘要 <= 2KB，错误/Acceptance/Evidence/rollback 不省略",
+    "full JSON evidence: 写 runner temp 或 .git/codex-review，不写 tracked 文件",
+    "stage timing telemetry: 记录阶段耗时、selected_project_count、render_count、stdout_bytes",
+    "candidate shadow: 只报告候选分类和节省量，不影响 legacy exit code 或 required result"
+  ],
+  "non_goals": [
+    "不删除 semantic/sync/render/Acceptance/Evidence 检查",
+    "不依赖 prompt 自报风险等级",
+    "不把 base/diff 错误解释为无变更",
+    "不引入未按内容 hash 和工具版本键控的 persistent cache",
+    "不修改项目业务 Roadmap 或业务代码",
+    "不把完整 Roadmap 或 current snapshot 复制到 README 形成新真相源"
+  ],
+  "known_blockers_for_s2": [
+    {
+      "cluster_id": "R1-C002",
+      "reason": "当前 root governance selector mismatch 是 P1 false negative 风险；S2 必须裁决是否 FIX-ONE 前置。"
+    },
+    {
+      "cluster_id": "R1-C003",
+      "reason": "required project root exclusions 需要等价 required coverage 或移除。"
+    }
+  ],
+  "required_counterexamples": [
+    "invalid base ref / unresolved diff must fail closed in changed-scope, ci, and candidate check plan",
+    "root governance file change must not produce selected_project_count>0 while validator checked none",
+    "0/1/8 selected project fixtures preserve legacy issue set and exit code",
+    "READ_ONLY/CI pre/post status remains clean even when validator would create cache files",
+    "unknown project render/check-render returns compact actionable non-traceback error",
+    "README remains entry-only and does not embed stale run snapshot or .git evidence path",
+    "two representative real commits/PR diffs run shadow without changing legacy decision"
+  ],
+  "allowed_future_write_scope_after_proceed_shadow": [
+    "scripts/lean_governance.py",
+    "tests/governance/**",
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "governance/run_manifests/*.json"
+  ],
+  "rollback": "S3 shadow 可通过移除/关闭 candidate output 回滚；legacy 从未失去权威。后续有限激活必须单提交 revert 或 feature flag。",
+  "next_stage_gate": "S2 must return PROCEED_SHADOW/FIX-ONE/STOP; PROCEED_SHADOW requires six reports, adjudicated P0/P1, zero tracked S1/S2 diff, and locked file/test/rollback scope.",
+  "generated_at": "2026-06-25T09:54:19.429Z"
+}
