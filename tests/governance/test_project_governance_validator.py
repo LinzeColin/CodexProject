@@ -24,6 +24,7 @@ from unittest.mock import patch
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "scripts" / "validate_project_governance.py"
+LEAN_GOVERNANCE = ROOT / "scripts" / "lean_governance.py"
 STOP_HOOK = ROOT / ".codex" / "hooks" / "governance_stop.py"
 
 
@@ -119,6 +120,24 @@ def run_validator(*args: str) -> subprocess.CompletedProcess[str]:
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        check=False,
+    )
+
+
+def run_lean(*args: str, env_updates: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    env.setdefault("PYTHONPYCACHEPREFIX", "/tmp/codex_governance_test_pycache")
+    env.setdefault("PYTHONIOENCODING", "utf-8")
+    if env_updates:
+        env.update(env_updates)
+    return subprocess.run(
+        [sys.executable, "-B", str(LEAN_GOVERNANCE), *args],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         check=False,
     )
 
@@ -300,17 +319,54 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_git_changed_files_decodes_utf8_paths(self) -> None:
         validator = load_validator_module()
         with patch.object(validator, "explicit_base_ref", return_value=None), patch.object(
-            validator, "git_ref_exists", return_value=False
-        ), patch.object(
             validator.subprocess,
-            "check_output",
-            return_value="docs/governance/templates/功能清单.template.md\n",
-        ) as check_output:
+            "run",
+            return_value=SimpleNamespace(
+                returncode=0,
+                stdout=" M docs/governance/templates/功能清单.template.md\n",
+                stderr="",
+            ),
+        ) as run:
             self.assertEqual(validator.git_changed_files(), ["docs/governance/templates/功能清单.template.md"])
-        self.assertTrue(check_output.called)
-        for call in check_output.call_args_list:
-            self.assertEqual(call.kwargs.get("encoding"), "utf-8")
-            self.assertTrue(call.kwargs.get("text"))
+        run.assert_called_once()
+        self.assertEqual(run.call_args.kwargs.get("encoding"), "utf-8")
+        self.assertTrue(run.call_args.kwargs.get("text"))
+        self.assertEqual(run.call_args.kwargs.get("stderr"), subprocess.PIPE)
+
+    def test_m1_s3pat03_git_changed_files_merges_local_status_sources(self) -> None:
+        validator = load_validator_module()
+        with patch.object(validator, "explicit_base_ref", return_value=None), patch.object(
+            validator.subprocess,
+            "run",
+            return_value=SimpleNamespace(
+                returncode=0,
+                stdout="\n".join(
+                    [
+                        " M governance/projects.yaml",
+                        "M  scripts/lean_governance.py",
+                        "?? governance/run_manifests/new.json",
+                    ]
+                )
+                + "\n",
+                stderr="",
+            ),
+        ) as run:
+            changed = validator.git_changed_files()
+
+        self.assertEqual(
+            changed,
+            [
+                "governance/projects.yaml",
+                "governance/run_manifests/new.json",
+                "scripts/lean_governance.py",
+            ],
+        )
+        run.assert_called_once()
+
+    def test_m1_s4pat02_git_status_rename_records_old_and_new_paths(self) -> None:
+        validator = load_validator_module()
+        paths = validator.parse_git_status_paths("R  Alpha/old.py -> Alpha/new.py\n")
+        self.assertEqual(paths, {"Alpha/old.py", "Alpha/new.py"})
 
     def test_review9_s2_dev_record_and_roadmap_templates_are_owner_readable(self) -> None:
         dev_text = (ROOT / "docs" / "governance" / "templates" / "开发记录.template.md").read_text(
@@ -448,7 +504,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(scope["selected_project_count"], 2)
         self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
 
-    def test_other8_s2pct01_root_change_respects_configured_project_exclusions(self) -> None:
+    def test_m1_s2pc_root_change_keeps_required_projects_despite_configured_exclusions(self) -> None:
         cli = load_lean_governance_module()
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
@@ -484,20 +540,101 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             with patch.object(cli.governance, "git_changed_files", return_value=["scripts/lean_governance.py"]):
                 scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
         self.assertTrue(scope["root_governance_changed"])
-        self.assertFalse(scope["all_projects_required"])
-        self.assertEqual(scope["root_scope_excluded_projects"], ["EEI", "arxiv-daily-push"])
-        self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
+        self.assertTrue(scope["all_projects_required"])
+        self.assertEqual(scope["configured_root_scope_excluded_projects"], ["EEI", "arxiv-daily-push"])
+        self.assertEqual(scope["root_scope_excluded_projects"], [])
+        self.assertEqual(scope["root_scope_configured_excluded_required_projects"], ["EEI", "arxiv-daily-push"])
+        self.assertEqual(
+            [project["project_id"] for project in scope["selected_projects"]],
+            ["A", "EEI", "arxiv-daily-push", "B"],
+        )
 
-    def test_other8_s2pct01_current_root_test_change_excludes_parallel_projects(self) -> None:
+    def test_m1_s2pc_current_root_test_change_covers_all_required_projects(self) -> None:
         cli = load_lean_governance_module()
         with patch.object(cli.governance, "git_changed_files", return_value=["tests/governance/test_project_governance_validator.py"]):
             scope = cli.build_changed_scope("origin/main", ROOT, ROOT / "governance" / "projects.yaml")
         selected_ids = {project["project_id"] for project in scope["selected_projects"]}
+        config = cli.governance.load_yaml(ROOT / "governance" / "projects.yaml")
+        required_ids = {
+            project["project_id"]
+            for project in cli.governance.as_list(config.get("projects"))
+            if isinstance(project, dict) and project.get("ci_mode") == "required"
+        }
         self.assertTrue(scope["root_governance_changed"])
-        self.assertFalse(scope["all_projects_required"])
-        self.assertEqual(scope["selected_project_count"], 8)
-        self.assertNotIn("EEI", selected_ids)
-        self.assertNotIn("arxiv-daily-push", selected_ids)
+        self.assertTrue(scope["all_projects_required"])
+        self.assertEqual(scope["selected_project_count"], 10)
+        self.assertLessEqual(required_ids, selected_ids)
+        self.assertIn("EEI", selected_ids)
+        self.assertIn("arxiv-daily-push", selected_ids)
+
+    def test_m1_s4pat03_unknown_path_escalates_to_full_required_scope(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            projects_yaml = tmp_path / "governance" / "projects.yaml"
+            projects_yaml.parent.mkdir(parents=True)
+            projects_yaml.write_text(
+                "\n".join(
+                    [
+                        "root_governance:",
+                        "  required_files:",
+                        "    - AGENTS.md",
+                        "projects:",
+                        "  - project_id: A",
+                        "    path: A",
+                        "    ci_mode: required",
+                        "  - project_id: B",
+                        "    path: B",
+                        "    ci_mode: required",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(cli.governance, "git_changed_files", return_value=["tools/new_unknown.txt"]):
+                scope = cli.build_changed_scope("origin/main", tmp_path, projects_yaml)
+
+        self.assertFalse(scope["root_governance_changed"])
+        self.assertTrue(scope["full_scope_required"])
+        self.assertEqual(scope["unknown_changed_files"], ["tools/new_unknown.txt"])
+        self.assertTrue(scope["all_projects_required"])
+        self.assertEqual([project["project_id"] for project in scope["selected_projects"]], ["A", "B"])
+        plan = cli.build_check_plan(scope, ["--changed-only"], selected_project_count=2, total_project_count=2)
+        self.assertIn("unknown_path_full_scope", plan["escalation_reasons"])
+
+    def test_m1_s4pat03_readme_is_root_governance_not_unknown_path(self) -> None:
+        validator = load_validator_module()
+        config = {
+            "root_governance": {"required_files": ["AGENTS.md"]},
+            "projects": [
+                {"project_id": "A", "path": "A", "ci_mode": "required"},
+                {"project_id": "B", "path": "B", "ci_mode": "required"},
+            ],
+        }
+        selection = validator.changed_scope_selection(config, ["README.md"])
+
+        self.assertTrue(selection["root_governance_changed"])
+        self.assertTrue(selection["full_scope_required"])
+        self.assertEqual(selection["unknown_changed_files"], [])
+        self.assertTrue(selection["all_required_projects_covered"])
+
+    def test_m1_s4pat02_unicode_and_delete_paths_select_project_scope(self) -> None:
+        validator = load_validator_module()
+        config = {
+            "root_governance": {"required_files": ["AGENTS.md"]},
+            "projects": [
+                {"project_id": "中文项目", "path": "中文项目", "ci_mode": "required"},
+                {"project_id": "Alpha", "path": "Alpha", "ci_mode": "required"},
+            ],
+        }
+
+        unicode_selection = validator.changed_scope_selection(config, ["中文项目/开发记录"])
+        delete_selection = validator.changed_scope_selection(config, ["Alpha/obsolete.py"])
+
+        self.assertEqual([project["project_id"] for project in unicode_selection["projects"]], ["中文项目"])
+        self.assertFalse(unicode_selection["full_scope_required"])
+        self.assertEqual([project["project_id"] for project in delete_selection["projects"]], ["Alpha"])
+        self.assertFalse(delete_selection["full_scope_required"])
 
     def test_review9_s3_changed_scope_project_change_selects_only_matching_project(self) -> None:
         cli = load_lean_governance_module()
@@ -855,6 +992,411 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(summary["budget_telemetry"]["selected_project_count"], 1)
         self.assertEqual(summary["budget_telemetry"]["total_project_count"], 1)
         self.assertEqual(summary["budget_telemetry"]["full_governance_location"], "schedule_or_workflow_dispatch_all")
+
+    def test_m1_s3pat02_local_preexisting_dirty_tree_is_not_new_write(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "changed_files": ["README.md"],
+            "root_governance_changed": False,
+            "selected_projects": [],
+            "selected_project_count": 0,
+            "total_project_count": 1,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"],
+            "exit_code": 0,
+            "output": ["CodexProject governance validation", "projects checked: none"],
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(cli, "git_status_porcelain", side_effect=[[" M README.md"], [" M README.md"]]),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(summary["zero_write_delta"]["clean"])
+        self.assertEqual(summary["zero_write_delta"]["preexisting_changed_count"], 1)
+        self.assertEqual(summary["zero_write_delta"]["new_changed_count"], 0)
+        self.assertTrue(summary["zero_diff"]["clean"])
+        self.assertEqual(summary["zero_diff"]["changed_count"], 0)
+
+    def test_m1_s3pbt02_validator_new_write_fails_closed(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "changed_files": ["README.md"],
+            "root_governance_changed": False,
+            "selected_projects": [],
+            "selected_project_count": 0,
+            "total_project_count": 1,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic"],
+            "exit_code": 0,
+            "output": ["CodexProject governance validation", "projects checked: none"],
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(cli, "git_status_porcelain", side_effect=[[], [" M README.md"]]),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 1)
+        self.assertFalse(summary["zero_write_delta"]["clean"])
+        self.assertEqual(summary["zero_write_delta"]["new_changed_files"], [" M README.md"])
+        self.assertFalse(summary["zero_tracked_write"] if "zero_tracked_write" in summary else summary["zero_diff"]["clean"])
+
+    def test_m1_s3pbt02_ci_clean_start_dirty_tree_fails_before_scope(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope") as build_changed_scope,
+            patch.object(cli, "ci_clean_start_required", return_value=True),
+            patch.object(cli, "git_status_porcelain", side_effect=[[" M README.md"], [" M README.md"]]),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 1)
+        build_changed_scope.assert_not_called()
+        self.assertEqual(summary["changed_scope"]["error_code"], "DIRTY_CI_CLEAN_START")
+        self.assertFalse(summary["zero_write_delta"]["clean_start_ok"])
+
+    def test_m1_s3pbt02_git_status_error_fails_closed(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope") as build_changed_scope,
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(
+                cli,
+                "git_status_porcelain",
+                side_effect=[["git_status_failed:fatal: not a git repository"], ["git_status_failed:fatal: not a git repository"]],
+            ),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 1)
+        build_changed_scope.assert_not_called()
+        self.assertEqual(summary["changed_scope"]["error_code"], "GIT_STATUS_FAILED")
+        self.assertTrue(summary["zero_write_delta"]["status_error"])
+
+    def test_m1_s3pbt01_check_plan_is_deterministic_and_report_only(self) -> None:
+        cli = load_lean_governance_module()
+        scope = {
+            "changed_files": ["scripts/lean_governance.py"],
+            "root_governance_changed": True,
+            "selected_required_project_count": 2,
+            "required_project_count": 2,
+            "selected_projects": [
+                {"project_id": "Alpha", "path": "Alpha", "ci_mode": "required"},
+                {"project_id": "EEI", "path": "EEI", "ci_mode": "required"},
+            ],
+        }
+        argv = ["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"]
+        first = cli.build_check_plan(scope, argv, selected_project_count=2, total_project_count=10)
+        second = cli.build_check_plan(scope, argv, selected_project_count=2, total_project_count=10)
+
+        self.assertEqual(first, second)
+        self.assertTrue(first["legacy_authoritative"])
+        self.assertTrue(first["candidate_report_only"])
+        self.assertIn("root_governance_fanout", first["escalation_reasons"])
+        self.assertEqual(first["commands"][0]["argv"], argv)
+
+    def test_m1_s4pbt01_run_validator_reuses_precomputed_changed_files_without_leak(self) -> None:
+        cli = load_lean_governance_module()
+        original = cli.governance.git_changed_files
+
+        def fake_main(argv: list[str]) -> int:
+            self.assertEqual(argv, ["--changed-only"])
+            self.assertEqual(cli.governance.git_changed_files("BASE"), ["README.md"])
+            print("projects checked: none")
+            return 0
+
+        with patch.object(cli.governance, "main", side_effect=fake_main):
+            result = cli.run_validator_capture(["--changed-only"], changed_files=["README.md"])
+
+        self.assertEqual(result["exit_code"], 0)
+        self.assertEqual(result["output"], ["projects checked: none"])
+        self.assertIs(cli.governance.git_changed_files, original)
+
+    def test_m1_s3pct01_stable_summary_hash_is_repeatable_for_20_runs(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "changed_files": ["scripts/lean_governance.py"],
+            "root_governance_changed": True,
+            "selected_required_project_count": 1,
+            "required_project_count": 1,
+            "selected_projects": [{"project_id": "Alpha", "path": "Alpha", "ci_mode": "required"}],
+            "selected_project_count": 1,
+            "total_project_count": 1,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"],
+            "exit_code": 0,
+            "output": ["CodexProject governance validation", "projects checked: Alpha"],
+        }
+        hashes: set[str] = set()
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+            patch.object(cli, "has_check_render_inputs", return_value=False),
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+        ):
+            for _ in range(20):
+                exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+                self.assertEqual(exit_code, 0)
+                hashes.add(summary["stable_summary_hash"])
+
+        self.assertEqual(len(hashes), 1)
+        self.assertTrue(next(iter(hashes)).startswith("sha256:"))
+
+    def test_m1_s3pct01_full_evidence_paths_are_unique_for_same_summary(self) -> None:
+        cli = load_lean_governance_module()
+        summary = cli.with_stable_summary_hash(
+            {
+                "schema_version": 1,
+                "command": "ci",
+                "scope": "changed-only",
+                "changed_scope": {"base_ref_status": "resolved", "changed_files": [], "selected_project_count": 0},
+                "validation": {"argv": [], "exit_code": 0, "output": ["projects checked: none"]},
+                "check_render": {"checked_count": 0, "skipped_count": 0, "skipped": []},
+                "selector_parity": {"selected_project_count": 0, "validation_checked_project_count": 0, "matches": True},
+                "zero_write_delta": {"clean": True, "clean_start_required": False, "clean_start_ok": True},
+                "zero_diff": {"clean": True},
+            }
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.dict(os.environ, {"GOVERNANCE_EVIDENCE_DIR": tmp}, clear=False):
+                first = cli.write_full_evidence(summary, root=ROOT)
+                second = cli.write_full_evidence(summary, root=ROOT)
+
+            self.assertNotEqual(first["path_or_artifact_ref"], second["path_or_artifact_ref"])
+            self.assertTrue(Path(first["path_or_artifact_ref"]).is_file())
+            self.assertTrue(Path(second["path_or_artifact_ref"]).is_file())
+            self.assertEqual(first["sha256"], second["sha256"])
+
+    def test_m1_s3pct02_candidate_shadow_comparison_preserves_legacy_exit_code(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "changed_files": ["Alpha/开发记录"],
+            "root_governance_changed": False,
+            "selected_required_project_count": 1,
+            "required_project_count": 1,
+            "selected_projects": [{"project_id": "Alpha", "path": "Alpha", "ci_mode": "required"}],
+            "selected_project_count": 1,
+            "total_project_count": 1,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"],
+            "exit_code": 1,
+            "output": ["CodexProject governance validation", "projects checked: Alpha", "errors: 1"],
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+            patch.object(cli, "has_check_render_inputs", return_value=False),
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(summary["candidate_shadow_comparison"]["legacy_exit_code"], 1)
+        self.assertTrue(summary["candidate_shadow_comparison"]["candidate_report_only"])
+        self.assertIn("legacy_validation", summary["candidate_shadow_comparison"]["required_exit_code_sources"])
+
+    def test_m1_s3pct02_check_render_drift_is_report_only_in_changed_only_ci(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "changed_files": ["scripts/lean_governance.py"],
+            "root_governance_changed": True,
+            "selected_required_project_count": 1,
+            "required_project_count": 1,
+            "selected_projects": [{"project_id": "EEI", "path": "EEI", "ci_mode": "required"}],
+            "selected_project_count": 1,
+            "total_project_count": 1,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"],
+            "exit_code": 0,
+            "output": ["CodexProject governance validation", "projects checked: EEI"],
+        }
+        check_render = {
+            "write": False,
+            "drift": [{"path": "开发记录"}],
+            "drift_count": 1,
+            "reference_issues": [],
+            "reference_issue_count": 0,
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+            patch.object(cli, "has_check_render_inputs", return_value=True),
+            patch.object(cli, "check_render_project_files", return_value=check_render),
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(summary["check_render"]["report"]["drift_count"], 1)
+        self.assertFalse(summary["check_render"]["report"]["blocking_required_exit"])
+        self.assertEqual(
+            summary["candidate_shadow_comparison"]["differences_report_only"],
+            ["check_render_drift_or_reference_issue"],
+        )
+
+    def test_m1_s4pbt01_root_fanout_defers_report_only_check_render(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 2,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "changed_files": ["README.md"],
+            "root_governance_changed": True,
+            "unknown_changed_files": [],
+            "selected_required_project_count": 2,
+            "required_project_count": 2,
+            "selected_projects": [
+                {"project_id": "A", "path": "A", "ci_mode": "required"},
+                {"project_id": "B", "path": "B", "ci_mode": "required"},
+            ],
+            "selected_project_count": 2,
+            "total_project_count": 2,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic", "--base-ref", "BASE"],
+            "exit_code": 0,
+            "output": ["CodexProject governance validation", "projects checked: A, B"],
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+            patch.object(cli, "check_render_project_files") as check_render_project,
+            patch.object(cli, "ci_clean_start_required", return_value=False),
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 0)
+        check_render_project.assert_not_called()
+        self.assertEqual(summary["check_render"]["checked_count"], 0)
+        self.assertEqual(summary["check_render"]["skipped_count"], 2)
+        self.assertEqual(summary["check_render"]["report"]["deferred_count"], 2)
+        self.assertEqual(
+            {item["reason"] for item in summary["check_render"]["skipped"]},
+            {"deferred_root_or_unknown_fanout"},
+        )
+
+    def test_m1_s2pc_ci_fails_closed_on_selector_parity_mismatch(self) -> None:
+        cli = load_lean_governance_module()
+        baseline = {
+            "totals": {
+                "projects": 1,
+                "human_entry_missing": 0,
+                "canonical_missing": 0,
+                "legacy_governance_missing": 0,
+            }
+        }
+        scope = {
+            "selected_projects": [
+                {
+                    "project_id": "ProjectA",
+                    "path": "ProjectA",
+                    "ci_mode": "required",
+                }
+            ],
+            "selected_project_count": 1,
+            "total_project_count": 1,
+        }
+        validation = {
+            "argv": ["--changed-only", "--enforce-sync", "--semantic"],
+            "exit_code": 0,
+            "output": ["CodexProject governance validation", "root: checked", "projects checked: none"],
+        }
+        with (
+            patch.object(cli, "build_baseline", return_value=baseline),
+            patch.object(cli, "build_changed_scope", return_value=scope),
+            patch.object(cli, "has_check_render_inputs", return_value=False),
+            patch.object(cli, "git_status_porcelain", return_value=[]),
+            patch.object(cli, "run_validator_capture", return_value=validation),
+        ):
+            exit_code, summary = cli.run_changed_only_ci("BASE", root=Path("root"), projects_file=Path("projects.yaml"))
+
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(summary["selector_parity"]["validation_checked_project_count"], 0)
+        self.assertFalse(summary["selector_parity"]["matches"])
 
     def test_review9_s3_ci_changed_only_skips_unmigrated_check_render(self) -> None:
         cli = load_lean_governance_module()
@@ -3615,6 +4157,107 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Unknown project: __missing_project__", result.stdout)
 
+    def test_m1_s2pc_changed_scope_invalid_base_fails_closed(self) -> None:
+        result = run_lean("changed-scope", "--base-ref", "__missing_m1_s2pc_base__")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn("Traceback", result.stderr + result.stdout)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["language"], "zh-CN")
+        self.assertEqual(payload["decision"], "STOP")
+        self.assertEqual(payload["error_code"], "UNRESOLVED_BASE")
+        self.assertEqual(payload["base_ref_status"], "unresolved")
+        self.assertNotIn("selected_project_count", payload)
+
+    def test_m1_s2pc_ci_invalid_base_does_not_emit_success_empty_scope(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_lean(
+                "ci",
+                "--changed-only",
+                "--base-ref",
+                "__missing_m1_s2pc_base__",
+                env_updates={"GOVERNANCE_EVIDENCE_DIR": tmp},
+            )
+            self.assertNotEqual(result.returncode, 0)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["decision"], "STOP")
+            self.assertEqual(payload["base_ref_status"], "unresolved")
+            self.assertEqual(payload["full_evidence_ref"]["retention_scope"], "configured")
+            evidence_path = Path(payload["full_evidence_ref"]["path_or_artifact_ref"])
+            self.assertTrue(evidence_path.is_file(), payload)
+            full = json.loads(evidence_path.read_text(encoding="utf-8"))
+        self.assertEqual(full["changed_scope"]["error_code"], "UNRESOLVED_BASE")
+        self.assertEqual(full["changed_scope"]["base_ref_status"], "unresolved")
+        self.assertNotEqual(full["validation"]["exit_code"], 0)
+
+    def test_m1_s2pc_render_unknown_project_has_compact_actionable_error(self) -> None:
+        for command in ("render", "check-render"):
+            with self.subTest(command=command):
+                result = run_lean(command, "--project", "__missing_project__")
+                self.assertNotEqual(result.returncode, 0)
+                self.assertNotIn("Traceback", result.stderr + result.stdout)
+                payload = json.loads(result.stdout)
+                self.assertEqual(payload["language"], "zh-CN")
+                self.assertEqual(payload["decision"], "STOP")
+                self.assertEqual(payload["error_code"], "UNKNOWN_PROJECT")
+                self.assertIn("Unknown project: __missing_project__", payload["owner_status_zh"])
+
+    def test_m1_s2pc_ci_compact_stdout_has_chinese_owner_and_durable_evidence_ref(self) -> None:
+        cli = load_lean_governance_module()
+        summary = {
+            "schema_version": 1,
+            "command": "ci",
+            "scope": "changed-only",
+            "changed_scope": {
+                "base_ref_status": "resolved",
+                "changed_files": [],
+                "selected_project_count": 0,
+            },
+            "validation": {"exit_code": 0, "output": ["projects checked: none"]},
+            "selector_parity": {
+                "selected_project_count": 0,
+                "validation_checked_project_count": 0,
+                "matches": True,
+            },
+            "zero_diff": {"clean": True},
+            "check_plan": {
+                "selected_project_count": 0,
+                "changed_file_count": 0,
+                "root_governance_changed": False,
+                "escalation_reasons": ["empty_diff"],
+                "next_action_zh": "查看 full_evidence_ref。",
+            },
+            "timing_telemetry": {"total_seconds": 0.001},
+            "output_telemetry": {"validator_stdout_bytes": 22, "validator_output_line_count": 1},
+        }
+        summary = cli.with_stable_summary_hash(summary)
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.dict(os.environ, {"GOVERNANCE_EVIDENCE_DIR": tmp}, clear=False):
+                evidence_ref = cli.write_full_evidence(summary, root=ROOT)
+                payload = cli.attach_compact_stdout_bytes(cli.compact_ci_summary(summary, 0, evidence_ref))
+            encoded = json.dumps(payload, ensure_ascii=False, sort_keys=False, separators=(",", ":")).encode("utf-8")
+            self.assertLessEqual(len(encoded), 2048)
+            self.assertEqual(payload["language"], "zh-CN")
+            self.assertTrue(payload["owner_status_zh"].startswith("治理检查通过"), payload)
+            self.assertTrue(payload["candidate_report_only"])
+            self.assertEqual(payload["legacy_exit_code"], 0)
+            self.assertIn("M1-S2PC-PRE-S3", payload["acceptance_ids"])
+            self.assertIn("S3PBT04", payload["acceptance_ids"])
+            self.assertTrue(payload["zero_tracked_write"])
+            self.assertTrue(payload["stable_summary_hash"].startswith("sha256:"))
+            self.assertEqual(payload["check_plan"]["next_action_zh"], "查看 full_evidence_ref。")
+            self.assertGreater(payload["output_telemetry"]["compact_stdout_bytes"], 0)
+            evidence_ref = payload["full_evidence_ref"]
+            evidence_path = Path(evidence_ref["path_or_artifact_ref"])
+            self.assertTrue(evidence_path.is_file(), payload)
+            digest = "sha256:" + hashlib.sha256(evidence_path.read_bytes().rstrip(b"\n")).hexdigest()
+            self.assertEqual(evidence_ref["sha256"], digest)
+            full = json.loads(evidence_path.read_text(encoding="utf-8"))
+        self.assertEqual(full["selector_parity"]["matches"], True)
+        self.assertEqual(
+            payload["validation_checked_project_count"],
+            full["selector_parity"]["validation_checked_project_count"],
+        )
+
     def test_governance_stop_hook_continues_enabled_repo_without_validator(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
@@ -3686,15 +4329,20 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 validator.validate_project(required, project, project_files, mode="required")
                 self.assertTrue(required.errors)
 
-    def test_changed_only_root_governance_change_does_not_select_all_projects(self) -> None:
+    def test_m1_s2pc_validator_changed_only_root_governance_uses_shared_selector(self) -> None:
         validator = load_validator_module()
         config = {
+            "root_governance": {
+                "changed_scope_excluded_projects": ["B"],
+                "required_files": ["docs/governance/STANDARD.md"],
+            },
             "projects": [
-                {"project_id": "A", "path": "A", "model_behavior_globs": []},
-                {"project_id": "B", "path": "B", "model_behavior_globs": []},
+                {"project_id": "A", "path": "A", "ci_mode": "required", "model_behavior_globs": []},
+                {"project_id": "B", "path": "B", "ci_mode": "required", "model_behavior_globs": []},
+                {"project_id": "C", "path": "C", "ci_mode": "advisory", "model_behavior_globs": []},
             ]
         }
-        args = SimpleNamespace(project=None, changed_only=True)
+        args = SimpleNamespace(project=None, changed_only=True, base_ref=None)
 
         with patch.object(
             validator,
@@ -3703,22 +4351,26 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         ):
             selected = validator.select_projects(config, args)
 
-        self.assertEqual([project["project_id"] for project in selected], ["A"])
+        self.assertEqual([project["project_id"] for project in selected], ["A", "B", "C"])
 
-    def test_changed_only_root_governance_only_change_selects_no_projects(self) -> None:
+    def test_m1_s2pc_validator_root_governance_only_change_selects_required_scope(self) -> None:
         validator = load_validator_module()
         config = {
+            "root_governance": {
+                "changed_scope_excluded_projects": ["B"],
+                "required_files": ["scripts/validate_project_governance.py"],
+            },
             "projects": [
-                {"project_id": "A", "path": "A", "model_behavior_globs": []},
-                {"project_id": "B", "path": "B", "model_behavior_globs": []},
+                {"project_id": "A", "path": "A", "ci_mode": "required", "model_behavior_globs": []},
+                {"project_id": "B", "path": "B", "ci_mode": "required", "model_behavior_globs": []},
             ]
         }
-        args = SimpleNamespace(project=None, changed_only=True)
+        args = SimpleNamespace(project=None, changed_only=True, base_ref=None)
 
         with patch.object(validator, "git_changed_files", return_value=["scripts/validate_project_governance.py"]):
             selected = validator.select_projects(config, args)
 
-        self.assertEqual(selected, [])
+        self.assertEqual([project["project_id"] for project in selected], ["A", "B"])
 
     def test_adp_s2pat07_email_v1_pointer_repair_is_current_contract_safe(self) -> None:
         validator = load_validator_module()
@@ -4234,6 +4886,27 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.scope == 'all'", workflow)
         self.assertNotIn("github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+
+    def test_m1_s2pc_changed_only_workflow_preserves_evidence_and_cache_boundaries(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        self.assertIn("PYTHONDONTWRITEBYTECODE", workflow)
+        self.assertIn("PYTHONPYCACHEPREFIX", workflow)
+        self.assertIn("PYTEST_ADDOPTS", workflow)
+        self.assertIn("-p no:cacheprovider", workflow)
+        self.assertIn("GOVERNANCE_EVIDENCE_DIR", workflow)
+        self.assertIn("GOVERNANCE_EVIDENCE_ARTIFACT", workflow)
+        self.assertIn("GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY", workflow)
+        self.assertIn("vars.GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY || '0'", workflow)
+        self.assertIn("set -o pipefail", workflow)
+        self.assertIn('if [ "${GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY}" = "1" ]; then', workflow)
+        self.assertIn("scripts/lean_governance.py validate --changed-only --base-ref", workflow)
+        self.assertIn('tee "${GOVERNANCE_EVIDENCE_DIR}/legacy-changed-only-output.txt"', workflow)
+        self.assertIn("scripts/lean_governance.py ci --changed-only --base-ref", workflow)
+        self.assertIn("Upload changed-only governance evidence artifact", workflow)
+        self.assertIn("governance-changed-only-evidence-${{ github.run_id }}-${{ github.run_attempt }}", workflow)
+        self.assertIn("if-no-files-found: error", workflow)
+        self.assertIn("github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.scope || 'default' }}", workflow)
+        self.assertIn("cancel-in-progress: ${{ !(github.event_name == 'schedule'", workflow)
 
     def test_other8_s2pct02_budget_guard_contract_passes(self) -> None:
         hook_text = STOP_HOOK.read_text(encoding="utf-8")
@@ -10465,11 +11138,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         entry = readme.split("## Governance Entry", 1)[1].split("##", 1)[0]
-        for required in ("docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
+        for required in ("AGENTS.md", "docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
             self.assertIn(required, entry)
-        for forbidden in ("AGENTS.md", "governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
+        for forbidden in ("governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
             self.assertNotIn(forbidden, entry)
         self.assertNotIn("source_snapshot_hash", readme)
+        self.assertNotIn("Current Governance Snapshot", readme)
+        self.assertNotIn(".git/codex-review", readme)
 
     def test_review9_s6pat03_generated_readme_entry_matches_lean_contract(self) -> None:
         dashboard = load_dashboard_module()
@@ -10482,10 +11157,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             },
         )
         entry = rendered.split("## Governance Entry", 1)[1].split("##", 1)[0]
-        for required in ("docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
+        for required in ("AGENTS.md", "docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
             self.assertIn(required, entry)
         for forbidden in ("governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
             self.assertNotIn(forbidden, entry)
+        self.assertNotIn("Current Governance Snapshot", rendered)
+        self.assertNotIn(".git/codex-review", rendered)
 
     def test_other8_s2pat01_root_readme_uses_read_only_fast_gate(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

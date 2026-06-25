@@ -31,13 +31,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: project-governance-${{ github.ref }}
-  cancel-in-progress: true
+  group: project-governance-${{ github.ref }}-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.scope || 'default' }}
+  cancel-in-progress: ${{ !(github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')) }}
 
 jobs:
   governance:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONPYCACHEPREFIX: ${{ runner.temp }}/python-pycache
+      PYTEST_ADDOPTS: "-p no:cacheprovider"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,12 +78,32 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
         env:
           GOVERNANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
+          GOVERNANCE_EVIDENCE_DIR: ${{ runner.temp }}/governance-ci-evidence
+          GOVERNANCE_EVIDENCE_ARTIFACT: governance-changed-only-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY: ${{ vars.GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY || '0' }}
         run: |
-          if [ -n "${GOVERNANCE_BASE_REF}" ]; then
-            python3 scripts/lean_governance.py ci --changed-only --base-ref "${GOVERNANCE_BASE_REF}"
+          set -o pipefail
+          mkdir -p "${GOVERNANCE_EVIDENCE_DIR}"
+          if [ "${GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY}" = "1" ]; then
+            if [ -n "${GOVERNANCE_BASE_REF}" ]; then
+              python3 scripts/lean_governance.py validate --changed-only --base-ref "${GOVERNANCE_BASE_REF}" --enforce-sync --semantic | tee "${GOVERNANCE_EVIDENCE_DIR}/legacy-changed-only-output.txt"
+            else
+              python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic | tee "${GOVERNANCE_EVIDENCE_DIR}/legacy-changed-only-output.txt"
+            fi
           else
-            python3 scripts/lean_governance.py ci --changed-only
+            if [ -n "${GOVERNANCE_BASE_REF}" ]; then
+              python3 scripts/lean_governance.py ci --changed-only --base-ref "${GOVERNANCE_BASE_REF}"
+            else
+              python3 scripts/lean_governance.py ci --changed-only
+            fi
           fi
+      - name: Upload changed-only governance evidence artifact
+        if: always() && (github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-changed-only-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/governance-ci-evidence/**
+          if-no-files-found: error
       - name: Validate information quality
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'
         env:

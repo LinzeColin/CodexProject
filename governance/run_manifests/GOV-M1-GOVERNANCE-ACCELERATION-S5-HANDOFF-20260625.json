@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-M1-GOVERNANCE-ACCELERATION-S5-HANDOFF-20260625",
+  "project_id": "root",
+  "task_id": "M1-GOVERNANCE-ACCELERATION",
+  "acceptance_ids": [
+    "S5PAT01",
+    "S5PAT02",
+    "S5PAT03",
+    "S5PBT01",
+    "S5PBT02",
+    "S5PBT03"
+  ],
+  "iteration_id": "ITER-20260625-M1-GOVERNANCE-ACCELERATION",
+  "stage": "S5",
+  "language": "zh-CN",
+  "generated_at": "2026-06-25T00:00:00Z",
+  "implementation_base_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "content_tree_hash": "sha256-precommit-local-s5-handoff-requires-final-commit-attestation",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "M1 governance acceleration changed-only compact CI and rollback handoff",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "owner_readable_summary": "治理真相仍由 legacy validator、Lean canonical facts、Roadmap、run manifests 和 CI artifacts 保留；普通 PR/push 开发路径只运行 changed-only compact CI，把完整治理计算移到 schedule/workflow_dispatch all 或 full evidence artifact。",
+  "started_at": "2026-06-25T00:00:00Z",
+  "finished_at": "2026-06-25T00:00:00Z",
+  "head_before_change": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "current_gate": {
+    "S1": "SHIP",
+    "S2": "PROCEED_SHADOW_AFTER_PRE_S3_FIX",
+    "S3": "SHIP",
+    "S4": "SHIP_LOCAL_SHADOW_PARITY",
+    "S5": "LOCAL_READY_PENDING_REAL_CI_AND_OWNER_MERGE"
+  },
+  "changed_files_declared": [
+    "root governance workflow",
+    "lean governance CLI",
+    "changed-scope validator",
+    "focused governance tests",
+    "run manifests for handoff"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+    "governance/run_manifests/GOV-M1-GOVERNANCE-ACCELERATION-S5-HANDOFF-20260625.json"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "README.md",
+    "AGENTS.md"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+    "governance/run_manifests/GOV-M1-GOVERNANCE-ACCELERATION-S5-HANDOFF-20260625.json"
+  ],
+  "quality_contract": {
+    "legacy_authoritative": true,
+    "candidate_report_only": true,
+    "selector_parity_fail_closed": true,
+    "git_base_or_status_error_fail_closed": true,
+    "zero_write_guard": "pre_post_delta",
+    "root_or_unknown_fanout_check_render": "deferred_report_only",
+    "full_governance_location": "schedule_or_workflow_dispatch_all"
+  },
+  "rollback": {
+    "primary_switch": "Set repository variable GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY=1.",
+    "effect": "PR/push changed-only step uses `lean_governance.py validate --changed-only --enforce-sync --semantic` instead of compact `ci --changed-only`.",
+    "artifact_proof": "Rollback branch pipes legacy output through tee into `${GOVERNANCE_EVIDENCE_DIR}/legacy-changed-only-output.txt`; `set -o pipefail` preserves validator failures.",
+    "single_commit_revert": "Revert the M1 governance acceleration commit to restore prior workflow and CLI behavior.",
+    "data_migration_required": false
+  },
+  "measured_roi": {
+    "compact_stdout_bytes_latest": 1760,
+    "workflow_full_all_p50_ms": 1451,
+    "workflow_full_all_p95_ms": 1598,
+    "single_project_candidate_p50_ratio": 0.6078566505858028,
+    "single_project_candidate_p95_ratio": 0.6082603254067585,
+    "root_changed_only_ci_p50_ratio": 1.0289455547898,
+    "root_changed_only_ci_p95_ratio": 1.0588235294117647,
+    "targets_met": true,
+    "source_evidence": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/s4pb_performance_benchmark.json"
+  },
+  "test_commands": [
+    "python -B -m unittest <30 focused governance tests> -q",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
+    "python -B scripts/lean_governance.py validate --all --semantic --drift-report",
+    "bash rollback tee success and pipefail failure simulation",
+    "git diff --check"
+  ],
+  "test_results": {
+    "focused_tests": "PASS",
+    "changed_only_validate": "PASS",
+    "compact_ci": "PASS",
+    "workflow_full_all": "PASS_WITH_EXISTING_SYNC_WARNINGS_IN_OUTPUT",
+    "rollback_artifact_and_pipefail": "PASS",
+    "diff_check": "PASS"
+  },
+  "evidence_refs": [
+    ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/s3_gate.json",
+    ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/s4pb_performance_benchmark.json"
+  ],
+  "residual_risks": [
+    "Full historical unit suite still has unrelated existing failures and was not claimed green.",
+    "Two post-merge real GitHub Governance runs cannot be proven before PR/merge.",
+    "Branch protection truth remains external and must be checked by owner/GitHub settings."
+  ],
+  "next_unique_task": "Open/verify PR, confirm required check name remains `Project Governance / governance`, then monitor two real Governance runs before final closure."
+}
