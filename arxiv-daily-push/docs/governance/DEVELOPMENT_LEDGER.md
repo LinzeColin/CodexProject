@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PI
-- Current gate: S2PIT04_CONTENT_LEDGER_LOCAL_ONLY
+- Current phase: S2PM
+- Current gate: S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY
 - Confirmed iteration count: 108
 - Reconstructed event count: 0
-- Current task: `S2PIT04` has completed local content/mail/review/action/asset/ROI ledger reconciliation evidence. It validates S2PIT02/S2PIT03/S2PJT01/S2PJT02/S2PJT03 dependencies, content/evidence/run/mail/feedback/lifecycle/review/action/asset/ROI traceability, status counts, deterministic ledger hashing, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, mail production code, SMTP, scheduler, Release, real DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime/frontstage. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT01` has completed local security and evidence-boundary evidence. It validates UNTRUSTED_DATA source content labeling, typed frontstage statements, safe public URL rendering, zero-critical-claim blocking, local supply-chain baseline controls, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -2703,3 +2703,23 @@ None for this new project baseline.
 - Rollback: Revert S2PKT05 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md`; `governance/run_manifests/ADP-S2PKT05-M4-MAIL-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Commit, push, open PR for S2PKT05, and wait for CI.
+
+### `ITER-20260626-ADP-S2PM-S2PMT01-SECURITY-BOUNDARY`
+
+- Timestamp: `2026-06-26T11:20:00+10:00`
+- Fact level: EXTRACTED from S2PMT01 security boundary code, focused tests, V7.1 inherited audit finding mapping, model/formula/parameter registry diff, and local S2PMT01 validation.
+- Base commit: `2866936e7cc25f7c7e8947cc6a4eb106a8ce1418`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT01`; acceptance `ACC-S2PMT01-SECURITY`.
+- Goal: Complete local security and evidence-boundary gates while preserving V7.2 no-production boundaries.
+- Files changed: S2PMT01 security boundary helper, lesson/frontstage validation, B1 report validation, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, owner/status records, and this ledger entry.
+- Model changes: Added `MOD-ADP-094` security boundary model.
+- Formula changes: Added `FORM-ADP-096` with machine-verifiable AST fingerprints bound to the S2PMT01 implementation.
+- Parameter changes: Added `PARAM-ADP-758` through `PARAM-ADP-767` for S2PMT01 identifiers, URL policy, typed statement types, required boundary flags, and supply-chain controls.
+- Validation: py_compile PASS; focused security/lesson/B1 tests 18 OK; full arxiv-daily-push unittest 404 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS. Full semantic extractor was not completed after local interrupt during full-table AST parsing; changed-only semantic governance is the S2PMT01 local gate used for this run.
+- Decisions: `ACC-S2PMT01-SECURITY` is accepted only as local security/evidence-boundary evidence. SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: A-020 full CI enforcement, vulnerability audit, Action SHA pinning, and SBOM generation remain for later hardening/review. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PMT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md`; `governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT01.

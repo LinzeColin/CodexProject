@@ -4936,3 +4936,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PKT05-M4-MAIL-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md"
+  -
+    model_id: "MOD-ADP-094"
+    name: "S2PMT01 local security and evidence boundary model"
+    purpose: "Validate local S2PMT01 security boundary gates for UNTRUSTED_DATA source content, typed frontstage statements, safe public source URLs, zero-critical-claim blocking, local supply-chain baseline evidence, and no tool/secret/production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-096"
+    parameter_ids:
+      - "PARAM-ADP-758"
+      - "PARAM-ADP-759"
+      - "PARAM-ADP-760"
+      - "PARAM-ADP-761"
+      - "PARAM-ADP-762"
+      - "PARAM-ADP-763"
+      - "PARAM-ADP-764"
+      - "PARAM-ADP-765"
+      - "PARAM-ADP-766"
+      - "PARAM-ADP-767"
+    inputs:
+      - "SourceItem and content_refs"
+      - "Claim Ledger supported claims"
+      - "Lesson frontstage object"
+      - "B1 report/email package"
+      - "workflow file inventory"
+      - "dependency file inventory"
+    outputs:
+      - "safe public URL rendering gate"
+      - "UNTRUSTED_DATA trust boundary receipt"
+      - "typed frontstage statement gate"
+      - "zero critical claim blocking gate"
+      - "local supply-chain baseline receipt"
+      - "no production side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/lesson.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_security_boundary.py"
+      - "arxiv-daily-push/tests/test_lesson.py"
+      - "arxiv-daily-push/tests/test_stage1_b1_report.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md"

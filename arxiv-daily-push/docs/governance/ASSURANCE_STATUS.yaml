@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PKT05-M4-MAIL-001"
+as_of_event_id: "EVENT-20260626-ADP-S2PMT01-SECURITY-BOUNDARY-001"
 source_snapshot_hash: "sha256:f86deee9c5d3349171c36815468ff01b2ce156fc32a52e8156f72e83f266bd7c"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 740
-    total_active_parameters: 740
-    checked_active_formulas: 95
-    total_active_formulas: 95
+    checked_active_parameters: 750
+    total_active_parameters: 750
+    checked_active_formulas: 96
+    total_active_formulas: 96
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PKT05_M4_MAIL_LOCAL_ONLY"
+  release_gate: "S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,10 +82,10 @@ delivery_readiness:
   parallel_shadow_source_task: "S2PBT01"
   current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PL_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2"
+  task_id: "S2PMT02_ATOMIC_STORAGE_AND_RECOVERY_UNDER_V7_2"
   status: "ready_for_local_only_execution"
-  reason: "S2PKT05 M4 mail orchestration evidence is complete locally; continue only with the next governed Stage2 task under V7.2 no-production boundaries."
-  acceptance_ids: ["ACC-S2PLT01-30D"]
+  reason: "S2PMT01 local security boundary evidence is complete; continue with atomic storage/recovery hardening under V7.2 no-production boundaries."
+  acceptance_ids: ["ACC-S2PMT02-ATOMIC-RECOVERY"]
   owner: "project owner"
   human_owner_role: "project_owner"
   unblock_condition: "Continue only with local no-production Stage2 integration evidence unless a later governed task explicitly owns runtime production changes."

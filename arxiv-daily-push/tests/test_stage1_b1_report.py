@@ -86,6 +86,31 @@ class Stage1B1ReportTests(unittest.TestCase):
         self.assertEqual(package["status"], "blocked")
         self.assertIn("P0 support_status must be supported", " ".join(package["blocking_reasons"]))
 
+    def test_b1_report_blocks_zero_critical_claim_coverage(self) -> None:
+        payload = daily_input_report()
+        no_critical = copy.deepcopy(payload)
+        for claim in no_critical["daily_input"]["claims"]:
+            claim["priority"] = "P2"
+
+        package = build_b1_report_email_package(
+            no_critical,
+            generated_at="2026-07-01T05:15:00+10:00",
+        )
+
+        self.assertEqual(package["status"], "blocked")
+        self.assertIn("critical claim evidence coverage must be 100.0", " ".join(package["blocking_reasons"]))
+
+    def test_b1_report_validation_rejects_unsafe_source_url(self) -> None:
+        package = build_b1_report_email_package(
+            daily_input_report(),
+            generated_at="2026-07-01T05:15:00+10:00",
+        )
+        package["email_learning_content_v1"]["source_meta"]["source_url"] = "javascript:alert(1)"
+
+        errors = validate_b1_report_email_package(package)
+
+        self.assertIn("email source URL must be safe", errors)
+
     def test_cli_build_b1_report_email_writes_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
