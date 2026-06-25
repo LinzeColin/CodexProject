@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PIT01` 中文 `00_用户中心` 和 `00_只改这里` 一改入口证据；四类常用控制被拆成画像与目标、邮件与复习、来源与板块、预算与调度，且仍只编译到唯一事实源 `config/owner_controls.yaml`。
+新增 `S2PIT02` 本地只读当前状态入口；它聚合 S2PIT01、runtime audit、watchdog、storage inspect 和生产边界报告，输出本地 dashboard evidence，不启用生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT01 as local user-center evidence only, continue S2PIT02 runtime dashboard locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, continue S2PJT01 review/action/ROI state model locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PIT02_RUNTIME_DASHBOARD_LOCAL_ONLY`
+- next_task_id: `S2PJT01_REVIEW_ACTION_ROI_STATE_MODEL_LOCAL_ONLY`
 - responsible_role: `project_owner`
-- acceptance_ids: `none`
-- unblock_condition: Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.
+- acceptance_ids: `ACC-S2PIT02-RUNTIME-DASHBOARD`
+- unblock_condition: S2PIT02 local dashboard evidence complete; continue next V7.2-authorized local-only task without production side effects.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (600/600 active parameters, 81/81 active formulas)
+- implementation_congruence: `VERIFIED` (608/608 active parameters, 82/82 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence, continue next S2PJT01 review/action/ROI state work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PJT01 review/action/ROI state model work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,11 +68,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `79`
-- total_formulas: `81`
-- active_formulas: `81`
-- total_parameters: `617`
-- active_parameters: `600`
+- model_count: `80`
+- total_formulas: `82`
+- active_formulas: `82`
+- total_parameters: `625`
+- active_parameters: `608`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance

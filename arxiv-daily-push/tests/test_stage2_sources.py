@@ -50,6 +50,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PET03_US_FM_BACKBONE_MODEL_ID,
     S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID,
     S2PIT01_REQUIRED_CONTROL_DOMAINS,
+    S2PIT02_RUNTIME_DASHBOARD_MODEL_ID,
     S2PIT01_USER_CENTER_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
@@ -82,6 +83,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pet03_us_fm_source_backbone_report,
     build_s2pet04_us_tp_d4_qualification_report,
     build_s2pit01_user_center_report,
+    build_s2pit02_runtime_dashboard_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -111,6 +113,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pet03_us_fm_source_backbone,
     run_s2pet04_us_tp_d4_qualification,
     run_s2pit01_user_center,
+    run_s2pit02_runtime_dashboard,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -138,6 +141,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pet03_us_fm_source_backbone_report,
     validate_s2pet04_us_tp_d4_qualification_report,
     validate_s2pit01_user_center_report,
+    validate_s2pit02_runtime_dashboard_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -279,6 +283,48 @@ def s2pit01_storage_inspect(status: str = "pass") -> dict:
         "table_count": 18 if status == "pass" else 0,
         "blocking_reasons": [] if status == "pass" else ["database file does not exist"],
     }
+
+
+def s2pit01_user_center_report() -> dict:
+    return build_s2pit01_user_center_report(
+        generated_at=GENERATED_AT,
+        owner_controls=s2pit01_owner_controls(),
+        owner_validation_report=s2pit01_owner_validation(),
+        owner_impact_preview=s2pit01_owner_preview(),
+        storage_inspect_report=s2pit01_storage_inspect(),
+    )
+
+
+def s2pit02_runtime_report(action: str, status: str = "pass") -> dict:
+    return {
+        "model_id": "adp-stage1-local-runtime-recovery-v1",
+        "schema_version": 1,
+        "acceptance_id": "ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY",
+        "action": action,
+        "status": status,
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "real_scheduler_installed": False,
+        "blocking_reasons": [] if status == "pass" else [f"{action} blocked"],
+    }
+
+
+def s2pit02_production_gate_state(**overrides: object) -> dict:
+    state = {
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_restore_executed": False,
+        "real_smtp_sent": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+    }
+    state.update(overrides)
+    return state
 
 
 def top_journal_publication_events() -> list:
@@ -4452,6 +4498,80 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["user_center_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pit01_user_center_report.json").is_file())
 
+    def test_s2pit02_runtime_dashboard_passes_local_state_and_no_production_gates(self) -> None:
+        report = build_s2pit02_runtime_dashboard_report(
+            generated_at=GENERATED_AT,
+            user_center_report=s2pit01_user_center_report(),
+            runtime_audit_report=s2pit02_runtime_report("runtime_audit"),
+            watchdog_report=s2pit02_runtime_report("watchdog"),
+            storage_inspect_report=s2pit01_storage_inspect(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PIT02_RUNTIME_DASHBOARD_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PIT02-RUNTIME-DASHBOARD")
+        self.assertEqual(report["task_id"], "S2PIT02")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["owner_center_gate"], "pass")
+        self.assertEqual(report["runtime_state_gate"], "pass")
+        self.assertEqual(report["storage_state_gate"], "pass")
+        self.assertEqual(report["production_boundary_gate"], "pass")
+        self.assertEqual(report["dashboard_section_gate"], "pass")
+        self.assertTrue(report["s2pit02_runtime_dashboard_ready"])
+        self.assertIn("runtime", report["dashboard_sections"])
+        self.assertIn("watchdog", report["dashboard_sections"]["runtime"]["runtime_actions_observed"])
+        self.assertEqual(report["owner_status_path"], "docs/owner/00_用户中心/01_当前状态.md")
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(validate_s2pit02_runtime_dashboard_report(report))
+
+    def test_s2pit02_runtime_dashboard_blocks_stale_runtime_and_production_side_effect(self) -> None:
+        report = build_s2pit02_runtime_dashboard_report(
+            generated_at=GENERATED_AT,
+            user_center_report={**s2pit01_user_center_report(), "status": "blocked"},
+            runtime_audit_report={**s2pit02_runtime_report("runtime_audit", "blocked"), "real_scheduler_installed": True},
+            watchdog_report=s2pit02_runtime_report("heartbeat"),
+            storage_inspect_report=s2pit01_storage_inspect("blocked"),
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["owner_center_gate"], "blocked")
+        self.assertEqual(report["runtime_state_gate"], "blocked")
+        self.assertEqual(report["storage_state_gate"], "blocked")
+        self.assertEqual(report["production_boundary_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("runtime_audit report must pass", joined)
+        self.assertIn("real_scheduler_installed", joined)
+        self.assertIn("watchdog report action must be watchdog", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pit02_runtime_dashboard_report(report))
+
+    def test_s2pit02_runtime_dashboard_persists_report_without_runtime_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pit02_runtime_dashboard(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                user_center_report=s2pit01_user_center_report(),
+                runtime_audit_report=s2pit02_runtime_report("runtime_audit"),
+                watchdog_report=s2pit02_runtime_report("watchdog"),
+                storage_inspect_report=s2pit01_storage_inspect(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pit02_runtime_dashboard_report(report))
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["source_adapter_changed"])
+            self.assertTrue(Path(report["runtime_dashboard_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pit02_runtime_dashboard_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -5805,6 +5925,53 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertFalse(payload["schema_migration_allowed"])
         self.assertFalse(payload["source_adapter_changed"])
         self.assertFalse(payload["stage2_production_accepted"])
+
+    def test_cli_stage2_runtime_dashboard_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            user_center_path = tmp_path / "user-center.json"
+            runtime_path = tmp_path / "runtime-audit.json"
+            watchdog_path = tmp_path / "watchdog.json"
+            storage_path = tmp_path / "storage-inspect.json"
+            gate_path = tmp_path / "production-gate.json"
+            user_center_path.write_text(json.dumps(s2pit01_user_center_report(), ensure_ascii=False), encoding="utf-8")
+            runtime_path.write_text(json.dumps(s2pit02_runtime_report("runtime_audit"), ensure_ascii=False), encoding="utf-8")
+            watchdog_path.write_text(json.dumps(s2pit02_runtime_report("watchdog"), ensure_ascii=False), encoding="utf-8")
+            storage_path.write_text(json.dumps(s2pit01_storage_inspect(), ensure_ascii=False), encoding="utf-8")
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-runtime-dashboard",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--user-center-report",
+                    str(user_center_path),
+                    "--runtime-audit-report",
+                    str(runtime_path),
+                    "--watchdog-report",
+                    str(watchdog_path),
+                    "--storage-inspect-report",
+                    str(storage_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PIT02_RUNTIME_DASHBOARD_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PIT02")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["runtime_state_gate"], "pass")
+        self.assertEqual(payload["production_boundary_gate"], "pass")
+        self.assertTrue(payload["s2pit02_runtime_dashboard_ready"])
+        self.assertFalse(payload["integrated_production_accepted"])
 
 
 if __name__ == "__main__":
