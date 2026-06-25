@@ -27,6 +27,31 @@ class StateMachineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not allowed"):
             transition_run_record(record, "evidence_bound", reason="skip", at="2026-06-21T05:00:00+10:00")
 
+    def test_validate_run_record_rejects_forged_history_from_state(self) -> None:
+        record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
+        record["current_state"] = "source_collected"
+        record["state_history"].append(
+            {
+                "from_state": "created",
+                "to_state": "source_collected",
+                "reason": "forged skip",
+                "at": "2026-06-21T05:00:00+10:00",
+            }
+        )
+
+        errors = validate_run_record(record)
+
+        self.assertIn("RunRecord.state_history[1] transition created -> source_collected is not allowed", errors)
+
+    def test_validate_run_record_rejects_current_state_history_drift(self) -> None:
+        record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
+        updated = transition_run_record(record, "health_checked", reason="doctor pass", at="2026-06-21T04:45:00+10:00")
+        updated["current_state"] = "source_collected"
+
+        errors = validate_run_record(updated)
+
+        self.assertIn("RunRecord.current_state must match state_history last to_state", errors)
+
     def test_validate_run_record_checks_nested_contracts(self) -> None:
         record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
         record["source_items"].append({"source_type": "arxiv"})

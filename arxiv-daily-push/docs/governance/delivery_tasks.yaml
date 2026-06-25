@@ -2028,3 +2028,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PMT03"
+    phase: "S2PM"
+    objective: "Implement local-only lease fencing, state concurrency, and transactional outbox evidence under V7.2 no-production boundaries."
+    scope: "row_version compare-and-swap, lease expiry, fencing-token stale writer rejection, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window handling, M4 cycle watermark, production false flags, focused tests, model/formula/parameter registration, phase record, and run manifest."
+    non_scope: "No real SMTP send, no scheduler install, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no exactly-once claim, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT02", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/src/arxiv_daily_push/state_machine.py", "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_smtp_delivery.py"]
+    acceptance_ids: ["ACC-S2PMT03-LEASE-FENCING-OUTBOX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt03_compile2 python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py arxiv-daily-push/src/arxiv_daily_push/state_machine.py arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_state_machine.py arxiv-daily-push/tests/test_smtp_delivery.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt03_tests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_state_machine.py arxiv-daily-push/tests/test_smtp_delivery.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT03/state/SMTP tests: 14 OK", "full arxiv-daily-push unittest: 419 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse: OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md", "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json", "arxiv-daily-push/tests/test_stage2_lease_fencing.py", "arxiv-daily-push/tests/test_state_machine.py", "arxiv-daily-push/tests/test_smtp_delivery.py"]
+    risk: "S2PMT03 local evidence can be misread as production outbox or SMTP enablement; exactly-once remains forbidden and independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT03 lease/fencing module, state validation and SMTP identity patches, tests, governance registrations, phase record, manifest, and events; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
