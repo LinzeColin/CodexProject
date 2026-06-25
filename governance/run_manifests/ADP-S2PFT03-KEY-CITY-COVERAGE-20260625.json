@@ -20,7 +20,8 @@
   ],
   "generated_at": "2026-06-25T10:30:00+10:00",
   "base_commit": "3ceaf7a532e334aa390e521700d640870f1e94fd",
-  "status": "completed_local_validation_passed_pending_pr_ci_no_production_side_effects",
+  "result_commit": "6924b5bf4cc49f7355c9c1f16d0b5cfbd78ded9b",
+  "status": "completed_main_merged_ci_passed_no_production_side_effects",
   "scope": "First 24 China key-city metadata-only coverage evidence with required city ids, aliases, local department roles, region groups, health tiers, authority evidence, metadata-only gates, and no production side effects.",
   "upstream_required_tasks": [
     "S2PFT02"
@@ -98,7 +99,9 @@
   ],
   "test_results": [
     "py_compile PASS",
-    "focused Stage2 source tests: 59 OK"
+    "focused Stage2 source tests: 59 OK",
+    "PR #174 merged to main at 6924b5bf4cc49f7355c9c1f16d0b5cfbd78ded9b",
+    "GitHub workflows success: Project Governance, arXiv Daily Push Stage 1 bootstrap, arXiv Daily Push live all-ArXiv cloud dry-run, arXiv Daily Push real 30-day backfill"
   ],
   "next_task_id": "S2PFT04",
   "next_legacy_context": "S2PF special-zone discovery after first key-city coverage; do not change V7.2 CURRENT pointer.",
@@ -132,5 +135,14 @@
   "release_changed": false,
   "inherited_v7_1_open_p0_findings": 8,
   "inherited_v7_1_open_p1_findings": 37,
-  "rollback": "Revert S2PFT03 key-city coverage code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made."
+  "rollback": "Revert S2PFT03 key-city coverage code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made.",
+  "pull_request": "https://github.com/LinzeColin/CodexProject/pull/174",
+  "main_merge_commit": "6924b5bf4cc49f7355c9c1f16d0b5cfbd78ded9b",
+  "pr_head_commit": "9b9dc34d94d1b10bad08e9159c78d889294dfc5d",
+  "github_checks": [
+    "Project Governance success",
+    "arXiv Daily Push Stage 1 bootstrap success",
+    "arXiv Daily Push live all-ArXiv cloud dry-run success",
+    "arXiv Daily Push real 30-day backfill success"
+  ]
 }

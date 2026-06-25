@@ -56,7 +56,15 @@ This task does not claim:
 
 - py_compile: PASS
 - focused Stage2 source tests: 59 OK
-- full validation pending this PR/CI closeout.
+- full arxiv-daily-push unittest: 288 OK
+- semantic extractor: 69 formulas / 470 parameters checked
+- V7.2 contract validator: PASS
+- ADP project governance: errors 0 warnings 0
+- lean check-render: drift_count 0 reference_issue_count 0
+- changed-only lean governance: errors 0 warnings 0
+- changed JSON/YAML/JSONL/CSV parse: OK
+- git diff --check: PASS
+- PR #174 merged to main at `6924b5bf4cc49f7355c9c1f16d0b5cfbd78ded9b` after GitHub workflows passed: Project Governance, Stage 1 bootstrap, live all-ArXiv cloud dry-run, and real 30-day backfill. This did not enable D3 full source-domain acceptance, Stage2 production acceptance, SMTP, scheduler, Release, public schema, queue/schema, or mail runtime changes.
 
 ## Next
 

@@ -2156,7 +2156,7 @@ None for this new project baseline.
 - Timestamp: `2026-06-25T10:30:00+10:00`
 - Fact level: EXTRACTED from S2PFT02 receipt, 24 key-city fixture rows, model/formula/parameter registry diff, and local S2PFT03 validation.
 - Base commit: `3ceaf7a532e334aa390e521700d640870f1e94fd`
-- Status: local validation passed; pending PR/CI and main merge attestation.
+- Status: merged to main via PR #174 after GitHub workflows passed; no production side effects.
 - Phase: S2PF
 - Task IDs: `S2PFT03`, legacy alias `S2P5T03`; next task `S2PFT04`
 - Goal: Complete first 24 China key-city metadata-only coverage evidence after S2PFT02, register S2PFT03 governance entries, and preserve V7.2 no-production boundaries.
@@ -2164,9 +2164,20 @@ None for this new project baseline.
 - Model changes: Added `MOD-ADP-067` key-city coverage model.
 - Formula changes: Added `FORM-ADP-069` with machine-verifiable AST fingerprints bound to the S2PFT03 implementation.
 - Parameter changes: Added `PARAM-ADP-479` through `PARAM-ADP-487` for S2PFT03 model id, acceptance id, task ids, required city ids, required city department roles, allowed region groups, allowed health tiers, and report filename.
-- Validation: py_compile PASS; focused Stage2 source tests 59 OK.
+- Validation: py_compile PASS; focused Stage2 source tests 59 OK; full arxiv-daily-push unittest 288 OK; semantic extractor 69 formulas / 470 parameters checked; V7.2 validator PASS; ADP project governance 0/0; changed-only governance semantic 0/0; lean check-render drift 0; GitHub workflows success for governance, Stage 1 bootstrap, live all-ArXiv cloud dry-run, and real 30-day backfill.
 - Decisions: `ACC-S2PFT03-CITIES` is accepted only as metadata-only first key-city coverage evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, and special-zone discovery all remain false/disabled. Email V1 PR #152 and governance PR #153 are merged to main; S2PFT03 does not modify mail runtime paths and preserves the Email V1 contract/readiness gate.
 - Remaining risks: S2PFT04 special-zone discovery and S2PFT05 full D3 governance remain unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
 - Rollback: Revert S2PFT03 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PFT03_KEY_CITY_COVERAGE.md`; `governance/run_manifests/ADP-S2PFT03-KEY-CITY-COVERAGE-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
-- Next step: Complete PR/CI and main merge status for `S2PFT03`, then continue `S2PFT04` special-zone metadata-only discovery under V7.2 boundaries; do not enable production source inclusion, SMTP, scheduler, Release, public schema, queue/schema mutation, or integrated production acceptance.
+- Next step: Continue `S2PFT04` special-zone metadata-only discovery under V7.2 boundaries; do not enable production source inclusion, SMTP, scheduler, Release, public schema, queue/schema mutation, or integrated production acceptance.
+
+### `ITER-20260625-ADP-S2PF-S2PFT03-MAIN-MERGE-STATUS`
+
+- Timestamp: `2026-06-25T14:40:00+10:00`
+- Fact level: EXTRACTED from PR #174, merge commit `6924b5bf4cc49f7355c9c1f16d0b5cfbd78ded9b`, and GitHub workflow status.
+- Phase: S2PF
+- Task IDs: `S2PFT03`, legacy alias `S2P5T03`; next task `S2PFT04`
+- Result: PR #174 merged to main after GitHub workflows passed.
+- GitHub checks: Project Governance success; Stage 1 bootstrap success; live all-ArXiv cloud dry-run success; real 30-day backfill success.
+- Decisions: S2PFT03 remains metadata-only/no-send key-city coverage evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, and special-zone discovery all remain false/disabled.
+- Rollback: Revert only this post-merge governance/status sync. Revert PR #174 separately only if the owner explicitly abandons S2PFT03.
