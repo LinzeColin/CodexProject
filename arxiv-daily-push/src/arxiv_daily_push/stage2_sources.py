@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 import time
 from collections.abc import Iterable, Mapping, Sequence
@@ -400,6 +401,43 @@ S2PGT01_REQUIRED_PACKET_FIELDS = (
     "production_affected",
 )
 S2PGT01_REPORT_FILENAME = "stage2_s2pgt01_evidence_packet_v2_compatibility_report.json"
+S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID = "adp-s2pgt02-knowledge-graph-spine-v1"
+S2PGT02_ACCEPTANCE_ID = "ACC-S2PGT02-KG"
+S2PGT02_TASK_ID = "S2PGT02"
+S2PGT02_LEGACY_TASK_ID = "S2P6T01"
+S2PGT02_REQUIRED_IDENTIFIER_TYPES = (
+    "doi",
+    "pmid",
+    "arxiv",
+    "cn_document_number",
+    "federal_register_document_number",
+    "cik",
+)
+S2PGT02_ALLOWED_RELATION_TYPES = (
+    "same_as",
+    "cites",
+    "updates",
+    "supersedes",
+    "implements",
+    "references",
+)
+S2PGT02_REQUIRED_RELATION_FIELDS = (
+    "relation_id",
+    "relation_type",
+    "source_canonical_id",
+    "target_canonical_id",
+    "evidence_refs",
+    "support_status",
+    "idempotency_key",
+)
+S2PGT02_REQUIRED_GATES = (
+    "identifier_coverage_gate",
+    "canonical_dedupe_gate",
+    "relation_evidence_gate",
+    "idempotent_update_gate",
+    "no_side_effect_gate",
+)
+S2PGT02_REPORT_FILENAME = "stage2_s2pgt02_knowledge_graph_spine_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -4740,6 +4778,229 @@ def validate_s2pgt01_evidence_packet_v2_compatibility_report(report: Mapping[str
     return errors
 
 
+def build_s2pgt02_knowledge_graph_spine_report(
+    *,
+    generated_at: str,
+    evidence_packet_report: Mapping[str, Any],
+    identity_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build a private cross-source identity and relation graph report."""
+
+    packet_errors = validate_s2pgt01_evidence_packet_v2_compatibility_report(evidence_packet_report)
+    identity_rows, identifier_index, identity_errors = _s2pgt02_identity_rows(identity_records)
+    canonical_entities, canonical_lookup, canonical_errors = _s2pgt02_canonical_entities(identity_rows)
+    relation_rows, relation_errors = _s2pgt02_relation_rows(relation_records, canonical_lookup)
+    identifier_gate = _s2pgt02_identifier_gate(identity_rows)
+    canonical_gate = _s2pgt02_canonical_gate(canonical_entities, canonical_errors)
+    relation_gate = _s2pgt02_relation_evidence_gate(relation_rows)
+    idempotent_gate = _s2pgt02_idempotent_update_gate(canonical_entities, relation_rows)
+    side_effect_gate = _s2pgt02_no_side_effect_gate([*identity_rows, *relation_rows])
+    graph_state_hash = _s2pgt02_graph_state_hash(canonical_entities, relation_rows)
+    blocking_reasons = [
+        *(f"S2PGT01: {error}" for error in packet_errors),
+        *identity_errors,
+        *canonical_errors,
+        *relation_errors,
+        *identifier_gate["blocking_reasons"],
+        *canonical_gate["blocking_reasons"],
+        *relation_gate["blocking_reasons"],
+        *idempotent_gate["blocking_reasons"],
+        *side_effect_gate["blocking_reasons"],
+    ]
+    if evidence_packet_report.get("status") != "pass":
+        blocking_reasons.append("S2PGT02 requires passing S2PGT01 EvidencePacket V2 compatibility evidence")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and identifier_gate["status"]
+        == canonical_gate["status"]
+        == relation_gate["status"]
+        == idempotent_gate["status"]
+        == side_effect_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID,
+        "acceptance_id": S2PGT02_ACCEPTANCE_ID,
+        "task_id": S2PGT02_TASK_ID,
+        "legacy_task_id": S2PGT02_LEGACY_TASK_ID,
+        "phase": "S2PG",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_s2pgt01_status": evidence_packet_report.get("status"),
+        "required_identifier_types": list(S2PGT02_REQUIRED_IDENTIFIER_TYPES),
+        "identifier_types_observed": identifier_gate["identifier_types_observed"],
+        "allowed_relation_types": list(S2PGT02_ALLOWED_RELATION_TYPES),
+        "required_relation_fields": list(S2PGT02_REQUIRED_RELATION_FIELDS),
+        "required_gates": list(S2PGT02_REQUIRED_GATES),
+        "identifier_coverage_gate": identifier_gate["status"],
+        "canonical_dedupe_gate": canonical_gate["status"],
+        "relation_evidence_gate": relation_gate["status"],
+        "idempotent_update_gate": idempotent_gate["status"],
+        "no_side_effect_gate": side_effect_gate["status"],
+        "duplicate_canonical_count": canonical_gate["duplicate_canonical_count"],
+        "relation_count": len(relation_rows),
+        "canonical_entity_count": len(canonical_entities),
+        "identifier_index": identifier_index,
+        "canonical_entities": canonical_entities,
+        "knowledge_graph_relations": relation_rows,
+        "graph_state_hash": graph_state_hash,
+        "idempotent_update_hash": idempotent_gate["idempotent_update_hash"],
+        "schema_migration_required": False,
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "v7_2_contract_files_changed": False,
+        "s2pgt02_knowledge_graph_spine_ready": status == "pass",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pgt02_knowledge_graph_spine(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    evidence_packet_report: Mapping[str, Any],
+    identity_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PGT02 private knowledge-graph evidence without side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pgt02-knowledge-graph-spine"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pgt02_knowledge_graph_spine_report(
+        generated_at=generated_at,
+        evidence_packet_report=evidence_packet_report,
+        identity_records=identity_records,
+        relation_records=relation_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "knowledge_graph_spine_report_path": str(run_dir / "adp-s2pgt02-knowledge-graph-spine-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pgt02-knowledge-graph-spine-report.json", report)
+        _write_json(state / S2PGT02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pgt02_knowledge_graph_spine_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID:
+        errors.append("S2PGT02 model_id must be adp-s2pgt02-knowledge-graph-spine-v1")
+    if report.get("task_id") != S2PGT02_TASK_ID:
+        errors.append("S2PGT02 task_id must be S2PGT02")
+    if report.get("legacy_task_id") != S2PGT02_LEGACY_TASK_ID:
+        errors.append("S2PGT02 legacy_task_id must be S2P6T01")
+    if report.get("acceptance_id") != S2PGT02_ACCEPTANCE_ID:
+        errors.append("S2PGT02 acceptance_id must be ACC-S2PGT02-KG")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PGT02 status must be pass or blocked")
+    for key in (
+        "schema_migration_required",
+        "public_schema_changed",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "production_affected",
+        "real_smtp_sent",
+        "v7_2_contract_files_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PGT02 knowledge graph spine")
+    observed = set(report.get("identifier_types_observed") or [])
+    missing = [identifier_type for identifier_type in S2PGT02_REQUIRED_IDENTIFIER_TYPES if identifier_type not in observed]
+    if missing:
+        errors.append("S2PGT02 missing identifier types: " + ", ".join(missing))
+    entities = report.get("canonical_entities")
+    if not isinstance(entities, list) or not entities:
+        errors.append("S2PGT02 canonical_entities must be a non-empty list")
+        entities = []
+    entity_ids = set()
+    for index, entity in enumerate(entities):
+        if not isinstance(entity, Mapping):
+            errors.append(f"canonical_entities[{index}] must be an object")
+            continue
+        canonical_id = str(entity.get("canonical_id") or "")
+        if not canonical_id:
+            errors.append(f"canonical_entities[{index}].canonical_id is required")
+        if canonical_id in entity_ids:
+            errors.append(f"canonical_entities[{index}].canonical_id must be unique")
+        entity_ids.add(canonical_id)
+        if not entity.get("identifiers"):
+            errors.append(f"canonical_entities[{index}].identifiers is required")
+        if not entity.get("evidence_refs"):
+            errors.append(f"canonical_entities[{index}].evidence_refs is required")
+    relations = report.get("knowledge_graph_relations")
+    if not isinstance(relations, list) or not relations:
+        errors.append("S2PGT02 knowledge_graph_relations must be a non-empty list")
+        relations = []
+    relation_ids = set()
+    idempotency_keys = set()
+    for index, relation in enumerate(relations):
+        if not isinstance(relation, Mapping):
+            errors.append(f"knowledge_graph_relations[{index}] must be an object")
+            continue
+        for field in S2PGT02_REQUIRED_RELATION_FIELDS:
+            if relation.get(field) in (None, "", []):
+                errors.append(f"knowledge_graph_relations[{index}].{field} is required")
+        if relation.get("relation_type") not in S2PGT02_ALLOWED_RELATION_TYPES:
+            errors.append(f"knowledge_graph_relations[{index}].relation_type is not supported")
+        if relation.get("source_canonical_id") not in entity_ids:
+            errors.append(f"knowledge_graph_relations[{index}].source_canonical_id must exist")
+        if relation.get("target_canonical_id") not in entity_ids:
+            errors.append(f"knowledge_graph_relations[{index}].target_canonical_id must exist")
+        relation_id = str(relation.get("relation_id") or "")
+        if relation_id in relation_ids:
+            errors.append(f"knowledge_graph_relations[{index}].relation_id must be unique")
+        relation_ids.add(relation_id)
+        idempotency_key = str(relation.get("idempotency_key") or "")
+        if idempotency_key in idempotency_keys:
+            errors.append(f"knowledge_graph_relations[{index}].idempotency_key must be unique")
+        idempotency_keys.add(idempotency_key)
+    if report.get("duplicate_canonical_count") != 0:
+        errors.append("S2PGT02 duplicate_canonical_count must be 0")
+    expected_hash = _s2pgt02_graph_state_hash(entities, relations)
+    if report.get("graph_state_hash") != expected_hash:
+        errors.append("S2PGT02 graph_state_hash must match canonical entities and relations")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PGT02 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "identifier_coverage_gate",
+            "canonical_dedupe_gate",
+            "relation_evidence_gate",
+            "idempotent_update_gate",
+            "no_side_effect_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PGT02 report requires {key}=pass")
+        if report.get("s2pgt02_knowledge_graph_spine_ready") is not True:
+            errors.append("passing S2PGT02 report requires s2pgt02_knowledge_graph_spine_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -8034,6 +8295,270 @@ def _s2pgt01_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str,
         if row.get("production_affected") is not False:
             blocking.append(f"evidence_packets[{index}].production_affected must be false")
     return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt02_identity_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, list[str]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    identifier_index: dict[str, list[str]] = {}
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"identity_records[{index}] must be an object")
+            continue
+        identifiers, identifier_errors = _s2pgt02_identifiers(record.get("identifiers") or {})
+        errors.extend(f"identity_records[{index}].{error}" for error in identifier_errors)
+        source_id = str(record.get("source_id") or "").strip()
+        row = {
+            "record_id": str(record.get("record_id") or source_id or f"identity:{index}"),
+            "source_id": source_id,
+            "source_domain": str(record.get("source_domain") or "").strip(),
+            "title": str(record.get("title") or ""),
+            "identifiers": identifiers,
+            "declared_canonical_id": str(record.get("canonical_id") or "").strip(),
+            "evidence_refs": [str(ref) for ref in (record.get("evidence_refs") or []) if str(ref)],
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "production_affected": record.get("production_affected") is True,
+        }
+        if not row["source_id"]:
+            errors.append(f"identity_records[{index}].source_id is required")
+        if not row["source_domain"]:
+            errors.append(f"identity_records[{index}].source_domain is required")
+        if not identifiers:
+            errors.append(f"identity_records[{index}].identifiers is required")
+        if not row["evidence_refs"]:
+            errors.append(f"identity_records[{index}].evidence_refs is required")
+        if row["schema_migration_required"]:
+            errors.append(f"identity_records[{index}].schema_migration_required must be false")
+        if row["production_affected"]:
+            errors.append(f"identity_records[{index}].production_affected must be false")
+        for identifier in identifiers:
+            identifier_index.setdefault(identifier, []).append(row["record_id"])
+        rows.append(row)
+    return rows, {key: sorted(value) for key, value in sorted(identifier_index.items())}, errors
+
+
+def _s2pgt02_identifiers(raw: Any) -> tuple[list[str], list[str]]:
+    errors: list[str] = []
+    if not isinstance(raw, Mapping):
+        return [], ["identifiers must be an object"]
+    identifiers: list[str] = []
+    for identifier_type, values in raw.items():
+        normalized_type = str(identifier_type or "").strip()
+        if normalized_type not in S2PGT02_REQUIRED_IDENTIFIER_TYPES:
+            errors.append(f"unsupported identifier type {normalized_type}")
+            continue
+        value_list = values if isinstance(values, list) else [values]
+        for value in value_list:
+            normalized = _s2pgt02_normalized_identifier(normalized_type, str(value or ""))
+            if normalized:
+                identifiers.append(normalized)
+    return sorted(set(identifiers)), errors
+
+
+def _s2pgt02_normalized_identifier(identifier_type: str, value: str) -> str:
+    text = value.strip()
+    if not text:
+        return ""
+    if identifier_type == "doi":
+        text = text.lower().removeprefix("https://doi.org/").removeprefix("http://doi.org/").removeprefix("doi:")
+    elif identifier_type == "pmid":
+        text = re.sub(r"\D+", "", text)
+    elif identifier_type == "arxiv":
+        text = text.lower().removeprefix("arxiv:")
+    elif identifier_type == "cn_document_number":
+        text = re.sub(r"\s+", "", text).upper()
+    elif identifier_type == "federal_register_document_number":
+        text = re.sub(r"\s+", "", text).lower()
+    elif identifier_type == "cik":
+        digits = re.sub(r"\D+", "", text)
+        text = digits.lstrip("0") or digits
+    return f"{identifier_type}:{text}" if text else ""
+
+
+def _s2pgt02_canonical_entities(rows: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, str], list[str]]:
+    parent: dict[str, str] = {}
+    declared_by_identifier: dict[str, set[str]] = {}
+    errors: list[str] = []
+
+    def find(item: str) -> str:
+        parent.setdefault(item, item)
+        if parent[item] != item:
+            parent[item] = find(parent[item])
+        return parent[item]
+
+    def union(left: str, right: str) -> None:
+        left_root = find(left)
+        right_root = find(right)
+        if left_root == right_root:
+            return
+        canonical_root = min(left_root, right_root)
+        parent[left_root] = canonical_root
+        parent[right_root] = canonical_root
+
+    for row in rows:
+        identifiers = [str(identifier) for identifier in row.get("identifiers") or []]
+        for identifier in identifiers:
+            find(identifier)
+            if row.get("declared_canonical_id"):
+                declared_by_identifier.setdefault(identifier, set()).add(str(row.get("declared_canonical_id")))
+        for identifier in identifiers[1:]:
+            union(identifiers[0], identifier)
+
+    for identifier, declared_ids in sorted(declared_by_identifier.items()):
+        if len(declared_ids) > 1:
+            errors.append(f"S2PGT02 duplicate canonical declaration for {identifier}: {', '.join(sorted(declared_ids))}")
+
+    groups: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        identifiers = [str(identifier) for identifier in row.get("identifiers") or []]
+        if not identifiers:
+            continue
+        root = min(find(identifier) for identifier in identifiers)
+        groups.setdefault(root, []).append(row)
+
+    canonical_lookup: dict[str, str] = {}
+    entities: list[dict[str, Any]] = []
+    for root, group_rows in sorted(groups.items()):
+        identifiers = sorted({identifier for row in group_rows for identifier in (row.get("identifiers") or [])})
+        canonical_id = "kg:" + _s2pgt02_slug(identifiers[0] if identifiers else root)
+        for identifier in identifiers:
+            canonical_lookup[identifier] = canonical_id
+        entities.append(
+            {
+                "canonical_id": canonical_id,
+                "identifiers": identifiers,
+                "identifier_types": sorted({identifier.split(":", 1)[0] for identifier in identifiers}),
+                "source_ids": sorted({str(row.get("source_id")) for row in group_rows if row.get("source_id")}),
+                "source_domains": sorted({str(row.get("source_domain")) for row in group_rows if row.get("source_domain")}),
+                "titles": sorted({str(row.get("title")) for row in group_rows if row.get("title")}),
+                "evidence_refs": sorted({str(ref) for row in group_rows for ref in (row.get("evidence_refs") or [])}),
+            }
+        )
+    return entities, canonical_lookup, errors
+
+
+def _s2pgt02_relation_rows(records: Sequence[Mapping[str, Any]], canonical_lookup: Mapping[str, str]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    seen_relations: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_type = str(record.get("relation_type") or "").strip()
+        source_canonical_id = _s2pgt02_resolve_canonical(record.get("source_identifier"), canonical_lookup)
+        target_canonical_id = _s2pgt02_resolve_canonical(record.get("target_identifier"), canonical_lookup)
+        evidence_refs = [str(ref) for ref in (record.get("evidence_refs") or []) if str(ref)]
+        relation_id = str(record.get("relation_id") or f"{relation_type}:{source_canonical_id}->{target_canonical_id}").strip()
+        idempotency_key = str(record.get("idempotency_key") or relation_id).strip()
+        row = {
+            "relation_id": relation_id,
+            "relation_type": relation_type,
+            "source_canonical_id": source_canonical_id,
+            "target_canonical_id": target_canonical_id,
+            "evidence_refs": evidence_refs,
+            "locator_refs": [str(ref) for ref in (record.get("locator_refs") or []) if str(ref)],
+            "support_status": str(record.get("support_status") or ""),
+            "idempotency_key": idempotency_key,
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "production_affected": record.get("production_affected") is True,
+        }
+        if relation_type not in S2PGT02_ALLOWED_RELATION_TYPES:
+            errors.append(f"relation_records[{index}].relation_type is not supported")
+        if not source_canonical_id:
+            errors.append(f"relation_records[{index}].source_identifier does not resolve")
+        if not target_canonical_id:
+            errors.append(f"relation_records[{index}].target_identifier does not resolve")
+        if not evidence_refs:
+            errors.append(f"relation_records[{index}].evidence_refs is required")
+        if not row["support_status"]:
+            errors.append(f"relation_records[{index}].support_status is required")
+        if relation_id in seen_relations:
+            errors.append(f"relation_records[{index}].relation_id must be unique")
+        seen_relations.add(relation_id)
+        if row["schema_migration_required"]:
+            errors.append(f"relation_records[{index}].schema_migration_required must be false")
+        if row["production_affected"]:
+            errors.append(f"relation_records[{index}].production_affected must be false")
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pgt02_resolve_canonical(identifier: Any, canonical_lookup: Mapping[str, str]) -> str:
+    if isinstance(identifier, Mapping):
+        identifier_type = str(identifier.get("type") or identifier.get("identifier_type") or "")
+        value = str(identifier.get("value") or identifier.get("identifier_value") or "")
+        return canonical_lookup.get(_s2pgt02_normalized_identifier(identifier_type, value), "")
+    text = str(identifier or "").strip()
+    if not text:
+        return ""
+    if text.startswith("kg:"):
+        return text
+    if ":" in text:
+        return canonical_lookup.get(text, "")
+    return ""
+
+
+def _s2pgt02_identifier_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(identifier).split(":", 1)[0] for row in rows for identifier in (row.get("identifiers") or [])})
+    blocking = [f"S2PGT02 missing identifier type {identifier_type}" for identifier_type in S2PGT02_REQUIRED_IDENTIFIER_TYPES if identifier_type not in observed]
+    return {"status": "pass" if not blocking else "blocked", "identifier_types_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt02_canonical_gate(entities: Sequence[Mapping[str, Any]], canonical_errors: Sequence[str]) -> dict[str, Any]:
+    canonical_ids = [str(entity.get("canonical_id") or "") for entity in entities]
+    duplicate_count = len(canonical_ids) - len(set(canonical_ids))
+    blocking = list(canonical_errors)
+    if duplicate_count:
+        blocking.append(f"S2PGT02 duplicate canonical ids: {duplicate_count}")
+    if not entities:
+        blocking.append("S2PGT02 requires at least one canonical entity")
+    return {"status": "pass" if not blocking else "blocked", "duplicate_canonical_count": duplicate_count + len(canonical_errors), "blocking_reasons": blocking}
+
+
+def _s2pgt02_relation_evidence_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    if not rows:
+        blocking.append("S2PGT02 requires at least one knowledge graph relation")
+    for index, row in enumerate(rows):
+        for field in S2PGT02_REQUIRED_RELATION_FIELDS:
+            if row.get(field) in (None, "", []):
+                blocking.append(f"knowledge_graph_relations[{index}].{field} is required")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt02_idempotent_update_gate(entities: Sequence[Mapping[str, Any]], relations: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    keys = [str(row.get("idempotency_key") or "") for row in relations]
+    duplicates = sorted({key for key in keys if key and keys.count(key) > 1})
+    blocking = [f"S2PGT02 duplicate idempotency key {key}" for key in duplicates]
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "idempotent_update_hash": _s2pgt02_graph_state_hash(entities, relations),
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pgt02_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for index, row in enumerate(rows):
+        if row.get("schema_migration_required") is not False:
+            blocking.append(f"s2pgt02_rows[{index}].schema_migration_required must be false")
+        if row.get("production_affected") is not False:
+            blocking.append(f"s2pgt02_rows[{index}].production_affected must be false")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt02_graph_state_hash(entities: Sequence[Mapping[str, Any]], relations: Sequence[Mapping[str, Any]]) -> str:
+    payload = {
+        "canonical_entities": sorted([dict(entity) for entity in entities], key=lambda item: str(item.get("canonical_id") or "")),
+        "knowledge_graph_relations": sorted([dict(row) for row in relations], key=lambda item: str(item.get("relation_id") or "")),
+    }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _s2pgt02_slug(value: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9]+", "-", value).strip("-").lower()
 
 
 def _is_iso_date(value: str) -> bool:

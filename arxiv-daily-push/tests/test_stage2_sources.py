@@ -13,6 +13,9 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID,
+    S2PGT02_REQUIRED_GATES,
+    S2PGT02_REQUIRED_IDENTIFIER_TYPES,
     S2PGT01_EVIDENCE_PACKET_MODEL_ID,
     S2PGT01_REQUIRED_EVIDENCE_LEVELS,
     S2PGT01_REQUIRED_SOURCE_DOMAINS,
@@ -43,6 +46,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pgt02_knowledge_graph_spine_report,
     build_s2pgt01_evidence_packet_v2_compatibility_report,
     build_s2pft05_d3_full_governance_qualification_report,
     build_s2pft04_special_zone_discovery_report,
@@ -63,6 +67,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pgt02_knowledge_graph_spine,
     run_s2pgt01_evidence_packet_v2_compatibility,
     run_s2pft05_d3_full_governance_qualification,
     run_s2pft04_special_zone_discovery,
@@ -81,6 +86,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pgt02_knowledge_graph_spine_report,
     validate_s2pgt01_evidence_packet_v2_compatibility_report,
     validate_s2pft05_d3_full_governance_qualification_report,
     validate_s2pft04_special_zone_discovery_report,
@@ -1168,6 +1174,86 @@ def evidence_packet_records() -> list[dict]:
             ],
         }
         for source_domain, source_type, adapter, source_id, levels, board_routes in rows
+    ]
+
+
+def knowledge_graph_identity_records() -> list[dict]:
+    return [
+        {
+            "record_id": "identity:arxiv-agent-risk",
+            "source_id": "arxiv:2606.00001",
+            "source_domain": "d1_research_preprint",
+            "title": "Agent benchmark for portfolio risk automation",
+            "identifiers": {"arxiv": "2606.00001", "doi": "10.48550/arXiv.2606.00001"},
+            "evidence_refs": ["claim:arxiv:2606.00001"],
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
+        {
+            "record_id": "identity:pubmed-agent-risk",
+            "source_id": "pubmed:39200001",
+            "source_domain": "d2_authoritative_publication",
+            "title": "Agent benchmark for portfolio risk automation",
+            "identifiers": {"doi": "https://doi.org/10.48550/arxiv.2606.00001", "pmid": "39200001"},
+            "evidence_refs": ["claim:pubmed:39200001"],
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
+        {
+            "record_id": "identity:cn-policy-ai",
+            "source_id": "cn.gov:policy-1",
+            "source_domain": "d3_china_official",
+            "title": "人工智能产业政策通知",
+            "identifiers": {"cn_document_number": "工信部科〔2026〕42号"},
+            "evidence_refs": ["claim:cn:policy-1"],
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
+        {
+            "record_id": "identity:fr-ai-rule",
+            "source_id": "fr:2026-12345",
+            "source_domain": "d4_us_official",
+            "title": "Federal Register AI disclosure rule",
+            "identifiers": {"federal_register_document_number": "2026-12345", "cik": "0000320193"},
+            "evidence_refs": ["claim:fr:2026-12345"],
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
+    ]
+
+
+def knowledge_graph_relation_records() -> list[dict]:
+    return [
+        {
+            "relation_type": "same_as",
+            "source_identifier": {"type": "arxiv", "value": "2606.00001"},
+            "target_identifier": {"type": "pmid", "value": "39200001"},
+            "evidence_refs": ["claim:doi-crosswalk:2606.00001"],
+            "locator_refs": ["doi:10.48550/arxiv.2606.00001"],
+            "support_status": "supported",
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
+        {
+            "relation_type": "references",
+            "source_identifier": {"type": "cn_document_number", "value": "工信部科〔2026〕42号"},
+            "target_identifier": {"type": "federal_register_document_number", "value": "2026-12345"},
+            "evidence_refs": ["claim:cn-fr-cross-source"],
+            "locator_refs": ["section:cross-source-policy-note"],
+            "support_status": "cross_source_verified",
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
+        {
+            "relation_type": "implements",
+            "source_identifier": {"type": "federal_register_document_number", "value": "2026-12345"},
+            "target_identifier": {"type": "cik", "value": "0000320193"},
+            "evidence_refs": ["claim:fr-cik-implementation"],
+            "locator_refs": ["agency:SEC"],
+            "support_status": "supported",
+            "schema_migration_required": False,
+            "production_affected": False,
+        },
     ]
 
 
@@ -2373,6 +2459,105 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["evidence_packet_v2_compatibility_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pgt01_evidence_packet_v2_compatibility_report.json").is_file())
 
+    def test_s2pgt02_knowledge_graph_spine_passes_identity_relation_and_idempotent_gates(self) -> None:
+        report = build_s2pgt02_knowledge_graph_spine_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            identity_records=knowledge_graph_identity_records(),
+            relation_records=knowledge_graph_relation_records(),
+        )
+        repeated = build_s2pgt02_knowledge_graph_spine_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            identity_records=knowledge_graph_identity_records(),
+            relation_records=knowledge_graph_relation_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PGT02-KG")
+        self.assertEqual(report["task_id"], "S2PGT02")
+        self.assertEqual(report["legacy_task_id"], "S2P6T01")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(set(report["required_gates"]), set(S2PGT02_REQUIRED_GATES))
+        self.assertEqual(set(report["identifier_types_observed"]), set(S2PGT02_REQUIRED_IDENTIFIER_TYPES))
+        self.assertEqual(report["identifier_coverage_gate"], "pass")
+        self.assertEqual(report["canonical_dedupe_gate"], "pass")
+        self.assertEqual(report["relation_evidence_gate"], "pass")
+        self.assertEqual(report["idempotent_update_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["duplicate_canonical_count"], 0)
+        self.assertEqual(report["graph_state_hash"], repeated["graph_state_hash"])
+        self.assertTrue(report["s2pgt02_knowledge_graph_spine_ready"])
+        self.assertFalse(report["schema_migration_required"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["production_affected"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(validate_s2pgt02_knowledge_graph_spine_report(report))
+
+    def test_s2pgt02_knowledge_graph_spine_blocks_duplicate_canonical_and_missing_relation_evidence(self) -> None:
+        identities = knowledge_graph_identity_records()
+        identities[0] = dict(identities[0], canonical_id="kg:manual-a")
+        identities[1] = dict(identities[1], canonical_id="kg:manual-b")
+        relations = knowledge_graph_relation_records()
+        relations[0] = dict(relations[0], evidence_refs=[], production_affected=True)
+        report = build_s2pgt02_knowledge_graph_spine_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            identity_records=identities,
+            relation_records=relations,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["canonical_dedupe_gate"], "blocked")
+        self.assertEqual(report["relation_evidence_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        self.assertFalse(report["s2pgt02_knowledge_graph_spine_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("duplicate canonical declaration", joined)
+        self.assertIn("evidence_refs", joined)
+        self.assertIn("production_affected", joined)
+        self.assertTrue(validate_s2pgt02_knowledge_graph_spine_report(report))
+
+    def test_s2pgt02_knowledge_graph_spine_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pgt02_knowledge_graph_spine(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                    generated_at=GENERATED_AT,
+                    source_domain_reports=evidence_packet_domain_reports(),
+                    packet_records=evidence_packet_records(),
+                ),
+                identity_records=knowledge_graph_identity_records(),
+                relation_records=knowledge_graph_relation_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pgt02_knowledge_graph_spine_report(report))
+            self.assertFalse(report["schema_migration_required"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertTrue(Path(report["knowledge_graph_spine_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pgt02_knowledge_graph_spine_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -3292,6 +3477,66 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["packet_version"], "EvidencePacketV2")
         self.assertTrue(payload["s2pgt01_evidence_packet_v2_compatibility_ready"])
+        self.assertFalse(payload["public_schema_changed"])
+        self.assertFalse(payload["schema_migration_required"])
+        self.assertFalse(payload["production_affected"])
+        self.assertFalse(payload["real_smtp_sent"])
+
+    def test_cli_stage2_knowledge_graph_spine_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            evidence_packet_path = Path(tmp) / "evidence-packet-report.json"
+            identity_records_path = Path(tmp) / "identity-records.json"
+            relation_records_path = Path(tmp) / "relation-records.json"
+            evidence_packet_path.write_text(
+                json.dumps(
+                    build_s2pgt01_evidence_packet_v2_compatibility_report(
+                        generated_at=GENERATED_AT,
+                        source_domain_reports=evidence_packet_domain_reports(),
+                        packet_records=evidence_packet_records(),
+                    ),
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            identity_records_path.write_text(
+                json.dumps({"identity_records": knowledge_graph_identity_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            relation_records_path.write_text(
+                json.dumps({"relation_records": knowledge_graph_relation_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-knowledge-graph-spine",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--evidence-packet-report",
+                    str(evidence_packet_path),
+                    "--identity-records",
+                    str(identity_records_path),
+                    "--relation-records",
+                    str(relation_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PGT02")
+        self.assertEqual(payload["legacy_task_id"], "S2P6T01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["identifier_coverage_gate"], "pass")
+        self.assertEqual(payload["canonical_dedupe_gate"], "pass")
+        self.assertEqual(payload["relation_evidence_gate"], "pass")
+        self.assertEqual(payload["idempotent_update_gate"], "pass")
+        self.assertTrue(payload["s2pgt02_knowledge_graph_spine_ready"])
         self.assertFalse(payload["public_schema_changed"])
         self.assertFalse(payload["schema_migration_required"])
         self.assertFalse(payload["production_affected"])

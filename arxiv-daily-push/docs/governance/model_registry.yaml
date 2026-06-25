@@ -3711,3 +3711,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md"
+  -
+    model_id: "MOD-ADP-071"
+    name: "S2PGT02 Knowledge graph relation spine"
+    kind: "deterministic private identity and relation spine model"
+    purpose: "Define and validate private cross-source identity resolution and knowledge-graph relation evidence across DOI, PMID, arXiv, Chinese document number, Federal Register document number, and CIK identifiers with duplicate-canonical, relation-evidence, idempotency, and no-side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pgt02-knowledge-graph-spine-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-073"
+    parameter_ids:
+      - "PARAM-ADP-516"
+      - "PARAM-ADP-517"
+      - "PARAM-ADP-518"
+      - "PARAM-ADP-519"
+      - "PARAM-ADP-520"
+      - "PARAM-ADP-521"
+      - "PARAM-ADP-522"
+      - "PARAM-ADP-523"
+      - "PARAM-ADP-524"
+    inputs:
+      - "passing S2PGT01 EvidencePacket V2 compatibility report"
+      - "cross-source identity records"
+      - "evidence-backed relation records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "knowledge graph spine report"
+      - "identifier coverage gate"
+      - "canonical dedupe gate"
+      - "relation evidence gate"
+      - "idempotent update gate"
+      - "no-side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PGT02-KNOWLEDGE-GRAPH-SPINE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT02_KNOWLEDGE_GRAPH_SPINE.md"
