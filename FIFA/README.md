@@ -1,3 +1,22 @@
+# FIFA 中文 Owner 快速入口
+
+- S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
+- 当前任务：`S6PAT02` / `ACC-S6PAT02`；下一 Gate：`S6PA-GATE` 仍在进行中。
+- 本轮边界：只补 Owner 可读路径，不改运行代码，不移动文件，不触发投注、TAB 点击、OpenD、邮件、launchd、app 打包或外部自动化。
+
+| Owner 判断项 | 当前路径 | 状态 |
+|---|---|---|
+| active pipeline | `tab-research-pipeline/` | 主动研究流水线和默认测试入口，本轮不改 |
+| legacy | `legacy/fifa-analysis-system/` | 只读历史实现，不参与默认运行 |
+| artifacts | `artifacts/latest/`、`artifacts/backups/` | 生成结果和备份，不作为源码事实 |
+| ops | `ops/` | 本地运行参考，不是 runtime source |
+
+- 当前运行口径：research-only；当前 executable new stake 仍为 `AUD 0`。
+- 最小项目 smoke：进入 `FIFA/tab-research-pipeline/`，运行 `set PYTHONPATH=..\..\..\test_stubs;.&& python -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag -q`；本轮实测结果为 `Ran 6 tests` / `OK`。
+- 最小治理验证：在仓库根目录运行 `python -B scripts/lean_governance.py check-render --project FIFA`，用于确认中文入口仍由 Lean v2 事实渲染且无漂移。
+- 失败去向：若出现 `No module named fcntl`，先确认 `PYTHONPATH` 指向 `work/test_stubs`；若 parser、validation 或 export 断言失败，再查 `FIFA/docs/FIFA_structure_report.md`、`governance/stage_gates/s5pb/fifa_smoke_tests.log` 和 `tab-research-pipeline/tests/test_pipeline.py`。
+- 回滚：revert S6PAT02 FIFA README 提交即可；本轮不改运行代码、不移动文件、不启用投注，不触发交易或外部自动化。
+
 # FIFA TAB Research System
 
 This repository is the continuity home for the local TAB FIFA betting-research system.
