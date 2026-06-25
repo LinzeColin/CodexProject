@@ -1,0 +1,26 @@
+task_id: S5PBT01
+acceptance_id: ACC-S5PBT01
+mode: FOCUSED_PARSER_VALIDATION_EXPORT_SMOKE
+working_directory: FIFA/tab-research-pipeline
+python: C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe
+py_path: C:\Users\linze\Documents\Codex\2026-06-23\xian\work\test_stubs;.
+
+command:
+set PYTHONPATH=C:\Users\linze\Documents\Codex\2026-06-23\xian\work\test_stubs;.&& C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag -q
+
+result: PASS
+output:
+----------------------------------------------------------------------
+Ran 6 tests in 0.342s
+
+OK
+
+coverage:
+- parser: test_parse_market_pairs, test_parse_market_pairs_rejects_invalid_decimal_odds_tokens
+- validation: test_matches_gate_blocks_invalid_raw_decimal_odds
+- export: test_write_outputs, test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks, test_write_outputs_legacy_blocked_export_requires_explicit_flag
+
+stop_conditions:
+- legacy_participates_default_run: false
+- active_pipeline_path_changed: false
+- betting_automation_enabled: false
