@@ -1,0 +1,319 @@
+{
+  "review_id": "M1-20260625-R2-A5",
+  "round": 2,
+  "agent_role": "fault_injection_extreme_review",
+  "baseline_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [
+    "原始报告为只读审查输出；未运行项保留在 finding.required_tests。"
+  ],
+  "findings": [
+    {
+      "finding_id": "M1-R2-A5-001",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "git_base_fail_closed",
+      "title": "changed-scope still fail-opens invalid explicit base into an empty successful scope",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-001:evidence:1",
+          "result": "Static path: scripts/validate_project_governance.py:1438-1440 only diffs an explicit base when git_ref_exists(base) is true; unresolved explicit bases fall through without an error."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-001:evidence:2",
+          "result": "Executed CLI: python -B scripts\\lean_governance.py changed-scope --base-ref refs/heads/DOES_NOT_EXIST_M1_R2_A5 returned exit 0, stderr 0 bytes, stdout 286 bytes, changed_files=[], selected_project_count=0."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-001:evidence:3",
+          "result": "Executed control: python -B scripts\\lean_governance.py ci --changed-only --base-ref refs/heads/DOES_NOT_EXIST_M1_R2_A5 returned exit 1 only because sync validation emitted Explicit governance diff base does not resolve to a commit; the embedded changed_scope object still reported empty scope."
+        }
+      ],
+      "reproduction": [
+        "git status --short",
+        "python -B scripts\\lean_governance.py changed-scope --base-ref refs/heads/DOES_NOT_EXIST_M1_R2_A5",
+        "python -B scripts\\lean_governance.py ci --changed-only --base-ref refs/heads/DOES_NOT_EXIST_M1_R2_A5"
+      ],
+      "impact": "Any candidate check-plan or shadow classifier that consumes changed-scope directly can convert an unresolved base into a successful zero-project plan, violating INV-006 and CE-001 even though the higher-level ci wrapper currently exits nonzero.",
+      "recommended_fix": "Make unresolved explicit base a first-class error from the shared diff helper. changed-scope should return nonzero or emit unresolved_base with a non-success decision; ci should not publish selected_project_count=0 for an unresolved base.",
+      "required_tests": [
+        "changed-scope invalid explicit base returns nonzero or structured unresolved_base with non-success decision",
+        "ci invalid base remains nonzero and its changed_scope/check_plan section cannot be mistaken for a valid empty diff",
+        "candidate check plan consumes the same fail-closed base resolution result as legacy validation"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A5-002",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "required_project_coverage",
+      "title": "Root governance changes still exclude two required projects from changed-scope shadow coverage",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": true,
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-002:evidence:1",
+          "result": "governance/projects.yaml declares changed_scope_excluded_projects: EEI and arxiv-daily-push; both projects have ci_mode: required."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-002:evidence:2",
+          "result": "Executed unittest set included ProjectGovernanceValidatorTests.test_other8_s2pct01_current_root_test_change_excludes_parallel_projects; the test asserts selected_project_count=8 and excludes EEI and arxiv-daily-push for tests/governance/test_project_governance_validator.py root change."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-002:evidence:3",
+          "result": "The 5-method direct unittest run returned exit 0 in 0.113s, confirming the current expected behavior is to exclude those two required projects."
+        }
+      ],
+      "reproduction": [
+        "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pct01_current_root_test_change_excludes_parallel_projects",
+        "Inspect governance/projects.yaml root_governance.changed_scope_excluded_projects and projects ci_mode fields"
+      ],
+      "impact": "A root governance implementation or test change can exercise only 8 of 10 required projects in the ordinary changed-only path. Shadow acceleration can make that under-coverage look intentional through budget telemetry instead of fixing the required coverage gap.",
+      "recommended_fix": "Remove required projects from root changed-scope exclusions, or add machine-proven equivalent required companion checks before PROCEED_SHADOW. The candidate should treat excluded required projects as a blocking condition, not as savings.",
+      "required_tests": [
+        "Root governance file changed fixture covers every ci_mode=required project or fails with explicit companion-proof absence",
+        "selected_project_count excludes required projects only when a required companion job/artifact is machine-proven",
+        "Budget telemetry labels required-project exclusions separately from safe scan avoidance"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A5-003",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "cli_error_surface",
+      "title": "check-render unknown project still leaks a Python traceback instead of compact actionable output",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-003:evidence:1",
+          "result": "Executed CLI: python -B scripts\\lean_governance.py check-render --project DOES_NOT_EXIST_M1_R2_A5 returned exit 1, stdout 0 bytes, stderr 1096 bytes."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-003:evidence:2",
+          "result": "stderr began with Traceback and ended at scripts/lean_governance.py:241 ValueError: Unknown project: DOES_NOT_EXIST_M1_R2_A5."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-003:evidence:3",
+          "result": "CE-008 expected a nonzero actionable error with no Python traceback."
+        }
+      ],
+      "reproduction": [
+        "python -B scripts\\lean_governance.py check-render --project DOES_NOT_EXIST_M1_R2_A5"
+      ],
+      "impact": "The candidate compact-output contract is not preserved on this common operator error. It increases token/noise cost and weakens the promised human-readable fast path.",
+      "recommended_fix": "Catch ValueError/SystemExit at lean_governance CLI boundaries for render/check-render and emit compact JSON or one-line errors that include the unknown selector and valid next actions, without traceback.",
+      "required_tests": [
+        "check-render unknown project exits nonzero with no Traceback in stdout/stderr",
+        "render unknown project exits nonzero with no Traceback in stdout/stderr",
+        "Error output stays below the compact-output budget while preserving actionable selector information"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A5-004",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "roi_stdout_and_repeated_compute",
+      "title": "Current shadow CI output does not prove token/stdout reduction and is larger than legacy on the 0-project path",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-004:evidence:1",
+          "result": "candidate_m1s objective is to move repeated governance computation/full JSON/telemetry out of ordinary stdout and reduce token and rerun cost."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-004:evidence:2",
+          "result": "Executed legacy comparison: python -B scripts\\validate_project_governance.py --changed-only --enforce-sync --semantic returned exit 0 with stdout_bytes=209."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-004:evidence:3",
+          "result": "Executed candidate path: python -B scripts\\lean_governance.py ci --changed-only returned exit 0 with stdout_bytes=1302 on the same clean 0-project state."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-004:evidence:4",
+          "result": "Executed 20 repeats of python -B scripts\\lean_governance.py ci --changed-only: all status 0, stderr 0, stdout_bytes alternated 1301/1302, durations ranged 858-1067 ms; no persistent compute reuse was evidenced."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-004:evidence:5",
+          "result": "budget_telemetry reports proxy counts such as full_project_scan_avoided_count=10 but does not include legacy_stdout_bytes, candidate_stdout_bytes, baseline duration, cache key, or reused computation count."
+        }
+      ],
+      "reproduction": [
+        "python -B scripts\\validate_project_governance.py --changed-only --enforce-sync --semantic",
+        "python -B scripts\\lean_governance.py ci --changed-only",
+        "Repeat the lean_governance ci command 20 times and record status, stdout_bytes, stderr_bytes, duration_ms"
+      ],
+      "impact": "The candidate can preserve legacy pass/fail yet still add ordinary-path token load and repeated computation. Without a measured ROI gate, PROCEED_SHADOW would approve an acceleration claim based on proxy telemetry rather than demonstrated savings.",
+      "recommended_fix": "Move full JSON evidence to runner temp or .git/codex-review and emit a smaller stdout summary with an evidence pointer. Add an ROI gate that compares candidate vs legacy stdout bytes and wall time for 0/1/8 project fixtures and representative real diffs.",
+      "required_tests": [
+        "0-project clean changed-only: candidate exit equals legacy exit and candidate stdout is below a declared legacy-relative or absolute budget",
+        "1-project changed-only fixture: candidate exit equals legacy exit and stdout/token budget is measured against legacy",
+        "8-project root governance fixture: required-project exclusions are not counted as savings unless companion proof exists",
+        "20-repeat stress records deterministic exits plus measured compute reuse or explicitly reports no reuse"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A5-005",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "timeout_cancel",
+      "title": "Diff-selection git subprocesses still lack per-command timeout and structured timeout errors",
+      "severity": "P3",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-005:evidence:1",
+          "result": "Static path: scripts/validate_project_governance.py:1408-1416 git_ref_exists uses subprocess.run without timeout."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-005:evidence:2",
+          "result": "Static path: scripts/validate_project_governance.py:1427-1463 git_changed_files uses subprocess.check_output for git diff/ls-files without timeout."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-005:evidence:3",
+          "result": "Executed external cancel probe: python -B scripts\\lean_governance.py ci --changed-only with injected 10 ms parent timeout ended with status=null, signal=SIGTERM, error=spawnSync python ETIMEDOUT, stdout/stderr 0, post git status clean."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-005:evidence:4",
+          "result": "This external timeout proves the process can be killed cleanly in this run, but it does not provide the structured bounded git error required by CE-007."
+        }
+      ],
+      "reproduction": [
+        "Inspect scripts/validate_project_governance.py git_ref_exists and git_changed_files subprocess calls",
+        "Run a parent-level timeout against python -B scripts\\lean_governance.py ci --changed-only and observe that the application emits no structured timeout result"
+      ],
+      "impact": "A hung git/diff operation can stall the governance path or be killed by the runner without preserving actionable fail-closed evidence. Candidate check-plan logic would inherit the same unbounded diff-selection behavior.",
+      "recommended_fix": "Introduce a shared bounded git helper with per-command timeout, UTF-8 decoding, stderr capture, and structured error propagation. Treat timeout as fail-closed for changed-scope, ci, and candidate check plan.",
+      "required_tests": [
+        "Monkeypatch subprocess timeout for git_ref_exists and git_changed_files; command exits nonzero with structured timeout error",
+        "Timeout cannot produce changed_files=[] with a success decision",
+        "Cancellation leaves tracked status clean and writes only to allowed temp/evidence paths"
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A5-006",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "workflow_concurrency",
+      "title": "Workflow-level concurrency can still cancel full evidence runs on the same ref",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-006:evidence:1",
+          "result": ".github/workflows/project-governance.yml sets concurrency.group to project-governance-${{ github.ref }} and cancel-in-progress: true."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-006:evidence:2",
+          "result": "The same workflow contains full governance scheduled/manual-all steps and ordinary changed-only pull_request/push steps under that single concurrency group."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-006:evidence:3",
+          "result": "Executed local two-instance read-only ci --changed-only probe: both instances returned code 0 with stdout_bytes=1302 and post tracked status clean, but this local probe does not exercise GitHub Actions cancellation semantics."
+        }
+      ],
+      "reproduction": [
+        "Inspect .github/workflows/project-governance.yml concurrency and job if conditions",
+        "On GitHub Actions, start workflow_dispatch scope=all and then a same-ref fast run; verify whether the full evidence run is canceled"
+      ],
+      "impact": "Scheduled/manual full evidence can be preempted by a same-ref fast run, undermining the candidate claim that full/nightly/release evidence gates remain intact while ordinary runs are accelerated.",
+      "recommended_fix": "Split concurrency groups by event/scope or disable cancel-in-progress for scheduled/manual full evidence. Keep ordinary fast-gate cancellation separate from full evidence production.",
+      "required_tests": [
+        "Workflow config test proves full evidence scopes do not share a canceling concurrency group with fast changed-only runs",
+        "Live or mocked workflow_dispatch all followed by same-ref fast run does not cancel the full evidence run"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A5-007",
+      "round": 2,
+      "agent_role": "fault_injection_extreme_review",
+      "category": "temp_cache_cleanup",
+      "title": "Zero tracked diff does not prove temp/cache cleanliness; ignored governance pycache already exists",
+      "severity": "P3",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-007:evidence:1",
+          "result": "Initial and post-run git status --short returned empty output."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-007:evidence:2",
+          "result": "git status --ignored --short tests\\governance returned !! tests/governance/__pycache__/."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-007:evidence:3",
+          "result": ".github/workflows/project-governance.yml full test step runs python3 -m pytest tests/governance -q or unittest discover without PYTHONDONTWRITEBYTECODE, PYTHONPYCACHEPREFIX, or pytest cacheprovider suppression in that step."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A5-007:evidence:4",
+          "result": "The executed Agent5 tests used python -B and did not clean the existing ignored cache because RUN_MODE=READ_ONLY allowed only the final JSON write."
+        }
+      ],
+      "reproduction": [
+        "git status --short",
+        "git status --ignored --short tests\\governance",
+        "Inspect .github/workflows/project-governance.yml full governance validator test step"
+      ],
+      "impact": "Candidate zero-write telemetry that only checks tracked status can miss checkout-local ignored cache pollution. This weakens the READ_ONLY/CI zero-write invariant and makes temp cleanup status ambiguous.",
+      "recommended_fix": "In CI, set PYTHONDONTWRITEBYTECODE=1, PYTHONPYCACHEPREFIX=$RUNNER_TEMP, and disable pytest cache or redirect it to RUNNER_TEMP. Add an ignored-cache audit or explicit allowed-cache report for governance tests.",
+      "required_tests": [
+        "Clean checkout full governance tests leave no __pycache__ or .pytest_cache under the checkout, or report allowed temp locations",
+        "pre/post status includes ignored-cache audit for tests/governance and root governance scripts",
+        "temp cleanup is separate from tracked zero-diff and reports NOT_RUN when deletion is forbidden"
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    }
+  ],
+  "summary": {
+    "P0": 0,
+    "P1": 1,
+    "P2": 4,
+    "P3": 2,
+    "merge_blocking": true,
+    "sanitized_from": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/round2/agent5.json"
+  }
+}

@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "task_ids": [
+    "S1PCT01",
+    "S1PCT02"
+  ],
+  "status": "ROUND1_CONSOLIDATED_FOR_S2_ATTACK",
+  "repository": "LinzeColin/CodexProject",
+  "head": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "evidence_dir": "C:/Users/linze/Documents/Codex/2026-06-23/xian/work/CodexProject/.git/codex-review/m1/m1-20260625-s1pa-3944f62d",
+  "source_reports": [
+    "round1/agent1.json",
+    "round1/agent2.json",
+    "round1/agent3.json"
+  ],
+  "replay_file": "round1_replay.json",
+  "all_p0_p1_replayed": true,
+  "unknown_not_promoted": true,
+  "duplicate_mapping_policy": "root_cause_cluster; all independent finding_ids retained under each cluster",
+  "clusters": [
+    {
+      "cluster_id": "R1-C001",
+      "title": "changed-scope 诊断入口对无效 explicit base_ref fail-open",
+      "root_cause": "validate_project_governance.git_changed_files 在 explicit base 不存在时回落为空变更；lean changed-scope 未独立 fail-closed。",
+      "finding_ids": [
+        "M1-R1-A1-001",
+        "M1-R1-A2-004"
+      ],
+      "round1_severities": {
+        "M1-R1-A1-001": "P1",
+        "M1-R1-A2-004": "P3"
+      },
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "CONFIRMED_WITH_CONTROL",
+      "replay_ids": [
+        "REPLAY-P1-BASE-DIAGNOSTIC",
+        "CONTROL-CI-INVALID-BASE-FAILS-CLOSED"
+      ],
+      "conflict_resolution": "A1 将其描述为可能 required check false negative；父级控制样本证明当前 ci --changed-only 对同一 invalid base exit 1，因此不把当前 CI 判为 fail-open。但 changed-scope 作为人类/Agent 诊断入口仍会返回 0 与空范围，必须在候选设计中 fail-closed，不能当作无变更。",
+      "required_fix": "让 changed-scope 对 explicit base_ref unresolved 返回非零或结构化 unresolved_base；候选 check plan 不得消费 unresolved base 的空结果。",
+      "required_tests": [
+        "changed-scope invalid base returns non-zero or unresolved_base=false equivalent with non-success decision",
+        "ci invalid base remains non-zero"
+      ],
+      "candidate_relevance": "S2 反例矩阵必须覆盖 Git/base 错误 fail-closed。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A1-001",
+          "agent": "agent1",
+          "original_title": "Invalid base_ref silently produces an empty changed scope",
+          "original_severity": "P1",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": true,
+          "p1_replay": [
+            {
+              "check_id": "REPLAY-P1-BASE-DIAGNOSTIC",
+              "replayed": true
+            },
+            {
+              "check_id": "CONTROL-CI-INVALID-BASE-FAILS-CLOSED",
+              "replayed": true
+            }
+          ]
+        },
+        {
+          "finding_id": "M1-R1-A2-004",
+          "agent": "agent2",
+          "original_title": "changed-scope diagnostic command reports success for an unresolved base ref",
+          "original_severity": "P3",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": false,
+          "p1_replay": [
+            {
+              "check_id": "REPLAY-P1-BASE-DIAGNOSTIC",
+              "replayed": true
+            },
+            {
+              "check_id": "CONTROL-CI-INVALID-BASE-FAILS-CLOSED",
+              "replayed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C002",
+      "title": "lean changed_scope 与底层 validator changed-only 项目选择不一致",
+      "root_cause": "lean_governance.build_changed_scope 对根治理变更扩展项目范围；validate_project_governance.select_projects 仅按项目路径匹配，根治理变更选择 0 项目。",
+      "finding_ids": [
+        "M1-R1-A3-001"
+      ],
+      "round1_severities": {
+        "M1-R1-A3-001": "P1"
+      },
+      "adjudicated_severity": "P1",
+      "merge_blocking": true,
+      "evidence_status": "CONFIRMED",
+      "replay_ids": [
+        "REPLAY-P1-SELECTOR-MISMATCH"
+      ],
+      "conflict_resolution": "无跨 Agent 反证。父级 monkeypatch 重放证明同一 changed_files fixture 下 lean selected=8，validator selected=[]。这是当前 root governance 变更路径的真实 false negative 风险。",
+      "required_fix": "统一 selector source of truth；validator 与 lean 输出必须来自同一项目选择结果，或由 CLI 显式传入并由 tests 锁定。",
+      "required_tests": [
+        "root governance file changed fixture: validator checked projects equals changed_scope.selected_projects",
+        "selected_project_count>0 while validator checks none must fail"
+      ],
+      "candidate_relevance": "S2 必须裁决这是 shadow 前置阻塞还是 FIX-ONE 修复；不得用 shadow telemetry 掩盖。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A3-001",
+          "agent": "agent3",
+          "original_title": "changed-only CI 的项目选择器与底层 validator 不一致",
+          "original_severity": "P1",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": true,
+          "p1_replay": [
+            {
+              "check_id": "REPLAY-P1-SELECTOR-MISMATCH",
+              "replayed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C003",
+      "title": "root governance 变更排除 required 项目 EEI 与 arxiv-daily-push",
+      "root_cause": "governance/projects.yaml root_governance.changed_scope_excluded_projects 包含两个 ci_mode=required 项目。",
+      "finding_ids": [
+        "M1-R1-A1-002"
+      ],
+      "round1_severities": {
+        "M1-R1-A1-002": "P1"
+      },
+      "adjudicated_severity": "P1",
+      "merge_blocking": "conditional",
+      "evidence_status": "CONFIRMED",
+      "replay_ids": [
+        "REPLAY-P1-REQUIRED-EXCLUSIONS"
+      ],
+      "conflict_resolution": "父级重放确认两个 required 项目不在 root scope 中。若无单独 required coverage，root contract/schema/workflow 变更可漏掉这些项目。",
+      "required_fix": "删除 required 项目的 root exclusion，或建立等价 required companion coverage 并在 tests 中证明。",
+      "required_tests": [
+        "root governance change covers every ci_mode=required project or proves required companion job exists"
+      ],
+      "candidate_relevance": "S2 必须攻击 exclusion 是否合理；S3 不得新增更弱排除规则。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A1-002",
+          "agent": "agent1",
+          "original_title": "Root governance changes exclude required projects from changed-scope checks",
+          "original_severity": "P1",
+          "original_status": "PARTIALLY_VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": [
+            {
+              "check_id": "REPLAY-P1-REQUIRED-EXCLUSIONS",
+              "replayed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C004",
+      "title": "render --write 缺少 READ_ONLY/CI 写入门禁",
+      "finding_ids": [
+        "M1-R1-A1-004"
+      ],
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "PARTIALLY_VERIFIED_STATIC",
+      "required_fix": "CLI write path 增加 run mode/CI guard；allowed IMPLEMENT 需显式元数据。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A1-004",
+          "agent": "agent1",
+          "original_title": "render --write has no READ_ONLY or CI mode guard",
+          "original_severity": "P2",
+          "original_status": "PARTIALLY_VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C005",
+      "title": "full governance test step 可能在 checkout 写 pytest/Python cache",
+      "finding_ids": [
+        "M1-R1-A2-001"
+      ],
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "PARTIALLY_VERIFIED_STATIC",
+      "required_fix": "CI 设置 PYTHONDONTWRITEBYTECODE、PYTHONPYCACHEPREFIX 到 RUNNER_TEMP，并禁用 pytest cache。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A2-001",
+          "agent": "agent2",
+          "original_title": "Full governance test step can write pytest and Python caches inside the checkout",
+          "original_severity": "P2",
+          "original_status": "PARTIALLY_VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C006",
+      "title": "schedule/manual full evidence 可能被同 ref 并发取消",
+      "finding_ids": [
+        "M1-R1-A2-002"
+      ],
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "VERIFIED_STATIC",
+      "required_fix": "按 event/scope 拆分 concurrency，或 full evidence 禁用 cancel-in-progress。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A2-002",
+          "agent": "agent2",
+          "original_title": "Workflow-level cancellation can preempt scheduled or manual full-governance evidence runs",
+          "original_severity": "P2",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C007",
+      "title": "diff-selection git 子进程缺少 per-command timeout",
+      "finding_ids": [
+        "M1-R1-A2-003"
+      ],
+      "adjudicated_severity": "P3",
+      "merge_blocking": false,
+      "evidence_status": "PROPOSED",
+      "required_fix": "共享 bounded git helper，TimeoutExpired 转结构化错误。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A2-003",
+          "agent": "agent2",
+          "original_title": "Diff-selection git subprocesses lack per-command timeouts",
+          "original_severity": "P3",
+          "original_status": "PROPOSED",
+          "original_merge_blocking": false,
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C008",
+      "title": "required governance workflow 使用 mutable action tags",
+      "finding_ids": [
+        "M1-R1-A1-003"
+      ],
+      "adjudicated_severity": "P3",
+      "merge_blocking": false,
+      "evidence_status": "PARTIALLY_VERIFIED_STATIC",
+      "required_fix": "pin actions to commit SHA 或明确 allowlist。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A1-003",
+          "agent": "agent1",
+          "original_title": "Required governance workflow uses mutable action version tags",
+          "original_severity": "P3",
+          "original_status": "PARTIALLY_VERIFIED",
+          "original_merge_blocking": false,
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C009",
+      "title": "render/check-render 未知项目输出 traceback",
+      "finding_ids": [
+        "M1-R1-A3-002"
+      ],
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "VERIFIED",
+      "required_fix": "CLI 边界捕获 ValueError，返回紧凑可操作错误和可用项目/下一动作。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A3-002",
+          "agent": "agent3",
+          "original_title": "render 命令的未知项目错误泄露 traceback",
+          "original_severity": "P2",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C010",
+      "title": "README Governance Entry 未暴露 AGENTS.md 执行契约入口",
+      "finding_ids": [
+        "M1-R1-A3-003"
+      ],
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "VERIFIED_STATIC",
+      "required_fix": "README 入口层级加入 AGENTS.md，保持 STANDARD 和三中文文件，不引入 yaml/dashboard 为 current truth。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A3-003",
+          "agent": "agent3",
+          "original_title": "README 的 Governance Entry 隐藏最高优先级 AGENTS 入口",
+          "original_severity": "P2",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": []
+        }
+      ]
+    },
+    {
+      "cluster_id": "R1-C011",
+      "title": "README Current Governance Snapshot 成为易过期平行真相源",
+      "finding_ids": [
+        "M1-R1-A3-004"
+      ],
+      "adjudicated_severity": "P2",
+      "merge_blocking": "conditional",
+      "evidence_status": "VERIFIED",
+      "required_fix": "移除或降级 README 内嵌运行快照；当前事实只在 run manifest/CI artifact/canonical facts。",
+      "findings": [
+        {
+          "finding_id": "M1-R1-A3-004",
+          "agent": "agent3",
+          "original_title": "README 内嵌 Current Governance Snapshot 形成易过期真相源",
+          "original_severity": "P2",
+          "original_status": "VERIFIED",
+          "original_merge_blocking": "conditional",
+          "p1_replay": []
+        }
+      ]
+    }
+  ],
+  "open_p0_p1": [
+    "R1-C002",
+    "R1-C003"
+  ],
+  "p0_p1_conflicts_explained": true,
+  "implementation_started": false,
+  "tracked_write_policy": "S1/S2 no tracked writes; evidence only under .git/codex-review/m1",
+  "generated_at": "2026-06-25T09:54:19.429Z"
+}

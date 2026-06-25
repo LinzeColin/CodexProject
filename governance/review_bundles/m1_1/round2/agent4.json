@@ -1,0 +1,324 @@
+{
+  "review_id": "M1-20260625-R2-A4",
+  "round": 2,
+  "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+  "baseline_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [
+    "原始报告为只读审查输出；未运行项保留在 finding.required_tests。"
+  ],
+  "findings": [
+    {
+      "finding_id": "M1-R2-A4-001",
+      "round": 2,
+      "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+      "category": "path_classification_bypass",
+      "title": "R1-C002 remains a merge-blocking selector split between lean changed_scope and the legacy validator",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": true,
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-001:evidence:1",
+          "result": "round1_consolidated.json keeps R1-C002 open as P1 merge_blocking=true and records replay REPLAY-P1-SELECTOR-MISMATCH: lean selected=8 while validator selected=[]."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-001:evidence:2",
+          "result": "scripts/lean_governance.py:849 builds changed_scope, then scripts/lean_governance.py:853 invokes the legacy validator independently with --changed-only; scripts/lean_governance.py:858-891 uses the lean-selected projects only for check-render."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-001:evidence:3",
+          "result": "scripts/validate_project_governance.py:1488-1491 recomputes --changed-only selection from git_changed_files and project_matches_changed only; it has no root_governance expansion equivalent to scripts/lean_governance.py:984-990."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-001:evidence:4",
+          "result": "scripts/lean_governance.py:937 returns success when validator exit_code is 0, check-render did not fail, and git status is clean; it does not compare lean selected_projects with validator checked_projects."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-001:evidence:5",
+          "result": "tests/governance/test_project_governance_validator.py:420-449 tests root changes select all projects in lean changed_scope, but tests/governance/test_project_governance_validator.py:809-849 only asserts the validator is called, not that it checked the same project set."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN due RUN_MODE=READ_ONLY and the no-write constraint.",
+        "Static reproduction path: monkeypatch governance.git_changed_files to return ['scripts/lean_governance.py']; build_changed_scope selects root-scope projects, while validate_project_governance.select_projects with --changed-only selects only projects whose project path prefixes match that root file, i.e. none."
+      ],
+      "impact": "A root governance change can be represented in the lean summary as selecting projects while the authoritative pass/fail validator validates no projects.\nShadow telemetry or compact stdout can hide the false negative because the required exit code still follows the legacy validator result.\nThis must be FIX-ONE before M1 proceeds beyond attack/shadow planning; telemetry alone cannot make the required gate sound.",
+      "recommended_fix": "Use one selector source of truth for changed-only governance selection.\nEither pass the lean-selected project ids into validate_project_governance and validate exactly those, or have run_changed_only_ci parse validator checked_projects and fail closed on any mismatch.\nMake selected_project_count>0 with validator checked none a hard nonzero result.",
+      "required_tests": [
+        "NOT_RUN: CE-002 fixture with changed_files=['scripts/lean_governance.py'] must prove validator checked projects equals changed_scope.selected_projects.",
+        "NOT_RUN: selected_project_count>0 while validator checks none must return nonzero.",
+        "NOT_RUN: 0/1/8 selected-project fixtures must preserve the legacy issue set and exit code except for explicit selector mismatch failures."
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A4-002",
+      "round": 2,
+      "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+      "category": "EEI_arxiv_boundary",
+      "title": "R1-C003 still excludes two ci_mode=required projects from root governance changed-scope coverage",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-002:evidence:1",
+          "result": "round1_consolidated.json keeps R1-C003 open as P1 and requires either removing the root exclusions or proving equivalent required companion coverage."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-002:evidence:2",
+          "result": "governance/projects.yaml:4-6 excludes EEI and arxiv-daily-push under root_governance.changed_scope_excluded_projects."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-002:evidence:3",
+          "result": "governance/projects.yaml:75-77 marks EEI as ci_mode=required, and governance/projects.yaml:115-117 marks arxiv-daily-push as ci_mode=required."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-002:evidence:4",
+          "result": "scripts/lean_governance.py:985-989 removes excluded projects when root_governance_changed is true."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-002:evidence:5",
+          "result": "tests/governance/test_project_governance_validator.py:451-489 asserts the configured EEI/arxiv exclusions, and tests/governance/test_project_governance_validator.py:491-500 asserts the current root test change excludes both projects."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-002:evidence:6",
+          "result": ".github/workflows/project-governance.yml:73-82 runs only the changed-only governance CI on PR/push; no local root governance test or machine-readable branch-protection proof was found in the allowed root execution chain showing equivalent required companion coverage for EEI/arxiv."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN due RUN_MODE=READ_ONLY and the no-write constraint.",
+        "Static reproduction path: for changed_files=['tests/governance/test_project_governance_validator.py'] or another root governance file, build_changed_scope treats root_governance_changed=true and filters out the configured excluded project ids, even though both are ci_mode=required."
+      ],
+      "impact": "Root schema, workflow, validator, or template changes can bypass required coverage for EEI and arxiv-daily-push unless an external companion check is machine-proven.\nThis is an EEI/arxiv boundary violation against s2pa_invariants INV-008 and INV-010 as currently evidenced.\nIt is FIX-ONE unless the implementation adds a machine-verifiable required companion proof with tests.",
+      "recommended_fix": "Preferred: remove EEI and arxiv-daily-push from root_governance.changed_scope_excluded_projects.\nAlternative: add a required companion coverage mechanism and a root governance test proving every ci_mode=required project is covered by either changed_scope or a required companion check.\nDo not keep tests that only assert the exclusion; convert them into coverage or companion-proof tests.",
+      "required_tests": [
+        "NOT_RUN: CE-003 root governance change must cover every ci_mode=required project or prove an equivalent required companion job exists.",
+        "NOT_RUN: governance/projects.yaml with excluded ci_mode=required projects must fail unless companion proof is present.",
+        "NOT_RUN: branch/check identity proof must be machine-readable and tied to the required workflow/job name if the companion route is used."
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A4-003",
+      "round": 2,
+      "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+      "category": "git_diff_failure_exit_code_swallowing",
+      "title": "changed-scope still fail-opens invalid or failed explicit Git diff bases into a successful empty scope",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-003:evidence:1",
+          "result": "round1_consolidated.json R1-C001 confirms changed-scope diagnostic bad behavior but notes CI invalid-base control fails closed through the sync validator."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-003:evidence:2",
+          "result": "scripts/validate_project_governance.py:1438-1450 only adds explicit-base diff output if git_ref_exists(explicit_base) succeeds; missing refs or CalledProcessError are silently ignored."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-003:evidence:3",
+          "result": "scripts/validate_project_governance.py:1464 returns sorted(changed) without unresolved-base state."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-003:evidence:4",
+          "result": "scripts/lean_governance.py:1047-1050 prints changed-scope JSON and returns 0 unconditionally after build_changed_scope returns."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-003:evidence:5",
+          "result": "scripts/validate_governance_sync.py:837-838 does fail closed for enforce_sync when explicit_base does not resolve, so the required CI path is stronger than the diagnostic path."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN due RUN_MODE=READ_ONLY and the no-write constraint.",
+        "Static reproduction path: call scripts/lean_governance.py changed-scope --base-ref DOES_NOT_EXIST. git_changed_files has no error channel for unresolved explicit base, and the changed-scope CLI returns 0 with whatever local staged/unstaged/untracked set exists, often empty."
+      ],
+      "impact": "Human or Agent check-plan consumers can classify an unresolved diff as no affected projects.\nIf candidate shadow features consume changed-scope JSON directly, they can inherit a fail-open empty result even though CI would fail closed later.\nThis is not the same P1 as R1-C002 because required CI has a control path, but it remains a candidate-design blocker for check plan and diagnostics.",
+      "recommended_fix": "Make git_changed_files return a structured result with unresolved_base or diff_error instead of a bare list.\nMake changed-scope return nonzero on an explicit unresolved base or Git diff failure.\nEnsure candidate check-plan refuses to consume a successful empty scope when base resolution failed.",
+      "required_tests": [
+        "NOT_RUN: CE-001 changed-scope --base-ref missing must return nonzero or an explicit non-success unresolved_base decision.",
+        "NOT_RUN: ci --changed-only --base-ref missing must continue to return nonzero.",
+        "NOT_RUN: monkeypatched git diff CalledProcessError must not become success with empty changed_files."
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A4-004",
+      "round": 2,
+      "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+      "category": "prompt_self_report_risk",
+      "title": "CI attestation validation accepts caller-supplied success instead of independently binding to the GitHub job conclusion",
+      "severity": "P2",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-004:evidence:1",
+          "result": ".github/workflows/project-governance.yml:114-131 writes an attestation only after success() for manual all scope, but it passes --conclusion success as a literal CLI argument."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-004:evidence:2",
+          "result": "scripts/validate_ci_attestation.py:61-82 builds the attestation from CLI args; job_id defaults to UNKNOWN at line 69 when omitted."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-004:evidence:3",
+          "result": "scripts/validate_ci_attestation.py:85-110 validates required fields, allowed conclusion, local commit existence, and payload hash; it does not query or bind the actual Actions run/job conclusion."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-004:evidence:4",
+          "result": "scripts/validate_ci_attestation.py:145-164 exposes --workflow, --run-id-number, --run-attempt, --job-id, --conclusion, and --test-summary as caller-provided values."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-004:evidence:5",
+          "result": "This is currently mitigated by the workflow-level success() guard and contents: read permissions, but the artifact itself remains self-reported evidence."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN due RUN_MODE=READ_ONLY and the no-write constraint.",
+        "Static reproduction path: validate_ci_attestation.py write can construct a locally valid payload with --conclusion success for any locally resolving commit_sha, because validate_payload does not independently verify the GitHub run or job conclusion."
+      ],
+      "impact": "If future gates treat this artifact as machine proof, a modified or compromised workflow can self-attest success without an independent Actions status binding.\nThis compounds Required Check rename or workflow-change scenarios because the attestation records a workflow string rather than deriving the check identity from GitHub.\nIt should not block M1 shadow by itself, but it must not be promoted to authoritative evidence without independent binding.",
+      "recommended_fix": "Derive conclusion, workflow name, job id, and check suite/run identity from GitHub Actions context or the GitHub API, not caller-provided CLI args.\nRequire job_id to be known and verify the referenced run_attempt/job conclusion before writing or validating success attestations.\nTreat self-reported attestations as EXTRACTED advisory artifacts unless an independent status binding is present.",
+      "required_tests": [
+        "NOT_RUN: attestation validate must reject success payloads whose run/job conclusion cannot be independently verified.",
+        "NOT_RUN: --job-id omitted must fail for success attestations if the attestation is used as required evidence.",
+        "NOT_RUN: workflow/check-name mismatch must fail attestation validation."
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A4-005",
+      "round": 2,
+      "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+      "category": "cache_pollution_zero_write",
+      "title": "Full governance test workflow still lacks cache redirection or disablement for checkout-local Python/pytest caches",
+      "severity": "P2",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-005:evidence:1",
+          "result": "round1_consolidated.json R1-C005 records this as a P2 conditional issue."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-005:evidence:2",
+          "result": ".github/workflows/project-governance.yml:48-58 runs pytest or unittest in the checkout without PYTHONDONTWRITEBYTECODE, PYTHONPYCACHEPREFIX, PYTEST_ADDOPTS=-p no:cacheprovider, or an equivalent cache policy."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-005:evidence:3",
+          "result": "tests/governance/test_project_governance_validator.py:114 sets PYTHONPYCACHEPREFIX only inside the local helper used by subprocess tests; the workflow step does not inherit an equivalent setting."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-005:evidence:4",
+          "result": "Read-only Git metadata check observed clean tracked status, but ignored checkout-local caches already exist: git status --short --ignored scripts/__pycache__ tests/governance/__pycache__ reported '!! scripts/__pycache__/' and '!! tests/governance/__pycache__/'."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-005:evidence:5",
+          "result": "git ls-files scripts/__pycache__ tests/governance/__pycache__ returned no tracked files, so this is checkout pollution rather than tracked-file modification."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN due RUN_MODE=READ_ONLY and the no-write constraint.",
+        "Read-only metadata reproduction already run: git status --short --ignored scripts/__pycache__ tests/governance/__pycache__ showed ignored cache directories in the checkout.",
+        "Executable reproduction should run the full workflow test step in a clean checkout, then inspect git status --short --ignored for __pycache__ and .pytest_cache."
+      ],
+      "impact": "The READ_ONLY/CI zero-write claim remains weaker than the candidate invariant because ignored caches can be produced inside the checkout and hidden from ordinary git status.\nCache residue can contaminate later local or CI probes, especially when tests are used as evidence for zero-write behavior.\nTracked files are not currently modified by this issue, so the merge-blocking effect is conditional on whether M1 claims zero checkout writes rather than zero tracked writes.",
+      "recommended_fix": "Set PYTHONDONTWRITEBYTECODE=1 and PYTHONPYCACHEPREFIX=${RUNNER_TEMP}/pycache for all Python workflow steps.\nDisable pytest cache with -p no:cacheprovider or redirect pytest cache outside the checkout.\nAdd a pre/post ignored-status check for the full governance test step, not just tracked git status.",
+      "required_tests": [
+        "NOT_RUN: CE-005 clean checkout full governance tests must leave no __pycache__ or .pytest_cache under the checkout.",
+        "NOT_RUN: pre/post git status --short --ignored must remain free of checkout-local cache additions.",
+        "NOT_RUN: local helper and workflow step must share the same cache redirection policy."
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A4-006",
+      "round": 2,
+      "agent_role": "M1 Round2 Agent 4: security and adversarial code review",
+      "category": "temporary_evidence_race",
+      "title": "Full governance evidence and attestation runs can still be canceled by same-ref fast runs",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-006:evidence:1",
+          "result": "round1_consolidated.json R1-C006 records workflow-level cancellation as a P2 conditional issue."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-006:evidence:2",
+          "result": ".github/workflows/project-governance.yml:33-35 uses one concurrency group, project-governance-${{ github.ref }}, with cancel-in-progress: true for all events and scopes."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-006:evidence:3",
+          "result": ".github/workflows/project-governance.yml:48-49 runs full governance validator tests only for schedule or workflow_dispatch all."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-006:evidence:4",
+          "result": ".github/workflows/project-governance.yml:73-82 runs changed-only governance CI for pull_request, push, or workflow_dispatch changed-only."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A4-006:evidence:5",
+          "result": ".github/workflows/project-governance.yml:114-139 writes and uploads CI attestation only for successful workflow_dispatch all, so cancellation before these steps removes the evidence artifact."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN due RUN_MODE=READ_ONLY and no live GitHub workflow triggering.",
+        "Static reproduction path: a workflow_dispatch scope=all run and a later same-ref changed-only/push run share the same project-governance-${{ github.ref }} concurrency key; cancel-in-progress=true cancels the older run regardless of scope."
+      ],
+      "impact": "Scheduled/manual all-scope evidence can be preempted by an ordinary same-ref fast run, leaving no attestation or generated-views artifact.\nThis creates a race in evidence availability and can make a later summary look current while full evidence was canceled.\nIt does not expand permissions, but it weakens the evidence chain used to compensate for changed-only fast gates.",
+      "recommended_fix": "Include event and scope in the concurrency group, or disable cancel-in-progress for schedule and workflow_dispatch all.\nKeep fast changed-only runs from canceling full evidence runs.\nAdd a static workflow test proving all-scope evidence cannot share a cancellation group with fast PR/push gates.",
+      "required_tests": [
+        "NOT_RUN: CE-006 workflow_dispatch scope=all followed by same-ref changed-only must not cancel full evidence.",
+        "NOT_RUN: workflow config test must prove distinct concurrency groups for full evidence and fast gates.",
+        "NOT_RUN: artifact/attestation upload remains reachable for full all-scope runs."
+      ],
+      "status": "VERIFIED"
+    }
+  ],
+  "summary": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 4,
+    "P3": 0,
+    "merge_blocking": true,
+    "sanitized_from": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/round2/agent4.json"
+  }
+}

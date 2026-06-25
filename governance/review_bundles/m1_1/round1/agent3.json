@@ -1,0 +1,204 @@
+{
+  "review_id": "M1-20260625-R1-A3",
+  "round": 1,
+  "agent_role": "Agent 3 - 人类界面、CLI 反馈、信息架构与功能连接审查",
+  "baseline_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [
+    "原始报告为只读审查输出；未运行项保留在 finding.required_tests。"
+  ],
+  "findings": [
+    {
+      "finding_id": "M1-R1-A3-001",
+      "round": 1,
+      "agent_role": "Agent 3 - 人类界面、CLI 反馈、信息架构与功能连接审查",
+      "category": "command_connection",
+      "title": "changed-only CI 的项目选择器与底层 validator 不一致",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": true,
+      "evidence": [
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:846-853",
+          "result": "run_changed_only_ci 先构建 baseline 和 changed_scope，然后调用 governance.main([\"--changed-only\", \"--enforce-sync\", \"--semantic\", ...]) 作为真实 validator。"
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:974-990",
+          "result": "lean_governance 的 build_changed_scope 会把 root_governance_changed 的根治理变更扩展到所有注册项目，扣除 configured exclusions。"
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/validate_project_governance.py:1488-1491",
+          "result": "validate_project_governance 的 changed-only 只按 project_matches_changed 选择项目，没有 root governance 变更分支。"
+        },
+        {
+          "kind": "command",
+          "reference": "read-only monkeypatch reproduction",
+          "result": "lean_selected 为 ['Alpha', 'EVA_OS', 'FIFA', 'OpMe_System', 'OpenAIDatabase', 'PFI_BIG_DATA_SIMULATOR', 'Serenity-Alipay', 'whkmSalary']，lean_root_changed=True，但 validator_selected=[]。",
+          "command": "python -B -c \"from types import SimpleNamespace; from pathlib import Path; import sys; sys.path.insert(0, 'scripts'); import lean_governance as lean; import validate_project_governance as validator; changed=['scripts/lean_governance.py']; validator.git_changed_files=lambda base_ref=None: changed; lean.governance.git_changed_files=validator.git_changed_files; scope=lean.build_changed_scope('BASE', Path('.'), Path('governance/projects.yaml')); config=validator.load_yaml(Path('governance/projects.yaml')); selected=validator.select_projects(config, SimpleNamespace(project=None, changed_only=True, base_ref='BASE')); print({'lean_selected': [p['project_id'] for p in scope['selected_projects']], 'lean_root_changed': scope['root_governance_changed'], 'validator_selected': [p['project_id'] for p in selected]})\""
+        },
+        {
+          "kind": "workflow",
+          "reference": ".github/workflows/project-governance.yml:73-82",
+          "result": "PR、push 和 manual changed-only 都运行 python3 scripts/lean_governance.py ci --changed-only，因此该不一致位于必经 fast gate。"
+        }
+      ],
+      "reproduction": [
+        "在只读 Python 进程中 monkeypatch git_changed_files 返回 ['scripts/lean_governance.py']，分别调用 lean_governance.build_changed_scope 和 validate_project_governance.select_projects。",
+        "观察 lean_governance 认为根治理变更影响 8 个项目，但底层 validator changed-only 选择 0 个项目。"
+      ],
+      "impact": "根治理文件变更时，CLI 摘要、check-render 和 budget telemetry 会显示一组 selected_projects，但真实 validator 的 projects checked 可能为 none。这样会把根契约变更对项目治理的影响漏检，也会误导 PR 审查者以为项目范围已经被验证。",
+      "recommended_fix": "统一 changed-only 选择逻辑：让 validate_project_governance 使用与 lean_governance 相同的 root_governance_changed/exclusions 规则，或由 lean_governance 将已计算的项目选择显式传给 validator。输出中的 selected_projects 和 projects checked 必须来自同一个选择结果，不要新增平行 current truth。",
+      "required_tests": [
+        "新增根治理文件变更的 run_changed_only_ci 单元测试，断言 validator 实际检查的项目与 changed_scope.selected_projects 一致。",
+        "新增 workflow/CLI 层回归测试，覆盖 scripts/lean_governance.py 变更时输出不允许出现 selected_project_count>0 但 validator projects checked none。"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A3-002",
+      "round": 1,
+      "agent_role": "Agent 3 - 人类界面、CLI 反馈、信息架构与功能连接审查",
+      "category": "cli_feedback",
+      "title": "render 命令的未知项目错误泄露 traceback",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:237-241",
+          "result": "registered_project 找不到 selector 时 raise ValueError('Unknown project: ...')。"
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:1051-1059",
+          "result": "render CLI 分支直接调用 render_registered_project 并打印 JSON，没有捕获 ValueError 或转成 argparse/JSON 错误。"
+        },
+        {
+          "kind": "command",
+          "reference": "render unknown project",
+          "result": "输出 Python traceback，末尾为 ValueError: Unknown project: DOES_NOT_EXIST。",
+          "command": "python -B scripts/lean_governance.py render --project DOES_NOT_EXIST"
+        },
+        {
+          "kind": "test",
+          "reference": "tests/governance/test_project_governance_validator.py:3613-3616,10795-10829",
+          "result": "测试覆盖 validate 未知项目的友好错误，也覆盖 render_project_files 内部未知 view 的 ValueError，但没有覆盖 render/check-render CLI 未知项目的用户反馈。"
+        }
+      ],
+      "reproduction": [
+        "运行 python -B scripts/lean_governance.py render --project DOES_NOT_EXIST。",
+        "观察命令首屏不是可操作错误摘要，而是完整 Python traceback。"
+      ],
+      "impact": "人类或 Agent 输错项目名时，render/check-render 入口没有列出可用 project_id、不会指出应改用 validate/changed-scope 还是修正 selector，CLI 反馈与 validate --project 的结构化错误不一致。",
+      "recommended_fix": "在 lean_governance.py 的 render 和 check-render CLI 边界捕获 ValueError，返回一致的非零退出和紧凑错误对象或 parser.error 文案；文案应包含未知 selector、可用项目列表或查看 changed-scope 的下一动作。",
+      "required_tests": [
+        "新增 lean_governance.py render --project __missing_project__ 的 CLI 回归测试，断言无 traceback、非零退出且包含 Unknown project 和下一动作。",
+        "同样覆盖 check-render --project __missing_project__。"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A3-003",
+      "round": 1,
+      "agent_role": "Agent 3 - 人类界面、CLI 反馈、信息架构与功能连接审查",
+      "category": "information_architecture",
+      "title": "README 的 Governance Entry 隐藏最高优先级 AGENTS 入口",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "doc",
+          "reference": "README.md:5-8",
+          "result": "Governance Entry 只列出 docs/governance/STANDARD.md 和三个人类入口文件，没有指向 AGENTS.md。"
+        },
+        {
+          "kind": "doc",
+          "reference": "AGENTS.md:3-6",
+          "result": "AGENTS.md 声明根 contract 适用于整个仓库和所有注册项目，嵌套 AGENTS 不能削弱它。"
+        },
+        {
+          "kind": "doc",
+          "reference": "docs/governance/STANDARD.md:7-11",
+          "result": "STANDARD 明确 Root AGENTS.md 是 permanent execution contract，standard 只是其后的机器规则、字段契约和 gate。"
+        },
+        {
+          "kind": "test",
+          "reference": "tests/governance/test_project_governance_validator.py:10465-10471",
+          "result": "现有测试要求 Governance Entry 包含 STANDARD 和三个人类入口，同时明确 forbidden 包含 AGENTS.md，把隐藏 Agent 入口固化为契约。"
+        }
+      ],
+      "reproduction": [
+        "打开 README.md 的 ## Governance Entry。",
+        "按该入口无法发现仓库最高优先级执行契约 AGENTS.md；相反，测试还禁止在该入口出现 AGENTS.md。"
+      ],
+      "impact": "从 GitHub 或 README 首屏进入的维护者/Agent 会先看到标准和人类文件，却看不到真正的执行入口、run mode、扫描边界和证据规则；重要事实被埋到非首屏文件中，增加误用平行入口的概率。",
+      "recommended_fix": "把 README Governance Entry 调整为单一路径层级：AGENTS.md = 执行契约入口，docs/governance/STANDARD.md = 机器/字段规则，三个人类入口 = owner-readable project views。不要把 governance/projects.yaml 或 dashboards 作为 current truth 入口。同步更新测试，只移除对 AGENTS.md 的 forbidden 断言并改为 required。",
+      "required_tests": [
+        "更新 test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard，使 Governance Entry 必须包含 AGENTS.md 且仍禁止 governance/projects.yaml、GOVERNANCE_DASHBOARD.md、OWNER_PORTFOLIO.md。",
+        "增加 README 首屏顺序测试，断言 AGENTS.md 位于 STANDARD.md 前或同一入口层级。"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A3-004",
+      "round": 1,
+      "agent_role": "Agent 3 - 人类界面、CLI 反馈、信息架构与功能连接审查",
+      "category": "truth_source_ux",
+      "title": "README 内嵌 Current Governance Snapshot 形成易过期真相源",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "doc",
+          "reference": "README.md:53-58",
+          "result": "README 包含 ## Current Governance Snapshot、Other8 remediation baseline、roadmap_kind 和本地 .git/codex-review 路径。"
+        },
+        {
+          "kind": "command",
+          "reference": "actual HEAD",
+          "result": "实际 HEAD 是 3944f62daff6287eeb2a7f086dd1594b78b9f311，而 README snapshot 写的是 main@e25be8d65e67fe89af18e18e1562191a60066449。",
+          "command": "git rev-parse HEAD"
+        },
+        {
+          "kind": "doc",
+          "reference": "docs/governance/STANDARD.md:218-227",
+          "result": "标准规定 PR/main 使用 changed-scope fast gate；scheduled/manual all 才执行 full information quality、generated-view determinism 和 attestation upload。"
+        },
+        {
+          "kind": "doc",
+          "reference": "docs/governance/STANDARD.md:343-358",
+          "result": "禁止把 generated dashboards/status pages 当作 editable source facts，并要求 read-only/CI/Hook 写 nothing。"
+        }
+      ],
+      "reproduction": [
+        "打开 README.md 的 ## Current Governance Snapshot。",
+        "与 git rev-parse HEAD 对比，看到 README 中 current/baseline 事实停留在旧 commit，并指向 clone 不会携带的本地 .git/codex-review 证据路径。"
+      ],
+      "impact": "README 作为 GitHub 高流量入口开始承载运行快照和本地证据引用，会变成新的平行 current truth；读者可能追逐旧 commit 或本地路径，无法判断当前治理状态应信 README、run manifest、CI artifact 还是项目 canonical facts。",
+      "recommended_fix": "从 README 移除 Current Governance Snapshot，或把它降级为明确的历史示例并移出首屏；真实快照应保留在 run manifests、CI attestation/artifacts 或项目 canonical facts 中，README 只保留入口和只读检查命令。不要新增新的平行 current truth。",
+      "required_tests": [
+        "新增 README 契约测试，禁止 ## Current Governance Snapshot、.git/codex-review 和裸运行快照 commit 作为 README current facts。",
+        "更新 render_readme 测试，确保生成 README 只包含治理入口、项目列表和 required checks，不内嵌本地证据快照。"
+      ],
+      "status": "VERIFIED"
+    }
+  ],
+  "summary": {
+    "P0": 0,
+    "P1": 1,
+    "P2": 3,
+    "P3": 0,
+    "merge_blocking": true,
+    "sanitized_from": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/round1/agent3.json"
+  }
+}

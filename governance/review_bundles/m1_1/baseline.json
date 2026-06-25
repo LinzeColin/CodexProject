@@ -1,0 +1,45 @@
+{
+  "run_id": "m1-20260625-s1pa-3944f62d",
+  "task_id": "S1PAT01",
+  "numeric_sequence": "1.1.1",
+  "repository": "LinzeColin/CodexProject",
+  "branch": "main",
+  "head_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "commit_title": "Repair ADP V7.2 Email V1 pointers",
+  "commit_time": "2026-06-25T19:26:41+10:00",
+  "status_short": "",
+  "observed_pack_baseline_sha": "2d2e6eb9401dceb127f9f1f2041bcce57564d5c6",
+  "observed_pack_baseline_status": "STALE_REBOUND_TO_ACTUAL_HEAD",
+  "drift_since_pack_baseline": {
+    "commit_count": 33,
+    "path_count": 137,
+    "touches_project_business_or_governance_dirs": true,
+    "note": "启动前主线已变化；S1/S2只记录，不把这些变更计入M1本轮写入。"
+  },
+  "read_files": [
+    "AGENTS.md",
+    "docs/governance/STANDARD.md",
+    "governance/projects.yaml",
+    "C:/Users/linze/Documents/Codex/2026-06-23/xian/work/m1_taskpack/CodexProject_M1_Governance_Acceleration_TaskPack_v1/01_BASELINE_AND_SCOPE.md",
+    "C:/Users/linze/Documents/Codex/2026-06-23/xian/work/m1_taskpack/CodexProject_M1_Governance_Acceleration_TaskPack_v1/roadmap/ROADMAP.md"
+  ],
+  "write_scope_tracked": [],
+  "evidence_dir": "C:/Users/linze/Documents/Codex/2026-06-23/xian/work/CodexProject/.git/codex-review/m1/m1-20260625-s1pa-3944f62d",
+  "taskpack_path": "C:/Users/linze/Documents/Codex/2026-06-23/xian/work/m1_taskpack/CodexProject_M1_Governance_Acceleration_TaskPack_v1",
+  "taskpack_validation": {
+    "ok": true,
+    "errors": [],
+    "stages": 5,
+    "phases": 15,
+    "tasks": 40,
+    "hours": 60,
+    "rounded_pct_sum": 99.9999,
+    "round1_agents": 3,
+    "round2_agents": 3
+  },
+  "stop_conditions": {
+    "unable_to_bind_head": false,
+    "tracked_write_performed": false,
+    "missing_required_start_files": false
+  }
+}
