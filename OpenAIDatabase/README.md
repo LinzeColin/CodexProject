@@ -495,6 +495,32 @@ apps/memory-atlas/
 profile is high weight, important mid/long-term is medium weight, and general
 short-term is low weight. SQLite is a derived read index.
 
+## S5PBT02 Structure Boundary
+
+OpenAIDatabase now treats app, skill, context, and private export layers as
+separate defaults:
+
+- App layer: `apps/memory-atlas/` is the Memory Atlas UI/runtime. It consumes
+  `data/derived/visualization/memory_atlas.json` and redacted derived context
+  outputs only.
+- Skill layer: `skills/openai-memory-analysis/` contains reusable analysis
+  tooling and must not become the default place for private exports.
+- Context layer: `context/`, `config/context_sources/`, and
+  `data/derived/agent_context/` provide routeable context packs. Agents should
+  use `scripts/route_agent_resources.py` and repository-relative entries.
+- Private export layer: raw OpenAI exports, private imports, cookies, sessions,
+  and plaintext secrets are external-first. Local copies must be encrypted,
+  ignored, or kept under ignored paths such as `data/raw/`,
+  `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
+  `exports/private/`, and `data/private/`.
+
+S5PBT02 does not move tracked personal-memory evidence. It binds the current
+paths to Review9 Wave 2 checksum evidence and keeps private values out of the
+ordinary development loop.
+
+Local absolute paths may appear only as historical examples or test fixtures;
+they are not default entry points for agents, app builds, or CI.
+
 `data/derived/profile/CORE_PROFILE.md` is the quickest personalization entry
 for future agents. It is generated from active memory plus
 `data/memory/curation/core_profile_review.json`, which records manual review
