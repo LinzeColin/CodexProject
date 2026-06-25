@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 97
-- formula_count: 99
-- parameter_count: 801
+- model_count: 98
+- formula_count: 100
+- parameter_count: 816
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -881,3 +881,15 @@ Uncovered planned scenarios:
 - `MOD-ADP-096` / `FORM-ADP-098` define local lease fencing, state concurrency, transactional outbox, SMTP accept crash-window, and M4 watermark evidence for S2PMT03.
 - Passing S2PMT03 local validation requires row_version compare-and-swap, unexpired foreign lease blocking, fencing-token stale writer rejection, state-history consistency, idempotent outbox Message-ID by content revision, SMTP accept crash-window blocking without durable provider refs, cycle-scoped M4 watermark readiness/degradation, exactly_once_claimed false, and all production side-effect flags false.
 - S2PMT03 local evidence does not send SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, or claim integrated production acceptance.
+
+## S2PMT04 Lifecycle And Cache Cleanup
+
+- `MOD-ADP-097` / `FORM-ADP-099` define local lifecycle and cache-cleanup hardening evidence for S2PMT04.
+- Passing S2PMT04 local validation requires disabled automatic wake dry-run, lifecycle drain/checkpoint/cleanup sequence, startup reconciliation, durable shutdown receipt, safe cache cleanup, parseable disabled launchd plist generation, and all production side-effect flags false.
+- S2PMT04 local evidence does not install or enable a scheduler, send SMTP, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, or claim integrated production acceptance.
+
+## S2PMT05 Stress Fault Time And E2E
+
+- `MOD-ADP-098` / `FORM-ADP-100` define local pressure, fault, time, and E2E hardening evidence for S2PMT05.
+- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, backpressure/degradation, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
+- S2PMT05 local evidence does not execute a real 24h wall-clock production soak, install or enable a scheduler, send SMTP, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, close inherited P0/P1 before S2PMT07, or claim integrated production acceptance.

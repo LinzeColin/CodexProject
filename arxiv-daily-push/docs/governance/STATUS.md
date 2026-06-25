@@ -5,7 +5,7 @@
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
 - source_snapshot_hash: `sha256:f8d2c2c5a00d14c85da4346460a8a1839462d6111aea65af51921eb9fa69b606`
-- snapshot_event_time: `2026-06-26T14:20:00+10:00`
+- snapshot_event_time: `2026-06-26T15:20:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PM / S2PMT04_LIFECYCLE_CACHE_LOCAL_ONLY`
-- Models/Formulas/Parameters total: `97 / 99 / 801`
-- Active formulas/parameters: `99 / 784`
-- Machine checked formulas/parameters: `99 / 784`
+- Phase/Gate: `S2PM / S2PMT05_STRESS_E2E_LOCAL_ONLY`
+- Models/Formulas/Parameters total: `98 / 100 / 816`
+- Active formulas/parameters: `100 / 799`
+- Machine checked formulas/parameters: `100 / 799`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT04_LIFECYCLE_CACHE_LOCAL_ONLY`
+- Release gate: `S2PMT05_STRESS_E2E_LOCAL_ONLY`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57`

@@ -5123,3 +5123,56 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md"
+  -
+    model_id: "MOD-ADP-098"
+    name: "S2PMT05 local stress fault time and E2E model"
+    purpose: "Validate local S2PMT05 load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E flow, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-100"
+    parameter_ids:
+      - "PARAM-ADP-802"
+      - "PARAM-ADP-803"
+      - "PARAM-ADP-804"
+      - "PARAM-ADP-805"
+      - "PARAM-ADP-806"
+      - "PARAM-ADP-807"
+      - "PARAM-ADP-808"
+      - "PARAM-ADP-809"
+      - "PARAM-ADP-810"
+      - "PARAM-ADP-811"
+      - "PARAM-ADP-812"
+      - "PARAM-ADP-813"
+      - "PARAM-ADP-814"
+      - "PARAM-ADP-815"
+      - "PARAM-ADP-816"
+    inputs:
+      - "deterministic workload profile"
+      - "local dual scheduler trigger fixture"
+      - "local transactional outbox crash-window fixture"
+      - "fault injection scenario matrix"
+      - "Australia/Sydney DST and clock-skew cases"
+      - "35-day local E2E fixture"
+      - "backpressure queue-depth fixture"
+    outputs:
+      - "load stress spike soak evaluation"
+      - "dual scheduler race evidence"
+      - "SMTP crash-window evidence"
+      - "fault injection matrix"
+      - "DST and clock-skew policy evidence"
+      - "35-day E2E flow evidence"
+      - "backpressure degradation evidence"
+      - "no production side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"

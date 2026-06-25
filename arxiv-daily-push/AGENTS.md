@@ -16,8 +16,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   and alias references; they no longer override V7.2.
 - Every implementation closeout must state the current V7.2 contract, the
   active contextual task, and any legacy alias. Current global Stage2 entry is
-  `S2PMT04` automatic lifecycle and cache cleanup local evidence; next hardening task
-  is `S2PMT05` pressure, fault, time, and E2E validation under V7.2
+  `S2PMT05` pressure, fault, time, and E2E validation local evidence; next hardening task
+  is `S2PMT06` runtime hardening under V7.2
   no-production boundaries. `S2PCT02` (`S2P2T02` legacy alias)
   Science/top-journal metadata-only no-send shadow evidence is completed
   history, not the current task. `S2PCT01`
@@ -42,7 +42,13 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   disabled automatic wake dry-run, drain/checkpoint/cleanup lifecycle,
   startup reconciliation, durable shutdown receipts, whitelist/symlink guarded
   dry-run cache cleanup, parseable launchd plist generation, and no production
-  side effects. None closes inherited P0/P1 blockers until
+  side effects. `S2PMT05` local stress/fault/time/E2E evidence covers
+  deterministic load/stress/spike profiles, accelerated local 24h soak coverage,
+  dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
+  SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock
+  skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E count
+  conservation, backpressure/degradation, deterministic isolation, and no
+  production side effects. None closes inherited P0/P1 blockers until
   independent review.
   `ADP-S1P5T05` completed the Stage 1 local production and migration prep after
   `ARXIV_PRODUCTION_ACCEPTED`.

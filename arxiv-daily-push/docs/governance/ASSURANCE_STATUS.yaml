@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PMT04-LIFECYCLE-CACHE-001"
+as_of_event_id: "EVENT-20260626-ADP-S2PMT05-STRESS-E2E-001"
 source_snapshot_hash: "sha256:f8d2c2c5a00d14c85da4346460a8a1839462d6111aea65af51921eb9fa69b606"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-26T14:20:00+10:00"
+snapshot_event_time: "2026-06-26T15:20:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 784
-    total_active_parameters: 784
-    checked_active_formulas: 99
-    total_active_formulas: 99
+    checked_active_parameters: 799
+    total_active_parameters: 799
+    checked_active_formulas: 100
+    total_active_formulas: 100
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 784
-    total_active_parameters: 784
+    checked_active_parameters: 799
+    total_active_parameters: 799
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT04_LIFECYCLE_CACHE_LOCAL_ONLY"
+  release_gate: "S2PMT05_STRESS_E2E_LOCAL_ONLY"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

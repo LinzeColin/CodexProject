@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 120
-- acceptance_count: 114
+- task_count: 121
+- acceptance_count: 115
 
 ## Delivery Tasks
 
@@ -216,3 +216,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT02 | Atomic storage and recovery | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Local-only atomic artifact writes, manifest hash verification, tamper detection, explicit restore drill, staging cleanup, and no production side effects. |
 | S2PMT03 | Lease fencing and transactional outbox | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local-only row_version CAS, lease/fencing, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window, M4 cycle watermark, and no production side effects. |
 | S2PMT04 | Automatic lifecycle and cache cleanup | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local-only disabled wake dry-run, lifecycle drain/checkpoint/cleanup, startup reconciliation, shutdown receipt, safe cache cleanup, parseable launchd plist, and no production side effects. |
+| S2PMT05 | Pressure fault time and E2E | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local-only load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no production side effects. |
