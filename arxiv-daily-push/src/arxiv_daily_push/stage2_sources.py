@@ -497,6 +497,44 @@ S2PGT03_SOURCE_DOMAIN_BOARD_RULES = {
     },
 }
 S2PGT03_REPORT_FILENAME = "stage2_s2pgt03_source_board_routing_report.json"
+S2PGT04_DELTA_RESONANCE_MODEL_ID = "adp-s2pgt04-delta-resonance-v1"
+S2PGT04_ACCEPTANCE_ID = "ACC-S2PGT04-DELTA-RESONANCE"
+S2PGT04_TASK_ID = "S2PGT04"
+S2PGT04_REQUIRED_DELTA_TYPES = (
+    "new_signal",
+    "changed_signal",
+    "supporting_signal",
+    "refuting_signal",
+    "frontier_shift",
+)
+S2PGT04_REQUIRED_RESONANCE_GROUPS = (
+    "science_engineering",
+    "policy_capital",
+    "risk_counterevidence",
+    "personal_roi",
+)
+S2PGT04_ALLOWED_SUPPORT_STATUSES = ("supported", "refuted", "mixed", "watch")
+S2PGT04_REQUIRED_DELTA_FIELDS = (
+    "delta_id",
+    "source_domain",
+    "source_id",
+    "route_id",
+    "delta_type",
+    "resonance_group",
+    "support_status",
+    "signal_strength",
+    "delta_explanation",
+    "evidence_refs",
+)
+S2PGT04_REQUIRED_GATES = (
+    "upstream_routing_gate",
+    "delta_type_coverage_gate",
+    "support_refute_gate",
+    "resonance_group_gate",
+    "delta_reason_gate",
+    "no_side_effect_gate",
+)
+S2PGT04_REPORT_FILENAME = "stage2_s2pgt04_delta_resonance_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -5257,6 +5295,199 @@ def validate_s2pgt03_source_board_routing_report(report: Mapping[str, Any]) -> l
     return errors
 
 
+def build_s2pgt04_delta_resonance_report(
+    *,
+    generated_at: str,
+    routing_report: Mapping[str, Any],
+    delta_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build private support/refute/frontier delta and resonance evidence."""
+
+    routing_errors = validate_s2pgt03_source_board_routing_report(routing_report)
+    route_index = _s2pgt04_route_index(routing_report.get("routing_records") or [])
+    delta_rows, delta_errors = _s2pgt04_delta_rows(delta_records, route_index)
+    upstream_gate = _s2pgt04_upstream_routing_gate(routing_report, routing_errors)
+    delta_type_gate = _s2pgt04_delta_type_coverage_gate(delta_rows)
+    support_refute_gate = _s2pgt04_support_refute_gate(delta_rows)
+    resonance_group_gate = _s2pgt04_resonance_group_gate(delta_rows)
+    reason_gate = _s2pgt04_delta_reason_gate(delta_rows)
+    side_effect_gate = _s2pgt04_no_side_effect_gate(delta_rows)
+    resonance_state_hash = _s2pgt04_resonance_state_hash(delta_rows)
+    blocking_reasons = [
+        *upstream_gate["blocking_reasons"],
+        *delta_errors,
+        *delta_type_gate["blocking_reasons"],
+        *support_refute_gate["blocking_reasons"],
+        *resonance_group_gate["blocking_reasons"],
+        *reason_gate["blocking_reasons"],
+        *side_effect_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate["status"]
+        == delta_type_gate["status"]
+        == support_refute_gate["status"]
+        == resonance_group_gate["status"]
+        == reason_gate["status"]
+        == side_effect_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PGT04_DELTA_RESONANCE_MODEL_ID,
+        "acceptance_id": S2PGT04_ACCEPTANCE_ID,
+        "task_id": S2PGT04_TASK_ID,
+        "phase": "S2PG",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_s2pgt03_status": routing_report.get("status"),
+        "required_delta_types": list(S2PGT04_REQUIRED_DELTA_TYPES),
+        "delta_types_observed": delta_type_gate["delta_types_observed"],
+        "required_resonance_groups": list(S2PGT04_REQUIRED_RESONANCE_GROUPS),
+        "resonance_groups_observed": resonance_group_gate["resonance_groups_observed"],
+        "allowed_support_statuses": list(S2PGT04_ALLOWED_SUPPORT_STATUSES),
+        "support_statuses_observed": support_refute_gate["support_statuses_observed"],
+        "required_delta_fields": list(S2PGT04_REQUIRED_DELTA_FIELDS),
+        "required_gates": list(S2PGT04_REQUIRED_GATES),
+        "upstream_routing_gate": upstream_gate["status"],
+        "delta_type_coverage_gate": delta_type_gate["status"],
+        "support_refute_gate": support_refute_gate["status"],
+        "resonance_group_gate": resonance_group_gate["status"],
+        "delta_reason_gate": reason_gate["status"],
+        "no_side_effect_gate": side_effect_gate["status"],
+        "delta_count": len(delta_rows),
+        "resonance_links": _s2pgt04_resonance_links(delta_rows),
+        "delta_records": delta_rows,
+        "resonance_state_hash": resonance_state_hash,
+        "schema_migration_required": False,
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "v7_2_contract_files_changed": False,
+        "email_frontstage_changed": False,
+        "s2pgt04_delta_resonance_ready": status == "pass",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pgt04_delta_resonance(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    routing_report: Mapping[str, Any],
+    delta_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PGT04 private delta/resonance evidence without side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pgt04-delta-resonance"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pgt04_delta_resonance_report(
+        generated_at=generated_at,
+        routing_report=routing_report,
+        delta_records=delta_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "delta_resonance_report_path": str(run_dir / "adp-s2pgt04-delta-resonance-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pgt04-delta-resonance-report.json", report)
+        _write_json(state / S2PGT04_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pgt04_delta_resonance_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PGT04_DELTA_RESONANCE_MODEL_ID:
+        errors.append("S2PGT04 model_id must be adp-s2pgt04-delta-resonance-v1")
+    if report.get("task_id") != S2PGT04_TASK_ID:
+        errors.append("S2PGT04 task_id must be S2PGT04")
+    if report.get("acceptance_id") != S2PGT04_ACCEPTANCE_ID:
+        errors.append("S2PGT04 acceptance_id must be ACC-S2PGT04-DELTA-RESONANCE")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PGT04 status must be pass or blocked")
+    for key in (
+        "schema_migration_required",
+        "public_schema_changed",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "production_affected",
+        "real_smtp_sent",
+        "v7_2_contract_files_changed",
+        "email_frontstage_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PGT04 delta resonance")
+    delta_types = set(report.get("delta_types_observed") or [])
+    missing_delta_types = [delta_type for delta_type in S2PGT04_REQUIRED_DELTA_TYPES if delta_type not in delta_types]
+    if missing_delta_types:
+        errors.append("S2PGT04 missing delta types: " + ", ".join(missing_delta_types))
+    groups = set(report.get("resonance_groups_observed") or [])
+    missing_groups = [group for group in S2PGT04_REQUIRED_RESONANCE_GROUPS if group not in groups]
+    if missing_groups:
+        errors.append("S2PGT04 missing resonance groups: " + ", ".join(missing_groups))
+    support_statuses = set(report.get("support_statuses_observed") or [])
+    if "supported" not in support_statuses or "refuted" not in support_statuses:
+        errors.append("S2PGT04 requires both supported and refuted support statuses")
+    deltas = report.get("delta_records")
+    if not isinstance(deltas, list) or not deltas:
+        errors.append("S2PGT04 delta_records must be a non-empty list")
+        deltas = []
+    delta_ids: set[str] = set()
+    for index, delta in enumerate(deltas):
+        if not isinstance(delta, Mapping):
+            errors.append(f"delta_records[{index}] must be an object")
+            continue
+        for field in S2PGT04_REQUIRED_DELTA_FIELDS:
+            if delta.get(field) in (None, "", []):
+                errors.append(f"delta_records[{index}].{field} is required")
+        delta_id = str(delta.get("delta_id") or "")
+        if delta_id in delta_ids:
+            errors.append(f"delta_records[{index}].delta_id must be unique")
+        delta_ids.add(delta_id)
+        if delta.get("delta_type") not in S2PGT04_REQUIRED_DELTA_TYPES:
+            errors.append(f"delta_records[{index}].delta_type is not supported")
+        if delta.get("resonance_group") not in S2PGT04_REQUIRED_RESONANCE_GROUPS:
+            errors.append(f"delta_records[{index}].resonance_group is not supported")
+        if delta.get("support_status") not in S2PGT04_ALLOWED_SUPPORT_STATUSES:
+            errors.append(f"delta_records[{index}].support_status is not supported")
+        strength = delta.get("signal_strength")
+        if not isinstance(strength, (int, float)) or isinstance(strength, bool) or not 0 <= float(strength) <= 1:
+            errors.append(f"delta_records[{index}].signal_strength must be between 0 and 1")
+    if report.get("resonance_state_hash") != _s2pgt04_resonance_state_hash(deltas):
+        errors.append("S2PGT04 resonance_state_hash must match delta_records")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PGT04 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in S2PGT04_REQUIRED_GATES:
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PGT04 report requires {key}=pass")
+        if report.get("s2pgt04_delta_resonance_ready") is not True:
+            errors.append("passing S2PGT04 report requires s2pgt04_delta_resonance_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -8966,6 +9197,173 @@ def _s2pgt03_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str,
 
 def _s2pgt03_routing_state_hash(routes: Sequence[Mapping[str, Any]]) -> str:
     payload = {"routing_records": sorted([dict(route) for route in routes], key=lambda item: str(item.get("route_id") or ""))}
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _s2pgt04_route_index(routes: Sequence[Any]) -> dict[str, Mapping[str, Any]]:
+    index: dict[str, Mapping[str, Any]] = {}
+    for route in routes:
+        if not isinstance(route, Mapping):
+            continue
+        route_id = str(route.get("route_id") or "").strip()
+        if route_id:
+            index[route_id] = route
+    return index
+
+
+def _s2pgt04_delta_rows(
+    records: Sequence[Mapping[str, Any]],
+    route_index: Mapping[str, Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    delta_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"delta_records[{index}] must be an object")
+            continue
+        route_id = str(record.get("route_id") or "").strip()
+        route = route_index.get(route_id)
+        source_domain = str(record.get("source_domain") or "").strip()
+        source_id = str(record.get("source_id") or "").strip()
+        delta_type = str(record.get("delta_type") or "").strip()
+        resonance_group = str(record.get("resonance_group") or "").strip()
+        support_status = str(record.get("support_status") or "").strip()
+        evidence_refs = [str(ref) for ref in (record.get("evidence_refs") or []) if str(ref)]
+        signal_strength, strength_error = _s2pgt04_signal_strength(record.get("signal_strength"))
+        delta_id = str(record.get("delta_id") or f"delta:{route_id}:{delta_type}:{resonance_group}").strip()
+        row = {
+            "delta_id": delta_id,
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "route_id": route_id,
+            "delta_type": delta_type,
+            "resonance_group": resonance_group,
+            "support_status": support_status,
+            "signal_strength": signal_strength,
+            "delta_explanation": str(record.get("delta_explanation") or "").strip(),
+            "evidence_refs": evidence_refs,
+            "route_primary_boards": list((route or {}).get("primary_boards") or []),
+            "route_cross_cutting_boards": list((route or {}).get("cross_cutting_boards") or []),
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "production_affected": record.get("production_affected") is True,
+            "email_frontstage_changed": record.get("email_frontstage_changed") is True,
+        }
+        for field in S2PGT04_REQUIRED_DELTA_FIELDS:
+            if row.get(field) in (None, "", []):
+                errors.append(f"delta_records[{index}].{field} is required")
+        if strength_error:
+            errors.append(f"delta_records[{index}].signal_strength must be between 0 and 1")
+        if delta_id in delta_ids:
+            errors.append(f"delta_records[{index}].delta_id must be unique")
+        delta_ids.add(delta_id)
+        if route_id and route_id not in route_index:
+            errors.append(f"delta_records[{index}].route_id must reference an S2PGT03 route_id")
+        if route:
+            if source_id != route.get("source_id"):
+                errors.append(f"delta_records[{index}].source_id must match route source_id")
+            if source_domain != route.get("source_domain"):
+                errors.append(f"delta_records[{index}].source_domain must match route source_domain")
+        if delta_type and delta_type not in S2PGT04_REQUIRED_DELTA_TYPES:
+            errors.append(f"delta_records[{index}].delta_type is not supported")
+        if resonance_group and resonance_group not in S2PGT04_REQUIRED_RESONANCE_GROUPS:
+            errors.append(f"delta_records[{index}].resonance_group is not supported")
+        if support_status and support_status not in S2PGT04_ALLOWED_SUPPORT_STATUSES:
+            errors.append(f"delta_records[{index}].support_status is not supported")
+        if row["schema_migration_required"]:
+            errors.append(f"delta_records[{index}].schema_migration_required must be false")
+        if row["production_affected"]:
+            errors.append(f"delta_records[{index}].production_affected must be false")
+        if row["email_frontstage_changed"]:
+            errors.append(f"delta_records[{index}].email_frontstage_changed must be false")
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pgt04_signal_strength(value: Any) -> tuple[float | None, bool]:
+    if isinstance(value, bool):
+        return None, True
+    try:
+        strength = float(value)
+    except (TypeError, ValueError):
+        return None, True
+    if not 0 <= strength <= 1:
+        return strength, True
+    return round(strength, 4), False
+
+
+def _s2pgt04_upstream_routing_gate(
+    routing_report: Mapping[str, Any],
+    routing_errors: Sequence[str],
+) -> dict[str, Any]:
+    blocking = [f"S2PGT03: {error}" for error in routing_errors]
+    if routing_report.get("status") != "pass":
+        blocking.append("S2PGT04 requires passing S2PGT03 source-board routing evidence")
+    if routing_report.get("s2pgt03_source_board_routing_ready") is not True:
+        blocking.append("S2PGT04 requires s2pgt03_source_board_routing_ready=true")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt04_delta_type_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("delta_type")) for row in rows if row.get("delta_type")})
+    blocking = [f"S2PGT04 missing delta type {delta_type}" for delta_type in S2PGT04_REQUIRED_DELTA_TYPES if delta_type not in observed]
+    return {"status": "pass" if not blocking else "blocked", "delta_types_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt04_support_refute_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("support_status")) for row in rows if row.get("support_status")})
+    blocking: list[str] = []
+    for required in ("supported", "refuted"):
+        if required not in observed:
+            blocking.append(f"S2PGT04 missing support_status {required}")
+    return {"status": "pass" if not blocking else "blocked", "support_statuses_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt04_resonance_group_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("resonance_group")) for row in rows if row.get("resonance_group")})
+    blocking = [f"S2PGT04 missing resonance group {group}" for group in S2PGT04_REQUIRED_RESONANCE_GROUPS if group not in observed]
+    return {"status": "pass" if not blocking else "blocked", "resonance_groups_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt04_delta_reason_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    if not rows:
+        blocking.append("S2PGT04 requires at least one delta record")
+    for index, row in enumerate(rows):
+        for field in S2PGT04_REQUIRED_DELTA_FIELDS:
+            if row.get(field) in (None, "", []):
+                blocking.append(f"delta_records[{index}].{field} is required")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt04_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for index, row in enumerate(rows):
+        if row.get("schema_migration_required") is not False:
+            blocking.append(f"delta_records[{index}].schema_migration_required must be false")
+        if row.get("production_affected") is not False:
+            blocking.append(f"delta_records[{index}].production_affected must be false")
+        if row.get("email_frontstage_changed") is not False:
+            blocking.append(f"delta_records[{index}].email_frontstage_changed must be false")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt04_resonance_links(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, list[str]] = {}
+    for row in rows:
+        group = str(row.get("resonance_group") or "")
+        delta_id = str(row.get("delta_id") or "")
+        if group and delta_id:
+            grouped.setdefault(group, []).append(delta_id)
+    return [
+        {"resonance_group": group, "delta_ids": sorted(delta_ids), "delta_count": len(delta_ids)}
+        for group, delta_ids in sorted(grouped.items())
+    ]
+
+
+def _s2pgt04_resonance_state_hash(deltas: Sequence[Mapping[str, Any]]) -> str:
+    payload = {"delta_records": sorted([dict(delta) for delta in deltas], key=lambda item: str(item.get("delta_id") or ""))}
     encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 

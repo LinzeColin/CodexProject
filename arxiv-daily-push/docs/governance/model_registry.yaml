@@ -3808,3 +3808,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md"
+  -
+    model_id: "MOD-ADP-073"
+    name: "S2PGT04 Delta resonance"
+    kind: "deterministic private frontier-delta and signal-resonance evidence model"
+    purpose: "Define and validate private support/refute/frontier delta and resonance evidence after S2PGT03 with upstream routing, delta-type, support/refute, resonance-group, explanation, evidence-reference, and no-production/no-schema side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pgt04-delta-resonance-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-075"
+    parameter_ids:
+      - "PARAM-ADP-536"
+      - "PARAM-ADP-537"
+      - "PARAM-ADP-538"
+      - "PARAM-ADP-539"
+      - "PARAM-ADP-540"
+      - "PARAM-ADP-541"
+      - "PARAM-ADP-542"
+      - "PARAM-ADP-543"
+      - "PARAM-ADP-544"
+    inputs:
+      - "passing S2PGT03 source-board routing report"
+      - "support/refute/frontier delta records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "delta resonance report"
+      - "upstream routing gate"
+      - "delta-type coverage gate"
+      - "support/refute gate"
+      - "resonance-group gate"
+      - "delta-reason gate"
+      - "no-side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PGT04-DELTA-RESONANCE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT04_DELTA_RESONANCE.md"
