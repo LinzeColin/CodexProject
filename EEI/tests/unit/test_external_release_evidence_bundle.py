@@ -6,7 +6,9 @@ from pathlib import Path
 import pytest
 
 from scripts.validate_external_release_evidence_bundle import (
+    build_operator_intake_packet,
     build_preflight,
+    validate_operator_intake_packet,
     validate_preflight,
 )
 
@@ -138,3 +140,115 @@ def test_bundle_validation_detects_source_hash_drift(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="external release evidence bundle drift"):
         validate_preflight(payload, **input_paths)
+
+
+def packet_paths(tmp_path: Path, *, ready: bool) -> dict[str, Path]:
+    input_paths = paths(tmp_path, ready=ready)
+    preflight = build_preflight(generated_at="2026-06-24T00:00:00Z", **input_paths)
+    return {
+        **input_paths,
+        "preflight_path": write_json(tmp_path / "preflight.json", preflight),
+        "a202_intake_template_path": write_json(
+            tmp_path / "a202_template.json",
+            {"bundle_status": "TEMPLATE_ONLY", "template": "a202"},
+        ),
+        "brand_intake_template_path": write_json(
+            tmp_path / "brand_template.json",
+            {"bundle_status": "TEMPLATE_ONLY", "template": "brand"},
+        ),
+        "gold_intake_template_path": write_json(
+            tmp_path / "gold_template.json",
+            {"bundle_status": "TEMPLATE_ONLY", "template": "gold"},
+        ),
+    }
+
+
+def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) -> None:
+    input_paths = packet_paths(tmp_path, ready=False)
+
+    payload = build_operator_intake_packet(
+        generated_at="2026-06-24T00:00:00Z",
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+    )
+
+    assert payload["task_id"] == "T1303"
+    assert payload["packet_status"] == "WAITING_FOR_OPERATOR_INPUTS"
+    assert payload["release_gate_closed_by_operator_packet"] is False
+    assert payload["missing_input_ids"] == [
+        "A202_source_license_passage_owner_legal_release",
+        "A210_brand_legal_market_clearance_or_risk_waiver",
+        "A026_entity_resolution_production_gold_set",
+        "A027_relationship_extraction_production_gold_set",
+        "A209_24h_operator_soak_finalization",
+    ]
+    assert all(
+        item["template_or_partial_evidence_counts_as_clearance"] is False
+        for item in payload["required_operator_inputs"]
+    )
+    validate_operator_intake_packet(
+        payload,
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+    )
+
+
+def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
+    tmp_path: Path,
+) -> None:
+    input_paths = packet_paths(tmp_path, ready=True)
+
+    payload = build_operator_intake_packet(
+        generated_at="2026-06-24T00:00:00Z",
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+    )
+
+    assert payload["packet_status"] == "READY_FOR_RELEASE_MANAGER_PREFLIGHT"
+    assert payload["missing_input_ids"] == []
+    assert payload["ready_input_ids"] == payload["operator_submission_order"]
+    validate_operator_intake_packet(
+        payload,
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+    )
+
+
+def test_operator_intake_packet_validation_detects_template_hash_drift(
+    tmp_path: Path,
+) -> None:
+    input_paths = packet_paths(tmp_path, ready=False)
+    payload = build_operator_intake_packet(
+        generated_at="2026-06-24T00:00:00Z",
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+    )
+    write_json(
+        input_paths["gold_intake_template_path"],
+        {"bundle_status": "TEMPLATE_ONLY", "template": "changed"},
+    )
+
+    with pytest.raises(ValueError, match="external release operator intake packet drift"):
+        validate_operator_intake_packet(
+            payload,
+            preflight_path=input_paths["preflight_path"],
+            a202_intake_template_path=input_paths["a202_intake_template_path"],
+            brand_intake_template_path=input_paths["brand_intake_template_path"],
+            gold_intake_template_path=input_paths["gold_intake_template_path"],
+            operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        )

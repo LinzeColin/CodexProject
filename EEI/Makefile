@@ -125,9 +125,11 @@ validate-a202-signed-intake-preflight:
 
 generate-external-release-evidence-bundle:
 	$(UV) run python scripts/validate_external_release_evidence_bundle.py generate
+	$(UV) run python scripts/validate_external_release_evidence_bundle.py generate-packet
 
 validate-external-release-evidence-bundle:
 	$(UV) run python scripts/validate_external_release_evidence_bundle.py validate
+	$(UV) run python scripts/validate_external_release_evidence_bundle.py validate-packet
 
 generate-release-manager-activation-artifact:
 	$(UV) run python scripts/validate_release_manager_activation.py generate

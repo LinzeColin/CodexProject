@@ -2,6 +2,28 @@
 
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
+## 2026-06-25 - T1303/A204-A205 external release operator intake packet
+
+Status: FOCUSED LOCAL VALIDATION PASS; GOVERNANCE/RELEASE ARTIFACT VALIDATION AND CI PENDING
+
+Completed:
+
+- Added `artifacts/tests/a205/t1303_external_release_operator_intake_packet.json` as the operator-facing checklist for A202 source/license/owner/legal release, A210 brand clearance, A026/A027 production gold labels and A209 24h soak finalization.
+- Added validator and Makefile coverage so the packet is generated and validated with the external release-evidence bundle.
+- Added `PARAM-087` governance binding for the packet schema version.
+
+Verification status:
+
+- Focused ruff PASS for the validator and tests.
+- `tests/unit/test_external_release_evidence_bundle.py` PASS `6/6`.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle` PASS, including packet generation and validation.
+
+Still blocked:
+
+- The packet reports `WAITING_FOR_OPERATOR_INPUTS`, `release_gate_closed_by_operator_packet=false` and no release clearance.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+- A209 remains background `IN_PROGRESS` until 24h evidence reaches `288/288` and release-ready validation passes.
+
 ## 2026-06-25 - T1302/A203 E2E CI repair, release still blocked
 
 Status: LOCAL VALIDATION PASS; CI PENDING

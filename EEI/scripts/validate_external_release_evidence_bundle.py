@@ -18,11 +18,18 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 SCHEMA_VERSION = "eei-external-release-evidence-bundle-preflight-v1"
+PACKET_SCHEMA_VERSION = "eei-external-release-operator-intake-packet-v1"
 DEFAULT_RELEASE_DECISION_CONTRACT = (
     ROOT / "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
 )
+DEFAULT_A202_INTAKE_TEMPLATE = (
+    ROOT / "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json"
+)
 DEFAULT_BRAND_PREFLIGHT = (
     ROOT / "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json"
+)
+DEFAULT_BRAND_INTAKE_TEMPLATE = (
+    ROOT / "artifacts/tests/a210/t1309_brand_clearance_intake_template.json"
 )
 DEFAULT_ENTITY_GOLD_EVALUATION = (
     ROOT / "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
@@ -30,10 +37,16 @@ DEFAULT_ENTITY_GOLD_EVALUATION = (
 DEFAULT_RELATIONSHIP_GOLD_EVALUATION = (
     ROOT / "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
 )
+DEFAULT_GOLD_INTAKE_TEMPLATE = (
+    ROOT / "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json"
+)
 DEFAULT_OPERATOR_SOAK_FINALIZATION = (
     ROOT / "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json"
 )
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json"
+DEFAULT_PACKET_OUTPUT = (
+    ROOT / "artifacts/tests/a205/t1303_external_release_operator_intake_packet.json"
+)
 
 REQUIRED_TASK_IDS = ["T1301", "T1303", "T1307", "T1309", "T904"]
 REQUIRED_ACCEPTANCE_IDS = ["A202", "A204", "A205", "A209", "A210", "A026", "A027"]
@@ -79,6 +92,10 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def source_ref(path: Path) -> dict[str, str]:
+    return {"path": display_path(path), "sha256": sha256_file(path)}
 
 
 def release_decision_summary(payload: dict[str, Any]) -> dict[str, Any]:
@@ -310,6 +327,206 @@ def operator_next_actions(ready: bool) -> list[str]:
     ]
 
 
+def intake_item(
+    *,
+    input_id: str,
+    acceptance_id: str,
+    label: str,
+    required_source: dict[str, str],
+    validation_command: str,
+    completion_criteria: list[str],
+    missing_inputs: list[dict[str, str]],
+) -> dict[str, Any]:
+    missing_match = next(
+        (row for row in missing_inputs if row.get("input_id") == input_id),
+        None,
+    )
+    return {
+        "input_id": input_id,
+        "acceptance_id": acceptance_id,
+        "label": label,
+        "current_status": "MISSING_OR_BLOCKED" if missing_match else "READY_FOR_PREFLIGHT",
+        "blocking_reason": missing_match.get("reason") if missing_match else "",
+        "required_source": required_source,
+        "validation_command": validation_command,
+        "completion_criteria": completion_criteria,
+        "template_or_partial_evidence_counts_as_clearance": False,
+    }
+
+
+def build_operator_intake_packet(
+    *,
+    preflight_path: Path = DEFAULT_OUTPUT,
+    a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
+    gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    preflight = read_json(preflight_path)
+    missing = preflight.get("missing_external_inputs")
+    if not isinstance(missing, list):
+        raise ValueError("external release operator intake packet requires missing_external_inputs")
+    gate_statuses = preflight.get("gate_statuses")
+    if not isinstance(gate_statuses, dict):
+        raise ValueError("external release operator intake packet requires gate_statuses")
+
+    required_inputs = [
+        intake_item(
+            input_id="A202_source_license_passage_owner_legal_release",
+            acceptance_id="A202",
+            label="A202 signed source/license/passage/owner/legal release decision",
+            required_source=source_ref(a202_intake_template_path),
+            validation_command=(
+                "make generate-a202-signed-intake-preflight "
+                "validate-a202-signed-intake-preflight"
+            ),
+            completion_criteria=[
+                "source-license reviews cover every required Golden Vertical source anchor",
+                "passage-level relationship reviews cover every Golden Vertical "
+                "relationship candidate",
+                "production owner signoffs cover every candidate without duplicates or unknowns",
+                "legal release clearance is signed and hash-bound",
+            ],
+            missing_inputs=missing,
+        ),
+        intake_item(
+            input_id="A210_brand_legal_market_clearance_or_risk_waiver",
+            acceptance_id="A210",
+            label="A210 formal brand legal/market clearance or signed risk waiver",
+            required_source=source_ref(brand_intake_template_path),
+            validation_command="make generate-brand-clearance-artifact validate-brand-clearance",
+            completion_criteria=[
+                "every required brand surface and jurisdiction is reviewed",
+                "formal clearance or risk waiver has accepted signed status",
+                "public launch decision scope is explicit",
+            ],
+            missing_inputs=missing,
+        ),
+        intake_item(
+            input_id="A026_entity_resolution_production_gold_set",
+            acceptance_id="A026",
+            label="A026 production entity-resolution gold labels",
+            required_source=source_ref(gold_intake_template_path),
+            validation_command=(
+                "make generate-gold-quality-evaluation-artifacts "
+                "validate-gold-quality-evaluation"
+            ),
+            completion_criteria=[
+                "at least 50 operator-supplied non-fixture entity-resolution cases",
+                "precision is at least 95%",
+                "source-license and passage-review references are present",
+            ],
+            missing_inputs=missing,
+        ),
+        intake_item(
+            input_id="A027_relationship_extraction_production_gold_set",
+            acceptance_id="A027",
+            label="A027 production relationship-extraction gold labels",
+            required_source=source_ref(gold_intake_template_path),
+            validation_command=(
+                "make generate-gold-quality-evaluation-artifacts "
+                "validate-gold-quality-evaluation"
+            ),
+            completion_criteria=[
+                "at least 100 operator-supplied non-fixture relationship cases",
+                "precision is at least 90%",
+                "source-license and passage-review references are present",
+            ],
+            missing_inputs=missing,
+        ),
+        intake_item(
+            input_id="A209_24h_operator_soak_finalization",
+            acceptance_id="A209",
+            label="A209 24h operator soak finalization evidence",
+            required_source=source_ref(operator_soak_finalization_path),
+            validation_command=(
+                "make generate-operator-soak-finalization-preflight "
+                "validate-operator-soak-finalization-preflight"
+            ),
+            completion_criteria=[
+                "288/288 five-minute windows pass",
+                "0 failed windows",
+                "operator soak evidence validation reports release-ready status",
+                "downstream release-gate refresh is explicitly allowed by finalization preflight",
+            ],
+            missing_inputs=missing,
+        ),
+    ]
+
+    ready_inputs = [
+        item["input_id"]
+        for item in required_inputs
+        if item["current_status"] == "READY_FOR_PREFLIGHT"
+    ]
+    missing_inputs = [
+        item["input_id"]
+        for item in required_inputs
+        if item["current_status"] != "READY_FOR_PREFLIGHT"
+    ]
+    return {
+        "schema_version": PACKET_SCHEMA_VERSION,
+        "artifact_id": "t1303-external-release-operator-intake-packet",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T1303",
+        "task_ids": REQUIRED_TASK_IDS,
+        "acceptance_ids": REQUIRED_ACCEPTANCE_IDS,
+        "packet_status": "READY_FOR_RELEASE_MANAGER_PREFLIGHT"
+        if not missing_inputs
+        else "WAITING_FOR_OPERATOR_INPUTS",
+        "external_release_evidence_ready": preflight.get("external_release_evidence_ready"),
+        "release_manager_preflight_refresh_allowed": preflight.get(
+            "release_manager_preflight_refresh_allowed"
+        ),
+        "mvp_release_gate_refresh_allowed": preflight.get("mvp_release_gate_refresh_allowed"),
+        "release_gate_closed_by_operator_packet": False,
+        "source_files": {
+            "external_release_evidence_bundle_preflight": source_ref(preflight_path),
+            "a202_release_decision_intake_template": source_ref(a202_intake_template_path),
+            "a210_brand_clearance_intake_template": source_ref(brand_intake_template_path),
+            "a026_a027_gold_label_intake_template": source_ref(gold_intake_template_path),
+            "a209_operator_soak_finalization_preflight": source_ref(
+                operator_soak_finalization_path
+            ),
+        },
+        "gate_statuses": gate_statuses,
+        "required_operator_inputs": required_inputs,
+        "ready_input_ids": ready_inputs,
+        "missing_input_ids": missing_inputs,
+        "operator_submission_order": [
+            "A202_source_license_passage_owner_legal_release",
+            "A210_brand_legal_market_clearance_or_risk_waiver",
+            "A026_entity_resolution_production_gold_set",
+            "A027_relationship_extraction_production_gold_set",
+            "A209_24h_operator_soak_finalization",
+        ],
+        "post_submission_commands": [
+            "make generate-external-release-evidence-bundle "
+            "validate-external-release-evidence-bundle",
+            "make generate-release-manager-activation-artifact validate-release-manager-activation",
+            "make generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight",
+            "make verify",
+        ],
+        "validation_policy": {
+            "repository_templates_count_as_clearance": False,
+            "repository_fixtures_count_as_clearance": False,
+            "partial_a209_checkpoint_counts_as_clearance": False,
+            "operator_packet_closes_release_gate": False,
+            "all_required_operator_inputs_must_be_ready": True,
+        },
+        "non_claims": [
+            "This operator intake packet is a checklist and hash manifest, not legal clearance.",
+            "This operator intake packet does not convert templates, fixtures, or "
+            "partial soak progress into release evidence.",
+            "This operator intake packet does not close A202, A209, A210, A026, "
+            "A027, A204, A205, or MVP release.",
+        ],
+    }
+
+
 def validate_preflight(
     payload: dict[str, Any],
     *,
@@ -331,6 +548,7 @@ def validate_preflight(
         "schema_version",
         "artifact_id",
         "system_name",
+        "task_id",
         "task_ids",
         "acceptance_ids",
         "status",
@@ -360,6 +578,63 @@ def validate_preflight(
         raise ValueError("bundle preflight must not close release gates directly")
 
 
+def validate_operator_intake_packet(
+    payload: dict[str, Any],
+    *,
+    preflight_path: Path = DEFAULT_OUTPUT,
+    a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
+    gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+) -> None:
+    expected = build_operator_intake_packet(
+        preflight_path=preflight_path,
+        a202_intake_template_path=a202_intake_template_path,
+        brand_intake_template_path=brand_intake_template_path,
+        gold_intake_template_path=gold_intake_template_path,
+        operator_soak_finalization_path=operator_soak_finalization_path,
+        generated_at=payload.get("generated_at"),
+    )
+    checked_fields = (
+        "schema_version",
+        "artifact_id",
+        "system_name",
+        "task_ids",
+        "acceptance_ids",
+        "packet_status",
+        "external_release_evidence_ready",
+        "release_manager_preflight_refresh_allowed",
+        "mvp_release_gate_refresh_allowed",
+        "release_gate_closed_by_operator_packet",
+        "source_files",
+        "gate_statuses",
+        "required_operator_inputs",
+        "ready_input_ids",
+        "missing_input_ids",
+        "operator_submission_order",
+        "post_submission_commands",
+        "validation_policy",
+        "non_claims",
+    )
+    for key in checked_fields:
+        if payload.get(key) != expected.get(key):
+            raise ValueError(f"external release operator intake packet drift: {key}")
+    if payload.get("release_gate_closed_by_operator_packet") is not False:
+        raise ValueError("operator intake packet must not close release gates")
+    if (
+        payload.get("missing_input_ids")
+        and payload.get("packet_status") != "WAITING_FOR_OPERATOR_INPUTS"
+    ):
+        raise ValueError("operator intake packet with missing inputs must wait for operator inputs")
+    if (
+        not payload.get("missing_input_ids")
+        and payload.get("packet_status") != "READY_FOR_RELEASE_MANAGER_PREFLIGHT"
+    ):
+        raise ValueError(
+            "operator intake packet with no missing inputs must be ready for preflight"
+        )
+
+
 def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--release-decision-contract",
@@ -382,13 +657,32 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         type=Path,
         default=DEFAULT_OPERATOR_SOAK_FINALIZATION,
     )
+    parser.add_argument(
+        "--a202-intake-template",
+        type=Path,
+        default=DEFAULT_A202_INTAKE_TEMPLATE,
+    )
+    parser.add_argument(
+        "--brand-intake-template",
+        type=Path,
+        default=DEFAULT_BRAND_INTAKE_TEMPLATE,
+    )
+    parser.add_argument(
+        "--gold-intake-template",
+        type=Path,
+        default=DEFAULT_GOLD_INTAKE_TEMPLATE,
+    )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("generate", "validate"))
+    parser.add_argument(
+        "command",
+        choices=("generate", "validate", "generate-packet", "validate-packet"),
+    )
     add_common_args(parser)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--packet-output", type=Path, default=DEFAULT_PACKET_OUTPUT)
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -414,7 +708,7 @@ def main() -> int:
         write_json(args.output, payload)
         if not args.quiet:
             print(json.dumps({"generated": True, "artifact": display_path(args.output)}))
-    else:
+    elif args.command == "validate":
         validate_preflight(
             read_json(args.output),
             release_decision_contract_path=args.release_decision_contract,
@@ -425,6 +719,36 @@ def main() -> int:
         )
         if not args.quiet:
             print(json.dumps({"valid": True, "artifact": display_path(args.output)}))
+    elif args.command == "generate-packet":
+        payload = build_operator_intake_packet(
+            preflight_path=args.output,
+            a202_intake_template_path=args.a202_intake_template,
+            brand_intake_template_path=args.brand_intake_template,
+            gold_intake_template_path=args.gold_intake_template,
+            operator_soak_finalization_path=args.operator_soak_finalization,
+        )
+        validate_operator_intake_packet(
+            payload,
+            preflight_path=args.output,
+            a202_intake_template_path=args.a202_intake_template,
+            brand_intake_template_path=args.brand_intake_template,
+            gold_intake_template_path=args.gold_intake_template,
+            operator_soak_finalization_path=args.operator_soak_finalization,
+        )
+        write_json(args.packet_output, payload)
+        if not args.quiet:
+            print(json.dumps({"generated": True, "artifact": display_path(args.packet_output)}))
+    else:
+        validate_operator_intake_packet(
+            read_json(args.packet_output),
+            preflight_path=args.output,
+            a202_intake_template_path=args.a202_intake_template,
+            brand_intake_template_path=args.brand_intake_template,
+            gold_intake_template_path=args.gold_intake_template,
+            operator_soak_finalization_path=args.operator_soak_finalization,
+        )
+        if not args.quiet:
+            print(json.dumps({"valid": True, "artifact": display_path(args.packet_output)}))
     return 0
 
 

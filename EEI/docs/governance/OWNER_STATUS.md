@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (86/86 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (87/87 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `86`
-- active_parameters: `86`
+- total_parameters: `87`
+- active_parameters: `87`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1302-A203-E2E-CI-REPAIR-PENDING-CI`
+- release_gate: `TASK-T1303-A204-A205-EXTERNAL-RELEASE-OPERATOR-INTAKE-PACKET-PENDING-CI`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `14`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `67`
-- pending_or_stale_events: `88`
+- precommit_pending_events: `68`
+- pending_or_stale_events: `89`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:f944c8a108a5ace01d0d440b9493cb8a9c549424d3bfc1b38940bf791ce43dfd`
-- snapshot_event_time: `2026-06-25T12:44:34Z`
+- source_snapshot_hash: `sha256:92747320c8d023a49f2711d08c1cd194f451d8d781b14dd0c9a28975e2998370`
+- snapshot_event_time: `2026-06-25T13:26:47Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1302-A203-E2E-CI-REPAIR-PENDING-CI`
+- phase/gate: `C / TASK-T1303-A204-A205-EXTERNAL-RELEASE-OPERATOR-INTAKE-PACKET-PENDING-CI`
 
 ## 17. Next Unique Task
 

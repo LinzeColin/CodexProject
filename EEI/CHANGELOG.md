@@ -52,6 +52,7 @@
 - `EVENT-20260625-005`: Synchronized VERSION_MATRIX, governance status, clean-room package and release evidence for the A209 `27/288` heartbeat refresh while keeping delivery readiness `FAILED`.
 - `EVENT-20260625-006`: Marked T1302/A203 API implementation coverage `DONE` while keeping production graph publication, score publication and MVP release readiness blocked; refreshed A209 background evidence to `35/288` windows PASS, `0` failed and `12.15%` completion.
 - `EVENT-20260625-007`: Bound the T1302/A203 development-status E2E CI repair after T1302 moved to `DONE`; local `make test-e2e` passes `32/32`, and A203 remains release-blocked pending A202/A204-A205/A209/A210/A026/A027.
+- `EVENT-20260625-008`: Added a T1303/A204-A205 external release operator intake packet that source-hashes required A202/A210/A026/A027/A209 inputs, validates with `WAITING_FOR_OPERATOR_INPUTS`, and keeps release-manager activation plus MVP release readiness blocked until real operator evidence is supplied.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
