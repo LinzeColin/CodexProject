@@ -1,0 +1,68 @@
+{
+  "acceptance_id": "ACC-S2PET02-US-LG",
+  "base_commit": "94350b5154bcfd646211d5b76b7f4937709d42ff",
+  "current_pointer_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md",
+    "governance/run_manifests/ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625.json",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
+  ],
+  "generated_at": "2026-06-25T23:45:00+10:00",
+  "legacy_task_id": "S2P4T02",
+  "manifest_id": "ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625",
+  "non_scope": [
+    "live source fetch",
+    "PDF/full-text download",
+    "legal advice",
+    "SMTP",
+    "scheduler",
+    "Release",
+    "public schema",
+    "DB migration",
+    "production flags",
+    "V7.1/V7.2 contract changes",
+    "integrated production acceptance"
+  ],
+  "phase": "S2PE",
+  "production_side_effects": {
+    "formal_production_inclusion": false,
+    "integrated_production_accepted": false,
+    "legal_advice_provided": false,
+    "live_source_fetch_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "scheduler_changed": false,
+    "stage2_production_accepted": false
+  },
+  "project": "arxiv-daily-push",
+  "scope": "Metadata-only US-LG legal backbone evidence for Federal Register, Regulations.gov, GovInfo, and Congress.gov relations.",
+  "status": "local_validation_passed_pending_pr_ci",
+  "task_id": "S2PET02",
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 96 OK",
+    "full arxiv-daily-push unittest: 325 OK",
+    "semantic extractor: 78 formulas / 562 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/YAML/JSONL/CSV parse OK",
+    "git diff --check PASS"
+  ],
+  "v7_1_historical_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "v7_2_revalidation_receipt_recorded": true
+}

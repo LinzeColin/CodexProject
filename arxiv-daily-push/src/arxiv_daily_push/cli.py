@@ -124,6 +124,7 @@ from .stage2_sources import (
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
     run_s2pet01_us_ta_source_foundation,
+    run_s2pet02_us_lg_legal_backbone,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -137,6 +138,7 @@ from .stage2_sources import (
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pet01_us_ta_source_foundation_report,
+    validate_s2pet02_us_lg_legal_backbone_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -661,6 +663,19 @@ def build_parser() -> argparse.ArgumentParser:
     s2pet01_us_ta.add_argument("--agency-records", required=True, help="US-TA official agency metadata JSON list or object with agency_records.")
     s2pet01_us_ta.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pet01_us_ta.add_argument("--json", action="store_true", help="Print JSON US-TA source foundation report.")
+
+    s2pet02_us_lg = subparsers.add_parser(
+        "stage2-us-lg-legal-backbone",
+        help="Run S2PET02/S2P4T02 US legal metadata-only backbone and cross-document relation evidence.",
+    )
+    s2pet02_us_lg.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pet02_us_lg.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pet02_us_lg.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pet02_us_lg.add_argument("--us-ta-source-foundation-report", required=True, help="Passing S2PET01 US-TA source foundation report JSON.")
+    s2pet02_us_lg.add_argument("--legal-records", required=True, help="US-LG legal metadata JSON list or object with legal_records.")
+    s2pet02_us_lg.add_argument("--relation-records", required=True, help="US-LG legal relation JSON list or object with relation_records.")
+    s2pet02_us_lg.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pet02_us_lg.add_argument("--json", action="store_true", help="Print JSON US-LG legal backbone report.")
 
     s2pft01_china_provinces = subparsers.add_parser(
         "stage2-china-provincial-template-coverage",
@@ -2063,6 +2078,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- agency_coverage_gate: {report.get('agency_coverage_gate')}")
             print(f"- signal_type_gate: {report.get('signal_type_gate')}")
             print(f"- official_identity_gate: {report.get('official_identity_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-us-lg-legal-backbone":
+        report = run_s2pet02_us_lg_legal_backbone(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            us_ta_source_foundation_report=load_json_mapping(args.us_ta_source_foundation_report),
+            legal_records=load_json_records(args.legal_records, "legal_records"),
+            relation_records=load_json_records(args.relation_records, "relation_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pet02_us_lg_legal_backbone_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- upstream_us_ta_source_foundation_gate: {report.get('upstream_us_ta_source_foundation_gate')}")
+            print(f"- source_system_coverage_gate: {report.get('source_system_coverage_gate')}")
+            print(f"- document_type_gate: {report.get('document_type_gate')}")
+            print(f"- legal_relation_gate: {report.get('legal_relation_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
