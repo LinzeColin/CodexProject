@@ -27,6 +27,42 @@ def release_decision(*, ready: bool) -> dict:
     }
 
 
+def a202_operator_review_packet() -> dict:
+    return {
+        "status": "PENDING_OWNER_LEGAL_CLEARANCE",
+        "source_capture_artifact": (
+            "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json"
+        ),
+        "source_capture_artifact_sha256": "capture-sha",
+        "counts": {
+            "anchors_ready_for_review": 3,
+            "anchors_with_source_text_committed": 0,
+            "relationship_candidates_ready_for_review": 2,
+            "relationship_candidate_source_anchors": 4,
+            "relationship_fact_candidates_allowed": 0,
+            "relationships_publishable": 0,
+        },
+        "closure_gates": [
+            {"gate_id": "live_capture_ready_for_review", "status": "present"},
+            {"gate_id": "source_license_review", "status": "missing"},
+            {"gate_id": "passage_level_relationship_review", "status": "missing"},
+            {"gate_id": "production_owner_signoff", "status": "missing"},
+            {"gate_id": "legal_release_clearance", "status": "missing"},
+            {"gate_id": "a209_24h_operator_soak", "status": "missing"},
+        ],
+        "publication_policy": {
+            "relationship_fact_publication_allowed": False,
+            "relationship_edge_publication_allowed": False,
+            "release_clearance": False,
+        },
+        "validation_summary": {
+            "full_text_committed": False,
+            "release_clearance": False,
+            "relationship_publication": False,
+        },
+    }
+
+
 def brand(*, ready: bool) -> dict:
     return {
         "release_gate": {
@@ -86,6 +122,9 @@ def paths(tmp_path: Path, *, ready: bool) -> dict[str, Path]:
         "release_decision_contract_path": write_json(
             tmp_path / "release_decision.json", release_decision(ready=ready)
         ),
+        "a202_operator_review_packet_path": write_json(
+            tmp_path / "a202_operator_review_packet.json", a202_operator_review_packet()
+        ),
         "brand_preflight_path": write_json(tmp_path / "brand.json", brand(ready=ready)),
         "entity_gold_evaluation_path": write_json(
             tmp_path / "entity_gold.json", gold(acceptance_id="A026", ready=ready)
@@ -115,6 +154,20 @@ def test_bundle_blocks_when_external_inputs_are_missing(tmp_path: Path) -> None:
         "A027",
         "A209",
     }
+    assert (
+        payload["gate_statuses"]["a202_operator_review"]["live_capture_ready_for_review"]
+        is True
+    )
+    assert (
+        payload["gate_statuses"]["a202_operator_review"]["relationship_fact_candidates_allowed"]
+        == 0
+    )
+    a202_missing = next(
+        row
+        for row in payload["missing_external_inputs"]
+        if row["input_id"] == "A202_source_license_passage_owner_legal_release"
+    )
+    assert "operator review packet is present for review" in a202_missing["reason"]
     validate_preflight(payload, **input_paths)
 
 
@@ -137,6 +190,17 @@ def test_bundle_validation_detects_source_hash_drift(tmp_path: Path) -> None:
     input_paths = paths(tmp_path, ready=True)
     payload = build_preflight(generated_at="2026-06-24T00:00:00Z", **input_paths)
     write_json(input_paths["brand_preflight_path"], brand(ready=False))
+
+    with pytest.raises(ValueError, match="external release evidence bundle drift"):
+        validate_preflight(payload, **input_paths)
+
+
+def test_bundle_validation_detects_a202_review_packet_drift(tmp_path: Path) -> None:
+    input_paths = paths(tmp_path, ready=False)
+    payload = build_preflight(generated_at="2026-06-24T00:00:00Z", **input_paths)
+    changed = a202_operator_review_packet()
+    changed["closure_gates"][0]["status"] = "missing"
+    write_json(input_paths["a202_operator_review_packet_path"], changed)
 
     with pytest.raises(ValueError, match="external release evidence bundle drift"):
         validate_preflight(payload, **input_paths)
@@ -170,6 +234,7 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
         generated_at="2026-06-24T00:00:00Z",
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -189,10 +254,16 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
         item["template_or_partial_evidence_counts_as_clearance"] is False
         for item in payload["required_operator_inputs"]
     )
+    a202_item = payload["required_operator_inputs"][0]
+    assert a202_item["input_id"] == "A202_source_license_passage_owner_legal_release"
+    assert a202_item["supporting_sources"] == [
+        payload["source_files"]["a202_operator_review_packet"]
+    ]
     validate_operator_intake_packet(
         payload,
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -208,6 +279,7 @@ def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
         generated_at="2026-06-24T00:00:00Z",
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -220,6 +292,7 @@ def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
         payload,
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -234,6 +307,7 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
         generated_at="2026-06-24T00:00:00Z",
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -248,6 +322,7 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
             payload,
             preflight_path=input_paths["preflight_path"],
             a202_intake_template_path=input_paths["a202_intake_template_path"],
+            a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
             brand_intake_template_path=input_paths["brand_intake_template_path"],
             gold_intake_template_path=input_paths["gold_intake_template_path"],
             operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],

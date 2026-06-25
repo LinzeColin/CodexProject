@@ -94,7 +94,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-25T17:15:28Z",
+  "generated_at": "2026-06-25T18:14:57Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -191,7 +191,7 @@
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "release_decision_contract_sha256": "2d0155ca2b922f33f1e023128de9d4386fc926b52cdf8cec3e7a638ac525ccc4",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "40d7a6f3dd99b2f2239b246f3335b8d01d05ca134ec5a582ff14296e3c07e5a5"
+    "release_manager_preflight_sha256": "9e9c5eedec78d1fe2126f53cbab34a6e2eb9761f533996d3adcc976f5c23f276"
   },
   "status": "MVP_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

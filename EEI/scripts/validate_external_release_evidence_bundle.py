@@ -25,6 +25,9 @@ DEFAULT_RELEASE_DECISION_CONTRACT = (
 DEFAULT_A202_INTAKE_TEMPLATE = (
     ROOT / "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json"
 )
+DEFAULT_A202_OPERATOR_REVIEW_PACKET = (
+    ROOT / "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
+)
 DEFAULT_BRAND_PREFLIGHT = (
     ROOT / "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json"
 )
@@ -107,6 +110,59 @@ def release_decision_summary(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def a202_operator_review_summary(payload: dict[str, Any]) -> dict[str, Any]:
+    counts = payload.get("counts") if isinstance(payload.get("counts"), dict) else {}
+    publication_policy = (
+        payload.get("publication_policy")
+        if isinstance(payload.get("publication_policy"), dict)
+        else {}
+    )
+    validation_summary = (
+        payload.get("validation_summary")
+        if isinstance(payload.get("validation_summary"), dict)
+        else {}
+    )
+    gate_statuses = {
+        str(gate.get("gate_id")): gate.get("status")
+        for gate in payload.get("closure_gates", [])
+        if isinstance(gate, dict) and gate.get("gate_id")
+    }
+    return {
+        "status": payload.get("status"),
+        "source_capture_artifact": payload.get("source_capture_artifact"),
+        "source_capture_artifact_sha256": payload.get("source_capture_artifact_sha256"),
+        "live_capture_ready_for_review": gate_statuses.get("live_capture_ready_for_review")
+        == "present",
+        "source_license_review_status": gate_statuses.get("source_license_review"),
+        "passage_level_relationship_review_status": gate_statuses.get(
+            "passage_level_relationship_review"
+        ),
+        "production_owner_signoff_status": gate_statuses.get("production_owner_signoff"),
+        "legal_release_clearance_status": gate_statuses.get("legal_release_clearance"),
+        "a209_24h_operator_soak_status": gate_statuses.get("a209_24h_operator_soak"),
+        "anchors_ready_for_review": counts.get("anchors_ready_for_review"),
+        "anchors_with_source_text_committed": counts.get("anchors_with_source_text_committed"),
+        "relationship_candidates_ready_for_review": counts.get(
+            "relationship_candidates_ready_for_review"
+        ),
+        "relationship_candidate_source_anchors": counts.get(
+            "relationship_candidate_source_anchors"
+        ),
+        "relationship_fact_candidates_allowed": counts.get(
+            "relationship_fact_candidates_allowed"
+        ),
+        "relationships_publishable": counts.get("relationships_publishable"),
+        "relationship_fact_publication_allowed": publication_policy.get(
+            "relationship_fact_publication_allowed"
+        ),
+        "relationship_edge_publication_allowed": publication_policy.get(
+            "relationship_edge_publication_allowed"
+        ),
+        "release_clearance": publication_policy.get("release_clearance"),
+        "full_text_committed": validation_summary.get("full_text_committed"),
+    }
+
+
 def brand_summary(payload: dict[str, Any]) -> dict[str, Any]:
     release_gate = (
         payload.get("release_gate") if isinstance(payload.get("release_gate"), dict) else {}
@@ -177,6 +233,7 @@ def soak_finalization_summary(payload: dict[str, Any]) -> dict[str, Any]:
 def missing_inputs(
     *,
     release_decision: dict[str, Any],
+    a202_operator_review: dict[str, Any],
     brand: dict[str, Any],
     entity_gold: dict[str, Any],
     relationship_gold: dict[str, Any],
@@ -184,11 +241,18 @@ def missing_inputs(
 ) -> list[dict[str, str]]:
     missing: list[dict[str, str]] = []
     if release_decision.get("relationship_publication_allowed") is not True:
+        reason = (
+            "signed A202 source/license/passage/owner/legal release is not supplied; "
+            "operator review packet is present for review"
+            if a202_operator_review.get("live_capture_ready_for_review") is True
+            else "live capture/operator review packet is not ready and relationship "
+            "publication clearance is not supplied"
+        )
         missing.append(
             {
                 "input_id": "A202_source_license_passage_owner_legal_release",
                 "acceptance_id": "A202",
-                "reason": "relationship publication clearance is not supplied",
+                "reason": reason,
             }
         )
     if brand.get("public_release_allowed") is not True or brand.get("a210_status") != "DONE":
@@ -235,6 +299,7 @@ def missing_inputs(
 def build_preflight(
     *,
     release_decision_contract_path: Path = DEFAULT_RELEASE_DECISION_CONTRACT,
+    a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     brand_preflight_path: Path = DEFAULT_BRAND_PREFLIGHT,
     entity_gold_evaluation_path: Path = DEFAULT_ENTITY_GOLD_EVALUATION,
     relationship_gold_evaluation_path: Path = DEFAULT_RELATIONSHIP_GOLD_EVALUATION,
@@ -242,12 +307,14 @@ def build_preflight(
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     release_decision = release_decision_summary(read_json(release_decision_contract_path))
+    a202_operator_review = a202_operator_review_summary(read_json(a202_operator_review_packet_path))
     brand = brand_summary(read_json(brand_preflight_path))
     entity_gold = gold_summary(read_json(entity_gold_evaluation_path), "A026")
     relationship_gold = gold_summary(read_json(relationship_gold_evaluation_path), "A027")
     soak_finalization = soak_finalization_summary(read_json(operator_soak_finalization_path))
     missing = missing_inputs(
         release_decision=release_decision,
+        a202_operator_review=a202_operator_review,
         brand=brand,
         entity_gold=entity_gold,
         relationship_gold=relationship_gold,
@@ -274,6 +341,10 @@ def build_preflight(
         "source_files": {
             "release_decision_contract": display_path(release_decision_contract_path),
             "release_decision_contract_sha256": sha256_file(release_decision_contract_path),
+            "a202_operator_review_packet": display_path(a202_operator_review_packet_path),
+            "a202_operator_review_packet_sha256": sha256_file(
+                a202_operator_review_packet_path
+            ),
             "brand_preflight": display_path(brand_preflight_path),
             "brand_preflight_sha256": sha256_file(brand_preflight_path),
             "entity_gold_evaluation": display_path(entity_gold_evaluation_path),
@@ -285,6 +356,7 @@ def build_preflight(
         },
         "gate_statuses": {
             "release_decision": release_decision,
+            "a202_operator_review": a202_operator_review,
             "brand": brand,
             "entity_gold": entity_gold,
             "relationship_gold": relationship_gold,
@@ -333,6 +405,7 @@ def intake_item(
     acceptance_id: str,
     label: str,
     required_source: dict[str, str],
+    supporting_sources: list[dict[str, str]] | None = None,
     validation_command: str,
     completion_criteria: list[str],
     missing_inputs: list[dict[str, str]],
@@ -348,6 +421,7 @@ def intake_item(
         "current_status": "MISSING_OR_BLOCKED" if missing_match else "READY_FOR_PREFLIGHT",
         "blocking_reason": missing_match.get("reason") if missing_match else "",
         "required_source": required_source,
+        "supporting_sources": supporting_sources or [],
         "validation_command": validation_command,
         "completion_criteria": completion_criteria,
         "template_or_partial_evidence_counts_as_clearance": False,
@@ -358,6 +432,7 @@ def build_operator_intake_packet(
     *,
     preflight_path: Path = DEFAULT_OUTPUT,
     a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
     operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
@@ -377,6 +452,7 @@ def build_operator_intake_packet(
             acceptance_id="A202",
             label="A202 signed source/license/passage/owner/legal release decision",
             required_source=source_ref(a202_intake_template_path),
+            supporting_sources=[source_ref(a202_operator_review_packet_path)],
             validation_command=(
                 "make generate-a202-signed-intake-preflight "
                 "validate-a202-signed-intake-preflight"
@@ -486,6 +562,7 @@ def build_operator_intake_packet(
         "source_files": {
             "external_release_evidence_bundle_preflight": source_ref(preflight_path),
             "a202_release_decision_intake_template": source_ref(a202_intake_template_path),
+            "a202_operator_review_packet": source_ref(a202_operator_review_packet_path),
             "a210_brand_clearance_intake_template": source_ref(brand_intake_template_path),
             "a026_a027_gold_label_intake_template": source_ref(gold_intake_template_path),
             "a209_operator_soak_finalization_preflight": source_ref(
@@ -531,6 +608,7 @@ def validate_preflight(
     payload: dict[str, Any],
     *,
     release_decision_contract_path: Path = DEFAULT_RELEASE_DECISION_CONTRACT,
+    a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     brand_preflight_path: Path = DEFAULT_BRAND_PREFLIGHT,
     entity_gold_evaluation_path: Path = DEFAULT_ENTITY_GOLD_EVALUATION,
     relationship_gold_evaluation_path: Path = DEFAULT_RELATIONSHIP_GOLD_EVALUATION,
@@ -538,6 +616,7 @@ def validate_preflight(
 ) -> None:
     expected = build_preflight(
         release_decision_contract_path=release_decision_contract_path,
+        a202_operator_review_packet_path=a202_operator_review_packet_path,
         brand_preflight_path=brand_preflight_path,
         entity_gold_evaluation_path=entity_gold_evaluation_path,
         relationship_gold_evaluation_path=relationship_gold_evaluation_path,
@@ -583,6 +662,7 @@ def validate_operator_intake_packet(
     *,
     preflight_path: Path = DEFAULT_OUTPUT,
     a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
     operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
@@ -590,6 +670,7 @@ def validate_operator_intake_packet(
     expected = build_operator_intake_packet(
         preflight_path=preflight_path,
         a202_intake_template_path=a202_intake_template_path,
+        a202_operator_review_packet_path=a202_operator_review_packet_path,
         brand_intake_template_path=brand_intake_template_path,
         gold_intake_template_path=gold_intake_template_path,
         operator_soak_finalization_path=operator_soak_finalization_path,
@@ -663,6 +744,11 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         default=DEFAULT_A202_INTAKE_TEMPLATE,
     )
     parser.add_argument(
+        "--a202-operator-review-packet",
+        type=Path,
+        default=DEFAULT_A202_OPERATOR_REVIEW_PACKET,
+    )
+    parser.add_argument(
         "--brand-intake-template",
         type=Path,
         default=DEFAULT_BRAND_INTAKE_TEMPLATE,
@@ -692,6 +778,7 @@ def main() -> int:
     if args.command == "generate":
         payload = build_preflight(
             release_decision_contract_path=args.release_decision_contract,
+            a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_preflight_path=args.brand_preflight,
             entity_gold_evaluation_path=args.entity_gold_evaluation,
             relationship_gold_evaluation_path=args.relationship_gold_evaluation,
@@ -700,6 +787,7 @@ def main() -> int:
         validate_preflight(
             payload,
             release_decision_contract_path=args.release_decision_contract,
+            a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_preflight_path=args.brand_preflight,
             entity_gold_evaluation_path=args.entity_gold_evaluation,
             relationship_gold_evaluation_path=args.relationship_gold_evaluation,
@@ -712,6 +800,7 @@ def main() -> int:
         validate_preflight(
             read_json(args.output),
             release_decision_contract_path=args.release_decision_contract,
+            a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_preflight_path=args.brand_preflight,
             entity_gold_evaluation_path=args.entity_gold_evaluation,
             relationship_gold_evaluation_path=args.relationship_gold_evaluation,
@@ -723,6 +812,7 @@ def main() -> int:
         payload = build_operator_intake_packet(
             preflight_path=args.output,
             a202_intake_template_path=args.a202_intake_template,
+            a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
             operator_soak_finalization_path=args.operator_soak_finalization,
@@ -731,6 +821,7 @@ def main() -> int:
             payload,
             preflight_path=args.output,
             a202_intake_template_path=args.a202_intake_template,
+            a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
             operator_soak_finalization_path=args.operator_soak_finalization,
@@ -743,6 +834,7 @@ def main() -> int:
             read_json(args.packet_output),
             preflight_path=args.output,
             a202_intake_template_path=args.a202_intake_template,
+            a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
             operator_soak_finalization_path=args.operator_soak_finalization,

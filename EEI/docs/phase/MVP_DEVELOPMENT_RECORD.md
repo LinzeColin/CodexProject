@@ -2,6 +2,28 @@
 
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
+## 2026-06-25 - T1303/A205 A202 operator-review evidence binding
+
+Status: LOCAL FOCUSED VALIDATED; CI PENDING; RELEASE STILL BLOCKED
+
+Completed:
+
+- Bound the existing `artifacts/tests/a202/t1301_operator_review_packet_contract.json` into the T1303 external release-evidence bundle `source_files`.
+- Added an `a202_operator_review` gate summary to the external release-evidence bundle so release-manager evidence now shows `live_capture_ready_for_review=true`, `relationship_fact_candidates_allowed=0`, `relationships_publishable=0`, `release_clearance=false` and all signed source/license/passage/owner/legal gates still missing.
+- Added the A202 operator review packet as a supporting source for the A202 operator intake item without treating it as clearance.
+- Regenerated the external release-evidence bundle, operator intake packet, release-manager activation preflight and MVP release-gate preflight; all remain fail-closed.
+
+Verification status:
+
+- `py_compile` PASS for `scripts/validate_external_release_evidence_bundle.py` and `tests/unit/test_external_release_evidence_bundle.py`.
+- Focused `ruff check` PASS for the same files.
+- `pytest -q tests/unit/test_external_release_evidence_bundle.py -p no:cacheprovider`: PASS, `7/7`.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight`: PASS.
+
+Still blocked:
+
+- This binding is review-readiness traceability only. It does not provide source-license review, passage-level approval, production owner sign-off, legal clearance, relationship publication, brand clearance, production gold labels, A209 24h completion, release-manager activation or MVP release readiness.
+
 ## 2026-06-25 - T1307/A209 live 24h soak heartbeat refresh to 173/288
 
 Status: LOCAL FOCUSED VALIDATED; CI PENDING; A209 STILL IN PROGRESS
