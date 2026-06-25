@@ -21,6 +21,17 @@ sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECTS_FILE = ROOT / "governance" / "projects.yaml"
+ROOT_GOVERNANCE_PREFIXES = (
+    ".agents/",
+    ".codex/",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "README.md",
+    "docs/governance/",
+    "governance/",
+    "scripts/",
+    "tests/governance/",
+)
 
 FACT_LEVELS = {"EXTRACTED", "RECONSTRUCTED", "PROPOSED", "UNKNOWN", "NOT_APPLICABLE"}
 MODEL_STATES = {"active", "planned", "deprecated", "not_applicable"}
@@ -43,6 +54,13 @@ SEMANTIC_COVERAGE_STATES = {
     "blocked",
     "not_applicable",
 }
+
+
+class GovernanceDiffError(RuntimeError):
+    def __init__(self, error_code: str, message: str, *, base_ref: str | None = None) -> None:
+        super().__init__(message)
+        self.error_code = error_code
+        self.base_ref = base_ref or ""
 PROJECT_MARKERS = {
     "README.md",
     "AGENTS.md",
@@ -1417,37 +1435,67 @@ def git_ref_exists(ref: str) -> bool:
     return result.returncode == 0
 
 
-def git_changed_files(base_ref: str | None = None) -> list[str]:
-    commands = [
-        ["git", "diff", "--name-only", "--cached"],
-        ["git", "diff", "--name-only"],
-        ["git", "ls-files", "--others", "--exclude-standard"],
-    ]
-    changed: set[str] = set()
-    for command in commands:
-        try:
-            output = subprocess.check_output(
-                ["git", "-c", "core.quotePath=false", *command[1:]],
-                cwd=ROOT,
-                text=True,
-                encoding="utf-8",
-            )
-        except subprocess.CalledProcessError:
+def parse_git_status_paths(output: str) -> set[str]:
+    paths: set[str] = set()
+    for line in output.splitlines():
+        if not line.strip() or len(line) < 4:
             continue
-        changed.update(line.strip() for line in output.splitlines() if line.strip())
+        payload = line[3:].strip()
+        if " -> " in payload:
+            old_path, new_path = payload.split(" -> ", 1)
+            if old_path.strip():
+                paths.add(old_path.strip())
+            if new_path.strip():
+                paths.add(new_path.strip())
+            continue
+        paths.add(payload)
+    return paths
+
+
+def git_local_changed_files() -> set[str]:
+    result = subprocess.run(
+        ["git", "-c", "core.quotePath=false", "status", "--porcelain=v1"],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode != 0:
+        stderr = result.stderr.strip() or f"exit_{result.returncode}"
+        raise GovernanceDiffError("STATUS_FAILED", f"Git status failed while collecting local changes: {stderr}")
+    return parse_git_status_paths(result.stdout)
+
+
+def git_changed_files(base_ref: str | None = None) -> list[str]:
+    changed: set[str] = set(git_local_changed_files())
     explicit_base = explicit_base_ref(base_ref)
-    if explicit_base and git_ref_exists(explicit_base):
+    if explicit_base:
+        if not git_ref_exists(explicit_base):
+            raise GovernanceDiffError(
+                "UNRESOLVED_BASE",
+                f"Explicit governance diff base does not resolve to a commit: {explicit_base}",
+                base_ref=explicit_base,
+            )
         try:
             output = subprocess.check_output(
                 ["git", "-c", "core.quotePath=false", "diff", "--name-only", f"{explicit_base}...HEAD"],
                 cwd=ROOT,
                 text=True,
                 encoding="utf-8",
-                stderr=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
             )
             changed.update(line.strip() for line in output.splitlines() if line.strip())
-        except subprocess.CalledProcessError:
-            pass
+        except subprocess.CalledProcessError as exc:
+            stderr = (exc.stderr or "").strip()
+            detail = f": {stderr}" if stderr else ""
+            raise GovernanceDiffError(
+                "DIFF_FAILED",
+                f"Explicit governance diff failed for base {explicit_base}{detail}",
+                base_ref=explicit_base,
+            ) from exc
     github_base_ref = os.environ.get("GITHUB_BASE_REF")
     if not explicit_base and github_base_ref:
         try:
@@ -1478,6 +1526,65 @@ def project_matches_changed(project: dict[str, Any], changed: list[str]) -> bool
     return False
 
 
+def root_required_files(config: dict[str, Any]) -> set[str]:
+    root_config = config.get("root_governance") if isinstance(config.get("root_governance"), dict) else {}
+    return {str(item).replace("\\", "/") for item in as_list(root_config.get("required_files"))}
+
+
+def is_root_governance_change(path: str, root_required: set[str]) -> bool:
+    normalized = path.replace("\\", "/")
+    return normalized in root_required or any(
+        normalized == prefix.rstrip("/") or normalized.startswith(prefix) for prefix in ROOT_GOVERNANCE_PREFIXES
+    )
+
+
+def project_id(project: dict[str, Any]) -> str:
+    return str(project.get("project_id") or "")
+
+
+def required_project_ids(projects: list[dict[str, Any]]) -> set[str]:
+    return {project_id(project) for project in projects if str(project.get("ci_mode") or "") == "required"}
+
+
+def root_changed_scope_configured_exclusions(config: dict[str, Any]) -> set[str]:
+    root_config = config.get("root_governance") if isinstance(config.get("root_governance"), dict) else {}
+    return {str(item) for item in as_list(root_config.get("changed_scope_excluded_projects")) if item}
+
+
+def changed_scope_selection(config: dict[str, Any], changed: list[str]) -> dict[str, Any]:
+    projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
+    root_changed = any(is_root_governance_change(path, root_required_files(config)) for path in changed)
+    configured_excluded = root_changed_scope_configured_exclusions(config) if root_changed else set()
+    required_ids = required_project_ids(projects)
+    effective_excluded = configured_excluded - required_ids
+    unknown_changed = [
+        path
+        for path in changed
+        if not is_root_governance_change(path, root_required_files(config))
+        and not any(project_matches_changed(project, [path]) for project in projects)
+    ]
+    full_scope_required = root_changed or bool(unknown_changed)
+    selected = (
+        [project for project in projects if project_id(project) not in effective_excluded]
+        if full_scope_required
+        else [project for project in projects if project_matches_changed(project, changed)]
+    )
+    selected_required = {project_id(project) for project in selected if project_id(project) in required_ids}
+    return {
+        "changed_files": changed,
+        "root_governance_changed": root_changed,
+        "unknown_changed_files": unknown_changed,
+        "full_scope_required": full_scope_required,
+        "projects": selected,
+        "configured_root_scope_excluded_projects": sorted(configured_excluded),
+        "root_scope_excluded_projects": sorted(effective_excluded),
+        "root_scope_configured_excluded_required_projects": sorted(configured_excluded & required_ids),
+        "all_required_projects_covered": bool(full_scope_required and required_ids <= selected_required),
+        "required_project_count": len(required_ids),
+        "selected_required_project_count": len(selected_required),
+    }
+
+
 def select_projects(config: dict[str, Any], args: argparse.Namespace) -> list[dict[str, Any]]:
     projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
     if args.project:
@@ -1487,8 +1594,7 @@ def select_projects(config: dict[str, Any], args: argparse.Namespace) -> list[di
         return selected
     if args.changed_only:
         changed = git_changed_files(getattr(args, "base_ref", None))
-        selected = [p for p in projects if project_matches_changed(p, changed)]
-        return selected
+        return list(changed_scope_selection(config, changed)["projects"])
     return projects
 
 
@@ -1534,6 +1640,10 @@ def main(argv: list[str] | None = None) -> int:
     project_files = [str(item) for item in as_list(config.get("project_governance_files"))]
     try:
         selected_projects = select_projects(config, args)
+    except GovernanceDiffError as exc:
+        validation.error("root", str(exc))
+        print_summary(validation, [])
+        return 1
     except SystemExit as exc:
         validation.error("root", str(exc))
         print_summary(validation, [])
