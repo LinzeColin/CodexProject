@@ -14,15 +14,15 @@
 - CURRENT 产品合同：`ADP-PRODUCT-CONTRACT-V7.2`
 - V7.1：只读历史基线，不覆盖、不删除。
 - 全局当前任务：`S2PCT02`
-- 邮件 V1 workstream 下一任务：`S2PHT01V1.1-T01`
+- 邮件 V1 workstream 状态：`EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
 
 ## 强制规则
 
 - 所有 Stage2 agent 在继续新任务前，必须按 V7.2 复审自己已完成的工作。
 - 不满足 V7.2 的已完成工作必须先修复。
-- `S2PHT01V1.1-T01` 通过前，不改邮件生产代码、不改公共 Schema、不改 connectors/queue/DB/scheduler/SMTP/Release/3+1 编排。
+- Email V1 已在 main 上完成 T01-T05 状态收口；后续新增邮件入口必须继续走同一 Email V1 contract/readiness gate，不改公共 Schema、不改 connectors/queue/DB/scheduler/SMTP/Release/3+1 编排，且不得启用生产副作用。
 - 无共享文件冲突的 Stage2 Shadow 数据源开发可以继续。
 
 ## 唯一下一合同任务
 
-`S2PHT01V1.1-T01`：只读调用链与 H/M 精确落位审计。
+无共享合同文件冲突、无公共 Schema/生产副作用的 Stage2 Shadow 数据源开发可继续，当前全局任务仍是 `S2PCT02`。

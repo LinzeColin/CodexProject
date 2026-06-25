@@ -716,8 +716,41 @@ def validate_arxiv_daily_push_v7_root_lock(
             validation.add(required, scope, f"V7.2 final review agent {agent_id} did not pass")
     if v72_review.get("baseline_publication_verdict", {}).get("status") != "pass":
         validation.add(required, scope, "V7.2 final review verdict must pass")
-    if v72_roadmap.get("email_v1_workstream_next") != "S2PHT01V1.1-T01":
-        validation.add(required, scope, "V7.2 roadmap must keep S2PHT01V1.1-T01 as next email task")
+    email_v1_merged_state = "EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS"
+    if v72_roadmap.get("global_current_task") != "S2PCT02":
+        validation.add(required, scope, "V7.2 roadmap global_current_task must remain S2PCT02")
+    if v72_roadmap.get("email_v1_workstream_next") != email_v1_merged_state:
+        validation.add(required, scope, "V7.2 roadmap must record Email V1 as merged to main with no production side effects")
+    if v72_lock.get("stage2_boundary", {}).get("email_v1_workstream_next") != email_v1_merged_state:
+        validation.add(required, scope, "V7_2_ROOT_LOCK Email V1 workstream status mismatch")
+    if matrix.get("v7_2_email_v1_workstream_next") != email_v1_merged_state:
+        validation.add(required, scope, "VERSION_MATRIX Email V1 workstream status mismatch")
+    email_required_tasks = {
+        "S2PHT01V1.1-T00",
+        "S2PHT01V1.1-T01",
+        "S2PHT01V1.1-T02",
+        "S2PHT01V1.1-T03",
+        "S2PHT01V1.1-T04",
+        "S2PHT01V1.1-T05",
+    }
+    baseline_workstream = next(
+        (item for item in as_list(v72_roadmap.get("workstreams")) if item.get("workstream_id") == "V7_2_BASELINE_UPGRADE"),
+        {},
+    )
+    if not email_required_tasks.issubset(set(as_list(baseline_workstream.get("completed_tasks")))):
+        validation.add(required, scope, "V7.2 baseline completed_tasks must include Email V1 T00-T05")
+    if baseline_workstream.get("next_task") != "S2PCT02":
+        validation.add(required, scope, "V7.2 baseline next_task must remain S2PCT02")
+    email_workstream = next(
+        (item for item in as_list(v72_roadmap.get("workstreams")) if item.get("workstream_id") == "EMAIL_LEARNING_V1"),
+        {},
+    )
+    if email_workstream.get("status") != "merged_to_main_no_production_side_effects":
+        validation.add(required, scope, "EMAIL_LEARNING_V1 workstream must be merged_to_main_no_production_side_effects")
+    email_task_status = {item.get("task_id"): item.get("status") for item in as_list(email_workstream.get("tasks"))}
+    for task_id in sorted(email_required_tasks):
+        if email_task_status.get(task_id) != "completed":
+            validation.add(required, scope, f"EMAIL_LEARNING_V1 task {task_id} must be completed")
     strengthened = set(v72_migration.get("stop_gate_migration", {}).get("added_or_strengthened", []))
     if "SCOPE-ESCAPE" not in strengthened:
         validation.add(required, scope, "V7.2 migration matrix must include SCOPE-ESCAPE")

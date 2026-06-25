@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PGT05-CROSS-BOARD-CALIBRATION-001"
-source_snapshot_hash: "sha256:49babb10dbcaf916819adfa4216610adcadb2ca39e7d18d1bdcf8d829073f5f0"
+as_of_event_id: "EVENT-20260625-ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-001"
+source_snapshot_hash: "sha256:b330a438347b109c5594613a4972573e6eb48a8dfee2b11e54376b5273ca6c66"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-25T21:10:00+10:00"
+snapshot_event_time: "2026-06-25T22:20:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,18 +60,18 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 76
+    legacy_unbound_events: 77
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PGT05_CALIBRATION_READY_NO_PRODUCTION"
+  release_gate: "S2PAT07_EMAIL_V1_POINTER_REPAIRED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
-  v7_contract_hash: "f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8"
-  v7_roadmap_hash: "fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56"
+  v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
+  v7_roadmap_hash: "db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57"
   v7_parallel_audit: "ADP-V7.2-FINAL-BASELINE-REVIEW"
   v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
   open_p0_findings: 8

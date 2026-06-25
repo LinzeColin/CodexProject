@@ -10,6 +10,17 @@ from pathlib import Path
 from typing import Any
 
 
+EMAIL_V1_MERGED_STATE = "EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS"
+EMAIL_V1_REQUIRED_TASKS = {
+    "S2PHT01V1.1-T00",
+    "S2PHT01V1.1-T01",
+    "S2PHT01V1.1-T02",
+    "S2PHT01V1.1-T03",
+    "S2PHT01V1.1-T04",
+    "S2PHT01V1.1-T05",
+}
+
+
 def repo_root_from_v7_2(root: Path) -> Path:
     return root.parents[3]
 
@@ -163,13 +174,47 @@ def main() -> int:
     if review.get("baseline_publication_verdict", {}).get("status") != "pass":
         errors.append("final review did not pass V7.2 baseline publication")
 
-    if roadmap.get("email_v1_workstream_next") != "S2PHT01V1.1-T01":
-        errors.append("roadmap does not keep S2PHT01V1.1-T01 as email V1 next task")
+    if roadmap.get("global_current_task") != "S2PCT02":
+        errors.append("roadmap global_current_task must remain S2PCT02")
+    if roadmap.get("email_v1_workstream_next") != EMAIL_V1_MERGED_STATE:
+        errors.append("roadmap does not record Email V1 as merged to main with no production side effects")
+    if current.get("current_pointer_registry", {}).get("email_v1_workstream_next") != EMAIL_V1_MERGED_STATE:
+        errors.append("CURRENT.yaml contextual Email V1 status mismatch")
+    if product.get("current_pointer_policy", {}).get("email_v1_workstream_next") != EMAIL_V1_MERGED_STATE:
+        errors.append("product contract Email V1 pointer policy mismatch")
+    if lock.get("stage2_boundary", {}).get("email_v1_workstream_next") != EMAIL_V1_MERGED_STATE:
+        errors.append("V7_2_ROOT_LOCK Email V1 boundary status mismatch")
     if pointer.get("single_current_product_contract", {}).get("current_contract_version") != "ADP-PRODUCT-CONTRACT-V7.2":
         errors.append("current pointer registry does not identify V7.2 as current")
+    pointer_context = pointer.get("contextual_next_tasks", {})
+    if pointer_context.get("global_current_task", {}).get("task_id") != "S2PCT02":
+        errors.append("current pointer registry global current task must remain S2PCT02")
+    if pointer_context.get("email_v1_workstream_next", {}).get("task_id") != EMAIL_V1_MERGED_STATE:
+        errors.append("current pointer registry Email V1 workstream status mismatch")
+
+    baseline_workstream = next(
+        (item for item in roadmap.get("workstreams", []) if item.get("workstream_id") == "V7_2_BASELINE_UPGRADE"),
+        {},
+    )
+    completed_tasks = set(baseline_workstream.get("completed_tasks", []))
+    if not EMAIL_V1_REQUIRED_TASKS.issubset(completed_tasks):
+        errors.append("V7.2 baseline completed_tasks must include Email V1 T00-T05")
+    if baseline_workstream.get("next_task") != "S2PCT02":
+        errors.append("V7.2 baseline next_task must route back to S2PCT02")
+
+    email_workstream = next(
+        (item for item in roadmap.get("workstreams", []) if item.get("workstream_id") == "EMAIL_LEARNING_V1"),
+        {},
+    )
+    if email_workstream.get("status") != "merged_to_main_no_production_side_effects":
+        errors.append("EMAIL_LEARNING_V1 workstream must be merged_to_main_no_production_side_effects")
+    task_status = {item.get("task_id"): item.get("status") for item in email_workstream.get("tasks", [])}
+    for task_id in EMAIL_V1_REQUIRED_TASKS:
+        if task_status.get(task_id) != "completed":
+            errors.append(f"EMAIL_LEARNING_V1 task {task_id} must be completed")
 
     handoff_text = required["handoff"].read_text(encoding="utf-8")
-    for token in ("CURRENT 产品合同：`ADP-PRODUCT-CONTRACT-V7.2`", "所有 Stage2 agent", "S2PHT01V1.1-T01"):
+    for token in ("CURRENT 产品合同：`ADP-PRODUCT-CONTRACT-V7.2`", "所有 Stage2 agent", EMAIL_V1_MERGED_STATE, "S2PCT02"):
         if token not in handoff_text:
             errors.append(f"handoff missing token: {token}")
 
