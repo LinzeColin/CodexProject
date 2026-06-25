@@ -56,6 +56,7 @@
 - `EVENT-20260625-009`: Refreshed the live T1307/A209 heartbeat, finalization preflight and dependent release preflights to `135/288` windows PASS, `0` failed and `46.88%` completion while keeping A209 `IN_PROGRESS`, `release_gate_closed_by_finalizer=false` and all release gates blocked.
 - `EVENT-20260625-010`: Hardened T1301/A202 signed-intake source boundaries so repository fixtures, templates, docs, config, data and tests cannot close A202; approved operator-input paths and external operator files remain the only accepted signed-intake sources, and release readiness remains blocked.
 - `EVENT-20260625-014`: Bound the T1301/A202 signed-intake source-boundary hardening to commit `a246df94bf73b6fba7111805f3c5a02b6edeb070` with Project Governance run `28179389094` PASS and EEI validation run `28179389156` PASS; A202, A209 and MVP release readiness remain blocked pending real external release evidence.
+- `EVENT-20260625-015`: Refreshed the live T1307/A209 heartbeat and dependent A203/A205 release preflights to `152/288` windows PASS, `0` failed and `52.78%` completion while keeping A209 finalization, release-manager activation and MVP release readiness blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
