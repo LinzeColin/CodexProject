@@ -1627,6 +1627,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PET01"
+    phase: "S2PE"
+    objective: "Implement metadata-only D4 US-TA official technology-agency source foundation evidence."
+    scope: "US official technology agency metadata foundation model, NSF/DARPA/DOE/NIH/NASA/NIST/USPTO/FDA agency coverage, required signal type coverage, official identity and traceability gates, focused tests, CLI, and governance registration."
+    non_scope: "No live source fetch, no public schema migration, no production queue mutation, no production ranking algorithm change, no SMTP, no scheduler, no Release, no source adapter production inclusion, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no Email V1 frontstage/runtime change, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PET01-US-TA"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_semantic3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_project3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_render2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "JSON/YAML/JSONL/CSV parse check with /opt/anaconda3/bin/python", "git diff --check"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 91 OK", "full arxiv-daily-push unittest: 320 OK", "semantic extractor: 77 formulas / 551 parameters checked", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSON/YAML/JSONL/CSV parse OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md", "governance/run_manifests/ADP-S2PET01-US-TA-SOURCE-FOUNDATION-20260625.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PET01 can be mistaken for D4 source production inclusion or live US official-source adapters; it must remain metadata-only evidence and prove all production side effects remain disabled."
+    rollback: "Revert S2PET01 source-foundation code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
