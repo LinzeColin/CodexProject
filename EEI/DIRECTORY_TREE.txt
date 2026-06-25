@@ -113,6 +113,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a205
 │   │   │   ├── t1303_atomic_refresh_context_contract.json
 │   │   │   ├── t1303_external_release_evidence_bundle_preflight.json
+│   │   │   ├── t1303_external_release_operator_intake_packet.json
 │   │   │   ├── t1303_mvp_release_gate_preflight.json
 │   │   │   └── t1303_release_manager_activation_preflight.json
 │   │   ├── a206

@@ -120,6 +120,7 @@ artifacts/tests/a203/t1302_production_api_release_preflight.json
 artifacts/tests/a204/t1303_transactional_model_activation_contract.json
 artifacts/tests/a205/t1303_atomic_refresh_context_contract.json
 artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json
+artifacts/tests/a205/t1303_external_release_operator_intake_packet.json
 artifacts/tests/a205/t1303_mvp_release_gate_preflight.json
 artifacts/tests/a205/t1303_release_manager_activation_preflight.json
 artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json
