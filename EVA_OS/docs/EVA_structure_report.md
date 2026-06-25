@@ -1,3 +1,38 @@
+# EVA_OS S4PBT02 中文结构验收报告
+
+- 任务：`S4PBT02`
+- 验收：`ACC-S4PBT02`
+- 结论：中文 owner 可读验收通过；本报告先给人类可读结论，再保留原技术记录。
+
+## 用户可读结论
+
+EVA_OS 的 S4PBT02 只清理主动项目表面的历史交接文档、`handoff_packs/`、`cleanup/` 和生成版功能 PDF。源码、共享模块、系统目录、测试、运行数据路径和私密 owner 复核数据没有移动。Owner 判断当前入口时，应从 `EVA_OS/README.md`、`EVA_OS/docs/Index.md`、三个中文入口和 `docs/governance/` 读取事实。
+
+## 中文验收标准
+
+- 第一屏必须说明改了什么、没改什么、风险在哪里。
+- 中文说明必须覆盖 active source、archive、private data、rollback。
+- 技术路径保留英文原样，但不能让英文段落成为唯一可读解释。
+
+## 停止条件与结果
+
+- EVA system/shared module import 路径被改变：`false`
+- runtime 或 live-trading 行为被改变：`false`
+- PRIVATE data 被移动或归档：`false`
+- 根 README 无分层地膨胀：`false`
+
+## 回滚
+
+优先用 git revert 回退 S4PBT02 任务提交。若必须手工恢复，从 `governance/archive/other8_wave1_pending/EVA_OS/` 按 OLD_TO_NEW_MAP 还原，并复核 S4PAT02 checksum 与 S4PBT02 run manifest。
+
+## 下一步
+
+后续 Agent 只能把 archive 视为历史资料，不得把归档文件重新作为默认运行或 import 入口。
+
+---
+
+## 原技术记录
+
 # EVA_OS S4PBT02 Structure Report
 
 Task: `S4PBT02`

@@ -5563,6 +5563,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertTrue(projects[project_id]["structure_report_contract"])
 
         self.assertIn("Rollback", markdown)
+        self.assertIn("中文验收结论", markdown)
+        self.assertIn("用户可读优先", markdown)
+        self.assertIn("停止条件", markdown)
+        self.assertIn("下一步", markdown)
         self.assertIn("S5PAT01", markdown)
         self.assertIn("EEI", markdown)
         self.assertIn("arxiv-daily-push", markdown)
@@ -6304,6 +6308,134 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             },
         )
         self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "PFI/", "EEI/", "arxiv-daily-push/")) for path in changed))
+
+    def test_other8_s5pct03_wave2_gate_binds_privacy_readability_links_tests_and_rollback(self) -> None:
+        report_path = ROOT / "governance" / "stage_gates" / "s5pc" / "wave2_gate_report.json"
+        report_md = ROOT / "governance" / "stage_gates" / "s5pc" / "wave2_gate.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json"
+        )
+        tool_path = ROOT / "tools" / "wave2_gate.py"
+        for path in {report_path, report_md, manifest_path, tool_path}:
+            self.assertTrue(path.is_file(), path)
+
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        markdown = report_md.read_text(encoding="utf-8")
+        structure_audit = (ROOT / "tools" / "structure_audit.py").read_text(encoding="utf-8")
+
+        self.assertIn('choices=["1", "2"]', structure_audit)
+        self.assertIn("import wave2_gate", structure_audit)
+        self.assertEqual(report["schema_version"], "codexproject.wave2_gate.v1")
+        self.assertEqual(report["task_id"], "S5PCT03")
+        self.assertEqual(report["acceptance_id"], "ACC-S5PCT03")
+        self.assertEqual(report["status"], "PASS")
+        self.assertEqual(report["gate_id"], "S5-GATE")
+        self.assertEqual(report["phase_gate_id"], "S5PC-GATE")
+        self.assertEqual(report["next_allowed_task"], "S6PAT01")
+        self.assertEqual(
+            report["scope"]["projects"],
+            ["FIFA", "OpenAIDatabase", "PFI_BIG_DATA_SIMULATOR", "Serenity-Alipay"],
+        )
+        self.assertEqual(report["forbidden_scope"]["touched_forbidden_projects"], [])
+        self.assertFalse(any(not check["passed"] for check in report["checks"]))
+        self.assertEqual(report["link_check"]["missing"], [])
+        self.assertEqual(report["link_check"]["checked"], 28)
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["candidate_count"], 457)
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["checksum_line_count"], 457)
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["project_counts"]["Serenity-Alipay"], 269)
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["project_counts"]["OpenAIDatabase"], 104)
+        self.assertEqual(report["stage_gate_inputs"]["archive_manifest"]["action_counts"]["OWNER_REVIEW_BEFORE_ARCHIVE"], 255)
+        self.assertEqual(report["privacy_gate"]["private_candidate_count"], 255)
+        self.assertFalse(report["privacy_gate"]["private_values_emitted"])
+        self.assertTrue(report["rollback_gate"]["archive_manifest_checksum_bound"])
+
+        projects = {item["project_id"]: item for item in report["project_readability"]}
+        for project_id, task_id in {
+            "FIFA": "S5PBT01",
+            "OpenAIDatabase": "S5PBT02",
+            "PFI_BIG_DATA_SIMULATOR": "S5PCT01",
+            "Serenity-Alipay": "S5PCT02",
+        }.items():
+            self.assertIn(project_id, projects)
+            self.assertEqual(projects[project_id]["task_id"], task_id)
+            self.assertTrue(projects[project_id]["human_entries_exist"])
+            self.assertTrue(projects[project_id]["owner_navigation"])
+            self.assertTrue(projects[project_id]["structure_report_contract"])
+
+        self.assertIn("隐私与运行边界", markdown)
+        self.assertIn("Privacy And Runtime Boundary", markdown)
+        self.assertIn("中文验收结论", markdown)
+        self.assertIn("用户可读优先", markdown)
+        self.assertIn("停止条件", markdown)
+        self.assertIn("下一步", markdown)
+        self.assertIn("Rollback", markdown)
+        self.assertIn("S6PAT01", markdown)
+        self.assertIn("EEI", markdown)
+        self.assertIn("arxiv-daily-push", markdown)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "ROOT")
+        self.assertEqual(manifest["task_id"], "S5PCT03")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PCT03"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PCT02-SERENITY-STRUCTURE-BOUNDARY-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PC-GATE"], "LOCAL_PRECOMMIT_PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S5-GATE"], "LOCAL_PRECOMMIT_PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["next_allowed_task"], "S6PAT01")
+        self.assertEqual(manifest["next_allowed_task"], "S6PAT01")
+        self.assertEqual(manifest["gate_report"]["wave2_candidate_count"], 457)
+        self.assertEqual(manifest["gate_report"]["private_candidate_count"], 255)
+        self.assertEqual(manifest["gate_report"]["evidence_refs_checked"], 28)
+        self.assertFalse(manifest["stop_conditions"]["private_data_entered_archive_or_example"])
+        self.assertFalse(manifest["stop_conditions"]["pfi_or_serenity_runtime_path_triggered_external_side_effects"])
+        self.assertFalse(manifest["stop_conditions"]["forbidden_project_scope_touched"])
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "tools/structure_audit.py",
+            "tools/wave2_gate.py",
+            "governance/stage_gates/s5pc/wave2_gate_report.json",
+            "governance/stage_gates/s5pc/wave2_gate.md",
+            "governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+
+    def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
+        owner_facing_reports = [
+            ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
+            ROOT / "governance" / "stage_gates" / "s5pc" / "wave2_gate.md",
+            ROOT / "Alpha" / "docs" / "structure_migration_map.md",
+            ROOT / "EVA_OS" / "docs" / "EVA_structure_report.md",
+            ROOT / "OpMe_System" / "docs" / "OpMe_structure_report.md",
+            ROOT / "whkmSalary" / "docs" / "whkm_structure_report.md",
+            ROOT / "FIFA" / "docs" / "FIFA_structure_report.md",
+            ROOT / "OpenAIDatabase" / "docs" / "OpenAIDatabase_structure_report.md",
+            ROOT / "PFI" / "大数据模拟器" / "docs" / "PFI_structure_report.md",
+            ROOT / "Serenity-Alipay" / "docs" / "Serenity_structure_report.md",
+        ]
+        required_tokens = ["用户可读", "中文验收", "停止条件", "回滚", "下一步"]
+
+        for path in owner_facing_reports:
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                text = path.read_text(encoding="utf-8")
+                first_non_empty = next((line.strip() for line in text.splitlines() if line.strip()), "")
+                first_twenty_lines = "\n".join(text.splitlines()[:20])
+                cjk_count = sum(1 for char in text if "\u4e00" <= char <= "\u9fff")
+
+                self.assertIn("中文", first_non_empty)
+                self.assertIn("用户可读", first_twenty_lines)
+                for token in required_tokens:
+                    self.assertIn(token, text)
+                self.assertGreaterEqual(cjk_count, 80)
+                self.assertFalse(first_non_empty.endswith("Gate") and "中文" not in first_non_empty)
 
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
