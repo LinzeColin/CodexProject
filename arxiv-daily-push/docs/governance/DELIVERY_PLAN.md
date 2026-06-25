@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 113
-- acceptance_count: 107
+- task_count: 114
+- acceptance_count: 108
 
 ## Delivery Tasks
 
@@ -209,3 +209,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PJT04 | Weekly report | completed_local_validation | `ACC-S2PJT04-WEEKLY` | Local-only weekly mainline, counterevidence, review/action/asset summary, next-week focus, content/state traceability, duplicate prevention, deterministic report hash, and no production side effects. |
 | S2PKT01 | M1-M4 mail contract | completed_local_validation | `ACC-S2PKT01-MAIL-CONTRACT` | Local-only shared EMAIL_LEARNING_V1 contract, board differentiation, reading layers, evidence labels, feedback actions, deterministic hashes, and no production side effects. |
 | S2PKT02 | M1 science/theory frontier mail | completed_local_validation | `ACC-S2PKT02-M1` | Local-only M1/B1 mail evidence with scientific mechanism, evidence chain, counterevidence, personal value, 15m/2h actions, deterministic hash, and no production side effects. |
+| S2PKT03 | M2 engineering/product/industry frontier mail | completed_local_validation | `ACC-S2PKT03-M2` | Local-only M2/B2 mail evidence with engineering usability, reproducibility, product/industry value, limitations, 2h/7d actions, deterministic hash, and no production side effects. |

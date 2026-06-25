@@ -5103,3 +5103,57 @@ formulas:
     evidence_hash: "sha256:aaae9712101a389dbf6c90c87dd31ce64172b423592c9f2f2174715abb5bf42b"
     last_verified_commit: "cb6f4f2da6c70dbc10c3693d41e3a73d36d4c827"
     verified_at: "2026-06-26T07:20:00+10:00"
+  -
+    formula_id: "FORM-ADP-093"
+    model_id: "MOD-ADP-091"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PKT03 passes only when S2PKT01, S2PHT05, S2PIT04, and S2PJT03 reports are passing and ready; the M2 mail record uses EMAIL_LEARNING_V1 template version 1.0.0, product M2, primary board B2, cross-cutting boards B4/B5/B6, source content traceable to the content ledger, required sections engineering_usability/reproducibility/product_industry_value/limitations/action_path, engineering usability evidence, reproducibility evidence, product or industry value evidence, explicit limitations, 2h and 7d action windows traceable to S2PJT03, a deterministic M2 hash, and all production, SMTP, scheduler, Release, DB migration, public schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags false."
+    variables:
+      -
+        name: "m2_mail_record"
+        data_type: "object"
+        unit: "M2 mail evidence record"
+        input_domain: "local M2 record with B2 primary board, B4/B5/B6 cross-cutting boards, required engineering/product/industry sections, source content ids, evidence refs, action ids, and no-send status"
+      -
+        name: "dependency_reports"
+        data_type: "object"
+        unit: "reports"
+        input_domain: "passing S2PKT01, S2PHT05, S2PIT04, and S2PJT03 reports"
+      -
+        name: "production_gate_state"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "all production and side-effect flags must be false"
+    constraints: "S2PKT03 is local M2 mail evidence only. It must not change runtime mail templates, send email, install scheduler, upload Release assets, mutate queues, change ranking, fetch live sources, change source adapters, migrate DB or public schema, change Email V1 runtime/frontstage, change V7.1 or V7.2 contract files, or claim owner-experience, Stage2, or integrated production acceptance."
+    missing_policy: "Missing dependency readiness, missing or drifted M2 contract scope, untraceable source content, missing required sections, missing engineering/reproducibility/product/limitations labels, untraceable action ids, missing 2h/7d action windows, stale hash, or any production/schema/scheduler/email side-effect flag blocks the report."
+    output_range: "S2PKT03 M2 mail report with status pass or blocked, gate states, M2 evidence record, deterministic M2 hash, validation errors, and all production/schema/email side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PKT03-M2-MAIL-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PKT03_M2_MAIL.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_M2_MAIL_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_ACCEPTANCE_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_TASK_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_MAIL_PRODUCT_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_PRIMARY_BOARD"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_REQUIRED_SECTIONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_REQUIRED_ACTION_WINDOWS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PKT03_REPORT_FILENAME"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::build_s2pkt03_m2_mail_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::run_s2pkt03_m2_mail"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::validate_s2pkt03_m2_mail_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"
+    implementation_fingerprint: "sha256:8ee20f003fe9e72b01e5f0b4fe535e15e60976cedeae449fbddd28c221392275"
+    evidence_hash: "sha256:fa5f6cb0f35163c9a5d2038f5307512b2779a3be22b3f43017660308265a53b2"
+    last_verified_commit: "fd5f57fbc2019ac3f71f92aed48092c2a0949a1e"
+    verified_at: "2026-06-26T08:20:00+10:00"
