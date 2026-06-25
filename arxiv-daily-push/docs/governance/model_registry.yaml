@@ -3959,3 +3959,57 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PET01-US-TA-SOURCE-FOUNDATION-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md"
+
+
+  -
+    model_id: "MOD-ADP-076"
+    name: "S2PET02 US-LG legal backbone"
+    kind: "deterministic metadata-only US legal source relation backbone model"
+    purpose: "Validate Federal Register, Regulations.gov, GovInfo, and Congress.gov metadata coverage, Docket/FR/bill/certified-text relation correctness, official identity, traceability, and disabled production side-effect flags before any D4 production inclusion."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pet02-us-lg-legal-backbone-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-078"
+    parameter_ids:
+      - "PARAM-ADP-569"
+      - "PARAM-ADP-570"
+      - "PARAM-ADP-571"
+      - "PARAM-ADP-572"
+      - "PARAM-ADP-573"
+      - "PARAM-ADP-574"
+      - "PARAM-ADP-575"
+      - "PARAM-ADP-576"
+      - "PARAM-ADP-577"
+      - "PARAM-ADP-578"
+      - "PARAM-ADP-579"
+    inputs:
+      - "passing S2PET01 US-TA source foundation report"
+      - "US-LG legal metadata records"
+      - "US-LG legal relation records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "US-LG legal backbone report"
+      - "upstream US-TA gate"
+      - "source system coverage gate"
+      - "document type gate"
+      - "official identity gate"
+      - "document traceability gate"
+      - "legal relation gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md"

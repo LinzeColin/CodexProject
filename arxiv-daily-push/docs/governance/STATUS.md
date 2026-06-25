@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PE / S2PET01_US_TA_SOURCE_FOUNDATION_METADATA_ONLY_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `75 / 77 / 568`
-- Active formulas/parameters: `77 / 551`
-- Machine checked formulas/parameters: `77 / 551`
+- Phase/Gate: `S2PE / S2PET02_US_LG_LEGAL_BACKBONE_METADATA_ONLY_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `76 / 78 / 579`
+- Active formulas/parameters: `78 / 562`
+- Machine checked formulas/parameters: `78 / 562`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PET01_US_TA_SOURCE_FOUNDATION_METADATA_ONLY_NO_PRODUCTION`
+- Release gate: `S2PET02_US_LG_LEGAL_BACKBONE_METADATA_ONLY_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57`

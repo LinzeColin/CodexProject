@@ -209,6 +209,37 @@ S2PET01_REQUIRED_SIGNAL_TYPES = (
 S2PET01_ALLOWED_IDENTITY_STATES = ("official_domain", "official_api_or_feed", "official_publication_portal")
 S2PET01_REQUIRED_TRACE_FIELDS = ("agency_id", "agency_name", "official_domain", "source_url", "published_date")
 S2PET01_REPORT_FILENAME = "stage2_s2pet01_us_ta_source_foundation_report.json"
+S2PET02_US_LG_BACKBONE_MODEL_ID = "adp-s2pet02-us-lg-legal-backbone-v1"
+S2PET02_ACCEPTANCE_ID = "ACC-S2PET02-US-LG"
+S2PET02_TASK_ID = "S2PET02"
+S2PET02_LEGACY_TASK_ID = "S2P4T02"
+S2PET02_REQUIRED_SOURCE_SYSTEMS = ("federal_register", "regulations_gov", "govinfo", "congress_gov")
+S2PET02_REQUIRED_DOCUMENT_TYPES = (
+    "docket",
+    "proposed_rule",
+    "final_rule",
+    "cfr",
+    "bill",
+    "public_law",
+    "committee_report",
+    "certified_text",
+)
+S2PET02_REQUIRED_RELATION_TYPES = (
+    "docket_to_fr_document",
+    "fr_document_to_cfr",
+    "bill_to_public_law",
+    "bill_to_report",
+    "certified_text_to_public_law",
+)
+S2PET02_ALLOWED_IDENTITY_STATES = (
+    "official_domain",
+    "official_api_or_feed",
+    "official_publication_portal",
+    "certified_government_text",
+)
+S2PET02_REQUIRED_TRACE_FIELDS = ("source_system", "official_domain", "source_url", "published_date", "document_identifier")
+S2PET02_REQUIRED_RELATION_FIELDS = ("relation_id", "relation_type", "source_document_id", "target_document_id", "evidence_refs")
+S2PET02_REPORT_FILENAME = "stage2_s2pet02_us_lg_legal_backbone_report.json"
 S2PFT01_CHINA_PROVINCIAL_MODEL_ID = "adp-s2pft01-china-provincial-template-coverage-v1"
 S2PFT01_ACCEPTANCE_ID = "ACC-S2PFT01-PROVINCES"
 S2PFT01_TASK_ID = "S2PFT01"
@@ -3693,6 +3724,290 @@ def validate_s2pet01_us_ta_source_foundation_report(report: Mapping[str, Any]) -
                 errors.append(f"passing S2PET01 US-TA report requires {key}=pass")
         if report.get("d4_us_ta_source_foundation_ready") is not True:
             errors.append("passing S2PET01 US-TA report requires d4_us_ta_source_foundation_ready=true")
+    return errors
+
+
+def build_s2pet02_us_lg_legal_backbone_report(
+    *,
+    generated_at: str,
+    us_ta_source_foundation_report: Mapping[str, Any],
+    legal_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build US-LG legal backbone metadata and cross-document relation evidence without production inclusion."""
+
+    us_ta_errors = validate_s2pet01_us_ta_source_foundation_report(us_ta_source_foundation_report)
+    us_ta_gate = (
+        "pass"
+        if not us_ta_errors
+        and us_ta_source_foundation_report.get("status") == "pass"
+        and us_ta_source_foundation_report.get("d4_us_ta_source_foundation_ready") is True
+        else "blocked"
+    )
+    legal_rows, legal_row_errors = _s2pet02_legal_rows(legal_records)
+    relation_rows, relation_row_errors = _s2pet02_relation_rows(relation_records)
+    source_gate = _s2pet02_source_system_gate(legal_rows)
+    document_gate = _s2pet02_document_type_gate(legal_rows)
+    identity_gate = _s2pet02_legal_identity_gate(legal_rows)
+    traceability_gate = _s2pet02_legal_traceability_gate(legal_rows)
+    relation_gate = _s2pet02_relation_gate(legal_rows, relation_rows)
+    metadata_gate = _s2pet02_legal_metadata_gate(legal_rows, relation_rows)
+    upstream_reasons = [f"upstream S2PET01: {error}" for error in us_ta_errors]
+    if us_ta_gate != "pass":
+        upstream_reasons.append("upstream S2PET01 report must pass before S2PET02 US-LG legal backbone evidence")
+    blocking_reasons = [
+        *upstream_reasons,
+        *legal_row_errors,
+        *relation_row_errors,
+        *source_gate["blocking_reasons"],
+        *document_gate["blocking_reasons"],
+        *identity_gate["blocking_reasons"],
+        *traceability_gate["blocking_reasons"],
+        *relation_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and us_ta_gate
+        == source_gate["status"]
+        == document_gate["status"]
+        == identity_gate["status"]
+        == traceability_gate["status"]
+        == relation_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PET02_US_LG_BACKBONE_MODEL_ID,
+        "acceptance_id": S2PET02_ACCEPTANCE_ID,
+        "task_id": S2PET02_TASK_ID,
+        "legacy_task_id": S2PET02_LEGACY_TASK_ID,
+        "phase": "S2PE",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_us_ta_source_foundation_gate": us_ta_gate,
+        "source_system_coverage_gate": source_gate["status"],
+        "document_type_gate": document_gate["status"],
+        "official_identity_gate": identity_gate["status"],
+        "document_traceability_gate": traceability_gate["status"],
+        "legal_relation_gate": relation_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_source_systems": list(S2PET02_REQUIRED_SOURCE_SYSTEMS),
+        "source_systems_observed": source_gate["source_systems_observed"],
+        "required_document_types": list(S2PET02_REQUIRED_DOCUMENT_TYPES),
+        "document_types_observed": document_gate["document_types_observed"],
+        "required_relation_types": list(S2PET02_REQUIRED_RELATION_TYPES),
+        "relation_types_observed": relation_gate["relation_types_observed"],
+        "required_trace_fields": list(S2PET02_REQUIRED_TRACE_FIELDS),
+        "required_relation_fields": list(S2PET02_REQUIRED_RELATION_FIELDS),
+        "legal_records": legal_rows,
+        "relation_records": relation_rows,
+        "legal_record_count": len(legal_rows),
+        "relation_record_count": len(relation_rows),
+        "source_system_summary": source_gate,
+        "document_type_summary": document_gate,
+        "identity_summary": identity_gate,
+        "traceability_summary": traceability_gate,
+        "relation_summary": relation_gate,
+        "metadata_summary": metadata_gate,
+        "d4_us_lg_legal_backbone_ready": status == "pass",
+        "d4_us_official_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "public_schema_changed": False,
+        "legal_advice_provided": False,
+        "live_source_fetch_executed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_modified": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pet02_us_lg_legal_backbone(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    us_ta_source_foundation_report: Mapping[str, Any],
+    legal_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PET02 US-LG legal backbone evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pet02-us-lg-legal-backbone"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pet02_us_lg_legal_backbone_report(
+        generated_at=generated_at,
+        us_ta_source_foundation_report=us_ta_source_foundation_report,
+        legal_records=legal_records,
+        relation_records=relation_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "legal_backbone_report_path": str(run_dir / "adp-s2pet02-us-lg-legal-backbone-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pet02-us-lg-legal-backbone-report.json", report)
+        _write_json(state / S2PET02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pet02_us_lg_legal_backbone_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PET02_US_LG_BACKBONE_MODEL_ID:
+        errors.append("S2PET02 US-LG model_id must be adp-s2pet02-us-lg-legal-backbone-v1")
+    if report.get("task_id") != S2PET02_TASK_ID:
+        errors.append("S2PET02 US-LG task_id must be S2PET02")
+    if report.get("legacy_task_id") != S2PET02_LEGACY_TASK_ID:
+        errors.append("S2PET02 US-LG legacy_task_id must be S2P4T02")
+    if report.get("acceptance_id") != S2PET02_ACCEPTANCE_ID:
+        errors.append("S2PET02 US-LG acceptance_id must be ACC-S2PET02-US-LG")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PET02 US-LG status must be pass or blocked")
+    for key in (
+        "d4_us_official_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "public_schema_changed",
+        "legal_advice_provided",
+        "live_source_fetch_executed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_modified",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PET02 US-LG legal backbone")
+    records = report.get("legal_records")
+    if not isinstance(records, list):
+        errors.append("S2PET02 legal_records must be a list")
+        records = []
+    relations = report.get("relation_records")
+    if not isinstance(relations, list):
+        errors.append("S2PET02 relation_records must be a list")
+        relations = []
+    observed_sources = set(report.get("source_systems_observed") or [])
+    missing_sources = [system for system in S2PET02_REQUIRED_SOURCE_SYSTEMS if system not in observed_sources]
+    if missing_sources:
+        errors.append("S2PET02 missing required source systems: " + ", ".join(missing_sources))
+    observed_documents = set(report.get("document_types_observed") or [])
+    missing_documents = [document_type for document_type in S2PET02_REQUIRED_DOCUMENT_TYPES if document_type not in observed_documents]
+    if missing_documents:
+        errors.append("S2PET02 missing required document types: " + ", ".join(missing_documents))
+    observed_relations = set(report.get("relation_types_observed") or [])
+    missing_relations = [relation_type for relation_type in S2PET02_REQUIRED_RELATION_TYPES if relation_type not in observed_relations]
+    if missing_relations:
+        errors.append("S2PET02 missing required relation types: " + ", ".join(missing_relations))
+    document_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"legal_records[{index}] must be an object")
+            continue
+        document_id = str(record.get("document_id") or "")
+        if not document_id:
+            errors.append(f"legal_records[{index}].document_id is required")
+        if document_id in document_ids:
+            errors.append(f"duplicate S2PET02 document_id: {document_id}")
+        document_ids.add(document_id)
+        if record.get("source_system") not in S2PET02_REQUIRED_SOURCE_SYSTEMS:
+            errors.append(f"legal_records[{index}].source_system is not supported")
+        if record.get("document_type") not in S2PET02_REQUIRED_DOCUMENT_TYPES:
+            errors.append(f"legal_records[{index}].document_type is not supported")
+        if record.get("identity_state") not in S2PET02_ALLOWED_IDENTITY_STATES:
+            errors.append(f"legal_records[{index}].identity_state is not accepted")
+        if record.get("metadata_only") is not True:
+            errors.append(f"legal_records[{index}].metadata_only must be true")
+        if record.get("pdf_downloaded") is not False:
+            errors.append(f"legal_records[{index}].pdf_downloaded must be false")
+        if record.get("full_text_extracted") is not False:
+            errors.append(f"legal_records[{index}].full_text_extracted must be false")
+        if record.get("production_affected") is not False:
+            errors.append(f"legal_records[{index}].production_affected must be false")
+        if record.get("legal_advice_provided") is not False:
+            errors.append(f"legal_records[{index}].legal_advice_provided must be false")
+        for field in S2PET02_REQUIRED_TRACE_FIELDS:
+            if not record.get(field):
+                errors.append(f"legal_records[{index}].{field} is required")
+        if not record.get("document_title"):
+            errors.append(f"legal_records[{index}].document_title is required")
+        if not record.get("evidence_refs"):
+            errors.append(f"legal_records[{index}].evidence_refs is required")
+    relation_ids: set[str] = set()
+    for index, relation in enumerate(relations):
+        if not isinstance(relation, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_id = str(relation.get("relation_id") or "")
+        if not relation_id:
+            errors.append(f"relation_records[{index}].relation_id is required")
+        if relation_id in relation_ids:
+            errors.append(f"duplicate S2PET02 relation_id: {relation_id}")
+        relation_ids.add(relation_id)
+        if relation.get("relation_type") not in S2PET02_REQUIRED_RELATION_TYPES:
+            errors.append(f"relation_records[{index}].relation_type is not supported")
+        if relation.get("source_document_id") not in document_ids:
+            errors.append(f"relation_records[{index}].source_document_id must reference legal_records")
+        if relation.get("target_document_id") not in document_ids:
+            errors.append(f"relation_records[{index}].target_document_id must reference legal_records")
+        if not relation.get("evidence_refs"):
+            errors.append(f"relation_records[{index}].evidence_refs is required")
+        if relation.get("metadata_only") is not True:
+            errors.append(f"relation_records[{index}].metadata_only must be true")
+        if relation.get("production_affected") is not False:
+            errors.append(f"relation_records[{index}].production_affected must be false")
+        if relation.get("schema_migration_required") is not False:
+            errors.append(f"relation_records[{index}].schema_migration_required must be false")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PET02 US-LG report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_us_ta_source_foundation_gate",
+            "source_system_coverage_gate",
+            "document_type_gate",
+            "official_identity_gate",
+            "document_traceability_gate",
+            "legal_relation_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PET02 US-LG report requires {key}=pass")
+        if report.get("d4_us_lg_legal_backbone_ready") is not True:
+            errors.append("passing S2PET02 US-LG report requires d4_us_lg_legal_backbone_ready=true")
     return errors
 
 
@@ -8345,6 +8660,234 @@ def _s2pet01_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "status": "pass" if not reasons else "blocked",
         "metadata_only_record_count": len(rows) - len(violations),
         "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet02_legal_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    document_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"legal_records[{index}] must be an object")
+            continue
+        document_id = str(record.get("document_id") or "").strip()
+        official_domain = str(record.get("official_domain") or "").strip().lower()
+        source_url = str(record.get("source_url") or "").strip()
+        row = {
+            "document_id": document_id,
+            "source_system": str(record.get("source_system") or "").strip(),
+            "document_type": str(record.get("document_type") or "").strip(),
+            "document_title": str(record.get("document_title") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "published_date": str(record.get("published_date") or "").strip(),
+            "document_identifier": str(record.get("document_identifier") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "queue_mutation_allowed": record.get("queue_mutation_allowed") is True,
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "legal_advice_provided": record.get("legal_advice_provided") is True,
+            "live_source_fetch_executed": record.get("live_source_fetch_executed") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not document_id:
+            errors.append(f"legal_records[{index}].document_id is required")
+        if document_id in document_ids:
+            errors.append(f"duplicate S2PET02 document_id: {document_id}")
+        document_ids.add(document_id)
+        if official_domain and source_url and official_domain not in source_url.lower():
+            errors.append(f"legal_records[{index}].source_url must contain official_domain")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET02 requires at least one US-LG legal record")
+    return rows, errors
+
+
+def _s2pet02_relation_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    relation_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_id = str(record.get("relation_id") or "").strip()
+        row = {
+            "relation_id": relation_id,
+            "relation_type": str(record.get("relation_type") or "").strip(),
+            "source_document_id": str(record.get("source_document_id") or "").strip(),
+            "target_document_id": str(record.get("target_document_id") or "").strip(),
+            "relation_explanation": str(record.get("relation_explanation") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "legal_advice_provided": record.get("legal_advice_provided") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not relation_id:
+            errors.append(f"relation_records[{index}].relation_id is required")
+        if relation_id in relation_ids:
+            errors.append(f"duplicate S2PET02 relation_id: {relation_id}")
+        relation_ids.add(relation_id)
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET02 requires at least one legal relation record")
+    return rows, errors
+
+
+def _s2pet02_source_system_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("source_system") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET02_REQUIRED_SOURCE_SYSTEMS) - observed)
+    unsupported = sorted(observed - set(S2PET02_REQUIRED_SOURCE_SYSTEMS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET02 US-LG missing required source systems: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET02 US-LG has unsupported source systems: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_source_systems": list(S2PET02_REQUIRED_SOURCE_SYSTEMS),
+        "source_systems_observed": sorted(system for system in observed if system),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet02_document_type_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("document_type") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET02_REQUIRED_DOCUMENT_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET02_REQUIRED_DOCUMENT_TYPES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET02 US-LG missing required document types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET02 US-LG has unsupported document types: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_document_types": list(S2PET02_REQUIRED_DOCUMENT_TYPES),
+        "document_types_observed": sorted(document_type for document_type in observed if document_type),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet02_legal_identity_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("identity_state") not in S2PET02_ALLOWED_IDENTITY_STATES
+        or not str(row.get("official_domain") or "")
+        or not str(row.get("source_url") or "")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PET02 US-LG identity requires accepted identity_state, official_domain, and source_url")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_identity_states": list(S2PET02_ALLOWED_IDENTITY_STATES),
+        "verified_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet02_legal_traceability_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing_rows = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            missing_rows.append(row)
+            continue
+        if any(not row.get(field) for field in S2PET02_REQUIRED_TRACE_FIELDS) or not row.get("document_title") or not row.get("evidence_refs"):
+            missing_rows.append(row)
+    reasons: list[str] = []
+    if missing_rows:
+        reasons.append("S2PET02 US-LG traceability requires source_system, official_domain, source_url, published_date, document_identifier, document_title, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_trace_fields": list(S2PET02_REQUIRED_TRACE_FIELDS),
+        "traceable_record_count": len(rows) - len(missing_rows),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet02_relation_gate(
+    legal_rows: Sequence[Mapping[str, Any]],
+    relation_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    document_ids = {str(row.get("document_id") or "") for row in legal_rows if isinstance(row, Mapping)}
+    observed = {str(row.get("relation_type") or "") for row in relation_rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET02_REQUIRED_RELATION_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET02_REQUIRED_RELATION_TYPES))
+    invalid_refs = [
+        row
+        for row in relation_rows
+        if not isinstance(row, Mapping)
+        or row.get("source_document_id") not in document_ids
+        or row.get("target_document_id") not in document_ids
+        or not row.get("evidence_refs")
+        or not row.get("relation_explanation")
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET02 US-LG missing required relation types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET02 US-LG has unsupported relation types: " + ", ".join(unsupported))
+    if invalid_refs:
+        reasons.append("S2PET02 US-LG relations require valid source/target document ids, explanation, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_relation_types": list(S2PET02_REQUIRED_RELATION_TYPES),
+        "relation_types_observed": sorted(relation_type for relation_type in observed if relation_type),
+        "verified_relation_count": len(relation_rows) - len(invalid_refs),
+        "relation_count": len(relation_rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet02_legal_metadata_gate(
+    legal_rows: Sequence[Mapping[str, Any]],
+    relation_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    legal_violations = [
+        row
+        for row in legal_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+        or row.get("queue_mutation_allowed") is not False
+        or row.get("schema_migration_required") is not False
+        or row.get("legal_advice_provided") is not False
+        or row.get("live_source_fetch_executed") is not False
+    ]
+    relation_violations = [
+        row
+        for row in relation_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+        or row.get("schema_migration_required") is not False
+        or row.get("legal_advice_provided") is not False
+    ]
+    reasons: list[str] = []
+    if legal_violations or relation_violations:
+        reasons.append("S2PET02 US-LG records must be metadata-only with no PDF/full-text, legal-advice, live-fetch, production, SMTP, schema, or queue side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_legal_record_count": len(legal_rows) - len(legal_violations),
+        "metadata_only_relation_record_count": len(relation_rows) - len(relation_violations),
+        "legal_record_count": len(legal_rows),
+        "relation_record_count": len(relation_rows),
         "blocking_reasons": reasons,
     }
 

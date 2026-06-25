@@ -46,6 +46,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
     S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
     S2PET01_US_TA_SOURCE_MODEL_ID,
+    S2PET02_US_LG_BACKBONE_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -73,6 +74,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pdt02_china_c1_department_source_map_report,
     build_s2pdt01_china_c0_source_foundation_report,
     build_s2pet01_us_ta_source_foundation_report,
+    build_s2pet02_us_lg_legal_backbone_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -98,6 +100,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
     run_s2pet01_us_ta_source_foundation,
+    run_s2pet02_us_lg_legal_backbone,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -121,6 +124,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pet01_us_ta_source_foundation_report,
+    validate_s2pet02_us_lg_legal_backbone_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -670,6 +674,215 @@ def us_ta_agency_records() -> list[dict]:
             "queue_mutation_allowed": False,
             "evidence_refs": ["fixture:us-ta-fda-reg-sci"],
         },
+    ]
+
+
+def us_ta_source_foundation_report() -> dict:
+    return build_s2pet01_us_ta_source_foundation_report(
+        generated_at=GENERATED_AT,
+        agency_records=us_ta_agency_records(),
+    )
+
+
+def us_lg_legal_records() -> list[dict]:
+    base = {
+        "metadata_only": True,
+        "pdf_downloaded": False,
+        "full_text_extracted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "queue_mutation_allowed": False,
+        "schema_migration_required": False,
+        "legal_advice_provided": False,
+        "live_source_fetch_executed": False,
+    }
+    rows = [
+        (
+            "us-lg:regulations:docket:doe-2026-0001",
+            "regulations_gov",
+            "docket",
+            "DOE AI infrastructure rulemaking docket metadata",
+            "regulations.gov",
+            "https://www.regulations.gov/docket/DOE-2026-0001",
+            "2026-05-09",
+            "DOE-2026-0001",
+            "official_publication_portal",
+            ["fixture:us-lg-regulations-docket"],
+        ),
+        (
+            "us-lg:fr:proposed-rule:2026-10001",
+            "federal_register",
+            "proposed_rule",
+            "Federal Register proposed AI infrastructure rule metadata",
+            "federalregister.gov",
+            "https://www.federalregister.gov/documents/2026/05/10/2026-10001/example-proposed-rule",
+            "2026-05-10",
+            "2026-10001",
+            "official_publication_portal",
+            ["fixture:us-lg-fr-proposed-rule"],
+        ),
+        (
+            "us-lg:fr:final-rule:2026-10002",
+            "federal_register",
+            "final_rule",
+            "Federal Register final AI infrastructure rule metadata",
+            "federalregister.gov",
+            "https://www.federalregister.gov/documents/2026/06/10/2026-10002/example-final-rule",
+            "2026-06-10",
+            "2026-10002",
+            "official_publication_portal",
+            ["fixture:us-lg-fr-final-rule"],
+        ),
+        (
+            "us-lg:govinfo:cfr:10-431",
+            "govinfo",
+            "cfr",
+            "GovInfo CFR metadata for energy efficiency part",
+            "govinfo.gov",
+            "https://www.govinfo.gov/app/details/CFR-2026-title10-vol3/CFR-2026-title10-vol3-part431",
+            "2026-06-11",
+            "CFR-2026-title10-vol3-part431",
+            "certified_government_text",
+            ["fixture:us-lg-govinfo-cfr"],
+        ),
+        (
+            "us-lg:congress:bill:hr2600",
+            "congress_gov",
+            "bill",
+            "Congress.gov bill metadata for AI infrastructure act",
+            "congress.gov",
+            "https://www.congress.gov/bill/119th-congress/house-bill/2600",
+            "2026-05-12",
+            "H.R.2600-119",
+            "official_publication_portal",
+            ["fixture:us-lg-congress-bill"],
+        ),
+        (
+            "us-lg:govinfo:plaw:119-1",
+            "govinfo",
+            "public_law",
+            "GovInfo public law metadata",
+            "govinfo.gov",
+            "https://www.govinfo.gov/app/details/PLAW-119publ1",
+            "2026-06-12",
+            "PLAW-119publ1",
+            "certified_government_text",
+            ["fixture:us-lg-govinfo-public-law"],
+        ),
+        (
+            "us-lg:congress:report:hrpt119-1",
+            "congress_gov",
+            "committee_report",
+            "Congress.gov committee report metadata",
+            "congress.gov",
+            "https://www.congress.gov/congressional-report/119th-congress/house-report/1",
+            "2026-05-20",
+            "H.Rpt.119-1",
+            "official_publication_portal",
+            ["fixture:us-lg-congress-report"],
+        ),
+        (
+            "us-lg:govinfo:certified-text:119-1",
+            "govinfo",
+            "certified_text",
+            "GovInfo enrolled bill and certified text metadata",
+            "govinfo.gov",
+            "https://www.govinfo.gov/app/details/BILLS-119hr2600enr",
+            "2026-06-01",
+            "BILLS-119hr2600enr",
+            "certified_government_text",
+            ["fixture:us-lg-govinfo-certified-text"],
+        ),
+    ]
+    return [
+        {
+            **base,
+            "document_id": document_id,
+            "source_system": source_system,
+            "document_type": document_type,
+            "document_title": document_title,
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "published_date": published_date,
+            "document_identifier": document_identifier,
+            "identity_state": identity_state,
+            "evidence_refs": evidence_refs,
+        }
+        for (
+            document_id,
+            source_system,
+            document_type,
+            document_title,
+            official_domain,
+            source_url,
+            published_date,
+            document_identifier,
+            identity_state,
+            evidence_refs,
+        ) in rows
+    ]
+
+
+def us_lg_relation_records() -> list[dict]:
+    base = {
+        "metadata_only": True,
+        "production_affected": False,
+        "schema_migration_required": False,
+        "legal_advice_provided": False,
+    }
+    rows = [
+        (
+            "us-lg:relation:docket-fr-proposed",
+            "docket_to_fr_document",
+            "us-lg:regulations:docket:doe-2026-0001",
+            "us-lg:fr:proposed-rule:2026-10001",
+            "Regulations.gov docket metadata links to the Federal Register proposed rule metadata.",
+            ["fixture:us-lg-relation-docket-fr"],
+        ),
+        (
+            "us-lg:relation:fr-final-cfr",
+            "fr_document_to_cfr",
+            "us-lg:fr:final-rule:2026-10002",
+            "us-lg:govinfo:cfr:10-431",
+            "Federal Register final rule metadata links to the corresponding GovInfo CFR metadata.",
+            ["fixture:us-lg-relation-fr-cfr"],
+        ),
+        (
+            "us-lg:relation:bill-public-law",
+            "bill_to_public_law",
+            "us-lg:congress:bill:hr2600",
+            "us-lg:govinfo:plaw:119-1",
+            "Congress bill metadata links to the resulting GovInfo public law metadata.",
+            ["fixture:us-lg-relation-bill-law"],
+        ),
+        (
+            "us-lg:relation:bill-report",
+            "bill_to_report",
+            "us-lg:congress:bill:hr2600",
+            "us-lg:congress:report:hrpt119-1",
+            "Congress bill metadata links to the committee report metadata.",
+            ["fixture:us-lg-relation-bill-report"],
+        ),
+        (
+            "us-lg:relation:certified-public-law",
+            "certified_text_to_public_law",
+            "us-lg:govinfo:certified-text:119-1",
+            "us-lg:govinfo:plaw:119-1",
+            "GovInfo certified text metadata links to the public law metadata without downloading full text.",
+            ["fixture:us-lg-relation-certified-law"],
+        ),
+    ]
+    return [
+        {
+            **base,
+            "relation_id": relation_id,
+            "relation_type": relation_type,
+            "source_document_id": source_document_id,
+            "target_document_id": target_document_id,
+            "relation_explanation": relation_explanation,
+            "evidence_refs": evidence_refs,
+        }
+        for relation_id, relation_type, source_document_id, target_document_id, relation_explanation, evidence_refs in rows
     ]
 
 
@@ -2128,6 +2341,108 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["schema_migration_allowed"])
             self.assertTrue(Path(report["source_foundation_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pet01_us_ta_source_foundation_report.json").is_file())
+
+    def test_s2pet02_us_lg_legal_backbone_validates_relations_without_production(self) -> None:
+        report = build_s2pet02_us_lg_legal_backbone_report(
+            generated_at=GENERATED_AT,
+            us_ta_source_foundation_report=us_ta_source_foundation_report(),
+            legal_records=us_lg_legal_records(),
+            relation_records=us_lg_relation_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PET02_US_LG_BACKBONE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PET02-US-LG")
+        self.assertEqual(report["task_id"], "S2PET02")
+        self.assertEqual(report["legacy_task_id"], "S2P4T02")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d4_us_lg_legal_backbone_ready"])
+        self.assertEqual(report["upstream_us_ta_source_foundation_gate"], "pass")
+        self.assertEqual(report["source_system_coverage_gate"], "pass")
+        self.assertEqual(report["document_type_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["document_traceability_gate"], "pass")
+        self.assertEqual(report["legal_relation_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_source_systems"]).issubset(set(report["source_systems_observed"])))
+        self.assertTrue(set(report["required_document_types"]).issubset(set(report["document_types_observed"])))
+        self.assertTrue(set(report["required_relation_types"]).issubset(set(report["relation_types_observed"])))
+        self.assertFalse(report["d4_us_official_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["legal_advice_provided"])
+        self.assertFalse(report["live_source_fetch_executed"])
+        self.assertFalse(report["v7_2_contract_files_modified"])
+        self.assertFalse(validate_s2pet02_us_lg_legal_backbone_report(report))
+
+    def test_s2pet02_us_lg_legal_backbone_blocks_unofficial_missing_relation_and_side_effects(self) -> None:
+        records = us_lg_legal_records()
+        records[0] = dict(
+            records[0],
+            source_url="https://mirror.example.com/docket",
+            published_date="",
+            identity_state="mirror",
+            pdf_downloaded=True,
+            legal_advice_provided=True,
+            production_affected=True,
+        )
+        relations = us_lg_relation_records()
+        relations[0] = dict(relations[0], target_document_id="missing:fr-doc", evidence_refs=[])
+
+        report = build_s2pet02_us_lg_legal_backbone_report(
+            generated_at=GENERATED_AT,
+            us_ta_source_foundation_report=us_ta_source_foundation_report(),
+            legal_records=records,
+            relation_records=relations,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["official_identity_gate"], "blocked")
+        self.assertEqual(report["document_traceability_gate"], "blocked")
+        self.assertEqual(report["legal_relation_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d4_us_lg_legal_backbone_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("traceability requires", joined)
+        self.assertIn("relations require", joined)
+        self.assertIn("metadata-only", joined)
+
+    def test_s2pet02_us_lg_legal_backbone_requires_passing_s2pet01_upstream(self) -> None:
+        upstream = dict(us_ta_source_foundation_report(), status="blocked", d4_us_ta_source_foundation_ready=False)
+
+        report = build_s2pet02_us_lg_legal_backbone_report(
+            generated_at=GENERATED_AT,
+            us_ta_source_foundation_report=upstream,
+            legal_records=us_lg_legal_records(),
+            relation_records=us_lg_relation_records(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["upstream_us_ta_source_foundation_gate"], "blocked")
+        self.assertFalse(report["d4_us_lg_legal_backbone_ready"])
+        self.assertIn("upstream S2PET01 report must pass", " ".join(report["blocking_reasons"]))
+
+    def test_s2pet02_us_lg_legal_backbone_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pet02_us_lg_legal_backbone(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                us_ta_source_foundation_report=us_ta_source_foundation_report(),
+                legal_records=us_lg_legal_records(),
+                relation_records=us_lg_relation_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pet02_us_lg_legal_backbone_report(report))
+            self.assertFalse(report["d4_us_official_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["legal_backbone_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pet02_us_lg_legal_backbone_report.json").is_file())
 
     def test_s2pdt02_china_c1_department_source_map_validates_alias_routes_without_production(self) -> None:
         report = build_s2pdt02_china_c1_department_source_map_report(
@@ -3889,6 +4204,43 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["legacy_task_id"], "S2P4T01")
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d4_us_ta_source_foundation_ready"])
+        self.assertFalse(payload["d4_us_official_source_domain_accepted"])
+
+    def test_cli_stage2_us_lg_legal_backbone_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            us_ta_report_path = Path(tmp) / "us-ta-source-foundation-report.json"
+            legal_records_path = Path(tmp) / "legal-records.json"
+            relation_records_path = Path(tmp) / "relation-records.json"
+            us_ta_report_path.write_text(json.dumps(us_ta_source_foundation_report(), ensure_ascii=False), encoding="utf-8")
+            legal_records_path.write_text(json.dumps({"legal_records": us_lg_legal_records()}, ensure_ascii=False), encoding="utf-8")
+            relation_records_path.write_text(json.dumps({"relation_records": us_lg_relation_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-us-lg-legal-backbone",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--us-ta-source-foundation-report",
+                    str(us_ta_report_path),
+                    "--legal-records",
+                    str(legal_records_path),
+                    "--relation-records",
+                    str(relation_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PET02_US_LG_BACKBONE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PET02")
+        self.assertEqual(payload["legacy_task_id"], "S2P4T02")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d4_us_lg_legal_backbone_ready"])
         self.assertFalse(payload["d4_us_official_source_domain_accepted"])
 
     def test_cli_stage2_china_c1_department_source_map_outputs_json(self) -> None:
