@@ -9,7 +9,7 @@
   "iteration_id": "ITER-OTHER8-S6PAT02-ALPHA-20260625",
   "generated_at": "2026-06-25T00:00:00+10:00",
   "implementation_base_sha": "daab8498f8b9921fd79da95ca92457dee9847620",
-  "result_commit": "PENDING_PR_HEAD",
+  "result_commit": "fc8b20090494ae51e99a400dc308d958bface441",
   "depends_on": [
     "GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625"
   ],
@@ -140,9 +140,9 @@
     "governance/run_manifests/GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625.json",
     "governance/run_manifests/GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json"
   ],
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "CI_ATTESTED",
   "ci_attestation_subject": "Other8 S6PAT02 Alpha owner flow and first smoke path",
-  "ci_run_reference": "LOCAL_CHANGED_ONLY_PASS_PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "PR_168_PROJECT_GOVERNANCE_RUN_28142583948_SUCCESS_AND_MAIN_PUSH_RUN_28142613322_SUCCESS",
   "summary": "S6PAT02 starts with Alpha only. It implements the S6PAT01 Alpha P0/P1 owner-flow candidates in README, records the current dependency blocker honestly, and avoids project code, runtime state, file movement, UI framework, broker, or external automation changes.",
   "rollback": {
     "action": "revert_s6pat02_alpha_readme_commit",

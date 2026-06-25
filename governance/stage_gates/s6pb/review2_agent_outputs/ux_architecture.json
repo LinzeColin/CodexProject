@@ -1,0 +1,115 @@
+{
+  "review_agent": "S6PBT01 Agent 3 ux_architecture",
+  "baseline": {
+    "branch": "main",
+    "head": "951e5848d1970e490ef0e1a0dabb1595faf4aa32"
+  },
+  "mode": "READ_ONLY",
+  "tests_executed": "NOT_RUN",
+  "findings": [
+    {
+      "finding_id": "S6PBT01-A3-HIGH-ALPHA-CURRENT-STATE",
+      "severity": "High",
+      "title": "Alpha Owner 当前状态存在多事实源冲突，2 分钟状态判断不可靠",
+      "evidence_paths": [
+        "Alpha/README.md:3-8",
+        "Alpha/docs/governance/roadmap.yaml:6-9",
+        "Alpha/功能清单:7-14",
+        "Alpha/开发记录:7-15",
+        "Alpha/docs/governance/OWNER_STATUS.md:5-10",
+        "AGENTS.md:30-35"
+      ],
+      "repro_or_check": "NOT_RUN；只读对比可见 README 声称 S6PAT02/S6PA，canonical roadmap 与三份中文入口仍是 S5PAT01/S5PA，OWNER_STATUS 又停在 S3PB/旧快照。",
+      "status": "open",
+      "recommendation": "把首屏 current_task/current_gate/current_status 从 canonical roadmap/project/assurance 派生，或显式标注 README 的 S6PAT02 只是 Owner-flow 改进任务；同时增加跨文件同步校验，禁止 README/OwnerStatus 成为第二事实源。"
+    },
+    {
+      "finding_id": "S6PBT01-A3-MED-S6PA-CI-BINDING",
+      "severity": "Medium",
+      "title": "S6PA Gate 声称通过，但证据绑定仍混有 precommit/pending 语义",
+      "evidence_paths": [
+        "governance/stage_gates/s6pa/s6pa_gate.md:3-6",
+        "governance/run_manifests/GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json:24-39",
+        "governance/run_manifests/GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json:12-16",
+        "governance/run_manifests/GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json:143-145"
+      ],
+      "repro_or_check": "NOT_RUN；Gate 文件写 PASSED，Gate manifest 又写 PRECOMMIT_TREE_BOUND / LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI；Alpha slice manifest 仍是 PENDING_PR_HEAD。",
+      "status": "open",
+      "recommendation": "在 main 基线中把 evidence binding 更新为 main/CI 绑定，或把 Gate 状态降级为 pending_main_ci，不要同时给 Owner 展示 PASSED 与 pending 证据。"
+    },
+    {
+      "finding_id": "S6PBT01-A3-MED-STRING-ONLY-VALIDATION",
+      "severity": "Medium",
+      "title": "S6PAT02/S6PA 验证偏字符串存在性，未校验 Owner 首屏事实与 canonical 同步",
+      "evidence_paths": [
+        "tests/governance/test_project_governance_validator.py:6624",
+        "tests/governance/test_project_governance_validator.py:7781",
+        "tests/governance/test_project_governance_validator.py:7875"
+      ],
+      "repro_or_check": "NOT_RUN；测试断言 README/manifest 包含指定文本、范围和 rollback，但没有把 current task/gate/status 与 roadmap.yaml、project.yaml、ASSURANCE_STATUS.yaml 交叉比对。",
+      "status": "open",
+      "recommendation": "新增同步断言：Owner 首屏的任务、Gate、状态、测试结果必须匹配 canonical facts；若是操作流任务，字段名应改为 owner_flow_task，避免冒充项目当前状态。"
+    },
+    {
+      "finding_id": "S6PBT01-A3-MED-DASHBOARD-DECISION-POLICY",
+      "severity": "Medium",
+      "title": "治理 dashboard 生成器仍硬编码 Owner decision policy，有第二事实源风险",
+      "evidence_paths": [
+        "scripts/generate_governance_dashboard.py:116",
+        "scripts/generate_governance_dashboard.py:282",
+        "scripts/generate_governance_dashboard.py:1095",
+        "AGENTS.md:30"
+      ],
+      "repro_or_check": "NOT_RUN；生成器代码内含 REVIEW8_DECISION_POLICY，并用它生成 owner_decision，再由 existing_owner_decision 覆盖。这仍让代码成为可漂移的事实来源。",
+      "status": "open",
+      "recommendation": "把 decision policy 移入 canonical governance 文件，生成器只做投影；没有 canonical decision 时输出 UNKNOWN/needs_owner_decision，不要在代码里补事实。"
+    },
+    {
+      "finding_id": "S6PBT01-A3-LOW-ALPHA-OPERATION-PATH",
+      "severity": "Low",
+      "title": "Alpha 5 分钟操作理解路径中文优先不足",
+      "evidence_paths": [
+        "Alpha/README.md:1-12",
+        "Alpha/README.md:20-34",
+        "governance/stage_gates/s6pa/ux_priority_matrix.csv:2-3"
+      ],
+      "repro_or_check": "NOT_RUN；Alpha 首屏覆盖状态和首个测试，但操作路径主要落在后续英文 Local run 段落；S6PAT01 对 Alpha 只选了 2min 状态和 10min 测试候选。",
+      "status": "open",
+      "recommendation": "在 Alpha 中文首屏补一行“操作路径：入口 -> 运行 -> 验证 -> 失败去向”，并与已有 Local run/API 入口保持一致。"
+    },
+    {
+      "finding_id": "S6PBT01-A3-INFO-CHINESE-FIRST",
+      "severity": "Info",
+      "title": "S4/S5/S6PA 中文优先、用户可读优先证据总体成立",
+      "evidence_paths": [
+        "governance/stage_gates/s4pc/wave1_gate.md:3",
+        "governance/stage_gates/s5pc/wave2_gate.md:3",
+        "governance/stage_gates/s6pa/ux_priority_matrix.md:3",
+        "governance/stage_gates/s6pa/cli_evidence.md:5"
+      ],
+      "repro_or_check": "NOT_RUN；只读审查显示这些 gate 都先给中文 Owner 结论，并记录范围、回滚、阻塞或测试边界。",
+      "status": "closed",
+      "recommendation": "保持现有中文-first gate 摘要，但补上同步和 main-bound 证据约束。"
+    },
+    {
+      "finding_id": "S6PBT01-A3-INFO-FAST-GATE-SEPARATION",
+      "severity": "Info",
+      "title": "未发现全量治理计算被重新塞回每次开发动作",
+      "evidence_paths": [
+        "README.md:39",
+        "AGENTS.md:58",
+        ".codex/hooks/governance_stop.py:4",
+        ".github/workflows/project-governance.yml:73"
+      ],
+      "repro_or_check": "NOT_RUN；PR/push 走 changed-only；full validator、dashboard write 和 artifact upload 仅 schedule/workflow_dispatch all。",
+      "status": "closed",
+      "recommendation": "继续保持 changed-only fast gate 与 scheduled/manual full gate 分离。"
+    }
+  ],
+  "critical_or_high_open_blocker": {
+    "exists": true,
+    "critical_open": 0,
+    "high_open": 1,
+    "summary": "存在 1 个 High 未决阻塞：Alpha Owner 当前状态跨 README、canonical roadmap、中文入口和 OWNER_STATUS 不一致。"
+  }
+}
