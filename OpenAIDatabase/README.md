@@ -1,7 +1,7 @@
 # OpenAIDatabase 中文 Owner 快速入口
 
 - S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
-- 当前任务：`S6PAT02` / `ACC-S6PAT02`；下一 Gate：`S6PA-GATE` 仍在进行中。
+- 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02`，只补 Owner 路径，不改产品 canonical current_task；下一 Gate：`S6PA-GATE` 仍在进行中。
 - 本轮边界：只补 Owner 可读路径，不改运行代码，不移动文件，不读取或展开 raw/private 内容，不触发外部自动化。
 - 默认入口：先读 `OpenAIDatabase/AGENTS.md` 和 `scripts/route_agent_resources.py`；Memory Atlas 只读 redacted derived snapshot，不读 raw export、private import、cookies、sessions 或 plaintext secrets。
 
