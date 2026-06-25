@@ -1,0 +1,39 @@
+task_id: S5PCT01
+acceptance_id: ACC-S5PCT01
+project_id: PFI_BIG_DATA_SIMULATOR
+mode: BOUNDARY_ONLY_NO_ALGORITHM_CHANGE
+result: PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED
+
+active_qbvs_path: PFI/大数据模拟器/qbvs
+config_path: PFI/大数据模拟器/config
+tests_path: PFI/大数据模拟器/tests
+runs_path: PFI/大数据模拟器/runs
+reports_path: PFI/大数据模拟器/reports
+root_contracts: QUANTLAB_INTEGRATION_CONTRACT.json,HANDSHAKE_PROTOCOL.json,HANDOFF.md,BACKUP_MANIFEST.md
+dated_tools_integration_action: document_only_no_move_no_rewrite
+date_stamped_scripts_integration_changes_algorithm: false
+runs_reports_used_as_source_truth: false
+archive_written_or_files_moved: false
+
+wave2_manifest:
+- pfi_candidate_count: 42
+- archive_candidate_count: 40
+- merge_candidate_count: 2
+- moved_in_s5pct01: 0
+
+smoke_commands:
+- command: python -B -m pytest "PFI/大数据模拟器/tests" -q
+  result: NOT_RUN
+  evidence: local Python environments do not include pytest
+- command: C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m unittest tests.test_s3pct02_lifecycle -q
+  result: PASS
+  evidence: Ran 1 test OK
+- command: active qbvs direct smoke
+  result: PASS
+  evidence: S5PCT01_PFI_ACTIVE_QBVS_SMOKE_PASS specs=240 rows=120
+
+stop_conditions:
+- PFI date-stamped script integration changes algorithm: false
+- root contracts used as active algorithm source: false
+- runs/reports imported as source truth by default: false
+- active qbvs path changed: false

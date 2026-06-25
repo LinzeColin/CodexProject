@@ -1,0 +1,205 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625",
+  "project_id": "PFI_BIG_DATA_SIMULATOR",
+  "task_id": "S5PCT01",
+  "acceptance_ids": [
+    "ACC-S5PCT01"
+  ],
+  "iteration_id": "ITER-OTHER8-S5PCT01-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "cb630789052628c8503dc2c307a4104bbe418588",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:249d4126d22b76767b4e6e932e21cbcfaecdb2daecaf97c392edeb11dc672ee8",
+  "changed_files_declared": [
+    "PFI/大数据模拟器/AGENTS.md",
+    "PFI/大数据模拟器/README.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+    "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "PFI/大数据模拟器/AGENTS.md",
+    "PFI/大数据模拟器/README.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+    "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+    "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "PFI/大数据模拟器/AGENTS.md",
+    "PFI/大数据模拟器/README.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+    "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage5_pfi_structure_boundary",
+    "active_qbvs_config_tests_runs_reports_layering",
+    "root_contracts_and_dated_tools_bound_without_algorithm_change",
+    "no_runtime_rewrite",
+    "no_file_move",
+    "no_archive_write"
+  ],
+  "stage_gate_status": {
+    "S5PBT02": "PASSED_AND_BOUND",
+    "S5PCT01": "LOCAL_PRECOMMIT_PASSED",
+    "S5PC-GATE": "IN_PROGRESS",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "next_allowed_task": "S5PCT02"
+  },
+  "next_allowed_task": "S5PCT02",
+  "structure_boundary": {
+    "active_qbvs": "PFI/大数据模拟器/qbvs",
+    "config": "PFI/大数据模拟器/config",
+    "tests": "PFI/大数据模拟器/tests",
+    "runs": "PFI/大数据模拟器/runs",
+    "reports": "PFI/大数据模拟器/reports",
+    "root_contracts": [
+      "PFI/大数据模拟器/QUANTLAB_INTEGRATION_CONTRACT.json",
+      "PFI/大数据模拟器/HANDSHAKE_PROTOCOL.json",
+      "PFI/大数据模拟器/HANDOFF.md",
+      "PFI/大数据模拟器/BACKUP_MANIFEST.md"
+    ],
+    "dated_tools": "PFI/大数据模拟器/tools",
+    "contract_ref": "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+    "report_ref": "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "smoke_log_ref": "governance/stage_gates/s5pc/pfi_smoke_tests.log"
+  },
+  "archive_manifest_reconciliation": {
+    "wave2_manifest_ref": "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "pfi_candidate_count": 42,
+    "archive_candidate_count": 40,
+    "merge_candidate_count": 2,
+    "moved_in_s5pct01": 0,
+    "reason": "S5PCT01 binds active/runtime/output layers and keeps Wave 2 candidates checksum-bound for future owner-reviewed cleanup."
+  },
+  "smoke_summary": {
+    "log_ref": "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+    "pytest_command_result": "NOT_RUN_LOCAL_PYTEST_MISSING",
+    "lifecycle_unittest_result": "PASS",
+    "active_qbvs_smoke_result": "PASS"
+  },
+  "stop_conditions": {
+    "date_stamped_scripts_integration_changes_algorithm": false,
+    "root_contracts_used_as_active_algorithm_source": false,
+    "runs_reports_used_as_source_truth": false,
+    "active_qbvs_path_changed": false,
+    "archive_written_or_files_moved": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "FIFA",
+      "OpenAIDatabase",
+      "Serenity-Alipay",
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": false,
+    "allowed_project": "PFI_BIG_DATA_SIMULATOR",
+    "tracked_diff_command": "git diff --name-only origin/main -- FIFA OpenAIDatabase Serenity-Alipay EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT"
+  },
+  "model_delta": "NOT_CHANGED: S5PCT01 documents and binds PFI structure boundaries only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No PFI product version change. Active qbvs algorithms, config, tests, runs, reports, and root contracts remain in place.",
+  "test_commands": [
+    "python -B -m pytest \"PFI/大数据模拟器/tests\" -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_s3pct02_lifecycle -q",
+    "active qbvs direct smoke",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pct01_pfi_structure_boundary_and_smoke_evidence -q",
+    "python -B scripts/lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --name-only origin/main -- FIFA OpenAIDatabase Serenity-Alipay EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m pytest \"PFI/大数据模拟器/tests\" -q",
+      "result": "NOT_RUN",
+      "evidence": "local Python environments do not include pytest"
+    },
+    {
+      "command": "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_s3pct02_lifecycle -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "active qbvs direct smoke",
+      "result": "PASS",
+      "evidence": "S5PCT01_PFI_ACTIVE_QBVS_SMOKE_PASS specs=240 rows=120"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pct01_pfi_structure_boundary_and_smoke_evidence -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+      "result": "PASS",
+      "evidence": "manifest JSON parsed"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR",
+      "result": "PASS",
+      "evidence": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "evidence": "projects changed: PFI_BIG_DATA_SIMULATOR; errors=0 warnings=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "evidence": "root and 10 projects checked; errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --name-only origin/main -- FIFA OpenAIDatabase Serenity-Alipay EEI arxiv-daily-push",
+      "result": "PASS",
+      "evidence": "no forbidden project diff output"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "evidence": "no whitespace errors; Windows line-ending normalization warnings only"
+    }
+  ],
+  "evidence_refs": [
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+    "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S5PCT01 PFI active qbvs, root contracts, dated tools, runs, and reports structure boundary",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "unresolved_risks": [
+    "Local environment lacks pytest, so the roadmap pytest command is recorded as NOT_RUN locally while equivalent lifecycle/direct qbvs smoke passed.",
+    "PFI Wave 2 archive/merge candidates remain in place and checksum-bound; future movement must use the Wave 2 manifest.",
+    "S5PCT02 still must migrate Serenity before S5PC-GATE can pass."
+  ],
+  "rollback": {
+    "mode": "remove_s5pct01_boundary_docs_manifest_and_smoke_log_only",
+    "reason": "S5PCT01 performs no runtime rewrite, no archive move, no output move, and no algorithm change."
+  }
+}

@@ -23,6 +23,31 @@ handoff 契约。
 - 只在本目录下写入运行结果、CSV、JSON、PDF。
 - 后续 QuantLab 可以读取本系统产出的 `strategy_summary.csv`、`validation_results.csv` 和 PDF 作为策略审批证据。
 
+## S5PCT01 Structure Boundary
+
+S5PCT01 binds the PFI/QBVS layout without changing algorithm code:
+
+- Active QBVS package: `qbvs/` owns strategy generation, signal rules,
+  backtest, cache, warehouse, validation, QuantLab bundle, and adapter code.
+- Config and tests: `config/` contains reusable input templates and universe
+  seed files; `tests/` contains the verification suite.
+- Root contracts: `QUANTLAB_INTEGRATION_CONTRACT.json`,
+  `HANDSHAKE_PROTOCOL.json`, `HANDOFF.md`, and `BACKUP_MANIFEST.md` are
+  interoperability/recovery contracts and owner handoff documents, not runtime
+  algorithm modules.
+- Date-stamped scripts: `tools/generate_*_20260606.py` and
+  `tools/generate_dev_handoff_package_20260615.py` are report/handoff
+  generators. They remain non-default entry points and must not change active
+  `qbvs/` behavior during structure migration.
+- Runs and reports: `runs/` stores lightweight run state/evidence and
+  `reports/` stores generated reports. They are output layers, not source truth
+  for active algorithms.
+
+PFI Wave 2 archive candidates remain checksum-bound by the shared S5PAT02
+manifest. S5PCT01 moves no files and writes no archive; it only binds current
+roles so future cleanup can be reviewed without redoing broad governance
+calculation in every development action.
+
 ## 已内置能力
 
 - 生成 200+ 个真实可解释的交易行为策略族。
