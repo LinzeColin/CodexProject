@@ -3452,6 +3452,8 @@ tasks:
       - "A202 selected live official capture freshness refresh PASS: JSON syntax PASS; project uv artifact validator PASS for 3/3 selected anchors; semantic extractor binds PARAM-086 release_clearance=false; no committed source_text fields found; NVDA-ANCHOR-002/003/004 source_health=healthy, token_coverage=1.0, http_status=200, release_clearance=false and relationship_publication=false."
       - "A202 signed-intake source-boundary hardening local validation PASS: repository fixture/test/docs/config/data paths fail closure, external operator files and approved operator input paths may validate A202 clearance but still leave external release gates blocked."
       - "A202 signed-intake source-boundary hardening remote CI PASS: commit a246df94bf73b6fba7111805f3c5a02b6edeb070 passed Project Governance run 28179389094 and EEI validation run 28179389156."
+      - "A202 operator review packet freshness repair PASS: pre-repair validation failed on source_capture_artifact_sha256 drift, then packet generate/validate PASS after refresh with status PENDING_OWNER_LEGAL_CLEARANCE, relationship_fact_candidates_allowed=0 and release_clearance=false."
+      - "A202 release-decision intake, A202/A210 release-decision bundle and A202 signed-intake preflight refresh PASS after operator review packet freshness repair; template-only and signed-intake-missing states remain non-clearance."
     evidence_refs:
       - "EEI/data/golden_vertical_fact_candidates.json"
       - "EEI/tests/integration/test_database_migrations.py"
@@ -3612,6 +3614,7 @@ tasks:
       - "operator intake packet local validation PASS: artifact validates with WAITING_FOR_OPERATOR_INPUTS, five missing operator inputs, release_gate_closed_by_operator_packet=false and unit tests PASS 6/6"
       - "A202 operator-review packet binding PASS: external release-evidence bundle now source-hashes artifacts/tests/a202/t1301_operator_review_packet_contract.json, reports live_capture_ready_for_review=true, keeps relationship_fact_candidates_allowed=0, keeps release_clearance=false, and focused unit tests PASS 7/7"
       - "A204/A205 dependent preflight current A209 sync PASS: serially regenerated external bundle, release-manager activation and MVP release-gate artifacts validate after A209 heartbeat advanced to 27/288 PASS, 0 failed, 261 remaining; statuses remain EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED, RELEASE_MANAGER_ACTIVATION_BLOCKED and MVP_RELEASE_BLOCKED"
+      - "A205 dependent preflight freshness sync PASS: after EVENT-20260625-022 A202 packet repair, external release bundle, operator intake packet, release-manager activation and MVP release-gate artifacts regenerate/validate PASS and remain blocked."
     evidence_refs:
       - "EEI/apps/worker/app/main.py"
       - "EEI/scripts/apply_model_config.py"
@@ -3744,6 +3747,7 @@ tasks:
       - "local A209 live heartbeat/preflight sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 135/288 PASS, 0 failed, 153 remaining, completion 46.88%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and downstream release/MVP preflights remain blocked"
       - "local A209 live heartbeat/preflight sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 152/288 PASS, 0 failed, 136 remaining, completion 52.78%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and A203/A204/A205/MVP release preflights remain blocked"
       - "local A209 live heartbeat/preflight sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 173/288 PASS, 0 failed, 115 remaining, completion 60.07%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and A203/A204/A205/MVP release preflights remain blocked"
+      - "local A209 heartbeat/preflight freshness sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 190/288 PASS, 0 failed, 98 remaining, completion 65.97%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and A203/A204/A205/MVP release preflights remain blocked"
       - "changed-only Project Governance diagnosis for commit 0b552060 FAIL: generated/test evidence changes required companion updates to DEVELOPMENT_LEDGER.md, TRACEABILITY_MATRIX.csv, delivery_tasks.yaml and parameter_registry.csv; this repair updates those companion files without closing A209"
       - "local clean-room package binding PASS; supervisor, watchdog, heartbeat and finalization evidence included in package boundary with package_paths=437, release manifest_paths=444 and checksum_paths=443"
       - "local elevated make verify PASS; unit tests 106/106"

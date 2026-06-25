@@ -28,7 +28,7 @@
       "relationships_publishable": 0,
       "release_clearance": false,
       "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-      "source_capture_artifact_sha256": "dd74bab057a817b5705a862024b2579331e206d9bd962038f53aa13ea0984ed6",
+      "source_capture_artifact_sha256": "9e8e73ee58338a3d1d17206b46559019ea5d9860e50edc4bc97e142fbde3bd3d",
       "source_license_review_status": "missing",
       "status": "PENDING_OWNER_LEGAL_CLEARANCE"
     },
@@ -59,7 +59,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
       "target_windows": 288,
-      "windows_completed": 173,
+      "windows_completed": 190,
       "windows_failed": 0
     },
     "relationship_gold": {
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-25T18:14:56Z",
+  "generated_at": "2026-06-25T18:48:45Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -126,12 +126,12 @@
       "label": "A202 signed source/license/passage/owner/legal release decision",
       "required_source": {
         "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-        "sha256": "97d46e7a21143c0f44186736340884de00874889b9f9230c5bc29f6a6fa4b589"
+        "sha256": "6885e82f97cf59e3f0d99ec1dc64a7c1b248043002edc9d0ec14f8638fcdf138"
       },
       "supporting_sources": [
         {
           "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
-          "sha256": "96fbed00c1b6c4ac19fa400f6a24ac8bb4b7f689b93647f4613f3b12fc9ac6c6"
+          "sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b"
         }
       ],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -196,7 +196,7 @@
     },
     {
       "acceptance_id": "A209",
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 173/288 windows",
+      "blocking_reason": "A209 finalization does not allow downstream refresh at 190/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
@@ -208,7 +208,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "40c5a26f9db9c3dfd2837ae0ca453e41f22dd93289c72ab1354db01b79b676a2"
+        "sha256": "a224bd5adbd30e6032a246c5adface495adaad3832f1f7d1fe45bb1eddfdcab7"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -223,15 +223,15 @@
     },
     "a202_operator_review_packet": {
       "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
-      "sha256": "96fbed00c1b6c4ac19fa400f6a24ac8bb4b7f689b93647f4613f3b12fc9ac6c6"
+      "sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b"
     },
     "a202_release_decision_intake_template": {
       "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-      "sha256": "97d46e7a21143c0f44186736340884de00874889b9f9230c5bc29f6a6fa4b589"
+      "sha256": "6885e82f97cf59e3f0d99ec1dc64a7c1b248043002edc9d0ec14f8638fcdf138"
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "40c5a26f9db9c3dfd2837ae0ca453e41f22dd93289c72ab1354db01b79b676a2"
+      "sha256": "a224bd5adbd30e6032a246c5adface495adaad3832f1f7d1fe45bb1eddfdcab7"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -239,7 +239,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "8d4f6273eea73440c8a4d1a9307f6a76262005215c5c7b2f59e9677ff882e511"
+      "sha256": "0999a859be03c8dba1164c7accac282b71729e0e64dbe3afc5eb989d49ee660a"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

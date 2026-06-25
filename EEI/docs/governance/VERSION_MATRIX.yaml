@@ -33,9 +33,9 @@ parameter_profile_versions:
   release-decision-intake: "3"
   release-decision-bundle: "2"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260625-017"
+current_iteration: "ITER-20260625-018"
 current_phase: "C"
-current_gate: "TASK-T1303-A205-A202-OPERATOR-REVIEW-PACKET-BINDING-RELEASE-BLOCKED"
+current_gate: "TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-REPAIRED-RELEASE-BLOCKED"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

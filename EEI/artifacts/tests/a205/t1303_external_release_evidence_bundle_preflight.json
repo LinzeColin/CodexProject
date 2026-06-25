@@ -28,7 +28,7 @@
       "relationships_publishable": 0,
       "release_clearance": false,
       "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-      "source_capture_artifact_sha256": "dd74bab057a817b5705a862024b2579331e206d9bd962038f53aa13ea0984ed6",
+      "source_capture_artifact_sha256": "9e8e73ee58338a3d1d17206b46559019ea5d9860e50edc4bc97e142fbde3bd3d",
       "source_license_review_status": "missing",
       "status": "PENDING_OWNER_LEGAL_CLEARANCE"
     },
@@ -59,7 +59,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
       "target_windows": 288,
-      "windows_completed": 173,
+      "windows_completed": 190,
       "windows_failed": 0
     },
     "relationship_gold": {
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-25T18:14:56Z",
+  "generated_at": "2026-06-25T18:48:45Z",
   "missing_external_inputs": [
     {
       "acceptance_id": "A202",
@@ -105,7 +105,7 @@
     {
       "acceptance_id": "A209",
       "input_id": "A209_24h_operator_soak_finalization",
-      "reason": "A209 finalization does not allow downstream refresh at 173/288 windows"
+      "reason": "A209 finalization does not allow downstream refresh at 190/288 windows"
     }
   ],
   "mvp_release_gate_refresh_allowed": false,
@@ -138,17 +138,17 @@
   "schema_version": "eei-external-release-evidence-bundle-preflight-v1",
   "source_files": {
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
-    "a202_operator_review_packet_sha256": "96fbed00c1b6c4ac19fa400f6a24ac8bb4b7f689b93647f4613f3b12fc9ac6c6",
+    "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "6a1005b7435fc882e27b04c17ca58126dd94b9f25f49d0c4179701578ccd1358",
     "operator_soak_finalization": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-    "operator_soak_finalization_sha256": "40c5a26f9db9c3dfd2837ae0ca453e41f22dd93289c72ab1354db01b79b676a2",
+    "operator_soak_finalization_sha256": "a224bd5adbd30e6032a246c5adface495adaad3832f1f7d1fe45bb1eddfdcab7",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "27b138a5f052a48357af9617ee912cc78ecde614a96a7d3076c74c7e01893535",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "2d0155ca2b922f33f1e023128de9d4386fc926b52cdf8cec3e7a638ac525ccc4"
+    "release_decision_contract_sha256": "b9c8bbf84300ad15d69b9d6d4b1b089b8948a75f8f28dc970498b641424a7c53"
   },
   "status": "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

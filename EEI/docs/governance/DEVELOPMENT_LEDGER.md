@@ -11,12 +11,45 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1307-A209-BACKGROUND-SOAK-173-OF-288-REMOTE-CI-ATTESTED-RELEASE-BLOCKED`
-- Confirmed iteration count: 37
+- Current gate: `TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-REPAIRED-RELEASE-BLOCKED`
+- Confirmed iteration count: 38
 - Reconstructed development event count: 4
-- Current task: `TASK-T1307/A209 background 24h operator soak append-only governance CI repair`
-- Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `173/288` successful windows, `0` failed windows, `115` remaining, `60.07%` completion and `release_gate_closed_by_background_heartbeat=false`. Live checkpoint evidence observed after the CI-bound commit advanced to at least `176/288` successful windows with `0` failed windows, but later checkpoints remain progress-only until 288/288 validates.
-- Blockers: T1307/A209 is still `IN_PROGRESS`; `173/288` committed heartbeat evidence and later live checkpoint progress are non-closure evidence only. Commit `edddaad16a42d7eb15c7da3b662b2ee05107a618` is remote-CI bound by Project Governance run `28188342130` and EEI validation run `28188342002`, but this does not create A202 source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Current task: `TASK-T1301/A202 operator review packet freshness repair with A209 background heartbeat sync`
+- Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `190/288` successful windows, `0` failed windows, `98` remaining, `65.97%` completion and `release_gate_closed_by_background_heartbeat=false`. Live checkpoint evidence observed after this local sync advanced to at least `194/288` successful windows with `0` failed windows, but later checkpoints remain progress-only until 288/288 validates.
+- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; `190/288` committed heartbeat evidence and later live checkpoint progress are non-closure evidence only. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+
+## EVENT-20260625-022 - T1301/A202 operator review packet freshness repair
+
+- Timestamp: 2026-06-25T18:43:05Z
+- Fact level: EXTRACTED
+- Base commit: `0eeb763b974b8a0a31f8ea22f8fe2a99e08f9cf7`
+- Scope: repair validator-detected drift between the A202 operator review packet and current live official selected capture artifact, then refresh dependent A202 release-decision intake/template artifacts, A205 external release-evidence/operator intake/release-manager/MVP preflights, and A209 point-in-time heartbeat/finalization artifacts.
+- Non-claims: this does not close A202, does not create source-license, passage-level, production owner or legal clearance, does not close A209, does not create A210/A026/A027 external evidence, and does not activate release-manager or MVP release readiness.
+- A209 state: committed heartbeat is `190/288` successful windows, `0` failed and `65.97%` complete; live checkpoint progress observed after this local sync reached at least `194/288` successful windows with `0` failed and remains non-release evidence until final 288/288 validation.
+- Next step: run clean changed-only Project Governance, full EEI validation, commit/push and verify remote CI while the detached A209 soak continues.
+
+## ITER-20260625-018 - T1301/A202 operator review packet freshness repair
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `0eeb763b974b8a0a31f8ea22f8fe2a99e08f9cf7`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, with dependent release-gate context for `TASK-T1303`, `TASK-T1307`, `TASK-T1309` and `TASK-T904`
+- Acceptance IDs: `A202`, with blocked dependent release evidence for `A204`, `A205`, `A209`, `A210`, `A026` and `A027`.
+- Goal: repair stale A202 operator review packet source-capture hash binding and synchronize downstream fail-closed release preflights without changing product runtime behavior.
+- Files changed: A202 operator review packet, A202 release-decision intake/template/signed-intake artifacts, A205 external release/release-manager/MVP preflights, A209 heartbeat/finalization artifacts, governance status views, phase development record, changelog and regenerated clean-room/release artifacts.
+- Model changes: no scoring formula, graph traversal formula, extraction model, formula weight, threshold value, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active parameter value changed; A202 operator-review fail-closed policy and A209 heartbeat non-closure policy remain unchanged.
+- Commands run: A202 operator review packet generate/validate; release-decision template/bundle/signed-intake generate/validate; A209 heartbeat/finalization generate/validate; A205 external bundle/operator intake/release-manager/MVP preflights generate/validate; focused unit validation and full `make verify`.
+- Test results: A202 packet validates after freshness repair with `status=PENDING_OWNER_LEGAL_CLEARANCE`; A209 heartbeat validates at `190/288` PASS, `0` failed and `counts_as_release_ready=false`; A205/release-manager/MVP preflights validate and remain blocked; full local `make verify` passed before companion governance sync.
+- Successes: A202/A205/A209 evidence hashes now align with the current live-capture artifact and release preflights remain fail-closed.
+- Failures: clean changed-only Project Governance still requires companion governance files to be updated before commit and CI binding.
+- Decisions: keep A202 `IN_PROGRESS`; keep A209 background soak running independently; keep release-manager activation and MVP release gates blocked.
+- Remaining risks: A209 can still fail before `288/288`; A202 operator review readiness can be misread as source/license/legal/owner clearance if fail-closed fields are ignored.
+- Rollback: revert the refreshed A202/A205/A209 artifacts and regenerated governance/release files, then rerun the A202/A205/A209 validation subset while preserving live A209 checkpoint, log and PID files.
+- Next step: update traceability, delivery task and parameter companion files, regenerate derived artifacts, rerun local and remote validation.
 
 ## EVENT-20260625-020 - T1307/A209 append-only governance CI repair
 
@@ -454,6 +487,30 @@ This ledger is human-readable. The append-only machine record is `development_ev
 ## Confirmed Iterations
 
 Do not infer iteration count from Git commit count.
+
+### `ITER-20260625-018`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `0eeb763b974b8a0a31f8ea22f8fe2a99e08f9cf7`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, with dependent context for `TASK-T1303`, `TASK-T1307`, `TASK-T1309` and `TASK-T904`
+- Acceptance IDs: `ACC-A202`, with blocked dependent evidence for `ACC-A204`, `ACC-A205`, `ACC-A209`, `ACC-A210`, `ACC-A026` and `ACC-A027`
+- Goal: repair A202 operator review packet freshness drift and refresh dependent fail-closed release evidence while A209 continues in the background.
+- Assumptions: the refreshed A202 packet is review input only; A209 heartbeat remains progress-only until `288/288` validates.
+- Files changed: A202 review packet and release-decision artifacts, A205 external release/release-manager/MVP preflights, A209 heartbeat/finalization artifacts, governance companion records, changelog and generated release artifacts.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, threshold value, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active parameter value changed.
+- Commands run: A202 packet and release-decision artifact generation/validation; A209 heartbeat/finalization generation/validation; A205 external bundle/release-manager/MVP preflight generation/validation; focused unit validation; full `make verify`.
+- Test results: A202 packet validation PASS after repairing source-capture hash drift; A209 heartbeat PASS at `190/288`, `0` failed and `counts_as_release_ready=false`; A205/release-manager/MVP preflights PASS and remain blocked.
+- Successes: current A202/A205/A209 generated evidence is hash-fresh and still fail-closed.
+- Failures: no real A202 signed clearance, no A210 clearance, no A026/A027 production gold labels, no final A209 24h summary and no release-manager activation were added.
+- Decisions: keep A202 and A209 `IN_PROGRESS`; do not treat review packets, templates or partial heartbeat evidence as release clearance.
+- Remaining risks: A209 can still fail before completion; A202 freshness evidence can be misread as legal/source/owner clearance if the blocked gate fields are ignored.
+- Rollback: revert refreshed A202/A205/A209 artifacts and companion governance files, regenerate release artifacts from the prior packet hash and preserve live A209 checkpoints/logs.
+- Next step: rerun changed-only governance, full verification, commit, push and verify remote CI.
 
 ### `ITER-20260620-001`
 

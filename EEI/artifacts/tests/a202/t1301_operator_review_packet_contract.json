@@ -67,14 +67,14 @@
         "content_type": "text/html; charset=utf-8",
         "http_status": 200,
         "status": "healthy",
-        "text_char_count": 21040,
+        "text_char_count": 21021,
         "token_coverage": {
           "minimum_ratio": 1.0,
           "ratio": 1.0
         }
       },
       "source_text_excerpt": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for the Next Industrial Revolution | NVIDIA Newsroom Artificial Intelligence Computing Leadership from NVIDIA --> PLATFORMS Autonomous Machines Cloud",
-      "source_text_sha256": "f2e2217445ba6c1fdb2012ef3655c80c2ad63a24caa39edf1e8bebe674221095",
+      "source_text_sha256": "afe6f894a8aa01a96c39cb728c11c7e09d4cfaff53b4ec49cf18a2cbabd8ebf9",
       "source_url": "https://nvidianews.nvidia.com/news/computer-industry-ai-factories-data-centers",
       "source_url_sha256": "69400554ed85016ecedf3865620780c38921d1757cd84ef407de012c35d1a986",
       "title": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for Next Industrial Revolution"
@@ -105,14 +105,14 @@
         "content_type": "text/html; charset=UTF-8",
         "http_status": 200,
         "status": "healthy",
-        "text_char_count": 7950,
+        "text_char_count": 7860,
         "token_coverage": {
           "minimum_ratio": 1.0,
           "ratio": 1.0
         }
       },
       "source_text_excerpt": "NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ | NVIDIA Blog Skip to content NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ In his COMPUTEX keynote, Huang unvei",
-      "source_text_sha256": "769af5690063ad9da0e52c9496e06e5ccd0f1a04eafb942c73fbed000daf5cb0",
+      "source_text_sha256": "0ad380f0d70cd5d1ce785bc65ac7cd4f746d4f6de74df4aeda475cec09315705",
       "source_url": "https://blogs.nvidia.com/blog/computex-2025-jensen-huang/",
       "source_url_sha256": "17227c45d8516a41a1903f1ccc043fb10de2474d0c2bc1ca055ea131dbfde5aa",
       "title": "NVIDIA CEO Envisions AI Infrastructure Industry Worth Tens of Trillions of Dollars"
@@ -166,7 +166,7 @@
     "relationship_fact_candidates_allowed": 0,
     "relationships_publishable": 0
   },
-  "generated_at": "2026-06-23T10:03:01Z",
+  "generated_at": "2026-06-25T18:42:32Z",
   "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
   "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6",
   "parser_version": "nvidia-official-fulltext-live-v1",
@@ -408,7 +408,7 @@
   ],
   "schema_version": "eei-a202-operator-review-packet-v1",
   "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-  "source_capture_artifact_sha256": "dd74bab057a817b5705a862024b2579331e206d9bd962038f53aa13ea0984ed6",
+  "source_capture_artifact_sha256": "9e8e73ee58338a3d1d17206b46559019ea5d9860e50edc4bc97e142fbde3bd3d",
   "source_registry": "data/nvidia_public_source_anchors.csv",
   "source_registry_sha256": "cf9013872f5b5e8a33367b583e6e5877a7c3d29cce45174728afd4d59871fc2d",
   "status": "PENDING_OWNER_LEGAL_CLEARANCE",

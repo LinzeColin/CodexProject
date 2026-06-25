@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-A205-A202-OPERATOR-REVIEW-PACKET-BINDING-RELEASE-BLOCKED`
+- release_gate: `TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-REPAIRED-RELEASE-BLOCKED`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `17`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `78`
-- pending_or_stale_events: `99`
+- precommit_pending_events: `79`
+- pending_or_stale_events: `100`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:d1c2d36f0023f58a99e0d4ffe8a9657e7afa4fa0a4d881f5fd56e0c776678ec5`
-- snapshot_event_time: `2026-06-25T18:15:31Z`
+- source_snapshot_hash: `sha256:a68e5590179b962bdfef5a8b90bbf2e68f6fea1c090f722e6bef50d9438f33fb`
+- snapshot_event_time: `2026-06-25T18:43:05Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1303-A205-A202-OPERATOR-REVIEW-PACKET-BINDING-RELEASE-BLOCKED`
+- phase/gate: `C / TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-REPAIRED-RELEASE-BLOCKED`
 
 ## 17. Next Unique Task
 

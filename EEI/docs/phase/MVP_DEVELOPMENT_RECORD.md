@@ -5917,3 +5917,52 @@ Status: REMOTE CI ATTESTED FOR COMMIT `edddaad16a42d7eb15c7da3b662b2ee05107a618`
 
 - Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
 - Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
+
+## 2026-06-25 - T1301/A202 operator review packet freshness repair
+
+Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Repaired the validator-detected hash drift between `artifacts/tests/a202/t1301_operator_review_packet_contract.json` and the current `artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`.
+- Refreshed dependent A202 release-decision intake template, A202/A210 release-decision bundle and A202 signed-intake preflight after `validate-release-decision-bundle` exposed template drift.
+- Refreshed dependent T1303/A205 external release-evidence bundle, operator intake packet, release-manager activation preflight and MVP release-gate preflight.
+- Refreshed T1307/A209 background heartbeat and finalization preflight to the current clean-run point-in-time snapshot.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route, legal/source clearance or publication policy changed.
+
+### Current Evidence
+
+- Pre-repair validation failed with `source_capture_artifact_sha256 does not match capture artifact`.
+- Refreshed A202 packet validates with `status=PENDING_OWNER_LEGAL_CLEARANCE`, `relationship_fact_candidates_allowed=0`, `relationships_publishable=0` and no committed source text.
+- A209 point-in-time heartbeat reports `190/288` PASS windows, `0` failed, `98` remaining and `65.97%` completion.
+- A209 finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; partial heartbeat evidence does not count as release-ready evidence.
+
+### Acceptance Mapping
+
+- T1301 -> A202 for the operator review packet freshness repair.
+- T1303 -> A204/A205 for dependent external release-evidence, release-manager and MVP gate preflight refresh.
+- T1307 -> A209 for the background heartbeat/finalization snapshot.
+- This repair does not close A202, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- `scripts/validate_a202_operator_review_packet.py generate`: PASS.
+- `scripts/validate_a202_operator_review_packet.py validate`: PASS.
+- `scripts/validate_release_decision_bundle.py generate-template/generate/validate-template/validate/validate-bundle`: PASS.
+- `scripts/validate_a202_signed_intake_preflight.py generate/validate`: PASS.
+- `scripts/record_operator_soak_heartbeat.py generate/validate`: PASS.
+- `scripts/finalize_operator_soak_evidence.py generate/validate`: PASS.
+- `scripts/validate_external_release_evidence_bundle.py generate/validate/generate-packet/validate-packet`: PASS.
+- `scripts/validate_release_manager_activation.py generate/validate`: PASS.
+- `scripts/validate_mvp_release_gate.py generate/validate`: PASS.
+
+### Remaining Gaps
+
+- A202 still requires signed source-license review, passage-level relationship review, production owner sign-off, legal release clearance and final attestation.
+- A210 formal brand clearance or waiver, A026/A027 production gold labels, A209 24h final evidence and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert the refreshed A202/A205/A209 artifacts and governance companion records, then regenerate release artifacts from the previous packet hash.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
