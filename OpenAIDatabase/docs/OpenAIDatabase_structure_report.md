@@ -1,3 +1,39 @@
+# OpenAIDatabase S5PBT02 中文结构验收报告
+
+- 任务：`S5PBT02`
+- 验收：`ACC-S5PBT02`
+- 结论：中文 owner 可读验收通过；本报告先给人类可读结论，再保留原技术记录。
+
+## 用户可读结论
+
+OpenAIDatabase 的 S5PBT02 把 app、skill、context 和 private exports 四层分清楚。默认启动仍从 `OpenAIDatabase/AGENTS.md` 和 route script 进入；Memory Atlas 只读 redacted derived snapshot，不读 raw export、private import 或 plaintext secret。104 个隐私候选继续由 Wave2 manifest 与 privacy manifest 记录 checksum 和路径类型，不输出个人内容值。
+
+## 中文验收标准
+
+- Owner 能直接看懂默认入口、隐私边界、哪些路径不能进 git。
+- 只允许输出路径类别、数量、checksum 和策略标记，不允许输出私人记忆内容值。
+- 中文说明必须优先于英文技术字段，避免 Agent 为了理解边界去读取大体量隐私资料。
+
+## 停止条件与结果
+
+- examples 包含真实个人内容：`false`
+- private exports 默认进入 tracked plaintext path：`false`
+- absolute local path 被当作默认入口：`false`
+- S5PBT02 evidence 输出私人内容值：`false`
+- app 默认读取 raw exports：`false`
+
+## 回滚
+
+回滚仅限治理层：移除 S5PBT02 报告、合同、privacy log、run manifest、README/AGENTS 边界说明和 private-export ignore 补充。本任务没有移动产品 runtime、tracked private data 或 generated memory 文件。
+
+## 下一步
+
+后续任务只能复用本中文隐私边界，不能为了治理计算重新扫描或展开 raw/private 内容。
+
+---
+
+## 原技术记录
+
 # OpenAIDatabase S5PBT02 Structure Report
 
 task_id: `S5PBT02`

@@ -1,3 +1,39 @@
+# Serenity-Alipay S5PCT02 中文结构验收报告
+
+- 任务：`S5PCT02`
+- 验收：`ACC-S5PCT02`
+- 结论：中文 owner 可读验收通过；本报告先给人类可读结论，再保留原技术记录。
+
+## 用户可读结论
+
+Serenity-Alipay 的主动应用源码仍在 `Serenity-Alipay/app/`，验证层仍在 `tests/`，可审计手工输入在 `data/manual/`。`data/reports/`、`data/notifications/`、`data/moomoo/`、`data/backups/`、SQLite、日志和 `outputs/` 都是运行状态、历史事实、生成包或恢复证据，不是模型/参数的事实源。本任务不移动文件、不重建历史输出、不触发 OpenD、真实邮件、launchd 安装、app 打包或外部账户动作。
+
+## 中文验收标准
+
+- Owner 能直接看出 app、data、tests、outputs、backup、handoff/ops 的边界。
+- Review9 Lean v2 产品事实继续保留在三中文入口和 `docs/governance/`，Other8 结构治理不得污染产品 Roadmap。
+- 输出和备份只能 checksum-bound 等待 owner 复核，不能在结构任务中被移动或重跑。
+
+## 停止条件与结果
+
+- runtime/report history 被删除：`false`
+- output/backup move 触发自动化：`false`
+- OpenD/mail/launchd path 被改变：`false`
+- app/data/tests boundary 变模糊：`false`
+- archive written 或 files moved：`false`
+
+## 回滚
+
+回滚只需 revert S5PCT02 提交。本任务只增加边界文档、contract evidence 和测试，不需要恢复已移动文件或 replay archive。
+
+## 下一步
+
+S5PCT03 只能汇总本中文边界，不得触发 Serenity 的真实自动化或重建输出。
+
+---
+
+## 原技术记录
+
 # Serenity-Alipay S5PCT02 Structure Report
 
 - task_id: `S5PCT02`

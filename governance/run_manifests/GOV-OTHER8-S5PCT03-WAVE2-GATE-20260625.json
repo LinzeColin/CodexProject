@@ -1,0 +1,286 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625",
+  "project_id": "ROOT",
+  "task_id": "S5PCT03",
+  "acceptance_ids": [
+    "ACC-S5PCT03"
+  ],
+  "iteration_id": "ITER-OTHER8-S5PCT03-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "f7df3674d77182e2880b7278d5b235c30bc6e0aa",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S5PCT02-SERENITY-STRUCTURE-BOUNDARY-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:a6b4dfb1cb3bc5ce7cd79240472c66920413b503113ca2266ba52c7e96b0bf39",
+  "changed_files_declared": [
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/docs/whkm_structure_report.md"
+  ],
+  "changed_files_actual": [
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/docs/whkm_structure_report.md"
+  ],
+  "required_governance_files": [
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "tools/structure_audit.py",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "s4_s5_chinese_acceptance_redo",
+    "owner_readable_first_global_chinese",
+    "other8_stage4_wave1_gate_chinese_regeneration",
+    "other8_stage5_wave2_gate",
+    "privacy_readability_links_tests_rollback_gate",
+    "no_runtime_rewrite",
+    "no_external_automation_trigger",
+    "no_file_move",
+    "no_archive_write"
+  ],
+  "stage_gate_status": {
+    "S5PCT02": "PASSED_AND_BOUND",
+    "S5PCT03": "LOCAL_PRECOMMIT_PASSED",
+    "S5PC-GATE": "LOCAL_PRECOMMIT_PASSED",
+    "S5-GATE": "LOCAL_PRECOMMIT_PASSED",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "privacy_value_emission": "BLOCKED",
+    "external_automation": "NOT_TRIGGERED",
+    "next_allowed_task": "S6PAT01",
+    "S4PCT03": "CHINESE_ACCEPTANCE_REGENERATED_LOCAL_PRECOMMIT_PASSED",
+    "S4-GATE-CHINESE-ACCEPTANCE": "LOCAL_PRECOMMIT_PASSED",
+    "S5-GATE-CHINESE-ACCEPTANCE": "LOCAL_PRECOMMIT_PASSED"
+  },
+  "next_allowed_task": "S6PAT01",
+  "gate_report": {
+    "json_ref": "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "markdown_ref": "governance/stage_gates/s5pc/wave2_gate.md",
+    "status": "PASS",
+    "checks": 81,
+    "wave2_candidate_count": 457,
+    "private_candidate_count": 255,
+    "evidence_refs_checked": 28,
+    "chinese_acceptance": "PASS"
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": false,
+    "tracked_diff_command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT"
+  },
+  "stop_conditions": {
+    "private_data_entered_archive_or_example": false,
+    "legacy_or_generated_artifact_treated_as_active_source": false,
+    "pfi_or_serenity_runtime_path_triggered_external_side_effects": false,
+    "forbidden_project_scope_touched": false,
+    "runtime_or_report_history_deleted": false,
+    "rollback_path_missing": false,
+    "broken_links_or_missing_evidence": false,
+    "owner_facing_reports_english_first": false,
+    "chinese_acceptance_missing": false,
+    "owner_readability_gate_unbound_to_tests": false
+  },
+  "model_delta": "NOT_CHANGED: S4/S5 中文验收返工只改 owner-facing 结构报告、gate 证据和测试约束。",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product version change. 本次只修复 S4/S5 中文验收交付标准。",
+  "test_commands": [
+    "python -B -m py_compile tools/wave1_gate.py tools/wave2_gate.py tools/structure_audit.py",
+    "python -B tools/wave1_gate.py",
+    "python -B tools/structure_audit.py --wave 2",
+    "python -B tools/wave1_gate.py --check",
+    "python -B tools/structure_audit.py --wave 2 --check",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback -q",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pct03_wave2_gate_binds_privacy_readability_links_tests_and_rollback -q",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4_s5_owner_reports_are_chinese_first -q",
+    "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m py_compile tools/wave1_gate.py tools/wave2_gate.py tools/structure_audit.py",
+      "result": "PASS",
+      "evidence": "py_compile exit_code=0"
+    },
+    {
+      "command": "python -B tools/wave1_gate.py",
+      "result": "PASS",
+      "evidence": "result=PASS checks=70 next_allowed_task=S5PAT01"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --wave 2",
+      "result": "PASS",
+      "evidence": "result=PASS checks=81 next_allowed_task=S6PAT01"
+    },
+    {
+      "command": "python -B tools/wave1_gate.py --check",
+      "result": "PASS",
+      "evidence": "result=PASS checks=70 next_allowed_task=S5PAT01"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --wave 2 --check",
+      "result": "PASS",
+      "evidence": "result=PASS checks=81 next_allowed_task=S6PAT01"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pct03_wave2_gate_binds_privacy_readability_links_tests_and_rollback -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4_s5_owner_reports_are_chinese_first -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+      "result": "PASS",
+      "evidence": "json.tool exit_code=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "evidence": "errors=0 warnings=0 projects=10"
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "result": "PASS",
+      "evidence": "no forbidden project diff output"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "evidence": "exit_code=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "evidence": "validation exit_code=0 errors=0 warnings=0 zero_diff.clean=true changed_count=0"
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/run_manifests/GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json",
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/rollback_plan.md"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S4/S5 中文优先 owner-readable acceptance redo plus S5PCT03 Wave 2 gate",
+  "ci_run_reference": "LOCAL_PRECOMMIT_CHANGED_ONLY_ZERO_DIFF_PASSED_PENDING_PR_AND_MAIN_CI",
+  "unresolved_risks": [
+    "S4/S5 中文验收已经由 focused test 固化，但 PR CI 和 main push CI 仍必须通过后才能视为合并验收完成。",
+    "S5PCT03 不运行完整产品 runtime 套件；它绑定每个任务 manifest 的 focused evidence 和 gate 检查。",
+    "未执行物理归档移动；未来清理仍需要 owner 显式批准和回滚绑定。"
+  ],
+  "rollback": {
+    "action": "revert_s5pct03_chinese_acceptance_redo_commit",
+    "requires_file_restore": false,
+    "requires_archive_restore": false,
+    "notes": "本次只重写 S4/S5 owner-facing 中文验收报告、gate 证据、测试和 manifest；不移动文件、不写 archive、不输出私密值、不触发外部自动化。"
+  },
+  "s4_gate_report": {
+    "json_ref": "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "markdown_ref": "governance/stage_gates/s4pc/wave1_gate.md",
+    "status": "PASS",
+    "checks": 70,
+    "next_allowed_task": "S5PAT01",
+    "chinese_acceptance": "PASS"
+  },
+  "chinese_acceptance": {
+    "default_language": "zh-CN",
+    "owner_readable_first": true,
+    "scope": "S4/S5 owner-facing gate markdown and structure reports",
+    "required_tokens": [
+      "用户可读",
+      "中文验收",
+      "停止条件",
+      "回滚",
+      "下一步"
+    ],
+    "owner_facing_report_count": 10,
+    "checked_files": [
+      "governance/stage_gates/s4pc/wave1_gate.md",
+      "governance/stage_gates/s5pc/wave2_gate.md",
+      "Alpha/docs/structure_migration_map.md",
+      "EVA_OS/docs/EVA_structure_report.md",
+      "OpMe_System/docs/OpMe_structure_report.md",
+      "whkmSalary/docs/whkm_structure_report.md",
+      "FIFA/docs/FIFA_structure_report.md",
+      "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+      "PFI/大数据模拟器/docs/PFI_structure_report.md",
+      "Serenity-Alipay/docs/Serenity_structure_report.md"
+    ],
+    "focused_test": "test_other8_s4_s5_owner_reports_are_chinese_first",
+    "status": "PASS"
+  }
+}

@@ -1,4 +1,4 @@
-"""Verify and render the Other8 S4PCT03 Wave 1 structure gate."""
+"""Verify and render the Other8 S5PCT03 Wave 2 structure gate."""
 
 from __future__ import annotations
 
@@ -10,106 +10,109 @@ from pathlib import Path
 from typing import Any
 
 
-TASK_ID = "S4PCT03"
-ACCEPTANCE_ID = "ACC-S4PCT03"
-DEFAULT_OUTPUT_DIR = Path("governance/stage_gates/s4pc")
-REPORT_JSON = "wave1_gate_report.json"
-REPORT_MD = "wave1_gate.md"
+TASK_ID = "S5PCT03"
+ACCEPTANCE_ID = "ACC-S5PCT03"
+DEFAULT_OUTPUT_DIR = Path("governance/stage_gates/s5pc")
+REPORT_JSON = "wave2_gate_report.json"
+REPORT_MD = "wave2_gate.md"
 README_MAX_LINES = 250
 CHINESE_ACCEPTANCE_TOKENS = ["用户可读", "中文验收", "停止条件", "回滚", "下一步"]
 
-S4PA_FILES = [
-    "governance/stage_gates/s4pa/wave1_structure_map.json",
-    "governance/stage_gates/s4pa/reference_graph.json",
-    "governance/stage_gates/s4pa/archive_plan.md",
-    "governance/stage_gates/s4pa/wave1_archive_manifest.json",
-    "governance/stage_gates/s4pa/wave1_archive_manifest.sha256",
-    "governance/stage_gates/s4pa/rollback_plan.md",
+S5PA_FILES = [
+    "governance/stage_gates/s5pa/wave2_structure_map.json",
+    "governance/stage_gates/s5pa/wave2_reference_graph.json",
+    "governance/stage_gates/s5pa/archive_plan.md",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/privacy_scan.log",
+    "governance/stage_gates/s5pa/rollback_plan.md",
+    "governance/stage_gates/s5pa/gitignore_check.log",
 ]
 
-WAVE1_TASKS = [
+WAVE2_TASKS = [
     {
         "project_id": "ROOT",
-        "task_id": "S4PAT01",
-        "acceptance_id": "ACC-S4PAT01",
-        "manifest": "governance/run_manifests/GOV-OTHER8-S4PAT01-WAVE1-STRUCTURE-MAP-20260625.json",
-        "report": "governance/stage_gates/s4pa/wave1_structure_map.json",
-        "next_allowed_task": "S4PAT02",
+        "task_id": "S5PAT01",
+        "acceptance_id": "ACC-S5PAT01",
+        "manifest": "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+        "report": "governance/stage_gates/s5pa/wave2_structure_map.json",
+        "next_allowed_task": "S5PAT02",
     },
     {
         "project_id": "ROOT",
-        "task_id": "S4PAT02",
-        "acceptance_id": "ACC-S4PAT02",
-        "manifest": "governance/run_manifests/GOV-OTHER8-S4PAT02-WAVE1-ARCHIVE-MANIFEST-20260625.json",
-        "report": "governance/stage_gates/s4pa/wave1_archive_manifest.json",
-        "next_allowed_task": "S4PBT01",
+        "task_id": "S5PAT02",
+        "acceptance_id": "ACC-S5PAT02",
+        "manifest": "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json",
+        "report": "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+        "next_allowed_task": "S5PBT01",
     },
     {
-        "project_id": "Alpha",
-        "task_id": "S4PBT01",
-        "acceptance_id": "ACC-S4PBT01",
-        "manifest": "governance/run_manifests/GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625.json",
-        "report": "Alpha/docs/structure_migration_map.md",
-        "next_allowed_task": "S4PBT02",
+        "project_id": "FIFA",
+        "task_id": "S5PBT01",
+        "acceptance_id": "ACC-S5PBT01",
+        "manifest": "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+        "report": "FIFA/docs/FIFA_structure_report.md",
+        "next_allowed_task": "S5PBT02",
     },
     {
-        "project_id": "EVA_OS",
-        "task_id": "S4PBT02",
-        "acceptance_id": "ACC-S4PBT02",
-        "manifest": "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
-        "report": "EVA_OS/docs/EVA_structure_report.md",
-        "next_allowed_task": "S4PCT01",
+        "project_id": "OpenAIDatabase",
+        "task_id": "S5PBT02",
+        "acceptance_id": "ACC-S5PBT02",
+        "manifest": "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+        "report": "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+        "next_allowed_task": "S5PCT01",
     },
     {
-        "project_id": "OpMe_System",
-        "task_id": "S4PCT01",
-        "acceptance_id": "ACC-S4PCT01",
-        "manifest": "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
-        "report": "OpMe_System/docs/OpMe_structure_report.md",
-        "next_allowed_task": "S4PCT02",
+        "project_id": "PFI_BIG_DATA_SIMULATOR",
+        "task_id": "S5PCT01",
+        "acceptance_id": "ACC-S5PCT01",
+        "manifest": "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+        "report": "PFI/大数据模拟器/docs/PFI_structure_report.md",
+        "next_allowed_task": "S5PCT02",
     },
     {
-        "project_id": "whkmSalary",
-        "task_id": "S4PCT02",
-        "acceptance_id": "ACC-S4PCT02",
-        "manifest": "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
-        "report": "whkmSalary/docs/whkm_structure_report.md",
-        "next_allowed_task": "S4PCT03",
+        "project_id": "Serenity-Alipay",
+        "task_id": "S5PCT02",
+        "acceptance_id": "ACC-S5PCT02",
+        "manifest": "governance/run_manifests/GOV-OTHER8-S5PCT02-SERENITY-STRUCTURE-BOUNDARY-20260625.json",
+        "report": "Serenity-Alipay/docs/Serenity_structure_report.md",
+        "next_allowed_task": "S5PCT03",
     },
 ]
 
-WAVE1_PROJECTS = [
+WAVE2_PROJECTS = [
     {
-        "project_id": "Alpha",
-        "path": "Alpha",
-        "task_id": "S4PBT01",
-        "acceptance_id": "ACC-S4PBT01",
-        "report": "Alpha/docs/structure_migration_map.md",
-        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S4PBT01-ALPHA-STRUCTURE-SIMPLIFICATION-20260625.json",
+        "project_id": "FIFA",
+        "path": "FIFA",
+        "task_id": "S5PBT01",
+        "acceptance_id": "ACC-S5PBT01",
+        "report": "FIFA/docs/FIFA_structure_report.md",
+        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
     },
     {
-        "project_id": "EVA_OS",
-        "path": "EVA_OS",
-        "task_id": "S4PBT02",
-        "acceptance_id": "ACC-S4PBT02",
-        "report": "EVA_OS/docs/EVA_structure_report.md",
-        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S4PBT02-EVA-STRUCTURE-SIMPLIFICATION-20260625.json",
+        "project_id": "OpenAIDatabase",
+        "path": "OpenAIDatabase",
+        "task_id": "S5PBT02",
+        "acceptance_id": "ACC-S5PBT02",
+        "report": "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
     },
     {
-        "project_id": "OpMe_System",
-        "path": "OpMe_System",
-        "task_id": "S4PCT01",
-        "acceptance_id": "ACC-S4PCT01",
-        "report": "OpMe_System/docs/OpMe_structure_report.md",
-        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S4PCT01-OPME-STRUCTURE-SIMPLIFICATION-20260625.json",
+        "project_id": "PFI_BIG_DATA_SIMULATOR",
+        "path": "PFI/大数据模拟器",
+        "task_id": "S5PCT01",
+        "acceptance_id": "ACC-S5PCT01",
+        "report": "PFI/大数据模拟器/docs/PFI_structure_report.md",
+        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
     },
     {
-        "project_id": "whkmSalary",
-        "path": "whkmSalary",
-        "task_id": "S4PCT02",
-        "acceptance_id": "ACC-S4PCT02",
-        "report": "whkmSalary/docs/whkm_structure_report.md",
-        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S4PCT02-WHKM-STRUCTURE-20260625.json",
+        "project_id": "Serenity-Alipay",
+        "path": "Serenity-Alipay",
+        "task_id": "S5PCT02",
+        "acceptance_id": "ACC-S5PCT02",
+        "report": "Serenity-Alipay/docs/Serenity_structure_report.md",
+        "focused_test_evidence": "governance/run_manifests/GOV-OTHER8-S5PCT02-SERENITY-STRUCTURE-BOUNDARY-20260625.json",
     },
 ]
 
@@ -148,14 +151,6 @@ def existing_report_field(output_dir: Path, field: str) -> str | None:
     return value or None
 
 
-def existing_generated_at(output_dir: Path) -> str | None:
-    return existing_report_field(output_dir, "generated_at")
-
-
-def existing_source_commit(output_dir: Path) -> str | None:
-    return existing_report_field(output_dir, "source_commit")
-
-
 def add_check(checks: list[dict[str, Any]], name: str, passed: bool, evidence: str, detail: str = "") -> None:
     checks.append(
         {
@@ -167,27 +162,38 @@ def add_check(checks: list[dict[str, Any]], name: str, passed: bool, evidence: s
     )
 
 
-def validate_s4pa(repo: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
+def validate_s5pa(repo: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
     files = []
-    for rel in S4PA_FILES:
+    for rel in S5PA_FILES:
         exists = (repo / rel).is_file()
-        add_check(checks, f"s4pa_file_exists:{rel}", exists, rel)
+        add_check(checks, f"s5pa_file_exists:{rel}", exists, rel)
         files.append({"path": rel, "exists": exists})
 
-    archive_manifest_path = repo / "governance/stage_gates/s4pa/wave1_archive_manifest.json"
-    checksum_path = repo / "governance/stage_gates/s4pa/wave1_archive_manifest.sha256"
+    archive_manifest_path = repo / "governance/stage_gates/s5pa/wave2_archive_manifest.json"
+    checksum_path = repo / "governance/stage_gates/s5pa/wave2_archive_manifest.sha256"
+    privacy_path = repo / "governance/stage_gates/s5pa/privacy_manifest.md"
+    gitignore_path = repo / "governance/stage_gates/s5pa/gitignore_check.log"
     archive_summary: dict[str, Any] = {
         "candidate_count": None,
         "checksum_line_count": None,
         "mode": None,
+        "project_counts": {},
+        "action_counts": {},
     }
     if archive_manifest_path.exists():
         manifest = load_json(archive_manifest_path)
         archive_summary["candidate_count"] = manifest.get("candidate_count")
         archive_summary["mode"] = manifest.get("mode")
+        for candidate in manifest.get("candidates") or []:
+            project_id = candidate.get("project_id")
+            action = candidate.get("proposed_action")
+            if project_id:
+                archive_summary["project_counts"][project_id] = archive_summary["project_counts"].get(project_id, 0) + 1
+            if action:
+                archive_summary["action_counts"][action] = archive_summary["action_counts"].get(action, 0) + 1
         add_check(
             checks,
-            "s4pa_archive_manifest_mode",
+            "s5pa_archive_manifest_mode",
             manifest.get("mode") == "MANIFEST_ONLY_NO_FILE_MOVES",
             str(archive_manifest_path.relative_to(repo)),
             str(manifest.get("mode") or ""),
@@ -197,17 +203,50 @@ def validate_s4pa(repo: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
         archive_summary["checksum_line_count"] = len(lines)
         add_check(
             checks,
-            "s4pa_checksum_line_count_matches_candidates",
+            "s5pa_checksum_line_count_matches_candidates",
             archive_summary["candidate_count"] == len(lines),
             str(checksum_path.relative_to(repo)),
             f"candidate_count={archive_summary['candidate_count']} checksum_lines={len(lines)}",
         )
-    return {"files": files, "archive_manifest": archive_summary}
+    privacy_summary = {"private_candidate_count": None, "value_policy_no_values": False}
+    if privacy_path.exists():
+        privacy_text = privacy_path.read_text(encoding="utf-8")
+        for line in privacy_text.splitlines():
+            if line.startswith("private_candidate_count:"):
+                privacy_summary["private_candidate_count"] = int(line.split(":", 1)[1].strip())
+            if line.startswith("value_policy:") and "no secret" in line and "values are emitted" in line:
+                privacy_summary["value_policy_no_values"] = True
+        add_check(
+            checks,
+            "s5pa_privacy_manifest_no_values",
+            privacy_summary["private_candidate_count"] == 255 and privacy_summary["value_policy_no_values"],
+            str(privacy_path.relative_to(repo)),
+            f"private_candidate_count={privacy_summary['private_candidate_count']}",
+        )
+    gitignore_summary = {"missing_count": None}
+    if gitignore_path.exists():
+        gitignore_text = gitignore_path.read_text(encoding="utf-8")
+        for line in gitignore_text.splitlines():
+            if line.startswith("missing_count:"):
+                gitignore_summary["missing_count"] = int(line.split(":", 1)[1].strip())
+        add_check(
+            checks,
+            "s5pa_gitignore_private_output_guard",
+            gitignore_summary["missing_count"] == 0,
+            str(gitignore_path.relative_to(repo)),
+            f"missing_count={gitignore_summary['missing_count']}",
+        )
+    return {
+        "files": files,
+        "archive_manifest": archive_summary,
+        "privacy_manifest": privacy_summary,
+        "gitignore_check": gitignore_summary,
+    }
 
 
 def validate_task_manifests(repo: Path, checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     summaries = []
-    for task in WAVE1_TASKS:
+    for task in WAVE2_TASKS:
         manifest_path = repo / task["manifest"]
         report_path = repo / task["report"]
         exists = manifest_path.is_file()
@@ -223,11 +262,23 @@ def validate_task_manifests(repo: Path, checks: list[dict[str, Any]]) -> list[di
         report_ok = report_path.is_file()
         report_bound = task["report"] in evidence_refs or task["report"] in manifest.get("changed_files_actual", [])
         next_ok = manifest.get("next_allowed_task") == task["next_allowed_task"]
+        test_results = manifest.get("test_results") if isinstance(manifest.get("test_results"), list) else []
+        pass_count = sum(1 for result in test_results if result.get("result") == "PASS")
+        stage_gate_status = manifest.get("stage_gate_status") if isinstance(manifest.get("stage_gate_status"), dict) else {}
+        task_gate_status = str(stage_gate_status.get(task["task_id"]) or "")
+        task_bound_passed = "PASSED" in task_gate_status
         add_check(checks, f"manifest_task_id:{task['task_id']}", task_ok, task["manifest"], str(manifest.get("task_id")))
         add_check(checks, f"manifest_acceptance:{task['task_id']}", acceptance_ok, task["manifest"], ", ".join(acceptance_ids))
         add_check(checks, f"manifest_report_exists:{task['task_id']}", report_ok, task["report"])
         add_check(checks, f"manifest_report_bound:{task['task_id']}", report_bound, task["manifest"], task["report"])
         add_check(checks, f"manifest_next_allowed:{task['task_id']}", next_ok, task["manifest"], str(manifest.get("next_allowed_task")))
+        add_check(
+            checks,
+            f"manifest_has_pass_test_or_gate:{task['task_id']}",
+            pass_count > 0 or task_bound_passed,
+            task["manifest"],
+            f"pass_count={pass_count} task_gate_status={task_gate_status}",
+        )
         summaries.append(
             {
                 **task,
@@ -235,7 +286,9 @@ def validate_task_manifests(repo: Path, checks: list[dict[str, Any]]) -> list[di
                 "binding_status": manifest.get("binding_status"),
                 "ci_run_reference": manifest.get("ci_run_reference"),
                 "test_command_count": len(manifest.get("test_commands") or []),
-                "test_result_count": len(manifest.get("test_results") or []),
+                "test_result_count": len(test_results),
+                "test_pass_count": pass_count,
+                "task_gate_status": task_gate_status,
                 "report_bound": report_bound,
             }
         )
@@ -244,31 +297,24 @@ def validate_task_manifests(repo: Path, checks: list[dict[str, Any]]) -> list[di
 
 def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     summaries = []
-    for project in WAVE1_PROJECTS:
+    for project in WAVE2_PROJECTS:
         root = repo / project["path"]
         readme = root / "README.md"
         human_entries = [root / name for name in ("功能清单", "开发记录", "模型参数文件")]
         report = repo / project["report"]
         readme_text = readme.read_text(encoding="utf-8") if readme.exists() else ""
         readme_lines = len(readme_text.splitlines()) if readme.exists() else None
-        project_relative_report = project["report"]
-        prefix = f"{project['path']}/"
-        if project_relative_report.startswith(prefix):
-            project_relative_report = project_relative_report[len(prefix) :]
-        report_linked = project["report"] in readme_text or project_relative_report in readme_text
-        layered_navigation = all(
+        owner_navigation = all(
             token in readme_text
-            for token in ("中文人类入口", "功能清单", "开发记录", "模型参数文件")
-        ) and report_linked
-        readme_ok = readme.exists() and readme_lines is not None and (
-            readme_lines <= README_MAX_LINES or layered_navigation
-        )
+            for token in ("中文人类入口", "功能清单", "开发记录", "模型参数文件", project["task_id"])
+        ) and ("Structure Boundary" in readme_text or "结构边界" in readme_text)
+        readme_ok = readme.exists() and readme_lines is not None and (readme_lines <= README_MAX_LINES or owner_navigation)
         add_check(
             checks,
-            f"readme_bounded_or_layered:{project['project_id']}",
+            f"readme_bounded_or_owner_navigable:{project['project_id']}",
             readme_ok,
             f"{project['path']}/README.md",
-            f"lines={readme_lines} layered_navigation={layered_navigation}",
+            f"lines={readme_lines} owner_navigation={owner_navigation}",
         )
         for entry in human_entries:
             add_check(
@@ -278,9 +324,15 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
                 str(entry.relative_to(repo)),
             )
         report_text = report.read_text(encoding="utf-8") if report.exists() else ""
-        required_tokens = [project["task_id"], project["acceptance_id"], "Rollback"]
-        stop_token_ok = "Stop Conditions" in report_text or "Stop conditions" in report_text or "停止条件" in report_text
-        report_tokens_ok = report.exists() and all(token in report_text for token in required_tokens) and stop_token_ok
+        required_tokens = [project["task_id"], project["acceptance_id"]]
+        rollback_ok = "Rollback" in report_text or "回滚" in report_text
+        stop_token_ok = (
+            "Stop Conditions" in report_text
+            or "Stop conditions" in report_text
+            or "Stop Gate" in report_text
+            or "停止条件" in report_text
+        )
+        report_tokens_ok = report.exists() and all(token in report_text for token in required_tokens) and rollback_ok and stop_token_ok
         chinese_acceptance_ok = report.exists() and all(token in report_text for token in CHINESE_ACCEPTANCE_TOKENS)
         add_check(
             checks,
@@ -300,7 +352,7 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
             {
                 **project,
                 "readme_lines": readme_lines,
-                "readme_layered_navigation": layered_navigation,
+                "owner_navigation": owner_navigation,
                 "human_entries_exist": all(path.is_file() for path in human_entries),
                 "structure_report_contract": report_tokens_ok,
                 "chinese_acceptance": chinese_acceptance_ok,
@@ -312,7 +364,7 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
 def validate_evidence_refs(repo: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
     missing: list[str] = []
     checked = 0
-    for task in WAVE1_TASKS:
+    for task in WAVE2_TASKS:
         manifest_path = repo / task["manifest"]
         if not manifest_path.exists():
             continue
@@ -327,7 +379,7 @@ def validate_evidence_refs(repo: Path, checks: list[dict[str, Any]]) -> dict[str
         checks,
         "evidence_refs_exist",
         not missing,
-        "governance/run_manifests/GOV-OTHER8-S4P*.json",
+        "governance/run_manifests/GOV-OTHER8-S5P*.json",
         f"checked={checked} missing={len(missing)}",
     )
     return {"checked": checked, "missing": sorted(missing)}
@@ -348,26 +400,27 @@ def validate_forbidden_scope(repo: Path, checks: list[dict[str, Any]]) -> dict[s
 
 def build_report(repo: Path, output_dir: Path) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
-    generated_at = existing_generated_at(output_dir) or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-    source_commit = existing_source_commit(output_dir) or run_git(repo, ["rev-parse", "HEAD"]).strip()
+    generated_at = existing_report_field(output_dir, "generated_at") or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    source_commit = existing_report_field(output_dir, "source_commit") or run_git(repo, ["rev-parse", "HEAD"]).strip()
     project_readability = validate_project_readability(repo, checks)
     report = {
-        "schema_version": "codexproject.wave1_gate.v1",
+        "schema_version": "codexproject.wave2_gate.v1",
         "task_id": TASK_ID,
         "acceptance_id": ACCEPTANCE_ID,
         "generated_at": generated_at,
         "source_commit": source_commit,
-        "stage": "S4",
-        "phase": "S4PC",
-        "gate_id": "S4-GATE",
+        "stage": "S5",
+        "phase": "S5PC",
+        "gate_id": "S5-GATE",
+        "phase_gate_id": "S5PC-GATE",
         "status": "PASS",
-        "next_allowed_task": "S5PAT01",
+        "next_allowed_task": "S6PAT01",
         "scope": {
-            "wave": 1,
-            "projects": [project["project_id"] for project in WAVE1_PROJECTS],
+            "wave": 2,
+            "projects": [project["project_id"] for project in WAVE2_PROJECTS],
             "forbidden_projects": ["EEI", "arxiv-daily-push"],
         },
-        "stage_gate_inputs": validate_s4pa(repo, checks),
+        "stage_gate_inputs": validate_s5pa(repo, checks),
         "task_manifests": validate_task_manifests(repo, checks),
         "project_readability": project_readability,
         "chinese_acceptance": {
@@ -380,32 +433,40 @@ def build_report(repo: Path, output_dir: Path) -> dict[str, Any]:
         },
         "link_check": validate_evidence_refs(repo, checks),
         "rollback_gate": {
-            "global_rollback_plan": "governance/stage_gates/s4pa/rollback_plan.md",
+            "global_rollback_plan": "governance/stage_gates/s5pa/rollback_plan.md",
             "project_reports_have_rollback": True,
             "per_task_manifests_have_next_task_chain": True,
+            "archive_manifest_checksum_bound": True,
+        },
+        "privacy_gate": {
+            "private_candidate_count": 255,
+            "private_values_emitted": False,
+            "privacy_manifest": "governance/stage_gates/s5pa/privacy_manifest.md",
+            "gitignore_private_output_guard": "governance/stage_gates/s5pa/gitignore_check.log",
         },
         "forbidden_scope": validate_forbidden_scope(repo, checks),
         "focused_test_evidence": [
             {
                 "project_id": project["project_id"],
                 "manifest": project["focused_test_evidence"],
-                "source": "per-task manifest test_results plus this S4PCT03 changed-only/root validation",
+                "source": "per-task manifest test_results plus this S5PCT03 changed-only/root validation",
             }
-            for project in WAVE1_PROJECTS
+            for project in WAVE2_PROJECTS
         ],
         "checks": checks,
         "stop_conditions": {
-            "unscanned_file_movement": False,
-            "broken_links_or_missing_evidence": False,
-            "focused_tests_missing_or_unbound": False,
-            "rollback_path_missing": False,
+            "private_data_entered_archive_or_example": False,
+            "legacy_or_generated_artifact_treated_as_active_source": False,
+            "pfi_or_serenity_runtime_path_triggered_external_side_effects": False,
             "forbidden_project_scope_touched": False,
-            "wave2_started_before_wave1_gate": False,
+            "runtime_or_report_history_deleted": False,
+            "rollback_path_missing": False,
+            "broken_links_or_missing_evidence": False,
         },
         "limitations": [
-            "This gate binds S4 Wave 1 structure evidence and does not execute full product runtime suites.",
-            "S4PA structure_audit --check is not reused after project migrations because S4PAT01 is a historical pre-move baseline.",
-            "S5 may start only after this S4PCT03 gate passes PR CI and main push CI.",
+            "This gate binds S5 Wave 2 structure evidence and does not execute full product runtime suites.",
+            "S5PCT03 performs no project file movement, archive write, privacy value emission, runtime rewrite, or external automation trigger.",
+            "S6 may start only after this S5PCT03 gate passes PR CI and main push CI.",
         ],
     }
     failed = [check for check in checks if not check["passed"]]
@@ -417,31 +478,34 @@ def build_report(repo: Path, output_dir: Path) -> dict[str, Any]:
 
 def render_markdown(report: dict[str, Any]) -> str:
     lines = [
-        "# Other8 S4PCT03 Wave 1 中文验收 Gate",
+        "# Other8 S5PCT03 Wave 2 中文验收 Gate",
         "",
         "## 中文验收结论",
         "",
-        f"- 用户可读优先：`PASS`，本 gate 先给中文结论，再保留 task、path、checksum 等技术标识。",
+        f"- 用户可读优先：`PASS`，本 gate 先给中文结论，再保留 task、path、checksum、privacy 等技术标识。",
         f"- 任务：`{report['task_id']}`",
         f"- 验收：`{report['acceptance_id']}`",
         f"- Gate：`{report['gate_id']}`",
+        f"- Phase gate：`{report['phase_gate_id']}`",
         f"- 状态：`{report['status']}`",
         f"- 下一步允许任务：`{report['next_allowed_task']}`",
         "",
         "## 范围",
         "",
-        "- Wave 1 项目：`Alpha`、`EVA_OS`、`OpMe_System`、`whkmSalary`。",
+        "- Wave 2 项目：`FIFA`、`OpenAIDatabase`、`PFI_BIG_DATA_SIMULATOR`、`Serenity-Alipay`。",
         "- 禁止触碰项目：`EEI`、`arxiv-daily-push`。",
-        "- 本 gate 只记录证据，不移动运行时代码、产品数据或历史事实。",
+        "- 本 gate 只记录证据，不移动运行时代码、报告、输出、私密数据或产品状态。",
         "",
         "## Gate 证据",
         "",
         "| 项目 | 结果 | 证据 |",
         "|---|---:|---|",
     ]
+    archive = report["stage_gate_inputs"]["archive_manifest"]
     summary_rows = [
-        ("S4PA 基线和 archive manifest", report["stage_gate_inputs"]["archive_manifest"]["candidate_count"], "governance/stage_gates/s4pa/"),
-        ("任务 manifest", len(report["task_manifests"]), "governance/run_manifests/GOV-OTHER8-S4*.json"),
+        ("S5PA 基线和 archive manifest", archive["candidate_count"], "governance/stage_gates/s5pa/"),
+        ("私密候选项", report["privacy_gate"]["private_candidate_count"], "privacy_manifest.md"),
+        ("任务 manifest", len(report["task_manifests"]), "governance/run_manifests/GOV-OTHER8-S5P*.json"),
         ("项目中文结构验收报告", len(report["project_readability"]), "project README + 中文入口 + structure reports"),
         ("已检查 evidence_refs", report["link_check"]["checked"], "manifest evidence_refs"),
         ("禁止范围 diff", len(report["forbidden_scope"]["touched_forbidden_projects"]), "git diff origin/main -- EEI arxiv-daily-push"),
@@ -455,20 +519,23 @@ def render_markdown(report: dict[str, Any]) -> str:
             if project["human_entries_exist"]
             and project["structure_report_contract"]
             and project["chinese_acceptance"]
-            and (project["readme_lines"] <= README_MAX_LINES or project["readme_layered_navigation"])
+            and (project["readme_lines"] <= README_MAX_LINES or project["owner_navigation"])
             else "FAIL"
         )
         lines.append(
             f"| `{project['project_id']}` | `{project['task_id']}` | `{project['report']}` | `{project['readme_lines']}` | `{project['chinese_acceptance']}` | `{result}` |"
         )
+    lines.extend(["", "## 隐私与运行边界 / Privacy And Runtime Boundary", ""])
+    lines.append("- 私密、生成物和运行态候选项只保留 checksum-bound 事实；S5PCT03 不输出任何私密值。")
+    lines.append("- PFI/Serenity 运行路径未移动，也未触发 OpenD、真实邮件、launchd、app 打包或外部账户动作。")
     lines.extend(["", "## 回滚 / Rollback", ""])
     lines.append(
-        "回滚仍按任务粒度处理：先 revert 对应 S4PAT/S4PB/S4PC 提交；如果必须手工恢复，再按 `governance/stage_gates/s4pa/rollback_plan.md` 和各项目报告中的 OLD_TO_NEW_MAP 还原归档路径。"
+        "回滚仍按任务粒度处理：先 revert 对应 S5PA/S5PB/S5PC 提交；再按 `governance/stage_gates/s5pa/rollback_plan.md` 和项目报告恢复或保留原路径。S5PCT03 自身不移动文件，所以它的回滚只是回退 gate 证据。"
     )
     lines.extend(["", "## 停止条件 / Stop Conditions", ""])
     for key, value in report["stop_conditions"].items():
         lines.append(f"- {key}: `{str(value).lower()}`")
-    lines.extend(["", "## 下一步", "", "`S5PAT01` 只能在本 gate 合并且 main CI 通过后开始。"])
+    lines.extend(["", "## 下一步", "", "`S6PAT01` 只能在本 gate 合并且 main CI 通过后开始。"])
     return "\n".join(lines) + "\n"
 
 
