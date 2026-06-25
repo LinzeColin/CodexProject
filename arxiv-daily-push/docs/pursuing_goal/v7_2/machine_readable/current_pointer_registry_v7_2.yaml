@@ -7,8 +7,8 @@ single_current_product_contract:
   previous_contract_policy: read_only_history_baseline
 contextual_next_tasks:
   global_current_task:
-    task_id: S2PCT02
-    meaning: Science main-journal metadata-only no-send shadow source work may continue when it does not touch V7.2 shared files.
+    task_id: S2PMT07
+    meaning: S2PMT07 final gate precheck is the current global Stage2 entry and remains blocked until inherited V7.1 P0/P1 are zero, S2PLT04 is complete, the final bundle exists, and independent final review passes.
   email_v1_workstream_next:
     task_id: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
     meaning: T01 through T05 are completed on main; future mail entrypoints must use the Email V1 contract/readiness gate and still cannot enable SMTP, scheduler, Release, public schema changes, or production acceptance.
@@ -16,8 +16,8 @@ contextual_next_tasks:
     task_id: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
     meaning: V7.2 baseline publication plus Email V1 main-merge status are recorded; no V7.2 remediation task remains open before no-conflict Stage2 shadow work continues.
   shadow_source_next:
-    task_id: S2PCT02
-    meaning: No-send source shadow path, no formal D2 acceptance.
+    task_id: NONE_WHILE_S2PMT07_BLOCKED
+    meaning: S2PCT02 Science shadow evidence is completed history; no new shadow source is the current executable task while S2PMT07 remains blocked.
 rules:
   - Contextual next tasks must not overwrite the CURRENT product-contract pointer.
   - No Stage2 agent may continue new task work until it records V7.2 revalidation for its completed work.

@@ -14,11 +14,11 @@ previous_read_only_contract:
   root_lock: docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml
   policy: read_only_history_baseline
 current_pointer_registry:
-  global_current_task: S2PCT02
-  global_current_task_meaning: Stage2 Science metadata-only no-send shadow evidence may continue when it does not touch V7.2 shared contract files.
+  global_current_task: S2PMT07
+  global_current_task_meaning: S2PMT07 final gate precheck is blocked; no new executable Stage2 task may claim production acceptance until inherited V7.1 P0/P1 are zero, S2PLT04 is complete, the final bundle exists, and independent final review passes.
   v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
-  shadow_source_next: S2PCT02
+  shadow_source_next: NONE_WHILE_S2PMT07_BLOCKED
 single_current_contract_rule: Only this file may identify the CURRENT product contract. Workstream next tasks must be named by context and must not replace the product-contract pointer.
 production_boundary:
   stage1_gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED
@@ -30,6 +30,8 @@ production_boundary:
   forbidden_until:
     - inherited V7.1 P0=0
     - inherited V7.1 P1=0
+    - S2PLT04 completed
+    - final bundle present
     - S2PMT07 independent review passed
     - INTEGRATED_PRODUCTION_ACCEPTED written with evidence
   forbidden_actions:
