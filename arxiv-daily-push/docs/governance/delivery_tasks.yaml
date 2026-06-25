@@ -2101,3 +2101,22 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+
+  - task_id: "S2PMT07"
+    phase: "S2PM"
+    objective: "Record fail-closed final gate precheck for independent S2PMT07 production review under V7.2 boundaries."
+    scope: "Final gate precheck helper, focused tests, model/formula/parameter registration, traceability row, blocked phase record, run manifest, and no-production side-effect evidence."
+    non_scope: "No independent signoff, no final acceptance bundle creation, no inherited P0/P1 closure, no S2PLT04 completion claim, no real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    status: "blocked"
+    dependencies: ["S2PMT01", "S2PMT02", "S2PMT03", "S2PMT04", "S2PMT05", "S2PMT06", "S2PLT04", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt07_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py arxiv-daily-push/tests/test_stage2_final_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt07_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT07 tests: 5 OK", "full arxiv-daily-push unittest: 447 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse: OK", "git diff --check: PASS", "forbidden production enablement diff scan: no true/enabling hits", "full semantic extractor: NOT COMPLETED after local interrupt during full-table AST parsing; changed-only semantic governance is the S2PMT07 local gate used for this run"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md", "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "S2PMT07 precheck can be misread as final independent review or production acceptance; inherited P0/P1, missing S2PLT04, missing final bundle, and missing independent signoff still block integrated production acceptance."
+    rollback: "Revert S2PMT07 precheck module, tests, governance registrations, phase record, manifest, and events; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []

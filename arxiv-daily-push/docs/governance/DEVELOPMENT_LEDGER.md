@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT06_OWNER_UX_SAFE_CONTROLS_LOCAL_ONLY
-- Confirmed iteration count: 113
+- Current gate: S2PMT07_FINAL_GATE_PRECHECK_BLOCKED
+- Confirmed iteration count: 114
 - Reconstructed event count: 0
-- Current task: `S2PMT06` has completed local Chinese owner UX, interaction feedback, navigation, safe controls, traceability, and accessibility evidence. It validates the first-screen owner status, fixed top/bottom navigation, breadcrumbs, related links, source-to-ROI traceability, not-run/loading/no-update/partial-success/degraded/failed/stale status feedback, recoverable error cards, safe config-change preview-to-rollback flow, append-only revision ledger, queue search/filter/sort/export/drilldown, safe manual actions, feedback visibility, accessibility/mail-client compatibility, C-001 through C-015 coverage, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler installation, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, inherited P0/P1 closure, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT07` final gate precheck is blocked. S2PMT01 through S2PMT06 have local validation evidence, but reviewer independence is not proven, inherited V7.1 P0=8 and P1=37 remain open, S2PLT04 completion is missing, the final acceptance bundle is missing, independent signoff is missing, and independent final command execution is not proven. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -38,6 +38,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260626-ADP-S2PM-S2PMT07-FINAL-GATE-PRECHECK`
+
+- Timestamp: `2026-06-26T17:00:00+10:00`
+- Fact level: EXTRACTED from S2PMT07 final gate precheck code, focused tests, model/formula/parameter registry diff, phase record, manifest, and V7.2 root-lock blocker context.
+- Base commit: `0c52a3257800c5bab89de93c6713c71249d20697`
+- Status: blocked precheck recorded.
+- Phase: S2PM
+- Task IDs: `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Record a machine-verifiable fail-closed S2PMT07 final gate precheck without claiming production acceptance.
+- Files changed: S2PMT07 final gate helper, focused tests, phase record, run manifest, model/formula/parameter registries, traceability/status files, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-100` final gate precheck model.
+- Formula changes: Added `FORM-ADP-102` with machine-verifiable AST references bound to S2PMT07 final gate precheck implementations.
+- Parameter changes: Added `PARAM-ADP-830` through `PARAM-ADP-842` for S2PMT07 identifiers, inherited P0/P1 blocker counts, reviewer independence, required zero severities, dependencies, evidence, final commands, forbidden pass flags, and blocking reasons.
+- Validation: py_compile PASS; focused S2PMT07 tests 5 OK; full arxiv-daily-push unittest 447 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS; forbidden production enablement diff scan no true/enabling hits; full semantic extractor NOT COMPLETED after local interrupt during full-table AST parsing, so changed-only semantic governance is the S2PMT07 local gate used for this run.
+- Decisions: `ACC-S2PMT07-FINAL-REVIEW` is not accepted. The current precheck is blocked by missing independent reviewer proof, inherited V7.1 P0/P1 blockers, missing S2PLT04, missing final acceptance bundle, and missing independent signoff. Real SMTP, scheduler installation, launchd bootstrap, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, DAILY_OPERATION, and production operation remain false/disabled.
+- Remaining risks: This does not replace an independent final reviewer, full acceptance bundle verification, or zero P0/P1 remediation.
+- Rollback: Revert S2PMT07 final gate precheck code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md`; `governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Continue only no-conflict Stage 2 work under V7.2 boundaries, or unblock S2PMT07 by proving S2PLT04, inherited P0/P1 zero, final bundle, independent signoff, and independent final command execution.
 
 ### `ITER-20260626-ADP-S2PM-S2PMT06-OWNER-UX`
 

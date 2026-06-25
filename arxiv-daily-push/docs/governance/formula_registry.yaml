@@ -5672,3 +5672,73 @@ formulas:
     evidence_hash: "sha256:a5484df05e3479ad41450036e6511350835a2172fecbb5159dfb3760f22b1728"
     last_verified_commit: "82716f943237baf164ac78f9ece0a749aec4f6a8"
     verified_at: "2026-06-26T16:00:00+10:00"
+
+  -
+    formula_id: "FORM-ADP-102"
+    model_id: "MOD-ADP-100"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PMT07 final gate precheck remains blocked unless reviewer independence is proven, inherited V7.1 P0/P1 findings are zero, S2PMT01 through S2PMT06 and S2PLT04 dependencies are completed, FINAL_ACCEPTANCE_BUNDLE plus HANDOFF plus independent_review_signoff evidence exists, final commands are executed by the independent reviewer, no production acceptance is claimed, inherited P0/P1 are not self-closed, and all production/CURRENT/V7 baseline side-effect flags remain false."
+    variables:
+      -
+        name: "dependency_state"
+        data_type: "object"
+        unit: "required dependency completion evidence"
+        input_domain: "S2PMT01 through S2PMT06 plus S2PLT04"
+      -
+        name: "audit_blocker_state"
+        data_type: "object"
+        unit: "inherited V7.1 P0/P1 blocker counts"
+        input_domain: "open P0 and P1 findings"
+      -
+        name: "reviewer_independence"
+        data_type: "object"
+        unit: "independent final reviewer proof"
+        input_domain: "not involved in S2PMT01 through S2PMT06 implementation"
+      -
+        name: "evidence_bundle"
+        data_type: "object"
+        unit: "final acceptance bundle"
+        input_domain: "FINAL_ACCEPTANCE_BUNDLE, HANDOFF, independent_review_signoff"
+      -
+        name: "test_gates"
+        data_type: "object"
+        unit: "final required command coverage"
+        input_domain: "task-pack validator, full pytest, zero P0/P1 bundle verifier"
+    constraints: "S2PMT07 precheck is fail-closed only. It must not claim INTEGRATED_PRODUCTION_ACCEPTED, DAILY_OPERATION, real SMTP, scheduler installation, Release packaging, production restore, CURRENT changes, V7.1 baseline changes, V7.2 contract changes, or inherited P0/P1 closure."
+    missing_policy: "Missing independent reviewer proof, nonzero inherited P0/P1, missing S2PLT04, missing final acceptance bundle, missing independent signoff, missing required command execution, or any forbidden production flag blocks S2PMT07."
+    output_range: "S2PMT07 precheck report with pass or blocked status, required dependencies, inherited audit blocker counts, evidence bundle state, test gate state, blocking reasons, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden pass flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FINAL_GATE_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_ACCEPTANCE_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_TASK_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_REQUIRED_ZERO_FINDING_SEVERITIES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_REQUIRED_DEPENDENCIES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_REQUIRED_EVIDENCE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_REQUIRED_TEST_COMMANDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FORBIDDEN_PASS_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_dependency_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_audit_blocker_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_reviewer_independence_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_evidence_bundle_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_test_gate_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2pmt07_precheck_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2pmt07_precheck_report"
+    implementation_fingerprint: "sha256:6527bf050eada147dacd0c1db88adcca981eb5a9e9bac13666f034c99d40d6c3"
+    evidence_hash: "sha256:c8a184db987cb1d1c47d9eaa950cf7ea3aa7bb53309195c8fdc41083f621bf65"
+    last_verified_commit: "0c52a3257800c5bab89de93c6713c71249d20697"
+    verified_at: "2026-06-26T17:00:00+10:00"
