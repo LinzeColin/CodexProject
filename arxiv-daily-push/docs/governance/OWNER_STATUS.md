@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；Stage 2 S2PFT02 已记录香港与澳门独立 Profile 证据但不构成 D3 full source-domain acceptance 或生产启用。
+arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；Stage 2 S2PFT03 已记录首批 24 个中国重点城市 metadata-only 覆盖证据但不构成 D3 full source-domain acceptance 或生产启用。
 
 ## 2. 本次运行改变了什么
 
@@ -21,7 +21,7 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验�
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT02 as merged metadata-only/no-send Hong Kong/Macau profile evidence, continue next no-conflict S2PFT03 key-city coverage, and require future mail entrypoints to use the merged Email V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT03 as local metadata-only/no-send key-city coverage evidence pending PR/CI, continue next no-conflict S2PFT04 only after PR/CI closeout, and require future mail entrypoints to use the merged Email V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,10 +31,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PFT03`
+- next_task_id: `S2PFT04`
 - responsible_role: `content_owner + engineering_owner`
-- acceptance_ids: `ACC-S2PFT03-CITIES`
-- unblock_condition: Read V7.2 current contract and S2PFT02 receipt first, then perform metadata-only/no-send first key-city coverage work without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT.
+- acceptance_ids: `ACC-S2PFT04-ZONES`
+- unblock_condition: Read V7.2 current contract and S2PFT03 receipt first, then perform metadata-only/no-send special-zone discovery work without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT.
 
 ## 8. 九层 Assurance 状态
 
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT02 as merged metadata-only/no-send Hong Kong/Macau profile evidence, and continue next no-conflict S2PFT03 only after V7.2 receipt review. | 继续 S2PFT03 key-city metadata-only coverage work under V7.2 boundaries. | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 越过 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT03 as local metadata-only/no-send key-city coverage evidence pending PR/CI, and continue next no-conflict S2PFT04 only after PR/CI closeout. | 完成 S2PFT03 PR/CI 后继续 S2PFT04 special-zone metadata-only discovery under V7.2 boundaries. | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 越过 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `66`
-- total_formulas: `68`
-- active_formulas: `68`
-- total_parameters: `478`
-- active_parameters: `461`
+- model_count: `67`
+- total_formulas: `69`
+- active_formulas: `69`
+- total_parameters: `487`
+- active_parameters: `470`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PFT02_HK_MO_INDEPENDENT_PROFILE_READY_NO_PRODUCTION`
+- release_gate: `S2PFT03_KEY_CITY_COVERAGE_READY_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T09:20:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PF / S2PFT02_HK_MO_INDEPENDENT_PROFILE_READY_NO_PRODUCTION`
+- phase/gate: `S2PF / S2PFT03_KEY_CITY_COVERAGE_READY_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PFT03`
-- reason: Continue S2PF with first key-city coverage after S2PFT02 Hong Kong and Macau independent profiles, still metadata-only/no-send and under V7.2 production blockers.
+- task_id: `S2PFT04`
+- reason: Continue S2PF with special-zone discovery after S2PFT03 first key-city coverage, still metadata-only/no-send and under V7.2 production blockers.

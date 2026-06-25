@@ -1421,6 +1421,24 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PFT03"
+    legacy_alias: "S2P5T03"
+    phase: "S2PF"
+    objective: "Add first 24 China key-city metadata-only coverage evidence after Hong Kong and Macau independent profiles."
+    scope: "Required city ids, aliases, province/locality context, city department roles, region groups, region weights, health tiers, authority evidence, metadata-only gates, focused tests, CLI command, and governance registration."
+    non_scope: "No D3_FULL_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no special-zone discovery, no SMTP, Release, scheduler, production queue/schema mutation, bulk scraping, PDF/full-text access, paid API, paywall bypass, V7.2 contract edit, mail production code, or public schema pre-run."
+    status: "completed"
+    dependencies: ["S2PFT02"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PFT03_KEY_CITY_COVERAGE.md"]
+    acceptance_ids: ["ACC-S2PFT03-CITIES"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pft03_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pft03_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 59 OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PFT03_KEY_CITY_COVERAGE.md", "governance/run_manifests/ADP-S2PFT03-KEY-CITY-COVERAGE-20260625.json"]
+    risk: "Key-city coverage evidence must not be misread as D3 full source-domain production acceptance; inherited V7.1 blockers and S2PMT07 still block production."
+    rollback: "Revert S2PFT03 key-city coverage code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2PHT01V1.1-T01"
     phase: "S2PH"
     objective: "Run the EMAIL_LEARNING_V1 read-only exact H/M repository path audit required by V7.2 before any mail production implementation work."

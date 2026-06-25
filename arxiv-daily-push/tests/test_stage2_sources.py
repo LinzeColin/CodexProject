@@ -13,6 +13,9 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PFT03_KEY_CITY_COVERAGE_MODEL_ID,
+    S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES,
+    S2PFT03_REQUIRED_CITY_IDS,
     S2PFT02_HK_MO_PROFILE_MODEL_ID,
     S2PFT01_CHINA_PROVINCIAL_MODEL_ID,
     S2PDT04_D3_READINESS_MODEL_ID,
@@ -31,6 +34,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pft03_key_city_coverage_report,
     build_s2pft02_hk_mo_independent_profile_report,
     build_s2pft01_china_provincial_template_coverage_report,
     build_s2pdt04_china_d3_readiness_review_report,
@@ -47,6 +51,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pft03_key_city_coverage,
     run_s2pft02_hk_mo_independent_profile,
     run_s2pft01_china_provincial_template_coverage,
     run_s2pdt04_china_d3_readiness_review,
@@ -61,6 +66,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pft03_key_city_coverage_report,
     validate_s2pft02_hk_mo_independent_profile_report,
     validate_s2pft01_china_provincial_template_coverage_report,
     validate_s2pdt04_china_d3_readiness_review_report,
@@ -903,6 +909,71 @@ def hk_mo_jurisdiction_profiles() -> list[dict]:
             "evidence_refs": ["fixture:s2pft02:macau"],
         },
     ]
+
+
+KEY_CITY_FIXTURE_ROWS = (
+    ("beijing", "北京市", "beijing", "national_municipality", "beijing.gov.cn"),
+    ("shanghai", "上海市", "shanghai", "national_municipality", "shanghai.gov.cn"),
+    ("shenzhen", "深圳市", "guangdong", "pearl_delta", "sz.gov.cn"),
+    ("guangzhou", "广州市", "guangdong", "pearl_delta", "gz.gov.cn"),
+    ("tianjin", "天津市", "tianjin", "national_municipality", "tj.gov.cn"),
+    ("chongqing", "重庆市", "chongqing", "national_municipality", "cq.gov.cn"),
+    ("hangzhou", "杭州市", "zhejiang", "yangtze_delta", "hangzhou.gov.cn"),
+    ("nanjing", "南京市", "jiangsu", "yangtze_delta", "nanjing.gov.cn"),
+    ("suzhou", "苏州市", "jiangsu", "yangtze_delta", "suzhou.gov.cn"),
+    ("hefei", "合肥市", "anhui", "yangtze_delta", "hefei.gov.cn"),
+    ("wuhan", "武汉市", "hubei", "central", "wuhan.gov.cn"),
+    ("xian", "西安市", "shaanxi", "western", "xa.gov.cn"),
+    ("chengdu", "成都市", "sichuan", "western", "chengdu.gov.cn"),
+    ("changsha", "长沙市", "hunan", "central", "changsha.gov.cn"),
+    ("wuxi", "无锡市", "jiangsu", "yangtze_delta", "wuxi.gov.cn"),
+    ("dongguan", "东莞市", "guangdong", "pearl_delta", "dg.gov.cn"),
+    ("foshan", "佛山市", "guangdong", "pearl_delta", "foshan.gov.cn"),
+    ("zhuhai", "珠海市", "guangdong", "pearl_delta", "zhuhai.gov.cn"),
+    ("shenyang", "沈阳市", "liaoning", "northeast", "shenyang.gov.cn"),
+    ("ningbo", "宁波市", "zhejiang", "coastal", "ningbo.gov.cn"),
+    ("qingdao", "青岛市", "shandong", "coastal", "qingdao.gov.cn"),
+    ("xiamen", "厦门市", "fujian", "coastal", "xm.gov.cn"),
+    ("dalian", "大连市", "liaoning", "coastal", "dl.gov.cn"),
+    ("zhengzhou", "郑州市", "henan", "central", "zhengzhou.gov.cn"),
+)
+
+
+def hk_mo_profile_report() -> dict:
+    return build_s2pft02_hk_mo_independent_profile_report(
+        generated_at=GENERATED_AT,
+        provincial_template_coverage_report=china_provincial_template_report(),
+        jurisdiction_profiles=hk_mo_jurisdiction_profiles(),
+    )
+
+
+def key_city_records() -> list[dict]:
+    records: list[dict] = []
+    assert tuple(row[0] for row in KEY_CITY_FIXTURE_ROWS) == S2PFT03_REQUIRED_CITY_IDS
+    for index, (city_id, city_name, province_id, region_group, domain) in enumerate(KEY_CITY_FIXTURE_ROWS):
+        records.append(
+            {
+                "city_id": city_id,
+                "city_name": city_name,
+                "province_id": province_id,
+                "region_group": region_group,
+                "aliases": [city_name, city_id],
+                "department_roles": list(S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES),
+                "region_weight": 0.04 + (index % 4) * 0.001,
+                "health_tier": ("green", "yellow", "red")[index % 3],
+                "health_explanation": "fixture health tier covers official identity, city-department role completeness, and metadata freshness",
+                "official_domain": domain,
+                "source_url": f"https://www.{domain}/",
+                "authority_gate": "pass",
+                "metadata_only": True,
+                "pdf_downloaded": False,
+                "full_text_extracted": False,
+                "production_affected": False,
+                "real_smtp_sent": False,
+                "evidence_refs": [f"fixture:s2pft03:{city_id}"],
+            }
+        )
+    return records
 
 
 def replay_batches(start: date, count: int = 30) -> dict:
@@ -1765,6 +1836,86 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["hk_mo_profile_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pft02_hk_mo_independent_profile_report.json").is_file())
 
+    def test_s2pft03_key_city_coverage_validates_without_production(self) -> None:
+        report = build_s2pft03_key_city_coverage_report(
+            generated_at=GENERATED_AT,
+            hk_mo_profile_report=hk_mo_profile_report(),
+            city_records=key_city_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PFT03_KEY_CITY_COVERAGE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PFT03-CITIES")
+        self.assertEqual(report["task_id"], "S2PFT03")
+        self.assertEqual(report["legacy_task_id"], "S2P5T03")
+        self.assertEqual(report["phase"], "S2PF")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["upstream_hk_mo_profile_gate"], "pass")
+        self.assertEqual(report["city_coverage_gate"], "pass")
+        self.assertEqual(report["city_alias_gate"], "pass")
+        self.assertEqual(report["city_department_template_gate"], "pass")
+        self.assertEqual(report["region_weight_gate"], "pass")
+        self.assertEqual(report["health_tier_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(report["required_city_count"], 24)
+        self.assertEqual(set(report["city_ids_observed"]), set(S2PFT03_REQUIRED_CITY_IDS))
+        self.assertTrue(report["s2pf_key_city_coverage_ready"])
+        self.assertTrue(report["city_coverage_modeled"])
+        self.assertFalse(report["d3_full_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(report["special_zone_discovery_enabled"])
+        self.assertFalse(validate_s2pft03_key_city_coverage_report(report))
+
+    def test_s2pft03_key_city_coverage_blocks_missing_city_roles_and_side_effects(self) -> None:
+        records = [record for record in key_city_records() if record["city_id"] != "zhengzhou"]
+        records[0] = dict(
+            records[0],
+            department_roles=["government_portal"],
+            production_affected=True,
+            real_smtp_sent=True,
+        )
+        report = build_s2pft03_key_city_coverage_report(
+            generated_at=GENERATED_AT,
+            hk_mo_profile_report=hk_mo_profile_report(),
+            city_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["city_coverage_gate"], "blocked")
+        self.assertEqual(report["city_department_template_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["s2pf_key_city_coverage_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("zhengzhou", joined)
+        self.assertIn("department", joined)
+        self.assertIn("production", joined)
+        self.assertTrue(validate_s2pft03_key_city_coverage_report(report))
+
+    def test_s2pft03_key_city_coverage_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pft03_key_city_coverage(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                hk_mo_profile_report=hk_mo_profile_report(),
+                city_records=key_city_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pft03_key_city_coverage_report(report))
+            self.assertFalse(report["d3_full_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["key_city_coverage_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pft03_key_city_coverage_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -2514,6 +2665,44 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["s2pf_hk_mo_profile_ready"])
         self.assertTrue(payload["hk_mo_profile_modeled"])
+        self.assertFalse(payload["d3_full_source_domain_accepted"])
+
+    def test_cli_stage2_key_city_coverage_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            hk_mo_report_path = Path(tmp) / "hk-mo-profile-report.json"
+            city_records_path = Path(tmp) / "city-records.json"
+            hk_mo_report_path.write_text(json.dumps(hk_mo_profile_report(), ensure_ascii=False), encoding="utf-8")
+            city_records_path.write_text(
+                json.dumps({"city_records": key_city_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-key-city-coverage",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--hk-mo-profile-report",
+                    str(hk_mo_report_path),
+                    "--city-records",
+                    str(city_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PFT03_KEY_CITY_COVERAGE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PFT03")
+        self.assertEqual(payload["legacy_task_id"], "S2P5T03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["required_city_count"], 24)
+        self.assertTrue(payload["s2pf_key_city_coverage_ready"])
+        self.assertTrue(payload["city_coverage_modeled"])
         self.assertFalse(payload["d3_full_source_domain_accepted"])
 
 

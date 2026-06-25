@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pft03_key_city_coverage,
     run_s2pft02_hk_mo_independent_profile,
     run_s2pft01_china_provincial_template_coverage,
     run_s2pdt04_china_d3_readiness_review,
@@ -136,6 +137,7 @@ from .stage2_sources import (
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
+    validate_s2pft03_key_city_coverage_report,
     validate_s2pft02_hk_mo_independent_profile_report,
     validate_s2pft01_china_provincial_template_coverage_report,
 )
@@ -656,6 +658,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pft02_hk_mo.add_argument("--jurisdiction-profiles", required=True, help="HK/MO profile JSON list or object with jurisdiction_profiles.")
     s2pft02_hk_mo.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pft02_hk_mo.add_argument("--json", action="store_true", help="Print JSON HK/MO profile report.")
+
+    s2pft03_cities = subparsers.add_parser(
+        "stage2-key-city-coverage",
+        help="Run S2PFT03/S2P5T03 first key-city metadata-only coverage evidence.",
+    )
+    s2pft03_cities.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pft03_cities.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pft03_cities.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pft03_cities.add_argument("--hk-mo-profile-report", required=True, help="Passing S2PFT02 HK/MO profile report JSON.")
+    s2pft03_cities.add_argument("--city-records", required=True, help="Key city metadata JSON list or object with city_records.")
+    s2pft03_cities.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pft03_cities.add_argument("--json", action="store_true", help="Print JSON key-city coverage report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1958,6 +1972,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- language_profile_gate: {report.get('language_profile_gate')}")
             print(f"- legal_status_gate: {report.get('legal_status_gate')}")
             print(f"- template_independence_gate: {report.get('template_independence_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-key-city-coverage":
+        report = run_s2pft03_key_city_coverage(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            hk_mo_profile_report=load_json_mapping(args.hk_mo_profile_report),
+            city_records=load_json_records(args.city_records, "city_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pft03_key_city_coverage_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- city_coverage_gate: {report.get('city_coverage_gate')}")
+            print(f"- city_alias_gate: {report.get('city_alias_gate')}")
+            print(f"- city_department_template_gate: {report.get('city_department_template_gate')}")
+            print(f"- region_weight_gate: {report.get('region_weight_gate')}")
+            print(f"- health_tier_gate: {report.get('health_tier_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
