@@ -1,0 +1,66 @@
+schema_version: "codexproject.structure_contract.v1"
+project_id: "PFI_BIG_DATA_SIMULATOR"
+task_id: "S5PCT01"
+acceptance_id: "ACC-S5PCT01"
+mode: "BOUNDARY_ONLY_NO_ALGORITHM_CHANGE"
+active_qbvs:
+  path: "PFI/大数据模拟器/qbvs"
+  default_runtime_package: true
+  algorithm_changed: false
+  owns:
+    - "strategy generation"
+    - "signals"
+    - "backtest"
+    - "cache"
+    - "warehouse"
+    - "validation"
+    - "QuantLab adapter and bundle generation"
+config_layer:
+  path: "PFI/大数据模拟器/config"
+  runtime_algorithm_source: false
+  can_feed_active_qbvs: true
+tests_layer:
+  path: "PFI/大数据模拟器/tests"
+  verification_layer: true
+root_contracts:
+  default_runtime_algorithm_source: false
+  paths:
+    - "PFI/大数据模拟器/QUANTLAB_INTEGRATION_CONTRACT.json"
+    - "PFI/大数据模拟器/HANDSHAKE_PROTOCOL.json"
+    - "PFI/大数据模拟器/HANDOFF.md"
+    - "PFI/大数据模拟器/BACKUP_MANIFEST.md"
+dated_tools:
+  path: "PFI/大数据模拟器/tools"
+  default_runtime_entry: false
+  integration_action: "document_only_no_move_no_rewrite"
+  algorithm_changed: false
+  files:
+    - "generate_current_stage_20260606_report.py"
+    - "generate_goal_completion_gap_audit_20260606.py"
+    - "generate_random_stress_progress_report_20260606.py"
+    - "generate_dev_handoff_package_20260615.py"
+runs_reports:
+  runs_path: "PFI/大数据模拟器/runs"
+  reports_path: "PFI/大数据模拟器/reports"
+  output_layer: true
+  source_truth_for_algorithms: false
+wave2_manifest_reconciliation:
+  manifest_ref: "governance/stage_gates/s5pa/wave2_archive_manifest.json"
+  pfi_candidate_count: 42
+  archive_candidate_count: 40
+  merge_candidate_count: 2
+  moved_in_s5pct01: 0
+smoke_tests:
+  log_ref: "governance/stage_gates/s5pc/pfi_smoke_tests.log"
+  pytest_command: "NOT_RUN_LOCAL_PYTEST_MISSING"
+  lifecycle_unittest: "PASS"
+  active_qbvs_smoke: "PASS"
+stop_conditions:
+  date_stamped_scripts_integration_changes_algorithm: false
+  root_contracts_used_as_active_algorithm_source: false
+  runs_reports_used_as_source_truth: false
+  active_qbvs_path_changed: false
+  archive_written_or_files_moved: false
+rollback:
+  mode: "remove_s5pct01_boundary_docs_manifest_and_tests_only"
+  note: "No PFI runtime files, generated outputs, or archive candidates are moved by S5PCT01."

@@ -6047,6 +6047,138 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith(("FIFA/", "PFI/", "Serenity-Alipay/", "EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s5pct01_pfi_structure_boundary_and_smoke_evidence(self) -> None:
+        validator = load_validator_module()
+        pfi_root = ROOT / "PFI" / "大数据模拟器"
+        report_path = pfi_root / "docs" / "PFI_structure_report.md"
+        contract_path = ROOT / "governance" / "stage_gates" / "s5pc" / "pfi_structure_contract.yaml"
+        smoke_path = ROOT / "governance" / "stage_gates" / "s5pc" / "pfi_smoke_tests.log"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json"
+        )
+        for path in {report_path, contract_path, smoke_path, manifest_path}:
+            self.assertTrue(path.is_file(), path)
+
+        report = report_path.read_text(encoding="utf-8")
+        smoke = smoke_path.read_text(encoding="utf-8")
+        readme = (pfi_root / "README.md").read_text(encoding="utf-8")
+        agents = (pfi_root / "AGENTS.md").read_text(encoding="utf-8")
+        contract = validator.load_yaml(contract_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        for required in {
+            "S5PCT01",
+            "ACC-S5PCT01",
+            "PFI_BIG_DATA_SIMULATOR",
+            "PFI/大数据模拟器/qbvs/",
+            "PFI/大数据模拟器/config/",
+            "PFI/大数据模拟器/tests/",
+            "PFI/大数据模拟器/runs/",
+            "PFI/大数据模拟器/reports/",
+            "QUANTLAB_INTEGRATION_CONTRACT.json",
+            "HANDSHAKE_PROTOCOL.json",
+            "40 `ARCHIVE` and 2 `MERGE`",
+            "BOUNDARY_ONLY_NO_ALGORITHM_CHANGE",
+            "PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED",
+        }:
+            self.assertIn(required, report)
+        for required in {
+            "S5PCT01 Structure Boundary",
+            "Active QBVS package: `qbvs/`",
+            "Config and tests: `config/`",
+            "Root contracts: `QUANTLAB_INTEGRATION_CONTRACT.json`",
+            "Date-stamped scripts: `tools/generate_*_20260606.py`",
+            "Runs and reports: `runs/`",
+            "S5PCT01 moves no files and writes no archive",
+        }:
+            self.assertIn(required, readme)
+        for required in {
+            "S5PCT01 Structure Boundary",
+            "Active runtime and algorithm code lives under `qbvs/`",
+            "`config/` is the input/config layer and `tests/` is the verification layer",
+            "Date-stamped scripts under `tools/` are report/handoff generators",
+            "`runs/` and `reports/` are output/evidence layers",
+        }:
+            self.assertIn(required, agents)
+
+        self.assertEqual(contract["schema_version"], "codexproject.structure_contract.v1")
+        self.assertEqual(contract["project_id"], "PFI_BIG_DATA_SIMULATOR")
+        self.assertEqual(contract["task_id"], "S5PCT01")
+        self.assertEqual(contract["acceptance_id"], "ACC-S5PCT01")
+        self.assertEqual(contract["active_qbvs"]["path"], "PFI/大数据模拟器/qbvs")
+        self.assertTrue(contract["active_qbvs"]["default_runtime_package"])
+        self.assertFalse(contract["active_qbvs"]["algorithm_changed"])
+        self.assertEqual(contract["config_layer"]["path"], "PFI/大数据模拟器/config")
+        self.assertFalse(contract["config_layer"]["runtime_algorithm_source"])
+        self.assertTrue(contract["tests_layer"]["verification_layer"])
+        self.assertFalse(contract["root_contracts"]["default_runtime_algorithm_source"])
+        self.assertFalse(contract["dated_tools"]["default_runtime_entry"])
+        self.assertFalse(contract["dated_tools"]["algorithm_changed"])
+        self.assertTrue(contract["runs_reports"]["output_layer"])
+        self.assertFalse(contract["runs_reports"]["source_truth_for_algorithms"])
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["pfi_candidate_count"], 42)
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["archive_candidate_count"], 40)
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["merge_candidate_count"], 2)
+        for key, value in contract["stop_conditions"].items():
+            self.assertFalse(value, key)
+
+        for required in {
+            "task_id: S5PCT01",
+            "acceptance_id: ACC-S5PCT01",
+            "result: PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED",
+            "date_stamped_scripts_integration_changes_algorithm: false",
+            "runs_reports_used_as_source_truth: false",
+            "archive_written_or_files_moved: false",
+            "pfi_candidate_count: 42",
+            "archive_candidate_count: 40",
+            "merge_candidate_count: 2",
+            "python -B -m pytest \"PFI/大数据模拟器/tests\" -q",
+            "result: NOT_RUN",
+            "tests.test_s3pct02_lifecycle",
+            "Ran 1 test OK",
+            "S5PCT01_PFI_ACTIVE_QBVS_SMOKE_PASS specs=240 rows=120",
+        }:
+            self.assertIn(required, smoke)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "PFI_BIG_DATA_SIMULATOR")
+        self.assertEqual(manifest["task_id"], "S5PCT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PCT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PC-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S5PCT02")
+        self.assertEqual(manifest["structure_boundary"]["active_qbvs"], "PFI/大数据模拟器/qbvs")
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["pfi_candidate_count"], 42)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["archive_candidate_count"], 40)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["merge_candidate_count"], 2)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["moved_in_s5pct01"], 0)
+        self.assertFalse(manifest["stop_conditions"]["date_stamped_scripts_integration_changes_algorithm"])
+        self.assertFalse(manifest["stop_conditions"]["root_contracts_used_as_active_algorithm_source"])
+        self.assertFalse(manifest["stop_conditions"]["runs_reports_used_as_source_truth"])
+        self.assertFalse(manifest["stop_conditions"]["archive_written_or_files_moved"])
+        self.assertFalse(manifest["scope_guard"]["touched_forbidden_projects"])
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "PFI/大数据模拟器/AGENTS.md",
+                "PFI/大数据模拟器/README.md",
+                "PFI/大数据模拟器/docs/PFI_structure_report.md",
+                "governance/stage_gates/s5pc/pfi_structure_contract.yaml",
+                "governance/stage_gates/s5pc/pfi_smoke_tests.log",
+                "governance/run_manifests/GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "Serenity-Alipay/", "EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
