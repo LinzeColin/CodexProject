@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY
-- Confirmed iteration count: 108
+- Current gate: S2PMT02_ATOMIC_RECOVERY_LOCAL_ONLY
+- Confirmed iteration count: 109
 - Reconstructed event count: 0
-- Current task: `S2PMT01` has completed local security and evidence-boundary evidence. It validates UNTRUSTED_DATA source content labeling, typed frontstage statements, safe public URL rendering, zero-critical-claim blocking, local supply-chain baseline controls, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT02` has completed local atomic storage and recovery evidence. It validates staged local artifact writes with atomic replace, manifest hash verification, tamper detection, explicit restore drill into caller-provided drill paths, staging cleanup, malformed/unsafe path blocking, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -38,6 +38,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260626-ADP-S2PM-S2PMT02-ATOMIC-RECOVERY`
+
+- Timestamp: `2026-06-26T12:20:00+10:00`
+- Fact level: EXTRACTED from S2PMT02 atomic recovery code, focused tests, model/formula/parameter registry diff, phase record, and local S2PMT02 validation.
+- Base commit: `a326356e35959c31693122e6b533c49833c1ad91`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT02`; acceptance `ACC-S2PMT02-ATOMIC-RECOVERY`.
+- Goal: Complete local atomic storage and recovery evidence while preserving V7.2 no-production boundaries.
+- Files changed: S2PMT02 atomic recovery helper, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-095` local atomic storage and recovery model.
+- Formula changes: Added `FORM-ADP-097` with machine-verifiable AST fingerprints bound to the S2PMT02 implementation.
+- Parameter changes: Added `PARAM-ADP-768` through `PARAM-ADP-777` for S2PMT02 identifiers, manifest/staging names, max artifact size, required gates, production-false flags, and disabled environment flags.
+- Validation: py_compile PASS; focused S2PMT02 tests 5 OK; full arxiv-daily-push unittest PENDING; V7.2 validator PENDING; ADP project governance PENDING; changed-only governance semantic PENDING; lean check-render PENDING; JSONL/YAML/CSV/manifest parse PENDING; git diff --check PENDING.
+- Decisions: `ACC-S2PMT02-ATOMIC-RECOVERY` is accepted only as local atomic storage/recovery evidence. Production restore, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: This does not enable production backup/restore. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PMT02 atomic recovery code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md`; `governance/run_manifests/ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json`; `arxiv-daily-push/tests/test_stage2_atomic_recovery.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT02.
 
 
 ### `ITER-20260626-ADP-S2PI-S2PIT04-CONTENT-LEDGER`
