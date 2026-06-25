@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PJ / S2PJT02_REVIEW_SCHEDULE_LOCAL_ONLY`
+- Phase/Gate: `S2PJ / S2PJT03_ACTION_ASSET_ROI_LEDGER_LOCAL_ONLY`
 - Models/Formulas/Parameters total: `83 / 85 / 650`
 - Active formulas/parameters: `85 / 633`
 - Machine checked formulas/parameters: `85 / 633`
