@@ -4071,3 +4071,67 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md"
+
+
+  -
+    model_id: "MOD-ADP-078"
+    name: "S2PET04 US-TP D4 qualification"
+    kind: "deterministic metadata-only US technology policy and D4 qualification model"
+    purpose: "Validate OSTP, BIS, FTC, FCC, CISA, and CHIPS Program metadata coverage, US-TP signal taxonomy, D4 30-date replay, 2-day shadow evidence, B4/B5/B6 board routing, 35/15/30/20 budget explanations, upstream S2PET01-S2PET03 readiness, and disabled production side-effect flags before any D4 production inclusion."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pet04-us-tp-d4-qualification-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-080"
+    parameter_ids:
+      - "PARAM-ADP-593"
+      - "PARAM-ADP-594"
+      - "PARAM-ADP-595"
+      - "PARAM-ADP-596"
+      - "PARAM-ADP-597"
+      - "PARAM-ADP-598"
+      - "PARAM-ADP-599"
+      - "PARAM-ADP-600"
+      - "PARAM-ADP-601"
+      - "PARAM-ADP-602"
+      - "PARAM-ADP-603"
+      - "PARAM-ADP-604"
+      - "PARAM-ADP-605"
+      - "PARAM-ADP-606"
+      - "PARAM-ADP-607"
+    inputs:
+      - "passing S2PET01 US-TA source foundation report"
+      - "passing S2PET02 US-LG legal backbone report"
+      - "passing S2PET03 US-FM source backbone report"
+      - "US-TP policy metadata records"
+      - "D4 replay records"
+      - "D4 shadow records"
+      - "D4 board route records"
+      - "D4 budget records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "US-TP D4 qualification report"
+      - "upstream S2PET01-S2PET03 gate"
+      - "US-TP source system gate"
+      - "US-TP signal type gate"
+      - "D4 replay gate"
+      - "D4 shadow gate"
+      - "board routing gate"
+      - "budget explanation gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md"

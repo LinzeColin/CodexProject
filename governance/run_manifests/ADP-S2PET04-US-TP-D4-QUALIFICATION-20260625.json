@@ -1,0 +1,82 @@
+{
+  "acceptance_id": "ACC-S2PET04-D4",
+  "base_commit": "37bf847e82e9e007ea2e766853fe66ba3f1c4931",
+  "current_pointer_changed": false,
+  "email_v1_sync_observation": {
+    "delegation_claimed_pr_152_153_merged": true,
+    "current_git_remote_main_observed": "37bf847e82e9e007ea2e766853fe66ba3f1c4931",
+    "pr_152_merge_commit_from_api": "1cdad3d9e41f4543b06f158157f35878a30dbc93",
+    "pr_153_merge_commit_from_api": "421154de2c10c8c44bc0bf854a4042bfe5a46958",
+    "s2pet04_depends_on_email_v1_main": false,
+    "mail_runtime_changed": false
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md",
+    "governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
+  ],
+  "generated_at": "2026-06-25T23:59:30+10:00",
+  "legacy_task_id": "S2P4T04",
+  "manifest_id": "ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625",
+  "non_scope": [
+    "live source fetch",
+    "D4 source-domain production inclusion",
+    "legal advice",
+    "investment advice",
+    "trading signal generation",
+    "automated trading",
+    "SMTP",
+    "scheduler",
+    "Release",
+    "public schema",
+    "DB migration",
+    "production flags",
+    "V7.1/V7.2 contract changes",
+    "Email V1 runtime changes",
+    "integrated production acceptance"
+  ],
+  "phase": "S2PE",
+  "production_side_effects": {
+    "d4_source_domain_accepted": false,
+    "formal_production_inclusion": false,
+    "integrated_production_accepted": false,
+    "live_source_fetch_executed": false,
+    "mail_runtime_changed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "scheduler_changed": false,
+    "stage2_production_accepted": false
+  },
+  "project": "arxiv-daily-push",
+  "scope": "Metadata-only US-TP and D4 qualification evidence for OSTP, BIS, FTC, FCC, CISA, CHIPS Program, D4 30-date replay, 2-day shadow, board routing, and budget explanation.",
+  "status": "local_validation_passed_pending_pr_ci",
+  "task_id": "S2PET04",
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 106 OK",
+    "full arxiv-daily-push unittest: 335 OK",
+    "semantic extractor: 80 formulas / 590 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/YAML/JSONL/CSV parse OK",
+    "git diff --check PASS",
+    "no __pycache__ or .pyc files found"
+  ],
+  "v7_1_historical_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "v7_2_revalidation_receipt_recorded": true
+}

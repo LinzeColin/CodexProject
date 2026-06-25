@@ -48,6 +48,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PET01_US_TA_SOURCE_MODEL_ID,
     S2PET02_US_LG_BACKBONE_MODEL_ID,
     S2PET03_US_FM_BACKBONE_MODEL_ID,
+    S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -77,6 +78,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pet01_us_ta_source_foundation_report,
     build_s2pet02_us_lg_legal_backbone_report,
     build_s2pet03_us_fm_source_backbone_report,
+    build_s2pet04_us_tp_d4_qualification_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -104,6 +106,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pet01_us_ta_source_foundation,
     run_s2pet02_us_lg_legal_backbone,
     run_s2pet03_us_fm_source_backbone,
+    run_s2pet04_us_tp_d4_qualification,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -129,6 +132,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pet01_us_ta_source_foundation_report,
     validate_s2pet02_us_lg_legal_backbone_report,
     validate_s2pet03_us_fm_source_backbone_report,
+    validate_s2pet04_us_tp_d4_qualification_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -1102,6 +1106,209 @@ def us_fm_relation_records() -> list[dict]:
             "evidence_refs": [f"fixture:{relation_id}"],
         }
         for relation_id, relation_type, source_record_id, target_entity_id, relation_explanation in rows
+    ]
+
+
+def us_fm_source_backbone_report() -> dict:
+    return build_s2pet03_us_fm_source_backbone_report(
+        generated_at=GENERATED_AT,
+        us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+        finance_records=us_fm_finance_records(),
+        relation_records=us_fm_relation_records(),
+    )
+
+
+def us_tp_policy_records() -> list[dict]:
+    base = {
+        "metadata_only": True,
+        "production_affected": False,
+        "public_schema_changed": False,
+        "live_source_fetch_executed": False,
+        "identity_state": "official_domain",
+    }
+    rows = [
+        (
+            "us-tp:ostp:ai-policy",
+            "ostp",
+            "technology_policy_notice",
+            "OSTP AI and advanced technology policy metadata",
+            "whitehouse.gov",
+            "https://www.whitehouse.gov/ostp/news-updates/example-ai-policy/",
+            "2026-05-01",
+            "OSTP-TECH-2026-001",
+            ["B4", "B6"],
+            ["fixture:us-tp-ostp"],
+        ),
+        (
+            "us-tp:bis:export-control",
+            "bis",
+            "export_control_notice",
+            "BIS advanced computing export control notice metadata",
+            "bis.gov",
+            "https://www.bis.gov/press-release/example-export-control",
+            "2026-05-02",
+            "BIS-EXPORT-2026-001",
+            ["B4", "B5"],
+            ["fixture:us-tp-bis"],
+        ),
+        (
+            "us-tp:ftc:competition",
+            "ftc",
+            "competition_policy_notice",
+            "FTC technology competition policy metadata",
+            "ftc.gov",
+            "https://www.ftc.gov/news-events/news/press-releases/example-tech-competition",
+            "2026-05-03",
+            "FTC-TECH-2026-001",
+            ["B4", "B5"],
+            ["fixture:us-tp-ftc"],
+        ),
+        (
+            "us-tp:fcc:spectrum",
+            "fcc",
+            "spectrum_policy_notice",
+            "FCC spectrum policy metadata",
+            "fcc.gov",
+            "https://www.fcc.gov/document/example-spectrum-policy",
+            "2026-05-04",
+            "FCC-SPECTRUM-2026-001",
+            ["B4"],
+            ["fixture:us-tp-fcc"],
+        ),
+        (
+            "us-tp:cisa:cyber",
+            "cisa",
+            "cybersecurity_advisory",
+            "CISA cybersecurity advisory metadata",
+            "cisa.gov",
+            "https://www.cisa.gov/news-events/alerts/example-cyber-advisory",
+            "2026-05-05",
+            "CISA-CYBER-2026-001",
+            ["B4", "B6"],
+            ["fixture:us-tp-cisa"],
+        ),
+        (
+            "us-tp:chips:notice",
+            "chips_program",
+            "semiconductor_program_notice",
+            "CHIPS program semiconductor funding notice metadata",
+            "chips.gov",
+            "https://www.chips.gov/news/example-funding-notice",
+            "2026-05-06",
+            "CHIPS-NOTICE-2026-001",
+            ["B4", "B6"],
+            ["fixture:us-tp-chips"],
+        ),
+    ]
+    return [
+        {
+            **base,
+            "record_id": record_id,
+            "source_system": source_system,
+            "signal_type": signal_type,
+            "record_title": record_title,
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "published_date": published_date,
+            "record_identifier": record_identifier,
+            "d4_component": "us_tp",
+            "board_ids": board_ids,
+            "evidence_refs": evidence_refs,
+        }
+        for (
+            record_id,
+            source_system,
+            signal_type,
+            record_title,
+            official_domain,
+            source_url,
+            published_date,
+            record_identifier,
+            board_ids,
+            evidence_refs,
+        ) in rows
+    ]
+
+
+def d4_replay_records() -> list[dict]:
+    return [
+        {
+            "as_of_date": f"2026-05-{day:02d}",
+            "d4_components": ["us_ta", "us_lg", "us_fm", "us_tp"],
+            "status": "pass",
+            "route_gate": "pass",
+            "budget_gate": "pass",
+            "metadata_only": True,
+            "production_affected": False,
+            "candidate_count": 4,
+            "evidence_refs": [f"fixture:d4-replay-2026-05-{day:02d}"],
+        }
+        for day in range(1, 31)
+    ]
+
+
+def d4_shadow_records() -> list[dict]:
+    return [
+        {
+            "shadow_date": f"2026-06-{day:02d}",
+            "status": "pass",
+            "candidate_count": 4,
+            "email_preview_gate": "pass",
+            "metadata_only": True,
+            "real_smtp_sent": False,
+            "production_affected": False,
+            "evidence_refs": [f"fixture:d4-shadow-2026-06-{day:02d}"],
+        }
+        for day in (1, 2)
+    ]
+
+
+def d4_board_route_records() -> list[dict]:
+    return [
+        {
+            "board_id": "B4",
+            "source_systems": ["ostp", "bis", "fcc", "cisa", "chips_program"],
+            "route_explanation": "B4 keeps US official technology policy and innovation signals first.",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d4-board-b4"],
+        },
+        {
+            "board_id": "B5",
+            "source_systems": ["bis", "ftc"],
+            "route_explanation": "B5 captures legal, competition, export-control, and industrial-policy risk context.",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d4-board-b5"],
+        },
+        {
+            "board_id": "B6",
+            "source_systems": ["ostp", "cisa", "chips_program"],
+            "route_explanation": "B6 captures action, capability, and implementation follow-up signals.",
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": ["fixture:d4-board-b6"],
+        },
+    ]
+
+
+def d4_budget_records() -> list[dict]:
+    rows = [
+        ("US-TA", 35, "US-TA keeps the highest share because technology innovation priority must not be diluted."),
+        ("US-LG", 15, "US-LG supplies legal backbone context without dominating technology policy."),
+        ("US-FM", 30, "US-FM receives a large share for SEC, macro, market, and finance linkage."),
+        ("US-TP", 20, "US-TP receives the policy share required for OSTP, BIS, FTC, FCC, CISA, and CHIPS signals."),
+    ]
+    return [
+        {
+            "segment": segment,
+            "weight": weight,
+            "budget_explanation": explanation,
+            "metadata_only": True,
+            "production_affected": False,
+            "evidence_refs": [f"fixture:d4-budget-{segment.lower()}"],
+        }
+        for segment, weight, explanation in rows
     ]
 
 
@@ -2771,6 +2978,134 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["automated_trading_enabled"])
             self.assertTrue(Path(report["finance_backbone_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pet03_us_fm_source_backbone_report.json").is_file())
+
+    def test_s2pet04_us_tp_d4_qualification_validates_replay_shadow_routing_budget_without_production(self) -> None:
+        report = build_s2pet04_us_tp_d4_qualification_report(
+            generated_at=GENERATED_AT,
+            us_ta_source_foundation_report=us_ta_source_foundation_report(),
+            us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+            us_fm_source_backbone_report=us_fm_source_backbone_report(),
+            policy_records=us_tp_policy_records(),
+            replay_records=d4_replay_records(),
+            shadow_records=d4_shadow_records(),
+            board_route_records=d4_board_route_records(),
+            budget_records=d4_budget_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PET04-D4")
+        self.assertEqual(report["task_id"], "S2PET04")
+        self.assertEqual(report["legacy_task_id"], "S2P4T04")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d4_us_tp_and_qualification_ready"])
+        self.assertEqual(report["upstream_s2pet01_s2pet03_gate"], "pass")
+        self.assertEqual(report["us_tp_source_system_gate"], "pass")
+        self.assertEqual(report["us_tp_signal_type_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["d4_replay_gate"], "pass")
+        self.assertEqual(report["d4_shadow_gate"], "pass")
+        self.assertEqual(report["board_routing_gate"], "pass")
+        self.assertEqual(report["budget_explanation_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(len(report["replay_dates_observed"]), 30)
+        self.assertEqual(len(report["shadow_dates_observed"]), 2)
+        self.assertEqual(report["budget_weight_total"], 100)
+        self.assertTrue(set(report["required_source_systems"]).issubset(set(report["source_systems_observed"])))
+        self.assertTrue(set(report["required_board_ids"]).issubset(set(report["board_ids_observed"])))
+        self.assertFalse(report["d4_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["v7_2_contract_files_modified"])
+        self.assertFalse(validate_s2pet04_us_tp_d4_qualification_report(report))
+
+    def test_s2pet04_us_tp_d4_qualification_blocks_unofficial_budget_and_shadow_side_effects(self) -> None:
+        policy_records = us_tp_policy_records()
+        policy_records[0] = dict(
+            policy_records[0],
+            source_url="https://mirror.example.com/ostp",
+            identity_state="mirror",
+            production_affected=True,
+        )
+        replay_records = d4_replay_records()[:29]
+        shadow_records = d4_shadow_records()
+        shadow_records[0] = dict(shadow_records[0], real_smtp_sent=True, production_affected=True)
+        board_records = d4_board_route_records()[:2]
+        budget_records = d4_budget_records()
+        budget_records[0] = dict(budget_records[0], weight=34)
+
+        report = build_s2pet04_us_tp_d4_qualification_report(
+            generated_at=GENERATED_AT,
+            us_ta_source_foundation_report=us_ta_source_foundation_report(),
+            us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+            us_fm_source_backbone_report=us_fm_source_backbone_report(),
+            policy_records=policy_records,
+            replay_records=replay_records,
+            shadow_records=shadow_records,
+            board_route_records=board_records,
+            budget_records=budget_records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["official_identity_gate"], "blocked")
+        self.assertEqual(report["d4_replay_gate"], "blocked")
+        self.assertEqual(report["d4_shadow_gate"], "blocked")
+        self.assertEqual(report["board_routing_gate"], "blocked")
+        self.assertEqual(report["budget_explanation_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d4_us_tp_and_qualification_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("30 dates", joined)
+        self.assertIn("shadow rows require", joined)
+        self.assertIn("budget weights", joined)
+        self.assertIn("metadata-only", joined)
+
+    def test_s2pet04_us_tp_d4_qualification_requires_s2pet01_to_s2pet03_upstream(self) -> None:
+        upstream = dict(us_fm_source_backbone_report(), status="blocked", d4_us_fm_source_backbone_ready=False)
+
+        report = build_s2pet04_us_tp_d4_qualification_report(
+            generated_at=GENERATED_AT,
+            us_ta_source_foundation_report=us_ta_source_foundation_report(),
+            us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+            us_fm_source_backbone_report=upstream,
+            policy_records=us_tp_policy_records(),
+            replay_records=d4_replay_records(),
+            shadow_records=d4_shadow_records(),
+            board_route_records=d4_board_route_records(),
+            budget_records=d4_budget_records(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["upstream_s2pet01_s2pet03_gate"], "blocked")
+        self.assertFalse(report["d4_us_tp_and_qualification_ready"])
+        self.assertIn("upstream S2PET01-S2PET03 reports must pass", " ".join(report["blocking_reasons"]))
+
+    def test_s2pet04_us_tp_d4_qualification_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pet04_us_tp_d4_qualification(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                us_ta_source_foundation_report=us_ta_source_foundation_report(),
+                us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+                us_fm_source_backbone_report=us_fm_source_backbone_report(),
+                policy_records=us_tp_policy_records(),
+                replay_records=d4_replay_records(),
+                shadow_records=d4_shadow_records(),
+                board_route_records=d4_board_route_records(),
+                budget_records=d4_budget_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pet04_us_tp_d4_qualification_report(report))
+            self.assertFalse(report["d4_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["d4_qualification_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pet04_us_tp_d4_qualification_report.json").is_file())
 
     def test_s2pdt02_china_c1_department_source_map_validates_alias_routes_without_production(self) -> None:
         report = build_s2pdt02_china_c1_department_source_map_report(
@@ -4608,6 +4943,64 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertTrue(payload["d4_us_fm_source_backbone_ready"])
         self.assertFalse(payload["d4_us_official_source_domain_accepted"])
         self.assertFalse(payload["automated_trading_enabled"])
+
+    def test_cli_stage2_us_tp_d4_qualification_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            us_ta_report_path = Path(tmp) / "us-ta-source-foundation-report.json"
+            us_lg_report_path = Path(tmp) / "us-lg-legal-backbone-report.json"
+            us_fm_report_path = Path(tmp) / "us-fm-source-backbone-report.json"
+            policy_records_path = Path(tmp) / "policy-records.json"
+            replay_records_path = Path(tmp) / "replay-records.json"
+            shadow_records_path = Path(tmp) / "shadow-records.json"
+            board_route_records_path = Path(tmp) / "board-route-records.json"
+            budget_records_path = Path(tmp) / "budget-records.json"
+            us_ta_report_path.write_text(json.dumps(us_ta_source_foundation_report(), ensure_ascii=False), encoding="utf-8")
+            us_lg_report_path.write_text(json.dumps(us_lg_legal_backbone_report(), ensure_ascii=False), encoding="utf-8")
+            us_fm_report_path.write_text(json.dumps(us_fm_source_backbone_report(), ensure_ascii=False), encoding="utf-8")
+            policy_records_path.write_text(json.dumps({"policy_records": us_tp_policy_records()}, ensure_ascii=False), encoding="utf-8")
+            replay_records_path.write_text(json.dumps({"replay_records": d4_replay_records()}, ensure_ascii=False), encoding="utf-8")
+            shadow_records_path.write_text(json.dumps({"shadow_records": d4_shadow_records()}, ensure_ascii=False), encoding="utf-8")
+            board_route_records_path.write_text(json.dumps({"board_route_records": d4_board_route_records()}, ensure_ascii=False), encoding="utf-8")
+            budget_records_path.write_text(json.dumps({"budget_records": d4_budget_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-us-tp-d4-qualification",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--us-ta-source-foundation-report",
+                    str(us_ta_report_path),
+                    "--us-lg-legal-backbone-report",
+                    str(us_lg_report_path),
+                    "--us-fm-source-backbone-report",
+                    str(us_fm_report_path),
+                    "--policy-records",
+                    str(policy_records_path),
+                    "--replay-records",
+                    str(replay_records_path),
+                    "--shadow-records",
+                    str(shadow_records_path),
+                    "--board-route-records",
+                    str(board_route_records_path),
+                    "--budget-records",
+                    str(budget_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PET04")
+        self.assertEqual(payload["legacy_task_id"], "S2P4T04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d4_us_tp_and_qualification_ready"])
+        self.assertFalse(payload["d4_source_domain_accepted"])
+        self.assertFalse(payload["real_smtp_sent"])
 
     def test_cli_stage2_china_c1_department_source_map_outputs_json(self) -> None:
         buffer = io.StringIO()

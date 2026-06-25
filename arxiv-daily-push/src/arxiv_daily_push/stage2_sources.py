@@ -269,6 +269,28 @@ S2PET03_REQUIRED_TRACE_FIELDS = ("source_system", "official_domain", "source_url
 S2PET03_REQUIRED_IDENTIFIER_FIELDS = ("cik", "accession_number")
 S2PET03_REQUIRED_RELATION_FIELDS = ("relation_id", "relation_type", "source_record_id", "target_entity_id", "evidence_refs")
 S2PET03_REPORT_FILENAME = "stage2_s2pet03_us_fm_source_backbone_report.json"
+S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID = "adp-s2pet04-us-tp-d4-qualification-v1"
+S2PET04_ACCEPTANCE_ID = "ACC-S2PET04-D4"
+S2PET04_TASK_ID = "S2PET04"
+S2PET04_LEGACY_TASK_ID = "S2P4T04"
+S2PET04_REQUIRED_SOURCE_SYSTEMS = ("ostp", "bis", "ftc", "fcc", "cisa", "chips_program")
+S2PET04_REQUIRED_SIGNAL_TYPES = (
+    "technology_policy_notice",
+    "export_control_notice",
+    "competition_policy_notice",
+    "spectrum_policy_notice",
+    "cybersecurity_advisory",
+    "semiconductor_program_notice",
+)
+S2PET04_REQUIRED_D4_COMPONENTS = ("us_ta", "us_lg", "us_fm", "us_tp")
+S2PET04_REQUIRED_BOARD_IDS = ("B4", "B5", "B6")
+S2PET04_REQUIRED_BUDGET_SEGMENTS = ("US-TA", "US-LG", "US-FM", "US-TP")
+S2PET04_REQUIRED_BUDGET_WEIGHTS = (35, 15, 30, 20)
+S2PET04_REQUIRED_REPLAY_DATES = 30
+S2PET04_REQUIRED_SHADOW_DAYS = 2
+S2PET04_ALLOWED_IDENTITY_STATES = ("official_domain", "official_api_or_feed", "official_publication_portal")
+S2PET04_REQUIRED_POLICY_FIELDS = ("source_system", "signal_type", "official_domain", "source_url", "published_date", "record_identifier")
+S2PET04_REPORT_FILENAME = "stage2_s2pet04_us_tp_d4_qualification_report.json"
 S2PFT01_CHINA_PROVINCIAL_MODEL_ID = "adp-s2pft01-china-provincial-template-coverage-v1"
 S2PFT01_ACCEPTANCE_ID = "ACC-S2PFT01-PROVINCES"
 S2PFT01_TASK_ID = "S2PFT01"
@@ -4365,6 +4387,282 @@ def validate_s2pet03_us_fm_source_backbone_report(report: Mapping[str, Any]) -> 
                 errors.append(f"passing S2PET03 US-FM report requires {key}=pass")
         if report.get("d4_us_fm_source_backbone_ready") is not True:
             errors.append("passing S2PET03 US-FM report requires d4_us_fm_source_backbone_ready=true")
+    return errors
+
+
+def build_s2pet04_us_tp_d4_qualification_report(
+    *,
+    generated_at: str,
+    us_ta_source_foundation_report: Mapping[str, Any],
+    us_lg_legal_backbone_report: Mapping[str, Any],
+    us_fm_source_backbone_report: Mapping[str, Any],
+    policy_records: Sequence[Mapping[str, Any]],
+    replay_records: Sequence[Mapping[str, Any]],
+    shadow_records: Sequence[Mapping[str, Any]],
+    board_route_records: Sequence[Mapping[str, Any]],
+    budget_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build US-TP and D4 qualification evidence without production inclusion."""
+
+    us_ta_errors = validate_s2pet01_us_ta_source_foundation_report(us_ta_source_foundation_report)
+    us_lg_errors = validate_s2pet02_us_lg_legal_backbone_report(us_lg_legal_backbone_report)
+    us_fm_errors = validate_s2pet03_us_fm_source_backbone_report(us_fm_source_backbone_report)
+    upstream_gate = (
+        "pass"
+        if not us_ta_errors
+        and not us_lg_errors
+        and not us_fm_errors
+        and us_ta_source_foundation_report.get("status") == "pass"
+        and us_ta_source_foundation_report.get("d4_us_ta_source_foundation_ready") is True
+        and us_lg_legal_backbone_report.get("status") == "pass"
+        and us_lg_legal_backbone_report.get("d4_us_lg_legal_backbone_ready") is True
+        and us_fm_source_backbone_report.get("status") == "pass"
+        and us_fm_source_backbone_report.get("d4_us_fm_source_backbone_ready") is True
+        else "blocked"
+    )
+    policy_rows, policy_errors = _s2pet04_policy_rows(policy_records)
+    replay_rows, replay_errors = _s2pet04_replay_rows(replay_records)
+    shadow_rows, shadow_errors = _s2pet04_shadow_rows(shadow_records)
+    route_rows, route_errors = _s2pet04_board_route_rows(board_route_records)
+    budget_rows, budget_errors = _s2pet04_budget_rows(budget_records)
+    source_gate = _s2pet04_source_system_gate(policy_rows)
+    signal_gate = _s2pet04_signal_type_gate(policy_rows)
+    identity_gate = _s2pet04_official_identity_gate(policy_rows)
+    replay_gate = _s2pet04_replay_gate(replay_rows)
+    shadow_gate = _s2pet04_shadow_gate(shadow_rows)
+    route_gate = _s2pet04_board_route_gate(route_rows)
+    budget_gate = _s2pet04_budget_gate(budget_rows)
+    metadata_gate = _s2pet04_metadata_gate(policy_rows, replay_rows, shadow_rows, route_rows, budget_rows)
+    upstream_reasons = [f"upstream S2PET01: {error}" for error in us_ta_errors]
+    upstream_reasons.extend(f"upstream S2PET02: {error}" for error in us_lg_errors)
+    upstream_reasons.extend(f"upstream S2PET03: {error}" for error in us_fm_errors)
+    if upstream_gate != "pass":
+        upstream_reasons.append("upstream S2PET01-S2PET03 reports must pass before S2PET04 D4 qualification evidence")
+    blocking_reasons = [
+        *upstream_reasons,
+        *policy_errors,
+        *replay_errors,
+        *shadow_errors,
+        *route_errors,
+        *budget_errors,
+        *source_gate["blocking_reasons"],
+        *signal_gate["blocking_reasons"],
+        *identity_gate["blocking_reasons"],
+        *replay_gate["blocking_reasons"],
+        *shadow_gate["blocking_reasons"],
+        *route_gate["blocking_reasons"],
+        *budget_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == source_gate["status"]
+        == signal_gate["status"]
+        == identity_gate["status"]
+        == replay_gate["status"]
+        == shadow_gate["status"]
+        == route_gate["status"]
+        == budget_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID,
+        "acceptance_id": S2PET04_ACCEPTANCE_ID,
+        "task_id": S2PET04_TASK_ID,
+        "legacy_task_id": S2PET04_LEGACY_TASK_ID,
+        "phase": "S2PE",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_s2pet01_s2pet03_gate": upstream_gate,
+        "us_tp_source_system_gate": source_gate["status"],
+        "us_tp_signal_type_gate": signal_gate["status"],
+        "official_identity_gate": identity_gate["status"],
+        "d4_replay_gate": replay_gate["status"],
+        "d4_shadow_gate": shadow_gate["status"],
+        "board_routing_gate": route_gate["status"],
+        "budget_explanation_gate": budget_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_source_systems": list(S2PET04_REQUIRED_SOURCE_SYSTEMS),
+        "source_systems_observed": source_gate["source_systems_observed"],
+        "required_signal_types": list(S2PET04_REQUIRED_SIGNAL_TYPES),
+        "signal_types_observed": signal_gate["signal_types_observed"],
+        "required_d4_components": list(S2PET04_REQUIRED_D4_COMPONENTS),
+        "d4_components_observed": replay_gate["d4_components_observed"],
+        "required_board_ids": list(S2PET04_REQUIRED_BOARD_IDS),
+        "board_ids_observed": route_gate["board_ids_observed"],
+        "required_budget_segments": list(S2PET04_REQUIRED_BUDGET_SEGMENTS),
+        "required_budget_weights": list(S2PET04_REQUIRED_BUDGET_WEIGHTS),
+        "budget_segments_observed": budget_gate["budget_segments_observed"],
+        "budget_weight_total": budget_gate["budget_weight_total"],
+        "required_replay_dates": S2PET04_REQUIRED_REPLAY_DATES,
+        "replay_dates_observed": replay_gate["replay_dates_observed"],
+        "required_shadow_days": S2PET04_REQUIRED_SHADOW_DAYS,
+        "shadow_dates_observed": shadow_gate["shadow_dates_observed"],
+        "policy_records": policy_rows,
+        "replay_records": replay_rows,
+        "shadow_records": shadow_rows,
+        "board_route_records": route_rows,
+        "budget_records": budget_rows,
+        "policy_record_count": len(policy_rows),
+        "replay_record_count": len(replay_rows),
+        "shadow_record_count": len(shadow_rows),
+        "board_route_record_count": len(route_rows),
+        "budget_record_count": len(budget_rows),
+        "source_system_summary": source_gate,
+        "signal_summary": signal_gate,
+        "identity_summary": identity_gate,
+        "replay_summary": replay_gate,
+        "shadow_summary": shadow_gate,
+        "board_route_summary": route_gate,
+        "budget_summary": budget_gate,
+        "metadata_summary": metadata_gate,
+        "d4_us_tp_and_qualification_ready": status == "pass",
+        "d4_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "public_schema_changed": False,
+        "live_source_fetch_executed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_modified": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pet04_us_tp_d4_qualification(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    us_ta_source_foundation_report: Mapping[str, Any],
+    us_lg_legal_backbone_report: Mapping[str, Any],
+    us_fm_source_backbone_report: Mapping[str, Any],
+    policy_records: Sequence[Mapping[str, Any]],
+    replay_records: Sequence[Mapping[str, Any]],
+    shadow_records: Sequence[Mapping[str, Any]],
+    board_route_records: Sequence[Mapping[str, Any]],
+    budget_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PET04 US-TP and D4 qualification evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pet04-us-tp-d4-qualification"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pet04_us_tp_d4_qualification_report(
+        generated_at=generated_at,
+        us_ta_source_foundation_report=us_ta_source_foundation_report,
+        us_lg_legal_backbone_report=us_lg_legal_backbone_report,
+        us_fm_source_backbone_report=us_fm_source_backbone_report,
+        policy_records=policy_records,
+        replay_records=replay_records,
+        shadow_records=shadow_records,
+        board_route_records=board_route_records,
+        budget_records=budget_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "d4_qualification_report_path": str(run_dir / "adp-s2pet04-us-tp-d4-qualification-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pet04-us-tp-d4-qualification-report.json", report)
+        _write_json(state / S2PET04_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pet04_us_tp_d4_qualification_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID:
+        errors.append("S2PET04 model_id must be adp-s2pet04-us-tp-d4-qualification-v1")
+    if report.get("task_id") != S2PET04_TASK_ID:
+        errors.append("S2PET04 task_id must be S2PET04")
+    if report.get("legacy_task_id") != S2PET04_LEGACY_TASK_ID:
+        errors.append("S2PET04 legacy_task_id must be S2P4T04")
+    if report.get("acceptance_id") != S2PET04_ACCEPTANCE_ID:
+        errors.append("S2PET04 acceptance_id must be ACC-S2PET04-D4")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PET04 status must be pass or blocked")
+    for key in (
+        "d4_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "public_schema_changed",
+        "live_source_fetch_executed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_modified",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PET04 D4 qualification")
+    for key in ("policy_records", "replay_records", "shadow_records", "board_route_records", "budget_records"):
+        if not isinstance(report.get(key), list):
+            errors.append(f"S2PET04 {key} must be a list")
+    missing_sources = [system for system in S2PET04_REQUIRED_SOURCE_SYSTEMS if system not in set(report.get("source_systems_observed") or [])]
+    if missing_sources:
+        errors.append("S2PET04 missing required source systems: " + ", ".join(missing_sources))
+    missing_signals = [signal for signal in S2PET04_REQUIRED_SIGNAL_TYPES if signal not in set(report.get("signal_types_observed") or [])]
+    if missing_signals:
+        errors.append("S2PET04 missing required signal types: " + ", ".join(missing_signals))
+    missing_components = [component for component in S2PET04_REQUIRED_D4_COMPONENTS if component not in set(report.get("d4_components_observed") or [])]
+    if missing_components:
+        errors.append("S2PET04 missing D4 components in replay: " + ", ".join(missing_components))
+    if len(set(report.get("replay_dates_observed") or [])) < S2PET04_REQUIRED_REPLAY_DATES:
+        errors.append("S2PET04 D4 qualification requires at least 30 replay dates")
+    if len(set(report.get("shadow_dates_observed") or [])) < S2PET04_REQUIRED_SHADOW_DAYS:
+        errors.append("S2PET04 D4 qualification requires at least 2 shadow dates")
+    missing_boards = [board for board in S2PET04_REQUIRED_BOARD_IDS if board not in set(report.get("board_ids_observed") or [])]
+    if missing_boards:
+        errors.append("S2PET04 missing board routes: " + ", ".join(missing_boards))
+    missing_budget = [segment for segment in S2PET04_REQUIRED_BUDGET_SEGMENTS if segment not in set(report.get("budget_segments_observed") or [])]
+    if missing_budget:
+        errors.append("S2PET04 missing budget segments: " + ", ".join(missing_budget))
+    if report.get("budget_weight_total") != 100:
+        errors.append("S2PET04 budget weights must total 100")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PET04 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_s2pet01_s2pet03_gate",
+            "us_tp_source_system_gate",
+            "us_tp_signal_type_gate",
+            "official_identity_gate",
+            "d4_replay_gate",
+            "d4_shadow_gate",
+            "board_routing_gate",
+            "budget_explanation_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PET04 report requires {key}=pass")
+        if report.get("d4_us_tp_and_qualification_ready") is not True:
+            errors.append("passing S2PET04 report requires d4_us_tp_and_qualification_ready=true")
     return errors
 
 
@@ -9540,6 +9838,310 @@ def _s2pet03_metadata_gate(
         "relation_record_count": len(relation_rows),
         "blocking_reasons": reasons,
     }
+
+
+def _s2pet04_policy_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    record_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"policy_records[{index}] must be an object")
+            continue
+        record_id = str(record.get("record_id") or "").strip()
+        official_domain = str(record.get("official_domain") or "").lower().strip()
+        source_url = str(record.get("source_url") or "").lower().strip()
+        row = {
+            "record_id": record_id,
+            "source_system": str(record.get("source_system") or "").strip(),
+            "signal_type": str(record.get("signal_type") or "").strip(),
+            "record_title": str(record.get("record_title") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": str(record.get("source_url") or "").strip(),
+            "published_date": str(record.get("published_date") or "").strip(),
+            "record_identifier": str(record.get("record_identifier") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "d4_component": str(record.get("d4_component") or "").strip(),
+            "board_ids": list(record.get("board_ids") or []),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "public_schema_changed": record.get("public_schema_changed") is True,
+            "live_source_fetch_executed": record.get("live_source_fetch_executed") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not record_id:
+            errors.append(f"policy_records[{index}].record_id is required")
+        if record_id in record_ids:
+            errors.append(f"duplicate S2PET04 policy record_id: {record_id}")
+        record_ids.add(record_id)
+        if official_domain and source_url and official_domain not in source_url:
+            errors.append(f"policy_records[{index}].source_url must contain official_domain")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET04 requires at least one US-TP policy record")
+    return rows, errors
+
+
+def _s2pet04_replay_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"replay_records[{index}] must be an object")
+            continue
+        row = {
+            "as_of_date": str(record.get("as_of_date") or "").strip(),
+            "d4_components": list(record.get("d4_components") or []),
+            "status": str(record.get("status") or "").strip(),
+            "route_gate": str(record.get("route_gate") or "").strip(),
+            "budget_gate": str(record.get("budget_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "candidate_count": int(record.get("candidate_count") or 0),
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not _is_iso_date(row["as_of_date"]):
+            errors.append(f"replay_records[{index}].as_of_date must be YYYY-MM-DD")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET04 requires replay records")
+    return rows, errors
+
+
+def _s2pet04_shadow_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"shadow_records[{index}] must be an object")
+            continue
+        row = {
+            "shadow_date": str(record.get("shadow_date") or "").strip(),
+            "status": str(record.get("status") or "").strip(),
+            "candidate_count": int(record.get("candidate_count") or 0),
+            "email_preview_gate": str(record.get("email_preview_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "production_affected": record.get("production_affected") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not _is_iso_date(row["shadow_date"]):
+            errors.append(f"shadow_records[{index}].shadow_date must be YYYY-MM-DD")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET04 requires shadow records")
+    return rows, errors
+
+
+def _s2pet04_board_route_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"board_route_records[{index}] must be an object")
+            continue
+        row = {
+            "board_id": str(record.get("board_id") or "").strip(),
+            "source_systems": list(record.get("source_systems") or []),
+            "route_explanation": str(record.get("route_explanation") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET04 requires board route records")
+    return rows, errors
+
+
+def _s2pet04_budget_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"budget_records[{index}] must be an object")
+            continue
+        row = {
+            "segment": str(record.get("segment") or "").strip(),
+            "weight": int(record.get("weight") or 0),
+            "budget_explanation": str(record.get("budget_explanation") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET04 requires budget records")
+    return rows, errors
+
+
+def _s2pet04_source_system_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("source_system") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET04_REQUIRED_SOURCE_SYSTEMS) - observed)
+    unsupported = sorted(observed - set(S2PET04_REQUIRED_SOURCE_SYSTEMS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET04 missing required source systems: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET04 has unsupported source systems: " + ", ".join(unsupported))
+    return {"status": "pass" if not reasons else "blocked", "source_systems_observed": sorted(system for system in observed if system), "blocking_reasons": reasons}
+
+
+def _s2pet04_signal_type_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("signal_type") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET04_REQUIRED_SIGNAL_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET04_REQUIRED_SIGNAL_TYPES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET04 missing required signal types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET04 has unsupported signal types: " + ", ".join(unsupported))
+    return {"status": "pass" if not reasons else "blocked", "signal_types_observed": sorted(signal for signal in observed if signal), "blocking_reasons": reasons}
+
+
+def _s2pet04_official_identity_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("source_system") not in S2PET04_REQUIRED_SOURCE_SYSTEMS
+        or row.get("signal_type") not in S2PET04_REQUIRED_SIGNAL_TYPES
+        or row.get("identity_state") not in S2PET04_ALLOWED_IDENTITY_STATES
+        or any(not row.get(field) for field in S2PET04_REQUIRED_POLICY_FIELDS)
+        or not row.get("record_title")
+        or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PET04 policy records require official source identity, trace fields, title, and evidence refs")
+    return {"status": "pass" if not reasons else "blocked", "verified_record_count": len(rows) - len(invalid), "record_count": len(rows), "blocking_reasons": reasons}
+
+
+def _s2pet04_replay_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    dates = sorted({str(row.get("as_of_date") or "") for row in rows if isinstance(row, Mapping) and _is_iso_date(str(row.get("as_of_date") or ""))})
+    components = sorted({str(component) for row in rows if isinstance(row, Mapping) for component in (row.get("d4_components") or [])})
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("status") != "pass"
+        or row.get("route_gate") != "pass"
+        or row.get("budget_gate") != "pass"
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+        or not row.get("evidence_refs")
+    ]
+    missing_components = sorted(set(S2PET04_REQUIRED_D4_COMPONENTS) - set(components))
+    reasons: list[str] = []
+    if len(dates) < S2PET04_REQUIRED_REPLAY_DATES:
+        reasons.append("S2PET04 D4 replay requires at least 30 dates")
+    if missing_components:
+        reasons.append("S2PET04 D4 replay missing components: " + ", ".join(missing_components))
+    if invalid:
+        reasons.append("S2PET04 replay rows require pass route/budget gates, metadata-only, no production, and evidence refs")
+    return {"status": "pass" if not reasons else "blocked", "replay_dates_observed": dates, "d4_components_observed": components, "blocking_reasons": reasons}
+
+
+def _s2pet04_shadow_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    dates = sorted({str(row.get("shadow_date") or "") for row in rows if isinstance(row, Mapping) and _is_iso_date(str(row.get("shadow_date") or ""))})
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("status") != "pass"
+        or row.get("email_preview_gate") != "pass"
+        or row.get("candidate_count", 0) <= 0
+        or row.get("metadata_only") is not True
+        or row.get("real_smtp_sent") is not False
+        or row.get("production_affected") is not False
+        or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if len(dates) < S2PET04_REQUIRED_SHADOW_DAYS:
+        reasons.append("S2PET04 shadow requires at least 2 dates")
+    if invalid:
+        reasons.append("S2PET04 shadow rows require pass email preview gate, candidates, metadata-only, no SMTP, no production, and evidence refs")
+    return {"status": "pass" if not reasons else "blocked", "shadow_dates_observed": dates, "blocking_reasons": reasons}
+
+
+def _s2pet04_board_route_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("board_id") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET04_REQUIRED_BOARD_IDS) - observed)
+    unsupported = sorted(observed - set(S2PET04_REQUIRED_BOARD_IDS))
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or not row.get("source_systems")
+        or not row.get("route_explanation")
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+        or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET04 missing board routes: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET04 has unsupported board routes: " + ", ".join(unsupported))
+    if invalid:
+        reasons.append("S2PET04 board routes require source systems, explanation, metadata-only, no production, and evidence refs")
+    return {"status": "pass" if not reasons else "blocked", "board_ids_observed": sorted(board for board in observed if board), "blocking_reasons": reasons}
+
+
+def _s2pet04_budget_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("segment") or "") for row in rows if isinstance(row, Mapping)}
+    weights = {str(row.get("segment") or ""): int(row.get("weight") or 0) for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET04_REQUIRED_BUDGET_SEGMENTS) - observed)
+    expected = dict(zip(S2PET04_REQUIRED_BUDGET_SEGMENTS, S2PET04_REQUIRED_BUDGET_WEIGHTS))
+    invalid_weights = [segment for segment, weight in expected.items() if weights.get(segment) != weight]
+    invalid_rows = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or not row.get("budget_explanation")
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+        or not row.get("evidence_refs")
+    ]
+    total = sum(weights.get(segment, 0) for segment in S2PET04_REQUIRED_BUDGET_SEGMENTS)
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET04 missing budget segments: " + ", ".join(missing))
+    if invalid_weights or total != 100:
+        reasons.append("S2PET04 budget weights must match US-TA 35, US-LG 15, US-FM 30, US-TP 20 and total 100")
+    if invalid_rows:
+        reasons.append("S2PET04 budget records require explanations, metadata-only, no production, and evidence refs")
+    return {"status": "pass" if not reasons else "blocked", "budget_segments_observed": sorted(segment for segment in observed if segment), "budget_weight_total": total, "blocking_reasons": reasons}
+
+
+def _s2pet04_metadata_gate(
+    policy_rows: Sequence[Mapping[str, Any]],
+    replay_rows: Sequence[Mapping[str, Any]],
+    shadow_rows: Sequence[Mapping[str, Any]],
+    route_rows: Sequence[Mapping[str, Any]],
+    budget_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    policy_violations = [
+        row
+        for row in policy_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+        or row.get("public_schema_changed") is not False
+        or row.get("live_source_fetch_executed") is not False
+    ]
+    other_rows = [*replay_rows, *shadow_rows, *route_rows, *budget_rows]
+    other_violations = [
+        row
+        for row in other_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+    ]
+    reasons: list[str] = []
+    if policy_violations or other_violations:
+        reasons.append("S2PET04 records must be metadata-only with no live fetch, public schema, or production side effects")
+    return {"status": "pass" if not reasons else "blocked", "metadata_only_record_count": len(policy_rows) + len(other_rows) - len(policy_violations) - len(other_violations), "record_count": len(policy_rows) + len(other_rows), "blocking_reasons": reasons}
 
 
 def _s2pft01_provincial_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
