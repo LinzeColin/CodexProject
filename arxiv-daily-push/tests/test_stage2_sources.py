@@ -13,6 +13,9 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PGT01_EVIDENCE_PACKET_MODEL_ID,
+    S2PGT01_REQUIRED_EVIDENCE_LEVELS,
+    S2PGT01_REQUIRED_SOURCE_DOMAINS,
     S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID,
     S2PFT05_REQUIRED_COMPONENTS,
     S2PFT05_REQUIRED_QUOTA_ROLES,
@@ -40,6 +43,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pgt01_evidence_packet_v2_compatibility_report,
     build_s2pft05_d3_full_governance_qualification_report,
     build_s2pft04_special_zone_discovery_report,
     build_s2pft03_key_city_coverage_report,
@@ -59,6 +63,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pgt01_evidence_packet_v2_compatibility,
     run_s2pft05_d3_full_governance_qualification,
     run_s2pft04_special_zone_discovery,
     run_s2pft03_key_city_coverage,
@@ -76,6 +81,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pgt01_evidence_packet_v2_compatibility_report,
     validate_s2pft05_d3_full_governance_qualification_report,
     validate_s2pft04_special_zone_discovery_report,
     validate_s2pft03_key_city_coverage_report,
@@ -1092,6 +1098,77 @@ def d3_full_governance_qualification_report() -> dict:
         special_zone_discovery_report=special_zone_discovery_report(),
         governance_records=d3_full_governance_records(),
     )
+
+
+def evidence_packet_domain_reports() -> list[dict]:
+    rows = [
+        ("d1_research_preprint", "S2PBT01", "ADP-ACC-S2P1T01-SOURCE-PROMOTION", "fixture:d1-preprint-shadow"),
+        ("d2_authoritative_publication", "S2PCT07", "ACC-S2PCT07-D2", "fixture:d2-qualification"),
+        ("d3_china_official", "S2PFT05", "ACC-S2PFT05-D3-FULL", "fixture:d3-full-governance"),
+        ("d4_us_official", "S2PET04", "ACC-S2PET04-D4", "fixture:d4-readiness-contract"),
+    ]
+    assert tuple(row[0] for row in rows) == S2PGT01_REQUIRED_SOURCE_DOMAINS
+    return [
+        {
+            "source_domain": source_domain,
+            "task_id": task_id,
+            "acceptance_id": acceptance_id,
+            "status": "pass",
+            "shadow_evidence_ready": True,
+            "source_domain_qualified": True,
+            "report_ref": report_ref,
+            "production_affected": False,
+            "schema_migration_required": False,
+        }
+        for source_domain, task_id, acceptance_id, report_ref in rows
+    ]
+
+
+def evidence_packet_records() -> list[dict]:
+    rows = [
+        ("d1_research_preprint", "arxiv", "arxiv.atom.v1", "arxiv:2606.00001", ["metadata", "abstract"], ["B1"]),
+        ("d2_authoritative_publication", "rss", "top_journal.rss.v1", "nature:article-1", ["metadata"], ["B2"]),
+        ("d3_china_official", "web", "china.official.metadata.v1", "cn.gov:policy-1", ["metadata", "cross_source_verification"], ["B3", "B5"]),
+        ("d4_us_official", "web", "us.official.metadata.v1", "us.gov:signal-1", ["metadata", "full_text"], ["B4", "B6"]),
+    ]
+    return [
+        {
+            "source_domain": source_domain,
+            "evidence_levels_available": levels,
+            "board_routes": board_routes,
+            "metadata_only": True,
+            "schema_migration_required": False,
+            "production_affected": False,
+            "old_arxiv_compatible": source_domain == "d1_research_preprint",
+            "full_text_reference": "metadata-only locator for public official page" if "full_text" in levels else "",
+            "cross_source_refs": ["fixture:cross-source"] if "cross_source_verification" in levels else [],
+            "source_item": {
+                "source_id": source_id,
+                "source_type": source_type,
+                "source_adapter": adapter,
+                "stable_id": source_id,
+                "title": f"Fixture {source_domain} record",
+                "retrieved_at": GENERATED_AT,
+                "canonical_url": f"https://example.test/{source_id}",
+                "metadata": {"summary": f"Fixture summary for {source_domain}"},
+                "content_refs": [{"content_ref_id": f"content:{source_id}", "kind": "metadata"}],
+                "license": "fixture",
+            },
+            "evidence_claims": [
+                {
+                    "claim_id": f"claim:{source_id}",
+                    "source_id": source_id,
+                    "claim_type": "metadata",
+                    "priority": "P1",
+                    "statement": "Fixture claim used for EvidencePacket V2 compatibility.",
+                    "locator": {"stable_url": f"https://example.test/{source_id}"},
+                    "support_status": "supported",
+                    "extracted_at": GENERATED_AT,
+                }
+            ],
+        }
+        for source_domain, source_type, adapter, source_id, levels, board_routes in rows
+    ]
 
 
 def replay_batches(start: date, count: int = 30) -> dict:
@@ -2219,6 +2296,83 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["d3_full_governance_qualification_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pft05_d3_full_governance_qualification_report.json").is_file())
 
+    def test_s2pgt01_evidence_packet_v2_compatibility_passes_four_domains_without_schema_or_production(self) -> None:
+        report = build_s2pgt01_evidence_packet_v2_compatibility_report(
+            generated_at=GENERATED_AT,
+            source_domain_reports=evidence_packet_domain_reports(),
+            packet_records=evidence_packet_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PGT01_EVIDENCE_PACKET_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PGT01-EVIDENCE-V2")
+        self.assertEqual(report["task_id"], "S2PGT01")
+        self.assertEqual(report["phase"], "S2PG")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["packet_version"], "EvidencePacketV2")
+        self.assertEqual(set(report["source_domains_observed"]), set(S2PGT01_REQUIRED_SOURCE_DOMAINS))
+        self.assertEqual(set(report["evidence_levels_observed"]), set(S2PGT01_REQUIRED_EVIDENCE_LEVELS))
+        self.assertEqual(report["source_domain_gate"], "pass")
+        self.assertEqual(report["packet_shape_gate"], "pass")
+        self.assertEqual(report["evidence_level_gate"], "pass")
+        self.assertEqual(report["old_arxiv_compatibility_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertTrue(report["s2pgt01_evidence_packet_v2_compatibility_ready"])
+        self.assertFalse(report["schema_migration_required"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["smtp_transport_allowed"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["production_affected"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(validate_s2pgt01_evidence_packet_v2_compatibility_report(report))
+
+    def test_s2pgt01_evidence_packet_v2_compatibility_blocks_missing_d4_and_side_effects(self) -> None:
+        domain_reports = [row for row in evidence_packet_domain_reports() if row["source_domain"] != "d4_us_official"]
+        packet_records = evidence_packet_records()
+        packet_records[0] = dict(packet_records[0], old_arxiv_compatible=False, production_affected=True)
+        packet_records[1] = dict(packet_records[1], evidence_levels_available=["unsupported_level"])
+        report = build_s2pgt01_evidence_packet_v2_compatibility_report(
+            generated_at=GENERATED_AT,
+            source_domain_reports=domain_reports,
+            packet_records=packet_records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["source_domain_gate"], "blocked")
+        self.assertEqual(report["evidence_level_gate"], "blocked")
+        self.assertEqual(report["old_arxiv_compatibility_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        self.assertFalse(report["s2pgt01_evidence_packet_v2_compatibility_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("d4_us_official", joined)
+        self.assertIn("unsupported_level", joined)
+        self.assertIn("old_arxiv_compatible", joined)
+        self.assertIn("production_affected", joined)
+        self.assertTrue(validate_s2pgt01_evidence_packet_v2_compatibility_report(report))
+
+    def test_s2pgt01_evidence_packet_v2_compatibility_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pgt01_evidence_packet_v2_compatibility(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pgt01_evidence_packet_v2_compatibility_report(report))
+            self.assertFalse(report["schema_migration_required"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertTrue(Path(report["evidence_packet_v2_compatibility_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pgt01_evidence_packet_v2_compatibility_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -3100,6 +3254,48 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertTrue(payload["d3_full_source_domain_qualified"])
         self.assertFalse(payload["d3_full_source_domain_accepted"])
         self.assertFalse(payload["stage2_production_accepted"])
+
+    def test_cli_stage2_evidence_packet_v2_compatibility_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            domain_reports_path = Path(tmp) / "source-domain-reports.json"
+            packet_records_path = Path(tmp) / "packet-records.json"
+            domain_reports_path.write_text(
+                json.dumps({"source_domain_reports": evidence_packet_domain_reports()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            packet_records_path.write_text(
+                json.dumps({"packet_records": evidence_packet_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-evidence-packet-v2-compatibility",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--source-domain-reports",
+                    str(domain_reports_path),
+                    "--packet-records",
+                    str(packet_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PGT01_EVIDENCE_PACKET_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PGT01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["packet_version"], "EvidencePacketV2")
+        self.assertTrue(payload["s2pgt01_evidence_packet_v2_compatibility_ready"])
+        self.assertFalse(payload["public_schema_changed"])
+        self.assertFalse(payload["schema_migration_required"])
+        self.assertFalse(payload["production_affected"])
+        self.assertFalse(payload["real_smtp_sent"])
 
 
 if __name__ == "__main__":
