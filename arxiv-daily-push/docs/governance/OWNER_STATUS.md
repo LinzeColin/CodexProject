@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PKT03` 本地 M2 engineering/product/industry frontier mail evidence；它在 S2PKT01 合同基础上校验 M2/B2、B4/B5/B6、工程可用性、复现、产品/产业价值、限制、2h/7d 行动路径、状态与哈希，并保持 SMTP/scheduler/Release/schema/queue/ranking/source adapter/Email V1 runtime 全部无生产副作用。
+新增 `S2PKT04` 本地 M3 policy/capital/geopolitical frontier mail evidence；它在 S2PKT01 合同基础上校验 M3/B3、B4/B5/B6、法律状态、资本影响、地缘背景、个人影响、2h/30d 行动路径、状态与哈希，并保持 SMTP/scheduler/Release/schema/queue/ranking/source adapter/Email V1 runtime 全部无生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT03 as local M2 mail evidence only, allow S2PKT04 to start only as local no-production M3 mail evidence, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT04 as local M3 mail evidence only, allow S2PKT05 to start only as local no-production M4 mail orchestration evidence, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,9 +31,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PKT04_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
+- next_task_id: `S2PKT05_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PKT04-M3`
+- acceptance_ids: `ACC-S2PKT05-M4`
 - unblock_condition: S2PKT03 M2 mail evidence is complete locally; continue only with the next governed Stage2 task under V7.2 no-production boundaries and keep SMTP/scheduler/Release/public schema disabled.
 
 ## 8. 九层 Assurance 状态
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT03 as local M2 mail evidence, continue S2PKT04 local M3 mail evidence work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PKT04 M3 mail local-only work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 M2/M3 mail evidence gate 直接启用生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT04 as local M3 mail evidence, continue S2PKT05 local M4 mail orchestration work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PKT05 M4 mail orchestration local-only work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 M3/M4 mail evidence gate 直接启用生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `91`
-- total_formulas: `93`
-- active_formulas: `93`
-- total_parameters: `736`
-- active_parameters: `719`
+- model_count: `92`
+- total_formulas: `94`
+- active_formulas: `94`
+- total_parameters: `746`
+- active_parameters: `729`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PKT03_M2_MAIL_LOCAL_ONLY`
+- release_gate: `S2PKT04_M3_MAIL_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PK / S2PKT03_M2_MAIL_LOCAL_ONLY`
+- phase/gate: `S2PK / S2PKT04_M3_MAIL_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PKT04_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
+- task_id: `S2PKT05_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
 - reason: S2PKT03 local M2 mail evidence is complete; continue only with the next governed Stage2 task under V7.2 no-production boundaries.
