@@ -12,7 +12,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `C`
 - Current gate: `TASK-T1307-A209-BACKGROUND-SOAK-152-OF-288-RELEASE-BLOCKED`
-- Confirmed iteration count: 38
+- Confirmed iteration count: 37
 - Reconstructed development event count: 4
 - Current task: `TASK-T1307/A209 background 24h operator soak heartbeat and release-gate governance sync`
 - Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `152/288` successful windows, `0` failed windows, `136` remaining, `52.78%` completion and `release_gate_closed_by_background_heartbeat=false`. Live checkpoint evidence observed after that commit advanced to `156/288` successful windows with `0` failed windows, but later checkpoints remain progress-only until 288/288 validates.
