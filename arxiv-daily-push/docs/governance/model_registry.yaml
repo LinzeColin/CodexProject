@@ -4013,3 +4013,61 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md"
+
+
+  -
+    model_id: "MOD-ADP-077"
+    name: "S2PET03 US-FM source backbone"
+    kind: "deterministic metadata-only US financial and macro source relation backbone model"
+    purpose: "Validate SEC/EDGAR, Federal Reserve, Treasury, CFTC, OCC, FDIC, and CFPB metadata coverage, SEC form classification, CIK/Accession identifiers, company/fund/asset relation correctness, official identity, traceability, and disabled production side-effect flags before any D4 production inclusion."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pet03-us-fm-source-backbone-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-079"
+    parameter_ids:
+      - "PARAM-ADP-580"
+      - "PARAM-ADP-581"
+      - "PARAM-ADP-582"
+      - "PARAM-ADP-583"
+      - "PARAM-ADP-584"
+      - "PARAM-ADP-585"
+      - "PARAM-ADP-586"
+      - "PARAM-ADP-587"
+      - "PARAM-ADP-588"
+      - "PARAM-ADP-589"
+      - "PARAM-ADP-590"
+      - "PARAM-ADP-591"
+      - "PARAM-ADP-592"
+    inputs:
+      - "passing S2PET02 US-LG legal backbone report"
+      - "US-FM finance and macro metadata records"
+      - "US-FM company fund asset relation records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "US-FM source backbone report"
+      - "upstream US-LG gate"
+      - "source system coverage gate"
+      - "signal type gate"
+      - "SEC form coverage gate"
+      - "CIK and Accession identifier gate"
+      - "official identity gate"
+      - "record traceability gate"
+      - "finance relation gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md"

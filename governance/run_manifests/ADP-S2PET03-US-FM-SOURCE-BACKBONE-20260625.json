@@ -1,0 +1,73 @@
+{
+  "acceptance_id": "ACC-S2PET03-US-FM",
+  "base_commit": "6bf517184e3b2236bee33361831b350d79ffc8b0",
+  "current_pointer_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md",
+    "governance/run_manifests/ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625.json",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
+  ],
+  "generated_at": "2026-06-25T23:59:00+10:00",
+  "legacy_task_id": "S2P4T03",
+  "manifest_id": "ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625",
+  "non_scope": [
+    "live source fetch",
+    "paid market data",
+    "investment advice",
+    "trading signal generation",
+    "automated trading",
+    "SMTP",
+    "scheduler",
+    "Release",
+    "public schema",
+    "DB migration",
+    "production flags",
+    "V7.1/V7.2 contract changes",
+    "integrated production acceptance"
+  ],
+  "phase": "S2PE",
+  "production_side_effects": {
+    "automated_trading_enabled": false,
+    "formal_production_inclusion": false,
+    "integrated_production_accepted": false,
+    "investment_advice_provided": false,
+    "live_source_fetch_executed": false,
+    "paid_market_data_used": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "scheduler_changed": false,
+    "stage2_production_accepted": false,
+    "trading_signal_generated": false
+  },
+  "project": "arxiv-daily-push",
+  "scope": "Metadata-only US-FM source backbone evidence for SEC/EDGAR, Federal Reserve, Treasury, CFTC, OCC, FDIC, CFPB, SEC forms, CIK/Accession identifiers, and company/fund/asset relations.",
+  "status": "local_validation_passed_pending_pr_ci",
+  "task_id": "S2PET03",
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 101 OK",
+    "full arxiv-daily-push unittest: 330 OK",
+    "semantic extractor: 79 formulas / 575 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/YAML/JSONL/CSV parse OK",
+    "git diff --check PASS"
+  ],
+  "v7_1_historical_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "v7_2_revalidation_receipt_recorded": true
+}

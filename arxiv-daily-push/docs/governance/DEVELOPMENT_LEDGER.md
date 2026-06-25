@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PE
-- Current gate: S2PET02_US_LG_LEGAL_BACKBONE_METADATA_ONLY_NO_PRODUCTION
-- Confirmed iteration count: 98
+- Current gate: S2PET03_US_FM_SOURCE_BACKBONE_METADATA_ONLY_NO_PRODUCTION
+- Confirmed iteration count: 99
 - Reconstructed event count: 0
-- Current task: `S2PET02` has completed metadata-only D4 US-LG cross-agency legal backbone evidence. It validates upstream S2PET01, Federal Register, Regulations.gov, GovInfo, and Congress.gov coverage, required legal document types, Docket/FR/CFR/bill/report/public-law/certified-text relations, official identity, traceability, and no-production/no-schema/no-legal-advice side-effect gates without live source fetching, D4 production inclusion, public schema migration, or V7.1/V7.2 contract edits. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PET03` has completed metadata-only D4 US-FM financial, market, and macro source backbone evidence. It validates upstream S2PET02, SEC/EDGAR, Federal Reserve, Treasury, CFTC, OCC, FDIC, and CFPB coverage, SEC form classification, CIK and Accession identifiers, company/fund/asset relations, official identity, traceability, and no-production/no-schema/no-investment-advice/no-trading side-effect gates without live source fetching, paid market data, D4 production inclusion, public schema migration, or V7.1/V7.2 contract edits. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -30,11 +30,32 @@ The append-only machine record is `development_events.jsonl`.
 | S2PB | V7.2-inherited D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production, after V7.2 agent revalidation | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
 | S2PC | V7.2-inherited D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature metadata-only shadow foundation to S2PCT02 Science without D2 source-domain acceptance or production inclusion, after V7.2 agent revalidation | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119`; next `S2PCT02` |
 | S2PF | V7.2-inherited D3 China local and extended official-source coverage | completed_local_validation | S2PFT01-S2PFT05 now cover mainland provincial templates, Hong Kong/Macau profiles, key cities, special zones, and full D3 governance qualification without formal production inclusion | `governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json`; `docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md` |
-| S2PE | V7.2-inherited D4 US official technology and finance source domain | in_progress | `S2PET02` now covers metadata-only US-LG legal backbone evidence without live fetch, legal advice, production inclusion, SMTP, scheduler, Release, public schema, or queue mutation | `docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md`; `governance/run_manifests/ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625.json` |
+| S2PE | V7.2-inherited D4 US official technology and finance source domain | in_progress | `S2PET03` now covers metadata-only US-FM finance and macro source backbone evidence without live fetch, paid market data, investment advice, trading behavior, production inclusion, SMTP, scheduler, Release, public schema, or queue mutation | `docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md`; `governance/run_manifests/ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625.json` |
 | S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | in_progress | `S2PGT01` private EvidencePacket V2 compatibility is complete; continue later S2PG graph/routing work without silently migrating public schema or production queues | `docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260625-ADP-S2PE-S2PET03-US-FM-SOURCE-BACKBONE`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PET03 finance/macro code, focused US-FM metadata and relation fixtures, model/formula/parameter registry diff, and local S2PET03 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 6bf517184e3b2236bee33361831b350d79ffc8b0
+- Result commit: PENDING
+- Task IDs: `S2PET03`, legacy alias `S2P4T03`; next task `S2PET04` under V7.2 no-production boundaries.
+- Goal: Complete metadata-only D4 US-FM financial, market, and macro source backbone evidence and preserve V7.2 no-production boundaries.
+- Files changed: S2PET03 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-077` US-FM source backbone model.
+- Formula changes: Added `FORM-ADP-079` with machine-verifiable AST fingerprints bound to the S2PET03 implementation.
+- Parameter changes: Added `PARAM-ADP-580` through `PARAM-ADP-592` for S2PET03 model id, acceptance id, task ids, required source systems, SEC form types, signal types, relation types, identity states, trace fields, identifier fields, relation fields, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 101 OK; full arxiv-daily-push unittest 330 OK; semantic extractor 79 formulas / 575 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSON/YAML/JSONL/CSV parse OK; git diff --check PASS.
+- Decisions: `ACC-S2PET03-US-FM` is accepted only as metadata-only D4 US-FM source backbone evidence. Live source fetching, paid market data, investment advice, trading signals, automated trading, D4 production inclusion, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, scheduler, public schema migration, queue/schema mutation, mail runtime, and V7.1/V7.2 contract edits remain false/disabled.
+- Remaining risks: S2PET04 D4 qualification remains unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PET03 source-backbone code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state change was made.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md`; `governance/run_manifests/ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PET03.
 
 ### `ITER-20260625-ADP-S2PE-S2PET02-US-LG-LEGAL-BACKBONE`
 
