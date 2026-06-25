@@ -8,6 +8,7 @@ Updated: 2026-06-26 Australia/Sydney
 
 ## Current Status
 
+- 2026-06-26 CI retry note: Project Governance run `28207602139` failed before changed-scope validation because the forced update from `064caf7f` to `1d6ea340` left `GOVERNANCE_BASE_REF=064caf7f32e4ff612fb95d4b15f24944fd9da0c6` unavailable in the runner checkout. Use a normal follow-up push from `1d6ea340` so the next push `before` SHA resolves; no A209 release gate is closed by this retry.
 - 2026-06-26 A209 repair update: the clean 24h operator soak restarted at `2026-06-25T21:33:19Z` / `2026-06-26 07:33 AEST` failed at checkpoint window `7/288`.
 - Latest A209 failure evidence: `artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl` has 7 rows, 6 PASS windows and 1 FAIL window; window 7 reports `child_status=NO_OUTPUT`, `exit_status=1`, and `page.evaluate: Target page, context or browser has been closed`; `/private/tmp/eei-operator-soak-61143-7.json` is missing.
 - No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS`; finalization cannot run until a new 24h chain reaches `288/288` windows with zero failures and validates.
