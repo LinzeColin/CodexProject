@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 111
-- acceptance_count: 105
+- task_count: 112
+- acceptance_count: 106
 
 ## Delivery Tasks
 
@@ -207,3 +207,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PJT03 | Action asset ROI ledger | completed_local_validation | `ACC-S2PJT03-ROI` | Local-only 15m/2h/7d/30d action records, capability assets, expected ROI assumptions/confidence, actual ROI only with verifiable evidence, deterministic ledger hash, and no production side effects. |
 
 | S2PJT04 | Weekly report | completed_local_validation | `ACC-S2PJT04-WEEKLY` | Local-only weekly mainline, counterevidence, review/action/asset summary, next-week focus, content/state traceability, duplicate prevention, deterministic report hash, and no production side effects. |
+| S2PKT01 | M1-M4 mail contract | completed_local_validation | `ACC-S2PKT01-MAIL-CONTRACT` | Local-only shared EMAIL_LEARNING_V1 contract, board differentiation, reading layers, evidence labels, feedback actions, deterministic hashes, and no production side effects. |

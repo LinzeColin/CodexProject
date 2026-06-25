@@ -131,6 +131,7 @@ from .stage2_sources import (
     run_s2pit02_runtime_dashboard,
     run_s2pit03_source_model_view,
     run_s2pit04_content_ledger,
+    run_s2pkt01_mail_contract,
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
@@ -157,6 +158,7 @@ from .stage2_sources import (
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pit03_source_model_view_report,
     validate_s2pit04_content_ledger_report,
+    validate_s2pkt01_mail_contract_report,
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
@@ -916,6 +918,21 @@ def build_parser() -> argparse.ArgumentParser:
     s2pit04_content_ledger.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
     s2pit04_content_ledger.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pit04_content_ledger.add_argument("--json", action="store_true", help="Print JSON content ledger report.")
+
+    s2pkt01_mail_contract = subparsers.add_parser(
+        "stage2-mail-contract",
+        help="Build S2PKT01 local M1-M4 shared mail contract readiness evidence without sending mail.",
+    )
+    s2pkt01_mail_contract.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pkt01_mail_contract.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pkt01_mail_contract.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pkt01_mail_contract.add_argument("--content-quality-report", required=True, help="Passing S2PHT05 content quality gate report JSON.")
+    s2pkt01_mail_contract.add_argument("--content-ledger-report", required=True, help="Passing S2PIT04 content ledger report JSON.")
+    s2pkt01_mail_contract.add_argument("--action-roi-report", required=True, help="Passing S2PJT03 action/asset/ROI report JSON.")
+    s2pkt01_mail_contract.add_argument("--mail-contracts", required=True, help="Mail contract records JSON list or object with mail_contracts.")
+    s2pkt01_mail_contract.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pkt01_mail_contract.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pkt01_mail_contract.add_argument("--json", action="store_true", help="Print JSON mail contract report.")
 
     s2pjt01_lifecycle = subparsers.add_parser(
         "stage2-lifecycle-state",
@@ -2747,6 +2764,39 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- traceability_gate: {report.get('traceability_gate')}")
             print(f"- count_conservation_gate: {report.get('count_conservation_gate')}")
             print(f"- deterministic_ledger_gate: {report.get('deterministic_ledger_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-mail-contract":
+        production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        report = run_s2pkt01_mail_contract(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            content_quality_report=load_json_mapping(args.content_quality_report),
+            content_ledger_report=load_json_mapping(args.content_ledger_report),
+            action_roi_report=load_json_mapping(args.action_roi_report),
+            mail_contracts=load_json_records(args.mail_contracts, "mail_contracts"),
+            production_gate_state=production_gate_state,
+            write=not args.no_write,
+        )
+        errors = validate_s2pkt01_mail_contract_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- content_quality_gate: {report.get('content_quality_gate')}")
+            print(f"- content_ledger_gate: {report.get('content_ledger_gate')}")
+            print(f"- action_roi_gate: {report.get('action_roi_gate')}")
+            print(f"- shared_contract_gate: {report.get('shared_contract_gate')}")
+            print(f"- board_differentiation_gate: {report.get('board_differentiation_gate')}")
+            print(f"- reading_layer_gate: {report.get('reading_layer_gate')}")
+            print(f"- evidence_label_gate: {report.get('evidence_label_gate')}")
+            print(f"- feedback_component_gate: {report.get('feedback_component_gate')}")
+            print(f"- hash_status_gate: {report.get('hash_status_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
