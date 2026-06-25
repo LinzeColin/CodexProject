@@ -126,6 +126,7 @@ from .stage2_sources import (
     run_s2pet01_us_ta_source_foundation,
     run_s2pet02_us_lg_legal_backbone,
     run_s2pet03_us_fm_source_backbone,
+    run_s2pet04_us_tp_d4_qualification,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -141,6 +142,7 @@ from .stage2_sources import (
     validate_s2pet01_us_ta_source_foundation_report,
     validate_s2pet02_us_lg_legal_backbone_report,
     validate_s2pet03_us_fm_source_backbone_report,
+    validate_s2pet04_us_tp_d4_qualification_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -691,6 +693,24 @@ def build_parser() -> argparse.ArgumentParser:
     s2pet03_us_fm.add_argument("--relation-records", required=True, help="US-FM finance relation JSON list or object with relation_records.")
     s2pet03_us_fm.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pet03_us_fm.add_argument("--json", action="store_true", help="Print JSON US-FM source backbone report.")
+
+    s2pet04_us_tp = subparsers.add_parser(
+        "stage2-us-tp-d4-qualification",
+        help="Run S2PET04/S2P4T04 US technology policy and D4 qualification metadata-only evidence.",
+    )
+    s2pet04_us_tp.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pet04_us_tp.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pet04_us_tp.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pet04_us_tp.add_argument("--us-ta-source-foundation-report", required=True, help="Passing S2PET01 US-TA source foundation report JSON.")
+    s2pet04_us_tp.add_argument("--us-lg-legal-backbone-report", required=True, help="Passing S2PET02 US-LG legal backbone report JSON.")
+    s2pet04_us_tp.add_argument("--us-fm-source-backbone-report", required=True, help="Passing S2PET03 US-FM source backbone report JSON.")
+    s2pet04_us_tp.add_argument("--policy-records", required=True, help="US-TP policy metadata JSON list or object with policy_records.")
+    s2pet04_us_tp.add_argument("--replay-records", required=True, help="D4 replay JSON list or object with replay_records.")
+    s2pet04_us_tp.add_argument("--shadow-records", required=True, help="D4 shadow JSON list or object with shadow_records.")
+    s2pet04_us_tp.add_argument("--board-route-records", required=True, help="D4 board route JSON list or object with board_route_records.")
+    s2pet04_us_tp.add_argument("--budget-records", required=True, help="D4 budget JSON list or object with budget_records.")
+    s2pet04_us_tp.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pet04_us_tp.add_argument("--json", action="store_true", help="Print JSON US-TP D4 qualification report.")
 
     s2pft01_china_provinces = subparsers.add_parser(
         "stage2-china-provincial-template-coverage",
@@ -2144,6 +2164,38 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- sec_form_coverage_gate: {report.get('sec_form_coverage_gate')}")
             print(f"- identifier_gate: {report.get('identifier_gate')}")
             print(f"- finance_relation_gate: {report.get('finance_relation_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-us-tp-d4-qualification":
+        report = run_s2pet04_us_tp_d4_qualification(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            us_ta_source_foundation_report=load_json_mapping(args.us_ta_source_foundation_report),
+            us_lg_legal_backbone_report=load_json_mapping(args.us_lg_legal_backbone_report),
+            us_fm_source_backbone_report=load_json_mapping(args.us_fm_source_backbone_report),
+            policy_records=load_json_records(args.policy_records, "policy_records"),
+            replay_records=load_json_records(args.replay_records, "replay_records"),
+            shadow_records=load_json_records(args.shadow_records, "shadow_records"),
+            board_route_records=load_json_records(args.board_route_records, "board_route_records"),
+            budget_records=load_json_records(args.budget_records, "budget_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pet04_us_tp_d4_qualification_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- upstream_s2pet01_s2pet03_gate: {report.get('upstream_s2pet01_s2pet03_gate')}")
+            print(f"- us_tp_source_system_gate: {report.get('us_tp_source_system_gate')}")
+            print(f"- d4_replay_gate: {report.get('d4_replay_gate')}")
+            print(f"- d4_shadow_gate: {report.get('d4_shadow_gate')}")
+            print(f"- board_routing_gate: {report.get('board_routing_gate')}")
+            print(f"- budget_explanation_gate: {report.get('budget_explanation_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

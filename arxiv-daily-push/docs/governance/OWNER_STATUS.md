@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (575/575 active parameters, 79/79 active formulas)
+- implementation_congruence: `VERIFIED` (590/590 active parameters, 80/80 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `77`
-- total_formulas: `79`
-- active_formulas: `79`
-- total_parameters: `592`
-- active_parameters: `575`
+- model_count: `78`
+- total_formulas: `80`
+- active_formulas: `80`
+- total_parameters: `607`
+- active_parameters: `590`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PET03_US_FM_SOURCE_BACKBONE_METADATA_ONLY_NO_PRODUCTION`
+- release_gate: `S2PET04_US_TP_D4_QUALIFICATION_METADATA_ONLY_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PE / S2PET03_US_FM_SOURCE_BACKBONE_METADATA_ONLY_NO_PRODUCTION`
+- phase/gate: `S2PE / S2PET04_US_TP_D4_QUALIFICATION_METADATA_ONLY_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
