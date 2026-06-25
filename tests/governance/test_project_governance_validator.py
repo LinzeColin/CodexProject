@@ -5561,15 +5561,21 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertEqual(projects[project_id]["task_id"], task_id)
             self.assertTrue(projects[project_id]["human_entries_exist"])
             self.assertTrue(projects[project_id]["structure_report_contract"])
+            self.assertTrue(projects[project_id]["chinese_acceptance"])
+            self.assertTrue(projects[project_id]["owner_facing_machine_words_absent"])
 
-        self.assertIn("Rollback", markdown)
+        self.assertTrue(report["chinese_acceptance"]["machine_status_hidden_from_owner_view"])
+        self.assertIn("回滚方式", markdown)
         self.assertIn("中文验收结论", markdown)
         self.assertIn("用户可读优先", markdown)
+        self.assertIn("验收状态", markdown)
         self.assertIn("停止条件", markdown)
         self.assertIn("下一步", markdown)
         self.assertIn("S5PAT01", markdown)
         self.assertIn("EEI", markdown)
         self.assertIn("arxiv-daily-push", markdown)
+        for forbidden in {"`PASS`", "`FAIL`", "`True`", "`False`", "`true`", "`false`", "Rollback", "Stop Conditions"}:
+            self.assertNotIn(forbidden, markdown)
 
         self.assertEqual(manifest["schema_version"], 2)
         self.assertEqual(manifest["project_id"], "ROOT")
@@ -6365,17 +6371,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertTrue(projects[project_id]["human_entries_exist"])
             self.assertTrue(projects[project_id]["owner_navigation"])
             self.assertTrue(projects[project_id]["structure_report_contract"])
+            self.assertTrue(projects[project_id]["chinese_acceptance"])
+            self.assertTrue(projects[project_id]["owner_facing_machine_words_absent"])
 
+        self.assertTrue(report["chinese_acceptance"]["machine_status_hidden_from_owner_view"])
         self.assertIn("隐私与运行边界", markdown)
-        self.assertIn("Privacy And Runtime Boundary", markdown)
+        self.assertNotIn("Privacy And Runtime Boundary", markdown)
         self.assertIn("中文验收结论", markdown)
         self.assertIn("用户可读优先", markdown)
+        self.assertIn("验收状态", markdown)
         self.assertIn("停止条件", markdown)
         self.assertIn("下一步", markdown)
-        self.assertIn("Rollback", markdown)
+        self.assertIn("回滚方式", markdown)
         self.assertIn("S6PAT01", markdown)
         self.assertIn("EEI", markdown)
         self.assertIn("arxiv-daily-push", markdown)
+        for forbidden in {"`PASS`", "`FAIL`", "`True`", "`False`", "`true`", "`false`", "Rollback", "Stop Conditions"}:
+            self.assertNotIn(forbidden, markdown)
 
         self.assertEqual(manifest["schema_version"], 2)
         self.assertEqual(manifest["project_id"], "ROOT")
@@ -7063,7 +7075,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             ROOT / "PFI" / "大数据模拟器" / "docs" / "PFI_structure_report.md",
             ROOT / "Serenity-Alipay" / "docs" / "Serenity_structure_report.md",
         ]
-        required_tokens = ["用户可读", "中文验收", "停止条件", "回滚", "下一步"]
+        required_tokens = ["用户可读", "中文验收", "验收状态", "停止条件", "回滚", "下一步"]
+        forbidden_machine_terms = {
+            "`PASS`",
+            "`FAIL`",
+            "`True`",
+            "`False`",
+            "`true`",
+            "`false`",
+            "## Rollback",
+            "## Stop Conditions",
+            "Stop Conditions Preserved",
+            "Privacy And Runtime Boundary",
+        }
 
         for path in owner_facing_reports:
             with self.subTest(path=str(path.relative_to(ROOT))):
@@ -7076,6 +7100,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 self.assertIn("用户可读", first_twenty_lines)
                 for token in required_tokens:
                     self.assertIn(token, text)
+                for token in forbidden_machine_terms:
+                    self.assertNotIn(token, text)
                 self.assertGreaterEqual(cjk_count, 80)
                 self.assertFalse(first_non_empty.endswith("Gate") and "中文" not in first_non_empty)
 

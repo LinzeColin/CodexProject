@@ -1,0 +1,279 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625",
+  "project_id": "ROOT",
+  "task_id": "S4S5-CHINESE-ACCEPTANCE-REDO2",
+  "acceptance_ids": [
+    "ACC-S4PCT03",
+    "ACC-S5PCT03",
+    "ACC-OWNER-READABLE-FIRST-GLOBAL-CHINESE"
+  ],
+  "iteration_id": "ITER-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "d63178a65ba2a960b1f50a93003c51868f5632a2",
+  "result_commit": "PENDING_PR_HEAD",
+  "supersedes_insufficient_acceptance": [
+    "GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:53868468c52dbe9335da6b44db82a1ee556c340c9911097fb44c9e482b78c4c1",
+  "changed_files_declared": [
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/docs/whkm_structure_report.md"
+  ],
+  "changed_files_actual": [
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/docs/whkm_structure_report.md"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py"
+  ],
+  "updated_governance_files": [
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py"
+  ],
+  "owner_facing_reports": [
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md"
+  ],
+  "change_classification": [
+    "s4_s5_chinese_acceptance_redo2",
+    "owner_readable_first_global_chinese",
+    "machine_status_removed_from_owner_view",
+    "stricter_test_gate",
+    "no_runtime_rewrite",
+    "no_product_behavior_change",
+    "no_file_move",
+    "no_archive_write",
+    "no_external_automation_trigger",
+    "forbidden_scope_clean"
+  ],
+  "stage_gate_status": {
+    "S4PCT03": "CHINESE_ACCEPTANCE_REDONE_STRICT_LOCAL_PASS",
+    "S4-GATE-CHINESE-ACCEPTANCE": "STRICT_LOCAL_PASS",
+    "S5PCT03": "CHINESE_ACCEPTANCE_REDONE_STRICT_LOCAL_PASS",
+    "S5-GATE-CHINESE-ACCEPTANCE": "STRICT_LOCAL_PASS",
+    "owner_readable_first_global_chinese": "STRICT_LOCAL_PASS",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "external_automation": "NOT_TRIGGERED",
+    "next_allowed_task": "S6PAT02_FIFA_AFTER_PR_AND_MAIN_CI"
+  },
+  "gate_report": {
+    "s4_markdown_ref": "governance/stage_gates/s4pc/wave1_gate.md",
+    "s4_json_ref": "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "s4_check_count": 74,
+    "s5_markdown_ref": "governance/stage_gates/s5pc/wave2_gate.md",
+    "s5_json_ref": "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "s5_check_count": 85,
+    "owner_facing_report_count": 10
+  },
+  "chinese_acceptance": {
+    "default_language": "zh-CN",
+    "owner_readable_first": true,
+    "required_tokens": [
+      "用户可读",
+      "中文验收",
+      "验收状态",
+      "停止条件",
+      "回滚",
+      "下一步"
+    ],
+    "forbidden_owner_facing_machine_terms": [
+      "`PASS`",
+      "`FAIL`",
+      "`True`",
+      "`False`",
+      "`true`",
+      "`false`",
+      "## Rollback",
+      "## Stop Conditions",
+      "Stop Conditions Preserved",
+      "Privacy And Runtime Boundary"
+    ],
+    "machine_terms_scan": "PASS_NO_FORBIDDEN_TERMS",
+    "focused_test": "test_other8_s4_s5_owner_reports_are_chinese_first",
+    "status": "STRICT_LOCAL_PASS"
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": false,
+    "tracked_diff_command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT"
+  },
+  "stop_conditions": {
+    "owner_facing_reports_english_first": false,
+    "machine_status_exposed_as_owner_result": false,
+    "chinese_acceptance_missing": false,
+    "owner_readability_gate_unbound_to_tests": false,
+    "project_runtime_changed": false,
+    "project_files_moved": false,
+    "archive_written": false,
+    "external_automation_triggered": false,
+    "forbidden_project_scope_touched": false
+  },
+  "model_delta": "NOT_CHANGED: 本轮只重做 S4/S5 owner-facing 中文验收交付件和测试约束。",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "无产品版本、运行行为、模型、公式、参数、数据或外部集成变化。",
+  "test_commands": [
+    "python -B -m py_compile tools/wave1_gate.py tools/wave2_gate.py",
+    "python -B tools/wave1_gate.py",
+    "python -B tools/wave2_gate.py",
+    "node_repl owner-facing scan for required Chinese tokens and forbidden machine terms",
+    "python -B tools/wave1_gate.py --check",
+    "python -B tools/wave2_gate.py --check",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pct03_wave2_gate_binds_privacy_readability_links_tests_and_rollback tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4_s5_owner_reports_are_chinese_first -q",
+    "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m py_compile tools/wave1_gate.py tools/wave2_gate.py",
+      "result": "PASS",
+      "evidence": "py_compile exit_code=0"
+    },
+    {
+      "command": "python -B tools/wave1_gate.py",
+      "result": "PASS",
+      "evidence": "result=PASS checks=74 next_allowed_task=S5PAT01"
+    },
+    {
+      "command": "python -B tools/wave2_gate.py",
+      "result": "PASS",
+      "evidence": "result=PASS checks=85 next_allowed_task=S6PAT01"
+    },
+    {
+      "command": "node_repl owner-facing scan for required Chinese tokens and forbidden machine terms",
+      "result": "PASS",
+      "evidence": "10 owner-facing reports; forbidden=0; required tokens present in every report."
+    },
+    {
+      "command": "python -B tools/wave1_gate.py --check",
+      "result": "PASS",
+      "evidence": "result=PASS checks=74 next_allowed_task=S5PAT01"
+    },
+    {
+      "command": "python -B tools/wave2_gate.py --check",
+      "result": "PASS",
+      "evidence": "result=PASS checks=85 next_allowed_task=S6PAT01"
+    },
+    {
+      "command": "python -B -m unittest focused S4/S5 Chinese acceptance tests -q",
+      "result": "PASS",
+      "evidence": "Ran 3 tests in 0.008s; OK."
+    },
+    {
+      "command": "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json",
+      "result": "PASS",
+      "evidence": "json.tool exit_code=0 after manifest creation."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "evidence": "errors=0 warnings=0 projects=10."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "evidence": "duration_seconds=2.435; validation errors=0 warnings=0; check_render drift_count=0 reference_issue_count=0 across 8 changed projects; zero_diff.clean=true changed_count=0."
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "result": "PASS",
+      "evidence": "no forbidden project diff output"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "evidence": "exit_code=0; Git printed LF/CRLF working-copy warnings only."
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "whkmSalary/docs/whkm_structure_report.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO2-20260625.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S4/S5 strict Chinese-first owner-readable acceptance redo",
+  "ci_run_reference": "LOCAL_FOCUSED_VALIDATE_AND_POST_COMMIT_CHANGED_ONLY_PASS_PENDING_PR_AND_MAIN_CI",
+  "unresolved_risks": [
+    "本轮仍需 PR CI 与 main push CI 通过后才能视为远端验收完成。",
+    "本轮不执行产品 runtime 全量测试；它只修复 S4/S5 中文验收交付件、生成器和测试门禁。",
+    "旧 manifest 保留历史意义；当前严格中文验收以本 REDO2 manifest 和新测试为准。"
+  ],
+  "rollback": {
+    "action": "revert_this_redo2_commit",
+    "requires_file_restore": false,
+    "requires_archive_restore": false,
+    "notes": "本轮只修改 owner-facing 文档、gate 输出、生成器、测试和本 manifest；不移动项目文件、不写归档、不触发外部自动化。"
+  },
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; changed_files_actual includes this manifest for diff coverage."
+}
