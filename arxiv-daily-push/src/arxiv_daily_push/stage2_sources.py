@@ -260,6 +260,51 @@ S2PFT02_REQUIRED_PROFILE_FIELDS = (
 )
 S2PFT02_FORBIDDEN_TEMPLATE_STATES = ("mainland_province_template", "mainland_city_template")
 S2PFT02_REPORT_FILENAME = "stage2_s2pft02_hk_mo_independent_profile_report.json"
+S2PFT03_KEY_CITY_COVERAGE_MODEL_ID = "adp-s2pft03-key-city-coverage-v1"
+S2PFT03_ACCEPTANCE_ID = "ACC-S2PFT03-CITIES"
+S2PFT03_TASK_ID = "S2PFT03"
+S2PFT03_LEGACY_TASK_ID = "S2P5T03"
+S2PFT03_REQUIRED_CITY_IDS = (
+    "beijing",
+    "shanghai",
+    "shenzhen",
+    "guangzhou",
+    "tianjin",
+    "chongqing",
+    "hangzhou",
+    "nanjing",
+    "suzhou",
+    "hefei",
+    "wuhan",
+    "xian",
+    "chengdu",
+    "changsha",
+    "wuxi",
+    "dongguan",
+    "foshan",
+    "zhuhai",
+    "shenyang",
+    "ningbo",
+    "qingdao",
+    "xiamen",
+    "dalian",
+    "zhengzhou",
+)
+S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES = (
+    "party_committee",
+    "government_portal",
+    "development_reform",
+    "science_technology",
+    "industry_information",
+    "finance",
+    "commerce",
+    "market_regulation",
+    "data",
+    "financial_regulation",
+)
+S2PFT03_ALLOWED_REGION_GROUPS = ("national_municipality", "yangtze_delta", "pearl_delta", "central", "western", "northeast", "coastal")
+S2PFT03_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
+S2PFT03_REPORT_FILENAME = "stage2_s2pft03_key_city_coverage_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -3635,6 +3680,248 @@ def validate_s2pft02_hk_mo_independent_profile_report(report: Mapping[str, Any])
     return errors
 
 
+def build_s2pft03_key_city_coverage_report(
+    *,
+    generated_at: str,
+    hk_mo_profile_report: Mapping[str, Any],
+    city_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build first key-city metadata coverage evidence without production inclusion."""
+
+    upstream_errors = validate_s2pft02_hk_mo_independent_profile_report(hk_mo_profile_report)
+    upstream_gate = (
+        "pass"
+        if not upstream_errors
+        and hk_mo_profile_report.get("status") == "pass"
+        and hk_mo_profile_report.get("s2pf_hk_mo_profile_ready") is True
+        else "blocked"
+    )
+    city_rows, row_errors = _s2pft03_city_rows(city_records)
+    coverage_gate = _s2pft03_city_coverage_gate(city_rows)
+    alias_gate = _s2pft03_city_alias_gate(city_rows)
+    department_gate = _s2pft03_city_department_gate(city_rows)
+    region_gate = _s2pft03_region_weight_gate(city_rows)
+    health_gate = _s2pft03_city_health_gate(city_rows)
+    authority_gate = _s2pft03_city_authority_gate(city_rows)
+    metadata_gate = _s2pft03_city_metadata_gate(city_rows)
+    blocking_reasons = [
+        *upstream_errors,
+        *row_errors,
+        *coverage_gate["blocking_reasons"],
+        *alias_gate["blocking_reasons"],
+        *department_gate["blocking_reasons"],
+        *region_gate["blocking_reasons"],
+        *health_gate["blocking_reasons"],
+        *authority_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if upstream_gate != "pass":
+        blocking_reasons.append("S2PFT03 requires passing S2PFT02 Hong Kong/Macau profile evidence")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == coverage_gate["status"]
+        == alias_gate["status"]
+        == department_gate["status"]
+        == region_gate["status"]
+        == health_gate["status"]
+        == authority_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PFT03_KEY_CITY_COVERAGE_MODEL_ID,
+        "acceptance_id": S2PFT03_ACCEPTANCE_ID,
+        "task_id": S2PFT03_TASK_ID,
+        "legacy_task_id": S2PFT03_LEGACY_TASK_ID,
+        "phase": "S2PF",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_hk_mo_profile_gate": upstream_gate,
+        "city_coverage_gate": coverage_gate["status"],
+        "city_alias_gate": alias_gate["status"],
+        "city_department_template_gate": department_gate["status"],
+        "region_weight_gate": region_gate["status"],
+        "health_tier_gate": health_gate["status"],
+        "authority_gate": authority_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_city_ids": list(S2PFT03_REQUIRED_CITY_IDS),
+        "required_city_count": len(S2PFT03_REQUIRED_CITY_IDS),
+        "city_ids_observed": coverage_gate["city_ids_observed"],
+        "city_record_count": len(city_rows),
+        "required_city_department_roles": list(S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES),
+        "allowed_region_groups": list(S2PFT03_ALLOWED_REGION_GROUPS),
+        "region_groups_observed": region_gate["region_groups_observed"],
+        "allowed_health_tiers": list(S2PFT03_ALLOWED_HEALTH_TIERS),
+        "health_tiers_observed": health_gate["health_tiers_observed"],
+        "city_records": city_rows,
+        "city_coverage_summary": coverage_gate,
+        "city_alias_summary": alias_gate,
+        "city_department_template_summary": department_gate,
+        "region_weight_summary": region_gate,
+        "health_tier_summary": health_gate,
+        "authority_summary": authority_gate,
+        "metadata_summary": metadata_gate,
+        "s2pf_key_city_coverage_ready": status == "pass",
+        "d3_full_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "city_coverage_modeled": status == "pass",
+        "special_zone_discovery_enabled": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pft03_key_city_coverage(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    hk_mo_profile_report: Mapping[str, Any],
+    city_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PFT03 key-city coverage evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pft03-key-city-coverage"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pft03_key_city_coverage_report(
+        generated_at=generated_at,
+        hk_mo_profile_report=hk_mo_profile_report,
+        city_records=city_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "key_city_coverage_report_path": str(run_dir / "adp-s2pft03-key-city-coverage-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pft03-key-city-coverage-report.json", report)
+        _write_json(state / S2PFT03_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pft03_key_city_coverage_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PFT03_KEY_CITY_COVERAGE_MODEL_ID:
+        errors.append("S2PFT03 city model_id must be adp-s2pft03-key-city-coverage-v1")
+    if report.get("task_id") != S2PFT03_TASK_ID:
+        errors.append("S2PFT03 city task_id must be S2PFT03")
+    if report.get("legacy_task_id") != S2PFT03_LEGACY_TASK_ID:
+        errors.append("S2PFT03 city legacy_task_id must be S2P5T03")
+    if report.get("acceptance_id") != S2PFT03_ACCEPTANCE_ID:
+        errors.append("S2PFT03 city acceptance_id must be ACC-S2PFT03-CITIES")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PFT03 city status must be pass or blocked")
+    for key in (
+        "d3_full_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+        "v7_2_mail_or_schema_prerun",
+        "special_zone_discovery_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PFT03 key-city coverage")
+    city_records = report.get("city_records")
+    if not isinstance(city_records, list):
+        errors.append("S2PFT03 city_records must be a list")
+        city_records = []
+    observed_ids = set(report.get("city_ids_observed") or [])
+    missing_ids = [city_id for city_id in S2PFT03_REQUIRED_CITY_IDS if city_id not in observed_ids]
+    if missing_ids:
+        errors.append("S2PFT03 missing city ids: " + ", ".join(missing_ids))
+    for index, record in enumerate(city_records):
+        if not isinstance(record, Mapping):
+            errors.append(f"city_records[{index}] must be an object")
+            continue
+        if record.get("city_id") not in S2PFT03_REQUIRED_CITY_IDS:
+            errors.append(f"city_records[{index}].city_id is not supported")
+        if not record.get("city_name"):
+            errors.append(f"city_records[{index}].city_name is required")
+        if record.get("region_group") not in S2PFT03_ALLOWED_REGION_GROUPS:
+            errors.append(f"city_records[{index}].region_group is not supported")
+        if record.get("health_tier") not in S2PFT03_ALLOWED_HEALTH_TIERS:
+            errors.append(f"city_records[{index}].health_tier is not supported")
+        if not record.get("health_explanation"):
+            errors.append(f"city_records[{index}].health_explanation is required")
+        if not record.get("aliases"):
+            errors.append(f"city_records[{index}].aliases is required")
+        missing_roles = [
+            role for role in S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES if role not in set(record.get("department_roles") or [])
+        ]
+        if missing_roles:
+            errors.append(f"city_records[{index}] missing city roles: " + ", ".join(missing_roles))
+        if record.get("authority_gate") != "pass":
+            errors.append(f"city_records[{index}].authority_gate must be pass")
+        if record.get("metadata_only") is not True:
+            errors.append(f"city_records[{index}].metadata_only must be true")
+        for field in ("pdf_downloaded", "full_text_extracted", "production_affected", "real_smtp_sent"):
+            if record.get(field) is not False:
+                errors.append(f"city_records[{index}].{field} must be false")
+        if not record.get("official_domain") or not record.get("source_url") or not record.get("evidence_refs"):
+            errors.append(f"city_records[{index}] requires official_domain, source_url, and evidence_refs")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PFT03 city report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_hk_mo_profile_gate",
+            "city_coverage_gate",
+            "city_alias_gate",
+            "city_department_template_gate",
+            "region_weight_gate",
+            "health_tier_gate",
+            "authority_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PFT03 city report requires {key}=pass")
+        if report.get("s2pf_key_city_coverage_ready") is not True:
+            errors.append("passing S2PFT03 city report requires s2pf_key_city_coverage_ready=true")
+        if report.get("city_coverage_modeled") is not True:
+            errors.append("passing S2PFT03 city report requires city_coverage_modeled=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -6202,6 +6489,205 @@ def _s2pft02_metadata_gate(profiles: Sequence[Mapping[str, Any]]) -> dict[str, A
         "status": "pass" if not reasons else "blocked",
         "metadata_only_record_count": len(profiles) - len(violations),
         "record_count": len(profiles),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_city_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    city_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"city_records[{index}] must be an object")
+            continue
+        city_id = str(record.get("city_id") or "").strip()
+        try:
+            region_weight = float(record.get("region_weight", 0))
+        except (TypeError, ValueError):
+            region_weight = 0.0
+        row = {
+            "city_id": city_id,
+            "city_name": str(record.get("city_name") or "").strip(),
+            "province_id": str(record.get("province_id") or "").strip(),
+            "region_group": str(record.get("region_group") or "").strip(),
+            "aliases": list(record.get("aliases") or []),
+            "department_roles": list(record.get("department_roles") or []),
+            "region_weight": region_weight,
+            "health_tier": str(record.get("health_tier") or "").strip(),
+            "health_explanation": str(record.get("health_explanation") or "").strip(),
+            "official_domain": str(record.get("official_domain") or "").strip(),
+            "source_url": str(record.get("source_url") or "").strip(),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not city_id:
+            errors.append(f"city_records[{index}].city_id is required")
+        if city_id in city_ids:
+            errors.append(f"duplicate S2PFT03 city_id: {city_id}")
+        city_ids.add(city_id)
+        rows.append(row)
+    if not rows:
+        errors.append("S2PFT03 requires at least one city record")
+    return rows, errors
+
+
+def _s2pft03_city_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("city_id") or "") for row in rows if isinstance(row, Mapping)}
+    missing = [city_id for city_id in S2PFT03_REQUIRED_CITY_IDS if city_id not in observed]
+    unsupported = sorted(observed - set(S2PFT03_REQUIRED_CITY_IDS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PFT03 key-city coverage missing city ids: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PFT03 key-city coverage has unsupported city ids: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_city_ids": list(S2PFT03_REQUIRED_CITY_IDS),
+        "city_ids_observed": sorted(city_id for city_id in observed if city_id),
+        "missing_city_ids": missing,
+        "unsupported_city_ids": unsupported,
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_city_alias_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [row for row in rows if not isinstance(row, Mapping) or not row.get("city_name") or not row.get("aliases")]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT03 key-city records require city_name and aliases")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "alias_checked_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_city_department_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing_by_city: dict[str, list[str]] = {}
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        roles = set(row.get("department_roles") or [])
+        missing = [role for role in S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES if role not in roles]
+        if missing:
+            missing_by_city[str(row.get("city_id") or "")] = missing
+    reasons: list[str] = []
+    if missing_by_city:
+        reasons.append("S2PFT03 key-city records missing required department roles")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_city_department_roles": list(S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES),
+        "complete_department_record_count": len(rows) - len(missing_by_city),
+        "record_count": len(rows),
+        "missing_roles_by_city": missing_by_city,
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_region_weight_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted(
+        {
+            str(row.get("region_group") or "")
+            for row in rows
+            if isinstance(row, Mapping) and str(row.get("region_group") or "")
+        }
+    )
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("region_group") not in S2PFT03_ALLOWED_REGION_GROUPS
+        or not (0 < float(row.get("region_weight") or 0) <= 1)
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT03 key-city records require allowed region_group and region_weight in (0, 1]")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_region_groups": list(S2PFT03_ALLOWED_REGION_GROUPS),
+        "region_groups_observed": observed,
+        "region_weight_total": round(sum(float(row.get("region_weight") or 0) for row in rows if isinstance(row, Mapping)), 6),
+        "weighted_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_city_health_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted(
+        {
+            str(row.get("health_tier") or "")
+            for row in rows
+            if isinstance(row, Mapping) and str(row.get("health_tier") or "")
+        }
+    )
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("health_tier") not in S2PFT03_ALLOWED_HEALTH_TIERS
+        or not row.get("health_explanation")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT03 key-city records require allowed health_tier and health_explanation")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_health_tiers": list(S2PFT03_ALLOWED_HEALTH_TIERS),
+        "health_tiers_observed": observed,
+        "healthy_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_city_authority_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("authority_gate") != "pass"
+        or not row.get("official_domain")
+        or not row.get("source_url")
+        or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT03 key-city authority gate requires official_domain, source_url, authority_gate=pass, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "authority_checked_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft03_city_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PFT03 key-city records must stay metadata-only with no PDF/full-text, production, or SMTP side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(rows) - len(violations),
+        "record_count": len(rows),
         "blocking_reasons": reasons,
     }
 

@@ -3515,3 +3515,52 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PFT02-HK-MO-INDEPENDENT-PROFILE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT02_HK_MO_INDEPENDENT_PROFILE.md"
+  -
+    model_id: "MOD-ADP-067"
+    name: "S2PFT03 key-city coverage"
+    kind: "deterministic key-city metadata coverage model"
+    purpose: "Validate the first 24 China key-city records with aliases, region groups, local department roles, health tiers, authority evidence, and metadata-only no-production boundaries after S2PFT02."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pft03-key-city-coverage-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-069"
+    parameter_ids:
+      - "PARAM-ADP-479"
+      - "PARAM-ADP-480"
+      - "PARAM-ADP-481"
+      - "PARAM-ADP-482"
+      - "PARAM-ADP-483"
+      - "PARAM-ADP-484"
+      - "PARAM-ADP-485"
+      - "PARAM-ADP-486"
+      - "PARAM-ADP-487"
+    inputs:
+      - "passing S2PFT02 Hong Kong and Macau profile report"
+      - "first key-city metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "key-city coverage report"
+      - "city coverage gate"
+      - "city alias gate"
+      - "city department template gate"
+      - "region weight gate"
+      - "health tier gate"
+      - "authority gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PFT03-KEY-CITY-COVERAGE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT03_KEY_CITY_COVERAGE.md"
