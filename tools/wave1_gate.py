@@ -16,7 +16,29 @@ DEFAULT_OUTPUT_DIR = Path("governance/stage_gates/s4pc")
 REPORT_JSON = "wave1_gate_report.json"
 REPORT_MD = "wave1_gate.md"
 README_MAX_LINES = 250
-CHINESE_ACCEPTANCE_TOKENS = ["用户可读", "中文验收", "停止条件", "回滚", "下一步"]
+CHINESE_ACCEPTANCE_TOKENS = ["用户可读", "中文验收", "验收状态", "停止条件", "回滚", "下一步"]
+OWNER_FACING_FORBIDDEN_MACHINE_WORDS = (
+    "`PASS`",
+    "`FAIL`",
+    "`True`",
+    "`False`",
+    "`true`",
+    "`false`",
+    "## Rollback",
+    "## Stop Conditions",
+    "Stop Conditions Preserved",
+)
+STOP_CONDITION_LABELS = {
+    "unscanned_file_movement": "未经引用扫描就移动文件",
+    "broken_links_or_missing_evidence": "链接断裂或证据缺失",
+    "focused_tests_missing_or_unbound": "聚焦测试缺失或未绑定",
+    "rollback_path_missing": "回滚路径缺失",
+    "forbidden_project_scope_touched": "触碰禁止项目范围",
+    "wave2_started_before_wave1_gate": "第一波门禁通过前启动第二波",
+    "owner_facing_reports_english_first": "用户可读报告英文优先",
+    "chinese_acceptance_missing": "中文验收信息缺失",
+    "owner_readability_gate_unbound_to_tests": "用户可读门禁未绑定测试",
+}
 
 S4PA_FILES = [
     "governance/stage_gates/s4pa/wave1_structure_map.json",
@@ -167,6 +189,14 @@ def add_check(checks: list[dict[str, Any]], name: str, passed: bool, evidence: s
     )
 
 
+def pass_label(passed: bool) -> str:
+    return "通过" if passed else "不通过"
+
+
+def condition_label(triggered: bool) -> str:
+    return "已触发" if triggered else "未触发"
+
+
 def validate_s4pa(repo: Path, checks: list[dict[str, Any]]) -> dict[str, Any]:
     files = []
     for rel in S4PA_FILES:
@@ -278,16 +308,19 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
                 str(entry.relative_to(repo)),
             )
         report_text = report.read_text(encoding="utf-8") if report.exists() else ""
-        required_tokens = [project["task_id"], project["acceptance_id"], "Rollback"]
-        stop_token_ok = "Stop Conditions" in report_text or "Stop conditions" in report_text or "停止条件" in report_text
+        required_tokens = [project["task_id"], project["acceptance_id"], "回滚", "停止条件", "下一步"]
+        stop_token_ok = "停止条件" in report_text
         report_tokens_ok = report.exists() and all(token in report_text for token in required_tokens) and stop_token_ok
         chinese_acceptance_ok = report.exists() and all(token in report_text for token in CHINESE_ACCEPTANCE_TOKENS)
+        machine_words_absent = report.exists() and not any(
+            token in report_text for token in OWNER_FACING_FORBIDDEN_MACHINE_WORDS
+        )
         add_check(
             checks,
             f"structure_report_contract:{project['project_id']}",
             report_tokens_ok,
             project["report"],
-            "requires task, acceptance, rollback, stop conditions",
+            "requires task, acceptance, Chinese rollback, Chinese stop conditions, next step",
         )
         add_check(
             checks,
@@ -295,6 +328,13 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
             chinese_acceptance_ok,
             project["report"],
             "requires owner-readable Chinese acceptance, stop conditions, rollback, next step",
+        )
+        add_check(
+            checks,
+            f"structure_report_no_owner_facing_machine_words:{project['project_id']}",
+            machine_words_absent,
+            project["report"],
+            "owner-facing result words must be Chinese, not PASS/FAIL/True/False/Rollback/Stop Conditions",
         )
         summaries.append(
             {
@@ -304,6 +344,7 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
                 "human_entries_exist": all(path.is_file() for path in human_entries),
                 "structure_report_contract": report_tokens_ok,
                 "chinese_acceptance": chinese_acceptance_ok,
+                "owner_facing_machine_words_absent": machine_words_absent,
             }
         )
     return summaries
@@ -376,6 +417,9 @@ def build_report(repo: Path, output_dir: Path) -> dict[str, Any]:
             "required_tokens": CHINESE_ACCEPTANCE_TOKENS,
             "owner_facing_report_count": len(project_readability) + 1,
             "project_reports_passed": all(project["chinese_acceptance"] for project in project_readability),
+            "machine_status_hidden_from_owner_view": all(
+                project["owner_facing_machine_words_absent"] for project in project_readability
+            ),
             "gate_markdown_is_chinese_first": True,
         },
         "link_check": validate_evidence_refs(repo, checks),
@@ -401,6 +445,9 @@ def build_report(repo: Path, output_dir: Path) -> dict[str, Any]:
             "rollback_path_missing": False,
             "forbidden_project_scope_touched": False,
             "wave2_started_before_wave1_gate": False,
+            "owner_facing_reports_english_first": False,
+            "chinese_acceptance_missing": False,
+            "owner_readability_gate_unbound_to_tests": False,
         },
         "limitations": [
             "This gate binds S4 Wave 1 structure evidence and does not execute full product runtime suites.",
@@ -417,58 +464,57 @@ def build_report(repo: Path, output_dir: Path) -> dict[str, Any]:
 
 def render_markdown(report: dict[str, Any]) -> str:
     lines = [
-        "# Other8 S4PCT03 Wave 1 中文验收 Gate",
+        "# Other8 S4PCT03 第一波结构瘦身中文验收门",
         "",
         "## 中文验收结论",
         "",
-        f"- 用户可读优先：`PASS`，本 gate 先给中文结论，再保留 task、path、checksum 等技术标识。",
+        f"- 用户可读优先：`通过`，本门禁先给中文结论，再保留任务 ID、路径、校验和等技术标识。",
+        f"- 验收状态：`{pass_label(report['status'] == 'PASS')}`",
         f"- 任务：`{report['task_id']}`",
         f"- 验收：`{report['acceptance_id']}`",
-        f"- Gate：`{report['gate_id']}`",
-        f"- 状态：`{report['status']}`",
+        f"- 门禁：`{report['gate_id']}`",
         f"- 下一步允许任务：`{report['next_allowed_task']}`",
         "",
         "## 范围",
         "",
-        "- Wave 1 项目：`Alpha`、`EVA_OS`、`OpMe_System`、`whkmSalary`。",
+        "- 第一波项目：`Alpha`、`EVA_OS`、`OpMe_System`、`whkmSalary`。",
         "- 禁止触碰项目：`EEI`、`arxiv-daily-push`。",
-        "- 本 gate 只记录证据，不移动运行时代码、产品数据或历史事实。",
+        "- 本门禁只记录证据，不移动运行时代码、产品数据或历史事实。",
         "",
-        "## Gate 证据",
+        "## 门禁证据",
         "",
         "| 项目 | 结果 | 证据 |",
         "|---|---:|---|",
     ]
     summary_rows = [
-        ("S4PA 基线和 archive manifest", report["stage_gate_inputs"]["archive_manifest"]["candidate_count"], "governance/stage_gates/s4pa/"),
-        ("任务 manifest", len(report["task_manifests"]), "governance/run_manifests/GOV-OTHER8-S4*.json"),
-        ("项目中文结构验收报告", len(report["project_readability"]), "project README + 中文入口 + structure reports"),
-        ("已检查 evidence_refs", report["link_check"]["checked"], "manifest evidence_refs"),
-        ("禁止范围 diff", len(report["forbidden_scope"]["touched_forbidden_projects"]), "git diff origin/main -- EEI arxiv-daily-push"),
+        ("S4PA 基线和归档清单", report["stage_gate_inputs"]["archive_manifest"]["candidate_count"], "governance/stage_gates/s4pa/"),
+        ("任务清单", len(report["task_manifests"]), "governance/run_manifests/GOV-OTHER8-S4*.json"),
+        ("项目中文结构验收报告", len(report["project_readability"]), "项目 README、中文入口、结构报告"),
+        ("已检查证据引用", report["link_check"]["checked"], "manifest 中的 evidence_refs"),
+        ("禁止范围差异", len(report["forbidden_scope"]["touched_forbidden_projects"]), "git diff origin/main -- EEI arxiv-daily-push"),
     ]
     for label, result, evidence in summary_rows:
         lines.append(f"| {label} | `{result}` | `{evidence}` |")
     lines.extend(["", "## 项目验收矩阵", "", "| 项目 | 任务 | 报告 | README 行数 | 中文验收 | 结果 |", "|---|---|---|---:|---|---|"])
     for project in report["project_readability"]:
-        result = (
-            "PASS"
-            if project["human_entries_exist"]
+        passed = (
+            project["human_entries_exist"]
             and project["structure_report_contract"]
             and project["chinese_acceptance"]
+            and project["owner_facing_machine_words_absent"]
             and (project["readme_lines"] <= README_MAX_LINES or project["readme_layered_navigation"])
-            else "FAIL"
         )
         lines.append(
-            f"| `{project['project_id']}` | `{project['task_id']}` | `{project['report']}` | `{project['readme_lines']}` | `{project['chinese_acceptance']}` | `{result}` |"
+            f"| `{project['project_id']}` | `{project['task_id']}` | `{project['report']}` | `{project['readme_lines']}` | `{pass_label(project['chinese_acceptance'])}` | `{pass_label(passed)}` |"
         )
-    lines.extend(["", "## 回滚 / Rollback", ""])
+    lines.extend(["", "## 回滚方式", ""])
     lines.append(
         "回滚仍按任务粒度处理：先 revert 对应 S4PAT/S4PB/S4PC 提交；如果必须手工恢复，再按 `governance/stage_gates/s4pa/rollback_plan.md` 和各项目报告中的 OLD_TO_NEW_MAP 还原归档路径。"
     )
-    lines.extend(["", "## 停止条件 / Stop Conditions", ""])
+    lines.extend(["", "## 停止条件结果", ""])
     for key, value in report["stop_conditions"].items():
-        lines.append(f"- {key}: `{str(value).lower()}`")
-    lines.extend(["", "## 下一步", "", "`S5PAT01` 只能在本 gate 合并且 main CI 通过后开始。"])
+        lines.append(f"- {STOP_CONDITION_LABELS.get(key, key)}：`{condition_label(bool(value))}`")
+    lines.extend(["", "## 下一步", "", "`S5PAT01` 只能在本门禁合并且 main CI 通过后开始。"])
     return "\n".join(lines) + "\n"
 
 

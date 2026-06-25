@@ -3,6 +3,7 @@
 - 任务：`S4PCT02`
 - 验收：`ACC-S4PCT02`
 - 结论：中文 owner 可读验收通过；本报告先给人类可读结论，再保留原技术记录。
+- 验收状态：`通过`
 
 ## 用户可读结论
 
@@ -16,10 +17,10 @@ whkmSalary 的 S4PCT02 建立 `src` / `tests` / `config` / 中文入口的最小
 
 ## 停止条件与结果
 
-- 为了目录美观重写工资计算：`false`
-- 启动命令改变但 README 未同步：`false`
-- 业务参数无 owner 证明迁入 config：`false`
-- 测试绕开根兼容 import：`false`
+- 为了目录美观重写工资计算：`未触发`
+- 启动命令改变但 README 未同步：`未触发`
+- 业务参数无 owner 证明迁入 config：`未触发`
+- 测试绕开根兼容 import：`未触发`
 
 ## 回滚
 
@@ -33,45 +34,45 @@ whkmSalary 的 S4PCT02 建立 `src` / `tests` / `config` / 中文入口的最小
 
 ## 原技术记录
 
-# whkmSalary Structure Report
+# whkmSalary 结构报告
 
-Task: S4PCT02  
-Acceptance: ACC-S4PCT02  
-Baseline: 9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90
+任务：S4PCT02
+验收：ACC-S4PCT02
+基线：9bfe50b2195e8cfc04eb493e028c0f72e1ae0a90
 
-## Scope
+## 范围
 
-S4PCT02 establishes a minimal `src` / `tests` / `config` / Chinese owner-entry structure for whkmSalary. It does not change salary formulas, province weights, Streamlit field defaults, Railway startup commands, or payroll readiness status.
+S4PCT02 为 whkmSalary 建立最小 `src` / `tests` / `config` / 中文 owner 入口结构。工资公式、省份权重、Streamlit 字段默认值、Railway 启动命令和 payroll readiness 状态均未改变。
 
-## Active Structure
+## 主动结构
 
-| Area | Path | Responsibility |
+| 区域 | 路径 | 职责 |
 |---|---|---|
-| Runtime code | `whkmSalary/src/whkm_salary/salary_logic.py` | Quarterly performance salary calculation implementation. |
-| Runtime UI | `whkmSalary/src/whkm_salary/streamlit_app.py` | Streamlit form and display implementation. |
-| Compatibility imports | `whkmSalary/salary_logic.py` | Preserves existing `from salary_logic import ...` callers and tests. |
-| Compatibility startup | `whkmSalary/streamlit_app.py` | Preserves `Procfile` command and forwards to package UI. |
-| Tests | `whkmSalary/tests/` | Boundary, weight, rounding, and structure compatibility coverage. |
-| Structure config | `whkmSalary/config/structure_contract.yaml` | Records code/test/config/Chinese-entry ownership only. |
-| Machine truth | `whkmSalary/docs/governance/` | Lean v2 source of facts, limitations, and evidence links. |
-| Chinese owner entries | `whkmSalary/功能清单`, `whkmSalary/开发记录`, `whkmSalary/模型参数文件` | Human-readable current state, task, and model/parameter surfaces. |
+| 运行代码 | `whkmSalary/src/whkm_salary/salary_logic.py` | 季度绩效工资计算实现。 |
+| 运行 UI | `whkmSalary/src/whkm_salary/streamlit_app.py` | Streamlit 表单和展示实现。 |
+| 兼容 import | `whkmSalary/salary_logic.py` | 保留现有 `from salary_logic import ...` 调用方和测试。 |
+| 兼容启动 | `whkmSalary/streamlit_app.py` | 保留 `Procfile` 命令，并转发到 package UI。 |
+| 测试 | `whkmSalary/tests/` | 边界、权重、舍入和结构兼容性覆盖。 |
+| 结构配置 | `whkmSalary/config/structure_contract.yaml` | 只记录代码、测试、配置和中文入口归属。 |
+| 机器事实 | `whkmSalary/docs/governance/` | Lean v2 事实、限制和证据链接来源。 |
+| 中文 owner 入口 | `whkmSalary/功能清单`, `whkmSalary/开发记录`, `whkmSalary/模型参数文件` | 人类可读的当前状态、任务和模型/参数表面。 |
 
-## OLD_TO_NEW_MAP
+## 旧到新路径映射（OLD_TO_NEW_MAP）
 
-| Old path | New path | Compatibility |
+| 旧路径 | 新路径 | 兼容性 |
 |---|---|---|
-| `whkmSalary/salary_logic.py` | `whkmSalary/src/whkm_salary/salary_logic.py` | Root wrapper remains and re-exports the package module. |
-| `whkmSalary/streamlit_app.py` | `whkmSalary/src/whkm_salary/streamlit_app.py` | Root wrapper remains and runs the package module. |
+| `whkmSalary/salary_logic.py` | `whkmSalary/src/whkm_salary/salary_logic.py` | 根 wrapper 保留，并重新导出 package module。 |
+| `whkmSalary/streamlit_app.py` | `whkmSalary/src/whkm_salary/streamlit_app.py` | 根 wrapper 保留，并运行 package module。 |
 
-## Stop Conditions
+## 停止条件结果
 
-| Stop condition | Result | Evidence |
+| 停止条件 | 结果 | 证据 |
 |---|---:|---|
-| whkmSalary large calculation rewrite for appearance | no | Only file location/import boundary changed; formula bodies stay in moved module. |
-| Startup command changed without README sync | no | `Procfile` remains unchanged and README records the preserved command. |
-| Business parameters moved into config without owner proof | no | `config/` records structure only; payroll parameters remain governed as before. |
-| Tests bypass root compatibility imports | no | Existing tests still import `salary_logic`; added structure checks cover package paths. |
+| 为了目录美观大范围重写 whkmSalary 计算 | 未触发 | 只改变文件位置和 import 边界；公式主体保留在移动后的 module 中。 |
+| 启动命令改变但 README 未同步 | 未触发 | `Procfile` 未改变，README 记录保留的命令。 |
+| 业务参数无 owner 证明迁入 config | 未触发 | `config/` 只记录结构；payroll 参数仍按原治理管理。 |
+| 测试绕开根兼容 import | 未触发 | 既有测试仍 import `salary_logic`；新增结构检查覆盖 package 路径。 |
 
-## Rollback
+## 回滚方式
 
-Rollback is a single git revert of the S4PCT02 commit. If manual recovery is needed, move `src/whkm_salary/salary_logic.py` back to `salary_logic.py`, move `src/whkm_salary/streamlit_app.py` back to `streamlit_app.py`, remove `src/whkm_salary/`, `config/structure_contract.yaml`, this report, and revert governance evidence links.
+回滚优先使用一次 git revert 回退 S4PCT02 提交。若必须手工恢复，把 `src/whkm_salary/salary_logic.py` 还原为 `salary_logic.py`，把 `src/whkm_salary/streamlit_app.py` 还原为 `streamlit_app.py`，移除 `src/whkm_salary/`、`config/structure_contract.yaml`、本报告，并恢复治理证据链接。

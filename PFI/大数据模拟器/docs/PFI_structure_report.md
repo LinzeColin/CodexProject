@@ -3,6 +3,7 @@
 - 任务：`S5PCT01`
 - 验收：`ACC-S5PCT01`
 - 结论：中文 owner 可读验收通过；本报告先给人类可读结论，再保留原技术记录。
+- 验收状态：`通过`
 
 ## 用户可读结论
 
@@ -16,11 +17,11 @@ PFI/QBVS 的主动运行和算法代码仍在 `PFI/大数据模拟器/qbvs/`。`
 
 ## 停止条件与结果
 
-- PFI date-stamped script integration 改变算法：`false`
-- root contracts 被当作 active algorithm source：`false`
-- `runs/` 或 `reports/` 被默认 import 为 source truth：`false`
-- `qbvs/` active runtime path 被改变：`false`
-- archive written 或 files moved：`false`
+- PFI date-stamped script integration 改变算法：`未触发`
+- root contracts 被当作 active algorithm source：`未触发`
+- `runs/` 或 `reports/` 被默认 import 为 source truth：`未触发`
+- `qbvs/` active runtime path 被改变：`未触发`
+- archive written 或 files moved：`未触发`
 
 ## 回滚
 
@@ -34,62 +35,53 @@ S5PCT03 只能汇总本中文边界和 Wave2 checksum，不得重新计算或移
 
 ## 原技术记录
 
-# PFI S5PCT01 Structure Report
+# PFI S5PCT01 结构报告
 
 task_id: `S5PCT01`
 acceptance_id: `ACC-S5PCT01`
 project_id: `PFI_BIG_DATA_SIMULATOR`
 mode: `BOUNDARY_ONLY_NO_ALGORITHM_CHANGE`
 
-## Owner Summary
+## Owner 摘要
 
-S5PCT01 binds the current PFI/QBVS structure into explicit layers:
+S5PCT01 把当前 PFI/QBVS 结构绑定为明确层级：
 
 - Active QBVS package: `PFI/大数据模拟器/qbvs/`
 - Config layer: `PFI/大数据模拟器/config/`
 - Test layer: `PFI/大数据模拟器/tests/`
-- Root contracts and handoff: `QUANTLAB_INTEGRATION_CONTRACT.json`,
+- Root contracts and handoff：`QUANTLAB_INTEGRATION_CONTRACT.json`,
   `HANDSHAKE_PROTOCOL.json`, `HANDOFF.md`, `BACKUP_MANIFEST.md`
-- Date-stamped generator scripts: `PFI/大数据模拟器/tools/`
-- Output/evidence layers: `PFI/大数据模拟器/runs/` and
+- Date-stamped generator scripts：`PFI/大数据模拟器/tools/`
+- Output/evidence layers：`PFI/大数据模拟器/runs/` and
   `PFI/大数据模拟器/reports/`
 
-No files are moved in S5PCT01. The existing Wave 2 manifest records 42 PFI
-archive/merge candidates: 40 `ARCHIVE` and 2 `MERGE`. Those candidates remain
-checksum-bound by `governance/stage_gates/s5pa/wave2_archive_manifest.json`.
+S5PCT01 不移动文件。现有 Wave 2 manifest 记录 42 个 PFI archive/merge candidates：40 个 `ARCHIVE` 和 2 个 `MERGE`。这些候选继续由 `governance/stage_gates/s5pa/wave2_archive_manifest.json` checksum-bound。
 
-## Boundary Decisions
+## 边界决策
 
-- `qbvs/` remains the only default active runtime package.
-- `config/` may feed `qbvs/` commands, but does not contain runtime algorithms.
-- `tests/` verifies lifecycle and active runtime behavior.
-- Root contracts describe QuantLab read-only interoperability and recovery.
-- Date-stamped tools are report or handoff generators; S5PCT01 does not rewrite
-  their logic and does not make them default runtime entries.
-- `runs/` and `reports/` are output/evidence layers and are not source truth
-  for strategy, backtest, cache, warehouse, or adapter algorithms.
+- `qbvs/` 仍是唯一默认 active runtime package。
+- `config/` 可以供 `qbvs/` 命令使用，但不包含 runtime algorithms。
+- `tests/` 验证 lifecycle 和 active runtime 行为。
+- Root contracts 描述 QuantLab read-only 互操作和恢复。
+- Date-stamped tools 是报告或 handoff 生成器；S5PCT01 不重写其逻辑，也不把它们变成默认 runtime 入口。
+- `runs/` 和 `reports/` 是 output/evidence layers，不是 strategy、backtest、cache、warehouse 或 adapter algorithms 的 source truth。
 
-## Smoke Evidence
+## Smoke 证据
 
-- `python -B -m pytest "PFI/大数据模拟器/tests" -q`: `NOT_RUN`, local Python
-  environments do not include `pytest`.
-- `python -B -m unittest tests.test_s3pct02_lifecycle -q`: `PASS`, 1 test OK.
-- Active `qbvs/` direct smoke: `PASS`, generated 240 strategy specs, ran
-  backtest/buy-hold, and created/refreshed one OHLCV cache index.
+- `python -B -m pytest "PFI/大数据模拟器/tests" -q`：`未运行`，本地 Python 环境不包含 `pytest`。
+- `python -B -m unittest tests.test_s3pct02_lifecycle -q`：`通过`，1 个测试通过。
+- Active `qbvs/` direct smoke：`通过`，生成 240 个 strategy specs，运行 backtest/buy-hold，并创建或刷新一个 OHLCV cache index。
 
-Result: `PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED`.
+结果：`可用 smoke 通过，pytest 环境阻塞已记录`。
 
-## Stop Conditions
+## 停止条件结果
 
-- PFI date-stamped script integration changes algorithm: `false`
-- Root contracts used as active algorithm source: `false`
-- `runs/` or `reports/` imported as source truth by default: `false`
-- `qbvs/` active runtime path changed: `false`
-- Archive written or files moved: `false`
+- PFI date-stamped script integration 改变算法：`未触发`
+- Root contracts 被当作 active algorithm source：`未触发`
+- `runs/` 或 `reports/` 被默认 import 为 source truth：`未触发`
+- `qbvs/` active runtime path 被改变：`未触发`
+- Archive written 或 files moved：`未触发`
 
-## Rollback
+## 回滚方式
 
-Rollback is documentation/governance-only: remove the S5PCT01 report, contract,
-smoke log, run manifest, README/AGENTS boundary text, and S5PCT01 governance
-test. Because no runtime files, generated outputs, or PFI artifacts are moved,
-git restore is sufficient.
+回滚仅限文档和治理层：移除 S5PCT01 report、contract、smoke log、run manifest、README/AGENTS 边界说明和 S5PCT01 governance test。由于没有移动 runtime files、generated outputs 或 PFI artifacts，git restore 足够。
