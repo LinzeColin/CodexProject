@@ -4383,3 +4383,56 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT03_ACTION_ASSET_ROI.md"
+  -
+    model_id: "MOD-ADP-084"
+    name: "S2PJT04 weekly report and attention reallocation"
+    kind: "deterministic local weekly synthesis evidence model"
+    purpose: "Validate local-only weekly synthesis after S2PJT03 action/asset/ROI readiness: weekly mainline, counterevidence, review, action, asset, next-week focus, traceability to weekly content and actual state, duplicate-content prevention, deterministic report hashing, and no-production side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pjt04-weekly-report-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-086"
+    parameter_ids:
+      - "PARAM-ADP-651"
+      - "PARAM-ADP-652"
+      - "PARAM-ADP-653"
+      - "PARAM-ADP-654"
+      - "PARAM-ADP-655"
+      - "PARAM-ADP-656"
+      - "PARAM-ADP-657"
+      - "PARAM-ADP-658"
+    inputs:
+      - "S2PJT03 action asset ROI report"
+      - "weekly items"
+      - "weekly sections"
+      - "next week focus"
+      - "production gate state"
+      - "week_start"
+      - "week_end"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PJT04 weekly report"
+      - "action ROI gate"
+      - "week window gate"
+      - "section trace gate"
+      - "state trace gate"
+      - "no duplication gate"
+      - "next focus gate"
+      - "deterministic report gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT04_WEEKLY_REPORT.md"

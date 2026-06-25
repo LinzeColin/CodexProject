@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PJ
-- Current gate: S2PJT03_ACTION_ASSET_ROI_LEDGER_LOCAL_ONLY
-- Confirmed iteration count: 103
+- Current gate: S2PJT04_WEEKLY_REPORT_LOCAL_ONLY
+- Confirmed iteration count: 104
 - Reconstructed event count: 0
-- Current task: `S2PJT03` has completed local action, capability asset, and expected/actual ROI ledger evidence. It validates 15m/2h/7d/30d action windows, expected ROI assumptions/confidence, actual ROI calculation only with verifiable cost/benefit evidence, capability asset traceability, and deterministic ledger hashing without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, real DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime/frontstage. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PJT04` has completed local weekly report and attention reallocation evidence. It validates weekly mainline, counterevidence, review/action/asset summaries, next-week focus, content/state traceability, duplicate-content prevention, and deterministic report hashing without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, real DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime/frontstage. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -33,10 +33,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2PE | V7.2-inherited D4 US official technology and finance source domain | completed_local_validation | `S2PET01-S2PET04` now cover metadata-only US-TA, US-LG, US-FM, US-TP, and D4 qualification evidence without live fetch, D4 production inclusion, SMTP, scheduler, Release, public schema, or queue mutation | `docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json` |
 | S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | in_progress | `S2PGT01` private EvidencePacket V2 compatibility is complete; continue later S2PG graph/routing work without silently migrating public schema or production queues | `docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json` |
 | S2PI | Chinese user center, one-edit/four-check/three-base, and real-state visibility | completed_local_validation | `S2PIT01` and `S2PIT02` local user-center/runtime-dashboard evidence are complete without public schema, DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md`; `governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json` |
-| S2PJ | Review, action, capability asset, ROI, weekly and monthly report state | in_progress | `S2PJT01`-`S2PJT03` local lifecycle/review/action-asset-ROI evidence is complete; continue S2PJT04 weekly report locally without public schema, real DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PJT03_ACTION_ASSET_ROI.md`; `governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json` |
+| S2PJ | Review, action, capability asset, ROI, weekly and monthly report state | in_progress | `S2PJT01`-`S2PJT04` local lifecycle/review/action-asset-ROI/weekly evidence is complete; continue S2PJT05 monthly report locally without public schema, real DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PJT04_WEEKLY_REPORT.md`; `governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260626-ADP-S2PJ-S2PJT04-WEEKLY-REPORT`
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED from S2PJT04 weekly report code, focused tests, S2PJT03 report contract, weekly section traceability, actual-state traceability, duplicate-content prevention, model/formula/parameter registry diff, and local S2PJT04 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: f4619bbb9c4439d6401491584727470d792f04b2
+- Goal: Implement local-only weekly synthesis and attention reallocation evidence.
+- Files changed: `stage2_sources.py`, `cli.py`, `test_stage2_sources.py`, phase record, run manifest, model/formula/parameter registries, delivery plan/tasks, traceability, owner status docs, and this ledger.
+- Model changes: Added `MOD-ADP-084` for S2PJT04 weekly report evidence.
+- Formula changes: Added `FORM-ADP-086` for S2PJT03 dependency, weekly section traceability, state traceability, no duplicate content, next-week focus, deterministic report hashing, and no-side-effect gates.
+- Parameter changes: Added `PARAM-ADP-651` through `PARAM-ADP-658`.
+- Decisions: S2PJT04 records weekly report evidence only. It does not send weekly email, install scheduler, or claim owner-experience or integrated production acceptance.
+- Boundaries: No SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, Email V1 frontstage/runtime change, CURRENT pointer change, V7.1/V7.2 contract-file edit, owner-experience final acceptance, Stage2 production acceptance, or integrated production acceptance.
+- Validation: `py_compile` PASS; focused Stage2 source tests 130 OK; full arxiv-daily-push unittest 359 OK; semantic extractor 86 formulas / 641 parameters checked; V7.2 validator PASS; ADP project governance 0/0; changed-only governance semantic 0/0; lean check-render drift 0 reference issues 0; JSONL/YAML/CSV/manifest parse OK; `git diff --check` PASS.
 
 ### `ITER-20260626-ADP-S2PJ-S2PJT03-ACTION-ASSET-ROI`
 

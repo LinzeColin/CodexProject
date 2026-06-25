@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PJT03` 本地 action/asset/ROI ledger evidence；它在 S2PJT02 review schedule 基础上验证 15m/2h/7d/30d 行动、能力资产、预计 ROI 假设/置信度、实际 ROI 可核验成本/收益约束和 deterministic ledger hash，不计算虚假精确收益或启用生产副作用。
+新增 `S2PJT04` 本地 weekly report evidence；它在 S2PJT03 action/asset/ROI ledger 基础上验证周度主线、反证、复习、行动、资产、下周重点、内容/实际状态追溯和 deterministic report hash，不发送周报或启用生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, continue S2PJT04 weekly report locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, continue S2PJT05 monthly report locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
+- next_task_id: `S2PJT05_MONTHLY_REPORT_LOCAL_ONLY`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PJT03-ROI`
-- unblock_condition: S2PJT03 action/asset/ROI ledger evidence complete; continue S2PJT04 weekly report locally without production side effects.
+- acceptance_ids: `ACC-S2PJT04-WEEKLY`
+- unblock_condition: S2PJT03 action/asset/ROI ledger evidence complete; continue S2PJT05 monthly report locally without production side effects.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (633/633 active parameters, 85/85 active formulas)
+- implementation_congruence: `VERIFIED` (641/641 active parameters, 86/86 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence, continue S2PJT04 weekly report work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PJT04 weekly report work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence, continue S2PJT05 monthly report work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PJT05 monthly report work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `83`
-- total_formulas: `85`
-- active_formulas: `85`
-- total_parameters: `650`
-- active_parameters: `633`
+- model_count: `84`
+- total_formulas: `86`
+- active_formulas: `86`
+- total_parameters: `658`
+- active_parameters: `641`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PJT03_ACTION_ASSET_ROI_LEDGER_LOCAL_ONLY`
+- release_gate: `S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PJ / S2PJT03_ACTION_ASSET_ROI_LEDGER_LOCAL_ONLY`
+- phase/gate: `S2PJ / S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
-- reason: S2PJT03 local action/asset/ROI ledger evidence is complete; continue with local-only weekly report evidence under V7.2 no-production boundaries.
+- task_id: `S2PJT05_MONTHLY_REPORT_LOCAL_ONLY`
+- reason: S2PJT04 local weekly report evidence is complete; continue with local-only monthly report evidence under V7.2 no-production boundaries.

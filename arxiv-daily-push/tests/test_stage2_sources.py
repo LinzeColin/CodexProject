@@ -58,6 +58,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS,
     S2PJT02_REVIEW_SCHEDULE_MODEL_ID,
     S2PJT03_ACTION_ROI_MODEL_ID,
+    S2PJT04_WEEKLY_REPORT_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -93,6 +94,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pjt01_lifecycle_state_report,
     build_s2pjt02_review_schedule_report,
     build_s2pjt03_action_asset_roi_report,
+    build_s2pjt04_weekly_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -126,6 +128,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
+    run_s2pjt04_weekly_report,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -157,6 +160,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
+    validate_s2pjt04_weekly_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -553,6 +557,70 @@ def s2pjt03_capability_assets() -> list[dict]:
             "asset_type": "method_checklist",
             "evidence_refs": ["local://notes/method-checklist-v1.md"],
             "reuse_scenarios": ["future_paper_review", "weekly_synthesis"],
+        }
+    ]
+
+
+def s2pjt03_action_roi_report() -> dict:
+    return build_s2pjt03_action_asset_roi_report(
+        generated_at=GENERATED_AT,
+        service_date="2026-06-25",
+        review_schedule_report=s2pjt02_review_schedule_report(),
+        action_records=s2pjt03_action_records(),
+        capability_assets=s2pjt03_capability_assets(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pjt04_weekly_items() -> list[dict]:
+    return [
+        {
+            "content_id": "content:today",
+            "title": "Mechanism note",
+            "observed_date": "2026-06-23",
+            "actual_state": "ACTION",
+            "section_tags": ["weekly_mainline", "review_summary", "action_summary"],
+            "evidence_refs": ["local://actions/act-15m"],
+        },
+        {
+            "content_id": "content:week",
+            "title": "Counterexample note",
+            "observed_date": "2026-06-24",
+            "actual_state": "REVIEW_DUE",
+            "section_tags": ["counterevidence", "review_summary"],
+            "evidence_refs": ["local://review/content-week"],
+        },
+        {
+            "content_id": "content:done",
+            "title": "Reusable method checklist",
+            "observed_date": "2026-06-25",
+            "actual_state": "ASSET",
+            "section_tags": ["asset_summary", "action_summary", "next_week_focus"],
+            "evidence_refs": ["local://asset/method-checklist-v1"],
+        },
+    ]
+
+
+def s2pjt04_weekly_sections(**overrides: object) -> dict:
+    sections = {
+        "weekly_mainline": {"summary": "Mechanism notes define the week's primary learning line.", "content_ids": ["content:today"]},
+        "counterevidence": {"summary": "A pending review item preserves counterevidence for next synthesis.", "content_ids": ["content:week"]},
+        "review_summary": {"summary": "Two items remain tied to review state and due queue context.", "content_ids": ["content:today", "content:week"]},
+        "action_summary": {"summary": "Short and long actions are linked to current ledger states.", "content_ids": ["content:today", "content:done"]},
+        "asset_summary": {"summary": "The reusable method checklist is the durable asset for the week.", "content_ids": ["content:done"]},
+        "next_week_focus": {"summary": "Next week should reuse the checklist and resolve the counterexample.", "content_ids": ["content:week", "content:done"]},
+    }
+    sections.update(overrides)
+    return sections
+
+
+def s2pjt04_next_week_focus() -> list[dict]:
+    return [
+        {
+            "focus_id": "focus:counterexample-resolution",
+            "source_content_ids": ["content:week", "content:done"],
+            "priority": 4,
+            "rationale": "Resolve the open counterexample using the reusable checklist.",
         }
     ]
 
@@ -5076,6 +5144,111 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["action_roi_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pjt03_action_asset_roi_ledger_report.json").is_file())
 
+    def test_s2pjt04_weekly_report_passes_traceable_sections_and_next_focus(self) -> None:
+        report = build_s2pjt04_weekly_report(
+            generated_at=GENERATED_AT,
+            week_start="2026-06-22",
+            week_end="2026-06-28",
+            action_roi_report=s2pjt03_action_roi_report(),
+            weekly_items=s2pjt04_weekly_items(),
+            weekly_sections=s2pjt04_weekly_sections(),
+            next_week_focus=s2pjt04_next_week_focus(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PJT04_WEEKLY_REPORT_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PJT04-WEEKLY")
+        self.assertEqual(report["task_id"], "S2PJT04")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["action_roi_gate"], "pass")
+        self.assertEqual(report["week_window_gate"], "pass")
+        self.assertEqual(report["section_trace_gate"], "pass")
+        self.assertEqual(report["state_trace_gate"], "pass")
+        self.assertEqual(report["no_duplication_gate"], "pass")
+        self.assertEqual(report["next_focus_gate"], "pass")
+        self.assertEqual(report["deterministic_report_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["state_counts"], {"ACTION": 1, "REVIEW_DUE": 1, "ASSET": 1})
+        self.assertEqual(report["section_counts"]["weekly_mainline"], 1)
+        self.assertEqual(report["section_counts"]["review_summary"], 2)
+        self.assertTrue(report["weekly_report_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pjt04_weekly_report_ready"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_s2pjt04_weekly_report(report))
+
+    def test_s2pjt04_weekly_report_blocks_duplicate_untraced_and_bad_focus(self) -> None:
+        items = s2pjt04_weekly_items()
+        items[0] = {**items[0], "observed_date": "2026-06-01", "actual_state": "", "evidence_refs": []}
+        items.append({**items[1], "title": "duplicate content"})
+        items.append(
+            {
+                "content_id": "content:untraced",
+                "title": "Untraced",
+                "observed_date": "2026-06-25",
+                "actual_state": "ACTION",
+                "section_tags": ["weekly_mainline"],
+                "evidence_refs": ["local://untraced"],
+            }
+        )
+        report = build_s2pjt04_weekly_report(
+            generated_at=GENERATED_AT,
+            week_start="2026-06-22",
+            week_end="2026-07-05",
+            action_roi_report={**s2pjt03_action_roi_report(), "status": "blocked"},
+            weekly_items=items,
+            weekly_sections=s2pjt04_weekly_sections(asset_summary={"summary": "", "content_ids": []}),
+            next_week_focus=[{"focus_id": "", "source_content_ids": ["content:missing"], "priority": 8, "rationale": ""}],
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["action_roi_gate"], "blocked")
+        self.assertEqual(report["week_window_gate"], "blocked")
+        self.assertEqual(report["section_trace_gate"], "blocked")
+        self.assertEqual(report["state_trace_gate"], "blocked")
+        self.assertEqual(report["no_duplication_gate"], "blocked")
+        self.assertEqual(report["next_focus_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("S2PJT03 action/asset/ROI report must pass", joined)
+        self.assertIn("weekly report window must not exceed", joined)
+        self.assertIn("observed_date must be inside", joined)
+        self.assertIn("actual_state is required", joined)
+        self.assertIn("evidence_refs must be a non-empty list", joined)
+        self.assertIn("duplicate weekly content_id", joined)
+        self.assertIn("not traceable to S2PJT03", joined)
+        self.assertIn("weekly_sections.asset_summary.content_ids must be non-empty", joined)
+        self.assertIn("source_content_ids not in weekly_items", joined)
+        self.assertIn("priority must be between 1 and 5", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pjt04_weekly_report(report))
+
+    def test_s2pjt04_weekly_report_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pjt04_weekly_report(
+                state_dir=tmp,
+                date="2026-06-28",
+                generated_at=GENERATED_AT,
+                week_start="2026-06-22",
+                week_end="2026-06-28",
+                action_roi_report=s2pjt03_action_roi_report(),
+                weekly_items=s2pjt04_weekly_items(),
+                weekly_sections=s2pjt04_weekly_sections(),
+                next_week_focus=s2pjt04_next_week_focus(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pjt04_weekly_report(report))
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertTrue(Path(report["weekly_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pjt04_weekly_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -6618,6 +6791,64 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["action_counts"]["15m"], 1)
         self.assertEqual(payload["actual_roi_status_counts"]["calculated"], 1)
         self.assertTrue(payload["s2pjt03_action_roi_ready"])
+        self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_weekly_report_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            action_roi_path = tmp_path / "action-roi.json"
+            weekly_items_path = tmp_path / "weekly-items.json"
+            weekly_sections_path = tmp_path / "weekly-sections.json"
+            next_focus_path = tmp_path / "next-focus.json"
+            gate_path = tmp_path / "production-gate.json"
+            action_roi_path.write_text(json.dumps(s2pjt03_action_roi_report(), ensure_ascii=False), encoding="utf-8")
+            weekly_items_path.write_text(
+                json.dumps({"weekly_items": s2pjt04_weekly_items()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            weekly_sections_path.write_text(json.dumps(s2pjt04_weekly_sections(), ensure_ascii=False), encoding="utf-8")
+            next_focus_path.write_text(
+                json.dumps({"next_week_focus": s2pjt04_next_week_focus()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-weekly-report",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-28",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--week-start",
+                    "2026-06-22",
+                    "--week-end",
+                    "2026-06-28",
+                    "--action-roi-report",
+                    str(action_roi_path),
+                    "--weekly-items",
+                    str(weekly_items_path),
+                    "--weekly-sections",
+                    str(weekly_sections_path),
+                    "--next-week-focus",
+                    str(next_focus_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PJT04_WEEKLY_REPORT_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PJT04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["state_counts"]["ASSET"], 1)
+        self.assertEqual(payload["section_counts"]["next_week_focus"], 2)
+        self.assertTrue(payload["s2pjt04_weekly_report_ready"])
         self.assertFalse(payload["scheduler_enabled"])
         self.assertFalse(payload["integrated_production_accepted"])
 
