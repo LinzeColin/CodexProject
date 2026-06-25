@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import plistlib
 import shlex
 import shutil
 from collections.abc import Callable, Mapping
@@ -594,22 +595,16 @@ def _local_daily_command(project_root: Path, state_dir: Path) -> str:
 
 
 def _launchd_plist(command: str) -> str:
-    return "\n".join(
-        [
-            '<?xml version="1.0" encoding="UTF-8"?>',
-            '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
-            '<plist version="1.0"><dict>',
-            f"<key>Label</key><string>{LOCAL_LAUNCHD_LABEL}</string>",
-            "<key>Disabled</key><true/>",
-            "<key>StartCalendarInterval</key><dict><key>Hour</key><integer>5</integer><key>Minute</key><integer>0</integer></dict>",
-            "<key>RunAtLoad</key><false/>",
-            "<key>StandardOutPath</key><string>/tmp/adp-local-daily.out</string>",
-            "<key>StandardErrorPath</key><string>/tmp/adp-local-daily.err</string>",
-            f"<key>ProgramArguments</key><array><string>/bin/zsh</string><string>-lc</string><string>{command}</string></array>",
-            "</dict></plist>",
-            "",
-        ]
-    )
+    payload = {
+        "Label": LOCAL_LAUNCHD_LABEL,
+        "Disabled": True,
+        "StartCalendarInterval": {"Hour": 5, "Minute": 0},
+        "RunAtLoad": False,
+        "StandardOutPath": "/tmp/adp-local-daily.out",
+        "StandardErrorPath": "/tmp/adp-local-daily.err",
+        "ProgramArguments": ["/bin/zsh", "-lc", command],
+    }
+    return plistlib.dumps(payload, fmt=plistlib.FMT_XML, sort_keys=False).decode("utf-8")
 
 
 def _install_script(plist_path: Path) -> str:

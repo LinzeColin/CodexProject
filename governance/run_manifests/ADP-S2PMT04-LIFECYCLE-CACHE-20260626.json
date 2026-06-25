@@ -1,0 +1,85 @@
+{
+  "acceptance_id": "ACC-S2PMT04-LIFECYCLE",
+  "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED",
+  "base_commit": "91ab1f7fa59ef6b981472694579f6fa56376bf0d",
+  "branch": "codex/adp-s2pmt04-lifecycle-cache-20260626",
+  "cache_delete_bytes_dry_run": 2176,
+  "cache_delete_candidate_count": 2,
+  "change_type": "adp_s2pmt04_lifecycle_cache_cleanup",
+  "commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py",
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+    "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv"
+  ],
+  "formula_id": "FORM-ADP-099",
+  "formula_ids_changed": [
+    "FORM-ADP-099"
+  ],
+  "generated_at": "2026-06-26T14:20:00+10:00",
+  "gates": {
+    "automatic_wake_dry_run": true,
+    "cache_cleanup_safety": true,
+    "launchd_plist_parseable": true,
+    "lifecycle_transition_chain": true,
+    "no_production_side_effect": true,
+    "shutdown_receipt": true,
+    "startup_reconciliation": true
+  },
+  "integrated_production_accepted": false,
+  "launchd_plist_sha256": "3dea47c478d7a09d03fdf554a0d4773b6d59f877c804412fe3caee597eff792c",
+  "model_id": "MOD-ADP-097",
+  "model_ids_changed": [
+    "MOD-ADP-097"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-789",
+    "PARAM-ADP-790",
+    "PARAM-ADP-791",
+    "PARAM-ADP-792",
+    "PARAM-ADP-793",
+    "PARAM-ADP-794",
+    "PARAM-ADP-795",
+    "PARAM-ADP-796",
+    "PARAM-ADP-797",
+    "PARAM-ADP-798",
+    "PARAM-ADP-799",
+    "PARAM-ADP-800",
+    "PARAM-ADP-801"
+  ],
+  "phase": "S2PM",
+  "production_boundary": {
+    "db_migration_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "scheduler_installed": false,
+    "production_restore_executed": false,
+    "production_side_effects_enabled": false
+  },
+  "report_hash": "620b934d7fafddd46c8ac4c0aaad6f7cf2cafcabe43379438ab40dfff0ced806",
+  "result": "local_validation_passed",
+  "scope": "Local-only S2PMT04 automatic lifecycle, shutdown receipt, cache cleanup, and disabled launchd plist evidence under V7.2 no-production boundaries.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PMT04",
+  "tests": {
+    "py_compile": "PASS",
+    "focused_s2pmt04_local_runner": "12 OK",
+    "full_arxiv_daily_push_unittest": "425 OK",
+    "v7_2_validator": "PASS",
+    "project_governance": "0 errors / 0 warnings",
+    "changed_only_governance_semantic": "0 errors / 0 warnings",
+    "lean_check_render": "drift_count 0 reference_issue_count 0",
+    "parse": "OK",
+    "git_diff_check": "PASS"
+  },
+  "v7_contract": "ADP-PRODUCT-CONTRACT-V7.2"
+}

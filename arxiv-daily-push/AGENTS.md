@@ -16,8 +16,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   and alias references; they no longer override V7.2.
 - Every implementation closeout must state the current V7.2 contract, the
   active contextual task, and any legacy alias. Current global Stage2 entry is
-  `S2PMT03` lease fencing and concurrency control local evidence; next hardening task
-  is `S2PMT04` automatic lifecycle and cache cleanup under V7.2
+  `S2PMT04` automatic lifecycle and cache cleanup local evidence; next hardening task
+  is `S2PMT05` pressure, fault, time, and E2E validation under V7.2
   no-production boundaries. `S2PCT02` (`S2P2T02` legacy alias)
   Science/top-journal metadata-only no-send shadow evidence is completed
   history, not the current task. `S2PCT01`
@@ -38,7 +38,11 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   cleanup. `S2PMT03` local lease/concurrency evidence covers row_version
   compare-and-swap, lease expiry, fencing tokens, state-history consistency,
   idempotent transactional outbox identity, SMTP accept crash-window handling,
-  and M4 cycle watermarks. None closes inherited P0/P1 blockers until
+  and M4 cycle watermarks. `S2PMT04` local lifecycle/cache evidence covers
+  disabled automatic wake dry-run, drain/checkpoint/cleanup lifecycle,
+  startup reconciliation, durable shutdown receipts, whitelist/symlink guarded
+  dry-run cache cleanup, parseable launchd plist generation, and no production
+  side effects. None closes inherited P0/P1 blockers until
   independent review.
   `ADP-S1P5T05` completed the Stage 1 local production and migration prep after
   `ARXIV_PRODUCTION_ACCEPTED`.

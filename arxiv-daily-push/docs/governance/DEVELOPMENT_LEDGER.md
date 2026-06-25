@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT03_LEASE_FENCING_LOCAL_ONLY
-- Confirmed iteration count: 110
+- Current gate: S2PMT04_LIFECYCLE_CACHE_LOCAL_ONLY
+- Confirmed iteration count: 111
 - Reconstructed event count: 0
-- Current task: `S2PMT03` has completed local lease fencing and transactional outbox evidence. It validates row_version compare-and-swap, lease expiry, fencing-token stale writer rejection, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window handling, M4 cycle watermark readiness/degradation, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT04` has completed local automatic lifecycle and cache-cleanup evidence. It validates disabled automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation for temp/inflight/outbox/stale locks, durable shutdown receipts, whitelist/symlink guarded dry-run cache cleanup, parseable launchd plist generation, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler installation, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -38,6 +38,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260626-ADP-S2PM-S2PMT04-LIFECYCLE-CACHE`
+
+- Timestamp: `2026-06-26T14:20:00+10:00`
+- Fact level: EXTRACTED from S2PMT04 lifecycle/cache code, local-runner launchd plist patch, focused tests, model/formula/parameter registry diff, phase record, and local S2PMT04 validation.
+- Base commit: `91ab1f7fa59ef6b981472694579f6fa56376bf0d`
+- Status: local validation passed.
+- Phase: S2PM
+- Task IDs: `S2PMT04`; acceptance `ACC-S2PMT04-LIFECYCLE`.
+- Goal: Complete local automatic lifecycle, startup reconciliation, shutdown receipt, safe cache cleanup, disabled launchd plist, and no-production side-effect evidence while preserving V7.2 boundaries.
+- Files changed: S2PMT04 lifecycle/cache helper, local runner launchd plist generation, focused tests, phase record, run manifest, model/formula/parameter registries, traceability/status files, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-097` local lifecycle and cache-cleanup model.
+- Formula changes: Added `FORM-ADP-099` with machine-verifiable AST fingerprints bound to S2PMT04 and local-runner launchd plist implementations.
+- Parameter changes: Added `PARAM-ADP-789` through `PARAM-ADP-801` for S2PMT04 identifiers, cache TTL/cap, shutdown grace, launchd label, lifecycle states, cache classes, shutdown steps, gates, and production-false flags.
+- Validation: py_compile PASS; focused S2PMT04/local-runner tests 12 OK; full arxiv-daily-push unittest 425 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS.
+- Decisions: `ACC-S2PMT04-LIFECYCLE` is accepted only as local lifecycle/cache evidence. Scheduler installation, launchd bootstrap, real SMTP, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: This does not enable automatic production operation or live cache deletion. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PMT04 lifecycle/cache code, local runner plist patch, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md`; `governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json`; `arxiv-daily-push/tests/test_stage2_lifecycle_cache.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT04; after merge continue `S2PMT05` pressure, fault, time, and E2E validation under no-production boundaries.
 
 ### `ITER-20260626-ADP-S2PM-S2PMT03-LEASE-FENCING`
 

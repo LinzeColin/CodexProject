@@ -5075,3 +5075,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md"
+  -
+    model_id: "MOD-ADP-097"
+    name: "S2PMT04 local lifecycle and cache-cleanup model"
+    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, durable shutdown receipt, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-099"
+    parameter_ids:
+      - "PARAM-ADP-789"
+      - "PARAM-ADP-790"
+      - "PARAM-ADP-791"
+      - "PARAM-ADP-792"
+      - "PARAM-ADP-793"
+      - "PARAM-ADP-794"
+      - "PARAM-ADP-795"
+      - "PARAM-ADP-796"
+      - "PARAM-ADP-797"
+      - "PARAM-ADP-798"
+      - "PARAM-ADP-799"
+      - "PARAM-ADP-800"
+      - "PARAM-ADP-801"
+    inputs:
+      - "local lifecycle cycle id"
+      - "startup reconciliation fixtures"
+      - "shutdown receipt inputs"
+      - "cache entry inventory"
+      - "launchd program arguments"
+    outputs:
+      - "lifecycle transition plan"
+      - "startup reconciliation receipt"
+      - "shutdown receipt"
+      - "cache cleanup dry-run plan"
+      - "parseable disabled launchd plist payload"
+      - "no production side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
+      - "arxiv-daily-push/tests/test_local_runner.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md"
