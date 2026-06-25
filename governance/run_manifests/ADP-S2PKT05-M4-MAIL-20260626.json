@@ -1,0 +1,44 @@
+{
+  "manifest_id": "ADP-S2PKT05-M4-MAIL-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PKT05",
+  "acceptance_id": "ACC-S2PKT05-M4",
+  "phase": "S2PK",
+  "model_id": "MOD-ADP-093",
+  "formula_id": "FORM-ADP-095",
+  "parameter_ids": [
+    "PARAM-ADP-747",
+    "PARAM-ADP-748",
+    "PARAM-ADP-749",
+    "PARAM-ADP-750",
+    "PARAM-ADP-751",
+    "PARAM-ADP-752",
+    "PARAM-ADP-753",
+    "PARAM-ADP-754",
+    "PARAM-ADP-755",
+    "PARAM-ADP-756",
+    "PARAM-ADP-757"
+  ],
+  "base_commit": "4d388788d28b0bff08677ffd8da4ca7f905f1851",
+  "created_at": "2026-06-26T10:20:00+10:00",
+  "scope": "Local-only M4 cross-board 3+1 mail orchestration and watermark evidence assembled from S2PKT01, S2PKT02, S2PKT03, S2PKT04, S2PIT04, S2PJT03, and S2PJT02 readiness.",
+  "non_scope": "No runtime mail template/frontstage change, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, live source fetch, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, production waterline/outbox readiness, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 166 OK",
+    "full arxiv-daily-push unittest: 395 OK",
+    "full semantic extractor: NOT COMPLETED after repeated full-table AST parsing with no output for more than 3 minutes; changed-only semantic governance passed and S2PKT05 hashes were computed through the same extractor helpers",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}

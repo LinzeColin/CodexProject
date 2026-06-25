@@ -2683,3 +2683,23 @@ None for this new project baseline.
 - Rollback: Revert S2PKT04 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT04_M3_MAIL.md`; `governance/run_manifests/ADP-S2PKT04-M3-MAIL-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run final validation, commit, push, and open PR for S2PKT04.
+
+### `ITER-20260626-ADP-S2PK-S2PKT05-M4-MAIL`
+
+- Timestamp: `2026-06-26T10:20:00+10:00`
+- Fact level: EXTRACTED from S2PKT01/S2PKT02/S2PKT03/S2PKT04/S2PIT04/S2PJT03/S2PJT02 dependency receipts, M4 orchestration fixture, model/formula/parameter registry diff, and local S2PKT05 validation.
+- Base commit: `4d388788d28b0bff08677ffd8da4ca7f905f1851`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PK
+- Task IDs: `S2PKT05`; acceptance `ACC-S2PKT05-M4`.
+- Goal: Complete local M4 cross-board 3+1 mail orchestration and watermark evidence while preserving V7.2 no-production boundaries.
+- Files changed: S2PKT05 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-093` M4 mail orchestration evidence model.
+- Formula changes: Added `FORM-ADP-095` with machine-verifiable AST fingerprints bound to the S2PKT05 implementation.
+- Parameter changes: Added `PARAM-ADP-747` through `PARAM-ADP-757` for S2PKT05 M4 identifiers, required terminal mails, sections, staggered windows, gates, side-effect flags, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 166 OK; full arxiv-daily-push unittest 395 OK; full semantic extractor NOT COMPLETED after repeated full-table AST parsing with no output for more than 3 minutes, while changed-only semantic governance passed and S2PKT05 hashes were computed through the same extractor helpers; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; `git diff --check` PASS.
+- Decisions: `ACC-S2PKT05-M4` is accepted only as local M4 orchestration evidence. Runtime mail template/frontstage changes, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, production waterline/outbox readiness, Stage 2 production acceptance, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: S2PL/S2PM integration, stress, safety, and final gate tasks still need explicit no-production or production-owner gates. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PKT05 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md`; `governance/run_manifests/ADP-S2PKT05-M4-MAIL-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Commit, push, open PR for S2PKT05, and wait for CI.

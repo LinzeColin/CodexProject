@@ -1008,6 +1008,53 @@ S2PKT04_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PKT04_REPORT_FILENAME = "stage2_s2pkt04_m3_mail_report.json"
+S2PKT05_M4_MAIL_MODEL_ID = "adp-s2pkt05-m4-mail-v1"
+S2PKT05_ACCEPTANCE_ID = "ACC-S2PKT05-M4"
+S2PKT05_TASK_ID = "S2PKT05"
+S2PKT05_MAIL_PRODUCT_ID = "M4"
+S2PKT05_PRIMARY_BOARD = "B1-B6"
+S2PKT05_REQUIRED_TERMINAL_MAILS = ("M1", "M2", "M3")
+S2PKT05_REQUIRED_SECTIONS = (
+    "cross_source_resonance",
+    "contradictions",
+    "era_mainline",
+    "personal_action_mix",
+    "review_reminders",
+)
+S2PKT05_DEFAULT_STAGGERED_WINDOWS = ("M1=07:30", "M2=11:30", "M3=17:00", "M4=21:30")
+S2PKT05_REQUIRED_GATES = (
+    "mail_contract_gate",
+    "m1_terminal_gate",
+    "m2_terminal_gate",
+    "m3_terminal_gate",
+    "m4_scope_gate",
+    "staggered_schedule_gate",
+    "watermark_gate",
+    "duplicate_suppression_gate",
+    "section_coverage_gate",
+    "cross_board_synthesis_gate",
+    "action_review_gate",
+    "hash_status_gate",
+    "no_side_effect_gate",
+)
+S2PKT05_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PKT05_REPORT_FILENAME = "stage2_s2pkt05_m4_mail_report.json"
 S2PJT01_LIFECYCLE_STATE_MODEL_ID = "adp-s2pjt01-lifecycle-state-v1"
 S2PJT01_ACCEPTANCE_ID = "ACC-S2PJT01-LIFECYCLE"
 S2PJT01_TASK_ID = "S2PJT01"
@@ -10011,6 +10058,457 @@ def validate_s2pkt04_m3_mail_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("blocked S2PKT04 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pkt04_m3_mail_ready") is not True:
         errors.append("passing S2PKT04 report requires s2pkt04_m3_mail_ready=true")
+    return errors
+
+
+def _s2pkt05_m4_payload(record: Mapping[str, Any]) -> dict[str, Any]:
+    sections = []
+    for section in record.get("sections") or []:
+        section_map = section if isinstance(section, Mapping) else {}
+        sections.append(
+            {
+                "action_ids": [str(item) for item in section_map.get("action_ids") or []],
+                "content_ids": [str(item) for item in section_map.get("content_ids") or []],
+                "evidence_labels": [str(item) for item in section_map.get("evidence_labels") or []],
+                "evidence_refs": [str(item) for item in section_map.get("evidence_refs") or []],
+                "review_content_ids": [str(item) for item in section_map.get("review_content_ids") or []],
+                "section_id": str(section_map.get("section_id") or ""),
+            }
+        )
+    sections = sorted(sections, key=lambda item: item["section_id"])
+    terminal_inputs = []
+    for item in record.get("terminal_inputs") or []:
+        item_map = item if isinstance(item, Mapping) else {}
+        terminal_inputs.append(
+            {
+                "mail_hash": str(item_map.get("mail_hash") or ""),
+                "mail_product_id": str(item_map.get("mail_product_id") or ""),
+                "ready": bool(item_map.get("ready")),
+                "status": str(item_map.get("status") or ""),
+                "task_id": str(item_map.get("task_id") or ""),
+            }
+        )
+    terminal_inputs = sorted(terminal_inputs, key=lambda item: item["mail_product_id"])
+    schedule_windows = []
+    for item in record.get("schedule_windows") or []:
+        item_map = item if isinstance(item, Mapping) else {}
+        schedule_windows.append(
+            {
+                "mail_product_id": str(item_map.get("mail_product_id") or ""),
+                "time": str(item_map.get("time") or ""),
+            }
+        )
+    schedule_windows = sorted(schedule_windows, key=lambda item: item["mail_product_id"])
+    watermark = record.get("watermark") if isinstance(record.get("watermark"), Mapping) else {}
+    return {
+        "action_ids": [str(item) for item in record.get("action_ids") or []],
+        "contract_id": str(record.get("contract_id") or ""),
+        "cross_cutting_boards": [str(item) for item in record.get("cross_cutting_boards") or []],
+        "cycle_id": str(record.get("cycle_id") or ""),
+        "duplicate_count": int(record.get("duplicate_count") or 0),
+        "legacy_five_mail_active": bool(record.get("legacy_five_mail_active")),
+        "mail_product_id": str(record.get("mail_product_id") or ""),
+        "primary_board": str(record.get("primary_board") or ""),
+        "review_content_ids": [str(item) for item in record.get("review_content_ids") or []],
+        "schedule_windows": schedule_windows,
+        "sections": sections,
+        "silent_drop_count": int(record.get("silent_drop_count") or 0),
+        "status": str(record.get("status") or ""),
+        "template_version": str(record.get("template_version") or ""),
+        "terminal_inputs": terminal_inputs,
+        "watermark": {
+            "cycle_id": str(watermark.get("cycle_id") or ""),
+            "late_arrival_policy": str(watermark.get("late_arrival_policy") or ""),
+            "terminal_mail_products": [str(item) for item in watermark.get("terminal_mail_products") or []],
+        },
+    }
+
+
+def _s2pkt05_m4_mail_hash(record: Mapping[str, Any]) -> str:
+    encoded = json.dumps(_s2pkt05_m4_payload(record), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pkt05_m4_mail_report(
+    *,
+    generated_at: str,
+    mail_contract_report: Mapping[str, Any],
+    m1_mail_report: Mapping[str, Any],
+    m2_mail_report: Mapping[str, Any],
+    m3_mail_report: Mapping[str, Any],
+    content_ledger_report: Mapping[str, Any],
+    action_roi_report: Mapping[str, Any],
+    review_schedule_report: Mapping[str, Any],
+    m4_orchestration_record: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PKT05 M4 3+1 orchestration and watermark evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    blocking_reasons: list[str] = []
+
+    mail_contract_errors = validate_s2pkt01_mail_contract_report(mail_contract_report)
+    mail_contract_gate = (
+        "pass"
+        if mail_contract_report.get("status") == "pass"
+        and mail_contract_report.get("s2pkt01_mail_contract_ready") is True
+        and not mail_contract_errors
+        else "blocked"
+    )
+    if mail_contract_gate != "pass":
+        blocking_reasons.append("S2PKT01 mail contract report must pass")
+        blocking_reasons.extend(mail_contract_errors)
+
+    terminal_specs = (
+        ("M1", m1_mail_report, validate_s2pkt02_m1_mail_report, "s2pkt02_m1_mail_ready", "m1_mail_hash", "S2PKT02"),
+        ("M2", m2_mail_report, validate_s2pkt03_m2_mail_report, "s2pkt03_m2_mail_ready", "m2_mail_hash", "S2PKT03"),
+        ("M3", m3_mail_report, validate_s2pkt04_m3_mail_report, "s2pkt04_m3_mail_ready", "m3_mail_hash", "S2PKT04"),
+    )
+    terminal_errors_by_mail: dict[str, list[str]] = {}
+    terminal_hash_by_mail: dict[str, str] = {}
+    terminal_gate_by_mail: dict[str, str] = {}
+    for mail_id, report, validator, ready_key, hash_key, task_id in terminal_specs:
+        errors = validator(report)
+        terminal_hash_by_mail[mail_id] = str(report.get(hash_key) or "")
+        if report.get("status") == "pass" and report.get(ready_key) is True and report.get("mail_product_id") == mail_id and not errors:
+            terminal_gate_by_mail[mail_id] = "pass"
+        else:
+            terminal_gate_by_mail[mail_id] = "blocked"
+            terminal_errors_by_mail[mail_id] = [f"{task_id} {mail_id} mail report must pass and be terminal"]
+            terminal_errors_by_mail[mail_id].extend(errors)
+            blocking_reasons.extend(terminal_errors_by_mail[mail_id])
+
+    ledger_errors = validate_s2pit04_content_ledger_report(content_ledger_report)
+    ledger_content_ids = {str(row.get("content_id") or "") for row in content_ledger_report.get("ledger_records") or []}
+    if content_ledger_report.get("status") != "pass" or content_ledger_report.get("s2pit04_content_ledger_ready") is not True or ledger_errors:
+        blocking_reasons.append("S2PIT04 content ledger report must pass")
+        blocking_reasons.extend(ledger_errors)
+
+    action_errors = validate_s2pjt03_action_asset_roi_report(action_roi_report)
+    action_records = [row for row in action_roi_report.get("action_records") or [] if isinstance(row, Mapping)]
+    action_horizon_by_id = {str(row.get("action_id") or ""): str(row.get("horizon") or "") for row in action_records}
+    if action_roi_report.get("status") != "pass" or action_roi_report.get("s2pjt03_action_roi_ready") is not True or action_errors:
+        blocking_reasons.append("S2PJT03 action/asset/ROI report must pass")
+        blocking_reasons.extend(action_errors)
+
+    review_errors = validate_s2pjt02_review_schedule_report(review_schedule_report)
+    review_content_ids = {str(row.get("content_id") or "") for row in review_schedule_report.get("due_queue_records") or []}
+    if review_schedule_report.get("status") != "pass" or review_schedule_report.get("s2pjt02_review_schedule_ready") is not True or review_errors:
+        blocking_reasons.append("S2PJT02 review schedule report must pass")
+        blocking_reasons.extend(review_errors)
+
+    record = dict(m4_orchestration_record)
+    scope_errors: list[str] = []
+    schedule_errors: list[str] = []
+    watermark_errors: list[str] = []
+    duplicate_errors: list[str] = []
+    section_errors: list[str] = []
+    synthesis_errors: list[str] = []
+    action_review_errors: list[str] = []
+    hash_status_errors: list[str] = []
+    side_effect_errors: list[str] = []
+
+    contracts = [row for row in mail_contract_report.get("mail_contracts") or [] if isinstance(row, Mapping)]
+    m4_contract = next((row for row in contracts if row.get("mail_product_id") == S2PKT05_MAIL_PRODUCT_ID), {})
+    if not m4_contract:
+        scope_errors.append("S2PKT05 requires M4 contract from S2PKT01")
+    if record.get("mail_product_id") != S2PKT05_MAIL_PRODUCT_ID:
+        scope_errors.append("S2PKT05 m4_orchestration_record.mail_product_id must be M4")
+    if record.get("contract_id") != S2PKT01_EMAIL_CONTRACT_ID:
+        scope_errors.append("S2PKT05 M4 contract_id must be EMAIL_LEARNING_V1")
+    if record.get("template_version") != S2PKT01_TEMPLATE_VERSION:
+        scope_errors.append(f"S2PKT05 M4 template_version must be {S2PKT01_TEMPLATE_VERSION}")
+    if record.get("primary_board") != S2PKT05_PRIMARY_BOARD:
+        scope_errors.append("S2PKT05 M4 primary_board must be B1-B6")
+    cross_boards = [str(item) for item in record.get("cross_cutting_boards") or []]
+    if tuple(cross_boards) != S2PKT01_CROSS_CUTTING_BOARDS:
+        scope_errors.append("S2PKT05 M4 cross_cutting_boards must be B4/B5/B6")
+    for field in ("contract_id", "template_version", "primary_board", "cross_cutting_boards"):
+        if m4_contract and record.get(field) != m4_contract.get(field):
+            scope_errors.append(f"S2PKT05 M4 {field} must match S2PKT01 M4 contract")
+
+    status = str(record.get("status") or "")
+    if status not in S2PKT01_ALLOWED_MAIL_STATUSES:
+        hash_status_errors.append("S2PKT05 M4 status must be ready_no_send, previewed, or blocked_no_send")
+
+    terminal_inputs = [row for row in record.get("terminal_inputs") or [] if isinstance(row, Mapping)]
+    terminal_input_by_mail = {str(row.get("mail_product_id") or ""): row for row in terminal_inputs}
+    for mail_id in S2PKT05_REQUIRED_TERMINAL_MAILS:
+        terminal = terminal_input_by_mail.get(mail_id)
+        if not terminal:
+            watermark_errors.append(f"S2PKT05 M4 missing terminal input {mail_id}")
+            continue
+        if terminal.get("status") != "pass" or terminal.get("ready") is not True:
+            watermark_errors.append(f"S2PKT05 M4 terminal input {mail_id} must be pass and ready")
+        if terminal.get("mail_hash") != terminal_hash_by_mail.get(mail_id):
+            watermark_errors.append(f"S2PKT05 M4 terminal input {mail_id} hash must match upstream mail report")
+
+    schedule_by_mail = {
+        str(row.get("mail_product_id") or ""): str(row.get("time") or "")
+        for row in record.get("schedule_windows") or []
+        if isinstance(row, Mapping)
+    }
+    expected_schedule = dict(item.split("=", 1) for item in S2PKT05_DEFAULT_STAGGERED_WINDOWS)
+    for mail_id, expected_time in expected_schedule.items():
+        if schedule_by_mail.get(mail_id) != expected_time:
+            schedule_errors.append(f"S2PKT05 {mail_id} scheduled window must be {expected_time}")
+    if len(set(schedule_by_mail.values())) != len(schedule_by_mail):
+        schedule_errors.append("S2PKT05 scheduled windows must be staggered and unique")
+
+    cycle_id = str(record.get("cycle_id") or "")
+    watermark = record.get("watermark") if isinstance(record.get("watermark"), Mapping) else {}
+    watermark_mail_products = [str(item) for item in watermark.get("terminal_mail_products") or []]
+    if not cycle_id:
+        watermark_errors.append("S2PKT05 M4 cycle_id is required")
+    if watermark.get("cycle_id") != cycle_id:
+        watermark_errors.append("S2PKT05 M4 watermark.cycle_id must match cycle_id")
+    if tuple(watermark_mail_products) != S2PKT05_REQUIRED_TERMINAL_MAILS:
+        watermark_errors.append("S2PKT05 M4 watermark must wait for M1/M2/M3 terminal products")
+    if str(watermark.get("late_arrival_policy") or "") != "revision_required_no_send":
+        watermark_errors.append("S2PKT05 M4 late_arrival_policy must be revision_required_no_send")
+
+    if int(record.get("duplicate_count") or 0) != 0:
+        duplicate_errors.append("S2PKT05 M4 duplicate_count must be 0")
+    if int(record.get("silent_drop_count") or 0) != 0:
+        duplicate_errors.append("S2PKT05 M4 silent_drop_count must be 0")
+    if record.get("legacy_five_mail_active", False) is not False:
+        duplicate_errors.append("S2PKT05 M4 legacy_five_mail_active must be false")
+
+    sections = [section for section in record.get("sections") or [] if isinstance(section, Mapping)]
+    section_ids = [str(section.get("section_id") or "") for section in sections]
+    for section_id in S2PKT05_REQUIRED_SECTIONS:
+        if section_id not in section_ids:
+            section_errors.append(f"S2PKT05 M4 missing section {section_id}")
+    for section in sections:
+        section_id = str(section.get("section_id") or "section")
+        content_ids = [str(item) for item in section.get("content_ids") or []]
+        evidence_refs = [str(item) for item in section.get("evidence_refs") or []]
+        evidence_labels = [str(item) for item in section.get("evidence_labels") or []]
+        section_action_ids = [str(item) for item in section.get("action_ids") or []]
+        section_review_ids = [str(item) for item in section.get("review_content_ids") or []]
+        if not content_ids:
+            section_errors.append(f"{section_id} content_ids must be non-empty")
+        for content_id in content_ids:
+            if content_id not in ledger_content_ids:
+                section_errors.append(f"{section_id} content_id {content_id} not traceable to S2PIT04")
+        if not evidence_refs:
+            synthesis_errors.append(f"{section_id} evidence_refs must be non-empty")
+        for label in evidence_labels:
+            if label not in S2PKT01_EVIDENCE_LABELS:
+                synthesis_errors.append(f"{section_id} evidence label {label} is not allowed")
+        if section_id in {"cross_source_resonance", "contradictions", "era_mainline"} and not ({"FACT", "INFERENCE", "OBSERVATION"} & set(evidence_labels)):
+            synthesis_errors.append(f"{section_id} requires FACT, INFERENCE, or OBSERVATION label")
+        if section_id == "personal_action_mix" and not section_action_ids:
+            action_review_errors.append("personal_action_mix requires action_ids")
+        if section_id == "review_reminders" and not section_review_ids:
+            action_review_errors.append("review_reminders requires review_content_ids")
+        for action_id in section_action_ids:
+            if action_id not in action_horizon_by_id:
+                action_review_errors.append(f"{section_id} action_id {action_id} not traceable to S2PJT03")
+        for review_id in section_review_ids:
+            if review_id not in review_content_ids:
+                action_review_errors.append(f"{section_id} review_content_id {review_id} not traceable to S2PJT02 due queue")
+
+    action_ids = [str(item) for item in record.get("action_ids") or []]
+    for action_id in action_ids:
+        if action_id not in action_horizon_by_id:
+            action_review_errors.append(f"S2PKT05 M4 action_id {action_id} not traceable to S2PJT03")
+    record_review_ids = [str(item) for item in record.get("review_content_ids") or []]
+    for review_id in record_review_ids:
+        if review_id not in review_content_ids:
+            action_review_errors.append(f"S2PKT05 M4 review_content_id {review_id} not traceable to S2PJT02 due queue")
+
+    m4_hash = _s2pkt05_m4_mail_hash(record)
+    if record.get("m4_mail_hash") not in (None, "", m4_hash):
+        hash_status_errors.append("S2PKT05 M4 m4_mail_hash must match M4 orchestration fields")
+    record["m4_mail_hash"] = m4_hash
+
+    for key in (
+        "real_smtp_sent",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "db_migration_executed",
+        "schema_migration_allowed",
+        "public_schema_changed",
+        "queue_schema_changed",
+        "queue_mutation_allowed",
+        "ranking_algorithm_changed",
+        "source_adapter_changed",
+        "email_frontstage_changed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+    ):
+        if record.get(key, False) is not False:
+            side_effect_errors.append(f"S2PKT05 M4 {key} must be false")
+
+    production_errors: list[str] = []
+    for key in (*S2PKT05_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "mail_contract_gate": mail_contract_gate,
+        "m1_terminal_gate": terminal_gate_by_mail.get("M1", "blocked"),
+        "m2_terminal_gate": terminal_gate_by_mail.get("M2", "blocked"),
+        "m3_terminal_gate": terminal_gate_by_mail.get("M3", "blocked"),
+        "m4_scope_gate": "pass" if not scope_errors else "blocked",
+        "staggered_schedule_gate": "pass" if not schedule_errors else "blocked",
+        "watermark_gate": "pass" if not watermark_errors else "blocked",
+        "duplicate_suppression_gate": "pass" if not duplicate_errors else "blocked",
+        "section_coverage_gate": "pass" if not section_errors else "blocked",
+        "cross_board_synthesis_gate": "pass" if not synthesis_errors else "blocked",
+        "action_review_gate": "pass" if not action_review_errors else "blocked",
+        "hash_status_gate": "pass" if not hash_status_errors else "blocked",
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons.extend(scope_errors)
+    blocking_reasons.extend(schedule_errors)
+    blocking_reasons.extend(watermark_errors)
+    blocking_reasons.extend(duplicate_errors)
+    blocking_reasons.extend(section_errors)
+    blocking_reasons.extend(synthesis_errors)
+    blocking_reasons.extend(action_review_errors)
+    blocking_reasons.extend(hash_status_errors)
+    blocking_reasons.extend(side_effect_errors)
+    blocking_reasons.extend(production_errors)
+    report_status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+
+    return {
+        "model_id": S2PKT05_M4_MAIL_MODEL_ID,
+        "acceptance_id": S2PKT05_ACCEPTANCE_ID,
+        "task_id": S2PKT05_TASK_ID,
+        "phase": "S2PK",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": report_status,
+        **gates,
+        "email_contract_id": S2PKT01_EMAIL_CONTRACT_ID,
+        "template_version": S2PKT01_TEMPLATE_VERSION,
+        "mail_product_id": S2PKT05_MAIL_PRODUCT_ID,
+        "primary_board": S2PKT05_PRIMARY_BOARD,
+        "cross_cutting_boards": list(S2PKT01_CROSS_CUTTING_BOARDS),
+        "required_terminal_mails": list(S2PKT05_REQUIRED_TERMINAL_MAILS),
+        "required_sections": list(S2PKT05_REQUIRED_SECTIONS),
+        "default_staggered_windows": list(S2PKT05_DEFAULT_STAGGERED_WINDOWS),
+        "terminal_mail_count": len(set(terminal_input_by_mail) & set(S2PKT05_REQUIRED_TERMINAL_MAILS)),
+        "section_count": len(set(section_ids)),
+        "action_count": len(set(action_ids)),
+        "review_reminder_count": len(set(record_review_ids)),
+        "cycle_id": cycle_id,
+        "m4_orchestration_record": record,
+        "m4_mail_hash": m4_hash,
+        "s2pkt05_m4_mail_ready": report_status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pkt05_m4_mail(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    mail_contract_report: Mapping[str, Any],
+    m1_mail_report: Mapping[str, Any],
+    m2_mail_report: Mapping[str, Any],
+    m3_mail_report: Mapping[str, Any],
+    content_ledger_report: Mapping[str, Any],
+    action_roi_report: Mapping[str, Any],
+    review_schedule_report: Mapping[str, Any],
+    m4_orchestration_record: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PKT05 local M4 3+1 orchestration evidence without sending mail."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pkt05-m4-mail"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pkt05_m4_mail_report(
+        generated_at=generated_at,
+        mail_contract_report=mail_contract_report,
+        m1_mail_report=m1_mail_report,
+        m2_mail_report=m2_mail_report,
+        m3_mail_report=m3_mail_report,
+        content_ledger_report=content_ledger_report,
+        action_roi_report=action_roi_report,
+        review_schedule_report=review_schedule_report,
+        m4_orchestration_record=m4_orchestration_record,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "m4_mail_report_path": str(run_dir / "adp-s2pkt05-m4-mail-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pkt05-m4-mail-report.json", report)
+        _write_json(state / S2PKT05_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pkt05_m4_mail_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PKT05_M4_MAIL_MODEL_ID:
+        errors.append("S2PKT05 model_id must be adp-s2pkt05-m4-mail-v1")
+    if report.get("task_id") != S2PKT05_TASK_ID:
+        errors.append("S2PKT05 task_id must be S2PKT05")
+    if report.get("acceptance_id") != S2PKT05_ACCEPTANCE_ID:
+        errors.append("S2PKT05 acceptance_id must be ACC-S2PKT05-M4")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PKT05 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PKT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PKT05 local M4 mail orchestration evidence")
+    record = report.get("m4_orchestration_record")
+    if not isinstance(record, Mapping):
+        errors.append("S2PKT05 m4_orchestration_record must be an object")
+        record = {}
+    if report.get("m4_mail_hash") != _s2pkt05_m4_mail_hash(record):
+        errors.append("S2PKT05 m4_mail_hash must match m4_orchestration_record")
+    if int(report.get("section_count") or 0) != len(
+        {str(section.get("section_id") or "") for section in record.get("sections") or [] if isinstance(section, Mapping)}
+    ):
+        errors.append("S2PKT05 section_count must match unique section_ids")
+    if int(report.get("action_count") or 0) != len({str(item) for item in record.get("action_ids") or []}):
+        errors.append("S2PKT05 action_count must match action_ids")
+    if int(report.get("review_reminder_count") or 0) != len({str(item) for item in record.get("review_content_ids") or []}):
+        errors.append("S2PKT05 review_reminder_count must match review_content_ids")
+    for gate in S2PKT05_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PKT05 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PKT05 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pkt05_m4_mail_ready") is not True:
+        errors.append("passing S2PKT05 report requires s2pkt05_m4_mail_ready=true")
     return errors
 
 

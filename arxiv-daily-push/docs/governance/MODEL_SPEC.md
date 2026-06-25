@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 92
-- formula_count: 94
-- parameter_count: 746
+- model_count: 93
+- formula_count: 95
+- parameter_count: 757
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -857,3 +857,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-092` / `FORM-ADP-094` define local M3 policy, capital, and geopolitical frontier mail evidence built on the S2PKT01 `EMAIL_LEARNING_V1` contract.
 - Passing S2PKT04 requires S2PKT01/S2PHT05/S2PIT04/S2PJT03 readiness, M3/B3 scope, B4/B5/B6 cross-cutting boards, legal status, capital impact, geopolitical context, personal impact, action path, ledger-traceable content, S2PJT03-traceable 2h/30d action windows, deterministic M3 hash, and all production/schema/email side-effect flags false.
 - S2PKT04 does not change runtime mail templates/frontstage and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
+
+## S2PKT05 M4 Mail Orchestration Evidence
+
+- `MOD-ADP-093` / `FORM-ADP-095` define local M4 cross-board 3+1 mail orchestration evidence built on the S2PKT01 `EMAIL_LEARNING_V1` contract and terminal S2PKT02/S2PKT03/S2PKT04 local reports.
+- Passing S2PKT05 requires M4/B1-B6 scope, B4/B5/B6 cross-cutting boards, M1/M2/M3 pass-ready terminal inputs with matching hashes, Sydney 07:30/11:30/17:00/21:30 staggered windows, a cycle watermark waiting for M1/M2/M3, duplicate_count 0, silent_drop_count 0, legacy five-mail inactive state, cross_source_resonance/contradictions/era_mainline/personal_action_mix/review_reminders sections, S2PJT03-traceable actions, S2PJT02 due-queue-traceable review reminders, deterministic M4 hash, and all production/schema/email side-effect flags false.
+- S2PKT05 does not change runtime mail templates/frontstage and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, production waterline/outbox readiness, or Email V1 runtime change.

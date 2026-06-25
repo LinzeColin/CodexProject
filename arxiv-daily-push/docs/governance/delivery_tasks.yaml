@@ -1974,3 +1974,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PKT05"
+    phase: "S2PK"
+    objective: "Implement local-only M4 cross-board 3+1 mail orchestration and watermark evidence."
+    scope: "S2PKT01 contract readiness, terminal S2PKT02/S2PKT03/S2PKT04 reports, M4/B1-B6 scope, default 07:30/11:30/17:00/21:30 Sydney staggered windows, cycle watermark, duplicate count 0, silent-drop count 0, legacy five-mail deactivation, required cross-board summary sections, action/review traceability, deterministic M4 hash, focused tests, CLI, and governance registration."
+    non_scope: "No runtime mail template/frontstage change, no SMTP, no scheduler install, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no live source fetch, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no owner-experience final acceptance, no production waterline/outbox readiness, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PKT01", "S2PKT02", "S2PKT03", "S2PKT04", "S2PIT04", "S2PJT03", "S2PJT02", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PKT05-M4"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pkt05_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "/opt/anaconda3/bin/python JSONL/YAML/CSV/manifest parse check", "git diff --check"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 166 OK", "full arxiv-daily-push unittest: 395 OK", "full semantic extractor: NOT COMPLETED after repeated full-table AST parsing with no output for more than 3 minutes; changed-only semantic governance passed and S2PKT05 hashes were computed through the same extractor helpers", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md", "governance/run_manifests/ADP-S2PKT05-M4-MAIL-20260626.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PKT05 can be mistaken for live M4 operation or production scheduler/watermark readiness; it is local M4 orchestration evidence only and keeps all production side-effect gates false."
+    rollback: "Revert S2PKT05 M4 mail code, CLI, tests, governance registrations, phase record, manifest, and events; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
