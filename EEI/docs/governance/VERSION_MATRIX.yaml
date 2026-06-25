@@ -32,9 +32,9 @@ parameter_profile_versions:
   release-decision-intake: "2"
   release-decision-bundle: "2"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260625-006"
+current_iteration: "ITER-20260625-007"
 current_phase: "C"
-current_gate: "TASK-T1302-A203-API-IMPLEMENTATION-DONE-A209-HEARTBEAT-35-PENDING-CI"
+current_gate: "TASK-T1302-A203-E2E-CI-REPAIR-PENDING-CI"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

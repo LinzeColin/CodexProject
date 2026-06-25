@@ -2,6 +2,26 @@
 
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
+## 2026-06-25 - T1302/A203 E2E CI repair, release still blocked
+
+Status: LOCAL VALIDATION PASS; CI PENDING
+
+Completed:
+
+- Updated the development-status E2E contract so T1302/A203 is expected as `DONE` after implementation closure.
+- Rebound governance companion records for the push-base CI delta without changing runtime behavior or release readiness.
+- Re-generated clean-room and release artifacts after the E2E/governance repair.
+
+Verification status:
+
+- `make test-e2e` PASS `32/32`.
+- `make verify` PASS with `112` unit tests.
+- Changed-only governance reproduction PASS with `errors=0` and `warnings=0`.
+
+Still blocked:
+
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
 ## 2026-06-25 - T1302/A203 API implementation done, release still blocked
 
 Status: LOCAL FOCUSED VALIDATION PASS; CHANGED-ONLY GOVERNANCE AND CI PENDING

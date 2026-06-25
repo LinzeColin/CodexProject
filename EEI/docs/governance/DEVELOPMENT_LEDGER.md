@@ -11,12 +11,35 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1302-A203-API-IMPLEMENTATION-DONE-A209-HEARTBEAT-35-PENDING-CI`
+- Current gate: `TASK-T1302-A203-E2E-CI-REPAIR-PENDING-CI`
 - Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T1302/A203 API implementation contract closure with A209 heartbeat evidence refresh`
+- Current task: `TASK-T1302/A203 development-status E2E CI repair and governance delta binding`
 - Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `35/288` successful windows, `0` failed windows, `253` remaining and `release_gate_closed_by_background_heartbeat=false`.
 - Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. This run hardens the A026/A027 production gold-set path so repository fixture refs and fixture labelers are rejected when `production_gold_set=true`; it still does not supply real production labels. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the prior resumed chain failed because the fixed Playwright browser path was missing and is preserved as incident evidence only. The current clean restarted attempt now records operator PID `82041`, watchdog PID `61030`, committed heartbeat evidence at `35/288` successful windows, `0` failed windows and `release_gate_closed_by_background_heartbeat=false`; later checkpoint evidence may advance beyond that and remains progress-only until 288/288 validates. This A202 refresh updates selected live official-source capture hashes/health for `NVDA-ANCHOR-002..004` without changing publication clearance; the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+
+## ITER-20260625-007 - T1302/A203 E2E CI repair governance binding
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `3f59039b7e520276fdf604017ed45f536d154d64`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1302`, `TASK-T1307`, `TASK-T1303`
+- Goal: bind the development-status E2E contract repair and generated release artifacts into a push-base governance delta after T1302/A203 moved to `DONE`.
+- Assumptions: this is a CI/governance synchronization over `ITER-20260625-006`; it changes no runtime API, scoring, data publication or release approval behavior.
+- Files changed: governance ledger, model/formula/parameter/traceability companion records, release/clean-room generated artifacts and status dashboards.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active parameter value changed; `PARAM-082` heartbeat non-closure semantics remain `release_gate_closed_by_background_heartbeat=false`.
+- Commands run: `make test-e2e`, full `make verify`, semantic extractor, `git diff --check` and clean-worktree changed-only governance reproduction.
+- Test results: local `make test-e2e` PASS `32/32`; local `make verify` PASS with `112` unit tests; semantic extractor PASS with `86` parameters and `11` formulas; changed-only governance PASS with `errors=0` and `warnings=0`.
+- Successes: development-status E2E now matches T1302 `DONE` and no longer expects stale `IN_PROGRESS`.
+- Failures: no 24h A209 summary JSON, A202 signed clearance, A210 brand/legal clearance, A026/A027 production gold labels or release-manager activation were added.
+- Decisions: keep A203 implementation-complete but release-blocked; keep A209 `IN_PROGRESS`; keep publication and MVP readiness fail-closed.
+- Remaining risks: GitHub Actions must prove the push-base delta remotely; A209 can still fail before `288/288`.
+- Rollback: revert this governance/CI binding commit and the preceding A203 status sync, then regenerate release artifacts from the prior committed state.
+- Next step: commit, push, verify Project Governance and EEI validation, then continue A209 monitoring and the remaining external release blockers.
 
 ## ITER-20260625-006 - T1302/A203 API implementation done with A209 heartbeat refresh
 

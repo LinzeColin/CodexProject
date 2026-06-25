@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1302-A203-API-IMPLEMENTATION-DONE-A209-HEARTBEAT-35-PENDING-CI`
+- release_gate: `TASK-T1302-A203-E2E-CI-REPAIR-PENDING-CI`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `14`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `66`
-- pending_or_stale_events: `87`
+- precommit_pending_events: `67`
+- pending_or_stale_events: `88`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:84e0fd48f4acdfad3780bd32ea98d79562fce294779b0ac02d36eff597b097e7`
-- snapshot_event_time: `2026-06-25T05:40:00Z`
+- source_snapshot_hash: `sha256:f944c8a108a5ace01d0d440b9493cb8a9c549424d3bfc1b38940bf791ce43dfd`
+- snapshot_event_time: `2026-06-25T12:44:34Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1302-A203-API-IMPLEMENTATION-DONE-A209-HEARTBEAT-35-PENDING-CI`
+- phase/gate: `C / TASK-T1302-A203-E2E-CI-REPAIR-PENDING-CI`
 
 ## 17. Next Unique Task
 

@@ -3,6 +3,7 @@ project_id: "EEI"
 # 2026-06-22 audit: T1304/A206 scheduler closure changes delivery status only; formula expressions, weights and extraction logic are unchanged.
 # 2026-06-24 audit: T1303/A204-A205 apply CLI changes activation and recompute operations only; formula expressions, weights and thresholds are unchanged.
 # 2026-06-25 audit: T1302/A203 implementation closure and A209 35/288 heartbeat refresh update release evidence only; formula expressions, weights, thresholds and extraction logic are unchanged.
+# 2026-06-25 audit: T1302/A203 E2E CI repair updates status-screen evidence expectations only; formula expressions, weights, thresholds and extraction logic are unchanged.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"
