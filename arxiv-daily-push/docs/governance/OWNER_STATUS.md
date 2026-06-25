@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在记录 `S2PMT07` final gate precheck 的阻断状态：独立复审者证明、inherited V7.1 P0/P1=0、S2PLT04、最终证据包、独立签收和独立 final command execution 尚未齐备，因此不能进入 `INTEGRATED_PRODUCTION_ACCEPTED` 或 `DAILY_OPERATION`。
 
 ## 3. 为什么重要
 
@@ -39,14 +39,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (812/812 active parameters, 101/101 active formulas)
+- implementation_congruence: `VERIFIED` (825/825 active parameters, 102/102 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
 - operational_validation: `VERIFIED`
 - delivery_evidence: `VERIFIED`
 - evidence_freshness: `PARTIAL`
-- delivery_readiness: `VERIFIED`
+- delivery_readiness: `BLOCKED_PRECHECK`
 
 ## 9. A/B/C Choice Matrix
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `99`
-- total_formulas: `101`
-- active_formulas: `101`
-- total_parameters: `829`
-- active_parameters: `812`
+- model_count: `100`
+- total_formulas: `102`
+- active_formulas: `102`
+- total_parameters: `842`
+- active_parameters: `825`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT06_OWNER_UX_SAFE_CONTROLS_LOCAL_ONLY`
+- release_gate: `S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`
 
 ## 14. Evidence Freshness
 
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
 - source_snapshot_hash: `sha256:0581d1ede8d7c9a6352717f0057e99a31b5108a569097cb5ff529b112573aef1`
-- snapshot_event_time: `2026-06-26T16:00:00+10:00`
+- snapshot_event_time: `2026-06-26T17:00:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PM / S2PMT06_OWNER_UX_SAFE_CONTROLS_LOCAL_ONLY`
+- phase/gate: `S2PM / S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`
 
 ## 17. Next Unique Task
 
