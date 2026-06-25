@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 103
-- acceptance_count: 97
+- task_count: 104
+- acceptance_count: 98
 
 ## Delivery Tasks
 
@@ -119,6 +119,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PET04 | S2PE | completed | ACC-S2PET04-D4 | US-TP and D4 qualification passed for OSTP, BIS, FTC, FCC, CISA, CHIPS Program coverage, required technology policy signals, upstream S2PET01-S2PET03 gates, D4 30-date replay, 2-day shadow, B4/B5/B6 routing, 35/15/30/20 budget explanations, official identity, traceability, and metadata-only boundaries; no live source fetch, D4 production inclusion, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json` |
 | S2PIT01 | S2PI | completed | ACC-S2PIT01-USER-CENTER | Chinese `00_用户中心` and one-edit owner-control entry evidence passed for four separated control domains, two-click reachability, `config/owner_controls.yaml` as the only editable fact source, read-only storage inspect input, compatible config compilation, and no-production/no-schema/no-email-frontstage side-effect gates; no owner-experience final acceptance, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapter, CURRENT, V7.2 contract, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PIT01_USER_CENTER.md`; `governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json` |
 | S2PIT02 | S2PI | completed | ACC-S2PIT02-RUNTIME-DASHBOARD | Local runtime dashboard evidence passed by aggregating S2PIT01, runtime audit, watchdog, read-only storage inspect, and production-boundary reports into a local status report and read-only Chinese owner status page without production side effects | `docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md`; `governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json`; `docs/owner/00_用户中心/01_当前状态.md` |
+| S2PJT01 | S2PJ | completed | ACC-S2PJT01-LIFECYCLE | Local lifecycle state evidence passed for REVIEW_DUE, ACTION, ASSET, CONVERSION, MASTERED, append-only history, count conservation, ledger mapping, dry-run rollback migration proof, and no-production/no-schema/no-email-frontstage boundaries; no real DB migration or production operation is claimed | `docs/phase_records/PHASE_S2PJT01_LIFECYCLE_STATE.md`; `governance/run_manifests/ADP-S2PJT01-LIFECYCLE-STATE-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |

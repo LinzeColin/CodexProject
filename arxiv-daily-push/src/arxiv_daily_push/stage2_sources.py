@@ -722,6 +722,38 @@ S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
 )
 S2PIT02_OWNER_STATUS_PATH = "docs/owner/00_用户中心/01_当前状态.md"
 S2PIT02_REPORT_FILENAME = "stage2_s2pit02_runtime_dashboard_report.json"
+S2PJT01_LIFECYCLE_STATE_MODEL_ID = "adp-s2pjt01-lifecycle-state-v1"
+S2PJT01_ACCEPTANCE_ID = "ACC-S2PJT01-LIFECYCLE"
+S2PJT01_TASK_ID = "S2PJT01"
+S2PJT01_REQUIRED_STATES = ("REVIEW_DUE", "ACTION", "ASSET", "CONVERSION", "MASTERED")
+S2PJT01_REQUIRED_LEDGER_TYPES = ("review", "action", "asset", "conversion", "mastery")
+S2PJT01_REQUIRED_GATES = (
+    "runtime_dashboard_gate",
+    "state_coverage_gate",
+    "append_only_history_gate",
+    "count_conservation_gate",
+    "ledger_mapping_gate",
+    "migration_plan_gate",
+    "no_side_effect_gate",
+)
+S2PJT01_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PJT01_REPORT_FILENAME = "stage2_s2pjt01_lifecycle_state_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -7443,6 +7475,268 @@ def validate_s2pit02_runtime_dashboard_report(report: Mapping[str, Any]) -> list
         errors.append("blocked S2PIT02 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pit02_runtime_dashboard_ready") is not True:
         errors.append("passing S2PIT02 report requires s2pit02_runtime_dashboard_ready=true")
+    return errors
+
+
+def _state_history_states(record: Mapping[str, Any]) -> list[str]:
+    states: list[str] = []
+    for entry in record.get("state_history") or []:
+        if isinstance(entry, Mapping):
+            state = str(entry.get("state") or "")
+        else:
+            state = str(entry or "")
+        if state:
+            states.append(state)
+    return states
+
+
+def _state_history_timestamps(record: Mapping[str, Any]) -> list[str]:
+    timestamps: list[str] = []
+    for entry in record.get("state_history") or []:
+        if isinstance(entry, Mapping) and entry.get("changed_at"):
+            timestamps.append(str(entry["changed_at"]))
+    return timestamps
+
+
+def build_s2pjt01_lifecycle_state_report(
+    *,
+    generated_at: str,
+    runtime_dashboard_report: Mapping[str, Any],
+    lifecycle_records: Sequence[Mapping[str, Any]],
+    migration_plan: Mapping[str, Any] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build S2PJT01 local-only review/action/ROI lifecycle state evidence."""
+
+    migration = dict(migration_plan or {})
+    production_gate = dict(production_gate_state or {})
+    runtime_errors = validate_s2pit02_runtime_dashboard_report(runtime_dashboard_report)
+    runtime_gate = (
+        "pass"
+        if runtime_dashboard_report.get("status") == "pass"
+        and runtime_dashboard_report.get("s2pit02_runtime_dashboard_ready") is True
+        and not runtime_errors
+        else "blocked"
+    )
+    blocking_reasons: list[str] = []
+    if runtime_gate != "pass":
+        blocking_reasons.append("S2PIT02 runtime dashboard report must pass")
+        blocking_reasons.extend(runtime_errors)
+
+    content_ids: set[str] = set()
+    duplicate_content_ids: set[str] = set()
+    states_observed: set[str] = set()
+    state_counts = {state: 0 for state in S2PJT01_REQUIRED_STATES}
+    append_only_errors: list[str] = []
+    side_effect_errors: list[str] = []
+    ledger_types_observed: set[str] = set()
+
+    for index, record in enumerate(lifecycle_records):
+        content_id = str(record.get("content_id") or "")
+        current_state = str(record.get("current_state") or "")
+        if not content_id:
+            append_only_errors.append(f"record {index} missing content_id")
+        elif content_id in content_ids:
+            duplicate_content_ids.add(content_id)
+        content_ids.add(content_id)
+        history_states = _state_history_states(record)
+        states_observed.update(history_states)
+        if current_state:
+            states_observed.add(current_state)
+        if current_state in state_counts:
+            state_counts[current_state] += 1
+        if not history_states:
+            append_only_errors.append(f"{content_id or index} state_history must be non-empty")
+        elif history_states[-1] != current_state:
+            append_only_errors.append(f"{content_id or index} final state_history entry must equal current_state")
+        timestamps = _state_history_timestamps(record)
+        if timestamps and timestamps != sorted(timestamps):
+            append_only_errors.append(f"{content_id or index} state_history timestamps must be non-decreasing")
+        for ledger_ref in record.get("ledger_refs") or []:
+            if isinstance(ledger_ref, Mapping) and ledger_ref.get("ledger_type"):
+                ledger_types_observed.add(str(ledger_ref["ledger_type"]))
+        for key in ("queue_mutation_allowed", "ranking_algorithm_changed", "public_schema_changed", "real_smtp_sent"):
+            if record.get(key, False) is not False:
+                side_effect_errors.append(f"{content_id or index}.{key} must be false")
+
+    missing_states = [state for state in S2PJT01_REQUIRED_STATES if state not in states_observed]
+    missing_ledgers = [ledger for ledger in S2PJT01_REQUIRED_LEDGER_TYPES if ledger not in ledger_types_observed]
+    if duplicate_content_ids:
+        append_only_errors.append("duplicate content_id: " + ", ".join(sorted(duplicate_content_ids)))
+    count_conservation_errors: list[str] = []
+    if sum(state_counts.values()) != len(content_ids):
+        count_conservation_errors.append("state count sum must equal unique content count")
+    migration_errors: list[str] = []
+    if migration.get("dry_run_only") is not True:
+        migration_errors.append("migration_plan.dry_run_only must be true")
+    if migration.get("rollback_supported") is not True:
+        migration_errors.append("migration_plan.rollback_supported must be true")
+    if migration.get("db_migration_executed", False) is not False:
+        migration_errors.append("migration_plan.db_migration_executed must be false")
+    if migration.get("public_schema_changed", False) is not False:
+        migration_errors.append("migration_plan.public_schema_changed must be false")
+    if migration.get("count_conservation_checked") is not True:
+        migration_errors.append("migration_plan.count_conservation_checked must be true")
+
+    production_errors: list[str] = []
+    for key in (*S2PJT01_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "runtime_dashboard_gate": runtime_gate,
+        "state_coverage_gate": "pass" if not missing_states else "blocked",
+        "append_only_history_gate": "pass" if not append_only_errors else "blocked",
+        "count_conservation_gate": "pass" if not count_conservation_errors else "blocked",
+        "ledger_mapping_gate": "pass" if not missing_ledgers else "blocked",
+        "migration_plan_gate": "pass" if not migration_errors else "blocked",
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons.extend(f"missing lifecycle state: {state}" for state in missing_states)
+    blocking_reasons.extend(append_only_errors)
+    blocking_reasons.extend(count_conservation_errors)
+    blocking_reasons.extend(f"missing ledger type: {ledger}" for ledger in missing_ledgers)
+    blocking_reasons.extend(migration_errors)
+    blocking_reasons.extend(side_effect_errors)
+    blocking_reasons.extend(production_errors)
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+
+    return {
+        "model_id": S2PJT01_LIFECYCLE_STATE_MODEL_ID,
+        "acceptance_id": S2PJT01_ACCEPTANCE_ID,
+        "task_id": S2PJT01_TASK_ID,
+        "phase": "S2PJ",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_states": list(S2PJT01_REQUIRED_STATES),
+        "states_observed": sorted(states_observed),
+        "required_ledger_types": list(S2PJT01_REQUIRED_LEDGER_TYPES),
+        "ledger_types_observed": sorted(ledger_types_observed),
+        "content_count": len(content_ids),
+        "state_counts": state_counts,
+        "count_conservation_strategy": migration.get("count_conservation_strategy", "pre_post_state_count_match"),
+        "migration_plan": migration,
+        "lifecycle_records": [dict(record) for record in lifecycle_records],
+        "s2pjt01_lifecycle_state_ready": status == "pass",
+        "review_scheduler_enabled": False,
+        "actual_roi_calculation_enabled": False,
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pjt01_lifecycle_state(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    runtime_dashboard_report: Mapping[str, Any],
+    lifecycle_records: Sequence[Mapping[str, Any]],
+    migration_plan: Mapping[str, Any] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PJT01 lifecycle state evidence without migration or production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pjt01-lifecycle-state"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pjt01_lifecycle_state_report(
+        generated_at=generated_at,
+        runtime_dashboard_report=runtime_dashboard_report,
+        lifecycle_records=lifecycle_records,
+        migration_plan=migration_plan,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "lifecycle_state_report_path": str(run_dir / "adp-s2pjt01-lifecycle-state-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pjt01-lifecycle-state-report.json", report)
+        _write_json(state / S2PJT01_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pjt01_lifecycle_state_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PJT01_LIFECYCLE_STATE_MODEL_ID:
+        errors.append("S2PJT01 model_id must be adp-s2pjt01-lifecycle-state-v1")
+    if report.get("task_id") != S2PJT01_TASK_ID:
+        errors.append("S2PJT01 task_id must be S2PJT01")
+    if report.get("acceptance_id") != S2PJT01_ACCEPTANCE_ID:
+        errors.append("S2PJT01 acceptance_id must be ACC-S2PJT01-LIFECYCLE")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PJT01 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PJT01_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+        "review_scheduler_enabled",
+        "actual_roi_calculation_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PJT01 local lifecycle state evidence")
+    records = report.get("lifecycle_records")
+    if not isinstance(records, list) or not records:
+        errors.append("S2PJT01 lifecycle_records must be a non-empty list")
+    missing_states = [state for state in S2PJT01_REQUIRED_STATES if state not in set(report.get("states_observed") or [])]
+    if missing_states:
+        errors.append("S2PJT01 missing lifecycle states: " + ", ".join(missing_states))
+    missing_ledgers = [ledger for ledger in S2PJT01_REQUIRED_LEDGER_TYPES if ledger not in set(report.get("ledger_types_observed") or [])]
+    if missing_ledgers:
+        errors.append("S2PJT01 missing ledger types: " + ", ".join(missing_ledgers))
+    state_counts = report.get("state_counts")
+    if not isinstance(state_counts, Mapping):
+        errors.append("S2PJT01 state_counts must be a mapping")
+        state_counts = {}
+    if sum(int(value or 0) for value in state_counts.values()) != int(report.get("content_count") or 0):
+        errors.append("S2PJT01 state_counts must conserve content_count")
+    migration = report.get("migration_plan")
+    if not isinstance(migration, Mapping):
+        errors.append("S2PJT01 migration_plan must be a mapping")
+        migration = {}
+    if migration.get("dry_run_only") is not True:
+        errors.append("S2PJT01 migration_plan.dry_run_only must be true")
+    if migration.get("rollback_supported") is not True:
+        errors.append("S2PJT01 migration_plan.rollback_supported must be true")
+    if migration.get("db_migration_executed", False) is not False:
+        errors.append("S2PJT01 migration_plan.db_migration_executed must be false")
+    if migration.get("public_schema_changed", False) is not False:
+        errors.append("S2PJT01 migration_plan.public_schema_changed must be false")
+    for gate in S2PJT01_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PJT01 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PJT01 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pjt01_lifecycle_state_ready") is not True:
+        errors.append("passing S2PJT01 report requires s2pjt01_lifecycle_state_ready=true")
     return errors
 
 

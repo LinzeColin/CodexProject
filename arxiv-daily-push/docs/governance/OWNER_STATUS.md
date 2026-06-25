@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PIT02` 本地只读当前状态入口；它聚合 S2PIT01、runtime audit、watchdog、storage inspect 和生产边界报告，输出本地 dashboard evidence，不启用生产副作用。
+新增 `S2PJT01` 本地 lifecycle state evidence；它在 S2PIT02 运行状态基础上验证 REVIEW_DUE、ACTION、ASSET、CONVERSION、MASTERED、append-only history、count conservation、ledger mapping 和 dry-run rollback migration proof，不启用真实 DB migration 或生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, continue S2PJT01 review/action/ROI state model locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, continue S2PJT02 review schedule/due queue locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,10 +31,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PJT01_REVIEW_ACTION_ROI_STATE_MODEL_LOCAL_ONLY`
+- next_task_id: `S2PJT02_REVIEW_SCHEDULE_LOCAL_ONLY`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PIT02-RUNTIME-DASHBOARD`
-- unblock_condition: S2PIT02 local dashboard evidence complete; continue next V7.2-authorized local-only task without production side effects.
+- acceptance_ids: `ACC-S2PJT01-LIFECYCLE`
+- unblock_condition: S2PJT01 lifecycle state evidence complete; continue S2PJT02 review schedule/due queue locally without production side effects.
 
 ## 8. 九层 Assurance 状态
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `80`
-- total_formulas: `82`
-- active_formulas: `82`
-- total_parameters: `625`
-- active_parameters: `608`
+- model_count: `81`
+- total_formulas: `83`
+- active_formulas: `83`
+- total_parameters: `633`
+- active_parameters: `616`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PIT01_USER_CENTER_LOCAL_EVIDENCE_NO_PRODUCTION`
+- release_gate: `S2PJT01_LIFECYCLE_STATE_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
