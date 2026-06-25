@@ -11,7 +11,7 @@
 | demo input | `samples/` | 演示上传样例，本轮不改 |
 | historical archive | `governance/archive/other8_wave1_pending/OpMe_System/` | 只读历史资料，不重新进入默认开发循环 |
 
-- 最小后端 smoke：进入 `OpMe_System/`，运行 `set PYTHONPATH=backend&& .venv\Scripts\python.exe -m pytest backend\tests -q`；本轮实测结果为 `8 passed, 1 warning`。
+- 最小验证路径：进入 `OpMe_System/`，运行 `set PYTHONPATH=backend&& .venv\Scripts\python.exe -m pytest backend\tests -q`；本轮实测结果为 `8 passed, 1 warning`。
 - 失败去向：若出现 `No module named app`，先确认 `PYTHONPATH=backend`；若 `.venv` 或 `pytest` 缺失，先按 `backend/requirements.txt` 恢复依赖；若 API/PDF 断言失败，再查 `OpMe_System/docs/OpMe_structure_report.md` 和 `backend/tests/`。
 - 回滚：revert S6PAT02 OpMe_System README 提交即可；不需要恢复运行数据、报告或 archive。
 

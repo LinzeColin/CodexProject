@@ -2,7 +2,7 @@
 
 - S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
 - 当前任务：`S6PAT02` / `ACC-S6PAT02`；下一 Gate：`S6PA-GATE` 仍在进行中。
-- 首个有效测试：进入 `whkmSalary/`，运行 `python -m unittest discover -s tests -q`；本轮实测结果为 `Ran 10 tests` / `OK`。
+- 最小验证路径：进入 `whkmSalary/`，运行 `python -m unittest discover -s tests -q`；本轮实测结果为 `Ran 10 tests` / `OK`。
 - source/config/startup 边界：运行代码在 `src/whkm_salary/`；结构配置在 `config/structure_contract.yaml`，只记录结构归属，不承载工资政策参数；启动命令仍是 `streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0`。
 - 失败去向：测试失败先看 `tests/test_salary_logic_boundaries.py`、`tests/test_salary_logic_weights.py`、`tests/test_salary_logic_rounding.py`；若启动命令或结构边界不一致，再查 `whkmSalary/docs/whkm_structure_report.md`。
 - 回滚：revert S6PAT02 whkmSalary README 提交即可；本轮不改运行代码、不改工资公式、不移动文件、不触发外部自动化。
