@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 99
-- formula_count: 101
-- parameter_count: 829
+- model_count: 100
+- formula_count: 102
+- parameter_count: 842
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -899,3 +899,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-099` / `FORM-ADP-101` define local Chinese owner UX, interaction feedback, navigation, safe controls, traceability, and accessibility evidence for S2PMT06.
 - Passing S2PMT06 local validation requires a complete first-screen owner status, fixed top/bottom Chinese navigation, breadcrumbs, related links, source-to-ROI traceability, not-run/loading/no-update/partial-success/degraded/failed/stale status feedback, recoverable error cards, preview-to-rollback safe config changes, append-only revision ledger, queue search/filter/sort/export/drilldown, safe manual retry/cancel/requeue/skip/regenerate previews, visible feedback loops, accessibility/mail-client compatibility, C-001 through C-015 coverage, and all production side-effect flags false.
 - S2PMT06 local evidence does not enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1 before S2PMT07, or claim integrated production acceptance.
+
+## S2PMT07 Final Gate Precheck
+
+- `MOD-ADP-100` / `FORM-ADP-102` define the fail-closed final production gate precheck for S2PMT07.
+- Passing S2PMT07 is not claimed by this run. The current precheck remains blocked because reviewer independence is not proven, inherited V7.1 P0=8 and P1=37 are open, S2PLT04 completion is missing, the final acceptance bundle is missing, the independent signoff is missing, and final required command execution by an independent reviewer is not proven.
+- S2PMT07 precheck does not enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
