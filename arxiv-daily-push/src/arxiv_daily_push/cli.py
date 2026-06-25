@@ -130,6 +130,7 @@ from .stage2_sources import (
     run_s2pit01_user_center,
     run_s2pit02_runtime_dashboard,
     run_s2pjt01_lifecycle_state,
+    run_s2pjt02_review_schedule,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -149,6 +150,7 @@ from .stage2_sources import (
     validate_s2pit01_user_center_report,
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pjt01_lifecycle_state_report,
+    validate_s2pjt02_review_schedule_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -883,6 +885,20 @@ def build_parser() -> argparse.ArgumentParser:
     s2pjt01_lifecycle.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
     s2pjt01_lifecycle.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pjt01_lifecycle.add_argument("--json", action="store_true", help="Print JSON lifecycle state report.")
+
+    s2pjt02_review_schedule = subparsers.add_parser(
+        "stage2-review-schedule",
+        help="Build S2PJT02 local review schedule and due queue evidence without installing a scheduler.",
+    )
+    s2pjt02_review_schedule.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pjt02_review_schedule.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pjt02_review_schedule.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pjt02_review_schedule.add_argument("--lifecycle-state-report", required=True, help="Passing S2PJT01 lifecycle state report JSON.")
+    s2pjt02_review_schedule.add_argument("--review-records", required=True, help="Review records JSON list or object with review_records.")
+    s2pjt02_review_schedule.add_argument("--schedule-policy", help="Optional schedule policy JSON; defaults to 1/3/7/14/30/90 dry-run.")
+    s2pjt02_review_schedule.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pjt02_review_schedule.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pjt02_review_schedule.add_argument("--json", action="store_true", help="Print JSON review schedule report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2582,6 +2598,35 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- count_conservation_gate: {report.get('count_conservation_gate')}")
             print(f"- ledger_mapping_gate: {report.get('ledger_mapping_gate')}")
             print(f"- migration_plan_gate: {report.get('migration_plan_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-review-schedule":
+        production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        schedule_policy = load_json_mapping(args.schedule_policy) if args.schedule_policy else None
+        report = run_s2pjt02_review_schedule(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            lifecycle_state_report=load_json_mapping(args.lifecycle_state_report),
+            review_records=load_json_records(args.review_records, "review_records"),
+            schedule_policy=schedule_policy,
+            production_gate_state=production_gate_state,
+            write=not args.no_write,
+        )
+        errors = validate_s2pjt02_review_schedule_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- lifecycle_state_gate: {report.get('lifecycle_state_gate')}")
+            print(f"- schedule_policy_gate: {report.get('schedule_policy_gate')}")
+            print(f"- review_record_gate: {report.get('review_record_gate')}")
+            print(f"- due_count_gate: {report.get('due_count_gate')}")
+            print(f"- deterministic_queue_gate: {report.get('deterministic_queue_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

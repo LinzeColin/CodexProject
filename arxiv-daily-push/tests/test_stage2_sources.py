@@ -55,6 +55,8 @@ from arxiv_daily_push.stage2_sources import (
     S2PJT01_LIFECYCLE_STATE_MODEL_ID,
     S2PJT01_REQUIRED_LEDGER_TYPES,
     S2PJT01_REQUIRED_STATES,
+    S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS,
+    S2PJT02_REVIEW_SCHEDULE_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -88,6 +90,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pit01_user_center_report,
     build_s2pit02_runtime_dashboard_report,
     build_s2pjt01_lifecycle_state_report,
+    build_s2pjt02_review_schedule_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -119,6 +122,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pit01_user_center,
     run_s2pit02_runtime_dashboard,
     run_s2pjt01_lifecycle_state,
+    run_s2pjt02_review_schedule,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -148,6 +152,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pit01_user_center_report,
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pjt01_lifecycle_state_report,
+    validate_s2pjt02_review_schedule_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -380,6 +385,88 @@ def s2pjt01_migration_plan(**overrides: object) -> dict:
     }
     plan.update(overrides)
     return plan
+
+
+def s2pjt01_lifecycle_state_report() -> dict:
+    return build_s2pjt01_lifecycle_state_report(
+        generated_at=GENERATED_AT,
+        runtime_dashboard_report=s2pit02_runtime_dashboard_report(),
+        lifecycle_records=s2pjt01_lifecycle_records(),
+        migration_plan=s2pjt01_migration_plan(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pjt02_review_records() -> list[dict]:
+    return [
+        {
+            "content_id": "content:overdue",
+            "anchor_date": "2026-06-22",
+            "review_stage_days": 1,
+            "due_date": "2026-06-23",
+            "status": "pending",
+            "queue_mutation_allowed": False,
+            "scheduler_enabled": False,
+            "real_smtp_sent": False,
+            "public_schema_changed": False,
+        },
+        {
+            "content_id": "content:today",
+            "anchor_date": "2026-06-24",
+            "review_stage_days": 1,
+            "due_date": "2026-06-25",
+            "status": "pending",
+            "queue_mutation_allowed": False,
+            "scheduler_enabled": False,
+            "real_smtp_sent": False,
+            "public_schema_changed": False,
+        },
+        {
+            "content_id": "content:week",
+            "anchor_date": "2026-06-24",
+            "review_stage_days": 3,
+            "due_date": "2026-06-27",
+            "status": "pending",
+            "queue_mutation_allowed": False,
+            "scheduler_enabled": False,
+            "real_smtp_sent": False,
+            "public_schema_changed": False,
+        },
+        {
+            "content_id": "content:future",
+            "anchor_date": "2026-06-24",
+            "review_stage_days": 14,
+            "due_date": "2026-07-08",
+            "status": "pending",
+            "queue_mutation_allowed": False,
+            "scheduler_enabled": False,
+            "real_smtp_sent": False,
+            "public_schema_changed": False,
+        },
+        {
+            "content_id": "content:done",
+            "anchor_date": "2026-05-26",
+            "review_stage_days": 30,
+            "due_date": "2026-06-25",
+            "status": "completed",
+            "completed_at": "2026-06-25T09:00:00+10:00",
+            "queue_mutation_allowed": False,
+            "scheduler_enabled": False,
+            "real_smtp_sent": False,
+            "public_schema_changed": False,
+        },
+    ]
+
+
+def s2pjt02_schedule_policy(**overrides: object) -> dict:
+    policy = {
+        "review_intervals_days": list(S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS),
+        "feedback_adjustment_supported": True,
+        "dry_run_only": True,
+        "expected_counts": {"due_today": 1, "due_next_7_days": 2, "overdue": 1, "completed": 1},
+    }
+    policy.update(overrides)
+    return policy
 
 
 def top_journal_publication_events() -> list:
@@ -4717,6 +4804,92 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["lifecycle_state_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pjt01_lifecycle_state_report.json").is_file())
 
+    def test_s2pjt02_review_schedule_passes_due_counts_and_no_scheduler_gates(self) -> None:
+        report = build_s2pjt02_review_schedule_report(
+            generated_at=GENERATED_AT,
+            service_date="2026-06-25",
+            lifecycle_state_report=s2pjt01_lifecycle_state_report(),
+            review_records=s2pjt02_review_records(),
+            schedule_policy=s2pjt02_schedule_policy(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PJT02_REVIEW_SCHEDULE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PJT02-REVIEW")
+        self.assertEqual(report["task_id"], "S2PJT02")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["lifecycle_state_gate"], "pass")
+        self.assertEqual(report["schedule_policy_gate"], "pass")
+        self.assertEqual(report["review_record_gate"], "pass")
+        self.assertEqual(report["due_count_gate"], "pass")
+        self.assertEqual(report["deterministic_queue_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["computed_counts"], {"due_today": 1, "due_next_7_days": 2, "overdue": 1, "completed": 1})
+        self.assertEqual([row["content_id"] for row in report["due_today_queue"]], ["content:today"])
+        self.assertEqual([row["content_id"] for row in report["overdue_queue"]], ["content:overdue"])
+        self.assertEqual(set(report["review_intervals_days"]), set(S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS))
+        self.assertTrue(report["due_queue_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pjt02_review_schedule_ready"])
+        self.assertFalse(report["review_scheduler_enabled"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_s2pjt02_review_schedule_report(report))
+
+    def test_s2pjt02_review_schedule_blocks_bad_counts_due_date_and_side_effects(self) -> None:
+        records = s2pjt02_review_records()
+        records[0] = dict(records[0], due_date="2026-06-24", scheduler_enabled=True)
+        records[1] = dict(records[1], content_id=records[2]["content_id"], review_stage_days=2)
+        report = build_s2pjt02_review_schedule_report(
+            generated_at=GENERATED_AT,
+            service_date="2026-06-25",
+            lifecycle_state_report={**s2pjt01_lifecycle_state_report(), "status": "blocked"},
+            review_records=records,
+            schedule_policy=s2pjt02_schedule_policy(
+                review_intervals_days=[1, 3, 7],
+                expected_counts={"due_today": 9, "due_next_7_days": 9, "overdue": 9, "completed": 9},
+            ),
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["lifecycle_state_gate"], "blocked")
+        self.assertEqual(report["schedule_policy_gate"], "blocked")
+        self.assertEqual(report["review_record_gate"], "blocked")
+        self.assertEqual(report["due_count_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("S2PJT01 lifecycle state report must pass", joined)
+        self.assertIn("missing default review intervals", joined)
+        self.assertIn("review_stage_days", joined)
+        self.assertIn("due_date must equal", joined)
+        self.assertIn("duplicate review content_id", joined)
+        self.assertIn("scheduler_enabled", joined)
+        self.assertIn("due_today count mismatch", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pjt02_review_schedule_report(report))
+
+    def test_s2pjt02_review_schedule_persists_report_without_scheduler_installation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pjt02_review_schedule(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                lifecycle_state_report=s2pjt01_lifecycle_state_report(),
+                review_records=s2pjt02_review_records(),
+                schedule_policy=s2pjt02_schedule_policy(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pjt02_review_schedule_report(report))
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertTrue(Path(report["review_schedule_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pjt02_review_schedule_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -6163,6 +6336,53 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["migration_plan_gate"], "pass")
         self.assertTrue(payload["s2pjt01_lifecycle_state_ready"])
         self.assertFalse(payload["db_migration_executed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_review_schedule_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            lifecycle_path = tmp_path / "lifecycle-state.json"
+            review_records_path = tmp_path / "review-records.json"
+            schedule_policy_path = tmp_path / "schedule-policy.json"
+            gate_path = tmp_path / "production-gate.json"
+            lifecycle_path.write_text(json.dumps(s2pjt01_lifecycle_state_report(), ensure_ascii=False), encoding="utf-8")
+            review_records_path.write_text(
+                json.dumps({"review_records": s2pjt02_review_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            schedule_policy_path.write_text(json.dumps(s2pjt02_schedule_policy(), ensure_ascii=False), encoding="utf-8")
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-review-schedule",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--lifecycle-state-report",
+                    str(lifecycle_path),
+                    "--review-records",
+                    str(review_records_path),
+                    "--schedule-policy",
+                    str(schedule_policy_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PJT02_REVIEW_SCHEDULE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PJT02")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["computed_counts"]["due_today"], 1)
+        self.assertEqual(payload["computed_counts"]["due_next_7_days"], 2)
+        self.assertTrue(payload["s2pjt02_review_schedule_ready"])
+        self.assertFalse(payload["scheduler_enabled"])
         self.assertFalse(payload["integrated_production_accepted"])
 
 

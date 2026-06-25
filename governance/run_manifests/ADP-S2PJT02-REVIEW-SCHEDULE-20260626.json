@@ -1,0 +1,90 @@
+{
+  "manifest_id": "ADP-S2PJT02-REVIEW-SCHEDULE-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PJT02",
+  "phase": "S2PJ",
+  "generated_at": "2026-06-26T00:08:00+10:00",
+  "actor": "Codex",
+  "status": "completed_local_review_schedule_evidence",
+  "acceptance_id": "ACC-S2PJT02-REVIEW",
+  "acceptance_ids": [
+    "ACC-S2PJT02-REVIEW"
+  ],
+  "acceptance_claimed": false,
+  "owner_experience_accepted": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "formal_production_inclusion": false,
+  "production_restore_executed": false,
+  "github_cloud_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "scheduler_enabled": false,
+  "public_schema_changed": false,
+  "queue_schema_changed": false,
+  "db_migration_executed": false,
+  "source_adapter_changed": false,
+  "email_frontstage_changed": false,
+  "v7_1_current_switched": false,
+  "v7_2_contract_files_changed": false,
+  "source_scope": {
+    "report_filename": "stage2_s2pjt02_review_schedule_report.json",
+    "review_intervals_days": [
+      1,
+      3,
+      7,
+      14,
+      30,
+      90
+    ],
+    "count_buckets": [
+      "due_today",
+      "due_next_7_days",
+      "overdue",
+      "completed"
+    ],
+    "required_gates": [
+      "lifecycle_state_gate",
+      "schedule_policy_gate",
+      "review_record_gate",
+      "due_count_gate",
+      "deterministic_queue_gate",
+      "no_side_effect_gate"
+    ]
+  },
+  "side_effect_policy": {
+    "local_review_schedule_only": true,
+    "scheduler_install_enabled": false,
+    "smtp_send_enabled": false,
+    "release_upload_enabled": false,
+    "public_schema_migration_enabled": false,
+    "db_migration_enabled": false,
+    "queue_mutation_enabled": false
+  },
+  "implementation_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PJT02_REVIEW_SCHEDULE.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt02_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt02_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt02_semantic1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 122 OK",
+    "semantic extractor: 84 formulas / 624 parameters checked",
+    "S2PJT02 local review schedule pass, blocked, persistence, and CLI JSON gates passed",
+    "No scheduler, DB migration, production, SMTP, Release, schema, queue, source adapter, Email V1 runtime/frontstage, CURRENT, or V7.2 contract side effects are claimed"
+  ],
+  "blocking_gates": [
+    "inherited V7.1 P0/P1 production blockers",
+    "S2PMT07 independent review gate",
+    "Stage2 Stop Gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
+  ],
+  "rollback": "Revert S2PJT02 review schedule code, CLI, tests, governance registrations, phase record, event, and this manifest. No runtime production state was changed."
+}
