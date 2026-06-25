@@ -5672,6 +5672,154 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s5pat02_wave2_archive_privacy_manifest_and_gitignore(self) -> None:
+        s5pa_root = ROOT / "governance" / "stage_gates" / "s5pa"
+        archive_manifest_path = s5pa_root / "wave2_archive_manifest.json"
+        checksum_path = s5pa_root / "wave2_archive_manifest.sha256"
+        privacy_manifest_path = s5pa_root / "privacy_manifest.md"
+        rollback_path = s5pa_root / "rollback_plan.md"
+        gitignore_check_path = s5pa_root / "gitignore_check.log"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json"
+        )
+        for path in {
+            archive_manifest_path,
+            checksum_path,
+            privacy_manifest_path,
+            rollback_path,
+            gitignore_check_path,
+            manifest_path,
+            ROOT / "tools" / "wave_archive_manifest.py",
+        }:
+            self.assertTrue(path.is_file(), path)
+
+        archive_manifest = json.loads(archive_manifest_path.read_text(encoding="utf-8"))
+        checksum_lines = [line for line in checksum_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        privacy_manifest = privacy_manifest_path.read_text(encoding="utf-8")
+        rollback = rollback_path.read_text(encoding="utf-8")
+        gitignore_check = gitignore_check_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        expected_projects = ["FIFA", "OpenAIDatabase", "PFI_BIG_DATA_SIMULATOR", "Serenity-Alipay"]
+        expected_gitignore_patterns = [
+            "**/var/",
+            "**/.env",
+            "**/.env.local",
+            "**/.env.production",
+            "**/private_exports/",
+            "**/exports/private/",
+            "**/data/private/",
+        ]
+
+        self.assertEqual(archive_manifest["schema_version"], "codexproject.wave_archive_manifest.v1")
+        self.assertEqual(archive_manifest["task_id"], "S5PAT02")
+        self.assertEqual(archive_manifest["acceptance_id"], "ACC-S5PAT02")
+        self.assertEqual(archive_manifest["source_structure_map"], "governance/stage_gates/s5pa/wave2_structure_map.json")
+        self.assertEqual(archive_manifest["archive_root"], "governance/archive/other8_wave2_pending")
+        self.assertEqual(archive_manifest["mode"], "MANIFEST_ONLY_NO_FILE_MOVES")
+        self.assertEqual(archive_manifest["candidate_count"], 457)
+        self.assertEqual(archive_manifest["candidate_count"], len(archive_manifest["candidates"]))
+        self.assertEqual(archive_manifest["candidate_count"], len(checksum_lines))
+        self.assertEqual(archive_manifest["category_counts"]["DELETE_CANDIDATE"], 0)
+        self.assertEqual(archive_manifest["category_counts"]["PRIVATE"], 255)
+        self.assertEqual(
+            archive_manifest["project_counts"],
+            {"FIFA": 42, "OpenAIDatabase": 104, "PFI_BIG_DATA_SIMULATOR": 42, "Serenity-Alipay": 269},
+        )
+        for key in {
+            "files_moved",
+            "archive_written",
+            "checksum_missing",
+            "delete_candidate_without_owner_approval",
+            "gitignore_missing_required_private_patterns",
+        }:
+            self.assertFalse(archive_manifest["stop_conditions"][key], key)
+
+        checksum_by_path = {}
+        for line in checksum_lines:
+            digest, source_path = line.split("  ", 1)
+            checksum_by_path[source_path] = digest
+            self.assertRegex(digest, r"^[0-9a-f]{64}$")
+            self.assertFalse(source_path.startswith(("EEI/", "arxiv-daily-push/")), source_path)
+            current_path = ROOT / source_path
+            self.assertTrue(current_path.exists(), source_path)
+            self.assertEqual(hashlib.sha256(current_path.read_bytes()).hexdigest(), digest, source_path)
+        self.assertEqual(len(checksum_by_path), len(checksum_lines))
+
+        for item in archive_manifest["candidates"]:
+            self.assertIn(item["project_id"], expected_projects)
+            self.assertIn(item["category"], {"MERGE", "ARCHIVE", "GENERATED", "PRIVATE", "DELETE_CANDIDATE"})
+            self.assertEqual(item["sha256"], checksum_by_path[item["source_path"]])
+            self.assertTrue(item["current_path_must_remain"])
+            self.assertTrue(item["proposed_target"].startswith("governance/archive/other8_wave2_pending/"))
+            self.assertIn("restore original source_path", item["rollback_action"])
+            self.assertFalse(item["source_path"].startswith(("EEI/", "arxiv-daily-push/")), item["source_path"])
+
+        for required in {
+            "task_id: S5PAT02",
+            "acceptance_id: ACC-S5PAT02",
+            "mode: PATH_AND_CHECKSUM_ONLY_NO_VALUES",
+            "private_candidate_count: 255",
+            "- OpenAIDatabase: 104",
+            "- Serenity-Alipay: 151",
+            "- values_emitted: false",
+        }:
+            self.assertIn(required, privacy_manifest)
+        for required in {
+            "S5PAT02",
+            "ACC-S5PAT02",
+            "MANIFEST_ONLY_NO_FILE_MOVES",
+            "sha256sum -c governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+            "S5PBT01 may start FIFA structure migration",
+        }:
+            self.assertIn(required, rollback)
+
+        self.assertIn("missing_count: 0", gitignore_check)
+        root_gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+        for pattern in expected_gitignore_patterns:
+            self.assertIn(pattern, root_gitignore)
+            self.assertIn(f"- PRESENT | {pattern}", gitignore_check)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "ROOT")
+        self.assertEqual(manifest["task_id"], "S5PAT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PAT02"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PAT02"], "LOCAL_PRECOMMIT_PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S5PA-GATE"], "LOCAL_PRECOMMIT_PASSED_FOR_WAVE2_MANIFEST")
+        self.assertEqual(manifest["next_allowed_task"], "S5PBT01")
+        self.assertEqual(manifest["archive_manifest_summary"]["candidate_count"], archive_manifest["candidate_count"])
+        self.assertEqual(manifest["archive_manifest_summary"]["checksum_count"], len(checksum_lines))
+        self.assertEqual(manifest["archive_manifest_summary"]["private_candidate_count"], 255)
+        self.assertEqual(manifest["archive_manifest_summary"]["category_counts"]["DELETE_CANDIDATE"], 0)
+        self.assertFalse(manifest["stop_conditions"]["archive_written"])
+        self.assertFalse(manifest["stop_conditions"]["files_moved"])
+        self.assertFalse(manifest["stop_conditions"]["privacy_values_emitted"])
+        self.assertFalse(manifest["stop_conditions"]["gitignore_missing_required_private_patterns"])
+        self.assertEqual(manifest["scope_guard"]["tracked_diff_result"], "PASS_NO_OUTPUT")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                ".gitignore",
+                "tools/wave_archive_manifest.py",
+                "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+                "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+                "governance/stage_gates/s5pa/privacy_manifest.md",
+                "governance/stage_gates/s5pa/rollback_plan.md",
+                "governance/stage_gates/s5pa/gitignore_check.log",
+                "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

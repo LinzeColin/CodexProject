@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625",
+  "project_id": "ROOT",
+  "task_id": "S5PAT02",
+  "acceptance_ids": [
+    "ACC-S5PAT02"
+  ],
+  "iteration_id": "ITER-OTHER8-S5PAT02-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "00ca9afd7421bab66eb7a404fe6e81bc1086645b",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:4c47ac192b990509fcf4805127f562d2e2293955acf6132e231872088d0a1a53",
+  "changed_files_declared": [
+    ".gitignore",
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/rollback_plan.md",
+    "governance/stage_gates/s5pa/gitignore_check.log",
+    "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".gitignore",
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/rollback_plan.md",
+    "governance/stage_gates/s5pa/gitignore_check.log",
+    "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    ".gitignore",
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/rollback_plan.md",
+    "governance/stage_gates/s5pa/gitignore_check.log",
+    "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    ".gitignore",
+    "tools/wave_archive_manifest.py",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/rollback_plan.md",
+    "governance/stage_gates/s5pa/gitignore_check.log",
+    "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage5_wave2_archive_privacy_manifest",
+    "checksum_bound_manifest_only",
+    "privacy_path_and_checksum_only_no_values",
+    "future_private_output_gitignore_guard",
+    "root_governance_only_no_project_file_movement",
+    "scope_guard_no_forbidden_project_diff"
+  ],
+  "stage_gate_status": {
+    "S5PAT01": "PASSED_AND_BOUND",
+    "S5PAT02": "LOCAL_PRECOMMIT_PASSED",
+    "S5PA-GATE": "LOCAL_PRECOMMIT_PASSED_FOR_WAVE2_MANIFEST",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "privacy_value_emission": "BLOCKED",
+    "next_allowed_task": "S5PBT01"
+  },
+  "next_allowed_task": "S5PBT01",
+  "wave2_projects": [
+    "FIFA",
+    "OpenAIDatabase",
+    "PFI_BIG_DATA_SIMULATOR",
+    "Serenity-Alipay"
+  ],
+  "archive_manifest_summary": {
+    "source_commit": "00ca9afd7421bab66eb7a404fe6e81bc1086645b",
+    "candidate_count": 457,
+    "checksum_count": 457,
+    "private_candidate_count": 255,
+    "category_counts": {
+      "ARCHIVE": 155,
+      "DELETE_CANDIDATE": 0,
+      "GENERATED": 42,
+      "MERGE": 5,
+      "PRIVATE": 255
+    },
+    "project_counts": {
+      "FIFA": 42,
+      "OpenAIDatabase": 104,
+      "PFI_BIG_DATA_SIMULATOR": 42,
+      "Serenity-Alipay": 269
+    }
+  },
+  "privacy_manifest_summary": {
+    "mode": "PATH_AND_CHECKSUM_ONLY_NO_VALUES",
+    "private_candidate_count": 255,
+    "values_emitted": false,
+    "confirmed_real_secret_or_pii": false,
+    "project_private_counts": {
+      "FIFA": 0,
+      "OpenAIDatabase": 104,
+      "PFI_BIG_DATA_SIMULATOR": 0,
+      "Serenity-Alipay": 151
+    }
+  },
+  "gitignore_guard": {
+    "path": ".gitignore",
+    "missing_count": 0,
+    "required_patterns": [
+      "**/var/",
+      "**/.env",
+      "**/.env.local",
+      "**/.env.production",
+      "**/private_exports/",
+      "**/exports/private/",
+      "**/data/private/"
+    ],
+    "log_ref": "governance/stage_gates/s5pa/gitignore_check.log"
+  },
+  "stop_conditions": {
+    "files_moved": false,
+    "archive_written": false,
+    "checksum_missing": false,
+    "delete_candidate_without_owner_approval": false,
+    "privacy_values_emitted": false,
+    "gitignore_missing_required_private_patterns": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "tracked_diff_command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT",
+    "allowed_project": "ROOT",
+    "wave2_project_paths": [
+      "FIFA",
+      "OpenAIDatabase",
+      "PFI/大数据模拟器",
+      "Serenity-Alipay"
+    ]
+  },
+  "model_delta": "NOT_CHANGED: S5PAT02 adds root governance manifest/privacy/rollback evidence only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No project product version changes. S5PAT02 does not move, archive, delete, or rewrite project files.",
+  "test_commands": [
+    "python -B tools/wave_archive_manifest.py --structure-map governance/stage_gates/s5pa/wave2_structure_map.json --output-dir governance/stage_gates/s5pa --check",
+    "python -B tools/structure_audit.py --projects FIFA OpenAIDatabase PFI_BIG_DATA_SIMULATOR Serenity-Alipay --check",
+    "python -B -m py_compile tools/wave_archive_manifest.py",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pat02_wave2_archive_privacy_manifest_and_gitignore -q",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B tools/wave_archive_manifest.py --structure-map governance/stage_gates/s5pa/wave2_structure_map.json --output-dir governance/stage_gates/s5pa --check",
+      "result": "PASS",
+      "evidence": "candidate_count=457 checksum_count=457 private_candidate_count=255 gitignore_missing_count=0"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --projects FIFA OpenAIDatabase PFI_BIG_DATA_SIMULATOR Serenity-Alipay --check",
+      "result": "PASS",
+      "evidence": "node_count=1212 edge_count=3047"
+    },
+    {
+      "command": "python -B -m py_compile tools/wave_archive_manifest.py",
+      "result": "PASS",
+      "evidence": "py_compile completed"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pat02_wave2_archive_privacy_manifest_and_gitignore -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test: OK"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "evidence": "changed-only validation errors=0 warnings=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "evidence": "root and 10 projects checked; errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --name-only origin/main -- EEI arxiv-daily-push",
+      "result": "PASS",
+      "evidence": "no forbidden project diff output"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "evidence": "no whitespace errors"
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "governance/stage_gates/s5pa/wave2_archive_manifest.sha256",
+    "governance/stage_gates/s5pa/privacy_manifest.md",
+    "governance/stage_gates/s5pa/rollback_plan.md",
+    "governance/stage_gates/s5pa/gitignore_check.log",
+    "governance/run_manifests/GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S5PAT02 Wave 2 archive, privacy, gitignore, and rollback manifest binding",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "unresolved_risks": [
+    "No physical archive has been created; S5PBT01+ migrations must use the checksum manifest before moving paths.",
+    "PRIVATE candidates remain owner-review-only; this task emits paths and checksums but no private values.",
+    "Deletion candidates remain zero; any future deletion requires explicit owner approval and a new manifest."
+  ],
+  "rollback": {
+    "mode": "remove_s5pat02_governance_evidence_only",
+    "rollback_plan_ref": "governance/stage_gates/s5pa/rollback_plan.md",
+    "reason": "S5PAT02 performs no file movement, archive writes, product runtime changes, or project rewrites."
+  }
+}
