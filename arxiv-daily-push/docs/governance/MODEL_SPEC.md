@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 85
-- formula_count: 87
-- parameter_count: 667
+- model_count: 86
+- formula_count: 88
+- parameter_count: 681
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -828,3 +828,9 @@ Uncovered planned scenarios:
 - The only editable fact source is `config/owner_controls.yaml`; `docs/owner/00_用户中心/*` and generated owner views are read-only navigation or render artifacts.
 - Passing S2PIT01 requires owner_controls validation, read-only storage inspect status, four control domains, two-click reachability, compatible config compilation, and all production/schema/email side-effect flags false.
 - S2PIT01 does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, or Email V1 runtime change.
+
+## S2PHT05 Content Quality Gate Evidence
+
+- `MOD-ADP-086` / `FORM-ADP-088` define local semantic content quality gate evidence for `S2PHT05`.
+- Passing S2PHT05 requires S2PHT01-S2PHT04 dependency receipts with V7.2 revalidation, at least 10 gold items, all required semantic dimension scores >= 4.0, supported or partially supported claim entailment, quote/source locations, template similarity <= 0.35, counterevidence, boundary conditions, personal action evidence, Stage 1 arXiv/evidence/email regression checks, at least two manual review samples, deterministic quality hashing, and all production/schema/email side-effect flags false.
+- S2PHT05 does not change mail production code and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.

@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PJT05` 本地 monthly report evidence；它在 S2PJT04 weekly report 基础上验证月度时代主线、月初/月末认知差分、能力增长、可核验实际 ROI / 经济转化、预测复盘、下月重点和 deterministic report hash，不发送月报或启用生产副作用。
+新增 `S2PHT05` 本地 content quality gate evidence；它验证 S2PHT01-S2PHT04 V7.2 dependency receipts、10 项 semantic gold set、claim entailment、quote/location、template-rate、counterevidence、personal actionability、Stage 1 arXiv/evidence/email regression checks、manual review samples 和 deterministic quality hash，不改邮件生产代码或启用生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, treat S2PJT05 as local monthly report evidence and keep S2PKT01 blocked until S2PHT05/S2PIT04 dependencies are satisfied, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PHT05 as local content quality gate evidence only, keep S2PKT01 blocked until S2PIT04 ledger dependency is satisfied, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY_BLOCKED_PENDING_S2PHT05_S2PIT04`
+- next_task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY_BLOCKED_PENDING_S2PIT04`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PJT05-MONTHLY`
-- unblock_condition: S2PJT03 action/asset/ROI ledger evidence complete; treat S2PJT05 as local monthly report evidence and keep S2PKT01 blocked until S2PHT05/S2PIT04 dependencies are satisfied without production side effects.
+- acceptance_ids: `ACC-S2PHT05-CONTENT-GATE`
+- unblock_condition: S2PHT05 content quality gate evidence is complete locally; keep S2PKT01 blocked until S2PIT04 ledger dependency is satisfied without production side effects.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (650/650 active parameters, 87/87 active formulas)
+- implementation_congruence: `VERIFIED` (664/664 active parameters, 88/88 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `85`
-- total_formulas: `87`
-- active_formulas: `87`
-- total_parameters: `667`
-- active_parameters: `650`
+- model_count: `86`
+- total_formulas: `88`
+- active_formulas: `88`
+- total_parameters: `681`
+- active_parameters: `664`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PJT05_MONTHLY_REPORT_LOCAL_ONLY`
+- release_gate: `S2PHT05_CONTENT_QUALITY_GATE_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PJ / S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
+- phase/gate: `S2PH / S2PHT05_CONTENT_QUALITY_GATE_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PJT05_MONTHLY_REPORT_LOCAL_ONLY`
-- reason: S2PJT04 local weekly report evidence is complete; continue with local-only monthly report evidence under V7.2 no-production boundaries.
+- task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY_BLOCKED_PENDING_S2PIT04`
+- reason: S2PHT05 local content quality gate evidence is complete; continue only after S2PIT04 ledger dependency or explicit owner-approved degradation under V7.2 no-production boundaries.
