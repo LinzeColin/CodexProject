@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PJT02-REVIEW-SCHEDULE-001"
+as_of_event_id: "EVENT-20260626-ADP-S2PJT03-ACTION-ASSET-ROI-001"
 source_snapshot_hash: "sha256:f86deee9c5d3349171c36815468ff01b2ce156fc32a52e8156f72e83f266bd7c"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 624
-    total_active_parameters: 624
-    checked_active_formulas: 84
-    total_active_formulas: 84
+    checked_active_parameters: 633
+    total_active_parameters: 633
+    checked_active_formulas: 85
+    total_active_formulas: 85
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 624
-    total_active_parameters: 624
+    checked_active_parameters: 633
+    total_active_parameters: 633
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PJT02_REVIEW_SCHEDULE_LOCAL_ONLY"
+  release_gate: "S2PJT03_ACTION_ASSET_ROI_LEDGER_LOCAL_ONLY"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,10 +82,10 @@ delivery_readiness:
   parallel_shadow_source_task: "S2PBT01"
   current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PJT03_ACTION_ASSET_ROI_LEDGER_LOCAL_ONLY"
+  task_id: "S2PJT04_WEEKLY_REPORT_LOCAL_ONLY"
   status: "ready_local_only"
-  reason: "S2PJT02 review schedule evidence is complete; continue action, capability asset, and ROI ledger evidence without production side effects."
-  acceptance_ids: ["ACC-S2PJT03-ROI"]
+  reason: "S2PJT03 action, capability asset, and ROI ledger evidence is complete; continue weekly report evidence locally without production side effects."
+  acceptance_ids: ["ACC-S2PJT04-WEEKLY"]
   owner: "project owner"
   human_owner_role: "project_owner"
   unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."

@@ -1797,3 +1797,20 @@ tasks:
     target_version: "0.14.1"
     completed_version: ""
     unknown_task_ids: []
+  - task_id: "S2PJT03"
+    phase: "S2PJ"
+    objective: "Implement local-only action, capability asset, and expected/actual ROI ledger evidence."
+    scope: "15m/2h/7d/30d action windows, expected ROI assumptions/confidence, actual ROI only with verifiable cost/benefit evidence, capability asset traceability, deterministic ledger hash, focused tests, CLI, and governance registration."
+    non_scope: "No SMTP, no scheduler, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no Email V1 runtime/frontstage change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no owner-experience final acceptance, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PJT02", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PJT03-ROI"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt03_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt03_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 126 OK", "full arxiv-daily-push unittest: 355 OK", "semantic extractor: 85 formulas / 633 parameters checked", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PJT03_ACTION_ASSET_ROI.md", "governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PJT03 can be mistaken for actual economic gain proof or production ROI calculation; it is local ledger evidence only and calculated ROI is allowed only with verifiable cost/benefit evidence."
+    rollback: "Revert S2PJT03 action/asset/ROI code, CLI, tests, governance registrations, phase record, manifest, and events; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
