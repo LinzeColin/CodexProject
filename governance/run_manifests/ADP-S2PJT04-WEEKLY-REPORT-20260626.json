@@ -1,0 +1,41 @@
+{
+  "acceptance_id": "ACC-S2PJT04-WEEKLY",
+  "base_commit": "f4619bbb9c4439d6401491584727470d792f04b2",
+  "created_at": "2026-06-26T01:20:00+10:00",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PJT04_WEEKLY_REPORT.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "formula_id": "FORM-ADP-086",
+  "manifest_id": "ADP-S2PJT04-WEEKLY-REPORT-20260626",
+  "model_id": "MOD-ADP-084",
+  "non_scope": "No production SMTP, scheduler, Release, public schema, DB migration, queue mutation, source adapter, ranking, Email V1 runtime/frontstage, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "parameter_ids": [
+    "PARAM-ADP-651",
+    "PARAM-ADP-652",
+    "PARAM-ADP-653",
+    "PARAM-ADP-654",
+    "PARAM-ADP-655",
+    "PARAM-ADP-656",
+    "PARAM-ADP-657",
+    "PARAM-ADP-658"
+  ],
+  "phase": "S2PJ",
+  "production_side_effects": false,
+  "project_id": "arxiv-daily-push",
+  "scope": "Local-only weekly synthesis and attention reallocation evidence.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PJT04",
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 130 OK",
+    "full arxiv-daily-push unittest: 359 OK",
+    "semantic extractor: 86 formulas / 641 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}
