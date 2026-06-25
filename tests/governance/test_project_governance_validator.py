@@ -5820,6 +5820,106 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s5pbt01_fifa_structure_boundary_and_smoke_evidence(self) -> None:
+        validator = load_validator_module()
+        report_path = ROOT / "FIFA" / "docs" / "FIFA_structure_report.md"
+        contract_path = ROOT / "governance" / "stage_gates" / "s5pb" / "fifa_structure_contract.yaml"
+        smoke_path = ROOT / "governance" / "stage_gates" / "s5pb" / "fifa_smoke_tests.log"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json"
+        )
+        for path in {report_path, contract_path, smoke_path, manifest_path}:
+            self.assertTrue(path.is_file(), path)
+
+        report = report_path.read_text(encoding="utf-8")
+        smoke = smoke_path.read_text(encoding="utf-8")
+        readme = (ROOT / "FIFA" / "README.md").read_text(encoding="utf-8")
+        agents = (ROOT / "FIFA" / "AGENTS.md").read_text(encoding="utf-8")
+        contract = validator.load_yaml(contract_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        for required in {
+            "S5PBT01",
+            "ACC-S5PBT01",
+            "FIFA/tab-research-pipeline/",
+            "FIFA/legacy/fifa-analysis-system/",
+            "FIFA/artifacts/",
+            "FIFA/ops/",
+            "tab-research-pipeline/assets/app_icon/",
+            "Result: `PASS`, 6 tests OK.",
+        }:
+            self.assertIn(required, report)
+        for required in {
+            "S5PBT01 Structure Boundary",
+            "Active pipeline and tests live under `tab-research-pipeline/`",
+            "Legacy implementation is isolated under `legacy/fifa-analysis-system/`",
+            "Generated reports, backups, and public-safe latest artifacts live under `artifacts/`",
+            "Local launch and cleanup notes live under `ops/`",
+        }:
+            self.assertIn(required, readme)
+        self.assertIn("`legacy/fifa-analysis-system/` is read-only historical code", agents)
+        self.assertIn("`artifacts/` is generated-output territory", agents)
+
+        self.assertEqual(contract["schema_version"], "codexproject.structure_contract.v1")
+        self.assertEqual(contract["project_id"], "FIFA")
+        self.assertEqual(contract["task_id"], "S5PBT01")
+        self.assertEqual(contract["acceptance_id"], "ACC-S5PBT01")
+        self.assertEqual(contract["active_pipeline"]["path"], "FIFA/tab-research-pipeline")
+        self.assertTrue(contract["active_pipeline"]["default_entry"])
+        self.assertFalse(contract["legacy"]["default_entry"])
+        self.assertTrue(contract["legacy"]["read_only"])
+        self.assertFalse(contract["artifacts"]["default_entry"])
+        self.assertFalse(contract["ops_docs"]["runtime_source"])
+        for key, value in contract["stop_conditions"].items():
+            self.assertFalse(value, key)
+
+        for required in {
+            "task_id: S5PBT01",
+            "acceptance_id: ACC-S5PBT01",
+            "result: PASS",
+            "test_parse_market_pairs",
+            "test_matches_gate_blocks_invalid_raw_decimal_odds",
+            "test_write_outputs_legacy_blocked_export_requires_explicit_flag",
+            "legacy_participates_default_run: false",
+        }:
+            self.assertIn(required, smoke)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "FIFA")
+        self.assertEqual(manifest["task_id"], "S5PBT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S5PBT02")
+        self.assertEqual(manifest["structure_boundary"]["active_pipeline"], "FIFA/tab-research-pipeline")
+        self.assertEqual(manifest["structure_boundary"]["legacy"], "FIFA/legacy/fifa-analysis-system")
+        self.assertFalse(manifest["stop_conditions"]["legacy_participates_default_run"])
+        self.assertFalse(manifest["stop_conditions"]["active_pipeline_path_changed"])
+        self.assertFalse(manifest["stop_conditions"]["generated_artifacts_moved"])
+        self.assertFalse(manifest["stop_conditions"]["ops_docs_used_as_runtime_source"])
+        self.assertFalse(manifest["scope_guard"]["touched_forbidden_projects"])
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "FIFA/AGENTS.md",
+                "FIFA/README.md",
+                "FIFA/docs/FIFA_structure_report.md",
+                "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+                "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+                "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("OpenAIDatabase/", "PFI/", "Serenity-Alipay/", "EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

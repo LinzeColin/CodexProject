@@ -19,11 +19,21 @@ Build and maintain a research-only FIFA World Cup betting market analysis system
 - Local app bundle: `/Users/linzezhang/Downloads/TAB FIFA盘口研究系统.app`
 - Primary code: `tab-research-pipeline/`
 - Latest public artifacts: `artifacts/latest/`
+- Legacy system: `legacy/fifa-analysis-system/` is read-only and not a default run path.
+- Local ops material: `ops/` is operational reference only, not application source.
 - Handoff: `docs/HANDOFF.md` and `docs/HANDOFF_DETAILED.md`
 - Governance entry: `docs/governance/MODEL_SPEC.md`
 - Current formal automation status: blocked.
 - Research-only daily report status: available as candidate.
 - Current executable new stake: `AUD 0`.
+
+## S5PBT01 Structure Boundary
+
+- Active pipeline and tests live under `tab-research-pipeline/`.
+- Legacy implementation is isolated under `legacy/fifa-analysis-system/`; default commands do not import or execute it.
+- Generated reports, backups, and public-safe latest artifacts live under `artifacts/`; Wave 2 archive candidates remain checksum-bound by the governance manifest before any future movement.
+- Local launch and cleanup notes live under `ops/`; they are not product runtime source.
+- Structure evidence: `docs/FIFA_structure_report.md` and `../governance/stage_gates/s5pb/fifa_structure_contract.yaml`.
 
 ## Governance Baseline
 
