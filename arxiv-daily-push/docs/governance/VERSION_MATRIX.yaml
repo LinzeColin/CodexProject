@@ -126,7 +126,7 @@ parameter_profile_versions:
   adp-s2pft02-hk-mo-profile-parameters: "adp-s2pft02-hk-mo-profile-parameters-v1"
   adp-s2pft03-key-city-parameters: "adp-s2pft03-key-city-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260625-ADP-S2PF-S2PFT03-KEY-CITY-COVERAGE"
+current_iteration: "ITER-20260625-ADP-S2PF-S2PFT03-MAIN-MERGE-STATUS"
 current_phase: "S2PF"
 current_gate: "S2PFT03_KEY_CITY_COVERAGE_READY_NO_PRODUCTION"
 current_v6_task_id: "S2P5T03"
