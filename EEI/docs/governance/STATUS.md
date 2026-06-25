@@ -4,8 +4,8 @@
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:218aefe9eabb782fb0c68b80e79b9d3eea0c00708a10631c1cf2189b1253fa8b`
-- snapshot_event_time: `2026-06-25T15:31:30Z`
+- source_snapshot_hash: `sha256:aa4059a2718e1a1120afd1f2a4e0265de3b2bcd37d9017bcf92ea74f58239160`
+- snapshot_event_time: `2026-06-25T15:52:04Z`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -37,7 +37,7 @@
 - Readiness: `FAILED`
 - Release gate: `TASK-T1307-A209-BACKGROUND-SOAK-152-OF-288-RELEASE-BLOCKED`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `95`
+- Pending/stale events: `96`
 - Tree-bound events: `0`
 - Commit-bound events: `15`
 - Legacy unbound events: `19`

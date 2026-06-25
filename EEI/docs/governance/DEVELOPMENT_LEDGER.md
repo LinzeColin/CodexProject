@@ -11,12 +11,46 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-A202-SIGNED-INTAKE-SOURCE-BOUNDARY-CI-BOUND-RELEASE-BLOCKED`
+- Current gate: `TASK-T1307-A209-BACKGROUND-SOAK-152-OF-288-RELEASE-BLOCKED`
 - Confirmed iteration count: 37
 - Reconstructed development event count: 4
-- Current task: `TASK-T1301/A202 signed-intake source-boundary hardening`
-- Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence remains refreshed to `135/288` successful windows, `0` failed windows, `153` remaining, `46.88%` completion and `release_gate_closed_by_background_heartbeat=false`. Live checkpoint evidence observed after that commit advanced to `148/288` successful windows with `0` failed windows, but later checkpoints remain progress-only until 288/288 validates.
-- Blockers: T1301/A202 signed-intake source-boundary hardening is now remote-CI bound at commit `a246df94bf73b6fba7111805f3c5a02b6edeb070` by Project Governance run `28179389094` and EEI validation run `28179389156`. The hardening prevents repository fixtures, templates, docs, config, data and test paths from being used as false clearance sources; only external operator files or approved operator-input repository paths can pass the source-boundary guard. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the current clean restarted attempt records operator PID `82041`, watchdog PID `61030`, committed heartbeat evidence at `135/288` successful windows, `0` failed windows and `release_gate_closed_by_background_heartbeat=false`; later checkpoint evidence may advance beyond that and remains progress-only until 288/288 validates. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Current task: `TASK-T1307/A209 background 24h operator soak heartbeat and release-gate governance sync`
+- Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `152/288` successful windows, `0` failed windows, `136` remaining, `52.78%` completion and `release_gate_closed_by_background_heartbeat=false`. Live checkpoint evidence observed after that commit advanced to `156/288` successful windows with `0` failed windows, but later checkpoints remain progress-only until 288/288 validates.
+- Blockers: T1307/A209 is still `IN_PROGRESS`; `152/288` committed heartbeat evidence and later live checkpoint progress are non-closure evidence only. T1301/A202 signed-intake source-boundary hardening is remote-CI bound at commit `a246df94bf73b6fba7111805f3c5a02b6edeb070` by Project Governance run `28179389094` and EEI validation run `28179389156`, but A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+
+## EVENT-20260625-016 - T1307/A209 companion governance repair for 152/288 heartbeat
+
+- Timestamp: 2026-06-25T15:52:04Z
+- Fact level: EXTRACTED
+- Base commit: `0b5520604d78291bab76bdafd4219dd916867a51`
+- Scope: bind the already-committed T1307/A209 `152/288` heartbeat refresh to the four changed-only companion files required by Project Governance: development ledger, traceability matrix, delivery tasks and parameter registry.
+- CI finding: Project Governance run `28182254364` failed because the `0b552060` generated/test evidence change did not include those companion file updates in the diff.
+- Non-claims: this does not close A209, does not advance 24h evidence beyond `152/288` committed heartbeat, does not create A202/A210/A026/A027 clearance, and does not activate release-manager or MVP release readiness.
+- Next step: regenerate derived governance/release artifacts, rerun changed-only Project Governance locally, commit, push and verify remote CI while the detached A209 soak continues.
+
+## ITER-20260625-012 - T1307/A209 changed-only companion governance repair
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `0b5520604d78291bab76bdafd4219dd916867a51`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, with dependent release-gate context for `TASK-T1302`, `TASK-T1303`, `TASK-T1301`, `TASK-T1309` and `TASK-T904`
+- Acceptance IDs: `A209`, with blocked dependent release evidence for `A203`, `A204`, `A205`, `A202`, `A210`, `A026` and `A027`.
+- Goal: repair Project Governance changed-only companion coverage for the A209 heartbeat release-preflight sync without changing product runtime behavior or treating partial soak progress as release closure.
+- Assumptions: the authoritative committed heartbeat remains `152/288` successful windows and `0` failed; live checkpoint progress may advance independently and remains non-release evidence until final 288/288 validation.
+- Files changed: development ledger, traceability matrix, delivery task record, parameter registry, changelog, version/status views and regenerated release/clean-room artifacts.
+- Model changes: no scoring formula, graph traversal formula, extraction model, formula weight, threshold value, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active parameter value changed; `PARAM-082` remains `false` and only its evidence narrative/profile version is refreshed to bind the `152/288` heartbeat.
+- Commands run: changed-only governance reproduction identified the missing companion files; follow-up validation is required after this repair.
+- Test results: pending rerun of semantic extractor, task pack, changed-only Project Governance, release/clean-room validators and full `make verify`.
+- Successes: the current human-governance record now matches the already-committed `EVENT-20260625-015` heartbeat and preserves fail-closed release semantics.
+- Failures: no 24h summary JSON, no A202 signed clearance, no A210 brand/legal clearance, no A026/A027 production gold labels and no release-manager activation were added.
+- Decisions: keep A209 `IN_PROGRESS`; keep `counts_as_release_ready=false`; keep release-manager activation and MVP release gates blocked.
+- Remaining risks: A209 can still fail before `288/288`; the Project Governance repair must pass locally and remotely before the pushed branch is clean.
+- Rollback: revert this companion governance repair and regenerated artifacts only; preserve live A209 checkpoint, log and PID files so the detached soak continues.
+- Next step: run generators, validation, commit, push and remote CI polling.
 
 ## EVENT-20260625-014 - T1301/A202 signed-intake source-boundary CI binding
 
