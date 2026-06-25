@@ -1,0 +1,365 @@
+{
+  "review_id": "M1-20260625-R2-A6",
+  "round": 2,
+  "agent_role": "信息与交互对抗复审",
+  "baseline_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [
+    "原始报告为只读审查输出；未运行项保留在 finding.required_tests。"
+  ],
+  "findings": [
+    {
+      "finding_id": "M1-R2-A6-001",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "critical_failure_hiding",
+      "title": "changed-scope 对无效 explicit base_ref 仍以空 scope 成功返回",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": true,
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-001:evidence:1",
+          "result": "scripts/validate_project_governance.py:1438-1450 only diffs against explicit_base when git_ref_exists(explicit_base) is true; missing explicit bases are silently skipped instead of represented as unresolved."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-001:evidence:2",
+          "result": "scripts/lean_governance.py:974-1009 builds changed_scope directly from governance.git_changed_files(base_ref) and has no base_ref_status/diff_status/error field."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-001:evidence:3",
+          "result": "Direct run: python -B scripts/lean_governance.py changed-scope --base-ref __missing_m1_agent6_ref__ returned status=0 with changed_files=[], selected_project_count=0, root_governance_changed=false."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-001:evidence:4",
+          "result": "Direct run: python -B scripts/lean_governance.py ci --changed-only --base-ref __missing_m1_agent6_ref__ returned status=1 only after validation, while its changed_scope block still reported the same empty successful-looking scope."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-001:evidence:5",
+          "result": "s2pa_counterexample_matrix.json CE-001 requires changed-scope, ci, and candidate check plan to fail closed for unresolved base refs."
+        }
+      ],
+      "reproduction": [
+        "From repository root, run: python -B scripts/lean_governance.py changed-scope --base-ref __missing_m1_agent6_ref__.",
+        "Observe status=0 and JSON with changed_files=[] and selected_project_count=0.",
+        "Then run: python -B scripts/lean_governance.py ci --changed-only --base-ref __missing_m1_agent6_ref__; observe nonzero status, but compact JSON still contains changed_scope as an empty scope rather than an unresolved-base decision."
+      ],
+      "impact": "A compressed check-plan or agent handoff that reads only changed-scope/budget fields can classify an unknown diff as no change, hiding a root failure and allowing an incorrect PROCEED_SHADOW decision. This directly attacks the no-fail-open invariant and risks Acceptance/Evidence omission for files that were never diffed.",
+      "recommended_fix": "Create one shared diff resolver that returns resolved_base, base_ref_status, changed_files, and error_code. For any explicit base_ref or diff failure that cannot be resolved, changed-scope and ci must emit nonzero compact JSON with error_code=UNRESOLVED_BASE and must not include a successful empty selected scope. Candidate check-plan must consume this resolver only.",
+      "required_tests": [
+        "{\"command\": \"python -B scripts/lean_governance.py changed-scope --base-ref __missing_m1_agent6_ref__\", \"status\": \"RUN_COMPLETED_EXIT_0_OBSERVED_BAD_BEHAVIOR\"}",
+        "{\"command\": \"python -B scripts/lean_governance.py ci --changed-only --base-ref __missing_m1_agent6_ref__\", \"status\": \"RUN_COMPLETED_EXIT_1_OBSERVED_MIXED_SCOPE_AND_ERROR\"}",
+        "{\"command\": \"unit: assert changed-scope unresolved base exits nonzero and does not emit selected_project_count=0 as success\", \"status\": \"NOT_RUN\"}",
+        "{\"command\": \"unit: assert candidate check-plan unresolved base exits nonzero with UNRESOLVED_BASE\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A6-002",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "agent_deviation_and_evidence_loss",
+      "title": "lean changed_scope 与底层 validator changed-only 项目覆盖仍不一致，压缩输出会放大误导",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": true,
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-002:evidence:1",
+          "result": "scripts/lean_governance.py:974-1009 treats root governance changes specially and may select all projects or all except configured exclusions."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-002:evidence:2",
+          "result": "scripts/validate_project_governance.py:1488-1491 selects changed-only projects only by project_matches_changed(project, changed), without the same root-governance scope logic."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-002:evidence:3",
+          "result": "tests/governance/test_project_governance_validator.py:420-489 asserts lean build_changed_scope selects all projects or excludes EEI/arxiv for root governance changes."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-002:evidence:4",
+          "result": "tests/governance/test_project_governance_validator.py:3689-3721 asserts validate_project_governance.select_projects selects only direct project changes and selects [] for root-governance-only changes."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-002:evidence:5",
+          "result": "round1_consolidated.json R1-C002 is adjudicated P1 merge_blocking=true for this selector mismatch; candidate_m1s.json lists R1-C002 as a known S2 blocker."
+        }
+      ],
+      "reproduction": [
+        "Read the two selector implementations listed above; they derive changed-only coverage from different rules.",
+        "Compare the existing tests: lean scope tests require root governance coverage, while validator tests intentionally keep root-only changes at zero checked projects.",
+        "For a root governance change, compact budget_telemetry can report selected_project_count from lean while validation.output can still say projects checked: none."
+      ],
+      "impact": "The candidate proposes compact stdout and selected_project_count telemetry. If that telemetry is not reconciled with actual validator checked_projects, an agent may believe required projects were validated while Acceptance/Evidence checks were skipped. This is the strongest Agent 偏离 vector in the current chain.",
+      "recommended_fix": "Derive both changed_scope selection and validator checked_projects from a single selector result, or explicitly compare the two project-id sets in run_changed_only_ci and fail closed on mismatch. Root governance exclusions must be justified by required companion checks before any compact summary may say coverage is complete.",
+      "required_tests": [
+        "{\"command\": \"existing static tests at tests/governance/test_project_governance_validator.py:420-489 and 3689-3721 demonstrate the mismatch\", \"status\": \"REVIEWED_NOT_EXECUTED_AS_A_PAIR\"}",
+        "{\"command\": \"new unit: root governance file change with ci_mode=required projects must make validation checked_projects equal changed_scope selected_projects, or exit nonzero\", \"status\": \"NOT_RUN\"}",
+        "{\"command\": \"new unit: compact JSON includes validation_checked_project_count and fails if selected_project_count differs\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A6-003",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "owner_readability_and_compact_contract",
+      "title": "候选压缩没有可执行的中文 owner 首屏/compact CLI 验收契约",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-003:evidence:1",
+          "result": "candidate_m1s.json has no top-level acceptance_criteria field; proposed_shadow_features only says compact stdout <= 2KB and must not omit errors/Acceptance/Evidence/rollback."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-003:evidence:2",
+          "result": "s2pa_invariants.json INV-009 constrains compact output to include errors, acceptance ids, evidence pointer, and rollback/stop condition when failing, but it does not define success-path owner first-screen content or Chinese readability."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-003:evidence:3",
+          "result": "scripts/lean_governance.py:1065-1068 prints one raw compact JSON object for ci; successful direct run against HEAD produced stdout_bytes=1330 but it is machine JSON with English keys and no owner-readable Chinese first screen."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-003:evidence:4",
+          "result": "AGENTS.md:16-20 requires 中文优先 by default for agent-facing responses, governance summaries, CI-facing summaries, and owner-facing docs."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-003:evidence:5",
+          "result": "docs/governance/STANDARD.md:109-150 requires completed tasks and human first screens to expose Acceptance, evidence, current Stage/Phase/Task, blockers, next Gate/task, and owner-readable model/parameter facts."
+        }
+      ],
+      "reproduction": [
+        "Run: python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD.",
+        "Observe stdout is a single JSON object with English field names and validation output, not a Chinese owner-first summary.",
+        "Inspect candidate_m1s.json; no acceptance_criteria enumerates required first-screen fields or success/failure compact CLI schema."
+      ],
+      "impact": "The compression plan can satisfy a byte budget while still losing the information the owner actually needs: Acceptance target, Evidence refs, stop/rollback state, next action, and current failure status. It also risks violating global Chinese-first and 用户可读优先 by turning the primary interaction into machine telemetry.",
+      "recommended_fix": "Before PROCEED_SHADOW, add machine-checkable acceptance criteria for owner first-screen and compact CLI. The compact success path must include Chinese summary fields and must prove where full JSON evidence lives; the failure path must include failed invariant, actionable cause, Acceptance/Evidence impact, and stop/rollback action. Add byte-budget tests plus readability tests, not only JSON-shape tests.",
+      "required_tests": [
+        "{\"command\": \"python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD\", \"status\": \"RUN_COMPLETED_EXIT_0_OBSERVED_MACHINE_JSON_ONLY\"}",
+        "{\"command\": \"python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pbt02_renderer_derives_owner_fields_from_canonical_facts -q\", \"status\": \"RUN_COMPLETED_EXIT_0\"}",
+        "{\"command\": \"new unit: compact success stdout <=2048 bytes and first non-empty line is Chinese owner-readable status with acceptance_ids/evidence_refs/full_evidence_ref\", \"status\": \"NOT_RUN\"}",
+        "{\"command\": \"new unit: compact failure stdout/stderr contains failed_invariants, evidence impact, rollback_or_stop_condition, and no Python traceback\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A6-004",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "handoff_and_evidence_retention",
+      "title": "full JSON 迁出 stdout 后缺少 durable evidence handoff 合同",
+      "severity": "P1",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-004:evidence:1",
+          "result": "candidate_m1s.json proposed_shadow_features says full JSON evidence may be written to runner temp or .git/codex-review and removed from ordinary stdout."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-004:evidence:2",
+          "result": ".github/workflows/project-governance.yml:108-140 uploads generated views and manual-all CI attestation artifacts, but changed-only fast gate has no full JSON artifact upload or stable evidence-id contract."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-004:evidence:3",
+          "result": "scripts/lean_governance.py:1065-1068 currently prints the whole ci summary to stdout; the candidate plan changes that behavior but does not define a replacement durable pointer/hash in the compact output."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-004:evidence:4",
+          "result": "README.md:57 already references local untracked .git/codex-review evidence paths, demonstrating a non-portable handoff pattern."
+        }
+      ],
+      "reproduction": [
+        "Inspect candidate_m1s.json proposed_shadow_features for full JSON evidence location.",
+        "Inspect workflow lines 73-82 and 108-140: changed-only runs the CLI but does not upload a JSON evidence artifact.",
+        "If stdout is compacted before a durable artifact contract exists, a resumed agent or owner must rely on chat memory/local .git paths to recover full details."
+      ],
+      "impact": "Moving full JSON out of stdout is reasonable only if compact output carries a durable evidence pointer. Without that, Acceptance/Evidence details can disappear across CI runs, chat compaction, or handoff to another agent. This is a direct handoff 依赖聊天记忆 risk.",
+      "recommended_fix": "Define full_evidence_ref as a required compact field with evidence_id, path_or_artifact_ref, sha256, schema_version, legacy_exit_code, and retention scope. In GitHub changed-only runs, write the JSON to runner temp and upload it as an artifact or append a compact summary plus hash to the job summary. Local runs may use .git/codex-review only when the compact output explicitly marks it local-only and includes the absolute path and hash.",
+      "required_tests": [
+        "{\"command\": \"workflow inspection for changed-only artifact upload\", \"status\": \"REVIEWED_NO_CHANGED_ONLY_ARTIFACT_FOUND\"}",
+        "{\"command\": \"new unit: compact output full_evidence_ref resolves to an existing JSON file and sha256 matches\", \"status\": \"NOT_RUN\"}",
+        "{\"command\": \"new workflow test: changed-only run uploads/retains the full JSON evidence artifact or exposes durable artifact ref in job summary\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "PROPOSED"
+    },
+    {
+      "finding_id": "M1-R2-A6-005",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "new_truth_source",
+      "title": "README 仍包含 Current Governance Snapshot 和本地 .git evidence 路径，测试未覆盖 CE-010",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-005:evidence:1",
+          "result": "README.md:53-57 contains ## Current Governance Snapshot, a baseline commit, Roadmap kind statement, and local .git/codex-review paths."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-005:evidence:2",
+          "result": "candidate_m1s.json non_goals says not to copy full Roadmap or current snapshot to README as a new truth source."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-005:evidence:3",
+          "result": "s2pa_counterexample_matrix.json CE-010 expects no Current Governance Snapshot, .git/codex-review path, or bare current commit snapshot as README current fact."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-005:evidence:4",
+          "result": "tests/governance/test_project_governance_validator.py:10465-10472 only asserts source_snapshot_hash is absent and does not reject the heading, local .git paths, or baseline commit."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-005:evidence:5",
+          "result": "Direct targeted unit run including test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard completed with exit 0, so the current test suite does not catch this README state."
+        }
+      ],
+      "reproduction": [
+        "Open README.md lines 53-57 or run a targeted search for Current Governance Snapshot and .git/codex-review.",
+        "Run the existing README entry test; it does not fail because it only checks source_snapshot_hash absence.",
+        "Compare to CE-010, which requires a stricter negative scan."
+      ],
+      "impact": "A stale README snapshot competes with canonical human entries and generated artifacts. It also teaches agents to use local untracked .git evidence paths as handoff truth, which is brittle and not owner-readable.",
+      "recommended_fix": "Remove the README snapshot or rewrite it as a dated historical note that is explicitly not current truth and contains no local .git evidence paths. Strengthen README tests to reject Current Governance Snapshot, .git/codex-review, and bare commit-as-current-fact patterns.",
+      "required_tests": [
+        "{\"command\": \"python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard -q\", \"status\": \"RUN_COMPLETED_EXIT_0_EXISTING_TEST_TOO_WEAK\"}",
+        "{\"command\": \"new unit: README CE-010 rejects Current Governance Snapshot, .git/codex-review paths, and bare current commit snapshots\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A6-006",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "user_readable_failure_surface",
+      "title": "render/check-render 未知项目仍输出 Python traceback，不符合 compact actionable error",
+      "severity": "P2",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-006:evidence:1",
+          "result": "scripts/lean_governance.py:1051-1063 calls render_registered_project/check_render_registered_project without catching ValueError from registered_project."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-006:evidence:2",
+          "result": "Direct Node spawn: python -B scripts/lean_governance.py check-render --project __missing_project__ returned status=1 and stderr beginning with Traceback, ending ValueError: Unknown project: __missing_project__."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-006:evidence:3",
+          "result": "Direct Node spawn: python -B scripts/lean_governance.py render --project __missing_project__ returned status=1 and stderr traceback."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-006:evidence:4",
+          "result": "tests/governance/test_project_governance_validator.py:3613-3616 only covers validate_project_governance.py --project unknown, not lean_governance.py render/check-render."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-006:evidence:5",
+          "result": "s2pa_counterexample_matrix.json CE-008 requires render/check-render --project DOES_NOT_EXIST to return a nonzero actionable error with no Python traceback."
+        }
+      ],
+      "reproduction": [
+        "Run: python -B scripts/lean_governance.py check-render --project __missing_project__.",
+        "Run: python -B scripts/lean_governance.py render --project __missing_project__.",
+        "Observe traceback on stderr instead of compact structured owner-readable error."
+      ],
+      "impact": "Tracebacks are not acceptable owner or agent first-screen failure surfaces. In compact mode they waste the byte budget, bury the actionable cause, and make the user-readable Chinese-first contract weaker exactly when a project selector is wrong.",
+      "recommended_fix": "Catch ValueError/SystemExit around render/check-render/changed-scope/ci entrypoints and emit a compact structured error, preferably with Chinese owner text plus machine fields: error_code=UNKNOWN_PROJECT, project_selector, valid_selector_hint, failed_invariant, and full_evidence_ref when available. Keep nonzero exit.",
+      "required_tests": [
+        "{\"command\": \"python -B scripts/lean_governance.py check-render --project __missing_project__\", \"status\": \"RUN_COMPLETED_EXIT_1_OBSERVED_TRACEBACK\"}",
+        "{\"command\": \"python -B scripts/lean_governance.py render --project __missing_project__\", \"status\": \"RUN_COMPLETED_EXIT_1_OBSERVED_TRACEBACK\"}",
+        "{\"command\": \"new unit: render/check-render unknown project returns nonzero JSON or Chinese compact error and stderr/stdout contains no Traceback\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R2-A6-007",
+      "round": 2,
+      "agent_role": "信息与交互对抗复审",
+      "category": "workflow_evidence_loss",
+      "title": "Project Governance 并发组仍可能取消 manual/scheduled full evidence run",
+      "severity": "P2",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-007:evidence:1",
+          "result": ".github/workflows/project-governance.yml:33-35 uses concurrency group project-governance-${{ github.ref }} with cancel-in-progress: true for all event scopes."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-007:evidence:2",
+          "result": ".github/workflows/project-governance.yml:48-72 runs full governance validator tests only for schedule or workflow_dispatch scope=all."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-007:evidence:3",
+          "result": ".github/workflows/project-governance.yml:73-82 runs changed-only governance CI for pull_request, push, or manual changed-only on the same workflow/ref."
+        },
+        {
+          "kind": "source",
+          "reference": "M1-R2-A6-007:evidence:4",
+          "result": "round1_consolidated.json R1-C006 reports this as VERIFIED_STATIC: schedule/manual full evidence may be canceled by same-ref fast run."
+        }
+      ],
+      "reproduction": [
+        "Start workflow_dispatch scope=all on a branch/ref.",
+        "Trigger a push or PR run on the same ref before the full run completes.",
+        "Because the concurrency group is only ref-scoped and cancel-in-progress=true, the later run can cancel the full evidence run. This live reproduction was NOT_RUN in this review."
+      ],
+      "impact": "The compression proposal moves full evidence out of ordinary developer stdout and relies more heavily on scheduled/manual all-scope proof. If the workflow can cancel that proof, critical failures and evidence gaps can be hidden behind a successful fast gate.",
+      "recommended_fix": "Split concurrency groups by event/scope or set cancel-in-progress=false for schedule/workflow_dispatch scope=all. Add a workflow matrix test that proves changed-only runs cannot cancel full evidence and that the full evidence artifact/attestation is retained.",
+      "required_tests": [
+        "{\"command\": \"static workflow inspection of concurrency group and event-scoped steps\", \"status\": \"REVIEWED_STATIC\"}",
+        "{\"command\": \"live GitHub workflow_dispatch scope=all followed by same-ref fast run cancellation test\", \"status\": \"NOT_RUN\"}",
+        "{\"command\": \"new static unit: concurrency group includes scope/event or all-scope cancel-in-progress is disabled\", \"status\": \"NOT_RUN\"}"
+      ],
+      "status": "VERIFIED"
+    }
+  ],
+  "summary": {
+    "P0": 0,
+    "P1": 4,
+    "P2": 3,
+    "P3": 0,
+    "merge_blocking": true,
+    "sanitized_from": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/round2/agent6.json"
+  }
+}

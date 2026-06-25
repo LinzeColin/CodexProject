@@ -1,0 +1,195 @@
+{
+  "review_id": "M1-20260625-R1-A1",
+  "round": 1,
+  "agent_role": "Agent 1 security/code-quality/read-only reviewer",
+  "baseline_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [
+    "原始报告为只读审查输出；未运行项保留在 finding.required_tests。"
+  ],
+  "findings": [
+    {
+      "finding_id": "M1-R1-A1-001",
+      "round": 1,
+      "agent_role": "Agent 1 security/code-quality/read-only reviewer",
+      "category": "base_diff_fail_open",
+      "title": "Invalid base_ref silently produces an empty changed scope",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": true,
+      "evidence": [
+        {
+          "kind": "code",
+          "reference": "scripts/validate_project_governance.py:1438-1464",
+          "result": "git_changed_files only runs the explicit base diff when git_ref_exists(explicit_base) is true; missing refs and CalledProcessError are silently ignored, then the function returns the remaining changed set."
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:974-1005",
+          "result": "build_changed_scope trusts governance.git_changed_files(base_ref); if it returns [], root_governance_changed is false and selected_projects is empty."
+        },
+        {
+          "kind": "workflow",
+          "reference": ".github/workflows/project-governance.yml:73-81",
+          "result": "The required PR/push changed-only gate passes a base ref into lean_governance.py ci --changed-only --base-ref."
+        },
+        {
+          "kind": "command",
+          "reference": "python -B scripts\\lean_governance.py changed-scope --base-ref definitely-not-a-real-ref-3944f62d",
+          "result": "exit_code=0; output reported changed_files=[], selected_project_count=0, total_project_count=10.",
+          "command": "python -B scripts\\lean_governance.py changed-scope --base-ref definitely-not-a-real-ref-3944f62d"
+        }
+      ],
+      "reproduction": [
+        "From repository root at HEAD 3944f62daff6287eeb2a7f086dd1594b78b9f311, run: python -B scripts\\lean_governance.py changed-scope --base-ref definitely-not-a-real-ref-3944f62d",
+        "Observed: command exits 0 and returns an empty changed scope instead of failing closed on the invalid base ref."
+      ],
+      "impact": "A missing, mistyped, or unfetched base ref can make the changed-scope governance selector validate zero projects and no root-governance scope. In CI/manual changed-only runs this can create a false green required check and skip governance coverage for the actual diff.",
+      "recommended_fix": "Fail closed whenever an explicit base ref is provided but cannot be resolved, or when the base...HEAD diff command fails. Return a non-zero CI result with the failing ref and git stderr in the JSON summary. Keep local dirty-tree fallback only for calls with no explicit base ref.",
+      "required_tests": [
+        "Unit test git_changed_files with an explicit invalid base_ref and git_ref_exists=false; assert it raises or returns an error state that makes the CLI non-zero.",
+        "Integration test lean_governance.py changed-scope --base-ref <invalid> exits non-zero.",
+        "Integration test lean_governance.py ci --changed-only --base-ref <invalid> exits non-zero and reports the invalid base ref."
+      ],
+      "status": "VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A1-002",
+      "round": 1,
+      "agent_role": "Agent 1 security/code-quality/read-only reviewer",
+      "category": "required_check_continuity",
+      "title": "Root governance changes exclude required projects from changed-scope checks",
+      "severity": "P1",
+      "confidence": "high",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "config",
+          "reference": "governance/projects.yaml:2-7",
+          "result": "root_governance.changed_scope_excluded_projects excludes EEI and arxiv-daily-push even though both are registered projects with ci_mode required later in the same file."
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:969-990",
+          "result": "When any root governance file changes, build_changed_scope selects all projects except those in changed_scope_excluded_projects."
+        },
+        {
+          "kind": "test",
+          "reference": "tests/governance/test_project_governance_validator.py:451-500",
+          "result": "The test suite locks in that root governance changes exclude EEI and arxiv-daily-push and set all_projects_required=false."
+        }
+      ],
+      "reproduction": [
+        "Not executed as a live root-change diff in this read-only pass.",
+        "Static path: change a root governance file such as scripts/lean_governance.py; build_changed_scope will omit EEI and arxiv-daily-push by design per the cited code and tests."
+      ],
+      "impact": "Root governance code, standards, workflow, or validator changes can merge without exercising two required projects. If the root contract or validator regresses for those projects, the ordinary required changed-scope check can remain green until a scheduled/manual full run catches it later.",
+      "recommended_fix": "Do not exclude required projects from root-governance changed-scope coverage. If latency is the reason, split root-change coverage into stable required matrix jobs or separate required checks for the heavy projects, but keep required-check continuity for every ci_mode=required project affected by root governance code.",
+      "required_tests": [
+        "Update root-change scope tests to assert every ci_mode=required project is covered or has its own required companion check.",
+        "Add a regression test where a root validator change selects EEI and arxiv-daily-push, or verifies separate required jobs for them.",
+        "Add a workflow-level assertion that root governance changes cannot produce all_projects_required=false without an explicit alternate required check."
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A1-003",
+      "round": 1,
+      "agent_role": "Agent 1 security/code-quality/read-only reviewer",
+      "category": "supply_chain",
+      "title": "Required governance workflow uses mutable action version tags",
+      "severity": "P3",
+      "confidence": "high",
+      "merge_blocking": false,
+      "evidence": [
+        {
+          "kind": "workflow",
+          "reference": ".github/workflows/project-governance.yml:42-47",
+          "result": "The workflow uses actions/checkout@v4 and actions/setup-python@v5 instead of immutable commit SHAs."
+        },
+        {
+          "kind": "workflow",
+          "reference": ".github/workflows/project-governance.yml:108-110",
+          "result": "The generated-views artifact upload uses actions/upload-artifact@v4 by tag."
+        },
+        {
+          "kind": "workflow",
+          "reference": ".github/workflows/project-governance.yml:134-140",
+          "result": "The CI attestation artifact upload also uses actions/upload-artifact@v4 by tag."
+        }
+      ],
+      "reproduction": [
+        "Static review only; no exploit attempted.",
+        "Inspect .github/workflows/project-governance.yml and observe every third-party action reference is tag-pinned rather than SHA-pinned."
+      ],
+      "impact": "The governance required check depends on mutable external tags. A compromised or retargeted action tag could alter checkout, runtime setup, or artifact behavior while the workflow still appears to run the required Project Governance job.",
+      "recommended_fix": "Pin all GitHub Actions to full-length commit SHAs, keep human-readable comments for source versions, and manage updates through Dependabot/Renovate or a reviewed update process. Add a static guard so new uses: entries are SHA-pinned.",
+      "required_tests": [
+        "Add a governance test or CI lint that parses .github/workflows/project-governance.yml and rejects uses: values not pinned to a 40-character commit SHA unless explicitly allowlisted.",
+        "Verify upload-artifact and setup/checkouts remain pinned after dependency update automation changes them."
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    },
+    {
+      "finding_id": "M1-R1-A1-004",
+      "round": 1,
+      "agent_role": "Agent 1 security/code-quality/read-only reviewer",
+      "category": "run_mode_write_guard",
+      "title": "render --write has no READ_ONLY or CI mode guard",
+      "severity": "P2",
+      "confidence": "medium",
+      "merge_blocking": "conditional",
+      "evidence": [
+        {
+          "kind": "contract",
+          "reference": "AGENTS.md:56-60",
+          "result": "The root contract says READ_ONLY, REVIEW, PLAN, CI, and Hook execution must not modify repository files or run write-mode generators."
+        },
+        {
+          "kind": "contract",
+          "reference": "docs/governance/STANDARD.md:173-184",
+          "result": "The standard says READ_ONLY/REVIEW/PLAN/CI/Hook repository writes are prohibited and only a selected target render task may use write mode."
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:676-686",
+          "result": "render_project_files writes target human-entry files whenever write=True and content differs."
+        },
+        {
+          "kind": "code",
+          "reference": "scripts/lean_governance.py:1019-1022 and 1051-1059",
+          "result": "The CLI exposes render --write and dispatches args.write directly to render_registered_project without checking RUN_MODE, CI, task id, acceptance id, or selected write authorization."
+        },
+        {
+          "kind": "test",
+          "reference": "tests/governance/test_project_governance_validator.py:10733-10825",
+          "result": "Existing tests cover write behavior in temp directories but do not assert that READ_ONLY/CI contexts reject --write."
+        }
+      ],
+      "reproduction": [
+        "NOT_RUN in this review because running render --write against the repository would modify tracked files.",
+        "Expected failing scenario: RUN_MODE=READ_ONLY or CI=true with python -B scripts/lean_governance.py render --project <project> --write currently has no guard before path.write_text."
+      ],
+      "impact": "A user, hook, or automation can accidentally invoke a write-mode generator from a read-only or CI context and overwrite tracked project human-entry files. The final zero-diff check in ci does not protect direct render invocations, and the contract is only documented, not enforced at the CLI boundary.",
+      "recommended_fix": "Add a single write authorization gate before any render write: reject --write when RUN_MODE is READ_ONLY, REVIEW, PLAN, CI, or when CI=true, unless an explicit IMPLEMENT/render task contract is present. Require project/task/acceptance metadata for write-mode render and include tests for each prohibited mode.",
+      "required_tests": [
+        "Unit test render --write with RUN_MODE=READ_ONLY returns non-zero and writes no files.",
+        "Unit test render --write with CI=true returns non-zero and writes no files.",
+        "Positive test for the allowed IMPLEMENT render path with explicit project/task/acceptance metadata, using a temp project directory."
+      ],
+      "status": "PARTIALLY_VERIFIED"
+    }
+  ],
+  "summary": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 1,
+    "P3": 1,
+    "merge_blocking": true,
+    "sanitized_from": ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/round1/agent1.json"
+  }
+}

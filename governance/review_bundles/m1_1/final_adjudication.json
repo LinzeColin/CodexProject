@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "gate_id": "S2PC-GATE",
+  "stage": "S2",
+  "status": "STOP",
+  "decision": "STOP",
+  "decision_reason": "不能进入 S3：Round2 确认多个 P1 阻塞，包括当前 selector false-negative 风险、required 项目 root coverage 缺口、changed-scope unresolved base fail-open、中文 owner 首屏契约缺失和 full evidence durable handoff 缺失。根据 M1 gate，只有 S2PCT02=PROCEED_SHADOW 才可进入 S3。",
+  "repository": "LinzeColin/CodexProject",
+  "head": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "candidate_id": "M1-S-SHADOW-GOVERNANCE-ACCELERATION",
+  "source_files": [
+    "round1_consolidated.json",
+    "candidate_m1s.json",
+    "s2pa_invariants.json",
+    "s2pa_counterexample_matrix.json",
+    "round2/agent4.json",
+    "round2/agent5.json",
+    "round2/agent6.json"
+  ],
+  "phase_results": {
+    "S2PA": "SHIP",
+    "S2PB": "SHIP",
+    "S2PCT01": "SHIP",
+    "S2PCT02": "STOP"
+  },
+  "proceed_shadow_checks": {
+    "six_reports_complete": true,
+    "p0_p1_conflicts_adjudicated": true,
+    "zero_unresolved_blockers": false,
+    "candidate_does_not_change_authoritative_chain": true,
+    "locked_allowed_files_tests_rollback": true,
+    "s1_s2_tracked_diff_zero": true
+  },
+  "issue_map": [
+    {
+      "adjudication_id": "S2-ADJ-001",
+      "maps_to_round1": [
+        "R1-C002",
+        "M1-R1-A3-001"
+      ],
+      "maps_to_round2": [
+        "M1-R2-A4-001",
+        "M1-R2-A6-002"
+      ],
+      "status": "CONFIRMED",
+      "severity": "P1",
+      "merge_blocking": true,
+      "decision": "STOP_BLOCKER",
+      "rationale": "两轮均确认 lean changed_scope 与 legacy validator changed-only 使用不同 selector；root governance 变更可出现 selected_project_count>0 但 validator checked none。当前这是 false-negative 风险，不能进入 shadow。",
+      "required_before_reopen": [
+        "统一 selector source of truth",
+        "新增 root governance fixture：changed_scope selected projects == validator checked projects",
+        "mismatch 必须 nonzero"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-002",
+      "maps_to_round1": [
+        "R1-C003",
+        "M1-R1-A1-002"
+      ],
+      "maps_to_round2": [
+        "M1-R2-A4-002",
+        "M1-R2-A5-002"
+      ],
+      "status": "CONFIRMED",
+      "severity": "P1",
+      "merge_blocking": true,
+      "decision": "STOP_BLOCKER",
+      "rationale": "两轮确认 EEI 与 arxiv-daily-push 是 ci_mode=required 且被 root_governance.changed_scope_excluded_projects 排除；没有机器可验证 required companion coverage。",
+      "required_before_reopen": [
+        "移除 required 项目的 root exclusion，或增加等价 required companion proof",
+        "测试证明每个 ci_mode=required 项目在 root governance 变更下被覆盖"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-003",
+      "maps_to_round1": [
+        "R1-C001",
+        "M1-R1-A1-001",
+        "M1-R1-A2-004"
+      ],
+      "maps_to_round2": [
+        "M1-R2-A4-003",
+        "M1-R2-A5-001",
+        "M1-R2-A6-001"
+      ],
+      "status": "UPGRADED",
+      "severity": "P1",
+      "merge_blocking": true,
+      "decision": "STOP_BLOCKER_FOR_CHECK_PLAN",
+      "rationale": "Round1 将 CI 控制样本与 diagnostic 区分；Round2 证明 candidate check plan 若消费 changed-scope，会把 unresolved explicit base 显示成成功空 scope。因候选核心就是 check plan/compact 输出，该问题必须在 shadow 前 fail-closed。",
+      "required_before_reopen": [
+        "shared diff resolver 返回 base_ref_status/error_code",
+        "changed-scope invalid explicit base 非零",
+        "ci 输出不展示成功空 changed_scope"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-004",
+      "maps_to_round1": [],
+      "maps_to_round2": [
+        "M1-R2-A6-003"
+      ],
+      "status": "NEW",
+      "severity": "P1",
+      "merge_blocking": "conditional",
+      "decision": "STOP_BLOCKER_FOR_OWNER_READABILITY",
+      "rationale": "用户已明确全局中文优先、用户可读优先；候选只定义 <=2KB 与 evidence 不省略，没有可测试的中文 owner 首屏/compact CLI 契约。不能把治理计算移出 stdout 后丢失中文可读事实。",
+      "required_before_reopen": [
+        "定义 compact CLI 中文首屏 schema",
+        "测试首行中文、Acceptance/Evidence/rollback/next/stop condition",
+        "禁止 PASS/FAIL/true/false 作为 owner-facing 结果词"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-005",
+      "maps_to_round1": [],
+      "maps_to_round2": [
+        "M1-R2-A6-004"
+      ],
+      "status": "NEW",
+      "severity": "P1",
+      "merge_blocking": "conditional",
+      "decision": "STOP_BLOCKER_FOR_EVIDENCE_RETENTION",
+      "rationale": "full JSON 移出 ordinary stdout 后，changed-only CI 没有 durable artifact/ref/hash 合同；会让后续 agent 依赖聊天记忆或本地 .git 路径。",
+      "required_before_reopen": [
+        "compact 输出必须含 full_evidence_ref + sha256 + retention_scope",
+        "CI changed-only 上传或公开 durable evidence artifact/ref"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-006",
+      "maps_to_round1": [
+        "R1-C009",
+        "R1-C010",
+        "R1-C011"
+      ],
+      "maps_to_round2": [
+        "M1-R2-A5-003",
+        "M1-R2-A6-005",
+        "M1-R2-A6-006"
+      ],
+      "status": "CONFIRMED",
+      "severity": "P2",
+      "merge_blocking": "conditional",
+      "decision": "CARRY_AS_REQUIRED_FIX",
+      "rationale": "README stale snapshot、AGENTS.md 入口缺失、render/check-render traceback 会削弱用户可读性和单一真相，但不单独构成 S2 的唯一 P1。需纳入后续修复包。",
+      "required_before_reopen": [
+        "README 移除 Current Governance Snapshot/local .git path",
+        "README Governance Entry 暴露 AGENTS.md",
+        "render/check-render unknown project 无 traceback"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-007",
+      "maps_to_round1": [
+        "R1-C005",
+        "R1-C006",
+        "R1-C007",
+        "R1-C008"
+      ],
+      "maps_to_round2": [
+        "M1-R2-A4-004",
+        "M1-R2-A4-005",
+        "M1-R2-A4-006",
+        "M1-R2-A5-005",
+        "M1-R2-A5-006",
+        "M1-R2-A5-007",
+        "M1-R2-A6-007"
+      ],
+      "status": "CONFIRMED_OR_PARTIAL",
+      "severity": "P2/P3",
+      "merge_blocking": "conditional",
+      "decision": "CARRY_AS_S3_S4_GUARDS_AFTER_REOPEN",
+      "rationale": "cache、concurrency、timeout、attestation 自报、mutable actions 是真实质量/证据链风险，但不是当前 S2 停止的最小原因。",
+      "required_before_reopen": [
+        "workflow cache controls",
+        "full evidence concurrency separation",
+        "bounded git helper",
+        "attestation 不升级为权威证据"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-008",
+      "maps_to_round1": [],
+      "maps_to_round2": [
+        "M1-R2-A5-004"
+      ],
+      "status": "NEW",
+      "severity": "P2",
+      "merge_blocking": "conditional",
+      "decision": "ROI_NOT_PROVEN",
+      "rationale": "Agent5 测得当前 clean 0-project lean ci stdout 约 1302 bytes，legacy validator 约 209 bytes；优化目标尚未实现，不能声称 ROI 改善。",
+      "required_before_reopen": [
+        "建立 legacy/candidate stdout_bytes 和 duration 对比基线",
+        "compact stdout/evidence-ref 后再测 0/1/8 project fixtures"
+      ]
+    }
+  ],
+  "open_p0_p1": [
+    {
+      "adjudication_id": "S2-ADJ-001",
+      "severity": "P1",
+      "decision": "STOP_BLOCKER",
+      "rationale": "两轮均确认 lean changed_scope 与 legacy validator changed-only 使用不同 selector；root governance 变更可出现 selected_project_count>0 但 validator checked none。当前这是 false-negative 风险，不能进入 shadow。"
+    },
+    {
+      "adjudication_id": "S2-ADJ-002",
+      "severity": "P1",
+      "decision": "STOP_BLOCKER",
+      "rationale": "两轮确认 EEI 与 arxiv-daily-push 是 ci_mode=required 且被 root_governance.changed_scope_excluded_projects 排除；没有机器可验证 required companion coverage。"
+    },
+    {
+      "adjudication_id": "S2-ADJ-003",
+      "severity": "P1",
+      "decision": "STOP_BLOCKER_FOR_CHECK_PLAN",
+      "rationale": "Round1 将 CI 控制样本与 diagnostic 区分；Round2 证明 candidate check plan 若消费 changed-scope，会把 unresolved explicit base 显示成成功空 scope。因候选核心就是 check plan/compact 输出，该问题必须在 shadow 前 fail-closed。"
+    },
+    {
+      "adjudication_id": "S2-ADJ-004",
+      "severity": "P1",
+      "decision": "STOP_BLOCKER_FOR_OWNER_READABILITY",
+      "rationale": "用户已明确全局中文优先、用户可读优先；候选只定义 <=2KB 与 evidence 不省略，没有可测试的中文 owner 首屏/compact CLI 契约。不能把治理计算移出 stdout 后丢失中文可读事实。"
+    },
+    {
+      "adjudication_id": "S2-ADJ-005",
+      "severity": "P1",
+      "decision": "STOP_BLOCKER_FOR_EVIDENCE_RETENTION",
+      "rationale": "full JSON 移出 ordinary stdout 后，changed-only CI 没有 durable artifact/ref/hash 合同；会让后续 agent 依赖聊天记忆或本地 .git 路径。"
+    }
+  ],
+  "fixed_scope_required_before_any_s3": {
+    "can_enter_s3_now": false,
+    "minimum_corrective_scope": [
+      "统一 changed-only selector 与 validator checked project 集合，并 fail-closed mismatch",
+      "修复 required 项目 root governance coverage：EEI/arxiv 不得无 companion proof 被排除",
+      "invalid explicit base/diff failure 在 changed-scope/ci/check-plan 中 fail-closed，且不展示成功空 scope",
+      "定义并测试中文 owner 首屏/compact CLI acceptance contract",
+      "定义 durable full_evidence_ref/hash/artifact handoff contract"
+    ],
+    "prohibited_shortcut": "不得以 shadow telemetry、文档声明或压缩 stdout 代替上述 P1 修复。"
+  },
+  "tracked_status_short": "",
+  "rollback": "S1/S2 未修改 tracked 文件，无需代码回滚；继续使用 legacy-authoritative。若后续另开修复，回滚为 revert 修复提交或恢复本 HEAD 3944f62d。",
+  "next_unique_task": "STOP_FOR_OWNER_DECISION_OR_NEW_FIX_SCOPE_BEFORE_S3",
+  "generated_at": "2026-06-25T10:10:13.377Z"
+}

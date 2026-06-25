@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-25T12:12:15.242Z",
+  "repo_head_before_change": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "tracked_changed_files": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "untracked_files": [
+    "governance/run_manifests/GOV-M1-GOVERNANCE-ACCELERATION-S5-HANDOFF-20260625.json",
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json"
+  ],
+  "no_project_business_dir_writes": true,
+  "commands": {
+    "changed_only_validate": {
+      "command": "python -B scripts\\lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+      "shell": "cmd.exe",
+      "exit_code": 0,
+      "stdout_tail": [
+        "CodexProject governance sync validation",
+        "changed_files: .github/workflows/project-governance.yml, README.md, governance/run_manifests/GOV-M1-GOVERNANCE-ACCELERATION-S5-HANDOFF-20260625.json, governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json, scripts/generate_governance_dashboard.py, scripts/lean_governance.py, scripts/validate_project_governance.py, tests/governance/test_project_governance_validator.py",
+        "projects changed: none",
+        "errors: 0",
+        "warnings: 0",
+        "CodexProject governance validation",
+        "root: checked",
+        "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+        "errors: 0",
+        "warnings: 0",
+        ""
+      ],
+      "stderr_tail": [
+        ""
+      ]
+    },
+    "compact_ci": {
+      "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+      "shell": "cmd.exe",
+      "exit_code": 0,
+      "stdout_tail": [
+        "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":8,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:3458767226cc01ed9a994b1d8dea2674208b1992b0daa4f92def4f374f176ffa\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":8,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.007,\"changed_scope_seconds\":0.174,\"validation_seconds\":0.972,\"check_render_seconds\":0.0,\"total_seconds\":1.347},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":681,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782389528899-27848-f544d0e5baa7-810409fb.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"f544d0e5baa7\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782389528899-27848-f544d0e5baa7-810409fb.json\",\"sha256\":\"sha256:f544d0e5baa77c35b0ca47260d046e296f230785b47029cf3e68756bce61d473\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+        ""
+      ],
+      "stderr_tail": [
+        ""
+      ]
+    },
+    "workflow_full_all": {
+      "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+      "shell": "cmd.exe",
+      "exit_code": 0,
+      "stdout_tail": [
+        "    \"Serenity-Alipay\",",
+        "    \"whkmSalary\",",
+        "    \"arxiv-daily-push\"",
+        "  ],",
+        "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+        "}",
+        "CodexProject governance validation",
+        "root: checked",
+        "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+        "errors: 0",
+        "warnings: 0",
+        ""
+      ],
+      "stderr_tail": [
+        ""
+      ]
+    },
+    "rollback_tee_success": {
+      "command": "set -o pipefail; rm -rf /tmp/codex-governance-rollback-evidence /tmp/codex-governance-rollback-stdout.txt; mkdir -p /tmp/codex-governance-rollback-evidence; python.exe -B scripts/lean_governance.py validate --changed-only --base-ref HEAD --enforce-sync --semantic | tee /tmp/codex-governance-rollback-evidence/legacy-changed-only-output.txt >/tmp/codex-governance-rollback-stdout.txt; test -s /tmp/codex-governance-rollback-evidence/legacy-changed-only-output.txt; wc -c /tmp/codex-governance-rollback-evidence/legacy-changed-only-output.txt",
+      "shell": "bash",
+      "exit_code": 0,
+      "stdout_tail": [
+        "692 /tmp/codex-governance-rollback-evidence/legacy-changed-only-output.txt",
+        ""
+      ],
+      "stderr_tail": [
+        ""
+      ]
+    },
+    "rollback_pipefail_failure": {
+      "command": "set -o pipefail; python.exe -c \"import sys; sys.exit(7)\" | tee /tmp/codex-governance-rollback-fail.txt >/tmp/codex-governance-rollback-fail-stdout.txt",
+      "shell": "bash",
+      "exit_code": 7,
+      "stdout_tail": [
+        ""
+      ],
+      "stderr_tail": [
+        ""
+      ]
+    },
+    "diff_check": {
+      "command": "git diff --check",
+      "shell": "cmd.exe",
+      "exit_code": 0,
+      "stdout_tail": [
+        ""
+      ],
+      "stderr_tail": [
+        "warning: in the working copy of '.github/workflows/project-governance.yml', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/generate_governance_dashboard.py', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lean_governance.py', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/validate_project_governance.py', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'tests/governance/test_project_governance_validator.py', LF will be replaced by CRLF the next time Git touches it",
+        ""
+      ]
+    },
+    "status": {
+      "command": "git status -sb",
+      "shell": "cmd.exe",
+      "exit_code": 0,
+      "stdout_tail": [
+        "## main...origin/main",
+        " M .github/workflows/project-governance.yml",
+        " M README.md",
+        " M scripts/generate_governance_dashboard.py",
+        " M scripts/lean_governance.py",
+        " M scripts/validate_project_governance.py",
+        " M tests/governance/test_project_governance_validator.py",
+        "?? governance/run_manifests/GOV-M1-GOVERNANCE-ACCELERATION-S5-HANDOFF-20260625.json",
+        "?? governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+        ""
+      ],
+      "stderr_tail": [
+        ""
+      ]
+    },
+    "diff_names": {
+      "command": "git diff --name-only",
+      "shell": "cmd.exe",
+      "exit_code": 0,
+      "stdout_tail": [
+        ".github/workflows/project-governance.yml",
+        "README.md",
+        "scripts/generate_governance_dashboard.py",
+        "scripts/lean_governance.py",
+        "scripts/validate_project_governance.py",
+        "tests/governance/test_project_governance_validator.py",
+        ""
+      ],
+      "stderr_tail": [
+        "warning: in the working copy of '.github/workflows/project-governance.yml', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/generate_governance_dashboard.py', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lean_governance.py', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/validate_project_governance.py', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'tests/governance/test_project_governance_validator.py', LF will be replaced by CRLF the next time Git touches it",
+        ""
+      ]
+    }
+  },
+  "stage": "S5",
+  "phase": "S5PC",
+  "status": "PENDING_EXTERNAL",
+  "gate": "S5PC-GATE",
+  "acceptance": {
+    "S5PCT01": "PENDING_OWNER_PR_REVIEW",
+    "S5PCT02": "PENDING_TWO_REAL_GITHUB_RUNS"
+  },
+  "blocking_external_conditions": [
+    "PR/branch required check must run on GitHub",
+    "owner merge decision required",
+    "two real Governance runs required before final closure"
+  ]
+}
