@@ -1559,6 +1559,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PGT03"
+    phase: "S2PG"
+    objective: "Implement private D1-D4 to B1-B6 multi-label source-to-reading-board routing with reason codes after S2PGT01."
+    scope: "Private source-board routing model, D1-D4 route fixtures, B1-B3 primary board coverage, B4-B6 cross-cutting board coverage, reason-code and explanation checks, focused tests, and governance registration."
+    non_scope: "No public schema migration, no production queue mutation, no SMTP, no scheduler, no Release, no source adapter production inclusion, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no Email V1 runtime change, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PGT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_1/machine_readable/architecture_mapping_v7.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PGT03-ROUTING"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "JSON/YAML/JSONL/CSV parse check with /opt/anaconda3/bin/python", "git diff --check"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 79 OK", "full arxiv-daily-push unittest: 308 OK", "semantic extractor checked 74 formulas / 518 parameters", "project governance errors 0 warnings 0", "changed-only governance semantic errors 0 warnings 0", "V7.2 validator PASS", "lean check-render drift 0 reference_issue_count 0", "JSON/YAML/JSONL/CSV parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md", "governance/run_manifests/ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PGT03 can become a public routing/schema boundary; it must remain private evidence only and prove route reasons, board coverage, and production side effects remain disabled."
+    rollback: "Revert S2PGT03 routing code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
