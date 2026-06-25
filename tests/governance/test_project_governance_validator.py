@@ -8245,6 +8245,99 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 self.assertIn("不改产品 canonical current_task", first_screen)
                 self.assertNotIn("- 当前任务：`S6PAT02`", first_screen)
 
+    def test_other8_s6pc_metrics_review_closure_passes_s6_gate(self) -> None:
+        metrics_path = ROOT / "governance" / "stage_gates" / "s6pc" / "metrics_matrix.csv"
+        gate_path = ROOT / "governance" / "stage_gates" / "s6pc" / "s6pc_final_gate.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PC-METRICS-REVIEW-CLOSURE-20260625.json"
+        )
+        for path in (metrics_path, gate_path, manifest_path):
+            self.assertTrue(path.is_file(), path)
+
+        with metrics_path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertEqual(
+            {row["metric_id"] for row in rows},
+            {"S6PC-M01", "S6PC-M02", "S6PC-M03", "S6PC-M04", "S6PC-M05", "S6PC-M06"},
+        )
+        for row in rows:
+            with self.subTest(metric=row["metric_id"]):
+                self.assertEqual(row["result"], "PASS")
+                self.assertTrue(row["evidence"])
+
+        gate = gate_path.read_text(encoding="utf-8")
+        for required in {
+            "PASSED_FINAL_REVIEW_CLOSURE",
+            "中文优先，默认全局中文",
+            "用户可读优先",
+            "S6-GATE",
+            "main CI 通过后视为通过",
+            "治理计算没有回流到每次开发动作",
+            "false",
+        }:
+            self.assertIn(required, gate)
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["task_id"], "S6PC")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PC"])
+        self.assertEqual(manifest["stage_gate_status"]["S6PC"], "PASSED_FINAL_REVIEW_CLOSURE")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "PASSED_PENDING_THIS_PR_MAIN_CI")
+        self.assertEqual(manifest["next_allowed_task"], "COMPLETE")
+        self.assertEqual(manifest["closure_summary"]["critical_open_after"], 0)
+        self.assertEqual(manifest["closure_summary"]["high_open_after"], 0)
+        self.assertEqual(manifest["closure_summary"]["medium_open_after"], 0)
+        self.assertEqual(manifest["closure_summary"]["low_open_after"], 0)
+        for value in manifest["s6pc_stop_conditions"].values():
+            self.assertFalse(value)
+
+    def test_other8_s6pc_fast_gate_keeps_full_governance_out_of_pr_push(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("github.event_name == 'pull_request' || github.event_name == 'push'", workflow)
+        self.assertIn("python3 scripts/lean_governance.py ci --changed-only", workflow)
+        self.assertIn("github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')", workflow)
+        self.assertIn("scripts/generate_governance_dashboard.py --write --all", workflow)
+        self.assertNotIn("github.event_name == 'pull_request' || github.event_name == 'schedule'", workflow)
+        self.assertIn("Write-mode generators are not part of the ordinary PR fast gate", readme)
+        self.assertIn("Full semantic sweeps, generated-view drift checks, and attestation proof", agents)
+
+        metrics_path = ROOT / "governance" / "stage_gates" / "s6pc" / "metrics_matrix.csv"
+        with metrics_path.open(encoding="utf-8", newline="") as handle:
+            metrics = {row["metric_id"]: row for row in csv.DictReader(handle)}
+        self.assertEqual(metrics["S6PC-M02"]["result"], "PASS")
+        self.assertEqual(metrics["S6PC-M06"]["result"], "PASS")
+
+    def test_other8_s6pc_s6pbt02_is_main_ci_attested(self) -> None:
+        manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["binding_status"], "CI_ATTESTED")
+        self.assertEqual(manifest["result_commit"], "24dc09ff73e6394646a323ecc6271a05df9b8c12")
+        for run_id in {"28155753709", "28155753702", "28155824838", "28155824844"}:
+            self.assertIn(run_id, manifest["ci_run_reference"])
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "CI_ATTESTED_PASSED")
+
+        completed = subprocess.run(
+            ["git", "-c", "core.quotePath=false", "show", "--format=", "--name-only", manifest["result_commit"]],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+        )
+        actual = {line.strip().replace("\\", "/") for line in completed.stdout.splitlines() if line.strip()}
+        self.assertEqual(set(manifest["changed_files_actual"]), actual)
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
