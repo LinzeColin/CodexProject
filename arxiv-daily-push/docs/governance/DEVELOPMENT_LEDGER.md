@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PH
-- Current gate: S2PHT05_CONTENT_QUALITY_GATE_LOCAL_ONLY
-- Confirmed iteration count: 106
+- Current phase: S2PI
+- Current gate: S2PIT03_SOURCE_MODEL_VIEW_LOCAL_ONLY
+- Confirmed iteration count: 107
 - Reconstructed event count: 0
-- Current task: `S2PHT05` has completed local content quality gate evidence. It validates S2PHT01-S2PHT04 V7.2 dependency receipts, 10-item semantic gold dimensions, claim entailment, quote/location, template-rate, counterevidence, personal actionability, Stage 1 arXiv/evidence/email regression checks, manual review samples, and deterministic quality hashing without changing CURRENT, V7.1/V7.2 contract files, mail production code, SMTP, scheduler, Release, real DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime/frontstage. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PIT03` has completed local source/model view evidence. It validates D1-D4 source-domain health, B1-B6 reading-board coverage, parameter default/range/rollback/impact/code/test readability, first-screen progressive disclosure, queue traceability/exportability, deterministic view hashing, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, mail production code, SMTP, scheduler, Release, real DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime/frontstage. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -33,12 +33,30 @@ The append-only machine record is `development_events.jsonl`.
 | S2PE | V7.2-inherited D4 US official technology and finance source domain | completed_local_validation | `S2PET01-S2PET04` now cover metadata-only US-TA, US-LG, US-FM, US-TP, and D4 qualification evidence without live fetch, D4 production inclusion, SMTP, scheduler, Release, public schema, or queue mutation | `docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json` |
 | S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | in_progress | `S2PGT01` private EvidencePacket V2 compatibility is complete; continue later S2PG graph/routing work without silently migrating public schema or production queues | `docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json` |
 | S2PH | Deep understanding and personal frontier intelligence | completed_local_validation | `S2PHT05` local content quality gate evidence is complete; S2PKT01 still remains blocked until S2PIT04 ledger dependency or explicit owner-approved degradation, and production side effects remain forbidden | `docs/phase_records/PHASE_S2PHT05_CONTENT_QUALITY_GATE.md`; `governance/run_manifests/ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626.json` |
-| S2PI | Chinese user center, one-edit/four-check/three-base, and real-state visibility | completed_local_validation | `S2PIT01` and `S2PIT02` local user-center/runtime-dashboard evidence are complete without public schema, DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md`; `governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json` |
+| S2PI | Chinese user center, one-edit/four-check/three-base, and real-state visibility | completed_local_validation | `S2PIT01`-`S2PIT03` local user-center/runtime-dashboard/source-model-view evidence is complete without public schema, DB migration, SMTP, scheduler, Release, queue mutation, source adapter production inclusion, or production side effects; continue S2PIT04 ledger dependency before S2PKT01 | `docs/phase_records/PHASE_S2PIT03_SOURCE_MODEL_VIEW.md`; `governance/run_manifests/ADP-S2PIT03-SOURCE-MODEL-VIEW-20260626.json` |
 | S2PJ | Review, action, capability asset, ROI, weekly and monthly report state | completed_local_validation | `S2PJT01`-`S2PJT05` local lifecycle/review/action-asset-ROI/weekly/monthly evidence is complete; S2PKT01 remains blocked until S2PHT05/S2PIT04 dependencies or explicit degradation, and production side effects remain forbidden | `docs/phase_records/PHASE_S2PJT05_MONTHLY_REPORT.md`; `governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
 
+### `ITER-20260626-ADP-S2PI-S2PIT03-SOURCE-MODEL-VIEW`
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED from S2PIT03 source/model view code, focused tests, S2PIT01 user-center dependency, D1-D4 source-domain fixtures, B1-B6 reading-board fixtures, parameter readability records, queue view records, model/formula/parameter registry diff, and local S2PIT03 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: b5ecfdc7e3b7086544fcf0a6b2392413357d6b77
+- Goal: Implement local-only source-domain, reading-board, parameter disclosure, and queue-view evidence for the Chinese owner center.
+- Files changed: `stage2_sources.py`, `cli.py`, `test_stage2_sources.py`, phase record, run manifest, model/formula/parameter registries, delivery plan/tasks, traceability, owner status docs, and this ledger.
+- Model changes: Added `MOD-ADP-087` for S2PIT03 source/model view evidence.
+- Formula changes: Added `FORM-ADP-089` for D1-D4 source-domain coverage, B1-B6 reading-board coverage, parameter readability, first-screen disclosure cap, queue traceability/exportability, deterministic view hashing, and no-side-effect gates.
+- Parameter changes: Added `PARAM-ADP-682` through `PARAM-ADP-691`.
+- Decisions: S2PIT03 records local source/model view evidence only. It does not fetch live sources, include source adapters in production, mutate queues, change ranking, change public schema, migrate DB, send email, install scheduler, upload Release assets, change Email V1 runtime/frontstage, or claim owner-experience or integrated production acceptance.
+- Boundaries: No SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, Email V1 frontstage/runtime change, CURRENT pointer change, V7.1/V7.2 contract-file edit, owner-experience final acceptance, Stage2 production acceptance, or integrated production acceptance.
+- Validation: `py_compile` PASS; focused Stage2 source tests 142 OK; full arxiv-daily-push unittest 371 OK; semantic extractor 89 formulas / 674 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSON/YAML/JSONL/CSV parse OK; `git diff --check` PASS. Changed-only governance sync has only four pre-existing root EEI PENDING_CI manifest/attestation gaps outside this ADP task, plus no ADP structural errors after this ledger/version/owner sync.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PIT03_SOURCE_MODEL_VIEW.md`; `governance/run_manifests/ADP-S2PIT03-SOURCE-MODEL-VIEW-20260626.json`; `arxiv-daily-push/tests/test_stage2_sources.py`.
+- Rollback: Revert S2PIT03 source/model view code, CLI, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Next step: Continue `S2PIT04_LEDGER_LOCAL_ONLY` before S2PKT01 mail contract work; keep SMTP, scheduler, Release, public schema, DB migration, queue mutation, source adapter production inclusion, and integrated production acceptance disabled.
 
 ### `ITER-20260626-ADP-S2PH-S2PHT05-CONTENT-QUALITY-GATE`
 

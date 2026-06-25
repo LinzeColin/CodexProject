@@ -52,6 +52,9 @@ from arxiv_daily_push.stage2_sources import (
     S2PIT01_REQUIRED_CONTROL_DOMAINS,
     S2PIT02_RUNTIME_DASHBOARD_MODEL_ID,
     S2PIT01_USER_CENTER_MODEL_ID,
+    S2PIT03_REQUIRED_READING_BOARDS,
+    S2PIT03_REQUIRED_SOURCE_DOMAINS,
+    S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID,
     S2PJT01_LIFECYCLE_STATE_MODEL_ID,
     S2PJT01_REQUIRED_LEDGER_TYPES,
     S2PJT01_REQUIRED_STATES,
@@ -94,6 +97,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pet04_us_tp_d4_qualification_report,
     build_s2pit01_user_center_report,
     build_s2pit02_runtime_dashboard_report,
+    build_s2pit03_source_model_view_report,
     build_s2pjt01_lifecycle_state_report,
     build_s2pjt02_review_schedule_report,
     build_s2pjt03_action_asset_roi_report,
@@ -130,6 +134,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pet04_us_tp_d4_qualification,
     run_s2pit01_user_center,
     run_s2pit02_runtime_dashboard,
+    run_s2pit03_source_model_view,
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
@@ -164,6 +169,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pet04_us_tp_d4_qualification_report,
     validate_s2pit01_user_center_report,
     validate_s2pit02_runtime_dashboard_report,
+    validate_s2pit03_source_model_view_report,
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
@@ -362,6 +368,111 @@ def s2pit02_runtime_dashboard_report() -> dict:
         runtime_audit_report=s2pit02_runtime_report("runtime_audit"),
         watchdog_report=s2pit02_runtime_report("watchdog"),
         storage_inspect_report=s2pit01_storage_inspect(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pit03_source_domains() -> list[dict]:
+    return [
+        {
+            "domain_id": domain,
+            "label_zh": f"{domain} 数据源域",
+            "health_status": "ready",
+            "source_refs": [f"source:{domain.lower()}"],
+            "evidence_refs": [f"docs/phase_records/{domain}.md"],
+            "live_fetch_executed": False,
+            "source_adapter_changed": False,
+            "queue_mutation_allowed": False,
+            "ranking_algorithm_changed": False,
+            "public_schema_changed": False,
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+        }
+        for domain in S2PIT03_REQUIRED_SOURCE_DOMAINS
+    ]
+
+
+def s2pit03_reading_boards() -> list[dict]:
+    return [
+        {
+            "board_id": board,
+            "label_zh": f"{board} 阅读板块",
+            "health_status": "ready",
+            "source_domain_refs": list(S2PIT03_REQUIRED_SOURCE_DOMAINS[:2]),
+            "evidence_refs": [f"docs/phase_records/{board}.md"],
+            "live_fetch_executed": False,
+            "source_adapter_changed": False,
+            "queue_mutation_allowed": False,
+            "ranking_algorithm_changed": False,
+            "public_schema_changed": False,
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+        }
+        for board in S2PIT03_REQUIRED_READING_BOARDS
+    ]
+
+
+def s2pit03_parameter_records(count: int = 12) -> list[dict]:
+    return [
+        {
+            "parameter_id": f"PARAM-TEST-{index:03d}",
+            "display_name_zh": f"测试参数 {index}",
+            "default_value": index,
+            "value_range": "0..100",
+            "rollback_value": 0,
+            "impact": "影响队列解释和用户可读视图，不改变生产排名。",
+            "code_refs": ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"],
+            "test_refs": ["arxiv-daily-push/tests/test_stage2_sources.py"],
+            "evidence_refs": ["arxiv-daily-push/docs/governance/parameter_registry.csv"],
+            "first_screen": index <= 12,
+            "searchable": True,
+            "disclosure_tier": "core" if index <= 6 else "advanced",
+            "live_fetch_executed": False,
+            "source_adapter_changed": False,
+            "queue_mutation_allowed": False,
+            "ranking_algorithm_changed": False,
+            "public_schema_changed": False,
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+        }
+        for index in range(1, count + 1)
+    ]
+
+
+def s2pit03_queue_view_records() -> list[dict]:
+    return [
+        {
+            "content_id": f"content:{index}",
+            "source_domain": S2PIT03_REQUIRED_SOURCE_DOMAINS[index % len(S2PIT03_REQUIRED_SOURCE_DOMAINS)],
+            "board_id": S2PIT03_REQUIRED_READING_BOARDS[index % len(S2PIT03_REQUIRED_READING_BOARDS)],
+            "status": "queued",
+            "evidence_refs": [f"evidence:{index}"],
+            "detail_ref": f"docs/owner/queue/{index}.md",
+            "exportable": True,
+            "live_fetch_executed": False,
+            "source_adapter_changed": False,
+            "queue_mutation_allowed": False,
+            "ranking_algorithm_changed": False,
+            "public_schema_changed": False,
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+        }
+        for index in range(1, 7)
+    ]
+
+
+def s2pit03_source_model_view_report() -> dict:
+    return build_s2pit03_source_model_view_report(
+        generated_at=GENERATED_AT,
+        user_center_report=s2pit01_user_center_report(),
+        source_domain_records=s2pit03_source_domains(),
+        reading_board_records=s2pit03_reading_boards(),
+        parameter_records=s2pit03_parameter_records(),
+        queue_view_records=s2pit03_queue_view_records(),
         production_gate_state=s2pit02_production_gate_state(),
     )
 
@@ -5049,6 +5160,96 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["runtime_dashboard_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pit02_runtime_dashboard_report.json").is_file())
 
+    def test_s2pit03_source_model_view_passes_source_board_parameter_and_queue_gates(self) -> None:
+        report = build_s2pit03_source_model_view_report(
+            generated_at=GENERATED_AT,
+            user_center_report=s2pit01_user_center_report(),
+            source_domain_records=s2pit03_source_domains(),
+            reading_board_records=s2pit03_reading_boards(),
+            parameter_records=s2pit03_parameter_records(),
+            queue_view_records=s2pit03_queue_view_records(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PIT03-SOURCE-MODEL")
+        self.assertEqual(report["task_id"], "S2PIT03")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(set(report["source_domains_observed"]), set(S2PIT03_REQUIRED_SOURCE_DOMAINS))
+        self.assertEqual(set(report["reading_boards_observed"]), set(S2PIT03_REQUIRED_READING_BOARDS))
+        self.assertLessEqual(len(report["first_screen_parameter_ids"]), 20)
+        self.assertEqual(report["source_domain_gate"], "pass")
+        self.assertEqual(report["reading_board_gate"], "pass")
+        self.assertEqual(report["parameter_disclosure_gate"], "pass")
+        self.assertEqual(report["queue_view_gate"], "pass")
+        self.assertEqual(report["traceability_gate"], "pass")
+        self.assertEqual(report["deterministic_view_gate"], "pass")
+        self.assertTrue(report["s2pit03_source_model_view_ready"])
+        self.assertFalse(report["source_adapter_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["ranking_algorithm_changed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_s2pit03_source_model_view_report(report))
+
+    def test_s2pit03_source_model_view_blocks_missing_coverage_overload_and_side_effects(self) -> None:
+        source_domains = s2pit03_source_domains()[:-1]
+        reading_boards = s2pit03_reading_boards()
+        reading_boards[0] = {**reading_boards[0], "source_domain_refs": ["DX"], "real_smtp_sent": True}
+        parameters = s2pit03_parameter_records(21)
+        parameters = [{**parameter, "first_screen": True} for parameter in parameters]
+        parameters[0] = {**parameters[0], "searchable": False, "code_refs": []}
+        queue_records = s2pit03_queue_view_records()
+        queue_records[0] = {**queue_records[0], "source_domain": "DX", "exportable": False, "detail_ref": ""}
+
+        report = build_s2pit03_source_model_view_report(
+            generated_at=GENERATED_AT,
+            user_center_report={**s2pit01_user_center_report(), "status": "blocked"},
+            source_domain_records=source_domains,
+            reading_board_records=reading_boards,
+            parameter_records=parameters,
+            queue_view_records=queue_records,
+            production_gate_state=s2pit02_production_gate_state(public_schema_changed=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["user_center_gate"], "blocked")
+        self.assertEqual(report["source_domain_gate"], "blocked")
+        self.assertEqual(report["reading_board_gate"], "blocked")
+        self.assertEqual(report["parameter_disclosure_gate"], "blocked")
+        self.assertEqual(report["queue_view_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("missing source domain", joined)
+        self.assertIn("unknown source_domain_refs", joined)
+        self.assertIn("first-screen parameters", joined)
+        self.assertIn("must be searchable", joined)
+        self.assertIn("source_domain must be D1-D4", joined)
+        self.assertIn("public_schema_changed", joined)
+        self.assertTrue(validate_s2pit03_source_model_view_report(report))
+
+    def test_s2pit03_source_model_view_persists_report_without_production_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pit03_source_model_view(
+                state_dir=tmp,
+                date="2026-06-26",
+                generated_at=GENERATED_AT,
+                user_center_report=s2pit01_user_center_report(),
+                source_domain_records=s2pit03_source_domains(),
+                reading_board_records=s2pit03_reading_boards(),
+                parameter_records=s2pit03_parameter_records(),
+                queue_view_records=s2pit03_queue_view_records(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pit03_source_model_view_report(report))
+            self.assertFalse(report["source_adapter_changed"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertTrue(Path(report["source_model_view_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pit03_source_model_view_report.json").is_file())
+
     def test_s2pjt01_lifecycle_state_passes_local_model_and_no_migration_gates(self) -> None:
         report = build_s2pjt01_lifecycle_state_report(
             generated_at=GENERATED_AT,
@@ -7032,6 +7233,70 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["production_boundary_gate"], "pass")
         self.assertTrue(payload["s2pit02_runtime_dashboard_ready"])
         self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_source_model_view_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            user_center_path = tmp_path / "user-center.json"
+            source_domains_path = tmp_path / "source-domains.json"
+            reading_boards_path = tmp_path / "reading-boards.json"
+            parameters_path = tmp_path / "parameters.json"
+            queue_view_path = tmp_path / "queue-view.json"
+            gate_path = tmp_path / "production-gate.json"
+            user_center_path.write_text(json.dumps(s2pit01_user_center_report(), ensure_ascii=False), encoding="utf-8")
+            source_domains_path.write_text(
+                json.dumps({"source_domain_records": s2pit03_source_domains()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            reading_boards_path.write_text(
+                json.dumps({"reading_board_records": s2pit03_reading_boards()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            parameters_path.write_text(
+                json.dumps({"parameter_records": s2pit03_parameter_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            queue_view_path.write_text(
+                json.dumps({"queue_view_records": s2pit03_queue_view_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-source-model-view",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-26",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--user-center-report",
+                    str(user_center_path),
+                    "--source-domains",
+                    str(source_domains_path),
+                    "--reading-boards",
+                    str(reading_boards_path),
+                    "--parameters",
+                    str(parameters_path),
+                    "--queue-view",
+                    str(queue_view_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PIT03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["parameter_disclosure_gate"], "pass")
+        self.assertEqual(payload["queue_view_gate"], "pass")
+        self.assertTrue(payload["s2pit03_source_model_view_ready"])
+        self.assertFalse(payload["source_adapter_changed"])
+        self.assertFalse(payload["queue_mutation_allowed"])
 
     def test_cli_stage2_lifecycle_state_outputs_json(self) -> None:
         buffer = io.StringIO()
