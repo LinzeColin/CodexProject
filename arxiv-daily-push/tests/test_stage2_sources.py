@@ -13,6 +13,9 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PGT04_DELTA_RESONANCE_MODEL_ID,
+    S2PGT04_REQUIRED_DELTA_TYPES,
+    S2PGT04_REQUIRED_RESONANCE_GROUPS,
     S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS,
     S2PGT03_REQUIRED_PRIMARY_BOARDS,
     S2PGT03_REQUIRED_SOURCE_DOMAINS,
@@ -50,6 +53,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pgt04_delta_resonance_report,
     build_s2pgt03_source_board_routing_report,
     build_s2pgt02_knowledge_graph_spine_report,
     build_s2pgt01_evidence_packet_v2_compatibility_report,
@@ -72,6 +76,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pgt04_delta_resonance,
     run_s2pgt03_source_board_routing,
     run_s2pgt02_knowledge_graph_spine,
     run_s2pgt01_evidence_packet_v2_compatibility,
@@ -92,6 +97,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pgt04_delta_resonance_report,
     validate_s2pgt03_source_board_routing_report,
     validate_s2pgt02_knowledge_graph_spine_report,
     validate_s2pgt01_evidence_packet_v2_compatibility_report,
@@ -1237,6 +1243,94 @@ def source_board_route_records() -> list[dict]:
             "production_affected": False,
         }
         for route_id, source_domain, source_id, primary_boards, cross_cutting_boards, reason_codes, route_explanation in rows
+    ]
+
+
+def delta_resonance_records() -> list[dict]:
+    rows = [
+        (
+            "delta:d1:new-agent-risk",
+            "d1_research_preprint",
+            "arxiv:2606.00001",
+            "route:d1:arxiv:2606.00001",
+            "new_signal",
+            "science_engineering",
+            "supported",
+            0.82,
+            "New arXiv agent-risk result strengthens the science-to-engineering frontier signal.",
+        ),
+        (
+            "delta:d2:changed-engineering-evidence",
+            "d2_authoritative_publication",
+            "nature:article-1",
+            "route:d2:nature:article-1",
+            "changed_signal",
+            "science_engineering",
+            "watch",
+            0.58,
+            "Authoritative publication changes the engineering interpretation but needs follow-up evidence.",
+        ),
+        (
+            "delta:d3:support-policy-capital",
+            "d3_china_official",
+            "cn.gov:policy-1",
+            "route:d3:cn.gov:policy-1",
+            "supporting_signal",
+            "policy_capital",
+            "supported",
+            0.74,
+            "China official policy supports the policy-capital resonance for AI infrastructure.",
+        ),
+        (
+            "delta:d4:refute-risk",
+            "d4_us_official",
+            "us.gov:signal-1",
+            "route:d4:us.gov:signal-1",
+            "refuting_signal",
+            "risk_counterevidence",
+            "refuted",
+            0.66,
+            "US official signal refutes an overbroad deployment assumption and must be kept as counterevidence.",
+        ),
+        (
+            "delta:d1:frontier-personal-roi",
+            "d1_research_preprint",
+            "arxiv:2606.00001",
+            "route:d1:arxiv:2606.00001",
+            "frontier_shift",
+            "personal_roi",
+            "mixed",
+            0.61,
+            "Frontier shift is relevant to personal capability ROI but remains mixed until more evidence arrives.",
+        ),
+    ]
+    return [
+        {
+            "delta_id": delta_id,
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "route_id": route_id,
+            "delta_type": delta_type,
+            "resonance_group": resonance_group,
+            "support_status": support_status,
+            "signal_strength": signal_strength,
+            "delta_explanation": delta_explanation,
+            "evidence_refs": [f"claim:{source_id}", f"fixture:delta:{delta_type}"],
+            "schema_migration_required": False,
+            "production_affected": False,
+            "email_frontstage_changed": False,
+        }
+        for (
+            delta_id,
+            source_domain,
+            source_id,
+            route_id,
+            delta_type,
+            resonance_group,
+            support_status,
+            signal_strength,
+            delta_explanation,
+        ) in rows
     ]
 
 
@@ -2714,6 +2808,116 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["source_board_routing_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pgt03_source_board_routing_report.json").is_file())
 
+    def test_s2pgt04_delta_resonance_passes_support_refute_and_resonance_gates(self) -> None:
+        routing_report = build_s2pgt03_source_board_routing_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            route_records=source_board_route_records(),
+        )
+        report = build_s2pgt04_delta_resonance_report(
+            generated_at=GENERATED_AT,
+            routing_report=routing_report,
+            delta_records=delta_resonance_records(),
+        )
+        repeated = build_s2pgt04_delta_resonance_report(
+            generated_at=GENERATED_AT,
+            routing_report=routing_report,
+            delta_records=delta_resonance_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PGT04_DELTA_RESONANCE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PGT04-DELTA-RESONANCE")
+        self.assertEqual(report["task_id"], "S2PGT04")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(set(report["delta_types_observed"]), set(S2PGT04_REQUIRED_DELTA_TYPES))
+        self.assertEqual(set(report["resonance_groups_observed"]), set(S2PGT04_REQUIRED_RESONANCE_GROUPS))
+        self.assertIn("supported", report["support_statuses_observed"])
+        self.assertIn("refuted", report["support_statuses_observed"])
+        self.assertEqual(report["upstream_routing_gate"], "pass")
+        self.assertEqual(report["delta_type_coverage_gate"], "pass")
+        self.assertEqual(report["support_refute_gate"], "pass")
+        self.assertEqual(report["resonance_group_gate"], "pass")
+        self.assertEqual(report["delta_reason_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["resonance_state_hash"], repeated["resonance_state_hash"])
+        self.assertTrue(report["s2pgt04_delta_resonance_ready"])
+        self.assertFalse(report["schema_migration_required"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["production_affected"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(report["email_frontstage_changed"])
+        self.assertFalse(validate_s2pgt04_delta_resonance_report(report))
+
+    def test_s2pgt04_delta_resonance_blocks_missing_refute_bad_strength_and_side_effects(self) -> None:
+        routing_report = build_s2pgt03_source_board_routing_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            route_records=source_board_route_records(),
+        )
+        deltas = delta_resonance_records()
+        deltas = [delta for delta in deltas if delta["support_status"] != "refuted"]
+        deltas[0] = dict(deltas[0], signal_strength=1.8, production_affected=True, email_frontstage_changed=True)
+        deltas[1] = dict(deltas[1], route_id="route:missing", evidence_refs=[])
+        report = build_s2pgt04_delta_resonance_report(
+            generated_at=GENERATED_AT,
+            routing_report=routing_report,
+            delta_records=deltas,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["support_refute_gate"], "blocked")
+        self.assertEqual(report["delta_reason_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        self.assertFalse(report["s2pgt04_delta_resonance_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("support_status refuted", joined)
+        self.assertIn("signal_strength", joined)
+        self.assertIn("route_id must reference", joined)
+        self.assertIn("evidence_refs", joined)
+        self.assertIn("production_affected", joined)
+        self.assertIn("email_frontstage_changed", joined)
+        self.assertTrue(validate_s2pgt04_delta_resonance_report(report))
+
+    def test_s2pgt04_delta_resonance_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pgt04_delta_resonance(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                routing_report=build_s2pgt03_source_board_routing_report(
+                    generated_at=GENERATED_AT,
+                    evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                        generated_at=GENERATED_AT,
+                        source_domain_reports=evidence_packet_domain_reports(),
+                        packet_records=evidence_packet_records(),
+                    ),
+                    route_records=source_board_route_records(),
+                ),
+                delta_records=delta_resonance_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pgt04_delta_resonance_report(report))
+            self.assertFalse(report["schema_migration_required"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["email_frontstage_changed"])
+            self.assertTrue(Path(report["delta_resonance_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pgt04_delta_resonance_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -3749,6 +3953,63 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertFalse(payload["schema_migration_required"])
         self.assertFalse(payload["production_affected"])
         self.assertFalse(payload["real_smtp_sent"])
+
+    def test_cli_stage2_delta_resonance_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            routing_report_path = Path(tmp) / "routing-report.json"
+            delta_records_path = Path(tmp) / "delta-records.json"
+            routing_report_path.write_text(
+                json.dumps(
+                    build_s2pgt03_source_board_routing_report(
+                        generated_at=GENERATED_AT,
+                        evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                            generated_at=GENERATED_AT,
+                            source_domain_reports=evidence_packet_domain_reports(),
+                            packet_records=evidence_packet_records(),
+                        ),
+                        route_records=source_board_route_records(),
+                    ),
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            delta_records_path.write_text(
+                json.dumps({"delta_records": delta_resonance_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-delta-resonance",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--routing-report",
+                    str(routing_report_path),
+                    "--delta-records",
+                    str(delta_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PGT04_DELTA_RESONANCE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PGT04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["upstream_routing_gate"], "pass")
+        self.assertEqual(payload["delta_type_coverage_gate"], "pass")
+        self.assertEqual(payload["support_refute_gate"], "pass")
+        self.assertEqual(payload["resonance_group_gate"], "pass")
+        self.assertTrue(payload["s2pgt04_delta_resonance_ready"])
+        self.assertFalse(payload["public_schema_changed"])
+        self.assertFalse(payload["schema_migration_required"])
+        self.assertFalse(payload["production_affected"])
+        self.assertFalse(payload["real_smtp_sent"])
+        self.assertFalse(payload["email_frontstage_changed"])
 
 
 if __name__ == "__main__":

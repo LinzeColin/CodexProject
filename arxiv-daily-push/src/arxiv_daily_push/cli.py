@@ -107,6 +107,7 @@ from .stage1_runtime import (
     validate_stage1_runtime_report,
 )
 from .stage2_sources import (
+    run_s2pgt04_delta_resonance,
     run_s2pgt03_source_board_routing,
     run_s2pgt02_knowledge_graph_spine,
     run_s2pgt01_evidence_packet_v2_compatibility,
@@ -143,6 +144,7 @@ from .stage2_sources import (
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
     validate_s2pft05_d3_full_governance_qualification_report,
+    validate_s2pgt04_delta_resonance_report,
     validate_s2pgt03_source_board_routing_report,
     validate_s2pgt02_knowledge_graph_spine_report,
     validate_s2pgt01_evidence_packet_v2_compatibility_report,
@@ -745,6 +747,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pgt03_routing.add_argument("--route-records", required=True, help="Route records JSON list or object with route_records.")
     s2pgt03_routing.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pgt03_routing.add_argument("--json", action="store_true", help="Print JSON source-board routing report.")
+
+    s2pgt04_delta = subparsers.add_parser(
+        "stage2-delta-resonance",
+        help="Run S2PGT04 private frontier delta and signal resonance evidence without schema or production side effects.",
+    )
+    s2pgt04_delta.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pgt04_delta.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pgt04_delta.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pgt04_delta.add_argument("--routing-report", required=True, help="Passing S2PGT03 source-board routing report JSON.")
+    s2pgt04_delta.add_argument("--delta-records", required=True, help="Delta records JSON list or object with delta_records.")
+    s2pgt04_delta.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pgt04_delta.add_argument("--json", action="store_true", help="Print JSON delta/resonance report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2200,6 +2214,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- primary_board_coverage_gate: {report.get('primary_board_coverage_gate')}")
             print(f"- cross_cutting_board_coverage_gate: {report.get('cross_cutting_board_coverage_gate')}")
             print(f"- route_reason_gate: {report.get('route_reason_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-delta-resonance":
+        report = run_s2pgt04_delta_resonance(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            routing_report=load_json_mapping(args.routing_report),
+            delta_records=load_json_records(args.delta_records, "delta_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pgt04_delta_resonance_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- upstream_routing_gate: {report.get('upstream_routing_gate')}")
+            print(f"- delta_type_coverage_gate: {report.get('delta_type_coverage_gate')}")
+            print(f"- support_refute_gate: {report.get('support_refute_gate')}")
+            print(f"- resonance_group_gate: {report.get('resonance_group_gate')}")
+            print(f"- delta_reason_gate: {report.get('delta_reason_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

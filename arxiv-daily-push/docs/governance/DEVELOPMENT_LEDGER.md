@@ -2289,3 +2289,23 @@ None for this new project baseline.
 - Rollback: Revert S2PGT03 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md`; `governance/run_manifests/ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Commit, push, and open PR for S2PGT03.
+
+### `ITER-20260625-ADP-S2PG-S2PGT04-DELTA-RESONANCE`
+
+- Timestamp: `2026-06-25T20:20:00+10:00`
+- Fact level: EXTRACTED from S2PGT03 receipt, V7.1 requirement `REQ-V7-021`, route-linked support/refute/frontier delta fixtures, model/formula/parameter registry diff, and local S2PGT04 validation.
+- Base commit: `44760cdeee5f0a95d5b70bc168900005dde8af65`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PG
+- Task IDs: `S2PGT04`; next task `S2PGT05` if defined by the roadmap, otherwise continue the next governed S2PG/S2PH task under V7.2 boundaries.
+- Goal: Complete private support/refute/frontier delta and signal-resonance evidence after S2PGT03, register S2PGT04 governance entries, and preserve V7.2 no-production/no-email-frontstage boundaries.
+- Files changed: S2PGT04 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-073` delta resonance model.
+- Formula changes: Added `FORM-ADP-075` with machine-verifiable AST fingerprints bound to the S2PGT04 implementation.
+- Parameter changes: Added `PARAM-ADP-536` through `PARAM-ADP-544` for S2PGT04 model id, acceptance id, task id, delta types, resonance groups, support statuses, delta fields, required gates, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 83 OK; full arxiv-daily-push unittest 312 OK; semantic extractor 75 formulas / 527 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSON/YAML/JSONL/CSV parse OK; `git diff --check` PASS.
+- Decisions: `ACC-S2PGT04-DELTA-RESONANCE` is accepted only as private backend support/refute/frontier delta and signal-resonance evidence. Public schema migration, production queue mutation, source-domain production inclusion, visible Email V1 frontstage changes, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, scheduler, V7.2 contract edits, and production operation all remain false/disabled.
+- Remaining risks: Downstream S2PG/S2PH tasks still need to consume this evidence without bypassing EvidencePacket, routing, review, action, ROI, and Email V1 readiness gates. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PGT04 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT04_DELTA_RESONANCE.md`; `governance/run_manifests/ADP-S2PGT04-DELTA-RESONANCE-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Commit, push, and open PR for S2PGT04.
