@@ -1747,6 +1747,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PIT04"
+    phase: "S2PI"
+    objective: "Implement local-only content, mail, review, action, asset, and ROI ledger reconciliation evidence."
+    scope: "Content/evidence/run/mail/feedback/lifecycle/review/action/asset/ROI traceability, dependency gates from S2PIT02/S2PIT03/S2PJT01/S2PJT02/S2PJT03, mail and feedback status counts, deterministic ledger hash, focused tests, CLI, and governance registration."
+    non_scope: "No SMTP, no scheduler, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no Email V1 runtime/frontstage change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no owner-experience final acceptance, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PIT02", "S2PIT03", "S2PJT01", "S2PJT02", "S2PJT03", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PIT04-LEDGER"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit04_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit04_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit04_fulltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit04_semantic PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit04_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit04_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 146 OK", "full arxiv-daily-push unittest: 375 OK", "semantic extractor: 90 formulas / 683 parameters checked", "V7.2 validator PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift 0 / reference issues 0", "JSON/YAML/JSONL/CSV parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PIT04_CONTENT_LEDGER.md", "governance/run_manifests/ADP-S2PIT04-CONTENT-LEDGER-20260626.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PIT04 can be mistaken for a live production ledger, real email operation, or final owner-experience acceptance; it is local reconciliation evidence only and keeps all production side-effect gates false."
+    rollback: "Revert S2PIT04 content ledger code, CLI, tests, governance registrations, phase record, manifest, and events; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2PJT01"
     phase: "S2PJ"
     objective: "Implement local-only review/action/asset/conversion/mastery lifecycle state model evidence."

@@ -765,6 +765,53 @@ S2PIT03_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PIT03_REPORT_FILENAME = "stage2_s2pit03_source_model_view_report.json"
+S2PIT04_CONTENT_LEDGER_MODEL_ID = "adp-s2pit04-content-mail-review-action-roi-ledger-v1"
+S2PIT04_ACCEPTANCE_ID = "ACC-S2PIT04-LEDGER"
+S2PIT04_TASK_ID = "S2PIT04"
+S2PIT04_REQUIRED_RECORD_FIELDS = (
+    "content_id",
+    "evidence_refs",
+    "run_id",
+    "mail_id",
+    "feedback_id",
+    "lifecycle_state",
+    "review_ids",
+    "action_ids",
+    "asset_ids",
+    "roi",
+)
+S2PIT04_ALLOWED_MAIL_STATUSES = ("previewed", "ready_no_send", "blocked_no_send")
+S2PIT04_ALLOWED_FEEDBACK_STATUSES = ("pending", "received", "not_requested")
+S2PIT04_REQUIRED_GATES = (
+    "runtime_dashboard_gate",
+    "source_model_view_gate",
+    "lifecycle_state_gate",
+    "review_schedule_gate",
+    "action_roi_gate",
+    "ledger_record_gate",
+    "traceability_gate",
+    "count_conservation_gate",
+    "deterministic_ledger_gate",
+    "no_side_effect_gate",
+)
+S2PIT04_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PIT04_REPORT_FILENAME = "stage2_s2pit04_content_mail_review_action_roi_ledger_report.json"
 S2PJT01_LIFECYCLE_STATE_MODEL_ID = "adp-s2pjt01-lifecycle-state-v1"
 S2PJT01_ACCEPTANCE_ID = "ACC-S2PJT01-LIFECYCLE"
 S2PJT01_TASK_ID = "S2PJT01"
@@ -8039,6 +8086,340 @@ def validate_s2pit03_source_model_view_report(report: Mapping[str, Any]) -> list
         errors.append("blocked S2PIT03 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pit03_source_model_view_ready") is not True:
         errors.append("passing S2PIT03 report requires s2pit03_source_model_view_ready=true")
+    return errors
+
+
+def _s2pit04_ledger_hash(records: Sequence[Mapping[str, Any]]) -> str:
+    payload = [
+        {
+            "action_ids": [str(item) for item in row.get("action_ids") or []],
+            "asset_ids": [str(item) for item in row.get("asset_ids") or []],
+            "content_id": str(row.get("content_id") or ""),
+            "feedback_id": str(row.get("feedback_id") or ""),
+            "feedback_status": str(row.get("feedback_status") or ""),
+            "lifecycle_state": str(row.get("lifecycle_state") or ""),
+            "mail_id": str(row.get("mail_id") or ""),
+            "mail_status": str(row.get("mail_status") or ""),
+            "review_ids": [str(item) for item in row.get("review_ids") or []],
+            "roi_status": str((row.get("roi") or {}).get("status") or ""),
+            "run_id": str(row.get("run_id") or ""),
+        }
+        for row in records
+    ]
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pit04_content_ledger_report(
+    *,
+    generated_at: str,
+    runtime_dashboard_report: Mapping[str, Any],
+    source_model_view_report: Mapping[str, Any],
+    lifecycle_state_report: Mapping[str, Any],
+    review_schedule_report: Mapping[str, Any],
+    action_roi_report: Mapping[str, Any],
+    ledger_records: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only content/mail/review/action/ROI ledger reconciliation evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    blocking_reasons: list[str] = []
+
+    runtime_errors = validate_s2pit02_runtime_dashboard_report(runtime_dashboard_report)
+    runtime_gate = (
+        "pass"
+        if runtime_dashboard_report.get("status") == "pass"
+        and runtime_dashboard_report.get("s2pit02_runtime_dashboard_ready") is True
+        and not runtime_errors
+        else "blocked"
+    )
+    if runtime_gate != "pass":
+        blocking_reasons.append("S2PIT02 runtime dashboard report must pass")
+        blocking_reasons.extend(runtime_errors)
+
+    source_errors = validate_s2pit03_source_model_view_report(source_model_view_report)
+    source_gate = (
+        "pass"
+        if source_model_view_report.get("status") == "pass"
+        and source_model_view_report.get("s2pit03_source_model_view_ready") is True
+        and not source_errors
+        else "blocked"
+    )
+    if source_gate != "pass":
+        blocking_reasons.append("S2PIT03 source/model view report must pass")
+        blocking_reasons.extend(source_errors)
+
+    lifecycle_errors = validate_s2pjt01_lifecycle_state_report(lifecycle_state_report)
+    lifecycle_gate = (
+        "pass"
+        if lifecycle_state_report.get("status") == "pass"
+        and lifecycle_state_report.get("s2pjt01_lifecycle_state_ready") is True
+        and not lifecycle_errors
+        else "blocked"
+    )
+    if lifecycle_gate != "pass":
+        blocking_reasons.append("S2PJT01 lifecycle state report must pass")
+        blocking_reasons.extend(lifecycle_errors)
+
+    review_errors = validate_s2pjt02_review_schedule_report(review_schedule_report)
+    review_gate = (
+        "pass"
+        if review_schedule_report.get("status") == "pass"
+        and review_schedule_report.get("s2pjt02_review_schedule_ready") is True
+        and not review_errors
+        else "blocked"
+    )
+    if review_gate != "pass":
+        blocking_reasons.append("S2PJT02 review schedule report must pass")
+        blocking_reasons.extend(review_errors)
+
+    action_errors = validate_s2pjt03_action_asset_roi_report(action_roi_report)
+    action_gate = (
+        "pass"
+        if action_roi_report.get("status") == "pass"
+        and action_roi_report.get("s2pjt03_action_roi_ready") is True
+        and not action_errors
+        else "blocked"
+    )
+    if action_gate != "pass":
+        blocking_reasons.append("S2PJT03 action/asset/ROI report must pass")
+        blocking_reasons.extend(action_errors)
+
+    review_content_ids = {str(row.get("content_id") or "") for row in review_schedule_report.get("review_records") or []}
+    action_ids = {str(row.get("action_id") or "") for row in action_roi_report.get("action_records") or []}
+    calculated_roi_content_ids = {
+        str(row.get("content_id") or "")
+        for row in action_roi_report.get("action_records") or []
+        if row.get("actual_roi_status") == "calculated"
+    }
+    asset_ids = {str(row.get("asset_id") or "") for row in action_roi_report.get("capability_assets") or []}
+    normalized_records: list[dict[str, Any]] = []
+    record_errors: list[str] = []
+    trace_errors: list[str] = []
+    side_effect_errors: list[str] = []
+    content_ids: set[str] = set()
+    duplicate_ids: set[str] = set()
+    mail_status_counts = {status: 0 for status in S2PIT04_ALLOWED_MAIL_STATUSES}
+    feedback_status_counts = {status: 0 for status in S2PIT04_ALLOWED_FEEDBACK_STATUSES}
+    roi_status_counts = {status: 0 for status in S2PJT03_ALLOWED_ACTUAL_ROI_STATUSES}
+
+    if not ledger_records:
+        record_errors.append("S2PIT04 requires ledger_records")
+    for index, record in enumerate(ledger_records):
+        row = dict(record)
+        content_id = str(row.get("content_id") or "")
+        mail_status = str(row.get("mail_status") or "")
+        feedback_status = str(row.get("feedback_status") or "")
+        roi = row.get("roi") if isinstance(row.get("roi"), Mapping) else {}
+        roi_status = str(roi.get("status") or "")
+        for field in S2PIT04_REQUIRED_RECORD_FIELDS:
+            value = row.get(field)
+            if field == "asset_ids":
+                if value is None:
+                    record_errors.append(f"ledger record {content_id or index} missing {field}")
+                continue
+            if value is None or value == "" or value == [] or value == {}:
+                record_errors.append(f"ledger record {content_id or index} missing {field}")
+        if content_id:
+            if content_id in content_ids:
+                duplicate_ids.add(content_id)
+            content_ids.add(content_id)
+            if content_id not in review_content_ids:
+                trace_errors.append(f"{content_id} is not traceable to S2PJT02 review records")
+        if mail_status not in S2PIT04_ALLOWED_MAIL_STATUSES:
+            record_errors.append(f"{content_id or index} mail_status must be previewed, ready_no_send, or blocked_no_send")
+        else:
+            mail_status_counts[mail_status] += 1
+        if feedback_status not in S2PIT04_ALLOWED_FEEDBACK_STATUSES:
+            record_errors.append(f"{content_id or index} feedback_status must be pending, received, or not_requested")
+        else:
+            feedback_status_counts[feedback_status] += 1
+        if roi_status not in S2PJT03_ALLOWED_ACTUAL_ROI_STATUSES:
+            record_errors.append(f"{content_id or index} roi.status must be not_calculable or calculated")
+        else:
+            roi_status_counts[roi_status] += 1
+        for action_id in [str(item) for item in row.get("action_ids") or []]:
+            if action_id not in action_ids:
+                trace_errors.append(f"{content_id or index} action_id {action_id} is not traceable to S2PJT03")
+        for asset_id in [str(item) for item in row.get("asset_ids") or []]:
+            if asset_id not in asset_ids:
+                trace_errors.append(f"{content_id or index} asset_id {asset_id} is not traceable to S2PJT03")
+        if roi_status == "calculated" and content_id not in calculated_roi_content_ids:
+            trace_errors.append(f"{content_id or index} calculated ROI must trace to S2PJT03 calculated actual ROI")
+        if not isinstance(row.get("evidence_refs"), list) or not row.get("evidence_refs"):
+            trace_errors.append(f"{content_id or index} evidence_refs must be a non-empty list")
+        if not row.get("run_id") or not row.get("mail_id") or not row.get("feedback_id"):
+            trace_errors.append(f"{content_id or index} requires run_id, mail_id, and feedback_id")
+        for key in (
+            "real_smtp_sent",
+            "scheduler_enabled",
+            "release_upload_allowed",
+            "db_migration_executed",
+            "public_schema_changed",
+            "queue_mutation_allowed",
+            "source_adapter_changed",
+            "email_frontstage_changed",
+        ):
+            if row.get(key, False) is not False:
+                side_effect_errors.append(f"{content_id or index}.{key} must be false")
+        normalized_records.append(row)
+    if duplicate_ids:
+        record_errors.append("duplicate ledger content_id: " + ", ".join(sorted(duplicate_ids)))
+
+    count_errors: list[str] = []
+    if len(content_ids) != len(normalized_records):
+        count_errors.append("ledger content_id count must equal record count")
+    if not any(status_counts > 0 for status_counts in roi_status_counts.values()):
+        count_errors.append("ledger must include ROI status counts")
+
+    production_errors: list[str] = []
+    for key in (*S2PIT04_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "runtime_dashboard_gate": runtime_gate,
+        "source_model_view_gate": source_gate,
+        "lifecycle_state_gate": lifecycle_gate,
+        "review_schedule_gate": review_gate,
+        "action_roi_gate": action_gate,
+        "ledger_record_gate": "pass" if not record_errors else "blocked",
+        "traceability_gate": "pass" if not trace_errors else "blocked",
+        "count_conservation_gate": "pass" if not count_errors else "blocked",
+        "deterministic_ledger_gate": "pass",
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons.extend(record_errors)
+    blocking_reasons.extend(trace_errors)
+    blocking_reasons.extend(count_errors)
+    blocking_reasons.extend(side_effect_errors)
+    blocking_reasons.extend(production_errors)
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    ledger_hash = _s2pit04_ledger_hash(normalized_records)
+
+    return {
+        "model_id": S2PIT04_CONTENT_LEDGER_MODEL_ID,
+        "acceptance_id": S2PIT04_ACCEPTANCE_ID,
+        "task_id": S2PIT04_TASK_ID,
+        "phase": "S2PI",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_record_fields": list(S2PIT04_REQUIRED_RECORD_FIELDS),
+        "allowed_mail_statuses": list(S2PIT04_ALLOWED_MAIL_STATUSES),
+        "allowed_feedback_statuses": list(S2PIT04_ALLOWED_FEEDBACK_STATUSES),
+        "content_count": len(content_ids),
+        "ledger_record_count": len(normalized_records),
+        "mail_status_counts": mail_status_counts,
+        "feedback_status_counts": feedback_status_counts,
+        "roi_status_counts": roi_status_counts,
+        "ledger_records": normalized_records,
+        "ledger_hash": ledger_hash,
+        "s2pit04_content_ledger_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pit04_content_ledger(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    runtime_dashboard_report: Mapping[str, Any],
+    source_model_view_report: Mapping[str, Any],
+    lifecycle_state_report: Mapping[str, Any],
+    review_schedule_report: Mapping[str, Any],
+    action_roi_report: Mapping[str, Any],
+    ledger_records: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PIT04 local content/mail/review/action/ROI ledger evidence."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pit04-content-ledger"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pit04_content_ledger_report(
+        generated_at=generated_at,
+        runtime_dashboard_report=runtime_dashboard_report,
+        source_model_view_report=source_model_view_report,
+        lifecycle_state_report=lifecycle_state_report,
+        review_schedule_report=review_schedule_report,
+        action_roi_report=action_roi_report,
+        ledger_records=ledger_records,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "content_ledger_report_path": str(run_dir / "adp-s2pit04-content-ledger-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pit04-content-ledger-report.json", report)
+        _write_json(state / S2PIT04_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pit04_content_ledger_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PIT04_CONTENT_LEDGER_MODEL_ID:
+        errors.append("S2PIT04 model_id must be adp-s2pit04-content-mail-review-action-roi-ledger-v1")
+    if report.get("task_id") != S2PIT04_TASK_ID:
+        errors.append("S2PIT04 task_id must be S2PIT04")
+    if report.get("acceptance_id") != S2PIT04_ACCEPTANCE_ID:
+        errors.append("S2PIT04 acceptance_id must be ACC-S2PIT04-LEDGER")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PIT04 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PIT04_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PIT04 local ledger evidence")
+    records = report.get("ledger_records")
+    if not isinstance(records, list) or not records:
+        errors.append("S2PIT04 ledger_records must be a non-empty list")
+        records = []
+    if int(report.get("ledger_record_count") or 0) != len(records):
+        errors.append("S2PIT04 ledger_record_count must match ledger_records")
+    if int(report.get("content_count") or 0) != len({str(row.get("content_id") or "") for row in records}):
+        errors.append("S2PIT04 content_count must match unique ledger content_ids")
+    if report.get("ledger_hash") != _s2pit04_ledger_hash(records):
+        errors.append("S2PIT04 ledger_hash must match ledger_records")
+    for gate in S2PIT04_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PIT04 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PIT04 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pit04_content_ledger_ready") is not True:
+        errors.append("passing S2PIT04 report requires s2pit04_content_ledger_ready=true")
     return errors
 
 

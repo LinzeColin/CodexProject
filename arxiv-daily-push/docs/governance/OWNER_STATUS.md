@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PIT03` 本地 source/model view evidence；它验证 D1-D4 source-domain health、B1-B6 reading-board coverage、参数 default/range/rollback/impact/code/test 可读性、first-screen progressive disclosure、queue view traceability/exportability、deterministic view hash 和 no-production side-effect gates，不抓取 live source、不改 source adapter 生产纳入、不改 queue/ranking/schema/SMTP/scheduler/Release/Email V1 runtime。
+新增 `S2PIT04` 本地 content ledger evidence；它聚合并校验 content、evidence、Run、mail preview、feedback、lifecycle、review、action、asset 与 ROI 的可追踪总账，要求 S2PIT02/S2PIT03/S2PJT01/S2PJT02/S2PJT03 依赖通过，并保持 SMTP/scheduler/Release/schema/queue/ranking/source adapter/Email V1 runtime 全部无生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT03 as local source/model view evidence only, continue S2PIT04 ledger dependency next, keep S2PKT01 blocked until S2PIT04 is satisfied, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT04 as local content ledger evidence only, allow S2PKT01 to start only as local no-production mail contract work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PIT04_LEDGER_LOCAL_ONLY`
+- next_task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PIT04-LEDGER`
-- unblock_condition: S2PIT03 source/model view evidence is complete locally; execute S2PIT04 ledger dependency next and keep S2PKT01 blocked until S2PIT04 is satisfied without production side effects.
+- acceptance_ids: `ACC-S2PKT01-MAIL-CONTRACT`
+- unblock_condition: S2PIT04 content ledger evidence is complete locally; start S2PKT01 only as a local no-production mail contract task and keep SMTP/scheduler/Release/public schema disabled.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (674/674 active parameters, 89/89 active formulas)
+- implementation_congruence: `VERIFIED` (683/683 active parameters, 90/90 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT03 as local source/model view evidence, continue S2PIT04 ledger work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PIT04 ledger local-only work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 source/model/ledger gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT04 as local content ledger evidence, continue S2PKT01 local mail contract work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PKT01 mail contract local-only work under V7.2 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 ledger/mail contract gate 直接启用生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `87`
-- total_formulas: `89`
-- active_formulas: `89`
-- total_parameters: `691`
-- active_parameters: `674`
+- model_count: `88`
+- total_formulas: `90`
+- active_formulas: `90`
+- total_parameters: `700`
+- active_parameters: `683`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PIT03_SOURCE_MODEL_VIEW_LOCAL_ONLY`
+- release_gate: `S2PIT04_CONTENT_LEDGER_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PI / S2PIT03_SOURCE_MODEL_VIEW_LOCAL_ONLY`
+- phase/gate: `S2PI / S2PIT04_CONTENT_LEDGER_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PIT04_LEDGER_LOCAL_ONLY`
-- reason: S2PIT03 local source/model view evidence is complete; execute S2PIT04 ledger dependency next before S2PKT01 mail contract work under V7.2 no-production boundaries.
+- task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY`
+- reason: S2PIT04 local content ledger evidence is complete; continue S2PKT01 mail contract work only under V7.2 no-production boundaries.

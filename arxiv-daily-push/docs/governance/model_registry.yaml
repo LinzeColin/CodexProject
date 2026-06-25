@@ -4609,3 +4609,56 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PIT03-SOURCE-MODEL-VIEW-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT03_SOURCE_MODEL_VIEW.md"
+  -
+    model_id: "MOD-ADP-088"
+    name: "S2PIT04 content mail review action ROI ledger evidence model"
+    purpose: "Validate local-only S2PIT04 ledger traceability across content, evidence, run, mail preview, feedback, lifecycle, review, action, asset, and ROI records while keeping every production side-effect gate false."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-090"
+    parameter_ids:
+      - "PARAM-ADP-692"
+      - "PARAM-ADP-693"
+      - "PARAM-ADP-694"
+      - "PARAM-ADP-695"
+      - "PARAM-ADP-696"
+      - "PARAM-ADP-697"
+      - "PARAM-ADP-698"
+      - "PARAM-ADP-699"
+      - "PARAM-ADP-700"
+    inputs:
+      - "S2PIT02 runtime dashboard report"
+      - "S2PIT03 source/model view report"
+      - "S2PJT01 lifecycle state report"
+      - "S2PJT02 review schedule report"
+      - "S2PJT03 action/asset/ROI report"
+      - "S2PIT04 ledger records"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PIT04 content ledger report"
+      - "runtime dashboard gate"
+      - "source model view gate"
+      - "lifecycle state gate"
+      - "review schedule gate"
+      - "action ROI gate"
+      - "ledger record gate"
+      - "traceability gate"
+      - "count conservation gate"
+      - "deterministic ledger gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PIT04-CONTENT-LEDGER-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT04_CONTENT_LEDGER.md"

@@ -55,6 +55,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PIT03_REQUIRED_READING_BOARDS,
     S2PIT03_REQUIRED_SOURCE_DOMAINS,
     S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID,
+    S2PIT04_CONTENT_LEDGER_MODEL_ID,
     S2PJT01_LIFECYCLE_STATE_MODEL_ID,
     S2PJT01_REQUIRED_LEDGER_TYPES,
     S2PJT01_REQUIRED_STATES,
@@ -98,6 +99,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pit01_user_center_report,
     build_s2pit02_runtime_dashboard_report,
     build_s2pit03_source_model_view_report,
+    build_s2pit04_content_ledger_report,
     build_s2pjt01_lifecycle_state_report,
     build_s2pjt02_review_schedule_report,
     build_s2pjt03_action_asset_roi_report,
@@ -135,6 +137,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pit01_user_center,
     run_s2pit02_runtime_dashboard,
     run_s2pit03_source_model_view,
+    run_s2pit04_content_ledger,
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
@@ -170,6 +173,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pit01_user_center_report,
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pit03_source_model_view_report,
+    validate_s2pit04_content_ledger_report,
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
@@ -688,6 +692,90 @@ def s2pjt03_action_roi_report() -> dict:
         review_schedule_report=s2pjt02_review_schedule_report(),
         action_records=s2pjt03_action_records(),
         capability_assets=s2pjt03_capability_assets(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pit04_ledger_records() -> list[dict]:
+    return [
+        {
+            "content_id": "content:today",
+            "evidence_refs": ["local://evidence/content-today"],
+            "run_id": "run:20260625:M1",
+            "mail_id": "mail:M1:content-today",
+            "mail_status": "previewed",
+            "feedback_id": "feedback:content-today",
+            "feedback_status": "pending",
+            "lifecycle_state": "ACTION",
+            "review_ids": ["review:content-today"],
+            "action_ids": ["act:15m", "act:2h"],
+            "asset_ids": [],
+            "roi": {"status": "not_calculable", "evidence_refs": ["local://roi/not-yet"]},
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+            "db_migration_executed": False,
+            "public_schema_changed": False,
+            "queue_mutation_allowed": False,
+            "source_adapter_changed": False,
+            "email_frontstage_changed": False,
+        },
+        {
+            "content_id": "content:week",
+            "evidence_refs": ["local://evidence/content-week"],
+            "run_id": "run:20260625:M2",
+            "mail_id": "mail:M2:content-week",
+            "mail_status": "ready_no_send",
+            "feedback_id": "feedback:content-week",
+            "feedback_status": "not_requested",
+            "lifecycle_state": "REVIEW_DUE",
+            "review_ids": ["review:content-week"],
+            "action_ids": ["act:7d"],
+            "asset_ids": [],
+            "roi": {"status": "not_calculable", "evidence_refs": ["local://roi/not-yet"]},
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+            "db_migration_executed": False,
+            "public_schema_changed": False,
+            "queue_mutation_allowed": False,
+            "source_adapter_changed": False,
+            "email_frontstage_changed": False,
+        },
+        {
+            "content_id": "content:done",
+            "evidence_refs": ["local://evidence/content-done", "local://asset/method-checklist-v1"],
+            "run_id": "run:20260625:M3",
+            "mail_id": "mail:M3:content-done",
+            "mail_status": "blocked_no_send",
+            "feedback_id": "feedback:content-done",
+            "feedback_status": "received",
+            "lifecycle_state": "ASSET",
+            "review_ids": ["review:content-done"],
+            "action_ids": ["act:30d"],
+            "asset_ids": ["asset:method-checklist-v1"],
+            "roi": {"status": "calculated", "evidence_refs": ["local://asset/method-checklist-v1"]},
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+            "db_migration_executed": False,
+            "public_schema_changed": False,
+            "queue_mutation_allowed": False,
+            "source_adapter_changed": False,
+            "email_frontstage_changed": False,
+        },
+    ]
+
+
+def s2pit04_content_ledger_report() -> dict:
+    return build_s2pit04_content_ledger_report(
+        generated_at=GENERATED_AT,
+        runtime_dashboard_report=s2pit02_runtime_dashboard_report(),
+        source_model_view_report=s2pit03_source_model_view_report(),
+        lifecycle_state_report=s2pjt01_lifecycle_state_report(),
+        review_schedule_report=s2pjt02_review_schedule_report(),
+        action_roi_report=s2pjt03_action_roi_report(),
+        ledger_records=s2pit04_ledger_records(),
         production_gate_state=s2pit02_production_gate_state(),
     )
 
@@ -5250,6 +5338,121 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["source_model_view_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pit03_source_model_view_report.json").is_file())
 
+    def test_s2pit04_content_ledger_passes_traceability_counts_and_no_send_gates(self) -> None:
+        report = build_s2pit04_content_ledger_report(
+            generated_at=GENERATED_AT,
+            runtime_dashboard_report=s2pit02_runtime_dashboard_report(),
+            source_model_view_report=s2pit03_source_model_view_report(),
+            lifecycle_state_report=s2pjt01_lifecycle_state_report(),
+            review_schedule_report=s2pjt02_review_schedule_report(),
+            action_roi_report=s2pjt03_action_roi_report(),
+            ledger_records=s2pit04_ledger_records(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PIT04_CONTENT_LEDGER_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PIT04-LEDGER")
+        self.assertEqual(report["task_id"], "S2PIT04")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["runtime_dashboard_gate"], "pass")
+        self.assertEqual(report["source_model_view_gate"], "pass")
+        self.assertEqual(report["lifecycle_state_gate"], "pass")
+        self.assertEqual(report["review_schedule_gate"], "pass")
+        self.assertEqual(report["action_roi_gate"], "pass")
+        self.assertEqual(report["ledger_record_gate"], "pass")
+        self.assertEqual(report["traceability_gate"], "pass")
+        self.assertEqual(report["count_conservation_gate"], "pass")
+        self.assertEqual(report["deterministic_ledger_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["ledger_record_count"], 3)
+        self.assertEqual(report["content_count"], 3)
+        self.assertEqual(report["mail_status_counts"], {"previewed": 1, "ready_no_send": 1, "blocked_no_send": 1})
+        self.assertEqual(report["feedback_status_counts"], {"pending": 1, "received": 1, "not_requested": 1})
+        self.assertEqual(report["roi_status_counts"], {"not_calculable": 2, "calculated": 1})
+        self.assertTrue(report["ledger_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pit04_content_ledger_ready"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["db_migration_executed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["email_frontstage_changed"])
+        self.assertFalse(validate_s2pit04_content_ledger_report(report))
+
+    def test_s2pit04_content_ledger_blocks_orphans_bad_status_and_side_effects(self) -> None:
+        records = s2pit04_ledger_records()
+        records[0] = {
+            **records[0],
+            "mail_id": "",
+            "mail_status": "sent",
+            "feedback_status": "unknown",
+            "action_ids": ["act:missing"],
+            "asset_ids": ["asset:missing"],
+            "real_smtp_sent": True,
+        }
+        records[1] = {**records[1], "content_id": records[0]["content_id"], "roi": {"status": "calculated"}}
+        report = build_s2pit04_content_ledger_report(
+            generated_at=GENERATED_AT,
+            runtime_dashboard_report={**s2pit02_runtime_dashboard_report(), "status": "blocked"},
+            source_model_view_report={**s2pit03_source_model_view_report(), "status": "blocked"},
+            lifecycle_state_report={**s2pjt01_lifecycle_state_report(), "status": "blocked"},
+            review_schedule_report={**s2pjt02_review_schedule_report(), "status": "blocked"},
+            action_roi_report={**s2pjt03_action_roi_report(), "status": "blocked"},
+            ledger_records=records,
+            production_gate_state=s2pit02_production_gate_state(scheduler_enabled=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["runtime_dashboard_gate"], "blocked")
+        self.assertEqual(report["source_model_view_gate"], "blocked")
+        self.assertEqual(report["lifecycle_state_gate"], "blocked")
+        self.assertEqual(report["review_schedule_gate"], "blocked")
+        self.assertEqual(report["action_roi_gate"], "blocked")
+        self.assertEqual(report["ledger_record_gate"], "blocked")
+        self.assertEqual(report["traceability_gate"], "blocked")
+        self.assertEqual(report["count_conservation_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("S2PIT02 runtime dashboard report must pass", joined)
+        self.assertIn("S2PIT03 source/model view report must pass", joined)
+        self.assertIn("S2PJT01 lifecycle state report must pass", joined)
+        self.assertIn("S2PJT02 review schedule report must pass", joined)
+        self.assertIn("S2PJT03 action/asset/ROI report must pass", joined)
+        self.assertIn("missing mail_id", joined)
+        self.assertIn("mail_status must be previewed", joined)
+        self.assertIn("feedback_status must be pending", joined)
+        self.assertIn("action_id act:missing", joined)
+        self.assertIn("asset_id asset:missing", joined)
+        self.assertIn("calculated ROI must trace", joined)
+        self.assertIn("duplicate ledger content_id", joined)
+        self.assertIn("real_smtp_sent", joined)
+        self.assertIn("production_gate_state.scheduler_enabled", joined)
+        self.assertFalse(validate_s2pit04_content_ledger_report(report))
+
+    def test_s2pit04_content_ledger_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pit04_content_ledger(
+                state_dir=tmp,
+                date="2026-06-26",
+                generated_at=GENERATED_AT,
+                runtime_dashboard_report=s2pit02_runtime_dashboard_report(),
+                source_model_view_report=s2pit03_source_model_view_report(),
+                lifecycle_state_report=s2pjt01_lifecycle_state_report(),
+                review_schedule_report=s2pjt02_review_schedule_report(),
+                action_roi_report=s2pjt03_action_roi_report(),
+                ledger_records=s2pit04_ledger_records(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pit04_content_ledger_report(report))
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertTrue(Path(report["content_ledger_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pit04_content_mail_review_action_roi_ledger_report.json").is_file())
+
     def test_s2pjt01_lifecycle_state_passes_local_model_and_no_migration_gates(self) -> None:
         report = build_s2pjt01_lifecycle_state_report(
             generated_at=GENERATED_AT,
@@ -7297,6 +7500,65 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertTrue(payload["s2pit03_source_model_view_ready"])
         self.assertFalse(payload["source_adapter_changed"])
         self.assertFalse(payload["queue_mutation_allowed"])
+
+    def test_cli_stage2_content_ledger_view_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            runtime_dashboard_path = tmp_path / "runtime-dashboard.json"
+            source_model_path = tmp_path / "source-model.json"
+            lifecycle_path = tmp_path / "lifecycle.json"
+            review_path = tmp_path / "review.json"
+            action_roi_path = tmp_path / "action-roi.json"
+            ledger_path = tmp_path / "ledger-records.json"
+            gate_path = tmp_path / "production-gate.json"
+            runtime_dashboard_path.write_text(json.dumps(s2pit02_runtime_dashboard_report(), ensure_ascii=False), encoding="utf-8")
+            source_model_path.write_text(json.dumps(s2pit03_source_model_view_report(), ensure_ascii=False), encoding="utf-8")
+            lifecycle_path.write_text(json.dumps(s2pjt01_lifecycle_state_report(), ensure_ascii=False), encoding="utf-8")
+            review_path.write_text(json.dumps(s2pjt02_review_schedule_report(), ensure_ascii=False), encoding="utf-8")
+            action_roi_path.write_text(json.dumps(s2pjt03_action_roi_report(), ensure_ascii=False), encoding="utf-8")
+            ledger_path.write_text(
+                json.dumps({"ledger_records": s2pit04_ledger_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-content-ledger-view",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-26",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--runtime-dashboard-report",
+                    str(runtime_dashboard_path),
+                    "--source-model-view-report",
+                    str(source_model_path),
+                    "--lifecycle-state-report",
+                    str(lifecycle_path),
+                    "--review-schedule-report",
+                    str(review_path),
+                    "--action-roi-report",
+                    str(action_roi_path),
+                    "--ledger-records",
+                    str(ledger_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PIT04_CONTENT_LEDGER_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PIT04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["ledger_record_count"], 3)
+        self.assertTrue(payload["s2pit04_content_ledger_ready"])
+        self.assertFalse(payload["real_smtp_sent"])
+        self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["integrated_production_accepted"])
 
     def test_cli_stage2_lifecycle_state_outputs_json(self) -> None:
         buffer = io.StringIO()
