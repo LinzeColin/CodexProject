@@ -445,3 +445,5 @@
 - Added dry-run notification contract for `linzezhang35@gmail.com`.
 - Added local resource and storage pressure guardrails.
 - Added CodexProject governance records for Phase 1.
+
+- Added S2PJT03 local action, capability asset, and expected/actual ROI ledger evidence without production side effects.

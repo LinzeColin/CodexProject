@@ -785,6 +785,39 @@ S2PJT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PJT02_REPORT_FILENAME = "stage2_s2pjt02_review_schedule_report.json"
+S2PJT03_ACTION_ROI_MODEL_ID = "adp-s2pjt03-action-asset-roi-ledger-v1"
+S2PJT03_ACCEPTANCE_ID = "ACC-S2PJT03-ROI"
+S2PJT03_TASK_ID = "S2PJT03"
+S2PJT03_REQUIRED_ACTION_WINDOWS = ("15m", "2h", "7d", "30d")
+S2PJT03_ALLOWED_ACTION_STATUSES = ("planned", "completed", "deferred")
+S2PJT03_ALLOWED_ACTUAL_ROI_STATUSES = ("not_calculable", "calculated")
+S2PJT03_REQUIRED_GATES = (
+    "review_schedule_gate",
+    "action_window_gate",
+    "expected_roi_gate",
+    "actual_roi_gate",
+    "asset_trace_gate",
+    "deterministic_ledger_gate",
+    "no_side_effect_gate",
+)
+S2PJT03_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PJT03_REPORT_FILENAME = "stage2_s2pjt03_action_asset_roi_ledger_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -8060,6 +8093,312 @@ def validate_s2pjt02_review_schedule_report(report: Mapping[str, Any]) -> list[s
         errors.append("blocked S2PJT02 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pjt02_review_schedule_ready") is not True:
         errors.append("passing S2PJT02 report requires s2pjt02_review_schedule_ready=true")
+    return errors
+
+
+def _s2pjt03_ledger_hash(rows: Sequence[Mapping[str, Any]]) -> str:
+    payload = [
+        {
+            "action_id": str(row.get("action_id") or ""),
+            "actual_roi_status": str(row.get("actual_roi_status") or ""),
+            "content_id": str(row.get("content_id") or ""),
+            "expected_roi_confidence": row.get("expected_roi_confidence"),
+            "expected_roi_value": row.get("expected_roi_value"),
+            "horizon": str(row.get("horizon") or ""),
+            "status": str(row.get("status") or ""),
+        }
+        for row in rows
+    ]
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pjt03_action_asset_roi_report(
+    *,
+    generated_at: str,
+    service_date: str,
+    review_schedule_report: Mapping[str, Any],
+    action_records: Sequence[Mapping[str, Any]],
+    capability_assets: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PJT03 action, asset, and ROI ledger evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    blocking_reasons: list[str] = []
+    review_errors = validate_s2pjt02_review_schedule_report(review_schedule_report)
+    review_gate = (
+        "pass"
+        if review_schedule_report.get("status") == "pass"
+        and review_schedule_report.get("s2pjt02_review_schedule_ready") is True
+        and not review_errors
+        else "blocked"
+    )
+    if review_gate != "pass":
+        blocking_reasons.append("S2PJT02 review schedule report must pass")
+        blocking_reasons.extend(review_errors)
+    if _parse_iso_date(service_date) is None:
+        blocking_reasons.append("service_date must be YYYY-MM-DD")
+
+    action_errors: list[str] = []
+    expected_roi_errors: list[str] = []
+    actual_roi_errors: list[str] = []
+    action_ids: set[str] = set()
+    duplicate_action_ids: set[str] = set()
+    normalized_actions: list[dict[str, Any]] = []
+    for index, action in enumerate(action_records):
+        action_id = str(action.get("action_id") or "")
+        content_id = str(action.get("content_id") or "")
+        horizon = str(action.get("horizon") or "")
+        status = str(action.get("status") or "")
+        expected = action.get("expected_roi")
+        actual = action.get("actual_roi")
+        if not action_id:
+            action_errors.append(f"action {index} missing action_id")
+        elif action_id in action_ids:
+            duplicate_action_ids.add(action_id)
+        action_ids.add(action_id)
+        if not content_id:
+            action_errors.append(f"{action_id or index} missing content_id")
+        if horizon not in S2PJT03_REQUIRED_ACTION_WINDOWS:
+            action_errors.append(f"{action_id or index} horizon must be one of {', '.join(S2PJT03_REQUIRED_ACTION_WINDOWS)}")
+        if status not in S2PJT03_ALLOWED_ACTION_STATUSES:
+            action_errors.append(f"{action_id or index} status must be planned, completed, or deferred")
+        if not isinstance(expected, Mapping):
+            expected_roi_errors.append(f"{action_id or index} expected_roi must be a mapping")
+            expected = {}
+        assumptions = expected.get("assumptions") if isinstance(expected, Mapping) else None
+        confidence = expected.get("confidence") if isinstance(expected, Mapping) else None
+        if expected.get("value") in (None, ""):
+            expected_roi_errors.append(f"{action_id or index} expected_roi.value is required")
+        if not isinstance(assumptions, list) or not assumptions or not all(str(item).strip() for item in assumptions):
+            expected_roi_errors.append(f"{action_id or index} expected_roi.assumptions must be a non-empty list")
+        try:
+            confidence_value = float(confidence)
+        except (TypeError, ValueError):
+            confidence_value = -1.0
+        if not 0.0 <= confidence_value <= 1.0:
+            expected_roi_errors.append(f"{action_id or index} expected_roi.confidence must be between 0 and 1")
+
+        if not isinstance(actual, Mapping):
+            actual = {"status": "not_calculable"}
+        actual_status = str(actual.get("status") or "not_calculable")
+        if actual_status not in S2PJT03_ALLOWED_ACTUAL_ROI_STATUSES:
+            actual_roi_errors.append(f"{action_id or index} actual_roi.status must be not_calculable or calculated")
+        cost = actual.get("verifiable_cost")
+        benefit = actual.get("verifiable_benefit")
+        evidence_refs = actual.get("evidence_refs")
+        has_verifiable_cost_benefit = isinstance(cost, (int, float)) and cost > 0 and isinstance(benefit, (int, float))
+        has_evidence = isinstance(evidence_refs, list) and bool(evidence_refs) and all(str(ref).strip() for ref in evidence_refs)
+        if actual_status == "calculated":
+            if not has_verifiable_cost_benefit:
+                actual_roi_errors.append(f"{action_id or index} calculated actual ROI requires verifiable_cost > 0 and verifiable_benefit")
+            if not has_evidence:
+                actual_roi_errors.append(f"{action_id or index} calculated actual ROI requires evidence_refs")
+        else:
+            if actual.get("value") not in (None, ""):
+                actual_roi_errors.append(f"{action_id or index} not_calculable actual ROI must not include a precise value")
+
+        actual_value = None
+        if actual_status == "calculated" and has_verifiable_cost_benefit:
+            actual_value = round((float(benefit) - float(cost)) / float(cost), 6)
+        normalized_actions.append(
+            {
+                **dict(action),
+                "action_id": action_id,
+                "content_id": content_id,
+                "horizon": horizon,
+                "status": status,
+                "expected_roi_value": expected.get("value") if isinstance(expected, Mapping) else None,
+                "expected_roi_confidence": confidence_value if 0.0 <= confidence_value <= 1.0 else None,
+                "expected_roi_assumptions": assumptions if isinstance(assumptions, list) else [],
+                "actual_roi_status": actual_status,
+                "actual_roi_value": actual_value,
+            }
+        )
+    if duplicate_action_ids:
+        action_errors.append("duplicate action_id: " + ", ".join(sorted(duplicate_action_ids)))
+
+    missing_windows = [window for window in S2PJT03_REQUIRED_ACTION_WINDOWS if window not in {row.get("horizon") for row in normalized_actions}]
+    if missing_windows:
+        action_errors.append("missing required action windows: " + ", ".join(missing_windows))
+
+    asset_errors: list[str] = []
+    normalized_assets: list[dict[str, Any]] = []
+    for index, asset in enumerate(capability_assets):
+        asset_id = str(asset.get("asset_id") or "")
+        content_id = str(asset.get("content_id") or "")
+        asset_type = str(asset.get("asset_type") or "")
+        evidence_refs = asset.get("evidence_refs")
+        if not asset_id:
+            asset_errors.append(f"asset {index} missing asset_id")
+        if not content_id:
+            asset_errors.append(f"{asset_id or index} missing content_id")
+        if not asset_type:
+            asset_errors.append(f"{asset_id or index} missing asset_type")
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            asset_errors.append(f"{asset_id or index} evidence_refs must be a non-empty list")
+        normalized_assets.append({**dict(asset), "asset_id": asset_id, "content_id": content_id, "asset_type": asset_type})
+    if not normalized_assets:
+        asset_errors.append("at least one capability asset is required")
+
+    production_errors: list[str] = []
+    for key in (*S2PJT03_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    action_counts = {window: 0 for window in S2PJT03_REQUIRED_ACTION_WINDOWS}
+    for action in normalized_actions:
+        if action.get("horizon") in action_counts:
+            action_counts[str(action["horizon"])] += 1
+    actual_roi_counts = {status: 0 for status in S2PJT03_ALLOWED_ACTUAL_ROI_STATUSES}
+    for action in normalized_actions:
+        if action.get("actual_roi_status") in actual_roi_counts:
+            actual_roi_counts[str(action["actual_roi_status"])] += 1
+
+    gates = {
+        "review_schedule_gate": review_gate,
+        "action_window_gate": "pass" if not action_errors else "blocked",
+        "expected_roi_gate": "pass" if not expected_roi_errors else "blocked",
+        "actual_roi_gate": "pass" if not actual_roi_errors else "blocked",
+        "asset_trace_gate": "pass" if not asset_errors else "blocked",
+        "deterministic_ledger_gate": "pass",
+        "no_side_effect_gate": "pass" if not production_errors else "blocked",
+    }
+    blocking_reasons.extend(action_errors)
+    blocking_reasons.extend(expected_roi_errors)
+    blocking_reasons.extend(actual_roi_errors)
+    blocking_reasons.extend(asset_errors)
+    blocking_reasons.extend(production_errors)
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    ledger_hash = _s2pjt03_ledger_hash(normalized_actions)
+
+    return {
+        "model_id": S2PJT03_ACTION_ROI_MODEL_ID,
+        "acceptance_id": S2PJT03_ACCEPTANCE_ID,
+        "task_id": S2PJT03_TASK_ID,
+        "phase": "S2PJ",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "service_date": service_date,
+        "status": status,
+        **gates,
+        "required_action_windows": list(S2PJT03_REQUIRED_ACTION_WINDOWS),
+        "action_counts": action_counts,
+        "actual_roi_status_counts": actual_roi_counts,
+        "action_records": normalized_actions,
+        "capability_assets": normalized_assets,
+        "ledger_hash": ledger_hash,
+        "s2pjt03_action_roi_ready": status == "pass",
+        "actual_roi_policy": "calculate_only_with_verifiable_cost_benefit_and_evidence_refs",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pjt03_action_asset_roi(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    review_schedule_report: Mapping[str, Any],
+    action_records: Sequence[Mapping[str, Any]],
+    capability_assets: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PJT03 action, asset, and ROI ledger evidence without production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pjt03-action-asset-roi"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pjt03_action_asset_roi_report(
+        generated_at=generated_at,
+        service_date=date,
+        review_schedule_report=review_schedule_report,
+        action_records=action_records,
+        capability_assets=capability_assets,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "action_roi_report_path": str(run_dir / "adp-s2pjt03-action-asset-roi-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pjt03-action-asset-roi-report.json", report)
+        _write_json(state / S2PJT03_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pjt03_action_asset_roi_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PJT03_ACTION_ROI_MODEL_ID:
+        errors.append("S2PJT03 model_id must be adp-s2pjt03-action-asset-roi-ledger-v1")
+    if report.get("task_id") != S2PJT03_TASK_ID:
+        errors.append("S2PJT03 task_id must be S2PJT03")
+    if report.get("acceptance_id") != S2PJT03_ACCEPTANCE_ID:
+        errors.append("S2PJT03 acceptance_id must be ACC-S2PJT03-ROI")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PJT03 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PJT03_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PJT03 local action/ROI evidence")
+    action_records = report.get("action_records")
+    if not isinstance(action_records, list) or not action_records:
+        errors.append("S2PJT03 action_records must be a non-empty list")
+        action_records = []
+    missing_windows = [window for window in S2PJT03_REQUIRED_ACTION_WINDOWS if window not in {row.get("horizon") for row in action_records}]
+    if missing_windows:
+        errors.append("S2PJT03 missing action windows: " + ", ".join(missing_windows))
+    if report.get("ledger_hash") != _s2pjt03_ledger_hash(action_records):
+        errors.append("S2PJT03 ledger_hash must match action_records")
+    assets = report.get("capability_assets")
+    if not isinstance(assets, list) or not assets:
+        errors.append("S2PJT03 capability_assets must be a non-empty list")
+    for action in action_records:
+        if action.get("actual_roi_status") == "not_calculable" and action.get("actual_roi_value") is not None:
+            errors.append(f"{action.get('action_id')} not_calculable actual ROI must not include actual_roi_value")
+        if action.get("actual_roi_status") == "calculated" and action.get("actual_roi_value") is None:
+            errors.append(f"{action.get('action_id')} calculated actual ROI requires actual_roi_value")
+        if action.get("expected_roi_confidence") is None:
+            errors.append(f"{action.get('action_id')} expected ROI confidence is required")
+        if not action.get("expected_roi_assumptions"):
+            errors.append(f"{action.get('action_id')} expected ROI assumptions are required")
+    for gate in S2PJT03_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PJT03 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PJT03 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pjt03_action_roi_ready") is not True:
+        errors.append("passing S2PJT03 report requires s2pjt03_action_roi_ready=true")
     return errors
 
 

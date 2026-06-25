@@ -1,0 +1,42 @@
+{
+  "acceptance_id": "ACC-S2PJT03-ROI",
+  "base_commit": "2dca2ef88fed0aab638f6c674830fbde48a8c350",
+  "created_at": "2026-06-26T00:40:00+10:00",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PJT03_ACTION_ASSET_ROI.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "formula_id": "FORM-ADP-085",
+  "manifest_id": "ADP-S2PJT03-ACTION-ASSET-ROI-20260626",
+  "model_id": "MOD-ADP-083",
+  "non_scope": "No production SMTP, scheduler, Release, public schema, DB migration, queue mutation, source adapter, ranking, Email V1 runtime/frontstage, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "parameter_ids": [
+    "PARAM-ADP-642",
+    "PARAM-ADP-643",
+    "PARAM-ADP-644",
+    "PARAM-ADP-645",
+    "PARAM-ADP-646",
+    "PARAM-ADP-647",
+    "PARAM-ADP-648",
+    "PARAM-ADP-649",
+    "PARAM-ADP-650"
+  ],
+  "phase": "S2PJ",
+  "production_side_effects": false,
+  "project_id": "arxiv-daily-push",
+  "scope": "Local-only action, capability asset, and expected/actual ROI ledger evidence.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PJT03",
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 126 OK",
+    "full arxiv-daily-push unittest: 355 OK",
+    "semantic extractor: 85 formulas / 633 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}

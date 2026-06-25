@@ -4333,3 +4333,53 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PJT02-REVIEW-SCHEDULE-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT02_REVIEW_SCHEDULE.md"
+  -
+    model_id: "MOD-ADP-083"
+    name: "S2PJT03 action asset ROI ledger"
+    kind: "deterministic local action asset ROI evidence model"
+    purpose: "Validate local-only 15m/2h/7d/30d action records, capability asset traceability, expected ROI assumptions/confidence, actual ROI calculation only with verifiable cost/benefit evidence, deterministic ledger hashing, and no-production side-effect gates after S2PJT02 review schedule evidence."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pjt03-action-asset-roi-ledger-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-085"
+    parameter_ids:
+      - "PARAM-ADP-642"
+      - "PARAM-ADP-643"
+      - "PARAM-ADP-644"
+      - "PARAM-ADP-645"
+      - "PARAM-ADP-646"
+      - "PARAM-ADP-647"
+      - "PARAM-ADP-648"
+      - "PARAM-ADP-649"
+      - "PARAM-ADP-650"
+    inputs:
+      - "S2PJT02 review schedule report"
+      - "action records"
+      - "capability assets"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PJT03 action asset ROI ledger report"
+      - "review schedule gate"
+      - "action window gate"
+      - "expected ROI gate"
+      - "actual ROI gate"
+      - "asset trace gate"
+      - "deterministic ledger gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT03_ACTION_ASSET_ROI.md"
