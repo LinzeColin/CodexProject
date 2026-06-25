@@ -1,0 +1,111 @@
+task_id: S5PAT01
+acceptance_id: ACC-S5PAT01
+mode: PRIVACY_MARKER_SCAN_SUMMARY_NO_VALUES_EMITTED
+value_policy: paths and marker classes only; no secret, email, token, password, or personal value is emitted
+review_finding_count: 688
+secret_keyword_file_count: 34
+email_marker_file_count: 163
+absolute_user_path_file_count: 101
+sample_limit: 80
+omitted_review_findings: 608
+verified_real_secret_or_pii_found: false
+failure_action: remain_in_phase_if_owner_confirms_real_secret_or_pii
+
+## Project Counts
+- FIFA: 75
+- OpenAIDatabase: 259
+- PFI_BIG_DATA_SIMULATOR: 46
+- Serenity-Alipay: 308
+
+## Marker Counts
+- CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED: 163
+- CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED: 101
+- CONTENT_SECRET_KEYWORD_REVIEW_NO_VALUE_EMITTED: 34
+- PATH_PRIVACY_REVIEW: 390
+
+## Review Finding Samples
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/artifacts/latest/tab_fifa_dashboard_latest.html | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/app/config.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/app/database.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/app/main.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/app/scheduler.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/app/web.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/tests/test_crawler.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/tests/test_scheduler.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/assets/app_icon/generate_app_icon.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/active_timeline_check.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/build_downloads_app_entry.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/run_tab_fifa_daily_automation.sh | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/tab_real_refresh_smoke.sh | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/automation_config.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/bankroll.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/boards.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/daily_boards.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/dashboard.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/event_monitor.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/io.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/model.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/odds_provider_adapter.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/public_sources.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/raw_refresh.py | counted_without_value
+- FIFA | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/report_store.py | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/README.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/artifacts/backups/20260615/deleted_download_root_packages_20260615.sha256 | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/artifacts/backups/20260615/deleted_review_packages_20260615.sha256 | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/artifacts/latest/provider_config_doctor_latest.json | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/artifacts/latest/provider_config_doctor_latest.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/DELIVERY_PACKAGE_MANIFEST_20260613.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/DELIVERY_PACKAGE_MANIFEST_20260614.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/DELIVERY_STANDARDS.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/DEVELOPMENT_STATUS.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/FEATURE_LIST.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/HANDOFF.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/HANDOFF_DETAILED.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/KPI_STATUS.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/ODDS_PROVIDER_INTEGRATION_20260613.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/governance/delivery_tasks.yaml | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/docs/governance/development_events.jsonl | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/legacy/fifa-analysis-system/README.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/ops/launch_agents/com.linzezhang.tab-fifa-research.plist | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/ops/local_cleanup_audit_20260613.json | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/ops/local_cleanup_plan_20260613.json | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/ops/local_cleanup_plan_20260613.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/ops/local_slim_audit_20260615.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/HANDOFF.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/README.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/RUNBOOK.md | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/capture_tab_my_bets_readonly.mjs | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/capture_tab_my_bets_readonly_security.test.mjs | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/discover_tab_live_boards.mjs | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/scripts/refresh_tab_readonly.mjs | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/artifacts.py | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/evidence.py | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/provider_config_doctor.py | counted_without_value
+- FIFA | CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/safety.py | counted_without_value
+- FIFA | CONTENT_SECRET_KEYWORD_REVIEW_NO_VALUE_EMITTED | FIFA/tab-research-pipeline/tab_research/group_betting.py | keyword_only_not_verified_secret
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/CHANGELOG.md | log
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/20260615/2026_FIFA_ledger_20260615.xlsx | backup,backups
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/20260615/deleted_download_root_packages_20260615.sha256 | backup,backups
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/20260615/deleted_review_packages_20260615.sha256 | backup,backups
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/20260615/fifa_world_cup_team_tables_1930_2022.xlsx | backup,backups
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/20260615/runtime_outputs_snapshot_20260615.tar.gz | backup,backups
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/legacy_fifa_analysis_db_20260613.sqlite3.gz | backup,backups,db,sqlite
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/public_outputs_without_sqlite_20260613.tar.gz | backup,backups,sqlite
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/backups/tab_fifa_reports_20260613.sqlite3.gz | backup,backups,sqlite
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/latest/source_model_github_metadata_latest.json | data
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/artifacts/latest/tab_fifa_dashboard_data_latest.json | data
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/legacy/fifa-analysis-system/.env.example | .env
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/legacy/fifa-analysis-system/app/database.py | data,database
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/tab-research-pipeline/config/odds_providers.local.env.example | .env
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/tab-research-pipeline/scripts/refresh_source_model_metadata.py | data
+- FIFA | PATH_PRIVACY_REVIEW | FIFA/tab-research-pipeline/tab_research/source_model_metadata.py | data
+- OpenAIDatabase | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | OpenAIDatabase/.github/workflows/ci.yml | counted_without_value
+- OpenAIDatabase | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | OpenAIDatabase/apps/memory-atlas/package-lock.json | counted_without_value
+- OpenAIDatabase | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | OpenAIDatabase/apps/memory-atlas/package.json | counted_without_value
+- OpenAIDatabase | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | OpenAIDatabase/apps/memory-atlas/src/styles.css | counted_without_value
+- OpenAIDatabase | CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED | OpenAIDatabase/apps/memory-atlas/vite.config.ts | counted_without_value
+
+## Stop Conditions
+- real_secret_or_pii_confirmed: false
+- values_emitted: false
+- project_files_moved: false

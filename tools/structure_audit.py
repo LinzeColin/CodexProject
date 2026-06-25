@@ -14,6 +14,20 @@ from pathlib import Path
 TASK_ID = "S4PAT01"
 ACCEPTANCE_ID = "ACC-S4PAT01"
 DEFAULT_OUTPUT_DIR = Path("governance/stage_gates/s4pa")
+S4PA_OUTPUT_DIR = Path("governance/stage_gates/s4pa")
+S5PA_OUTPUT_DIR = Path("governance/stage_gates/s5pa")
+WAVE1_PROJECT_IDS = ["Alpha", "EVA_OS", "OpMe_System", "whkmSalary"]
+WAVE2_PROJECT_IDS = ["FIFA", "OpenAIDatabase", "PFI_BIG_DATA_SIMULATOR", "Serenity-Alipay"]
+PROJECT_PATHS = {
+    "Alpha": "Alpha",
+    "EVA_OS": "EVA_OS",
+    "FIFA": "FIFA",
+    "OpMe_System": "OpMe_System",
+    "OpenAIDatabase": "OpenAIDatabase",
+    "PFI_BIG_DATA_SIMULATOR": "PFI/大数据模拟器",
+    "Serenity-Alipay": "Serenity-Alipay",
+    "whkmSalary": "whkmSalary",
+}
 ALLOWED_CATEGORIES = ["KEEP", "MERGE", "ARCHIVE", "GENERATED", "PRIVATE", "DELETE_CANDIDATE"]
 TEXT_SUFFIXES = {
     ".cfg",
@@ -82,13 +96,13 @@ def repo_root() -> Path:
     return Path(run_git(Path.cwd(), ["rev-parse", "--show-toplevel"]).strip())
 
 
-def tracked_files(repo: Path, project: str) -> list[str]:
-    output = run_git(repo, ["ls-files", "--", project])
+def tracked_files(repo: Path, project_path: str) -> list[str]:
+    output = run_git(repo, ["ls-files", "--", project_path])
     return [line.strip() for line in output.splitlines() if line.strip()]
 
 
-def classify(project: str, repo_path: str) -> dict[str, str]:
-    rel = repo_path[len(project) + 1 :] if repo_path.startswith(project + "/") else repo_path
+def classify(project_path: str, repo_path: str) -> dict[str, str]:
+    rel = repo_path[len(project_path) + 1 :] if repo_path.startswith(project_path + "/") else repo_path
     parts = rel.split("/")
     name = parts[-1]
     top = parts[0]
@@ -178,18 +192,73 @@ def read_text_if_small(path: Path, max_bytes: int) -> str | None:
 def existing_metadata(output_dir: Path) -> dict[str, str]:
     path = output_dir / "wave1_structure_map.json"
     if not path.exists():
+        path = output_dir / "wave2_structure_map.json"
+    if not path.exists():
         return {}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return {}
+    return {"generated_at": str(data.get("generated_at") or ""), "source_commit": str(data.get("source_commit") or "")}
+
+
+def normalize_projects(projects: list[str]) -> list[dict[str, str]]:
+    normalized = []
+    path_to_id = {path: project_id for project_id, path in PROJECT_PATHS.items()}
+    for value in projects:
+        if value in PROJECT_PATHS:
+            project_id = value
+            project_path = PROJECT_PATHS[value]
+        elif value in path_to_id:
+            project_id = path_to_id[value]
+            project_path = value
+        else:
+            project_id = value
+            project_path = value
+        normalized.append({"project_id": project_id, "path": project_path, "requested": value})
+    return normalized
+
+
+def audit_profile(projects: list[dict[str, str]], output_dir_arg: str | None) -> dict[str, object]:
+    project_ids = [project["project_id"] for project in projects]
+    if project_ids == WAVE2_PROJECT_IDS:
+        return {
+            "task_id": "S5PAT01",
+            "acceptance_id": "ACC-S5PAT01",
+            "stage": "S5",
+            "phase": "S5PA",
+            "wave": 2,
+            "default_output_dir": S5PA_OUTPUT_DIR,
+            "structure_filename": "wave2_structure_map.json",
+            "reference_filename": "wave2_reference_graph.json",
+            "archive_plan_filename": "archive_plan.md",
+            "privacy_scan_filename": "privacy_scan.log",
+            "next_task": "S5PAT02",
+            "mode": "WAVE2_PRIVACY_ARTIFACT_BASELINE_ONLY",
+        }
     return {
-        "generated_at": str(data.get("generated_at") or ""),
-        "source_commit": str(data.get("source_commit") or ""),
+        "task_id": TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "stage": "S4",
+        "phase": "S4PA",
+        "wave": 1,
+        "default_output_dir": Path(output_dir_arg) if output_dir_arg else S4PA_OUTPUT_DIR,
+        "structure_filename": "wave1_structure_map.json",
+        "reference_filename": "reference_graph.json",
+        "archive_plan_filename": "archive_plan.md",
+        "privacy_scan_filename": None,
+        "next_task": "S4PAT02",
+        "mode": "STRUCTURE_BASELINE_ONLY",
     }
 
 
-def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_bytes: int) -> tuple[dict, dict, str]:
+def build_evidence(
+    repo: Path,
+    projects: list[dict[str, str]],
+    output_dir: Path,
+    max_text_bytes: int,
+    profile: dict[str, object],
+) -> tuple[dict, dict, str, str | None]:
     metadata = existing_metadata(output_dir)
     generated_at = metadata.get("generated_at") or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     source_commit = metadata.get("source_commit") or run_git(repo, ["rev-parse", "HEAD"]).strip()
@@ -198,19 +267,21 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
     graph_edges = []
 
     for project in projects:
-        files = tracked_files(repo, project)
+        project_id = project["project_id"]
+        project_path = project["path"]
+        files = tracked_files(repo, project_path)
         classified = []
         category_counts: Counter[str] = Counter()
         root_baseline = []
         text_sources: dict[str, str] = {}
 
         for repo_path in files:
-            rel = repo_path[len(project) + 1 :] if repo_path.startswith(project + "/") else repo_path
-            info = classify(project, repo_path)
+            rel = repo_path[len(project_path) + 1 :] if repo_path.startswith(project_path + "/") else repo_path
+            info = classify(project_path, repo_path)
             category_counts[info["category"]] += 1
             item = {
-                "path": repo_path,
-                "project_relative_path": rel,
+                    "path": repo_path,
+                    "project_relative_path": rel,
                 "category": info["category"],
                 "owner": info["owner"],
                 "reason": info["reason"],
@@ -220,7 +291,7 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
             graph_nodes.append(
                 {
                     "id": repo_path,
-                    "project_id": project,
+                    "project_id": project_id,
                     "category": info["category"],
                     "root_level": item["root_level"],
                 }
@@ -238,7 +309,7 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
             target_strings = [item["path"]]
             if "/" in item["project_relative_path"]:
                 target_strings.append(item["project_relative_path"])
-            elif item["project_relative_path"] not in {project, ""}:
+            elif item["project_relative_path"] not in {project_path, ""}:
                 target_strings.append(item["project_relative_path"])
             targets.append((item["path"], tuple(dict.fromkeys(target_strings))))
 
@@ -258,7 +329,8 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
 
         project_entries.append(
             {
-                "project_id": project,
+                "project_id": project_id,
+                "project_path": project_path,
                 "tracked_file_count": len(files),
                 "category_counts": {category: category_counts.get(category, 0) for category in ALLOWED_CATEGORIES},
                 "root_noise_baseline": {
@@ -271,14 +343,17 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
 
     structure_map = {
         "schema_version": "codexproject.structure_audit.v1",
-        "task_id": TASK_ID,
-        "acceptance_id": ACCEPTANCE_ID,
+        "task_id": profile["task_id"],
+        "acceptance_id": profile["acceptance_id"],
         "generated_at": generated_at,
         "source_commit": source_commit,
-        "projects": projects,
+        "stage": profile["stage"],
+        "phase": profile["phase"],
+        "wave": profile["wave"],
+        "projects": [project["project_id"] for project in projects],
         "classification_policy": {
             "allowed_categories": ALLOWED_CATEGORIES,
-            "delete_policy": "S4PAT01 records DELETE_CANDIDATE capacity but emits no deletion action.",
+            "delete_policy": f"{profile['task_id']} records DELETE_CANDIDATE capacity but emits no deletion action.",
             "dynamic_reference_limit": "Static textual scan cannot prove dynamic imports, shell expansion, runtime generated paths, or external references.",
         },
         "project_maps": project_entries,
@@ -288,13 +363,17 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
             "project_files_moved": False,
         },
     }
+    privacy_scan = render_privacy_scan(repo, structure_map, max_text_bytes) if profile["privacy_scan_filename"] else None
     reference_graph = {
         "schema_version": "codexproject.reference_graph.v1",
-        "task_id": TASK_ID,
-        "acceptance_id": ACCEPTANCE_ID,
+        "task_id": profile["task_id"],
+        "acceptance_id": profile["acceptance_id"],
         "generated_at": generated_at,
         "source_commit": source_commit,
-        "projects": projects,
+        "stage": profile["stage"],
+        "phase": profile["phase"],
+        "wave": profile["wave"],
+        "projects": [project["project_id"] for project in projects],
         "node_count": len(graph_nodes),
         "edge_count": len(graph_edges),
         "nodes": graph_nodes,
@@ -305,26 +384,148 @@ def build_evidence(repo: Path, projects: list[str], output_dir: Path, max_text_b
             "Dynamic imports, subprocess paths, glob expansion, runtime writes, and external references require follow-up in S4PAT02/S4PB/S4PC.",
         ],
     }
-    archive_plan = render_archive_plan(project_entries, reference_graph)
-    return structure_map, reference_graph, archive_plan
+    archive_plan = render_archive_plan(project_entries, reference_graph, profile)
+    return structure_map, reference_graph, archive_plan, privacy_scan
 
 
-def render_archive_plan(project_entries: list[dict], reference_graph: dict) -> str:
+def render_privacy_scan(repo: Path, structure_map: dict, max_text_bytes: int) -> str:
+    path_markers = {
+        "private",
+        "privacy",
+        "export",
+        "exports",
+        "context",
+        "profile",
+        "profiles",
+        "personal",
+        "data",
+        "database",
+        "db",
+        "sqlite",
+        "backup",
+        "backups",
+        "secret",
+        "secrets",
+        "credential",
+        "credentials",
+        ".env",
+        "log",
+        "logs",
+    }
+    placeholder_tokens = {"example", "sample", "dummy", "placeholder", "redacted", "changeme", "your_", "test"}
+    review_findings: list[dict[str, str]] = []
+    secret_assignment_count = 0
+    email_marker_count = 0
+    absolute_user_path_count = 0
+
+    for project in structure_map["project_maps"]:
+        for item in project["tracked_files"]:
+            path = item["path"]
+            rel_parts = item["project_relative_path"].replace("\\", "/").lower().split("/")
+            lowered_path = path.lower()
+            marker_hits = sorted(marker for marker in path_markers if marker in rel_parts or marker in lowered_path)
+            if item["category"] == "PRIVATE" or marker_hits:
+                review_findings.append(
+                    {
+                        "project_id": project["project_id"],
+                        "path": path,
+                        "marker": "PATH_PRIVACY_REVIEW",
+                        "detail": ",".join(marker_hits) if marker_hits else item["category"],
+                    }
+                )
+            text = read_text_if_small(repo / path, max_text_bytes)
+            if not text:
+                continue
+            lowered_text = text.lower()
+            if "@" in text and "." in text and any(token in lowered_text for token in ("email", "mail", "gmail", "@")):
+                email_marker_count += 1
+                review_findings.append(
+                    {
+                        "project_id": project["project_id"],
+                        "path": path,
+                        "marker": "CONTENT_EMAIL_MARKER_NO_VALUE_EMITTED",
+                        "detail": "counted_without_value",
+                    }
+                )
+            if "c:\\users\\" in lowered_text or "/users/" in lowered_text:
+                absolute_user_path_count += 1
+                review_findings.append(
+                    {
+                        "project_id": project["project_id"],
+                        "path": path,
+                        "marker": "CONTENT_LOCAL_USER_PATH_MARKER_NO_VALUE_EMITTED",
+                        "detail": "counted_without_value",
+                    }
+                )
+            if any(token in lowered_text for token in ("api_key", "apikey", "secret", "token", "password", "credential")):
+                if not any(token in lowered_text for token in placeholder_tokens):
+                    secret_assignment_count += 1
+                    review_findings.append(
+                        {
+                            "project_id": project["project_id"],
+                            "path": path,
+                            "marker": "CONTENT_SECRET_KEYWORD_REVIEW_NO_VALUE_EMITTED",
+                            "detail": "keyword_only_not_verified_secret",
+                        }
+                    )
+
+    project_counts: Counter[str] = Counter(finding["project_id"] for finding in review_findings)
+    marker_counts: Counter[str] = Counter(finding["marker"] for finding in review_findings)
+    samples = sorted(review_findings, key=lambda item: (item["project_id"], item["marker"], item["path"]))[:80]
+    omitted = max(len(review_findings) - len(samples), 0)
+
     lines = [
-        "# Other8 S4PAT01 Wave 1 Archive Plan Draft",
+        "task_id: S5PAT01",
+        "acceptance_id: ACC-S5PAT01",
+        "mode: PRIVACY_MARKER_SCAN_SUMMARY_NO_VALUES_EMITTED",
+        "value_policy: paths and marker classes only; no secret, email, token, password, or personal value is emitted",
+        f"review_finding_count: {len(review_findings)}",
+        f"secret_keyword_file_count: {secret_assignment_count}",
+        f"email_marker_file_count: {email_marker_count}",
+        f"absolute_user_path_file_count: {absolute_user_path_count}",
+        f"sample_limit: {len(samples)}",
+        f"omitted_review_findings: {omitted}",
+        "verified_real_secret_or_pii_found: false",
+        "failure_action: remain_in_phase_if_owner_confirms_real_secret_or_pii",
         "",
-        f"task_id: {TASK_ID}",
-        f"acceptance_id: {ACCEPTANCE_ID}",
-        "mode: STRUCTURE_BASELINE_ONLY",
+        "## Project Counts",
+    ]
+    for project_id, count in sorted(project_counts.items()):
+        lines.append(f"- {project_id}: {count}")
+    lines.extend(["", "## Marker Counts"])
+    for marker, count in sorted(marker_counts.items()):
+        lines.append(f"- {marker}: {count}")
+    lines.extend(["", "## Review Finding Samples"])
+    for finding in samples:
+        lines.append(
+            f"- {finding['project_id']} | {finding['marker']} | {finding['path']} | {finding['detail']}"
+        )
+    if not samples:
+        lines.append("- none")
+    lines.extend(["", "## Stop Conditions", "- real_secret_or_pii_confirmed: false", "- values_emitted: false", "- project_files_moved: false", ""])
+    return "\n".join(lines)
+
+
+def render_archive_plan(project_entries: list[dict], reference_graph: dict, profile: dict[str, object]) -> str:
+    task_id = str(profile["task_id"])
+    acceptance_id = str(profile["acceptance_id"])
+    mode = str(profile["mode"])
+    next_task = str(profile["next_task"])
+    lines = [
+        f"# Other8 {task_id} Wave {profile['wave']} Archive Plan Draft",
+        "",
+        f"task_id: {task_id}",
+        f"acceptance_id: {acceptance_id}",
+        f"mode: {mode}",
         "",
         "## Decision",
         "",
-        "S4PAT01 does not move, archive, delete, or rewrite project files. It records a Wave 1 tracked-file map, root noise baseline, and static reference graph so S4PAT02 can bind checksums and rollback steps before any physical structure migration.",
+        f"{task_id} does not move, archive, delete, or rewrite project files. It records a Wave {profile['wave']} tracked-file map, privacy/artifact baseline, root noise baseline, and static reference graph so {next_task} can bind checksums and rollback steps before any physical structure migration.",
         "",
         "## Stop Conditions",
         "",
         "- Unknown file marked DELETE_CANDIDATE: false",
-        "- Archive location still written by runtime code: false, because no archive location is activated in S4PAT01",
+        f"- Archive location still written by runtime code: false, because no archive location is activated in {task_id}",
         "- Runtime/import entry moved: false",
         "",
         "## Project Baseline",
@@ -358,28 +559,21 @@ def render_archive_plan(project_entries: list[dict], reference_graph: dict) -> s
             "",
             "## Rollback",
             "",
-            "Rollback for S4PAT01 is to remove this baseline evidence and keep all original project paths untouched. Any later archive or merge action must be bound by S4PAT02 checksum manifest and an explicit old-to-new map.",
+            f"Rollback for {task_id} is to remove this baseline evidence and keep all original project paths untouched. Any later archive or merge action must be bound by {next_task} checksum/privacy manifest and an explicit old-to-new map.",
             "",
             "## Next Task",
             "",
-            "S4PAT02 may generate the Wave 1 archive manifest, checksums, and rollback list. S4PAT01 itself is not permission to relocate files.",
+            f"{next_task} may generate the Wave {profile['wave']} archive/privacy manifest, checksums, and rollback list. {task_id} itself is not permission to relocate files.",
             "",
         ]
     )
     return "\n".join(lines)
 
 
-def write_outputs(output_dir: Path, structure_map: dict, reference_graph: dict, archive_plan: str) -> None:
+def write_outputs(output_dir: Path, expected: dict[Path, str]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "wave1_structure_map.json").write_text(
-        machine_json(structure_map),
-        encoding="utf-8",
-    )
-    (output_dir / "reference_graph.json").write_text(
-        machine_json(reference_graph),
-        encoding="utf-8",
-    )
-    (output_dir / "archive_plan.md").write_text(archive_plan, encoding="utf-8")
+    for path, content in expected.items():
+        path.write_text(content, encoding="utf-8")
 
 
 def machine_json(data: dict) -> str:
@@ -390,7 +584,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--projects", nargs="+")
     parser.add_argument("--wave", choices=["1"], help="Run a completed-wave gate verifier.")
-    parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
+    parser.add_argument("--output-dir")
     parser.add_argument("--max-text-bytes", type=int, default=512_000)
     parser.add_argument("--check", action="store_true", help="Fail if generated outputs differ from disk.")
     args = parser.parse_args()
@@ -403,27 +597,37 @@ def main() -> int:
         return wave1_gate.main(gate_args)
     if not args.projects:
         parser.error("--projects is required unless --wave is used")
-    output_dir = repo / args.output_dir
-    structure_map, reference_graph, archive_plan = build_evidence(repo, args.projects, output_dir, args.max_text_bytes)
+    project_specs = normalize_projects(args.projects)
+    profile = audit_profile(project_specs, args.output_dir)
+    output_dir = repo / (Path(args.output_dir) if args.output_dir else profile["default_output_dir"])
+    structure_map, reference_graph, archive_plan, privacy_scan = build_evidence(
+        repo,
+        project_specs,
+        output_dir,
+        args.max_text_bytes,
+        profile,
+    )
     expected = {
-        output_dir / "wave1_structure_map.json": machine_json(structure_map),
-        output_dir / "reference_graph.json": machine_json(reference_graph),
-        output_dir / "archive_plan.md": archive_plan,
+        output_dir / str(profile["structure_filename"]): machine_json(structure_map),
+        output_dir / str(profile["reference_filename"]): machine_json(reference_graph),
+        output_dir / str(profile["archive_plan_filename"]): archive_plan,
     }
+    if privacy_scan is not None:
+        expected[output_dir / str(profile["privacy_scan_filename"])] = privacy_scan
     if args.check:
         mismatched = [str(path.relative_to(repo)) for path, content in expected.items() if not path.exists() or path.read_text(encoding="utf-8") != content]
         if mismatched:
             print(json.dumps({"result": "FAIL", "mismatched": mismatched}, ensure_ascii=False, sort_keys=True))
             return 1
     else:
-        write_outputs(output_dir, structure_map, reference_graph, archive_plan)
+        write_outputs(output_dir, expected)
     print(
         json.dumps(
             {
                 "result": "PASS",
-                "task_id": TASK_ID,
-                "acceptance_id": ACCEPTANCE_ID,
-                "projects": args.projects,
+                "task_id": profile["task_id"],
+                "acceptance_id": profile["acceptance_id"],
+                "projects": [project["project_id"] for project in project_specs],
                 "output_dir": str(output_dir.relative_to(repo)),
                 "node_count": reference_graph["node_count"],
                 "edge_count": reference_graph["edge_count"],
