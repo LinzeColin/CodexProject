@@ -52,6 +52,9 @@ from arxiv_daily_push.stage2_sources import (
     S2PIT01_REQUIRED_CONTROL_DOMAINS,
     S2PIT02_RUNTIME_DASHBOARD_MODEL_ID,
     S2PIT01_USER_CENTER_MODEL_ID,
+    S2PJT01_LIFECYCLE_STATE_MODEL_ID,
+    S2PJT01_REQUIRED_LEDGER_TYPES,
+    S2PJT01_REQUIRED_STATES,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -84,6 +87,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pet04_us_tp_d4_qualification_report,
     build_s2pit01_user_center_report,
     build_s2pit02_runtime_dashboard_report,
+    build_s2pjt01_lifecycle_state_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -114,6 +118,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pet04_us_tp_d4_qualification,
     run_s2pit01_user_center,
     run_s2pit02_runtime_dashboard,
+    run_s2pjt01_lifecycle_state,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -142,6 +147,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pet04_us_tp_d4_qualification_report,
     validate_s2pit01_user_center_report,
     validate_s2pit02_runtime_dashboard_report,
+    validate_s2pjt01_lifecycle_state_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -325,6 +331,55 @@ def s2pit02_production_gate_state(**overrides: object) -> dict:
     }
     state.update(overrides)
     return state
+
+
+def s2pit02_runtime_dashboard_report() -> dict:
+    return build_s2pit02_runtime_dashboard_report(
+        generated_at=GENERATED_AT,
+        user_center_report=s2pit01_user_center_report(),
+        runtime_audit_report=s2pit02_runtime_report("runtime_audit"),
+        watchdog_report=s2pit02_runtime_report("watchdog"),
+        storage_inspect_report=s2pit01_storage_inspect(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pjt01_lifecycle_records() -> list[dict]:
+    records = []
+    for index, state in enumerate(S2PJT01_REQUIRED_STATES, start=1):
+        content_id = f"content:{index}"
+        ledger_type = S2PJT01_REQUIRED_LEDGER_TYPES[index - 1]
+        records.append(
+            {
+                "content_id": content_id,
+                "current_state": state,
+                "state_history": [
+                    {"state": "QUEUED", "changed_at": f"2026-06-24T0{index}:00:00+10:00"},
+                    {"state": state, "changed_at": f"2026-06-24T1{index}:00:00+10:00"},
+                ],
+                "ledger_refs": [{"ledger_type": ledger_type, "ledger_id": f"{ledger_type}:{index}"}],
+                "queue_mutation_allowed": False,
+                "ranking_algorithm_changed": False,
+                "public_schema_changed": False,
+                "real_smtp_sent": False,
+            }
+        )
+    return records
+
+
+def s2pjt01_migration_plan(**overrides: object) -> dict:
+    plan = {
+        "schema_name": "private_lifecycle_state_v1",
+        "dry_run_only": True,
+        "rollback_supported": True,
+        "db_migration_executed": False,
+        "public_schema_changed": False,
+        "count_conservation_checked": True,
+        "count_conservation_strategy": "pre_post_state_count_match",
+        "rollback_plan_ref": "docs/phase_records/PHASE_S2PJT01_LIFECYCLE_STATE.md#rollback",
+    }
+    plan.update(overrides)
+    return plan
 
 
 def top_journal_publication_events() -> list:
@@ -4572,6 +4627,96 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["runtime_dashboard_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pit02_runtime_dashboard_report.json").is_file())
 
+    def test_s2pjt01_lifecycle_state_passes_local_model_and_no_migration_gates(self) -> None:
+        report = build_s2pjt01_lifecycle_state_report(
+            generated_at=GENERATED_AT,
+            runtime_dashboard_report=s2pit02_runtime_dashboard_report(),
+            lifecycle_records=s2pjt01_lifecycle_records(),
+            migration_plan=s2pjt01_migration_plan(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PJT01_LIFECYCLE_STATE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PJT01-LIFECYCLE")
+        self.assertEqual(report["task_id"], "S2PJT01")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["runtime_dashboard_gate"], "pass")
+        self.assertEqual(report["state_coverage_gate"], "pass")
+        self.assertEqual(report["append_only_history_gate"], "pass")
+        self.assertEqual(report["count_conservation_gate"], "pass")
+        self.assertEqual(report["ledger_mapping_gate"], "pass")
+        self.assertEqual(report["migration_plan_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(set(report["states_observed"]) & set(S2PJT01_REQUIRED_STATES), set(S2PJT01_REQUIRED_STATES))
+        self.assertEqual(set(report["ledger_types_observed"]), set(S2PJT01_REQUIRED_LEDGER_TYPES))
+        self.assertEqual(sum(report["state_counts"].values()), report["content_count"])
+        self.assertTrue(report["s2pjt01_lifecycle_state_ready"])
+        self.assertFalse(report["db_migration_executed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["review_scheduler_enabled"])
+        self.assertFalse(report["actual_roi_calculation_enabled"])
+        self.assertFalse(validate_s2pjt01_lifecycle_state_report(report))
+
+    def test_s2pjt01_lifecycle_state_blocks_missing_state_history_and_side_effects(self) -> None:
+        records = s2pjt01_lifecycle_records()
+        records = [record for record in records if record["current_state"] != "MASTERED"]
+        records[0] = dict(
+            records[0],
+            content_id=records[1]["content_id"],
+            state_history=[
+                {"state": "REVIEW_DUE", "changed_at": "2026-06-24T12:00:00+10:00"},
+                {"state": "QUEUED", "changed_at": "2026-06-24T11:00:00+10:00"},
+            ],
+            queue_mutation_allowed=True,
+        )
+        report = build_s2pjt01_lifecycle_state_report(
+            generated_at=GENERATED_AT,
+            runtime_dashboard_report={**s2pit02_runtime_dashboard_report(), "status": "blocked"},
+            lifecycle_records=records,
+            migration_plan=s2pjt01_migration_plan(db_migration_executed=True, rollback_supported=False),
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["runtime_dashboard_gate"], "blocked")
+        self.assertEqual(report["state_coverage_gate"], "blocked")
+        self.assertEqual(report["append_only_history_gate"], "blocked")
+        self.assertEqual(report["count_conservation_gate"], "blocked")
+        self.assertEqual(report["migration_plan_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("S2PIT02 runtime dashboard report must pass", joined)
+        self.assertIn("missing lifecycle state: MASTERED", joined)
+        self.assertIn("duplicate content_id", joined)
+        self.assertIn("timestamps must be non-decreasing", joined)
+        self.assertIn("queue_mutation_allowed", joined)
+        self.assertIn("migration_plan.db_migration_executed", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pjt01_lifecycle_state_report(report))
+
+    def test_s2pjt01_lifecycle_state_persists_report_without_db_migration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pjt01_lifecycle_state(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                runtime_dashboard_report=s2pit02_runtime_dashboard_report(),
+                lifecycle_records=s2pjt01_lifecycle_records(),
+                migration_plan=s2pjt01_migration_plan(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pjt01_lifecycle_state_report(report))
+            self.assertFalse(report["db_migration_executed"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertTrue(Path(report["lifecycle_state_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pjt01_lifecycle_state_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -5971,6 +6116,53 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["runtime_state_gate"], "pass")
         self.assertEqual(payload["production_boundary_gate"], "pass")
         self.assertTrue(payload["s2pit02_runtime_dashboard_ready"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_lifecycle_state_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            runtime_dashboard_path = tmp_path / "runtime-dashboard.json"
+            lifecycle_records_path = tmp_path / "lifecycle-records.json"
+            migration_plan_path = tmp_path / "migration-plan.json"
+            gate_path = tmp_path / "production-gate.json"
+            runtime_dashboard_path.write_text(json.dumps(s2pit02_runtime_dashboard_report(), ensure_ascii=False), encoding="utf-8")
+            lifecycle_records_path.write_text(
+                json.dumps({"lifecycle_records": s2pjt01_lifecycle_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            migration_plan_path.write_text(json.dumps(s2pjt01_migration_plan(), ensure_ascii=False), encoding="utf-8")
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-lifecycle-state",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--runtime-dashboard-report",
+                    str(runtime_dashboard_path),
+                    "--lifecycle-records",
+                    str(lifecycle_records_path),
+                    "--migration-plan",
+                    str(migration_plan_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PJT01_LIFECYCLE_STATE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PJT01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["state_coverage_gate"], "pass")
+        self.assertEqual(payload["migration_plan_gate"], "pass")
+        self.assertTrue(payload["s2pjt01_lifecycle_state_ready"])
+        self.assertFalse(payload["db_migration_executed"])
         self.assertFalse(payload["integrated_production_accepted"])
 
 

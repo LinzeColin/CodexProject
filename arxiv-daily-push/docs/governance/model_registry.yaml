@@ -4236,3 +4236,52 @@ models:
       - "governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md"
       - "arxiv-daily-push/docs/owner/00_用户中心/01_当前状态.md"
+  -
+    model_id: "MOD-ADP-081"
+    name: "S2PJT01 lifecycle state model"
+    kind: "deterministic local lifecycle evidence model"
+    purpose: "Define and validate local-only review/action/asset/conversion/mastery lifecycle state evidence, append-only state history, ledger mapping, count conservation, dry-run migration rollback, and no-production side-effect gates before any real DB migration or scheduler work."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pjt01-lifecycle-state-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-083"
+    parameter_ids:
+      - "PARAM-ADP-626"
+      - "PARAM-ADP-627"
+      - "PARAM-ADP-628"
+      - "PARAM-ADP-629"
+      - "PARAM-ADP-630"
+      - "PARAM-ADP-631"
+      - "PARAM-ADP-632"
+      - "PARAM-ADP-633"
+    inputs:
+      - "S2PIT02 runtime dashboard report"
+      - "lifecycle records"
+      - "dry-run migration plan"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PJT01 lifecycle state report"
+      - "runtime dashboard gate"
+      - "state coverage gate"
+      - "append-only history gate"
+      - "count conservation gate"
+      - "ledger mapping gate"
+      - "migration plan gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PJT01-LIFECYCLE-STATE-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT01_LIFECYCLE_STATE.md"
