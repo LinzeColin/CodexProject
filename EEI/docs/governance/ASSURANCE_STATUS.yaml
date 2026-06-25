@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260625-002"
-source_snapshot_hash: "sha256:3b9042281ac124c8d8f43be5f1be073d62f50bb0b18aedb008bc98a05342f2a2"
+as_of_event_id: "EVENT-20260625-003"
+source_snapshot_hash: "sha256:842baaa98e8bf1ec9063493298c05c679c93d1f92889f5f50d49a7cda4f710ec"
 source_base_commit: "12df22b6347fd881d42545afe387ac9e41e56fb4"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-24T23:10:41Z"
+snapshot_event_time: "2026-06-25T04:03:35Z"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 85
-    total_active_parameters: 85
+    checked_active_parameters: 86
+    total_active_parameters: 86
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 85
-    total_active_parameters: 85
+    checked_active_parameters: 86
+    total_active_parameters: 86
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 14
     legacy_unbound_events: 19
-    precommit_pending_events: 62
+    precommit_pending_events: 63
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1307-A209-CURRENT-HEARTBEAT-SYNC-PENDING-CI"
+  release_gate: "TASK-T1301-A202-LIVE-CAPTURE-FRESHNESS-REFRESH-PENDING-CI"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -116,4 +116,4 @@ owner_decision:
   generated_from_refs:
     - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
     - "EEI/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T23:10:41Z"
+  last_reviewed_at: "2026-06-25T04:03:35Z"
