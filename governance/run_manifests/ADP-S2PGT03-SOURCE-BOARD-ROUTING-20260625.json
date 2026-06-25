@@ -1,0 +1,79 @@
+{
+  "artifact_id": "ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PGT03",
+  "acceptance_ids": [
+    "ACC-S2PGT03-ROUTING"
+  ],
+  "phase": "S2PG",
+  "generated_at": "2026-06-25T19:30:00+10:00",
+  "base_commit": "ceb6065997aed26a560f73f88fa8fea46d409b15",
+  "result": "completed_local_validation_passed_pending_pr_ci",
+  "summary": "Defined private D1-D4 to B1-B6 multi-label routing evidence with source-domain, primary board, cross-cutting board, reason-code, explanation, evidence-ref, and no-side-effect gates.",
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl"
+  ],
+  "tests_run": [
+    "PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "JSON/YAML/JSONL/CSV parse check with /opt/anaconda3/bin/python",
+    "git diff --check"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 79 OK",
+    "full arxiv-daily-push unittest: 308 OK",
+    "semantic extractor: 74 formulas / 518 parameters checked",
+    "project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "V7.2 validator PASS",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/YAML/JSONL/CSV parse OK",
+    "git diff --check PASS"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-072"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-074"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-525",
+    "PARAM-ADP-526",
+    "PARAM-ADP-527",
+    "PARAM-ADP-528",
+    "PARAM-ADP-529",
+    "PARAM-ADP-530",
+    "PARAM-ADP-531",
+    "PARAM-ADP-532",
+    "PARAM-ADP-533",
+    "PARAM-ADP-534",
+    "PARAM-ADP-535"
+  ],
+  "public_schema_changed": false,
+  "queue_schema_changed": false,
+  "mail_production_code_changed": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "production_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "v7_1_current_switched": false,
+  "v7_2_contract_files_changed": false,
+  "rollback": "Revert S2PGT03 routing code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime production state change was made."
+}

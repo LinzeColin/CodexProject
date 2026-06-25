@@ -13,6 +13,10 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS,
+    S2PGT03_REQUIRED_PRIMARY_BOARDS,
+    S2PGT03_REQUIRED_SOURCE_DOMAINS,
+    S2PGT03_ROUTING_MODEL_ID,
     S2PGT02_KNOWLEDGE_GRAPH_MODEL_ID,
     S2PGT02_REQUIRED_GATES,
     S2PGT02_REQUIRED_IDENTIFIER_TYPES,
@@ -46,6 +50,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pgt03_source_board_routing_report,
     build_s2pgt02_knowledge_graph_spine_report,
     build_s2pgt01_evidence_packet_v2_compatibility_report,
     build_s2pft05_d3_full_governance_qualification_report,
@@ -67,6 +72,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pgt03_source_board_routing,
     run_s2pgt02_knowledge_graph_spine,
     run_s2pgt01_evidence_packet_v2_compatibility,
     run_s2pft05_d3_full_governance_qualification,
@@ -86,6 +92,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pgt03_source_board_routing_report,
     validate_s2pgt02_knowledge_graph_spine_report,
     validate_s2pgt01_evidence_packet_v2_compatibility_report,
     validate_s2pft05_d3_full_governance_qualification_report,
@@ -1174,6 +1181,62 @@ def evidence_packet_records() -> list[dict]:
             ],
         }
         for source_domain, source_type, adapter, source_id, levels, board_routes in rows
+    ]
+
+
+def source_board_route_records() -> list[dict]:
+    rows = [
+        (
+            "route:d1:arxiv:2606.00001",
+            "d1_research_preprint",
+            "arxiv:2606.00001",
+            ["B1"],
+            ["B4", "B5", "B6"],
+            ["scientific_mechanism", "social_impact", "risk_counterevidence", "personal_roi_action"],
+            "D1 arXiv research routes to scientific frontier reading with mandatory social, risk, and personal impact checks.",
+        ),
+        (
+            "route:d2:nature:article-1",
+            "d2_authoritative_publication",
+            "nature:article-1",
+            ["B2"],
+            ["B4", "B5"],
+            ["engineering_relevance", "social_impact", "risk_counterevidence"],
+            "D2 authoritative publication routes to engineering and industry interpretation with social and risk checks.",
+        ),
+        (
+            "route:d3:cn.gov:policy-1",
+            "d3_china_official",
+            "cn.gov:policy-1",
+            ["B3"],
+            ["B5", "B6"],
+            ["policy_capital_context", "risk_counterevidence", "personal_roi_action"],
+            "D3 official China policy routes to policy, capital, and geopolitical interpretation with risk and action checks.",
+        ),
+        (
+            "route:d4:us.gov:signal-1",
+            "d4_us_official",
+            "us.gov:signal-1",
+            ["B2", "B3"],
+            ["B4", "B6"],
+            ["engineering_relevance", "policy_capital_context", "social_impact", "personal_roi_action"],
+            "D4 US official signal routes to engineering and policy interpretation with cross-cutting social and personal checks.",
+        ),
+    ]
+    return [
+        {
+            "route_id": route_id,
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "primary_boards": primary_boards,
+            "cross_cutting_boards": cross_cutting_boards,
+            "reason_codes": reason_codes,
+            "route_explanation": route_explanation,
+            "evidence_refs": [f"claim:{source_id}", f"fixture:routing:{source_domain}"],
+            "schema_migration_required": False,
+            "production_affected": False,
+        }
+        for route_id, source_domain, source_id, primary_boards, cross_cutting_boards, reason_codes, route_explanation in rows
     ]
 
 
@@ -2558,6 +2621,99 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["knowledge_graph_spine_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pgt02_knowledge_graph_spine_report.json").is_file())
 
+    def test_s2pgt03_source_board_routing_passes_multilabel_reason_and_side_effect_gates(self) -> None:
+        report = build_s2pgt03_source_board_routing_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            route_records=source_board_route_records(),
+        )
+        repeated = build_s2pgt03_source_board_routing_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            route_records=source_board_route_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PGT03_ROUTING_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PGT03-ROUTING")
+        self.assertEqual(report["task_id"], "S2PGT03")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(set(report["source_domains_observed"]), set(S2PGT03_REQUIRED_SOURCE_DOMAINS))
+        self.assertEqual(set(report["primary_boards_observed"]), set(S2PGT03_REQUIRED_PRIMARY_BOARDS))
+        self.assertEqual(set(report["cross_cutting_boards_observed"]), set(S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS))
+        self.assertEqual(report["source_domain_coverage_gate"], "pass")
+        self.assertEqual(report["primary_board_coverage_gate"], "pass")
+        self.assertEqual(report["cross_cutting_board_coverage_gate"], "pass")
+        self.assertEqual(report["route_reason_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["routing_state_hash"], repeated["routing_state_hash"])
+        self.assertTrue(report["s2pgt03_source_board_routing_ready"])
+        self.assertFalse(report["schema_migration_required"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["production_affected"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(validate_s2pgt03_source_board_routing_report(report))
+
+    def test_s2pgt03_source_board_routing_blocks_missing_cross_reason_and_side_effects(self) -> None:
+        routes = source_board_route_records()
+        routes[0] = dict(routes[0], cross_cutting_boards=[], reason_codes=[], production_affected=True)
+        routes[1] = dict(routes[1], primary_boards=["B6"])
+        report = build_s2pgt03_source_board_routing_report(
+            generated_at=GENERATED_AT,
+            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                generated_at=GENERATED_AT,
+                source_domain_reports=evidence_packet_domain_reports(),
+                packet_records=evidence_packet_records(),
+            ),
+            route_records=routes,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["cross_cutting_board_coverage_gate"], "pass")
+        self.assertEqual(report["route_reason_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        self.assertFalse(report["s2pgt03_source_board_routing_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("cross_cutting_boards", joined)
+        self.assertIn("reason_codes", joined)
+        self.assertIn("unsupported board B6", joined)
+        self.assertIn("production_affected", joined)
+        self.assertTrue(validate_s2pgt03_source_board_routing_report(report))
+
+    def test_s2pgt03_source_board_routing_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pgt03_source_board_routing(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                    generated_at=GENERATED_AT,
+                    source_domain_reports=evidence_packet_domain_reports(),
+                    packet_records=evidence_packet_records(),
+                ),
+                route_records=source_board_route_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pgt03_source_board_routing_report(report))
+            self.assertFalse(report["schema_migration_required"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertTrue(Path(report["source_board_routing_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pgt03_source_board_routing_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -3537,6 +3693,58 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["relation_evidence_gate"], "pass")
         self.assertEqual(payload["idempotent_update_gate"], "pass")
         self.assertTrue(payload["s2pgt02_knowledge_graph_spine_ready"])
+        self.assertFalse(payload["public_schema_changed"])
+        self.assertFalse(payload["schema_migration_required"])
+        self.assertFalse(payload["production_affected"])
+        self.assertFalse(payload["real_smtp_sent"])
+
+    def test_cli_stage2_source_board_routing_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            evidence_packet_path = Path(tmp) / "evidence-packet-report.json"
+            route_records_path = Path(tmp) / "route-records.json"
+            evidence_packet_path.write_text(
+                json.dumps(
+                    build_s2pgt01_evidence_packet_v2_compatibility_report(
+                        generated_at=GENERATED_AT,
+                        source_domain_reports=evidence_packet_domain_reports(),
+                        packet_records=evidence_packet_records(),
+                    ),
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            route_records_path.write_text(
+                json.dumps({"route_records": source_board_route_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-source-board-routing",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--evidence-packet-report",
+                    str(evidence_packet_path),
+                    "--route-records",
+                    str(route_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PGT03_ROUTING_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PGT03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["source_domain_coverage_gate"], "pass")
+        self.assertEqual(payload["primary_board_coverage_gate"], "pass")
+        self.assertEqual(payload["cross_cutting_board_coverage_gate"], "pass")
+        self.assertEqual(payload["route_reason_gate"], "pass")
+        self.assertTrue(payload["s2pgt03_source_board_routing_ready"])
         self.assertFalse(payload["public_schema_changed"])
         self.assertFalse(payload["schema_migration_required"])
         self.assertFalse(payload["production_affected"])

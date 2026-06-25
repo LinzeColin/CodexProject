@@ -3759,3 +3759,52 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PGT02-KNOWLEDGE-GRAPH-SPINE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT02_KNOWLEDGE_GRAPH_SPINE.md"
+  -
+    model_id: "MOD-ADP-072"
+    name: "S2PGT03 Source-board routing"
+    kind: "deterministic private source-to-reading-board routing model"
+    purpose: "Define and validate private D1-D4 to B1-B6 multi-label routing evidence with source-domain, primary-board, cross-cutting-board, reason-code, explanation, evidence-reference, and no-production/no-schema side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pgt03-source-board-routing-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-074"
+    parameter_ids:
+      - "PARAM-ADP-525"
+      - "PARAM-ADP-526"
+      - "PARAM-ADP-527"
+      - "PARAM-ADP-528"
+      - "PARAM-ADP-529"
+      - "PARAM-ADP-530"
+      - "PARAM-ADP-531"
+      - "PARAM-ADP-532"
+      - "PARAM-ADP-533"
+      - "PARAM-ADP-534"
+      - "PARAM-ADP-535"
+    inputs:
+      - "passing S2PGT01 EvidencePacket V2 compatibility report"
+      - "D1-D4 route records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "source-board routing report"
+      - "source-domain coverage gate"
+      - "primary-board coverage gate"
+      - "cross-cutting-board coverage gate"
+      - "route-reason gate"
+      - "no-side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md"

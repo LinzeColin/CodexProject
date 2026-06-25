@@ -2269,3 +2269,23 @@ None for this new project baseline.
 - Rollback: Revert S2PGT02 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT02_KNOWLEDGE_GRAPH_SPINE.md`; `governance/run_manifests/ADP-S2PGT02-KNOWLEDGE-GRAPH-SPINE-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run final validation, commit, push, and open PR for S2PGT02.
+
+### `ITER-20260625-ADP-S2PG-S2PGT03-SOURCE-BOARD-ROUTING`
+
+- Timestamp: `2026-06-25T19:30:00+10:00`
+- Fact level: EXTRACTED from S2PGT01 receipt, V7.1 architecture mapping, D1-D4 route fixtures, model/formula/parameter registry diff, and local S2PGT03 validation.
+- Base commit: `ceb6065997aed26a560f73f88fa8fea46d409b15`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PG
+- Task IDs: `S2PGT03`; next task `S2PGT04`
+- Goal: Complete private D1-D4 to B1-B6 multi-label routing evidence after S2PGT01, register S2PGT03 governance entries, and preserve V7.2 no-production boundaries.
+- Files changed: S2PGT03 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-072` source-board routing model.
+- Formula changes: Added `FORM-ADP-074` with machine-verifiable AST fingerprints bound to the S2PGT03 implementation.
+- Parameter changes: Added `PARAM-ADP-525` through `PARAM-ADP-535` for S2PGT03 model id, acceptance id, task id, source domains, primary boards, cross-cutting boards, reason codes, route fields, required gates, source-domain board rule keys, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 79 OK; full arxiv-daily-push unittest 308 OK; semantic extractor 74 formulas / 518 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSON/YAML/JSONL/CSV parse OK; `git diff --check` PASS.
+- Decisions: `ACC-S2PGT03-ROUTING` is accepted only as private source-to-reading-board routing evidence. Public schema migration, production queue mutation, source-domain production inclusion, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, scheduler, V7.2 contract edits, Email V1 runtime changes, and production operation all remain false/disabled.
+- Remaining risks: S2PGT04 support/refute/frontier delta/resonance evidence remains unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PGT03 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md`; `governance/run_manifests/ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Commit, push, and open PR for S2PGT03.

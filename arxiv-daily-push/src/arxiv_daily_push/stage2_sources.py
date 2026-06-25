@@ -438,6 +438,65 @@ S2PGT02_REQUIRED_GATES = (
     "no_side_effect_gate",
 )
 S2PGT02_REPORT_FILENAME = "stage2_s2pgt02_knowledge_graph_spine_report.json"
+S2PGT03_ROUTING_MODEL_ID = "adp-s2pgt03-source-board-routing-v1"
+S2PGT03_ACCEPTANCE_ID = "ACC-S2PGT03-ROUTING"
+S2PGT03_TASK_ID = "S2PGT03"
+S2PGT03_REQUIRED_SOURCE_DOMAINS = (
+    "d1_research_preprint",
+    "d2_authoritative_publication",
+    "d3_china_official",
+    "d4_us_official",
+)
+S2PGT03_REQUIRED_PRIMARY_BOARDS = ("B1", "B2", "B3")
+S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS = ("B4", "B5", "B6")
+S2PGT03_ALLOWED_REASON_CODES = (
+    "scientific_mechanism",
+    "engineering_relevance",
+    "policy_capital_context",
+    "social_impact",
+    "risk_counterevidence",
+    "personal_roi_action",
+)
+S2PGT03_REQUIRED_ROUTE_FIELDS = (
+    "route_id",
+    "source_domain",
+    "source_id",
+    "primary_boards",
+    "cross_cutting_boards",
+    "reason_codes",
+    "route_explanation",
+    "evidence_refs",
+)
+S2PGT03_REQUIRED_GATES = (
+    "source_domain_coverage_gate",
+    "primary_board_coverage_gate",
+    "cross_cutting_board_coverage_gate",
+    "route_reason_gate",
+    "no_side_effect_gate",
+)
+S2PGT03_SOURCE_DOMAIN_BOARD_RULES = {
+    "d1_research_preprint": {
+        "primary": ("B1", "B2"),
+        "conditional": ("B3",),
+        "mandatory_checks": ("B4", "B5", "B6"),
+    },
+    "d2_authoritative_publication": {
+        "primary": ("B1", "B2"),
+        "conditional": ("B3",),
+        "mandatory_checks": ("B4", "B5", "B6"),
+    },
+    "d3_china_official": {
+        "primary": ("B3",),
+        "conditional": ("B1", "B2"),
+        "mandatory_checks": ("B4", "B5", "B6"),
+    },
+    "d4_us_official": {
+        "primary": ("B2", "B3"),
+        "conditional": ("B1",),
+        "mandatory_checks": ("B4", "B5", "B6"),
+    },
+}
+S2PGT03_REPORT_FILENAME = "stage2_s2pgt03_source_board_routing_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -4997,7 +5056,204 @@ def validate_s2pgt02_knowledge_graph_spine_report(report: Mapping[str, Any]) -> 
             if report.get(key) != "pass":
                 errors.append(f"passing S2PGT02 report requires {key}=pass")
         if report.get("s2pgt02_knowledge_graph_spine_ready") is not True:
-            errors.append("passing S2PGT02 report requires s2pgt02_knowledge_graph_spine_ready=true")
+                errors.append("passing S2PGT02 report requires s2pgt02_knowledge_graph_spine_ready=true")
+    return errors
+
+
+def build_s2pgt03_source_board_routing_report(
+    *,
+    generated_at: str,
+    evidence_packet_report: Mapping[str, Any],
+    route_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build private D1-D4 to B1-B6 multi-label routing evidence."""
+
+    packet_errors = validate_s2pgt01_evidence_packet_v2_compatibility_report(evidence_packet_report)
+    packet_index = _s2pgt03_packet_index(evidence_packet_report.get("evidence_packets") or [])
+    route_rows, route_errors = _s2pgt03_route_rows(route_records, packet_index)
+    source_domain_gate = _s2pgt03_source_domain_coverage_gate(route_rows)
+    primary_gate = _s2pgt03_primary_board_coverage_gate(route_rows)
+    cross_gate = _s2pgt03_cross_cutting_board_coverage_gate(route_rows)
+    reason_gate = _s2pgt03_route_reason_gate(route_rows)
+    side_effect_gate = _s2pgt03_no_side_effect_gate(route_rows)
+    routing_state_hash = _s2pgt03_routing_state_hash(route_rows)
+    blocking_reasons = [
+        *(f"S2PGT01: {error}" for error in packet_errors),
+        *route_errors,
+        *source_domain_gate["blocking_reasons"],
+        *primary_gate["blocking_reasons"],
+        *cross_gate["blocking_reasons"],
+        *reason_gate["blocking_reasons"],
+        *side_effect_gate["blocking_reasons"],
+    ]
+    if evidence_packet_report.get("status") != "pass":
+        blocking_reasons.append("S2PGT03 requires passing S2PGT01 EvidencePacket V2 compatibility evidence")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and source_domain_gate["status"]
+        == primary_gate["status"]
+        == cross_gate["status"]
+        == reason_gate["status"]
+        == side_effect_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PGT03_ROUTING_MODEL_ID,
+        "acceptance_id": S2PGT03_ACCEPTANCE_ID,
+        "task_id": S2PGT03_TASK_ID,
+        "phase": "S2PG",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_s2pgt01_status": evidence_packet_report.get("status"),
+        "required_source_domains": list(S2PGT03_REQUIRED_SOURCE_DOMAINS),
+        "source_domains_observed": source_domain_gate["source_domains_observed"],
+        "required_primary_boards": list(S2PGT03_REQUIRED_PRIMARY_BOARDS),
+        "primary_boards_observed": primary_gate["primary_boards_observed"],
+        "required_cross_cutting_boards": list(S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS),
+        "cross_cutting_boards_observed": cross_gate["cross_cutting_boards_observed"],
+        "allowed_reason_codes": list(S2PGT03_ALLOWED_REASON_CODES),
+        "required_route_fields": list(S2PGT03_REQUIRED_ROUTE_FIELDS),
+        "required_gates": list(S2PGT03_REQUIRED_GATES),
+        "source_domain_board_rules": _s2pgt03_serializable_board_rules(),
+        "source_domain_coverage_gate": source_domain_gate["status"],
+        "primary_board_coverage_gate": primary_gate["status"],
+        "cross_cutting_board_coverage_gate": cross_gate["status"],
+        "route_reason_gate": reason_gate["status"],
+        "no_side_effect_gate": side_effect_gate["status"],
+        "route_count": len(route_rows),
+        "routed_source_ids": sorted({str(row.get("source_id")) for row in route_rows if row.get("source_id")}),
+        "routing_records": route_rows,
+        "routing_state_hash": routing_state_hash,
+        "schema_migration_required": False,
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "v7_2_contract_files_changed": False,
+        "s2pgt03_source_board_routing_ready": status == "pass",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pgt03_source_board_routing(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    evidence_packet_report: Mapping[str, Any],
+    route_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PGT03 private route evidence without production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pgt03-source-board-routing"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pgt03_source_board_routing_report(
+        generated_at=generated_at,
+        evidence_packet_report=evidence_packet_report,
+        route_records=route_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "source_board_routing_report_path": str(run_dir / "adp-s2pgt03-source-board-routing-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pgt03-source-board-routing-report.json", report)
+        _write_json(state / S2PGT03_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pgt03_source_board_routing_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PGT03_ROUTING_MODEL_ID:
+        errors.append("S2PGT03 model_id must be adp-s2pgt03-source-board-routing-v1")
+    if report.get("task_id") != S2PGT03_TASK_ID:
+        errors.append("S2PGT03 task_id must be S2PGT03")
+    if report.get("acceptance_id") != S2PGT03_ACCEPTANCE_ID:
+        errors.append("S2PGT03 acceptance_id must be ACC-S2PGT03-ROUTING")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PGT03 status must be pass or blocked")
+    for key in (
+        "schema_migration_required",
+        "public_schema_changed",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "production_affected",
+        "real_smtp_sent",
+        "v7_2_contract_files_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PGT03 routing")
+    domains = set(report.get("source_domains_observed") or [])
+    missing_domains = [domain for domain in S2PGT03_REQUIRED_SOURCE_DOMAINS if domain not in domains]
+    if missing_domains:
+        errors.append("S2PGT03 missing source domains: " + ", ".join(missing_domains))
+    primary_boards = set(report.get("primary_boards_observed") or [])
+    missing_primary = [board for board in S2PGT03_REQUIRED_PRIMARY_BOARDS if board not in primary_boards]
+    if missing_primary:
+        errors.append("S2PGT03 missing primary boards: " + ", ".join(missing_primary))
+    cross_boards = set(report.get("cross_cutting_boards_observed") or [])
+    missing_cross = [board for board in S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS if board not in cross_boards]
+    if missing_cross:
+        errors.append("S2PGT03 missing cross-cutting boards: " + ", ".join(missing_cross))
+    routes = report.get("routing_records")
+    if not isinstance(routes, list) or not routes:
+        errors.append("S2PGT03 routing_records must be a non-empty list")
+        routes = []
+    route_ids: set[str] = set()
+    for index, route in enumerate(routes):
+        if not isinstance(route, Mapping):
+            errors.append(f"routing_records[{index}] must be an object")
+            continue
+        for field in S2PGT03_REQUIRED_ROUTE_FIELDS:
+            if route.get(field) in (None, "", []):
+                errors.append(f"routing_records[{index}].{field} is required")
+        route_id = str(route.get("route_id") or "")
+        if route_id in route_ids:
+            errors.append(f"routing_records[{index}].route_id must be unique")
+        route_ids.add(route_id)
+        source_domain = str(route.get("source_domain") or "")
+        allowed = _s2pgt03_allowed_boards_for_source_domain(source_domain)
+        for board in route.get("primary_boards") or []:
+            if board not in S2PGT03_REQUIRED_PRIMARY_BOARDS:
+                errors.append(f"routing_records[{index}].primary_boards contains unsupported board {board}")
+            if board not in allowed:
+                errors.append(f"routing_records[{index}].primary_boards contains board {board} outside source-domain mapping")
+        for board in route.get("cross_cutting_boards") or []:
+            if board not in S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS:
+                errors.append(f"routing_records[{index}].cross_cutting_boards contains unsupported board {board}")
+        for reason_code in route.get("reason_codes") or []:
+            if reason_code not in S2PGT03_ALLOWED_REASON_CODES:
+                errors.append(f"routing_records[{index}].reason_codes contains unsupported reason {reason_code}")
+    if report.get("routing_state_hash") != _s2pgt03_routing_state_hash(routes):
+        errors.append("S2PGT03 routing_state_hash must match routing_records")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PGT03 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in S2PGT03_REQUIRED_GATES:
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PGT03 report requires {key}=pass")
+        if report.get("s2pgt03_source_board_routing_ready") is not True:
+            errors.append("passing S2PGT03 report requires s2pgt03_source_board_routing_ready=true")
     return errors
 
 
@@ -8559,6 +8815,159 @@ def _s2pgt02_graph_state_hash(entities: Sequence[Mapping[str, Any]], relations: 
 
 def _s2pgt02_slug(value: str) -> str:
     return re.sub(r"[^a-zA-Z0-9]+", "-", value).strip("-").lower()
+
+
+def _s2pgt03_packet_index(packets: Sequence[Any]) -> dict[str, Mapping[str, Any]]:
+    index: dict[str, Mapping[str, Any]] = {}
+    for packet in packets:
+        if not isinstance(packet, Mapping):
+            continue
+        source_id = str(packet.get("source_id") or "").strip()
+        if source_id:
+            index[source_id] = packet
+    return index
+
+
+def _s2pgt03_route_rows(
+    records: Sequence[Mapping[str, Any]],
+    packet_index: Mapping[str, Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    route_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"route_records[{index}] must be an object")
+            continue
+        source_domain = str(record.get("source_domain") or "").strip()
+        source_id = str(record.get("source_id") or "").strip()
+        primary_boards = _s2pgt03_board_list(record.get("primary_boards"))
+        cross_boards = _s2pgt03_board_list(record.get("cross_cutting_boards"))
+        reason_codes = sorted({str(reason) for reason in (record.get("reason_codes") or []) if str(reason)})
+        evidence_refs = [str(ref) for ref in (record.get("evidence_refs") or []) if str(ref)]
+        route_id = str(record.get("route_id") or f"route:{source_domain}:{source_id}").strip()
+        packet = packet_index.get(source_id)
+        row = {
+            "route_id": route_id,
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "primary_boards": primary_boards,
+            "cross_cutting_boards": cross_boards,
+            "reason_codes": reason_codes,
+            "route_explanation": str(record.get("route_explanation") or "").strip(),
+            "evidence_refs": evidence_refs,
+            "packet_board_routes": sorted({str(board) for board in ((packet or {}).get("board_routes") or []) if str(board)}),
+            "packet_ref": str((packet or {}).get("packet_id") or source_id),
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "production_affected": record.get("production_affected") is True,
+        }
+        if not source_domain:
+            errors.append(f"route_records[{index}].source_domain is required")
+        elif source_domain not in S2PGT03_REQUIRED_SOURCE_DOMAINS:
+            errors.append(f"route_records[{index}].source_domain is not supported")
+        if not source_id:
+            errors.append(f"route_records[{index}].source_id is required")
+        elif source_id not in packet_index:
+            errors.append(f"route_records[{index}].source_id must reference an EvidencePacket source_id")
+        elif packet and packet.get("source_domain") != source_domain:
+            errors.append(f"route_records[{index}].source_domain must match EvidencePacket source_domain")
+        if not primary_boards:
+            errors.append(f"route_records[{index}].primary_boards is required")
+        if not cross_boards:
+            errors.append(f"route_records[{index}].cross_cutting_boards is required")
+        if not reason_codes:
+            errors.append(f"route_records[{index}].reason_codes is required")
+        if not row["route_explanation"]:
+            errors.append(f"route_records[{index}].route_explanation is required")
+        if not evidence_refs:
+            errors.append(f"route_records[{index}].evidence_refs is required")
+        if route_id in route_ids:
+            errors.append(f"route_records[{index}].route_id must be unique")
+        route_ids.add(route_id)
+        allowed = _s2pgt03_allowed_boards_for_source_domain(source_domain)
+        for board in primary_boards:
+            if board not in S2PGT03_REQUIRED_PRIMARY_BOARDS:
+                errors.append(f"route_records[{index}].primary_boards contains unsupported board {board}")
+            elif board not in allowed:
+                errors.append(f"route_records[{index}].primary_boards contains board {board} outside source-domain mapping")
+        for board in cross_boards:
+            if board not in S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS:
+                errors.append(f"route_records[{index}].cross_cutting_boards contains unsupported board {board}")
+        for reason_code in reason_codes:
+            if reason_code not in S2PGT03_ALLOWED_REASON_CODES:
+                errors.append(f"route_records[{index}].reason_codes contains unsupported reason {reason_code}")
+        if row["schema_migration_required"]:
+            errors.append(f"route_records[{index}].schema_migration_required must be false")
+        if row["production_affected"]:
+            errors.append(f"route_records[{index}].production_affected must be false")
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pgt03_board_list(value: Any) -> list[str]:
+    values = value if isinstance(value, list) else [value]
+    return sorted({str(board).strip() for board in values if str(board or "").strip()})
+
+
+def _s2pgt03_allowed_boards_for_source_domain(source_domain: str) -> set[str]:
+    rules = S2PGT03_SOURCE_DOMAIN_BOARD_RULES.get(source_domain) or {}
+    return {
+        str(board)
+        for group in ("primary", "conditional")
+        for board in rules.get(group, ())
+    }
+
+
+def _s2pgt03_serializable_board_rules() -> dict[str, dict[str, list[str]]]:
+    return {
+        domain: {key: list(values) for key, values in rules.items()}
+        for domain, rules in sorted(S2PGT03_SOURCE_DOMAIN_BOARD_RULES.items())
+    }
+
+
+def _s2pgt03_source_domain_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("source_domain")) for row in rows if row.get("source_domain")})
+    blocking = [f"S2PGT03 missing source domain {domain}" for domain in S2PGT03_REQUIRED_SOURCE_DOMAINS if domain not in observed]
+    return {"status": "pass" if not blocking else "blocked", "source_domains_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt03_primary_board_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(board) for row in rows for board in (row.get("primary_boards") or [])})
+    blocking = [f"S2PGT03 missing primary board {board}" for board in S2PGT03_REQUIRED_PRIMARY_BOARDS if board not in observed]
+    return {"status": "pass" if not blocking else "blocked", "primary_boards_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt03_cross_cutting_board_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(board) for row in rows for board in (row.get("cross_cutting_boards") or [])})
+    blocking = [f"S2PGT03 missing cross-cutting board {board}" for board in S2PGT03_REQUIRED_CROSS_CUTTING_BOARDS if board not in observed]
+    return {"status": "pass" if not blocking else "blocked", "cross_cutting_boards_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt03_route_reason_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    if not rows:
+        blocking.append("S2PGT03 requires at least one routing record")
+    for index, row in enumerate(rows):
+        for field in S2PGT03_REQUIRED_ROUTE_FIELDS:
+            if row.get(field) in (None, "", []):
+                blocking.append(f"routing_records[{index}].{field} is required")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt03_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for index, row in enumerate(rows):
+        if row.get("schema_migration_required") is not False:
+            blocking.append(f"routing_records[{index}].schema_migration_required must be false")
+        if row.get("production_affected") is not False:
+            blocking.append(f"routing_records[{index}].production_affected must be false")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt03_routing_state_hash(routes: Sequence[Mapping[str, Any]]) -> str:
+    payload = {"routing_records": sorted([dict(route) for route in routes], key=lambda item: str(item.get("route_id") or ""))}
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
 def _is_iso_date(value: str) -> bool:
