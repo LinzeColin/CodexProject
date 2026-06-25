@@ -11,11 +11,58 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `C`
-- Current gate: `TASK-T1301-A202-LIVE-CAPTURE-FRESHNESS-REFRESH-PENDING-CI`
+- Current gate: `TASK-T1307-A209-HEARTBEAT-27-GOVERNANCE-SYNC-PENDING-CI`
 - Confirmed iteration count: 37
 - Reconstructed development event count: 3
-- Current task: `TASK-T1301/A202 live official capture freshness refresh`
+- Current task: `TASK-T1307/A209 heartbeat governance and release artifact sync`
+- Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `27/288` successful windows, `0` failed windows, `261` remaining and `release_gate_closed_by_background_heartbeat=false`.
 - Blockers: T1301/A202 now has an operator-review packet path that binds selected live official-source evidence and Golden Vertical relationship candidates to required official-source anchors for human/legal review; this is still review-input evidence only. A202 still lacks real source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation and final public relationship publication. EEI active parameter/formula semantic coverage is machine-verified for source binding, but that does not close production release gates. T905/A119-A120 has local machine evidence for migration suffix rollback rehearsal and README clean-start reproduction, but remote PostgreSQL CI binding for that new commit is still pending. T1301/A202 source-withdrawal rehearsal is remote-CI bound by EEI validation run `27991823195` and Project Governance run `27991823179`. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. This run hardens the A026/A027 production gold-set path so repository fixture refs and fixture labelers are rejected when `production_gold_set=true`; it still does not supply real production labels. A209 remains a background long-running gate until 24h operator soak evidence is produced and CI-validated; the prior resumed chain failed because the fixed Playwright browser path was missing and is preserved as incident evidence only. The current clean restarted attempt now records operator PID `82041`, watchdog PID `61030`, committed heartbeat evidence at `9/288` successful windows, `0` failed windows and `release_gate_closed_by_background_heartbeat=false`; live checkpoint evidence has advanced beyond that and remains progress-only until 288/288 validates. This A202 refresh updates selected live official-source capture hashes/health for `NVDA-ANCHOR-002..004` without changing publication clearance; the 24h gate still must not block unrelated MVP feature delivery. A210 still needs formal brand legal/market clearance or signed risk waiver.
+
+## ITER-20260625-005 - T1307/A209 governance and release artifact sync
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `84231a5d9492c178a98ff7222de03c622a8eaf02`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1303`, `TASK-T1302`
+- Goal: bind the A209 27/288 heartbeat/preflight refresh into the generated governance status files, version matrix, clean-room package and release evidence.
+- Assumptions: this is a generated-artifact synchronization over `ITER-20260625-004`; it changes no product runtime behavior and does not close A209.
+- Files changed: `VERSION_MATRIX.yaml`, generated governance status files, release/clean-room artifacts, checksum manifest and the companion governance records.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, threshold, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active parameter value changed.
+- Commands run: governance dashboard generation and development/risk/clean-room/release artifact generation; focused validation is required before commit.
+- Test results: generated governance snapshot is bound to the A209 heartbeat event chain; clean-room package and release manifests are regenerated pending validation.
+- Successes: current governance files no longer point at the prior T1301 iteration as the active work item for this run.
+- Failures: no 24h summary JSON, no A202 signed clearance, no A210 brand/legal clearance, no A026/A027 production gold labels and no release-manager activation were added.
+- Decisions: keep A209 `IN_PROGRESS`; keep overall delivery readiness failed; continue feature/gate work in parallel with the background soak.
+- Remaining risks: A209 can still fail before `288/288`; generated artifacts still require validation and remote CI binding.
+- Rollback: revert this governance/release artifact sync and `ITER-20260625-004` heartbeat/preflight refresh, then regenerate release artifacts from the prior committed state.
+- Next step: run focused validation, changed-only governance, commit, push and verify CI.
+
+## ITER-20260625-004 - T1307/A209 heartbeat and release preflight refresh
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `84231a5d9492c178a98ff7222de03c622a8eaf02`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1303`, `TASK-T1302`
+- Goal: refresh the A209 background heartbeat/finalization artifacts and downstream fail-closed release preflight artifacts to the latest validated point-in-time checkpoint after the Codex crash recovery.
+- Assumptions: live checkpoint JSONL and PID/log files remain runtime evidence; the committed heartbeat is a point-in-time progress snapshot and does not close A209 or MVP release readiness.
+- Files changed: A209 heartbeat/finalization artifacts, A203 production API release preflight, A204/A205 release-manager and MVP release preflights, external release-evidence bundle, plus governance companion records.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, threshold, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active parameter value changed; `PARAM-082` non-closure semantics remain `release_gate_closed_by_background_heartbeat=false`.
+- Commands run: A209 finalizer generate with upstream heartbeat refresh, serial external-release/release-manager/A203/MVP preflight regeneration, focused artifact validators and point-in-time checkpoint inspection.
+- Test results: A209 heartbeat validates at `27/288` windows PASS, `0` failed, `261` remaining and `9.38%` completion; finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; A203 remains `A203_PRODUCTION_API_RELEASE_BLOCKED`; release-manager remains `RELEASE_MANAGER_ACTIVATION_BLOCKED`; MVP release gate remains `MVP_RELEASE_BLOCKED`; external bundle remains `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`.
+- Successes: the repository artifacts now reflect the live A209 clean-restart process after recovery, and the dependent preflight hash chain validates after serial regeneration.
+- Failures: no 24h summary JSON, no A202 signed clearance, no A210 brand/legal clearance, no A026/A027 production gold labels and no release-manager activation were added.
+- Decisions: keep A209 `IN_PROGRESS`; treat the heartbeat as background evidence only; continue bounded MVP feature/gate work in parallel while the 24h soak continues.
+- Remaining risks: A209 can still fail before `288/288`; a later checkpoint may advance beyond the committed heartbeat before CI completes; all external release gates remain incomplete.
+- Rollback: revert this heartbeat/preflight sync and governance companion files, regenerate release artifacts from the prior heartbeat if needed, and preserve live A209 checkpoints/logs unless operator intervention is required.
+- Next step: regenerate governance/release artifacts, run focused validation plus changed-only governance, commit, push, verify CI and continue monitoring A209 to `288/288`.
 
 ## ITER-20260625-003 - T1301/A202 live official capture freshness refresh
 

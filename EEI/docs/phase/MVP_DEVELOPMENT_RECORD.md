@@ -5658,3 +5658,47 @@ Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BAC
 
 - Revert the external bundle script, unit tests, Makefile targets, v5 sync registration, generated artifact and governance rows.
 - Preserve live A209 checkpoint/log files and any future operator-supplied signed evidence bundles.
+
+
+## 2026-06-25 - T1307/A209 current heartbeat and release preflight refresh
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Refreshed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` and `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json` from the live clean-restart 24h operator soak.
+- Serially regenerated `artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, `artifacts/tests/a203/t1302_production_api_release_preflight.json` and `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json` so their `source_files` hashes bind to the latest upstream artifacts.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route or publication policy changed.
+
+### Current A209 evidence
+
+- Operator PID `82041` and watchdog PID `61030` are reported RUNNING in the committed heartbeat artifact.
+- Latest committed point-in-time heartbeat: `27/288` windows PASS, `0` failed, `261` remaining, `9.38%` completion.
+- Finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; `a209_evidence_ready_for_release_manager=false`; `downstream_release_gate_refresh_allowed=false`; `release_gate_closed_by_finalizer=false`.
+- The live checkpoint may advance beyond this committed snapshot while CI runs; that is expected and remains progress-only evidence until `288/288` validates.
+
+### Acceptance mapping
+
+- T1307 -> A209 for background soak progress and finalization preflight.
+- T1302 -> A203 for the dependent production API release preflight refresh.
+- T1303 -> A204/A205 for the dependent external bundle, release-manager activation and MVP release-gate preflight refresh.
+- This refresh does not close A202, A203, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- `scripts/record_operator_soak_heartbeat.py validate --quiet`: PASS.
+- `scripts/finalize_operator_soak_evidence.py validate --quiet`: PASS.
+- `scripts/validate_external_release_evidence_bundle.py validate`: PASS.
+- `scripts/validate_release_manager_activation.py validate`: PASS.
+- `scripts/validate_production_api_release_preflight.py validate`: PASS.
+- `scripts/validate_mvp_release_gate.py validate`: PASS.
+
+### Remaining gaps
+
+- Full A209 closure still requires a 24h summary/checkpoint chain at `288/288` successful windows with zero failures and release-ready validation.
+- A202 source/license/passage/owner/legal clearance, A210 formal brand clearance or waiver, A026/A027 production gold labels and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert this heartbeat/preflight artifact refresh and governance companion records, then regenerate release artifacts from the prior heartbeat if required.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.

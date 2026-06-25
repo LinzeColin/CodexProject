@@ -48,6 +48,8 @@
 - `EVENT-20260625-001`: Hardened A202 signed-decision/signed-intake exact coverage validation for duplicate, unknown and missing candidate/source/owner inputs; release readiness remains blocked pending real clearance, gold evidence and A209.
 - `EVENT-20260625-002`: Refreshed A209 clean-restart heartbeat and dependent release preflights to operator PID `82041`, watchdog PID `61030`, `9/288` windows PASS and `0` failed while keeping A209 and MVP release readiness blocked.
 - `EVENT-20260625-003`: Refreshed selected A202 live official-source capture evidence to the current healthy NVIDIA official-source hashes while keeping relationship publication, legal clearance, owner sign-off, A202 closure and MVP release readiness blocked.
+- `EVENT-20260625-004`: Refreshed A209 heartbeat/finalization and dependent A203/A204/A205 release preflights to `27/288` windows PASS, `0` failed and `9.38%` completion while keeping A209 and all release gates blocked.
+- `EVENT-20260625-005`: Synchronized VERSION_MATRIX, governance status, clean-room package and release evidence for the A209 `27/288` heartbeat refresh while keeping delivery readiness `FAILED`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 
