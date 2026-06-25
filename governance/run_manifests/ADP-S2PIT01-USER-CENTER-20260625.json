@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PIT01",
+  "acceptance_id": "ACC-S2PIT01-USER-CENTER",
+  "phase": "S2PI",
+  "generated_at": "2026-06-25T23:59:40+10:00",
+  "status": "completed_local_validation_pending_pr_ci",
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "model_ids_changed": ["MOD-ADP-079"],
+  "formula_ids_changed": ["FORM-ADP-081"],
+  "parameter_ids_changed": [
+    "PARAM-ADP-608",
+    "PARAM-ADP-609",
+    "PARAM-ADP-610",
+    "PARAM-ADP-611",
+    "PARAM-ADP-612",
+    "PARAM-ADP-613",
+    "PARAM-ADP-614",
+    "PARAM-ADP-615",
+    "PARAM-ADP-616",
+    "PARAM-ADP-617"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_USER_CENTER.md",
+    "arxiv-daily-push/docs/owner/00_用户中心/00_开始这里.md",
+    "arxiv-daily-push/docs/owner/00_用户中心/00_只改这里.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "production_flags": {
+    "owner_experience_accepted": false,
+    "stage2_production_accepted": false,
+    "integrated_production_accepted": false,
+    "real_smtp_sent": false,
+    "scheduler_enabled": false,
+    "release_upload_allowed": false,
+    "schema_migration_allowed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "source_adapter_changed": false,
+    "email_frontstage_changed": false,
+    "v7_1_current_switched": false,
+    "v7_2_contract_files_changed": false
+  },
+  "validation": {
+    "py_compile": "PASS",
+    "focused_stage2_sources": "110 OK",
+    "full_suite": "339 OK",
+    "semantic_extractor": "81 formulas / 600 parameters checked",
+    "project_governance": "0 errors / 0 warnings"
+  }
+}

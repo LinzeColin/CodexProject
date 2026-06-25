@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 78
-- formula_count: 80
-- parameter_count: 607
+- model_count: 79
+- formula_count: 81
+- parameter_count: 617
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -821,3 +821,10 @@ Uncovered planned scenarios:
 - Stage 1 production readiness now requires all-arXiv source selection, candidate queue persistence, Chinese teaching email, HTML/plain text delivery, Gmail SMTP evidence, and GitHub Actions text artifacts.
 - Video generation, MP4 links, and GitHub Release upload are not Stage 1 production-readiness gates. Release delivery remains a legacy/optional transport module and must not be used to claim S1-12 completion.
 - `ARXIV_PRODUCTION_ACCEPTED` is now evidenced by strict S1P5T03-R PR #94 run `28027759062` artifact `7821452823`; PR #82 artifact `7818287996` remains one-time live cloud-chain evidence. Production schedule enablement remains controlled by GitHub repository variables/secrets and fail-closed workflow gates.
+
+## S2PIT01 Chinese User Center Evidence
+
+- `MOD-ADP-079` / `FORM-ADP-081` define local owner-experience evidence for `S2PIT01`.
+- The only editable fact source is `config/owner_controls.yaml`; `docs/owner/00_用户中心/*` and generated owner views are read-only navigation or render artifacts.
+- Passing S2PIT01 requires owner_controls validation, read-only storage inspect status, four control domains, two-click reachability, compatible config compilation, and all production/schema/email side-effect flags false.
+- S2PIT01 does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, or Email V1 runtime change.

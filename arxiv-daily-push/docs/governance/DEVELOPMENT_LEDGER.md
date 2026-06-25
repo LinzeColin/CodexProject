@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PE
-- Current gate: S2PET04_US_TP_D4_QUALIFICATION_METADATA_ONLY_NO_PRODUCTION
-- Confirmed iteration count: 99
+- Current phase: S2PI
+- Current gate: S2PIT01_USER_CENTER_LOCAL_EVIDENCE_NO_PRODUCTION
+- Confirmed iteration count: 100
 - Reconstructed event count: 0
-- Current task: `S2PET04` has completed metadata-only D4 US-TP and D4 qualification evidence. It validates upstream S2PET01-S2PET03 readiness, OSTP, BIS, FTC, FCC, CISA, and CHIPS Program coverage, required technology policy signals, official identity, traceability, D4 30-date replay, 2-day shadow, B4/B5/B6 routing, 35/15/30/20 budget explanations, and no-production/no-schema side-effect gates without live source fetching, D4 production inclusion, public schema migration, Email V1 runtime changes, or V7.1/V7.2 contract edits. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PIT01` has completed local Chinese user-center and one-edit owner-control entry evidence. It validates `00_用户中心`, `00_只改这里`, the four control domains, two-click reachability, `config/owner_controls.yaml` as the only editable fact source, read-only storage inspect input, compatible config compilation, and no-production/no-schema/no-email-frontstage side-effect gates without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapters, or Email V1 runtime. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -32,9 +32,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2PF | V7.2-inherited D3 China local and extended official-source coverage | completed_local_validation | S2PFT01-S2PFT05 now cover mainland provincial templates, Hong Kong/Macau profiles, key cities, special zones, and full D3 governance qualification without formal production inclusion | `governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json`; `docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md` |
 | S2PE | V7.2-inherited D4 US official technology and finance source domain | completed_local_validation | `S2PET01-S2PET04` now cover metadata-only US-TA, US-LG, US-FM, US-TP, and D4 qualification evidence without live fetch, D4 production inclusion, SMTP, scheduler, Release, public schema, or queue mutation | `docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json` |
 | S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | in_progress | `S2PGT01` private EvidencePacket V2 compatibility is complete; continue later S2PG graph/routing work without silently migrating public schema or production queues | `docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json` |
+| S2PI | Chinese user center, one-edit/four-check/three-base, and real-state visibility | in_progress | `S2PIT01` local user-center and one-edit entry evidence is complete; continue later S2PIT02 runtime dashboard without public schema, DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PIT01_USER_CENTER.md`; `governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260625-ADP-S2PI-S2PIT01-USER-CENTER`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PIT01 user-center code, focused tests, owner-control contract, storage inspect boundary, model/formula/parameter registry diff, and local S2PIT01 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: bdefd80de6c1d325d40de621a6d780cad4d73312
+- Goal: Implement local Chinese `00_用户中心` and `00_只改这里` evidence for one-edit owner controls.
+- Files changed: `stage2_sources.py`, `cli.py`, `test_stage2_sources.py`, user-center owner docs, phase record, run manifest, model/formula/parameter registries, delivery plan/tasks, traceability, and this ledger.
+- Model changes: Added `MOD-ADP-079` for S2PIT01 user-center evidence.
+- Formula changes: Added `FORM-ADP-081` for owner controls validation, storage inspect, one editable fact source, four control domains, two-click reachability, compatible config compilation, and no-side-effect gates.
+- Parameter changes: Added `PARAM-ADP-608` through `PARAM-ADP-617`.
+- Decisions: S2PIT01 does not duplicate editable facts. The only editable fact source remains `config/owner_controls.yaml`; generated owner/user-center files are read-only views.
+- Boundaries: No SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, Email V1 frontstage/runtime change, CURRENT pointer change, V7.1/V7.2 contract-file edit, owner-experience final acceptance, Stage2 production acceptance, or integrated production acceptance.
+- Validation: `py_compile` PASS; focused Stage2 source tests 110 OK; full ADP unittest 339 OK; semantic extractor 81 formulas / 600 parameters checked; V7.2 validator PASS; project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings.
 
 ### `ITER-20260625-ADP-S2PE-S2PET04-US-TP-D4-QUALIFICATION`
 

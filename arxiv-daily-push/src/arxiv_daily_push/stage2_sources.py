@@ -670,6 +670,41 @@ S2PGT05_REQUIRED_GATES = (
     "no_side_effect_gate",
 )
 S2PGT05_REPORT_FILENAME = "stage2_s2pgt05_calibration_report.json"
+S2PIT01_USER_CENTER_MODEL_ID = "adp-s2pit01-user-center-v1"
+S2PIT01_ACCEPTANCE_ID = "ACC-S2PIT01-USER-CENTER"
+S2PIT01_TASK_ID = "S2PIT01"
+S2PIT01_REQUIRED_CONTROL_DOMAINS = ("profile", "mail_review", "source_boards", "budget_schedule")
+S2PIT01_REQUIRED_CONFIG_SECTIONS = (
+    "project",
+    "cost_policy",
+    "runtime",
+    "intelligence_provider",
+    "boards",
+    "sources",
+    "email",
+    "outputs",
+    "queue",
+    "scoring",
+    "source_defaults",
+    "iteration",
+    "validation",
+)
+S2PIT01_REQUIRED_USER_CENTER_PATHS = (
+    "docs/owner/00_用户中心/00_开始这里.md",
+    "docs/owner/00_用户中心/00_只改这里.md",
+)
+S2PIT01_REQUIRED_GATES = (
+    "owner_controls_gate",
+    "storage_readability_gate",
+    "one_edit_directory_gate",
+    "control_domain_gate",
+    "click_depth_gate",
+    "compatible_config_gate",
+    "no_side_effect_gate",
+)
+S2PIT01_MAX_CLICK_DEPTH = 2
+S2PIT01_EDITABLE_FACT_SOURCE = "config/owner_controls.yaml"
+S2PIT01_REPORT_FILENAME = "stage2_s2pit01_user_center_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -6946,6 +6981,225 @@ def validate_s2pgt05_cross_board_calibration_report(report: Mapping[str, Any]) -
     return errors
 
 
+def build_s2pit01_user_center_report(
+    *,
+    generated_at: str,
+    owner_controls: Mapping[str, Any],
+    owner_validation_report: Mapping[str, Any],
+    owner_impact_preview: Mapping[str, Any],
+    storage_inspect_report: Mapping[str, Any],
+    control_entries: Sequence[Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Build the S2PIT01 Chinese user-center and one-edit-entry evidence report."""
+
+    controls = dict(owner_controls)
+    rows, row_errors = _s2pit01_control_rows(control_entries or _s2pit01_default_control_entries())
+    owner_errors = [str(error) for error in owner_validation_report.get("errors") or []]
+    storage_reasons = [str(reason) for reason in storage_inspect_report.get("blocking_reasons") or []]
+    owner_gate = "pass" if owner_validation_report.get("status") == "pass" and not owner_errors else "blocked"
+    storage_gate = (
+        "pass"
+        if storage_inspect_report.get("model_id") == "adp-sqlite-data-model-v1"
+        and storage_inspect_report.get("action") == "inspect"
+        and storage_inspect_report.get("status") == "pass"
+        and int(storage_inspect_report.get("schema_version") or 0) >= 1
+        else "blocked"
+    )
+    editable_sources = sorted({str(row.get("editable_fact_source") or "") for row in rows if row.get("editable_fact_source")})
+    one_edit_errors: list[str] = []
+    if editable_sources != [S2PIT01_EDITABLE_FACT_SOURCE]:
+        one_edit_errors.append("S2PIT01 requires exactly one editable fact source: config/owner_controls.yaml")
+    if any(row.get("generated_view_editable") is not False for row in rows):
+        one_edit_errors.append("S2PIT01 generated owner/user-center views must remain non-editable facts")
+    domains = sorted({str(row.get("domain_id") or "") for row in rows})
+    missing_domains = [domain for domain in S2PIT01_REQUIRED_CONTROL_DOMAINS if domain not in domains]
+    control_errors = list(row_errors)
+    if missing_domains:
+        control_errors.append("S2PIT01 missing control domains: " + ", ".join(missing_domains))
+    sections_observed = sorted({section for row in rows for section in row.get("config_sections", []) if isinstance(section, str)})
+    missing_sections = [section for section in S2PIT01_REQUIRED_CONFIG_SECTIONS if section not in sections_observed]
+    missing_control_keys = [section for section in S2PIT01_REQUIRED_CONFIG_SECTIONS if section not in controls]
+    compatible_errors: list[str] = []
+    if missing_sections:
+        compatible_errors.append("S2PIT01 missing compiled config sections: " + ", ".join(missing_sections))
+    if missing_control_keys:
+        compatible_errors.append("S2PIT01 owner_controls missing sections: " + ", ".join(missing_control_keys))
+    if any(row.get("compiled_config_path") != S2PIT01_EDITABLE_FACT_SOURCE for row in rows):
+        compatible_errors.append("S2PIT01 every control domain must compile to config/owner_controls.yaml")
+    click_errors: list[str] = []
+    max_click_depth = max((int(row.get("click_depth") or 0) for row in rows), default=0)
+    if max_click_depth > S2PIT01_MAX_CLICK_DEPTH:
+        click_errors.append(f"S2PIT01 common controls must be reachable within {S2PIT01_MAX_CLICK_DEPTH} clicks")
+    no_side_effect_errors = _s2pit01_no_side_effect_errors(rows)
+    blocking_reasons = [
+        *owner_errors,
+        *storage_reasons,
+        *one_edit_errors,
+        *control_errors,
+        *compatible_errors,
+        *click_errors,
+        *no_side_effect_errors,
+    ]
+    gates = {
+        "owner_controls_gate": owner_gate,
+        "storage_readability_gate": storage_gate,
+        "one_edit_directory_gate": "pass" if not one_edit_errors else "blocked",
+        "control_domain_gate": "pass" if not control_errors and not missing_domains else "blocked",
+        "click_depth_gate": "pass" if not click_errors else "blocked",
+        "compatible_config_gate": "pass" if not compatible_errors else "blocked",
+        "no_side_effect_gate": "pass" if not no_side_effect_errors else "blocked",
+    }
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    return {
+        "model_id": S2PIT01_USER_CENTER_MODEL_ID,
+        "acceptance_id": S2PIT01_ACCEPTANCE_ID,
+        "task_id": S2PIT01_TASK_ID,
+        "legacy_task_id": None,
+        "phase": "S2PI",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_control_domains": list(S2PIT01_REQUIRED_CONTROL_DOMAINS),
+        "control_domains_observed": domains,
+        "required_config_sections": list(S2PIT01_REQUIRED_CONFIG_SECTIONS),
+        "config_sections_observed": sections_observed,
+        "required_user_center_paths": list(S2PIT01_REQUIRED_USER_CENTER_PATHS),
+        "user_center_paths_observed": sorted({path for row in rows for path in row.get("user_center_paths", []) if isinstance(path, str)}),
+        "editable_fact_sources": editable_sources,
+        "single_editable_fact_source": editable_sources[0] if len(editable_sources) == 1 else "",
+        "max_click_depth": max_click_depth,
+        "max_allowed_click_depth": S2PIT01_MAX_CLICK_DEPTH,
+        "control_entries": rows,
+        "owner_validation_report": dict(owner_validation_report),
+        "owner_impact_preview": dict(owner_impact_preview),
+        "storage_inspect_summary": {
+            "model_id": storage_inspect_report.get("model_id"),
+            "action": storage_inspect_report.get("action"),
+            "status": storage_inspect_report.get("status"),
+            "schema_version": storage_inspect_report.get("schema_version"),
+            "table_count": storage_inspect_report.get("table_count"),
+            "db_path": storage_inspect_report.get("db_path"),
+        },
+        "s2pit01_user_center_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pit01_user_center(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    owner_controls: Mapping[str, Any],
+    owner_validation_report: Mapping[str, Any],
+    owner_impact_preview: Mapping[str, Any],
+    storage_inspect_report: Mapping[str, Any],
+    control_entries: Sequence[Mapping[str, Any]] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PIT01 user-center evidence without changing owner controls or storage."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pit01-user-center"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pit01_user_center_report(
+        generated_at=generated_at,
+        owner_controls=owner_controls,
+        owner_validation_report=owner_validation_report,
+        owner_impact_preview=owner_impact_preview,
+        storage_inspect_report=storage_inspect_report,
+        control_entries=control_entries,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "user_center_report_path": str(run_dir / "adp-s2pit01-user-center-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pit01-user-center-report.json", report)
+        _write_json(state / S2PIT01_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pit01_user_center_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PIT01_USER_CENTER_MODEL_ID:
+        errors.append("S2PIT01 model_id must be adp-s2pit01-user-center-v1")
+    if report.get("task_id") != S2PIT01_TASK_ID:
+        errors.append("S2PIT01 task_id must be S2PIT01")
+    if report.get("acceptance_id") != S2PIT01_ACCEPTANCE_ID:
+        errors.append("S2PIT01 acceptance_id must be ACC-S2PIT01-USER-CENTER")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PIT01 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "production_affected",
+        "real_smtp_sent",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "schema_migration_allowed",
+        "public_schema_changed",
+        "queue_schema_changed",
+        "queue_mutation_allowed",
+        "ranking_algorithm_changed",
+        "source_adapter_changed",
+        "email_frontstage_changed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PIT01 user-center evidence")
+    rows = report.get("control_entries")
+    if not isinstance(rows, list) or not rows:
+        errors.append("S2PIT01 control_entries must be a non-empty list")
+        rows = []
+    domains = {str(row.get("domain_id") or "") for row in rows if isinstance(row, Mapping)}
+    missing_domains = [domain for domain in S2PIT01_REQUIRED_CONTROL_DOMAINS if domain not in domains]
+    if missing_domains:
+        errors.append("S2PIT01 missing control domains: " + ", ".join(missing_domains))
+    if report.get("single_editable_fact_source") != S2PIT01_EDITABLE_FACT_SOURCE:
+        errors.append("S2PIT01 single_editable_fact_source must be config/owner_controls.yaml")
+    if int(report.get("max_click_depth") or 0) > S2PIT01_MAX_CLICK_DEPTH:
+        errors.append(f"S2PIT01 max_click_depth must be <= {S2PIT01_MAX_CLICK_DEPTH}")
+    missing_paths = [path for path in S2PIT01_REQUIRED_USER_CENTER_PATHS if path not in set(report.get("user_center_paths_observed") or [])]
+    if missing_paths:
+        errors.append("S2PIT01 missing user-center paths: " + ", ".join(missing_paths))
+    for gate in S2PIT01_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PIT01 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PIT01 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pit01_user_center_ready") is not True:
+        errors.append("passing S2PIT01 report requires s2pit01_user_center_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -12087,6 +12341,121 @@ def _s2pgt05_queue_state_hash(rows: Sequence[Mapping[str, Any]]) -> str:
     payload = {"calibrated_queue_records": sorted([dict(row) for row in rows], key=lambda item: str(item.get("candidate_id") or ""))}
     encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _s2pit01_default_control_entries() -> list[dict[str, Any]]:
+    common_paths = list(S2PIT01_REQUIRED_USER_CENTER_PATHS)
+    return [
+        {
+            "domain_id": "profile",
+            "label_zh": "画像与目标",
+            "click_path": ["00_用户中心", "画像与目标"],
+            "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
+            "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
+            "config_sections": ["project", "cost_policy", "intelligence_provider", "validation"],
+            "user_center_paths": common_paths,
+            "generated_view_paths": ["docs/owner/OWNER_CONSOLE.md"],
+            "generated_view_editable": False,
+        },
+        {
+            "domain_id": "mail_review",
+            "label_zh": "邮件与复习",
+            "click_path": ["00_用户中心", "邮件与复习"],
+            "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
+            "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
+            "config_sections": ["email", "outputs", "iteration"],
+            "user_center_paths": common_paths,
+            "generated_view_paths": ["docs/owner/OWNER_CONSOLE.md", "docs/owner/CONTENT_LEDGER.csv"],
+            "generated_view_editable": False,
+        },
+        {
+            "domain_id": "source_boards",
+            "label_zh": "来源与板块",
+            "click_path": ["00_用户中心", "来源与板块"],
+            "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
+            "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
+            "config_sections": ["sources", "boards", "source_defaults"],
+            "user_center_paths": common_paths,
+            "generated_view_paths": ["docs/owner/SOURCE_CATALOG.md"],
+            "generated_view_editable": False,
+        },
+        {
+            "domain_id": "budget_schedule",
+            "label_zh": "预算与调度",
+            "click_path": ["00_用户中心", "预算与调度"],
+            "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
+            "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
+            "config_sections": ["runtime", "queue", "scoring", "validation"],
+            "user_center_paths": common_paths,
+            "generated_view_paths": ["docs/owner/MODEL_AND_QUEUE.md"],
+            "generated_view_editable": False,
+        },
+    ]
+
+
+def _s2pit01_control_rows(entries: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    seen_domains: set[str] = set()
+    for index, entry in enumerate(entries):
+        domain_id = str(entry.get("domain_id") or "")
+        label_zh = str(entry.get("label_zh") or "")
+        click_path = [str(item) for item in entry.get("click_path") or []]
+        config_sections = [str(item) for item in entry.get("config_sections") or []]
+        user_center_paths = [str(item) for item in entry.get("user_center_paths") or []]
+        generated_view_paths = [str(item) for item in entry.get("generated_view_paths") or []]
+        if not domain_id:
+            errors.append(f"control_entries[{index}].domain_id is required")
+        if domain_id in seen_domains:
+            errors.append(f"control_entries[{index}].domain_id must be unique")
+        seen_domains.add(domain_id)
+        if domain_id and domain_id not in S2PIT01_REQUIRED_CONTROL_DOMAINS:
+            errors.append(f"control_entries[{index}].domain_id is not supported")
+        if not label_zh:
+            errors.append(f"control_entries[{index}].label_zh is required")
+        if not click_path:
+            errors.append(f"control_entries[{index}].click_path is required")
+        if not config_sections:
+            errors.append(f"control_entries[{index}].config_sections is required")
+        rows.append(
+            {
+                "domain_id": domain_id,
+                "label_zh": label_zh,
+                "click_path": click_path,
+                "click_depth": len(click_path),
+                "editable_fact_source": str(entry.get("editable_fact_source") or ""),
+                "compiled_config_path": str(entry.get("compiled_config_path") or ""),
+                "config_sections": config_sections,
+                "user_center_paths": user_center_paths,
+                "generated_view_paths": generated_view_paths,
+                "generated_view_editable": bool(entry.get("generated_view_editable")),
+                "production_affected": bool(entry.get("production_affected")),
+                "real_smtp_sent": bool(entry.get("real_smtp_sent")),
+                "scheduler_enabled": bool(entry.get("scheduler_enabled")),
+                "schema_migration_allowed": bool(entry.get("schema_migration_allowed")),
+                "public_schema_changed": bool(entry.get("public_schema_changed")),
+                "queue_mutation_allowed": bool(entry.get("queue_mutation_allowed")),
+                "v7_2_contract_files_changed": bool(entry.get("v7_2_contract_files_changed")),
+            }
+        )
+    return rows, errors
+
+
+def _s2pit01_no_side_effect_errors(rows: Sequence[Mapping[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    for index, row in enumerate(rows):
+        for field in (
+            "production_affected",
+            "real_smtp_sent",
+            "scheduler_enabled",
+            "schema_migration_allowed",
+            "public_schema_changed",
+            "queue_mutation_allowed",
+            "v7_2_contract_files_changed",
+        ):
+            if row.get(field) is True:
+                errors.append(f"control_entries[{index}].{field} must be false for S2PIT01")
+    return errors
 
 
 def _is_iso_date(value: str) -> bool:

@@ -127,6 +127,7 @@ from .stage2_sources import (
     run_s2pet02_us_lg_legal_backbone,
     run_s2pet03_us_fm_source_backbone,
     run_s2pet04_us_tp_d4_qualification,
+    run_s2pit01_user_center,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -143,6 +144,7 @@ from .stage2_sources import (
     validate_s2pet02_us_lg_legal_backbone_report,
     validate_s2pet03_us_fm_source_backbone_report,
     validate_s2pet04_us_tp_d4_qualification_report,
+    validate_s2pit01_user_center_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -836,6 +838,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pgt05_calibration.add_argument("--queue-candidates", required=True, help="Queue candidate records JSON list or object with queue_candidate_records.")
     s2pgt05_calibration.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pgt05_calibration.add_argument("--json", action="store_true", help="Print JSON calibration report.")
+
+    s2pit01_user_center = subparsers.add_parser(
+        "stage2-user-center",
+        help="Build S2PIT01 Chinese user-center and one-edit-entry evidence without production side effects.",
+    )
+    s2pit01_user_center.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pit01_user_center.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pit01_user_center.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pit01_user_center.add_argument("--controls", help="Path to owner_controls.yaml.")
+    s2pit01_user_center.add_argument("--storage-inspect-report", required=True, help="Passing read-only storage inspect report JSON.")
+    s2pit01_user_center.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pit01_user_center.add_argument("--json", action="store_true", help="Print JSON user-center report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2447,6 +2461,37 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- waiting_credit_gate: {report.get('waiting_credit_gate')}")
             print(f"- queue_reason_gate: {report.get('queue_reason_gate')}")
             print(f"- deterministic_order_gate: {report.get('deterministic_order_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-user-center":
+        controls = load_owner_controls(args.controls)
+        owner_validation = validate_owner_controls(controls)
+        owner_preview = build_owner_impact_preview(controls)
+        report = run_s2pit01_user_center(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            owner_controls=controls,
+            owner_validation_report=owner_validation,
+            owner_impact_preview=owner_preview,
+            storage_inspect_report=load_json_mapping(args.storage_inspect_report),
+            write=not args.no_write,
+        )
+        errors = validate_s2pit01_user_center_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- owner_controls_gate: {report.get('owner_controls_gate')}")
+            print(f"- storage_readability_gate: {report.get('storage_readability_gate')}")
+            print(f"- one_edit_directory_gate: {report.get('one_edit_directory_gate')}")
+            print(f"- control_domain_gate: {report.get('control_domain_gate')}")
+            print(f"- click_depth_gate: {report.get('click_depth_gate')}")
+            print(f"- compatible_config_gate: {report.get('compatible_config_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

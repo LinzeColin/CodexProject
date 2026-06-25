@@ -49,6 +49,8 @@ from arxiv_daily_push.stage2_sources import (
     S2PET02_US_LG_BACKBONE_MODEL_ID,
     S2PET03_US_FM_BACKBONE_MODEL_ID,
     S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID,
+    S2PIT01_REQUIRED_CONTROL_DOMAINS,
+    S2PIT01_USER_CENTER_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -79,6 +81,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pet02_us_lg_legal_backbone_report,
     build_s2pet03_us_fm_source_backbone_report,
     build_s2pet04_us_tp_d4_qualification_report,
+    build_s2pit01_user_center_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -107,6 +110,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pet02_us_lg_legal_backbone,
     run_s2pet03_us_fm_source_backbone,
     run_s2pet04_us_tp_d4_qualification,
+    run_s2pit01_user_center,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -133,6 +137,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pet02_us_lg_legal_backbone_report,
     validate_s2pet03_us_fm_source_backbone_report,
     validate_s2pet04_us_tp_d4_qualification_report,
+    validate_s2pit01_user_center_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -206,6 +211,74 @@ def all_top_journal_batches() -> dict:
     combined.update(science_batches())
     combined.update(lancet_batches())
     return combined
+
+
+def s2pit01_owner_controls() -> dict:
+    return {
+        "schema_version": 1,
+        "config_version": "owner-controls-test",
+        "task_id": "S2PIT01",
+        "project": {"production_enabled": False},
+        "cost_policy": {"paid_data_api_allowed": False, "paid_cloud_compute_allowed": False, "paid_openai_api_allowed": False},
+        "runtime": {"max_fetch_concurrency": 1, "max_temp_cache_gb": 0.1, "window_a_resource_limits": {"max_online_arxiv_metadata": 10}},
+        "intelligence_provider": {"paid_openai_api_allowed": False},
+        "boards": [{"board_id": "B1", "enabled": True}],
+        "sources": [{"source_id": "SRC-ARXIV", "enabled": True}],
+        "email": {"enabled": True, "split_mode": "3+1", "send_order": ["M1", "M2", "M3", "M4"], "recipients": ["owner@example.com"]},
+        "outputs": {"report_enabled": True, "production_acceptance_claimed": False},
+        "queue": {"max_active_items": 10000},
+        "scoring": {"weights": {"quality": 1.0}},
+        "source_defaults": {"metadata_only": True},
+        "iteration": {"review_enabled": True},
+        "validation": {"rollback_config_version": "owner-controls-previous"},
+    }
+
+
+def s2pit01_owner_validation(status: str = "pass") -> dict:
+    return {
+        "model_id": "adp-owner-controls-v1",
+        "status": status,
+        "schema_valid": status == "pass",
+        "config_version": "owner-controls-test",
+        "task_id": "S2PIT01",
+        "production_enabled": False,
+        "owner_view_files": [
+            "docs/owner/OWNER_CONSOLE.md",
+            "docs/owner/SOURCE_CATALOG.md",
+            "docs/owner/MODEL_AND_QUEUE.md",
+            "docs/owner/CONTENT_LEDGER.csv",
+        ],
+        "rollback_config_version": "owner-controls-previous",
+        "warnings": [],
+        "errors": [] if status == "pass" else ["owner controls blocked"],
+    }
+
+
+def s2pit01_owner_preview() -> dict:
+    return {
+        "model_id": "adp-owner-controls-v1",
+        "status": "pass",
+        "days": 30,
+        "config_version": "owner-controls-test",
+        "schema_status": "pass",
+        "enabled_sources": ["SRC-ARXIV"],
+        "enabled_boards": ["B1"],
+        "rollback_config_version": "owner-controls-previous",
+        "warnings": [],
+        "errors": [],
+    }
+
+
+def s2pit01_storage_inspect(status: str = "pass") -> dict:
+    return {
+        "model_id": "adp-sqlite-data-model-v1",
+        "action": "inspect",
+        "status": status,
+        "db_path": "state/adp.sqlite3",
+        "schema_version": 1 if status == "pass" else 0,
+        "table_count": 18 if status == "pass" else 0,
+        "blocking_reasons": [] if status == "pass" else ["database file does not exist"],
+    }
 
 
 def top_journal_publication_events() -> list:
@@ -4291,6 +4364,94 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["calibration_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pgt05_calibration_report.json").is_file())
 
+    def test_s2pit01_user_center_passes_one_edit_two_click_and_no_production_gates(self) -> None:
+        report = build_s2pit01_user_center_report(
+            generated_at=GENERATED_AT,
+            owner_controls=s2pit01_owner_controls(),
+            owner_validation_report=s2pit01_owner_validation(),
+            owner_impact_preview=s2pit01_owner_preview(),
+            storage_inspect_report=s2pit01_storage_inspect(),
+        )
+
+        self.assertEqual(report["model_id"], S2PIT01_USER_CENTER_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PIT01-USER-CENTER")
+        self.assertEqual(report["task_id"], "S2PIT01")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["s2pit01_user_center_ready"])
+        self.assertEqual(set(report["control_domains_observed"]), set(S2PIT01_REQUIRED_CONTROL_DOMAINS))
+        self.assertEqual(report["single_editable_fact_source"], "config/owner_controls.yaml")
+        self.assertLessEqual(report["max_click_depth"], 2)
+        self.assertEqual(report["owner_controls_gate"], "pass")
+        self.assertEqual(report["storage_readability_gate"], "pass")
+        self.assertEqual(report["one_edit_directory_gate"], "pass")
+        self.assertEqual(report["compatible_config_gate"], "pass")
+        self.assertFalse(report["owner_experience_accepted"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(validate_s2pit01_user_center_report(report))
+
+    def test_s2pit01_user_center_blocks_duplicate_fact_source_deep_click_and_side_effect(self) -> None:
+        entries = [
+            {
+                "domain_id": domain,
+                "label_zh": domain,
+                "click_path": ["00_用户中心", "too", "deep"],
+                "editable_fact_source": "docs/owner/00_用户中心/manual.yaml" if domain == "profile" else "config/owner_controls.yaml",
+                "compiled_config_path": "config/owner_controls.yaml",
+                "config_sections": ["project"],
+                "user_center_paths": ["docs/owner/00_用户中心/00_开始这里.md"],
+                "generated_view_paths": [],
+                "generated_view_editable": domain == "mail_review",
+                "real_smtp_sent": domain == "budget_schedule",
+            }
+            for domain in S2PIT01_REQUIRED_CONTROL_DOMAINS
+        ]
+
+        report = build_s2pit01_user_center_report(
+            generated_at=GENERATED_AT,
+            owner_controls=s2pit01_owner_controls(),
+            owner_validation_report=s2pit01_owner_validation(),
+            owner_impact_preview=s2pit01_owner_preview(),
+            storage_inspect_report=s2pit01_storage_inspect("blocked"),
+            control_entries=entries,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["storage_readability_gate"], "blocked")
+        self.assertEqual(report["one_edit_directory_gate"], "blocked")
+        self.assertEqual(report["click_depth_gate"], "blocked")
+        self.assertEqual(report["compatible_config_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("exactly one editable fact source", joined)
+        self.assertIn("generated owner/user-center views", joined)
+        self.assertIn("2 clicks", joined)
+        self.assertIn("real_smtp_sent", joined)
+        self.assertTrue(validate_s2pit01_user_center_report(report))
+
+    def test_s2pit01_user_center_persists_report_without_storage_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pit01_user_center(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                owner_controls=s2pit01_owner_controls(),
+                owner_validation_report=s2pit01_owner_validation(),
+                owner_impact_preview=s2pit01_owner_preview(),
+                storage_inspect_report=s2pit01_storage_inspect(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pit01_user_center_report(report))
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["source_adapter_changed"])
+            self.assertTrue(Path(report["user_center_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pit01_user_center_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -5610,6 +5771,40 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertFalse(payload["production_affected"])
         self.assertFalse(payload["real_smtp_sent"])
         self.assertFalse(payload["email_frontstage_changed"])
+
+    def test_cli_stage2_user_center_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            storage_path = Path(tmp) / "storage-inspect.json"
+            storage_path.write_text(json.dumps(s2pit01_storage_inspect(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-user-center",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--controls",
+                    "arxiv-daily-push/config/owner_controls.yaml",
+                    "--storage-inspect-report",
+                    str(storage_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PIT01_USER_CENTER_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PIT01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["one_edit_directory_gate"], "pass")
+        self.assertEqual(payload["click_depth_gate"], "pass")
+        self.assertTrue(payload["s2pit01_user_center_ready"])
+        self.assertFalse(payload["schema_migration_allowed"])
+        self.assertFalse(payload["source_adapter_changed"])
+        self.assertFalse(payload["stage2_production_accepted"])
 
 
 if __name__ == "__main__":

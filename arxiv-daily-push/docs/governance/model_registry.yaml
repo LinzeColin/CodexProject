@@ -4135,3 +4135,55 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md"
+  -
+    model_id: "MOD-ADP-079"
+    name: "S2PIT01 Chinese user center one-edit entry"
+    kind: "deterministic owner-experience evidence model"
+    purpose: "Validate the Chinese 00_用户中心 first screen, one-edit owner controls entry, four separated control domains, two-click reachability, compatible config compilation, read-only storage inspect input, and disabled production side-effect flags before any broader owner-experience acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pit01-user-center-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-081"
+    parameter_ids:
+      - "PARAM-ADP-608"
+      - "PARAM-ADP-609"
+      - "PARAM-ADP-610"
+      - "PARAM-ADP-611"
+      - "PARAM-ADP-612"
+      - "PARAM-ADP-613"
+      - "PARAM-ADP-614"
+      - "PARAM-ADP-615"
+      - "PARAM-ADP-616"
+      - "PARAM-ADP-617"
+    inputs:
+      - "owner_controls mapping"
+      - "owner validation report"
+      - "owner impact preview"
+      - "read-only storage inspect report"
+      - "optional control entries"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PIT01 user center report"
+      - "one edit directory gate"
+      - "control domain gate"
+      - "click depth gate"
+      - "compatible config gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "arxiv-daily-push/config/owner_controls.yaml"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_USER_CENTER.md"
+      - "arxiv-daily-push/docs/owner/00_用户中心/00_开始这里.md"
+      - "arxiv-daily-push/docs/owner/00_用户中心/00_只改这里.md"
