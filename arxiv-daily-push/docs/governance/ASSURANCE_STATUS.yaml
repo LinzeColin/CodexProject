@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PKT01-MAIL-CONTRACT-001"
+as_of_event_id: "EVENT-20260626-ADP-S2PKT02-M1-MAIL-001"
 source_snapshot_hash: "sha256:f86deee9c5d3349171c36815468ff01b2ce156fc32a52e8156f72e83f266bd7c"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 699
-    total_active_parameters: 699
-    checked_active_formulas: 91
-    total_active_formulas: 91
+    checked_active_parameters: 709
+    total_active_parameters: 709
+    checked_active_formulas: 92
+    total_active_formulas: 92
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 683
-    total_active_parameters: 683
+    checked_active_parameters: 693
+    total_active_parameters: 693
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PKT01_MAIL_CONTRACT_LOCAL_ONLY"
+  release_gate: "S2PKT02_M1_MAIL_LOCAL_ONLY"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,13 +82,13 @@ delivery_readiness:
   parallel_shadow_source_task: "S2PBT01"
   current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PKT02_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2"
+  task_id: "S2PKT03_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2"
   status: "ready_for_local_only_execution"
-  reason: "S2PKT01 mail contract evidence is complete locally; continue only with the next governed Stage2 task under V7.2 no-production boundaries."
-  acceptance_ids: ["UNKNOWN_NEXT_ACCEPTANCE_ID"]
+  reason: "S2PKT02 M1 mail evidence is complete locally; continue only with the next governed Stage2 task under V7.2 no-production boundaries."
+  acceptance_ids: ["ACC-S2PKT03-M2"]
   owner: "project owner"
   human_owner_role: "project_owner"
-  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
+  unblock_condition: "Continue S2PKT03 M2 only as local no-production mail evidence unless a later governed task explicitly owns runtime production changes."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

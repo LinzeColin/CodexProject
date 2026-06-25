@@ -1,0 +1,43 @@
+{
+  "manifest_id": "ADP-S2PKT02-M1-MAIL-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PKT02",
+  "acceptance_id": "ACC-S2PKT02-M1",
+  "phase": "S2PK",
+  "model_id": "MOD-ADP-090",
+  "formula_id": "FORM-ADP-092",
+  "parameter_ids": [
+    "PARAM-ADP-717",
+    "PARAM-ADP-718",
+    "PARAM-ADP-719",
+    "PARAM-ADP-720",
+    "PARAM-ADP-721",
+    "PARAM-ADP-722",
+    "PARAM-ADP-723",
+    "PARAM-ADP-724",
+    "PARAM-ADP-725",
+    "PARAM-ADP-726"
+  ],
+  "base_commit": "cb6f4f2da6c70dbc10c3693d41e3a73d36d4c827",
+  "created_at": "2026-06-26T07:20:00+10:00",
+  "scope": "Local-only M1 science/theory frontier mail evidence assembled from S2PKT01, S2PHT05, S2PIT04, and S2PJT03 readiness.",
+  "non_scope": "No runtime mail template/frontstage change, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, live source fetch, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PKT02_M1_MAIL.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 154 OK",
+    "full arxiv-daily-push unittest: 383 OK",
+    "full semantic extractor: checked 92 formulas / 709 parameters; legacy non-current formula fingerprint drift remains outside changed-only gate",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}

@@ -879,6 +879,49 @@ S2PKT01_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PKT01_REPORT_FILENAME = "stage2_s2pkt01_mail_contract_report.json"
+S2PKT02_M1_MAIL_MODEL_ID = "adp-s2pkt02-m1-mail-v1"
+S2PKT02_ACCEPTANCE_ID = "ACC-S2PKT02-M1"
+S2PKT02_TASK_ID = "S2PKT02"
+S2PKT02_MAIL_PRODUCT_ID = "M1"
+S2PKT02_PRIMARY_BOARD = "B1"
+S2PKT02_REQUIRED_SECTIONS = (
+    "scientific_mechanism",
+    "evidence_chain",
+    "counterevidence",
+    "personal_value",
+    "action_path",
+)
+S2PKT02_REQUIRED_ACTION_WINDOWS = ("15m", "2h")
+S2PKT02_REQUIRED_GATES = (
+    "mail_contract_gate",
+    "content_quality_gate",
+    "content_ledger_gate",
+    "action_roi_gate",
+    "m1_scope_gate",
+    "section_coverage_gate",
+    "evidence_counterevidence_gate",
+    "personal_action_gate",
+    "hash_status_gate",
+    "no_side_effect_gate",
+)
+S2PKT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PKT02_REPORT_FILENAME = "stage2_s2pkt02_m1_mail_report.json"
 S2PJT01_LIFECYCLE_STATE_MODEL_ID = "adp-s2pjt01-lifecycle-state-v1"
 S2PJT01_ACCEPTANCE_ID = "ACC-S2PJT01-LIFECYCLE"
 S2PJT01_TASK_ID = "S2PJT01"
@@ -8800,6 +8843,366 @@ def validate_s2pkt01_mail_contract_report(report: Mapping[str, Any]) -> list[str
         errors.append("blocked S2PKT01 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pkt01_mail_contract_ready") is not True:
         errors.append("passing S2PKT01 report requires s2pkt01_mail_contract_ready=true")
+    return errors
+
+
+def _s2pkt02_m1_payload(record: Mapping[str, Any]) -> dict[str, Any]:
+    sections = []
+    for section in record.get("sections") or []:
+        section_map = section if isinstance(section, Mapping) else {}
+        sections.append(
+            {
+                "action_ids": [str(item) for item in section_map.get("action_ids") or []],
+                "content_ids": [str(item) for item in section_map.get("content_ids") or []],
+                "evidence_labels": [str(item) for item in section_map.get("evidence_labels") or []],
+                "evidence_refs": [str(item) for item in section_map.get("evidence_refs") or []],
+                "section_id": str(section_map.get("section_id") or ""),
+            }
+        )
+    sections = sorted(sections, key=lambda item: item["section_id"])
+    return {
+        "action_ids": [str(item) for item in record.get("action_ids") or []],
+        "contract_id": str(record.get("contract_id") or ""),
+        "cross_cutting_boards": [str(item) for item in record.get("cross_cutting_boards") or []],
+        "mail_product_id": str(record.get("mail_product_id") or ""),
+        "primary_board": str(record.get("primary_board") or ""),
+        "sections": sections,
+        "source_content_ids": [str(item) for item in record.get("source_content_ids") or []],
+        "status": str(record.get("status") or ""),
+        "template_version": str(record.get("template_version") or ""),
+    }
+
+
+def _s2pkt02_m1_mail_hash(record: Mapping[str, Any]) -> str:
+    encoded = json.dumps(_s2pkt02_m1_payload(record), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pkt02_m1_mail_report(
+    *,
+    generated_at: str,
+    mail_contract_report: Mapping[str, Any],
+    content_quality_report: Mapping[str, Any],
+    content_ledger_report: Mapping[str, Any],
+    action_roi_report: Mapping[str, Any],
+    m1_mail_record: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PKT02 M1 science/theory frontier mail evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    blocking_reasons: list[str] = []
+
+    mail_contract_errors = validate_s2pkt01_mail_contract_report(mail_contract_report)
+    mail_contract_gate = (
+        "pass"
+        if mail_contract_report.get("status") == "pass"
+        and mail_contract_report.get("s2pkt01_mail_contract_ready") is True
+        and not mail_contract_errors
+        else "blocked"
+    )
+    if mail_contract_gate != "pass":
+        blocking_reasons.append("S2PKT01 mail contract report must pass")
+        blocking_reasons.extend(mail_contract_errors)
+
+    quality_errors = validate_s2pht05_content_quality_gate_report(content_quality_report)
+    content_quality_gate = (
+        "pass"
+        if content_quality_report.get("status") == "pass"
+        and content_quality_report.get("s2pht05_content_quality_gate_ready") is True
+        and not quality_errors
+        else "blocked"
+    )
+    if content_quality_gate != "pass":
+        blocking_reasons.append("S2PHT05 content quality report must pass")
+        blocking_reasons.extend(quality_errors)
+
+    ledger_errors = validate_s2pit04_content_ledger_report(content_ledger_report)
+    content_ledger_gate = (
+        "pass"
+        if content_ledger_report.get("status") == "pass"
+        and content_ledger_report.get("s2pit04_content_ledger_ready") is True
+        and not ledger_errors
+        else "blocked"
+    )
+    if content_ledger_gate != "pass":
+        blocking_reasons.append("S2PIT04 content ledger report must pass")
+        blocking_reasons.extend(ledger_errors)
+
+    action_errors = validate_s2pjt03_action_asset_roi_report(action_roi_report)
+    action_roi_gate = (
+        "pass"
+        if action_roi_report.get("status") == "pass"
+        and action_roi_report.get("s2pjt03_action_roi_ready") is True
+        and not action_errors
+        else "blocked"
+    )
+    if action_roi_gate != "pass":
+        blocking_reasons.append("S2PJT03 action/asset/ROI report must pass")
+        blocking_reasons.extend(action_errors)
+
+    record = dict(m1_mail_record)
+    scope_errors: list[str] = []
+    section_errors: list[str] = []
+    evidence_errors: list[str] = []
+    personal_action_errors: list[str] = []
+    hash_status_errors: list[str] = []
+    side_effect_errors: list[str] = []
+
+    contracts = [row for row in mail_contract_report.get("mail_contracts") or [] if isinstance(row, Mapping)]
+    m1_contract = next((row for row in contracts if row.get("mail_product_id") == S2PKT02_MAIL_PRODUCT_ID), {})
+    if not m1_contract:
+        scope_errors.append("S2PKT02 requires M1 contract from S2PKT01")
+    if record.get("mail_product_id") != S2PKT02_MAIL_PRODUCT_ID:
+        scope_errors.append("S2PKT02 m1_mail_record.mail_product_id must be M1")
+    if record.get("contract_id") != S2PKT01_EMAIL_CONTRACT_ID:
+        scope_errors.append("S2PKT02 M1 contract_id must be EMAIL_LEARNING_V1")
+    if record.get("template_version") != S2PKT01_TEMPLATE_VERSION:
+        scope_errors.append(f"S2PKT02 M1 template_version must be {S2PKT01_TEMPLATE_VERSION}")
+    if record.get("primary_board") != S2PKT02_PRIMARY_BOARD:
+        scope_errors.append("S2PKT02 M1 primary_board must be B1")
+    cross_boards = [str(item) for item in record.get("cross_cutting_boards") or []]
+    if tuple(cross_boards) != S2PKT01_CROSS_CUTTING_BOARDS:
+        scope_errors.append("S2PKT02 M1 cross_cutting_boards must be B4/B5/B6")
+    for field in ("contract_id", "template_version", "primary_board", "cross_cutting_boards"):
+        if m1_contract and record.get(field) != m1_contract.get(field):
+            scope_errors.append(f"S2PKT02 M1 {field} must match S2PKT01 M1 contract")
+
+    status = str(record.get("status") or "")
+    if status not in S2PKT01_ALLOWED_MAIL_STATUSES:
+        hash_status_errors.append("S2PKT02 M1 status must be ready_no_send, previewed, or blocked_no_send")
+
+    ledger_content_ids = {str(row.get("content_id") or "") for row in content_ledger_report.get("ledger_records") or []}
+    action_records = [row for row in action_roi_report.get("action_records") or [] if isinstance(row, Mapping)]
+    action_horizon_by_id = {str(row.get("action_id") or ""): str(row.get("horizon") or "") for row in action_records}
+    source_content_ids = [str(item) for item in record.get("source_content_ids") or []]
+    if not source_content_ids:
+        section_errors.append("S2PKT02 M1 source_content_ids must be non-empty")
+    for content_id in source_content_ids:
+        if content_id not in ledger_content_ids:
+            section_errors.append(f"S2PKT02 M1 source_content_id {content_id} not traceable to S2PIT04")
+
+    sections = [section for section in record.get("sections") or [] if isinstance(section, Mapping)]
+    section_ids = [str(section.get("section_id") or "") for section in sections]
+    for section_id in S2PKT02_REQUIRED_SECTIONS:
+        if section_id not in section_ids:
+            section_errors.append(f"S2PKT02 M1 missing section {section_id}")
+    for section in sections:
+        section_id = str(section.get("section_id") or "section")
+        content_ids = [str(item) for item in section.get("content_ids") or []]
+        evidence_refs = [str(item) for item in section.get("evidence_refs") or []]
+        evidence_labels = [str(item) for item in section.get("evidence_labels") or []]
+        section_action_ids = [str(item) for item in section.get("action_ids") or []]
+        if not content_ids:
+            section_errors.append(f"{section_id} content_ids must be non-empty")
+        for content_id in content_ids:
+            if content_id not in source_content_ids:
+                section_errors.append(f"{section_id} content_id {content_id} not in M1 source_content_ids")
+        if not evidence_refs:
+            evidence_errors.append(f"{section_id} evidence_refs must be non-empty")
+        for label in evidence_labels:
+            if label not in S2PKT01_EVIDENCE_LABELS:
+                evidence_errors.append(f"{section_id} evidence label {label} is not allowed")
+        if section_id == "scientific_mechanism" and "FACT" not in evidence_labels:
+            evidence_errors.append("scientific_mechanism requires FACT evidence label")
+        if section_id == "evidence_chain" and "OBSERVATION" not in evidence_labels:
+            evidence_errors.append("evidence_chain requires OBSERVATION evidence label")
+        if section_id == "counterevidence" and "INFERENCE" not in evidence_labels:
+            evidence_errors.append("counterevidence requires INFERENCE evidence label")
+        if section_id == "personal_value" and not ({"OPINION", "INFERENCE"} & set(evidence_labels)):
+            personal_action_errors.append("personal_value requires OPINION or INFERENCE label")
+        if section_id == "action_path" and not section_action_ids:
+            personal_action_errors.append("action_path requires action_ids")
+        for action_id in section_action_ids:
+            if action_id not in action_horizon_by_id:
+                personal_action_errors.append(f"{section_id} action_id {action_id} not traceable to S2PJT03")
+
+    action_ids = [str(item) for item in record.get("action_ids") or []]
+    action_windows = sorted({action_horizon_by_id.get(action_id, "") for action_id in action_ids if action_id in action_horizon_by_id})
+    for action_id in action_ids:
+        if action_id not in action_horizon_by_id:
+            personal_action_errors.append(f"S2PKT02 M1 action_id {action_id} not traceable to S2PJT03")
+    missing_windows = [window for window in S2PKT02_REQUIRED_ACTION_WINDOWS if window not in action_windows]
+    if missing_windows:
+        personal_action_errors.append("S2PKT02 M1 missing required action windows: " + ", ".join(missing_windows))
+
+    m1_hash = _s2pkt02_m1_mail_hash(record)
+    if record.get("m1_mail_hash") not in (None, "", m1_hash):
+        hash_status_errors.append("S2PKT02 M1 m1_mail_hash must match M1 mail fields")
+    record["m1_mail_hash"] = m1_hash
+
+    for key in (
+        "real_smtp_sent",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "db_migration_executed",
+        "schema_migration_allowed",
+        "public_schema_changed",
+        "queue_schema_changed",
+        "queue_mutation_allowed",
+        "ranking_algorithm_changed",
+        "source_adapter_changed",
+        "email_frontstage_changed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+    ):
+        if record.get(key, False) is not False:
+            side_effect_errors.append(f"S2PKT02 M1 {key} must be false")
+
+    production_errors: list[str] = []
+    for key in (*S2PKT02_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "mail_contract_gate": mail_contract_gate,
+        "content_quality_gate": content_quality_gate,
+        "content_ledger_gate": content_ledger_gate,
+        "action_roi_gate": action_roi_gate,
+        "m1_scope_gate": "pass" if not scope_errors else "blocked",
+        "section_coverage_gate": "pass" if not section_errors else "blocked",
+        "evidence_counterevidence_gate": "pass" if not evidence_errors else "blocked",
+        "personal_action_gate": "pass" if not personal_action_errors else "blocked",
+        "hash_status_gate": "pass" if not hash_status_errors else "blocked",
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons.extend(scope_errors)
+    blocking_reasons.extend(section_errors)
+    blocking_reasons.extend(evidence_errors)
+    blocking_reasons.extend(personal_action_errors)
+    blocking_reasons.extend(hash_status_errors)
+    blocking_reasons.extend(side_effect_errors)
+    blocking_reasons.extend(production_errors)
+    report_status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+
+    return {
+        "model_id": S2PKT02_M1_MAIL_MODEL_ID,
+        "acceptance_id": S2PKT02_ACCEPTANCE_ID,
+        "task_id": S2PKT02_TASK_ID,
+        "phase": "S2PK",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": report_status,
+        **gates,
+        "email_contract_id": S2PKT01_EMAIL_CONTRACT_ID,
+        "template_version": S2PKT01_TEMPLATE_VERSION,
+        "mail_product_id": S2PKT02_MAIL_PRODUCT_ID,
+        "primary_board": S2PKT02_PRIMARY_BOARD,
+        "cross_cutting_boards": list(S2PKT01_CROSS_CUTTING_BOARDS),
+        "required_sections": list(S2PKT02_REQUIRED_SECTIONS),
+        "required_action_windows": list(S2PKT02_REQUIRED_ACTION_WINDOWS),
+        "source_content_count": len(set(source_content_ids)),
+        "section_count": len(set(section_ids)),
+        "action_count": len(set(action_ids)),
+        "action_windows": action_windows,
+        "m1_mail_record": record,
+        "m1_mail_hash": m1_hash,
+        "s2pkt02_m1_mail_ready": report_status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pkt02_m1_mail(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    mail_contract_report: Mapping[str, Any],
+    content_quality_report: Mapping[str, Any],
+    content_ledger_report: Mapping[str, Any],
+    action_roi_report: Mapping[str, Any],
+    m1_mail_record: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PKT02 local M1 mail evidence without production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pkt02-m1-mail"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pkt02_m1_mail_report(
+        generated_at=generated_at,
+        mail_contract_report=mail_contract_report,
+        content_quality_report=content_quality_report,
+        content_ledger_report=content_ledger_report,
+        action_roi_report=action_roi_report,
+        m1_mail_record=m1_mail_record,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "m1_mail_report_path": str(run_dir / "adp-s2pkt02-m1-mail-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pkt02-m1-mail-report.json", report)
+        _write_json(state / S2PKT02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pkt02_m1_mail_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PKT02_M1_MAIL_MODEL_ID:
+        errors.append("S2PKT02 model_id must be adp-s2pkt02-m1-mail-v1")
+    if report.get("task_id") != S2PKT02_TASK_ID:
+        errors.append("S2PKT02 task_id must be S2PKT02")
+    if report.get("acceptance_id") != S2PKT02_ACCEPTANCE_ID:
+        errors.append("S2PKT02 acceptance_id must be ACC-S2PKT02-M1")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PKT02 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PKT02_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PKT02 local M1 mail evidence")
+    record = report.get("m1_mail_record")
+    if not isinstance(record, Mapping):
+        errors.append("S2PKT02 m1_mail_record must be an object")
+        record = {}
+    if report.get("m1_mail_hash") != _s2pkt02_m1_mail_hash(record):
+        errors.append("S2PKT02 m1_mail_hash must match m1_mail_record")
+    if int(report.get("section_count") or 0) != len(
+        {str(section.get("section_id") or "") for section in record.get("sections") or [] if isinstance(section, Mapping)}
+    ):
+        errors.append("S2PKT02 section_count must match unique section_ids")
+    if int(report.get("source_content_count") or 0) != len({str(item) for item in record.get("source_content_ids") or []}):
+        errors.append("S2PKT02 source_content_count must match source_content_ids")
+    if int(report.get("action_count") or 0) != len({str(item) for item in record.get("action_ids") or []}):
+        errors.append("S2PKT02 action_count must match action_ids")
+    for gate in S2PKT02_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PKT02 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PKT02 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pkt02_m1_mail_ready") is not True:
+        errors.append("passing S2PKT02 report requires s2pkt02_m1_mail_ready=true")
     return errors
 
 
