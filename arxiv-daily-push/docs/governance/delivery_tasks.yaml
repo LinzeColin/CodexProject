@@ -1439,6 +1439,24 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PFT04"
+    legacy_alias: "S2P5T04"
+    phase: "S2PF"
+    objective: "Add China special-zone metadata-only discovery evidence after first key-city coverage."
+    scope: "Required zone ids, supported zone types, required authority roles, policy focus areas, parent-city mapping to S2PFT03 observed cities, health tiers, authority and dedupe gates, metadata-only gates, focused tests, CLI command, and governance registration."
+    non_scope: "No D3_FULL_SOURCE_DOMAIN_ACCEPTED, no STAGE2_PRODUCTION_ACCEPTED, no INTEGRATED_PRODUCTION_ACCEPTED, no SMTP, Release, scheduler, production queue/schema mutation, bulk scraping, PDF/full-text access, paid API, paywall bypass, V7.2 contract edit, mail production code, or public schema pre-run."
+    status: "completed"
+    dependencies: ["S2PFT03"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md"]
+    acceptance_ids: ["ACC-S2PFT04-ZONES"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 63 OK", "full arxiv-daily-push unittest: 292 OK", "semantic extractor: 70 formulas / 480 parameters checked", "V7.2 contract validator PASS", "ADP project governance errors 0 warnings 0", "lean check-render drift_count 0 reference_issue_count 0", "changed-only lean governance errors 0 warnings 0", "JSON/YAML/JSONL/CSV parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md", "governance/run_manifests/ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-20260625.json"]
+    risk: "Special-zone discovery evidence must not be misread as D3 full source-domain production acceptance; inherited V7.1 blockers and S2PMT07 still block production."
+    rollback: "Revert S2PFT04 special-zone discovery code, tests, governance registrations, phase record, manifest, events, and rendered governance sync. No runtime or production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2PHT01V1.1-T01"
     phase: "S2PH"
     objective: "Run the EMAIL_LEARNING_V1 read-only exact H/M repository path audit required by V7.2 before any mail production implementation work."

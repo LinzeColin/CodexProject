@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PFT03-KEY-CITY-MAIN-MERGE-STATUS-002"
+as_of_event_id: "EVENT-20260625-ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-001"
 source_snapshot_hash: "sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 470
-    total_active_parameters: 470
-    checked_active_formulas: 69
-    total_active_formulas: 69
+    checked_active_parameters: 480
+    total_active_parameters: 480
+    checked_active_formulas: 70
+    total_active_formulas: 70
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 470
-    total_active_parameters: 470
+    checked_active_parameters: 480
+    total_active_parameters: 480
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PFT03_KEY_CITY_COVERAGE_READY_NO_PRODUCTION"
+  release_gate: "S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -80,16 +80,16 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PFT03"
+  current_v7_task_id: "S2PFT04"
 next_executable_task:
-  task_id: "S2PFT04"
+  task_id: "S2PFT05"
   status: "planned"
-  reason: "Continue S2PF with special-zone discovery after S2PFT03 first key-city coverage, still metadata-only/no-send and under V7.2 production blockers."
+  reason: "Continue S2PF with full D3 governance and coverage qualification after S2PFT04 special-zone discovery, still blocked from production inclusion by V7.2 production gates."
   acceptance_ids:
-    - "ACC-S2PFT04-ZONES"
+    - "ACC-S2PFT05-D3-FULL"
   owner: "content_owner + engineering_owner"
   human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Read V7.2 current contract and S2PFT03 receipt first, then perform metadata-only/no-send special-zone discovery work without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT."
+  unblock_condition: "Read V7.2 current contract and S2PFT04 receipt first, then perform full D3 governance qualification without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -103,12 +103,12 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT03 as merged metadata-only/no-send key-city coverage evidence, continue next no-conflict S2PFT04 special-zone discovery, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate."
-  option_a: "继续 S2PFT04 special-zone metadata-only discovery under V7.2 boundaries。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT04 as local metadata-only/no-send special-zone discovery evidence pending PR/CI, continue next no-conflict S2PFT05 full D3 governance qualification, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate."
+  option_a: "继续 S2PFT05 full D3 governance qualification under V7.2 boundaries。"
   option_b: "暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。"
   option_c: "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
   options:
-    - "继续 S2PFT04 special-zone metadata-only discovery under V7.2 boundaries。"
+    - "继续 S2PFT05 full D3 governance qualification under V7.2 boundaries。"
     - "暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。"
     - "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
@@ -118,9 +118,9 @@ owner_decision:
   evidence_required: "V7.2 contract/CURRENT hash checks, root lock validator, three-base render proof, V7.2 revalidation receipts, Science/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."
-  unblock_task_id: "S2PFT04"
+  unblock_task_id: "S2PFT05"
   acceptance_ids:
-    - "ACC-S2PFT04-ZONES"
+    - "ACC-S2PFT05-D3-FULL"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"

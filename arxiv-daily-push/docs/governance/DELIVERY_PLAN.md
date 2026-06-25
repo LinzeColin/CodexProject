@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 89
-- acceptance_count: 83
+- task_count: 90
+- acceptance_count: 84
 
 ## Delivery Tasks
 
@@ -105,6 +105,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PFT01 | S2PF | completed | ACC-S2PFT01-PROVINCES | China mainland provincial template coverage passed for 31 provincial-level IDs, locality types, core department roles, health tiers, official identity, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, HK/MO, city, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT01_CHINA_PROVINCIAL_TEMPLATE_COVERAGE.md`; `governance/run_manifests/ADP-S2PFT01-CHINA-PROVINCIAL-TEMPLATE-COVERAGE-20260625.json` |
 | S2PFT02 | S2PF | completed | ACC-S2PFT02-HK-MO | Hong Kong and Macau independent profiles passed for jurisdiction identity, language profiles, legal-system states, government structures, authority evidence, mainland-template reuse blockers, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, city, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT02_HK_MO_INDEPENDENT_PROFILE.md`; `governance/run_manifests/ADP-S2PFT02-HK-MO-INDEPENDENT-PROFILE-20260625.json` |
 | S2PFT03 | S2PF | completed | ACC-S2PFT03-CITIES | First 24 key-city coverage passed for city IDs, aliases, local department roles, region groups, health tiers, official authority evidence, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, special-zone, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT03_KEY_CITY_COVERAGE.md`; `governance/run_manifests/ADP-S2PFT03-KEY-CITY-COVERAGE-20260625.json` |
+| S2PFT04 | S2PF | completed | ACC-S2PFT04-ZONES | Special-zone discovery passed for 10 zone IDs, zone types, authority roles, policy focus areas, parent-city mapping, health tiers, authority and dedupe gates, and metadata-only boundaries; no D3 full acceptance, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or production side effect is claimed | `docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md`; `governance/run_manifests/ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |

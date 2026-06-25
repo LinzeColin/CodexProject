@@ -305,6 +305,55 @@ S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES = (
 S2PFT03_ALLOWED_REGION_GROUPS = ("national_municipality", "yangtze_delta", "pearl_delta", "central", "western", "northeast", "coastal")
 S2PFT03_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
 S2PFT03_REPORT_FILENAME = "stage2_s2pft03_key_city_coverage_report.json"
+S2PFT04_SPECIAL_ZONE_MODEL_ID = "adp-s2pft04-special-zone-discovery-v1"
+S2PFT04_ACCEPTANCE_ID = "ACC-S2PFT04-ZONES"
+S2PFT04_TASK_ID = "S2PFT04"
+S2PFT04_LEGACY_TASK_ID = "S2P5T04"
+S2PFT04_REQUIRED_ZONE_IDS = (
+    "xiongan_new_area",
+    "shanghai_pudong_new_area",
+    "shenzhen_qianhai",
+    "hengqin_guangdong_macao",
+    "hainan_free_trade_port",
+    "shanghai_lingang",
+    "beijing_zhongguancun",
+    "suzhou_industrial_park",
+    "tianjin_binhai_new_area",
+    "chongqing_liangjiang_new_area",
+)
+S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES = (
+    "zone_governing_committee",
+    "government_portal",
+    "development_reform",
+    "commerce",
+    "science_technology",
+    "industry_information",
+    "market_regulation",
+    "data_or_digital",
+    "customs",
+    "taxation",
+    "financial_regulation",
+)
+S2PFT04_ALLOWED_ZONE_TYPES = (
+    "national_new_area",
+    "free_trade_port",
+    "cooperation_zone",
+    "innovation_demonstration_zone",
+    "industrial_park",
+    "new_area_subzone",
+)
+S2PFT04_ALLOWED_POLICY_FOCUS_AREAS = (
+    "technology_innovation",
+    "advanced_manufacturing",
+    "free_trade",
+    "finance",
+    "digital_economy",
+    "cross_border_cooperation",
+    "green_development",
+    "industrial_upgrade",
+)
+S2PFT04_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
+S2PFT04_REPORT_FILENAME = "stage2_s2pft04_special_zone_discovery_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -3922,6 +3971,257 @@ def validate_s2pft03_key_city_coverage_report(report: Mapping[str, Any]) -> list
     return errors
 
 
+def build_s2pft04_special_zone_discovery_report(
+    *,
+    generated_at: str,
+    key_city_coverage_report: Mapping[str, Any],
+    zone_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build special-zone metadata discovery evidence without production inclusion."""
+
+    upstream_errors = validate_s2pft03_key_city_coverage_report(key_city_coverage_report)
+    upstream_gate = (
+        "pass"
+        if not upstream_errors
+        and key_city_coverage_report.get("status") == "pass"
+        and key_city_coverage_report.get("s2pf_key_city_coverage_ready") is True
+        else "blocked"
+    )
+    zone_rows, row_errors = _s2pft04_zone_rows(zone_records)
+    parent_city_ids = set(key_city_coverage_report.get("city_ids_observed") or S2PFT03_REQUIRED_CITY_IDS)
+    coverage_gate = _s2pft04_zone_coverage_gate(zone_rows)
+    authority_role_gate = _s2pft04_zone_authority_role_gate(zone_rows)
+    type_policy_gate = _s2pft04_zone_type_policy_gate(zone_rows)
+    parent_city_gate = _s2pft04_parent_city_gate(zone_rows, parent_city_ids=parent_city_ids)
+    health_gate = _s2pft04_zone_health_gate(zone_rows)
+    authority_gate = _s2pft04_zone_authority_gate(zone_rows)
+    metadata_gate = _s2pft04_zone_metadata_gate(zone_rows)
+    blocking_reasons = [
+        *upstream_errors,
+        *row_errors,
+        *coverage_gate["blocking_reasons"],
+        *authority_role_gate["blocking_reasons"],
+        *type_policy_gate["blocking_reasons"],
+        *parent_city_gate["blocking_reasons"],
+        *health_gate["blocking_reasons"],
+        *authority_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if upstream_gate != "pass":
+        blocking_reasons.append("S2PFT04 requires passing S2PFT03 key-city coverage evidence")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == coverage_gate["status"]
+        == authority_role_gate["status"]
+        == type_policy_gate["status"]
+        == parent_city_gate["status"]
+        == health_gate["status"]
+        == authority_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PFT04_SPECIAL_ZONE_MODEL_ID,
+        "acceptance_id": S2PFT04_ACCEPTANCE_ID,
+        "task_id": S2PFT04_TASK_ID,
+        "legacy_task_id": S2PFT04_LEGACY_TASK_ID,
+        "phase": "S2PF",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_key_city_coverage_gate": upstream_gate,
+        "zone_coverage_gate": coverage_gate["status"],
+        "zone_authority_role_gate": authority_role_gate["status"],
+        "zone_type_policy_gate": type_policy_gate["status"],
+        "parent_city_mapping_gate": parent_city_gate["status"],
+        "health_tier_gate": health_gate["status"],
+        "authority_gate": authority_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_zone_ids": list(S2PFT04_REQUIRED_ZONE_IDS),
+        "required_zone_count": len(S2PFT04_REQUIRED_ZONE_IDS),
+        "zone_ids_observed": coverage_gate["zone_ids_observed"],
+        "zone_record_count": len(zone_rows),
+        "required_zone_authority_roles": list(S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES),
+        "allowed_zone_types": list(S2PFT04_ALLOWED_ZONE_TYPES),
+        "zone_types_observed": type_policy_gate["zone_types_observed"],
+        "allowed_policy_focus_areas": list(S2PFT04_ALLOWED_POLICY_FOCUS_AREAS),
+        "policy_focus_areas_observed": type_policy_gate["policy_focus_areas_observed"],
+        "allowed_health_tiers": list(S2PFT04_ALLOWED_HEALTH_TIERS),
+        "health_tiers_observed": health_gate["health_tiers_observed"],
+        "parent_city_ids_observed": parent_city_gate["parent_city_ids_observed"],
+        "zone_records": zone_rows,
+        "zone_coverage_summary": coverage_gate,
+        "zone_authority_role_summary": authority_role_gate,
+        "zone_type_policy_summary": type_policy_gate,
+        "parent_city_mapping_summary": parent_city_gate,
+        "health_tier_summary": health_gate,
+        "authority_summary": authority_gate,
+        "metadata_summary": metadata_gate,
+        "s2pf_special_zone_discovery_ready": status == "pass",
+        "d3_full_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "special_zone_discovery_modeled": status == "pass",
+        "special_zone_discovery_enabled": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pft04_special_zone_discovery(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    key_city_coverage_report: Mapping[str, Any],
+    zone_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PFT04 special-zone discovery evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pft04-special-zone-discovery"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pft04_special_zone_discovery_report(
+        generated_at=generated_at,
+        key_city_coverage_report=key_city_coverage_report,
+        zone_records=zone_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "special_zone_discovery_report_path": str(run_dir / "adp-s2pft04-special-zone-discovery-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pft04-special-zone-discovery-report.json", report)
+        _write_json(state / S2PFT04_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pft04_special_zone_discovery_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PFT04_SPECIAL_ZONE_MODEL_ID:
+        errors.append("S2PFT04 zone model_id must be adp-s2pft04-special-zone-discovery-v1")
+    if report.get("task_id") != S2PFT04_TASK_ID:
+        errors.append("S2PFT04 zone task_id must be S2PFT04")
+    if report.get("legacy_task_id") != S2PFT04_LEGACY_TASK_ID:
+        errors.append("S2PFT04 zone legacy_task_id must be S2P5T04")
+    if report.get("acceptance_id") != S2PFT04_ACCEPTANCE_ID:
+        errors.append("S2PFT04 zone acceptance_id must be ACC-S2PFT04-ZONES")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PFT04 zone status must be pass or blocked")
+    for key in (
+        "d3_full_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+        "v7_2_mail_or_schema_prerun",
+        "special_zone_discovery_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PFT04 special-zone discovery")
+    zone_records = report.get("zone_records")
+    if not isinstance(zone_records, list):
+        errors.append("S2PFT04 zone_records must be a list")
+        zone_records = []
+    observed_ids = set(report.get("zone_ids_observed") or [])
+    missing_ids = [zone_id for zone_id in S2PFT04_REQUIRED_ZONE_IDS if zone_id not in observed_ids]
+    if missing_ids:
+        errors.append("S2PFT04 missing zone ids: " + ", ".join(missing_ids))
+    for index, record in enumerate(zone_records):
+        if not isinstance(record, Mapping):
+            errors.append(f"zone_records[{index}] must be an object")
+            continue
+        if record.get("zone_id") not in S2PFT04_REQUIRED_ZONE_IDS:
+            errors.append(f"zone_records[{index}].zone_id is not supported")
+        if not record.get("zone_name"):
+            errors.append(f"zone_records[{index}].zone_name is required")
+        if record.get("zone_type") not in S2PFT04_ALLOWED_ZONE_TYPES:
+            errors.append(f"zone_records[{index}].zone_type is not supported")
+        focus_areas = set(record.get("policy_focus_areas") or [])
+        if not focus_areas or not focus_areas.issubset(set(S2PFT04_ALLOWED_POLICY_FOCUS_AREAS)):
+            errors.append(f"zone_records[{index}].policy_focus_areas are required and must be supported")
+        missing_roles = [
+            role for role in S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES if role not in set(record.get("authority_roles") or [])
+        ]
+        if missing_roles:
+            errors.append(f"zone_records[{index}] missing zone roles: " + ", ".join(missing_roles))
+        if not record.get("parent_city_ids"):
+            errors.append(f"zone_records[{index}].parent_city_ids is required")
+        if record.get("health_tier") not in S2PFT04_ALLOWED_HEALTH_TIERS:
+            errors.append(f"zone_records[{index}].health_tier is not supported")
+        if not record.get("health_explanation"):
+            errors.append(f"zone_records[{index}].health_explanation is required")
+        if record.get("authority_gate") != "pass":
+            errors.append(f"zone_records[{index}].authority_gate must be pass")
+        if record.get("dedupe_gate") != "pass":
+            errors.append(f"zone_records[{index}].dedupe_gate must be pass")
+        if record.get("metadata_only") is not True:
+            errors.append(f"zone_records[{index}].metadata_only must be true")
+        for field in ("pdf_downloaded", "full_text_extracted", "production_affected", "real_smtp_sent"):
+            if record.get(field) is not False:
+                errors.append(f"zone_records[{index}].{field} must be false")
+        if not record.get("official_domain") or not record.get("source_url") or not record.get("evidence_refs"):
+            errors.append(f"zone_records[{index}] requires official_domain, source_url, and evidence_refs")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PFT04 zone report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_key_city_coverage_gate",
+            "zone_coverage_gate",
+            "zone_authority_role_gate",
+            "zone_type_policy_gate",
+            "parent_city_mapping_gate",
+            "health_tier_gate",
+            "authority_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PFT04 zone report requires {key}=pass")
+        if report.get("s2pf_special_zone_discovery_ready") is not True:
+            errors.append("passing S2PFT04 zone report requires s2pf_special_zone_discovery_ready=true")
+        if report.get("special_zone_discovery_modeled") is not True:
+            errors.append("passing S2PFT04 zone report requires special_zone_discovery_modeled=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -6684,6 +6984,230 @@ def _s2pft03_city_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, 
     reasons: list[str] = []
     if violations:
         reasons.append("S2PFT03 key-city records must stay metadata-only with no PDF/full-text, production, or SMTP side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(rows) - len(violations),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_zone_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    zone_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"zone_records[{index}] must be an object")
+            continue
+        zone_id = str(record.get("zone_id") or "").strip()
+        row = {
+            "zone_id": zone_id,
+            "zone_name": str(record.get("zone_name") or "").strip(),
+            "zone_type": str(record.get("zone_type") or "").strip(),
+            "parent_city_ids": list(record.get("parent_city_ids") or []),
+            "authority_roles": list(record.get("authority_roles") or []),
+            "policy_focus_areas": list(record.get("policy_focus_areas") or []),
+            "health_tier": str(record.get("health_tier") or "").strip(),
+            "health_explanation": str(record.get("health_explanation") or "").strip(),
+            "official_domain": str(record.get("official_domain") or "").strip(),
+            "source_url": str(record.get("source_url") or "").strip(),
+            "authority_gate": str(record.get("authority_gate") or "").strip(),
+            "dedupe_gate": str(record.get("dedupe_gate") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not zone_id:
+            errors.append(f"zone_records[{index}].zone_id is required")
+        if zone_id in zone_ids:
+            errors.append(f"duplicate S2PFT04 zone_id: {zone_id}")
+        zone_ids.add(zone_id)
+        rows.append(row)
+    if not rows:
+        errors.append("S2PFT04 requires at least one special-zone record")
+    return rows, errors
+
+
+def _s2pft04_zone_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("zone_id") or "") for row in rows if isinstance(row, Mapping)}
+    missing = [zone_id for zone_id in S2PFT04_REQUIRED_ZONE_IDS if zone_id not in observed]
+    unsupported = sorted(observed - set(S2PFT04_REQUIRED_ZONE_IDS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PFT04 special-zone discovery missing zone ids: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PFT04 special-zone discovery has unsupported zone ids: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_zone_ids": list(S2PFT04_REQUIRED_ZONE_IDS),
+        "zone_ids_observed": sorted(zone_id for zone_id in observed if zone_id),
+        "missing_zone_ids": missing,
+        "unsupported_zone_ids": unsupported,
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_zone_authority_role_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing_by_zone: dict[str, list[str]] = {}
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        roles = set(row.get("authority_roles") or [])
+        missing = [role for role in S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES if role not in roles]
+        if missing:
+            missing_by_zone[str(row.get("zone_id") or "")] = missing
+    reasons: list[str] = []
+    if missing_by_zone:
+        reasons.append("S2PFT04 special-zone records missing required authority roles")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_zone_authority_roles": list(S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES),
+        "complete_authority_role_record_count": len(rows) - len(missing_by_zone),
+        "record_count": len(rows),
+        "missing_roles_by_zone": missing_by_zone,
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_zone_type_policy_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    zone_types = sorted(
+        {
+            str(row.get("zone_type") or "")
+            for row in rows
+            if isinstance(row, Mapping) and str(row.get("zone_type") or "")
+        }
+    )
+    policy_areas = sorted(
+        {
+            str(policy_area)
+            for row in rows
+            if isinstance(row, Mapping)
+            for policy_area in list(row.get("policy_focus_areas") or [])
+            if str(policy_area)
+        }
+    )
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("zone_type") not in S2PFT04_ALLOWED_ZONE_TYPES
+        or not set(row.get("policy_focus_areas") or [])
+        or not set(row.get("policy_focus_areas") or []).issubset(set(S2PFT04_ALLOWED_POLICY_FOCUS_AREAS))
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT04 special-zone records require allowed zone_type and policy_focus_areas")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_zone_types": list(S2PFT04_ALLOWED_ZONE_TYPES),
+        "zone_types_observed": zone_types,
+        "allowed_policy_focus_areas": list(S2PFT04_ALLOWED_POLICY_FOCUS_AREAS),
+        "policy_focus_areas_observed": policy_areas,
+        "typed_policy_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_parent_city_gate(rows: Sequence[Mapping[str, Any]], *, parent_city_ids: set[str]) -> dict[str, Any]:
+    observed = sorted(
+        {
+            str(city_id)
+            for row in rows
+            if isinstance(row, Mapping)
+            for city_id in list(row.get("parent_city_ids") or [])
+            if str(city_id)
+        }
+    )
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or not set(row.get("parent_city_ids") or [])
+        or not set(row.get("parent_city_ids") or []).issubset(parent_city_ids)
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT04 special-zone records require parent_city_ids mapped to S2PFT03 observed cities")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "parent_city_ids_observed": observed,
+        "supported_parent_city_ids": sorted(parent_city_ids),
+        "mapped_zone_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_zone_health_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted(
+        {
+            str(row.get("health_tier") or "")
+            for row in rows
+            if isinstance(row, Mapping) and str(row.get("health_tier") or "")
+        }
+    )
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("health_tier") not in S2PFT04_ALLOWED_HEALTH_TIERS
+        or not row.get("health_explanation")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT04 special-zone records require allowed health_tier and health_explanation")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_health_tiers": list(S2PFT04_ALLOWED_HEALTH_TIERS),
+        "health_tiers_observed": observed,
+        "healthy_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_zone_authority_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("authority_gate") != "pass"
+        or row.get("dedupe_gate") != "pass"
+        or not row.get("official_domain")
+        or not row.get("source_url")
+        or not row.get("evidence_refs")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PFT04 special-zone authority gate requires official_domain, source_url, authority_gate=pass, dedupe_gate=pass, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "authority_checked_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pft04_zone_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PFT04 special-zone records must stay metadata-only with no PDF/full-text, production, or SMTP side effects")
     return {
         "status": "pass" if not reasons else "blocked",
         "metadata_only_record_count": len(rows) - len(violations),

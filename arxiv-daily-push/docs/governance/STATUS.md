@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PF / S2PFT03_KEY_CITY_COVERAGE_READY_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `67 / 69 / 487`
-- Active formulas/parameters: `69 / 470`
-- Machine checked formulas/parameters: `69 / 470`
+- Phase/Gate: `S2PF / S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `68 / 70 / 497`
+- Active formulas/parameters: `70 / 480`
+- Machine checked formulas/parameters: `70 / 480`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PFT03_KEY_CITY_COVERAGE_READY_NO_PRODUCTION`
+- Release gate: `S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8`
 - V7 roadmap hash: `fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56`
@@ -45,9 +45,9 @@
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PFT04`
+- Next governance task: `S2PFT05`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `S2PFT04`
+- Next executable task: `S2PFT05`
 - Pending/stale events: `104`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
