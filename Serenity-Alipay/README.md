@@ -1,3 +1,23 @@
+# Serenity-Alipay 中文 Owner 快速入口
+
+- S5/S6 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
+- 当前任务：`S6PAT02` / `ACC-S6PAT02` 仍在逐项目进行；S5 结构验收回看任务为 `S5PCT02` / `ACC-S5PCT02`。
+- 下一 Gate：`S6PA-GATE` 仍在进行中；S5PC/S5-GATE 的中文验收必须继续以本第一屏和 `docs/Serenity_structure_report.md` 为准。
+- 本轮边界：只补 Owner 可读路径，不改运行代码，不改评分/权重/调度/邮件/OpenD/MooMoo/报告算法，不移动文件，不触发 launchd、app 打包或外部账户动作。
+
+| Owner 判断项 | 当前路径 | 状态 |
+|---|---|---|
+| app | `app/` | 默认应用源码和运行入口，本轮不改 |
+| tests | `tests/` | 验证层，本轮不改 |
+| manual data | `data/manual/` | 可审计手工输入，不是自动输出 |
+| runtime history | `data/reports/`、`data/notifications/`、`data/moomoo/`、`data/backups/`、`outputs/` | 历史/生成/恢复证据，不作为模型参数事实源 |
+| ops/handoff | `HANDOFF.md`、`BACKUP_SYNC_NOTE.md`、`DEVELOPMENT_BUG_REGRESSION_LOG.md` | 交接和运维说明，不是默认运行入口 |
+
+- 最小验证路径：进入 `Serenity-Alipay/`，运行 `python -B -m unittest tests.test_s3pct03_lifecycle -q`；本轮结构证据记录为 `Ran 4 tests OK`。
+- 外部副作用确认：结构任务不得触发 OpenD、真实邮件、launchd 安装、app 打包或外部账户动作；证据在 `governance/stage_gates/s5pc/serenity_smoke_tests.log`。
+- 失败去向：若出现 `No module named pytest`，先按环境 blocker 处理依赖；若 lifecycle 或 core import 断言失败，再查 `Serenity-Alipay/docs/Serenity_structure_report.md` 和 `tests/`。
+- 回滚：revert 本次 README/报告/gate 证据提交即可；本轮不改运行代码、不移动文件、不触发外部自动化。
+
 # Serenity Daily Analysis
 
 Local-first, auditable investment research automation for aggressive but controlled off-platform fund candidate screening.

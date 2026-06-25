@@ -1,0 +1,207 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625",
+  "project_id": "ROOT",
+  "task_id": "S4S5_CHINESE_ACCEPTANCE_REDO",
+  "acceptance_ids": [
+    "ACC-S4S5-CHINESE-ACCEPTANCE-REDO"
+  ],
+  "iteration_id": "ITER-20260625-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO",
+  "depends_on": [
+    "GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625",
+    "GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625"
+  ],
+  "generated_at": "2026-06-25T02:30:00+00:00",
+  "implementation_base_sha": "42839a260b5768b51678b0575bc42dbbb016a30e",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "ci_attestation_subject": "Other8 S4/S5 中文验收重做：用户可读优先与全局中文硬检查",
+  "evidence_refs": [
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "trigger": {
+    "source": "owner_feedback",
+    "decision": "S4S5 中文验收不合格，需要重做",
+    "reason": "任务文件要求用户可读优先、中文优先和默认全局中文；原 gate 口径允许英文第一屏和弱中文匹配通过。"
+  },
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_priority_enforced": true,
+  "corrective_scope": {
+    "stages": [
+      "S4",
+      "S5"
+    ],
+    "projects": [
+      "Alpha",
+      "EVA_OS",
+      "OpMe_System",
+      "whkmSalary",
+      "FIFA",
+      "OpenAIDatabase",
+      "PFI_BIG_DATA_SIMULATOR",
+      "Serenity-Alipay"
+    ],
+    "readme_first_screen_tokens": [
+      "用户可读优先",
+      "中文优先，默认全局中文",
+      "最小验证"
+    ],
+    "structure_report_tokens": [
+      "用户可读优先",
+      "中文验收标准",
+      "验收状态",
+      "停止条件与结果",
+      "回滚",
+      "下一步"
+    ],
+    "gate_json_checks": [
+      "readme_owner_first_global_chinese",
+      "structure_report_chinese_first",
+      "structure_report_no_owner_facing_machine_words"
+    ]
+  },
+  "stage_gate_status": {
+    "S4PCT03": "LOCAL_REDO_PRECOMMIT_PASSED",
+    "S4-GATE": "LOCAL_REDO_PRECOMMIT_PASSED",
+    "S5PCT03": "LOCAL_REDO_PRECOMMIT_PASSED",
+    "S5PC-GATE": "LOCAL_REDO_PRECOMMIT_PASSED",
+    "S5-GATE": "LOCAL_REDO_PRECOMMIT_PASSED",
+    "next_allowed_task": "S6PAT02_AFTER_PR_AND_MAIN_CI_RECONFIRM"
+  },
+  "changed_files_declared": [
+    "Alpha/README.md",
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/README.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "FIFA/README.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpMe_System/README.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/README.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/README.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/README.md",
+    "whkmSalary/docs/whkm_structure_report.md"
+  ],
+  "changed_files_actual": [
+    "Alpha/README.md",
+    "Alpha/docs/structure_migration_map.md",
+    "EVA_OS/README.md",
+    "EVA_OS/docs/EVA_structure_report.md",
+    "FIFA/README.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "OpMe_System/README.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "PFI/大数据模拟器/README.md",
+    "PFI/大数据模拟器/docs/PFI_structure_report.md",
+    "Serenity-Alipay/README.md",
+    "Serenity-Alipay/docs/Serenity_structure_report.md",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/README.md",
+    "whkmSalary/docs/whkm_structure_report.md"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625.json",
+    "governance/stage_gates/s4pc/wave1_gate.md",
+    "governance/stage_gates/s4pc/wave1_gate_report.json",
+    "governance/stage_gates/s5pc/wave2_gate.md",
+    "governance/stage_gates/s5pc/wave2_gate_report.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:ba5b54c122cf76499f111683a4e356f3944ba27c15eb901c831f11fa27c28972",
+  "test_commands": [
+    "python -B tools/wave1_gate.py",
+    "python -B tools/wave2_gate.py",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4_s5_chinese_acceptance_redo_enforces_owner_first_delivery -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "python -B tools/wave1_gate.py",
+      "result": "PASS",
+      "observed": "ACC-S4PCT03 result PASS, checks=78."
+    },
+    {
+      "command": "python -B tools/wave2_gate.py",
+      "result": "PASS",
+      "observed": "ACC-S5PCT03 result PASS, checks=89."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4pct03_wave1_gate_binds_readability_links_tests_and_rollback tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pct03_wave2_gate_binds_privacy_readability_links_tests_and_rollback tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s4_s5_chinese_acceptance_redo_enforces_owner_first_delivery -q",
+      "result": "PASS",
+      "observed": "Ran 3 tests; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "observed": "errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "observed": "validation exit_code=0, errors=0 warnings=0; zero_diff.clean=true after commit."
+    }
+  ],
+  "stop_conditions": {
+    "readme_first_screen_missing_global_chinese": false,
+    "structure_report_missing_user_readable_priority": false,
+    "gate_markdown_hides_first_screen_check": false,
+    "owner_readability_gate_unbound_to_tests": false,
+    "business_runtime_code_changed": false,
+    "external_automation_triggered": false,
+    "eei_or_arxiv_touched": false,
+    "s4_s5_pass_claim_without_pr_and_main_ci": false
+  },
+  "scope_guard": {
+    "runtime_code_changed": false,
+    "business_logic_changed": false,
+    "files_moved": false,
+    "archive_written": false,
+    "external_automation_triggered": false,
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "forbidden_projects_changed": []
+  },
+  "rollback": {
+    "action": "revert_this_corrective_commit",
+    "requires_runtime_restore": false,
+    "requires_archive_restore": false,
+    "notes": "本次只修复 S4/S5 中文 Owner 第一屏、结构报告、gate 证据、生成器和测试；不改业务运行代码。"
+  },
+  "summary": "重做 S4/S5 中文验收：把用户可读优先和全局中文改为硬检查，补齐 PFI/Serenity 中文第一屏，并让 gate Markdown 显示第一屏中文检查，避免再次用弱 PASS 口径关闭验收。"
+}
