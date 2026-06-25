@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260625-008"
-source_snapshot_hash: "sha256:92747320c8d023a49f2711d08c1cd194f451d8d781b14dd0c9a28975e2998370"
+as_of_event_id: "EVENT-20260625-009"
+source_snapshot_hash: "sha256:56771ab1961e7273f879c00e918268b940990f9d010935ce6f2502f095fcd463"
 source_base_commit: "12df22b6347fd881d42545afe387ac9e41e56fb4"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-25T13:26:47Z"
+snapshot_event_time: "2026-06-25T14:03:21Z"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 14
     legacy_unbound_events: 19
-    precommit_pending_events: 68
+    precommit_pending_events: 69
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1303-A204-A205-EXTERNAL-RELEASE-OPERATOR-INTAKE-PACKET-PENDING-CI"
+  release_gate: "TASK-T1307-A209-OPERATOR-SOAK-HEARTBEAT-135-PENDING-CI"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -116,4 +116,4 @@ owner_decision:
   generated_from_refs:
     - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
     - "EEI/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-25T13:26:47Z"
+  last_reviewed_at: "2026-06-25T14:03:21Z"

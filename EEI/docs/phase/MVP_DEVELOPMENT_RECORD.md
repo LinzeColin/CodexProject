@@ -2,6 +2,27 @@
 
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
+## 2026-06-25 - T1307/A209 live 24h soak heartbeat refresh
+
+Status: FOCUSED LOCAL VALIDATION PASS; GOVERNANCE/RELEASE ARTIFACT VALIDATION AND CI PENDING
+
+Completed:
+
+- Refreshed A209 background heartbeat to the current clean operator soak run: `135/288` windows PASS, `0` failed, `153` remaining and `46.88%` completion.
+- Refreshed A209 finalization, A203 production API release, release-manager activation, MVP release-gate and external release-evidence artifacts from the current heartbeat.
+- Kept `release_gate_closed_by_background_heartbeat=false`, `release_gate_closed_by_finalizer=false` and every dependent release gate fail-closed.
+
+Verification status:
+
+- A209 heartbeat/evidence/finalization generate and validate PASS.
+- A203 production API release preflight generate PASS.
+- Release-manager activation, MVP release-gate and external release-evidence bundle generate and validate PASS.
+
+Still blocked:
+
+- A209 is not complete until `288/288` windows and final 24h summary evidence validate.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
 ## 2026-06-25 - T1303/A204-A205 external release operator intake packet
 
 Status: FOCUSED LOCAL VALIDATION PASS; GOVERNANCE/RELEASE ARTIFACT VALIDATION AND CI PENDING

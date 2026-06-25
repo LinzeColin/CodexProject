@@ -3734,6 +3734,7 @@ tasks:
       - "local A209 clean-restart heartbeat PASS: Playwright Chromium reinstalled to /private/tmp/eei-ms-playwright, host probe passed, clean 24h attempt restarted, point-in-time heartbeat reports 3/288 PASS, 0 failed, operator PID 57281 and watchdog PID 17163"
       - "local A209 current heartbeat/preflight sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 9/288 PASS, 0 failed, 279 remaining, completion 3.12%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and downstream release/MVP preflights remain blocked"
       - "local A209 current heartbeat/preflight sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 27/288 PASS, 0 failed, 261 remaining, completion 9.38%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and downstream release/MVP preflights remain blocked"
+      - "local A209 live heartbeat/preflight sync PASS: point-in-time heartbeat reports operator PID 82041, watchdog PID 61030, 135/288 PASS, 0 failed, 153 remaining, completion 46.88%, finalization remains A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL and downstream release/MVP preflights remain blocked"
       - "local clean-room package binding PASS; supervisor, watchdog, heartbeat and finalization evidence included in package boundary with package_paths=437, release manifest_paths=444 and checksum_paths=443"
       - "local elevated make verify PASS; unit tests 106/106"
     evidence_refs:

@@ -42,15 +42,15 @@
       "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 12.15,
+      "completion_percent": 46.88,
       "counts_as_release_ready": false,
       "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
-      "windows_completed": 35,
+      "windows_completed": 135,
       "windows_failed": 0,
-      "windows_remaining": 253
+      "windows_remaining": 153
     },
     "release_decision": {
       "public_brand_launch_allowed": false,
@@ -75,7 +75,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-25T05:39:35Z",
+  "generated_at": "2026-06-25T14:03:45Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -107,7 +107,7 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "6c9fedc4c5629b129c5c3c010555f4033042a40ca8705fea2c9b7ad901b0605f",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "4a97db9f34d880a686a5a42373162c9445aaa5901899fbec3fff341bb5937729",
+    "operator_soak_heartbeat_sha256": "5adb552e0ec36436359ec7d793377d6294dce269e6f3607720e8c07e22ab5759",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "release_decision_contract_sha256": "dde4e676ad1b3fba86b4c3af68e3c8aac42afa7fb2a2e6fc9d612cdd5e17744f",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
