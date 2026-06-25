@@ -60,6 +60,8 @@ from arxiv_daily_push.stage2_sources import (
     S2PJT03_ACTION_ROI_MODEL_ID,
     S2PJT04_WEEKLY_REPORT_MODEL_ID,
     S2PJT05_MONTHLY_REPORT_MODEL_ID,
+    S2PHT05_CONTENT_QUALITY_MODEL_ID,
+    S2PHT05_REQUIRED_GOLD_DIMENSIONS,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -97,6 +99,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pjt03_action_asset_roi_report,
     build_s2pjt04_weekly_report,
     build_s2pjt05_monthly_report,
+    build_s2pht05_content_quality_gate_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -132,6 +135,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pjt03_action_asset_roi,
     run_s2pjt04_weekly_report,
     run_s2pjt05_monthly_report,
+    run_s2pht05_content_quality_gate,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -165,6 +169,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pjt03_action_asset_roi_report,
     validate_s2pjt04_weekly_report,
     validate_s2pjt05_monthly_report,
+    validate_s2pht05_content_quality_gate_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -722,6 +727,80 @@ def s2pjt05_next_month_focus() -> list[dict]:
             "priority": 5,
             "rationale": "Convert counterexample resolution into reusable monthly method transfer.",
         }
+    ]
+
+
+def s2pht05_dependency_receipts() -> list[dict]:
+    return [
+        {
+            "task_id": task_id,
+            "status": "pass",
+            "v7_2_revalidated": True,
+            "evidence_refs": [f"docs/phase_records/PHASE_{task_id}_LOCAL_EVIDENCE.md"],
+        }
+        for task_id in ("S2PHT01", "S2PHT02", "S2PHT03", "S2PHT04")
+    ]
+
+
+def s2pht05_gold_items() -> list[dict]:
+    items = []
+    for index in range(10):
+        items.append(
+            {
+                "gold_id": f"gold:item-{index + 1:02d}",
+                "content_id": f"content:quality-{index + 1:02d}",
+                "claim_text": "The mechanism claim is supported by cited evidence and bounded by counterevidence.",
+                "claim_entailment": "supported" if index % 2 == 0 else "partially_supported",
+                "dimension_scores": {dimension: 4.0 + (index % 2) * 0.5 for dimension in S2PHT05_REQUIRED_GOLD_DIMENSIONS},
+                "evidence_refs": [f"local://quality/evidence/{index + 1:02d}"],
+                "quote_locations": [
+                    {
+                        "source_ref": f"local://quality/source/{index + 1:02d}",
+                        "location": f"section-{index + 1}",
+                    }
+                ],
+                "template_similarity": 0.18 + index * 0.01,
+                "counterevidence_refs": [f"local://quality/counterevidence/{index + 1:02d}"],
+                "boundary_conditions": ["Only valid for local dry-run semantic evidence."],
+                "personal_action": {
+                    "action_id": f"action:quality-{index + 1:02d}",
+                    "horizon": "7d",
+                    "description": "Turn the mechanism into a reusable review checklist.",
+                    "evidence_refs": [f"local://quality/action/{index + 1:02d}"],
+                },
+                "chinese_summary": "该条样本把机制、证据、反证、边界和个人行动连接起来。",
+            }
+        )
+    return items
+
+
+def s2pht05_stage1_regression_checks() -> list[dict]:
+    return [
+        {
+            "check_id": check_id,
+            "status": "pass",
+            "evidence_refs": [f"governance/run_manifests/{check_id}.json"],
+        }
+        for check_id in ("arxiv_collection", "evidence_chain", "email_chain")
+    ]
+
+
+def s2pht05_manual_review_samples() -> list[dict]:
+    return [
+        {
+            "review_id": "manual:quality-01",
+            "gold_id": "gold:item-01",
+            "reviewer_role": "semantic_quality_reviewer",
+            "verdict": "pass",
+            "evidence_refs": ["local://quality/manual-review/01"],
+        },
+        {
+            "review_id": "manual:quality-02",
+            "gold_id": "gold:item-02",
+            "reviewer_role": "owner_experience_reviewer",
+            "verdict": "pass",
+            "evidence_refs": ["local://quality/manual-review/02"],
+        },
     ]
 
 
@@ -5457,6 +5536,102 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["monthly_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pjt05_monthly_report.json").is_file())
 
+    def test_s2pht05_content_quality_gate_passes_gold_semantic_and_regression_gates(self) -> None:
+        report = build_s2pht05_content_quality_gate_report(
+            generated_at=GENERATED_AT,
+            dependency_receipts=s2pht05_dependency_receipts(),
+            gold_items=s2pht05_gold_items(),
+            stage1_regression_checks=s2pht05_stage1_regression_checks(),
+            manual_review_samples=s2pht05_manual_review_samples(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PHT05_CONTENT_QUALITY_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PHT05-CONTENT-GATE")
+        self.assertEqual(report["task_id"], "S2PHT05")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["dependency_receipt_gate"], "pass")
+        self.assertEqual(report["gold_dimension_gate"], "pass")
+        self.assertEqual(report["entailment_gate"], "pass")
+        self.assertEqual(report["quote_location_gate"], "pass")
+        self.assertEqual(report["template_rate_gate"], "pass")
+        self.assertEqual(report["counterevidence_gate"], "pass")
+        self.assertEqual(report["personal_action_gate"], "pass")
+        self.assertEqual(report["stage1_regression_gate"], "pass")
+        self.assertEqual(report["manual_review_gate"], "pass")
+        self.assertEqual(report["deterministic_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["gold_item_count"], 10)
+        self.assertLessEqual(report["max_template_similarity_observed"], 0.35)
+        self.assertTrue(report["quality_gate_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pht05_content_quality_gate_ready"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(validate_s2pht05_content_quality_gate_report(report))
+
+    def test_s2pht05_content_quality_gate_blocks_low_quality_and_side_effects(self) -> None:
+        gold_items = s2pht05_gold_items()
+        gold_items[0]["dimension_scores"]["mechanism_depth"] = 3.0
+        gold_items[0]["claim_entailment"] = "unsupported"
+        gold_items[0]["quote_locations"] = []
+        gold_items[0]["template_similarity"] = 0.9
+        gold_items[0]["counterevidence_refs"] = []
+        gold_items[0]["personal_action"] = {"action_id": "", "evidence_refs": []}
+        report = build_s2pht05_content_quality_gate_report(
+            generated_at=GENERATED_AT,
+            dependency_receipts=[{**s2pht05_dependency_receipts()[0], "v7_2_revalidated": False}],
+            gold_items=gold_items[:9],
+            stage1_regression_checks=[{**s2pht05_stage1_regression_checks()[0], "status": "blocked"}],
+            manual_review_samples=[{**s2pht05_manual_review_samples()[0], "verdict": "blocked"}],
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["dependency_receipt_gate"], "blocked")
+        self.assertEqual(report["gold_dimension_gate"], "blocked")
+        self.assertEqual(report["entailment_gate"], "blocked")
+        self.assertEqual(report["quote_location_gate"], "blocked")
+        self.assertEqual(report["template_rate_gate"], "blocked")
+        self.assertEqual(report["counterevidence_gate"], "blocked")
+        self.assertEqual(report["personal_action_gate"], "blocked")
+        self.assertEqual(report["stage1_regression_gate"], "blocked")
+        self.assertEqual(report["manual_review_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("missing S2PHT05 dependency receipts", joined)
+        self.assertIn("mechanism_depth score must be >=", joined)
+        self.assertIn("claim_entailment must be supported", joined)
+        self.assertIn("quote_locations must be non-empty", joined)
+        self.assertIn("template_similarity exceeds", joined)
+        self.assertIn("counterevidence_refs must be non-empty", joined)
+        self.assertIn("personal_action.action_id is required", joined)
+        self.assertIn("missing Stage 1 regression checks", joined)
+        self.assertIn("manual review verdict must be pass", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pht05_content_quality_gate_report(report))
+
+    def test_s2pht05_content_quality_gate_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pht05_content_quality_gate(
+                state_dir=tmp,
+                date="2026-06-26",
+                generated_at=GENERATED_AT,
+                dependency_receipts=s2pht05_dependency_receipts(),
+                gold_items=s2pht05_gold_items(),
+                stage1_regression_checks=s2pht05_stage1_regression_checks(),
+                manual_review_samples=s2pht05_manual_review_samples(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pht05_content_quality_gate_report(report))
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertTrue(Path(report["content_quality_gate_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pht05_content_quality_gate_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -7136,6 +7311,65 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["calculated_conversion_count"], 1)
         self.assertTrue(payload["s2pjt05_monthly_report_ready"])
         self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_content_quality_gate_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            dependency_path = tmp_path / "dependency-receipts.json"
+            gold_path = tmp_path / "gold-items.json"
+            regression_path = tmp_path / "stage1-regression-checks.json"
+            manual_path = tmp_path / "manual-review-samples.json"
+            gate_path = tmp_path / "production-gate.json"
+            dependency_path.write_text(
+                json.dumps({"dependency_receipts": s2pht05_dependency_receipts()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gold_path.write_text(
+                json.dumps({"gold_items": s2pht05_gold_items()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            regression_path.write_text(
+                json.dumps({"stage1_regression_checks": s2pht05_stage1_regression_checks()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            manual_path.write_text(
+                json.dumps({"manual_review_samples": s2pht05_manual_review_samples()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-content-quality-gate",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-26",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--dependency-receipts",
+                    str(dependency_path),
+                    "--gold-items",
+                    str(gold_path),
+                    "--stage1-regression-checks",
+                    str(regression_path),
+                    "--manual-review-samples",
+                    str(manual_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PHT05_CONTENT_QUALITY_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PHT05")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["gold_item_count"], 10)
+        self.assertTrue(payload["s2pht05_content_quality_gate_ready"])
+        self.assertFalse(payload["real_smtp_sent"])
         self.assertFalse(payload["integrated_production_accepted"])
 
 

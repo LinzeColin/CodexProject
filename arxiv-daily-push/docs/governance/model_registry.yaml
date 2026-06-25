@@ -4495,3 +4495,64 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT05_MONTHLY_REPORT.md"
+
+  -
+    model_id: "MOD-ADP-086"
+    name: "S2PHT05 semantic content quality and Stage 1 regression gate"
+    kind: "deterministic local semantic quality gate evidence model"
+    purpose: "Validate local-only S2PHT05 content quality evidence before S2PK mail contract work: V7.2 dependency receipts, 10-item semantic gold set, claim entailment, quote/location coverage, template similarity ceiling, counterevidence, personal actionability, Stage 1 arXiv/evidence/email regression checks, manual review samples, deterministic quality hash, and no-production side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pht05-content-quality-gate-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-088"
+    parameter_ids:
+      - "PARAM-ADP-668"
+      - "PARAM-ADP-669"
+      - "PARAM-ADP-670"
+      - "PARAM-ADP-671"
+      - "PARAM-ADP-672"
+      - "PARAM-ADP-673"
+      - "PARAM-ADP-674"
+      - "PARAM-ADP-675"
+      - "PARAM-ADP-676"
+      - "PARAM-ADP-677"
+      - "PARAM-ADP-678"
+      - "PARAM-ADP-679"
+      - "PARAM-ADP-680"
+      - "PARAM-ADP-681"
+    inputs:
+      - "S2PHT01-S2PHT04 dependency receipts"
+      - "semantic gold items"
+      - "Stage 1 regression checks"
+      - "manual review samples"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PHT05 content quality gate report"
+      - "dependency receipt gate"
+      - "gold dimension gate"
+      - "entailment gate"
+      - "quote location gate"
+      - "template rate gate"
+      - "counterevidence gate"
+      - "personal action gate"
+      - "Stage 1 regression gate"
+      - "manual review gate"
+      - "deterministic gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PHT05_CONTENT_QUALITY_GATE.md"

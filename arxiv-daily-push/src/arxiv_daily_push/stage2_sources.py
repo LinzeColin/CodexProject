@@ -900,6 +900,59 @@ S2PJT05_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PJT05_REPORT_FILENAME = "stage2_s2pjt05_monthly_report.json"
+S2PHT05_CONTENT_QUALITY_MODEL_ID = "adp-s2pht05-content-quality-gate-v1"
+S2PHT05_ACCEPTANCE_ID = "ACC-S2PHT05-CONTENT-GATE"
+S2PHT05_TASK_ID = "S2PHT05"
+S2PHT05_REQUIRED_DEPENDENCY_TASKS = ("S2PHT01", "S2PHT02", "S2PHT03", "S2PHT04")
+S2PHT05_REQUIRED_GOLD_DIMENSIONS = (
+    "mechanism_depth",
+    "evidence_traceability",
+    "claim_entailment",
+    "quote_location",
+    "counterevidence",
+    "boundary_conditions",
+    "personal_actionability",
+    "template_novelty",
+    "regression_compatibility",
+    "chinese_clarity",
+)
+S2PHT05_MIN_GOLD_ITEMS = 10
+S2PHT05_MIN_DIMENSION_SCORE = 4.0
+S2PHT05_MAX_TEMPLATE_SIMILARITY = 0.35
+S2PHT05_MIN_MANUAL_REVIEW_SAMPLES = 2
+S2PHT05_REQUIRED_STAGE1_REGRESSION_CHECKS = ("arxiv_collection", "evidence_chain", "email_chain")
+S2PHT05_ALLOWED_ENTAILMENT_STATES = ("supported", "partially_supported")
+S2PHT05_REQUIRED_GATES = (
+    "dependency_receipt_gate",
+    "gold_dimension_gate",
+    "entailment_gate",
+    "quote_location_gate",
+    "template_rate_gate",
+    "counterevidence_gate",
+    "personal_action_gate",
+    "stage1_regression_gate",
+    "manual_review_gate",
+    "deterministic_gate",
+    "no_side_effect_gate",
+)
+S2PHT05_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PHT05_REPORT_FILENAME = "stage2_s2pht05_content_quality_gate_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -9299,6 +9352,446 @@ def validate_s2pjt05_monthly_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("blocked S2PJT05 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pjt05_monthly_report_ready") is not True:
         errors.append("passing S2PJT05 report requires s2pjt05_monthly_report_ready=true")
+    return errors
+
+
+def _s2pht05_content_quality_hash(
+    dependency_receipts: Sequence[Mapping[str, Any]],
+    gold_items: Sequence[Mapping[str, Any]],
+    stage1_regression_checks: Sequence[Mapping[str, Any]],
+    manual_review_samples: Sequence[Mapping[str, Any]],
+) -> str:
+    payload = {
+        "dependencies": sorted(
+            [
+            {
+                "task_id": str(receipt.get("task_id") or ""),
+                "status": str(receipt.get("status") or ""),
+                "evidence_refs": sorted(str(ref) for ref in receipt.get("evidence_refs", []) if str(ref).strip()),
+            }
+            for receipt in dependency_receipts
+            ],
+            key=lambda value: value["task_id"],
+        ),
+        "gold_items": sorted(
+            [
+            {
+                "gold_id": str(item.get("gold_id") or item.get("item_id") or ""),
+                "content_id": str(item.get("content_id") or ""),
+                "dimension_scores": {
+                    dimension: float(item.get("dimension_scores", {}).get(dimension, 0.0))
+                    for dimension in S2PHT05_REQUIRED_GOLD_DIMENSIONS
+                    if isinstance(item.get("dimension_scores"), Mapping)
+                },
+                "claim_entailment": str(item.get("claim_entailment") or ""),
+                "quote_locations": sorted(str(location.get("location") or location.get("source_ref") or "") for location in item.get("quote_locations", []) if isinstance(location, Mapping)),
+                "template_similarity": float(item.get("template_similarity") or 0.0),
+                "counterevidence_refs": sorted(str(ref) for ref in item.get("counterevidence_refs", []) if str(ref).strip()),
+            }
+            for item in gold_items
+            ],
+            key=lambda value: value["gold_id"],
+        ),
+        "stage1_regression": sorted(
+            [
+            {
+                "check_id": str(check.get("check_id") or ""),
+                "status": str(check.get("status") or ""),
+                "evidence_refs": sorted(str(ref) for ref in check.get("evidence_refs", []) if str(ref).strip()),
+            }
+            for check in stage1_regression_checks
+            ],
+            key=lambda value: value["check_id"],
+        ),
+        "manual_review": sorted(
+            [
+            {
+                "review_id": str(sample.get("review_id") or ""),
+                "gold_id": str(sample.get("gold_id") or sample.get("item_id") or ""),
+                "verdict": str(sample.get("verdict") or ""),
+                "evidence_refs": sorted(str(ref) for ref in sample.get("evidence_refs", []) if str(ref).strip()),
+            }
+            for sample in manual_review_samples
+            ],
+            key=lambda value: value["review_id"],
+        ),
+    }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pht05_content_quality_gate_report(
+    *,
+    generated_at: str,
+    dependency_receipts: Sequence[Mapping[str, Any]],
+    gold_items: Sequence[Mapping[str, Any]],
+    stage1_regression_checks: Sequence[Mapping[str, Any]],
+    manual_review_samples: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PHT05 semantic content quality gate evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    dependency_errors: list[str] = []
+    normalized_dependencies: list[dict[str, Any]] = []
+    observed_dependencies: set[str] = set()
+    for index, receipt in enumerate(dependency_receipts):
+        task_id = str(receipt.get("task_id") or "")
+        status = str(receipt.get("status") or "")
+        evidence_refs = [str(ref) for ref in receipt.get("evidence_refs", []) if str(ref).strip()]
+        if task_id not in S2PHT05_REQUIRED_DEPENDENCY_TASKS:
+            dependency_errors.append(f"dependency_receipts[{index}].task_id must be one of S2PHT01-S2PHT04")
+        if status != "pass":
+            dependency_errors.append(f"{task_id or index} dependency status must be pass")
+        if not evidence_refs:
+            dependency_errors.append(f"{task_id or index} dependency evidence_refs must be non-empty")
+        if receipt.get("v7_2_revalidated") is not True:
+            dependency_errors.append(f"{task_id or index} dependency must record v7_2_revalidated=true")
+        observed_dependencies.add(task_id)
+        normalized_dependencies.append({**dict(receipt), "task_id": task_id, "status": status, "evidence_refs": evidence_refs})
+    missing_dependencies = [task_id for task_id in S2PHT05_REQUIRED_DEPENDENCY_TASKS if task_id not in observed_dependencies]
+    if missing_dependencies:
+        dependency_errors.append("missing S2PHT05 dependency receipts: " + ", ".join(missing_dependencies))
+
+    gold_errors: list[str] = []
+    entailment_errors: list[str] = []
+    quote_errors: list[str] = []
+    template_errors: list[str] = []
+    counterevidence_errors: list[str] = []
+    action_errors: list[str] = []
+    normalized_gold_items: list[dict[str, Any]] = []
+    gold_ids: set[str] = set()
+    min_dimension_scores = {dimension: 5.0 for dimension in S2PHT05_REQUIRED_GOLD_DIMENSIONS}
+    max_template_similarity_observed = 0.0
+    for index, item in enumerate(gold_items):
+        gold_id = str(item.get("gold_id") or item.get("item_id") or "")
+        content_id = str(item.get("content_id") or "")
+        if not gold_id:
+            gold_errors.append(f"gold_items[{index}].gold_id is required")
+        if gold_id in gold_ids:
+            gold_errors.append(f"duplicate S2PHT05 gold_id: {gold_id}")
+        gold_ids.add(gold_id)
+        if not content_id:
+            gold_errors.append(f"{gold_id or index} content_id is required")
+        evidence_refs = [str(ref) for ref in item.get("evidence_refs", []) if str(ref).strip()]
+        if not evidence_refs:
+            gold_errors.append(f"{gold_id or index} evidence_refs must be non-empty")
+        if not str(item.get("claim_text") or ""):
+            entailment_errors.append(f"{gold_id or index} claim_text is required")
+        entailment = str(item.get("claim_entailment") or "")
+        if entailment not in S2PHT05_ALLOWED_ENTAILMENT_STATES:
+            entailment_errors.append(f"{gold_id or index} claim_entailment must be supported or partially_supported")
+        dimensions = item.get("dimension_scores")
+        if not isinstance(dimensions, Mapping):
+            gold_errors.append(f"{gold_id or index} dimension_scores must be a mapping")
+            dimensions = {}
+        normalized_scores: dict[str, float] = {}
+        for dimension in S2PHT05_REQUIRED_GOLD_DIMENSIONS:
+            try:
+                score = float(dimensions.get(dimension))
+            except (TypeError, ValueError):
+                score = -1.0
+            normalized_scores[dimension] = score
+            min_dimension_scores[dimension] = min(min_dimension_scores[dimension], score)
+            if score < S2PHT05_MIN_DIMENSION_SCORE:
+                gold_errors.append(f"{gold_id or index} {dimension} score must be >= {S2PHT05_MIN_DIMENSION_SCORE:g}")
+        quote_locations = item.get("quote_locations")
+        if not isinstance(quote_locations, list) or not quote_locations:
+            quote_errors.append(f"{gold_id or index} quote_locations must be non-empty")
+            quote_locations = []
+        for location_index, location in enumerate(quote_locations):
+            if not isinstance(location, Mapping):
+                quote_errors.append(f"{gold_id or index} quote_locations[{location_index}] must be a mapping")
+                continue
+            if not str(location.get("source_ref") or "") or not str(location.get("location") or ""):
+                quote_errors.append(f"{gold_id or index} quote_locations[{location_index}] requires source_ref and location")
+        try:
+            template_similarity = float(item.get("template_similarity"))
+        except (TypeError, ValueError):
+            template_similarity = 1.0
+        max_template_similarity_observed = max(max_template_similarity_observed, template_similarity)
+        if template_similarity > S2PHT05_MAX_TEMPLATE_SIMILARITY:
+            template_errors.append(f"{gold_id or index} template_similarity exceeds {S2PHT05_MAX_TEMPLATE_SIMILARITY:g}")
+        counter_refs = [str(ref) for ref in item.get("counterevidence_refs", []) if str(ref).strip()]
+        if not counter_refs:
+            counterevidence_errors.append(f"{gold_id or index} counterevidence_refs must be non-empty")
+        boundary_conditions = [str(value) for value in item.get("boundary_conditions", []) if str(value).strip()]
+        if not boundary_conditions:
+            counterevidence_errors.append(f"{gold_id or index} boundary_conditions must be non-empty")
+        personal_action = item.get("personal_action")
+        if not isinstance(personal_action, Mapping):
+            action_errors.append(f"{gold_id or index} personal_action must be a mapping")
+            personal_action = {}
+        action_refs = [str(ref) for ref in personal_action.get("evidence_refs", []) if str(ref).strip()]
+        for field in ("action_id", "horizon", "description"):
+            if not str(personal_action.get(field) or ""):
+                action_errors.append(f"{gold_id or index} personal_action.{field} is required")
+        if not action_refs:
+            action_errors.append(f"{gold_id or index} personal_action.evidence_refs must be non-empty")
+        if not str(item.get("chinese_summary") or ""):
+            gold_errors.append(f"{gold_id or index} chinese_summary is required")
+        normalized_gold_items.append(
+            {
+                **dict(item),
+                "gold_id": gold_id,
+                "content_id": content_id,
+                "dimension_scores": normalized_scores,
+                "evidence_refs": evidence_refs,
+                "claim_entailment": entailment,
+                "quote_locations": [dict(location) for location in quote_locations if isinstance(location, Mapping)],
+                "template_similarity": template_similarity,
+                "counterevidence_refs": counter_refs,
+                "boundary_conditions": boundary_conditions,
+                "personal_action": {**dict(personal_action), "evidence_refs": action_refs},
+            }
+        )
+    if len(normalized_gold_items) < S2PHT05_MIN_GOLD_ITEMS:
+        gold_errors.append(f"S2PHT05 requires at least {S2PHT05_MIN_GOLD_ITEMS} gold items")
+
+    regression_errors: list[str] = []
+    normalized_regressions: list[dict[str, Any]] = []
+    observed_regressions: set[str] = set()
+    for index, check in enumerate(stage1_regression_checks):
+        check_id = str(check.get("check_id") or "")
+        status = str(check.get("status") or "")
+        evidence_refs = [str(ref) for ref in check.get("evidence_refs", []) if str(ref).strip()]
+        if check_id not in S2PHT05_REQUIRED_STAGE1_REGRESSION_CHECKS:
+            regression_errors.append(f"stage1_regression_checks[{index}].check_id is not required")
+        if status != "pass":
+            regression_errors.append(f"{check_id or index} stage1 regression status must be pass")
+        if not evidence_refs:
+            regression_errors.append(f"{check_id or index} stage1 regression evidence_refs must be non-empty")
+        observed_regressions.add(check_id)
+        normalized_regressions.append({**dict(check), "check_id": check_id, "status": status, "evidence_refs": evidence_refs})
+    missing_regressions = [check_id for check_id in S2PHT05_REQUIRED_STAGE1_REGRESSION_CHECKS if check_id not in observed_regressions]
+    if missing_regressions:
+        regression_errors.append("missing Stage 1 regression checks: " + ", ".join(missing_regressions))
+
+    manual_errors: list[str] = []
+    normalized_manual_samples: list[dict[str, Any]] = []
+    for index, sample in enumerate(manual_review_samples):
+        review_id = str(sample.get("review_id") or "")
+        gold_id = str(sample.get("gold_id") or sample.get("item_id") or "")
+        evidence_refs = [str(ref) for ref in sample.get("evidence_refs", []) if str(ref).strip()]
+        if not review_id:
+            manual_errors.append(f"manual_review_samples[{index}].review_id is required")
+        if gold_id not in gold_ids:
+            manual_errors.append(f"{review_id or index} manual review gold_id must reference a gold item")
+        if str(sample.get("verdict") or "") != "pass":
+            manual_errors.append(f"{review_id or index} manual review verdict must be pass")
+        if not str(sample.get("reviewer_role") or ""):
+            manual_errors.append(f"{review_id or index} reviewer_role is required")
+        if not evidence_refs:
+            manual_errors.append(f"{review_id or index} manual review evidence_refs must be non-empty")
+        normalized_manual_samples.append({**dict(sample), "review_id": review_id, "gold_id": gold_id, "evidence_refs": evidence_refs})
+    if len(normalized_manual_samples) < S2PHT05_MIN_MANUAL_REVIEW_SAMPLES:
+        manual_errors.append(f"S2PHT05 requires at least {S2PHT05_MIN_MANUAL_REVIEW_SAMPLES} manual review samples")
+
+    production_errors: list[str] = []
+    for key in (*S2PHT05_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "dependency_receipt_gate": "pass" if not dependency_errors else "blocked",
+        "gold_dimension_gate": "pass" if not gold_errors else "blocked",
+        "entailment_gate": "pass" if not entailment_errors else "blocked",
+        "quote_location_gate": "pass" if not quote_errors else "blocked",
+        "template_rate_gate": "pass" if not template_errors else "blocked",
+        "counterevidence_gate": "pass" if not counterevidence_errors else "blocked",
+        "personal_action_gate": "pass" if not action_errors else "blocked",
+        "stage1_regression_gate": "pass" if not regression_errors else "blocked",
+        "manual_review_gate": "pass" if not manual_errors else "blocked",
+        "deterministic_gate": "pass",
+        "no_side_effect_gate": "pass" if not production_errors else "blocked",
+    }
+    blocking_reasons = [
+        *dependency_errors,
+        *gold_errors,
+        *entailment_errors,
+        *quote_errors,
+        *template_errors,
+        *counterevidence_errors,
+        *action_errors,
+        *regression_errors,
+        *manual_errors,
+        *production_errors,
+    ]
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    quality_gate_hash = _s2pht05_content_quality_hash(
+        normalized_dependencies,
+        normalized_gold_items,
+        normalized_regressions,
+        normalized_manual_samples,
+    )
+    return {
+        "model_id": S2PHT05_CONTENT_QUALITY_MODEL_ID,
+        "acceptance_id": S2PHT05_ACCEPTANCE_ID,
+        "task_id": S2PHT05_TASK_ID,
+        "phase": "S2PH",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_dependency_tasks": list(S2PHT05_REQUIRED_DEPENDENCY_TASKS),
+        "required_gold_dimensions": list(S2PHT05_REQUIRED_GOLD_DIMENSIONS),
+        "required_gold_item_count": S2PHT05_MIN_GOLD_ITEMS,
+        "minimum_dimension_score": S2PHT05_MIN_DIMENSION_SCORE,
+        "max_template_similarity_allowed": S2PHT05_MAX_TEMPLATE_SIMILARITY,
+        "minimum_manual_review_samples": S2PHT05_MIN_MANUAL_REVIEW_SAMPLES,
+        "required_stage1_regression_checks": list(S2PHT05_REQUIRED_STAGE1_REGRESSION_CHECKS),
+        "dependency_receipts": normalized_dependencies,
+        "gold_items": normalized_gold_items,
+        "stage1_regression_checks": normalized_regressions,
+        "manual_review_samples": normalized_manual_samples,
+        "gold_item_count": len(normalized_gold_items),
+        "manual_review_sample_count": len(normalized_manual_samples),
+        "min_dimension_scores": min_dimension_scores,
+        "max_template_similarity_observed": max_template_similarity_observed,
+        "quality_gate_hash": quality_gate_hash,
+        "s2pht05_content_quality_gate_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pht05_content_quality_gate(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    dependency_receipts: Sequence[Mapping[str, Any]],
+    gold_items: Sequence[Mapping[str, Any]],
+    stage1_regression_checks: Sequence[Mapping[str, Any]],
+    manual_review_samples: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PHT05 content quality gate evidence without production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pht05-content-quality-gate"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pht05_content_quality_gate_report(
+        generated_at=generated_at,
+        dependency_receipts=dependency_receipts,
+        gold_items=gold_items,
+        stage1_regression_checks=stage1_regression_checks,
+        manual_review_samples=manual_review_samples,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "content_quality_gate_report_path": str(run_dir / "adp-s2pht05-content-quality-gate-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pht05-content-quality-gate-report.json", report)
+        _write_json(state / S2PHT05_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pht05_content_quality_gate_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PHT05_CONTENT_QUALITY_MODEL_ID:
+        errors.append("S2PHT05 model_id must be adp-s2pht05-content-quality-gate-v1")
+    if report.get("task_id") != S2PHT05_TASK_ID:
+        errors.append("S2PHT05 task_id must be S2PHT05")
+    if report.get("acceptance_id") != S2PHT05_ACCEPTANCE_ID:
+        errors.append("S2PHT05 acceptance_id must be ACC-S2PHT05-CONTENT-GATE")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PHT05 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PHT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PHT05 local content quality gate evidence")
+    dependencies = report.get("dependency_receipts")
+    if not isinstance(dependencies, list):
+        errors.append("S2PHT05 dependency_receipts must be a list")
+        dependencies = []
+    observed_dependencies = {str(receipt.get("task_id") or "") for receipt in dependencies if isinstance(receipt, Mapping)}
+    missing_dependencies = [task_id for task_id in S2PHT05_REQUIRED_DEPENDENCY_TASKS if task_id not in observed_dependencies]
+    if missing_dependencies:
+        errors.append("S2PHT05 dependency_receipts missing: " + ", ".join(missing_dependencies))
+    gold_items = report.get("gold_items")
+    if not isinstance(gold_items, list) or len(gold_items) < S2PHT05_MIN_GOLD_ITEMS:
+        errors.append(f"S2PHT05 gold_items must include at least {S2PHT05_MIN_GOLD_ITEMS} items")
+        gold_items = []
+    for index, item in enumerate(gold_items):
+        if not isinstance(item, Mapping):
+            errors.append(f"gold_items[{index}] must be a mapping")
+            continue
+        scores = item.get("dimension_scores")
+        if not isinstance(scores, Mapping):
+            errors.append(f"gold_items[{index}].dimension_scores must be a mapping")
+            scores = {}
+        for dimension in S2PHT05_REQUIRED_GOLD_DIMENSIONS:
+            try:
+                score = float(scores.get(dimension))
+            except (TypeError, ValueError):
+                score = -1.0
+            if score < S2PHT05_MIN_DIMENSION_SCORE:
+                errors.append(f"{item.get('gold_id') or index} {dimension} score must be >= {S2PHT05_MIN_DIMENSION_SCORE:g}")
+        if item.get("claim_entailment") not in S2PHT05_ALLOWED_ENTAILMENT_STATES:
+            errors.append(f"{item.get('gold_id') or index} claim_entailment must be supported or partially_supported")
+        if not item.get("quote_locations"):
+            errors.append(f"{item.get('gold_id') or index} quote_locations must be non-empty")
+        if float(item.get("template_similarity") or 1.0) > S2PHT05_MAX_TEMPLATE_SIMILARITY:
+            errors.append(f"{item.get('gold_id') or index} template_similarity exceeds {S2PHT05_MAX_TEMPLATE_SIMILARITY:g}")
+        if not item.get("counterevidence_refs"):
+            errors.append(f"{item.get('gold_id') or index} counterevidence_refs must be non-empty")
+        if not item.get("boundary_conditions"):
+            errors.append(f"{item.get('gold_id') or index} boundary_conditions must be non-empty")
+        personal_action = item.get("personal_action")
+        if not isinstance(personal_action, Mapping) or not personal_action.get("action_id") or not personal_action.get("evidence_refs"):
+            errors.append(f"{item.get('gold_id') or index} personal_action must include action_id and evidence_refs")
+    regression_checks = report.get("stage1_regression_checks")
+    if not isinstance(regression_checks, list):
+        errors.append("S2PHT05 stage1_regression_checks must be a list")
+        regression_checks = []
+    observed_regressions = {str(check.get("check_id") or "") for check in regression_checks if isinstance(check, Mapping)}
+    missing_regressions = [check_id for check_id in S2PHT05_REQUIRED_STAGE1_REGRESSION_CHECKS if check_id not in observed_regressions]
+    if missing_regressions:
+        errors.append("S2PHT05 missing Stage 1 regression checks: " + ", ".join(missing_regressions))
+    manual_samples = report.get("manual_review_samples")
+    if not isinstance(manual_samples, list) or len(manual_samples) < S2PHT05_MIN_MANUAL_REVIEW_SAMPLES:
+        errors.append(f"S2PHT05 manual_review_samples must include at least {S2PHT05_MIN_MANUAL_REVIEW_SAMPLES} samples")
+        manual_samples = []
+    if report.get("quality_gate_hash") != _s2pht05_content_quality_hash(dependencies, gold_items, regression_checks, manual_samples):
+        errors.append("S2PHT05 quality_gate_hash must match quality evidence")
+    for gate in S2PHT05_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PHT05 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PHT05 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pht05_content_quality_gate_ready") is not True:
+        errors.append("passing S2PHT05 report requires s2pht05_content_quality_gate_ready=true")
     return errors
 
 

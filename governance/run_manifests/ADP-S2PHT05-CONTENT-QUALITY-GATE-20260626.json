@@ -1,0 +1,47 @@
+{
+  "acceptance_id": "ACC-S2PHT05-CONTENT-GATE",
+  "base_commit": "a13f60152e4abf2fe0884e9d547bc4a61c97b2bb",
+  "created_at": "2026-06-26T03:20:00+10:00",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PHT05_CONTENT_QUALITY_GATE.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "formula_id": "FORM-ADP-088",
+  "manifest_id": "ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626",
+  "model_id": "MOD-ADP-086",
+  "non_scope": "No mail production code, production SMTP, scheduler, Release, public schema, DB migration, queue mutation, source adapter, ranking, Email V1 runtime/frontstage, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "parameter_ids": [
+    "PARAM-ADP-668",
+    "PARAM-ADP-669",
+    "PARAM-ADP-670",
+    "PARAM-ADP-671",
+    "PARAM-ADP-672",
+    "PARAM-ADP-673",
+    "PARAM-ADP-674",
+    "PARAM-ADP-675",
+    "PARAM-ADP-676",
+    "PARAM-ADP-677",
+    "PARAM-ADP-678",
+    "PARAM-ADP-679",
+    "PARAM-ADP-680",
+    "PARAM-ADP-681"
+  ],
+  "phase": "S2PH",
+  "production_side_effects": false,
+  "project_id": "arxiv-daily-push",
+  "scope": "Local-only semantic content quality and Stage 1 regression gate evidence.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PHT05",
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 138 OK",
+    "full arxiv-daily-push unittest: 367 OK",
+    "semantic extractor: 88 formulas / 664 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}
