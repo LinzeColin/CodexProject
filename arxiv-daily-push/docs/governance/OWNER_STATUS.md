@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `75`
+- model_count: `76`
 - total_formulas: `77`
-- active_formulas: `77`
+- active_formulas: `78`
 - total_parameters: `568`
-- active_parameters: `551`
+- active_parameters: `562`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PET01_US_TA_SOURCE_FOUNDATION_METADATA_ONLY_NO_PRODUCTION`
+- release_gate: `S2PET02_US_LG_LEGAL_BACKBONE_METADATA_ONLY_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PE / S2PET01_US_TA_SOURCE_FOUNDATION_METADATA_ONLY_NO_PRODUCTION`
+- phase/gate: `S2PE / S2PET02_US_LG_LEGAL_BACKBONE_METADATA_ONLY_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

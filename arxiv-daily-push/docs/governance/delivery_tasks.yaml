@@ -1644,6 +1644,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PET02"
+    phase: "S2PE"
+    objective: "Implement metadata-only D4 US-LG cross-agency legal backbone evidence."
+    scope: "Federal Register, Regulations.gov, GovInfo, and Congress.gov metadata coverage, required document types, Docket/FR/CFR/bill/report/public-law/certified-text relations, official identity, traceability, focused tests, CLI, and governance registration."
+    non_scope: "No live source fetch, no PDF/full-text download, no legal advice, no public schema migration, no production queue mutation, no production ranking algorithm change, no SMTP, no scheduler, no Release, no source adapter production inclusion, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no Email V1 frontstage/runtime change, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PET01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PET02-US-LG"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet02_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet02_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "full arxiv-daily-push unittest: 325 OK", "semantic extractor: 78 formulas / 562 parameters checked", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSON/YAML/JSONL/CSV parse OK", "git diff --check PASS"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 96 OK", "full arxiv-daily-push unittest: 325 OK", "semantic extractor: 78 formulas / 562 parameters checked", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSON/YAML/JSONL/CSV parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md", "governance/run_manifests/ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PET02 can be mistaken for legal advice, live US legal-source adapters, or D4 production inclusion; it must remain metadata-only evidence and prove all production side effects remain disabled."
+    rollback: "Revert S2PET02 legal-backbone code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
