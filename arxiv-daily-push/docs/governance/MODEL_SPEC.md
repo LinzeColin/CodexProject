@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 90
-- formula_count: 92
-- parameter_count: 726
+- model_count: 91
+- formula_count: 93
+- parameter_count: 736
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -845,3 +845,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-090` / `FORM-ADP-092` define local M1 science/theory frontier mail evidence built on the S2PKT01 `EMAIL_LEARNING_V1` contract.
 - Passing S2PKT02 requires S2PKT01/S2PHT05/S2PIT04/S2PJT03 readiness, M1/B1 scope, B4/B5/B6 cross-cutting boards, scientific mechanism, evidence chain, counterevidence, personal value, action path, ledger-traceable content, S2PJT03-traceable 15m/2h action windows, deterministic M1 hash, and all production/schema/email side-effect flags false.
 - S2PKT02 does not change runtime mail templates/frontstage and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
+
+## S2PKT03 M2 Mail Evidence
+
+- `MOD-ADP-091` / `FORM-ADP-093` define local M2 engineering, product, and industry frontier mail evidence built on the S2PKT01 `EMAIL_LEARNING_V1` contract.
+- Passing S2PKT03 requires S2PKT01/S2PHT05/S2PIT04/S2PJT03 readiness, M2/B2 scope, B4/B5/B6 cross-cutting boards, engineering usability, reproducibility, product/industry value, limitations, action path, ledger-traceable content, S2PJT03-traceable 2h/7d action windows, deterministic M2 hash, and all production/schema/email side-effect flags false.
+- S2PKT03 does not change runtime mail templates/frontstage and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
