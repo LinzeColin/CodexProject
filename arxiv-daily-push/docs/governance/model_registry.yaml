@@ -4285,3 +4285,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PJT01-LIFECYCLE-STATE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT01_LIFECYCLE_STATE.md"
+  -
+    model_id: "MOD-ADP-082"
+    name: "S2PJT02 review schedule and due queue"
+    kind: "deterministic local review schedule evidence model"
+    purpose: "Validate local-only configurable review intervals, due queues, due-today/7-day/overdue/completed counts, deterministic queue hashing, feedback-adjustment readiness, and no-production side-effect gates after S2PJT01 lifecycle state evidence."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pjt02-review-schedule-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-084"
+    parameter_ids:
+      - "PARAM-ADP-634"
+      - "PARAM-ADP-635"
+      - "PARAM-ADP-636"
+      - "PARAM-ADP-637"
+      - "PARAM-ADP-638"
+      - "PARAM-ADP-639"
+      - "PARAM-ADP-640"
+      - "PARAM-ADP-641"
+    inputs:
+      - "S2PJT01 lifecycle state report"
+      - "review records"
+      - "schedule policy"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PJT02 review schedule report"
+      - "lifecycle state gate"
+      - "schedule policy gate"
+      - "review record gate"
+      - "due count gate"
+      - "deterministic queue gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PJT02-REVIEW-SCHEDULE-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT02_REVIEW_SCHEDULE.md"

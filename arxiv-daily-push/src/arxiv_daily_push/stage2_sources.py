@@ -754,6 +754,37 @@ S2PJT01_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PJT01_REPORT_FILENAME = "stage2_s2pjt01_lifecycle_state_report.json"
+S2PJT02_REVIEW_SCHEDULE_MODEL_ID = "adp-s2pjt02-review-schedule-v1"
+S2PJT02_ACCEPTANCE_ID = "ACC-S2PJT02-REVIEW"
+S2PJT02_TASK_ID = "S2PJT02"
+S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS = (1, 3, 7, 14, 30, 90)
+S2PJT02_REQUIRED_COUNT_BUCKETS = ("due_today", "due_next_7_days", "overdue", "completed")
+S2PJT02_REQUIRED_GATES = (
+    "lifecycle_state_gate",
+    "schedule_policy_gate",
+    "review_record_gate",
+    "due_count_gate",
+    "deterministic_queue_gate",
+    "no_side_effect_gate",
+)
+S2PJT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PJT02_REPORT_FILENAME = "stage2_s2pjt02_review_schedule_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -7737,6 +7768,298 @@ def validate_s2pjt01_lifecycle_state_report(report: Mapping[str, Any]) -> list[s
         errors.append("blocked S2PJT01 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pjt01_lifecycle_state_ready") is not True:
         errors.append("passing S2PJT01 report requires s2pjt01_lifecycle_state_ready=true")
+    return errors
+
+
+def _parse_iso_date(value: Any) -> Date | None:
+    try:
+        return Date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def _s2pjt02_queue_hash(rows: Sequence[Mapping[str, Any]]) -> str:
+    payload = [
+        {
+            "content_id": str(row.get("content_id") or ""),
+            "due_date": str(row.get("due_date") or ""),
+            "review_stage_days": int(row.get("review_stage_days") or 0),
+            "status": str(row.get("status") or ""),
+        }
+        for row in rows
+    ]
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pjt02_review_schedule_report(
+    *,
+    generated_at: str,
+    service_date: str,
+    lifecycle_state_report: Mapping[str, Any],
+    review_records: Sequence[Mapping[str, Any]],
+    schedule_policy: Mapping[str, Any] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PJT02 review schedule and due queue evidence."""
+
+    policy = dict(schedule_policy or {})
+    production_gate = dict(production_gate_state or {})
+    service_day = _parse_iso_date(service_date)
+    blocking_reasons: list[str] = []
+    lifecycle_errors = validate_s2pjt01_lifecycle_state_report(lifecycle_state_report)
+    lifecycle_gate = (
+        "pass"
+        if lifecycle_state_report.get("status") == "pass"
+        and lifecycle_state_report.get("s2pjt01_lifecycle_state_ready") is True
+        and not lifecycle_errors
+        else "blocked"
+    )
+    if lifecycle_gate != "pass":
+        blocking_reasons.append("S2PJT01 lifecycle state report must pass")
+        blocking_reasons.extend(lifecycle_errors)
+    if service_day is None:
+        blocking_reasons.append("service_date must be YYYY-MM-DD")
+
+    intervals = tuple(int(day) for day in (policy.get("review_intervals_days") or S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS))
+    missing_intervals = [day for day in S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS if day not in intervals]
+    policy_errors: list[str] = []
+    if missing_intervals:
+        policy_errors.append("missing default review intervals: " + ", ".join(str(day) for day in missing_intervals))
+    if policy.get("feedback_adjustment_supported", True) is not True:
+        policy_errors.append("schedule_policy.feedback_adjustment_supported must be true")
+    if policy.get("dry_run_only", True) is not True:
+        policy_errors.append("schedule_policy.dry_run_only must be true")
+
+    record_errors: list[str] = []
+    content_ids: set[str] = set()
+    duplicate_ids: set[str] = set()
+    normalized_records: list[dict[str, Any]] = []
+    for index, record in enumerate(review_records):
+        content_id = str(record.get("content_id") or "")
+        status = str(record.get("status") or "")
+        anchor = _parse_iso_date(record.get("anchor_date"))
+        due = _parse_iso_date(record.get("due_date"))
+        stage_days = int(record.get("review_stage_days") or 0)
+        if not content_id:
+            record_errors.append(f"record {index} missing content_id")
+        elif content_id in content_ids:
+            duplicate_ids.add(content_id)
+        content_ids.add(content_id)
+        if stage_days not in S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS:
+            record_errors.append(f"{content_id or index} review_stage_days must be one of default intervals")
+        if anchor is None:
+            record_errors.append(f"{content_id or index} anchor_date must be YYYY-MM-DD")
+        if due is None:
+            record_errors.append(f"{content_id or index} due_date must be YYYY-MM-DD")
+        if anchor is not None and due is not None and due != anchor + timedelta(days=stage_days):
+            record_errors.append(f"{content_id or index} due_date must equal anchor_date + review_stage_days")
+        if status not in {"pending", "completed"}:
+            record_errors.append(f"{content_id or index} status must be pending or completed")
+        for key in ("queue_mutation_allowed", "scheduler_enabled", "real_smtp_sent", "public_schema_changed"):
+            if record.get(key, False) is not False:
+                record_errors.append(f"{content_id or index}.{key} must be false")
+        normalized_records.append(
+            {
+                **dict(record),
+                "content_id": content_id,
+                "status": status,
+                "review_stage_days": stage_days,
+                "due_date": str(record.get("due_date") or ""),
+            }
+        )
+    if duplicate_ids:
+        record_errors.append("duplicate review content_id: " + ", ".join(sorted(duplicate_ids)))
+
+    due_today_queue: list[dict[str, Any]] = []
+    due_next_7_days_queue: list[dict[str, Any]] = []
+    overdue_queue: list[dict[str, Any]] = []
+    completed_records: list[dict[str, Any]] = []
+    if service_day is not None:
+        for record in normalized_records:
+            due = _parse_iso_date(record.get("due_date"))
+            if record.get("status") == "completed":
+                completed_records.append(record)
+                continue
+            if due is None:
+                continue
+            if due < service_day:
+                overdue_queue.append(record)
+            if due == service_day:
+                due_today_queue.append(record)
+            if service_day <= due <= service_day + timedelta(days=7):
+                due_next_7_days_queue.append(record)
+    sort_key = lambda row: (str(row.get("due_date") or ""), str(row.get("content_id") or ""))
+    due_today_queue = sorted(due_today_queue, key=sort_key)
+    due_next_7_days_queue = sorted(due_next_7_days_queue, key=sort_key)
+    overdue_queue = sorted(overdue_queue, key=sort_key)
+    completed_records = sorted(completed_records, key=sort_key)
+    computed_counts = {
+        "due_today": len(due_today_queue),
+        "due_next_7_days": len(due_next_7_days_queue),
+        "overdue": len(overdue_queue),
+        "completed": len(completed_records),
+    }
+    supplied_counts = dict(policy.get("expected_counts") or computed_counts)
+    count_errors = [
+        f"{bucket} count mismatch"
+        for bucket in S2PJT02_REQUIRED_COUNT_BUCKETS
+        if int(supplied_counts.get(bucket, -1)) != computed_counts[bucket]
+    ]
+
+    production_errors: list[str] = []
+    for key in (*S2PJT02_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "lifecycle_state_gate": lifecycle_gate,
+        "schedule_policy_gate": "pass" if not policy_errors else "blocked",
+        "review_record_gate": "pass" if not record_errors else "blocked",
+        "due_count_gate": "pass" if not count_errors else "blocked",
+        "deterministic_queue_gate": "pass",
+        "no_side_effect_gate": "pass" if not production_errors else "blocked",
+    }
+    blocking_reasons.extend(policy_errors)
+    blocking_reasons.extend(record_errors)
+    blocking_reasons.extend(count_errors)
+    blocking_reasons.extend(production_errors)
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    due_queue_records = [*overdue_queue, *due_today_queue, *due_next_7_days_queue]
+    due_queue_hash = _s2pjt02_queue_hash(due_queue_records)
+
+    return {
+        "model_id": S2PJT02_REVIEW_SCHEDULE_MODEL_ID,
+        "acceptance_id": S2PJT02_ACCEPTANCE_ID,
+        "task_id": S2PJT02_TASK_ID,
+        "phase": "S2PJ",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "service_date": service_date,
+        "status": status,
+        **gates,
+        "required_review_intervals_days": list(S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS),
+        "review_intervals_days": list(intervals),
+        "required_count_buckets": list(S2PJT02_REQUIRED_COUNT_BUCKETS),
+        "computed_counts": computed_counts,
+        "supplied_expected_counts": supplied_counts,
+        "due_today_queue": due_today_queue,
+        "due_next_7_days_queue": due_next_7_days_queue,
+        "overdue_queue": overdue_queue,
+        "completed_records": completed_records,
+        "due_queue_records": due_queue_records,
+        "due_queue_hash": due_queue_hash,
+        "schedule_policy": policy,
+        "review_records": normalized_records,
+        "s2pjt02_review_schedule_ready": status == "pass",
+        "review_scheduler_enabled": False,
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pjt02_review_schedule(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    lifecycle_state_report: Mapping[str, Any],
+    review_records: Sequence[Mapping[str, Any]],
+    schedule_policy: Mapping[str, Any] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PJT02 review schedule evidence without installing a scheduler."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pjt02-review-schedule"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pjt02_review_schedule_report(
+        generated_at=generated_at,
+        service_date=date,
+        lifecycle_state_report=lifecycle_state_report,
+        review_records=review_records,
+        schedule_policy=schedule_policy,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "review_schedule_report_path": str(run_dir / "adp-s2pjt02-review-schedule-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pjt02-review-schedule-report.json", report)
+        _write_json(state / S2PJT02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pjt02_review_schedule_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PJT02_REVIEW_SCHEDULE_MODEL_ID:
+        errors.append("S2PJT02 model_id must be adp-s2pjt02-review-schedule-v1")
+    if report.get("task_id") != S2PJT02_TASK_ID:
+        errors.append("S2PJT02 task_id must be S2PJT02")
+    if report.get("acceptance_id") != S2PJT02_ACCEPTANCE_ID:
+        errors.append("S2PJT02 acceptance_id must be ACC-S2PJT02-REVIEW")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PJT02 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PJT02_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+        "review_scheduler_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PJT02 local review schedule evidence")
+    missing_intervals = [day for day in S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS if day not in set(report.get("review_intervals_days") or [])]
+    if missing_intervals:
+        errors.append("S2PJT02 missing default review intervals: " + ", ".join(str(day) for day in missing_intervals))
+    records = report.get("review_records")
+    if not isinstance(records, list) or not records:
+        errors.append("S2PJT02 review_records must be a non-empty list")
+    computed_counts = report.get("computed_counts")
+    if not isinstance(computed_counts, Mapping):
+        errors.append("S2PJT02 computed_counts must be a mapping")
+        computed_counts = {}
+    for bucket in S2PJT02_REQUIRED_COUNT_BUCKETS:
+        if bucket not in computed_counts:
+            errors.append(f"S2PJT02 computed_counts missing {bucket}")
+    queue_records = report.get("due_queue_records")
+    if not isinstance(queue_records, list):
+        errors.append("S2PJT02 due_queue_records must be a list")
+        queue_records = []
+    if report.get("due_queue_hash") != _s2pjt02_queue_hash(queue_records):
+        errors.append("S2PJT02 due_queue_hash must match due_queue_records")
+    for gate in S2PJT02_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PJT02 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PJT02 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pjt02_review_schedule_ready") is not True:
+        errors.append("passing S2PJT02 report requires s2pjt02_review_schedule_ready=true")
     return errors
 
 

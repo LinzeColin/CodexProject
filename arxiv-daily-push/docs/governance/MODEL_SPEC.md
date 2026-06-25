@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 81
-- formula_count: 83
-- parameter_count: 633
+- model_count: 82
+- formula_count: 84
+- parameter_count: 641
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
