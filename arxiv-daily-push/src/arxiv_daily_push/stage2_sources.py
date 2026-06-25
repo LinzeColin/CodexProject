@@ -818,6 +818,46 @@ S2PJT03_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PJT03_REPORT_FILENAME = "stage2_s2pjt03_action_asset_roi_ledger_report.json"
+S2PJT04_WEEKLY_REPORT_MODEL_ID = "adp-s2pjt04-weekly-report-v1"
+S2PJT04_ACCEPTANCE_ID = "ACC-S2PJT04-WEEKLY"
+S2PJT04_TASK_ID = "S2PJT04"
+S2PJT04_REQUIRED_SECTIONS = (
+    "weekly_mainline",
+    "counterevidence",
+    "review_summary",
+    "action_summary",
+    "asset_summary",
+    "next_week_focus",
+)
+S2PJT04_MAX_WEEK_WINDOW_DAYS = 6
+S2PJT04_REQUIRED_GATES = (
+    "action_roi_gate",
+    "week_window_gate",
+    "section_trace_gate",
+    "state_trace_gate",
+    "no_duplication_gate",
+    "next_focus_gate",
+    "deterministic_report_gate",
+    "no_side_effect_gate",
+)
+S2PJT04_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PJT04_REPORT_FILENAME = "stage2_s2pjt04_weekly_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -8399,6 +8439,343 @@ def validate_s2pjt03_action_asset_roi_report(report: Mapping[str, Any]) -> list[
         errors.append("blocked S2PJT03 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pjt03_action_roi_ready") is not True:
         errors.append("passing S2PJT03 report requires s2pjt03_action_roi_ready=true")
+    return errors
+
+
+def _s2pjt04_weekly_hash(
+    weekly_items: Sequence[Mapping[str, Any]],
+    weekly_sections: Mapping[str, Any],
+    next_week_focus: Sequence[Mapping[str, Any]],
+) -> str:
+    payload = {
+        "items": [
+            {
+                "actual_state": str(item.get("actual_state") or ""),
+                "content_id": str(item.get("content_id") or ""),
+                "observed_date": str(item.get("observed_date") or ""),
+                "section_tags": sorted(str(tag) for tag in item.get("section_tags", []) if str(tag).strip()),
+            }
+            for item in weekly_items
+        ],
+        "sections": {
+            str(key): sorted(str(content_id) for content_id in value.get("content_ids", []) if str(content_id).strip())
+            for key, value in sorted(weekly_sections.items())
+            if isinstance(value, Mapping)
+        },
+        "next_week_focus": [
+            {
+                "focus_id": str(item.get("focus_id") or ""),
+                "priority": item.get("priority"),
+                "source_content_ids": sorted(str(content_id) for content_id in item.get("source_content_ids", []) if str(content_id).strip()),
+            }
+            for item in next_week_focus
+        ],
+    }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pjt04_weekly_report(
+    *,
+    generated_at: str,
+    week_start: str,
+    week_end: str,
+    action_roi_report: Mapping[str, Any],
+    weekly_items: Sequence[Mapping[str, Any]],
+    weekly_sections: Mapping[str, Any],
+    next_week_focus: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PJT04 weekly synthesis and attention reallocation evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    blocking_reasons: list[str] = []
+    action_roi_errors = validate_s2pjt03_action_asset_roi_report(action_roi_report)
+    action_roi_gate = (
+        "pass"
+        if action_roi_report.get("status") == "pass"
+        and action_roi_report.get("s2pjt03_action_roi_ready") is True
+        and not action_roi_errors
+        else "blocked"
+    )
+    if action_roi_gate != "pass":
+        blocking_reasons.append("S2PJT03 action/asset/ROI report must pass")
+        blocking_reasons.extend(action_roi_errors)
+
+    start = _parse_iso_date(week_start)
+    end = _parse_iso_date(week_end)
+    week_errors: list[str] = []
+    if start is None:
+        week_errors.append("week_start must be YYYY-MM-DD")
+    if end is None:
+        week_errors.append("week_end must be YYYY-MM-DD")
+    if start is not None and end is not None:
+        if end < start:
+            week_errors.append("week_end must be on or after week_start")
+        if (end - start).days > S2PJT04_MAX_WEEK_WINDOW_DAYS:
+            week_errors.append("weekly report window must not exceed 7 inclusive days")
+
+    traceable_content_ids = {
+        str(row.get("content_id") or "")
+        for row in action_roi_report.get("action_records", [])
+        if isinstance(row, Mapping) and row.get("content_id")
+    }
+    traceable_content_ids.update(
+        str(row.get("content_id") or "")
+        for row in action_roi_report.get("capability_assets", [])
+        if isinstance(row, Mapping) and row.get("content_id")
+    )
+    item_errors: list[str] = []
+    state_errors: list[str] = []
+    duplicate_content_ids: set[str] = set()
+    seen_content_ids: set[str] = set()
+    normalized_items: list[dict[str, Any]] = []
+    for index, item in enumerate(weekly_items):
+        content_id = str(item.get("content_id") or "")
+        actual_state = str(item.get("actual_state") or "")
+        observed = _parse_iso_date(item.get("observed_date"))
+        evidence_refs = item.get("evidence_refs")
+        section_tags = [str(tag) for tag in item.get("section_tags", []) if str(tag).strip()]
+        if not content_id:
+            item_errors.append(f"item {index} missing content_id")
+        elif content_id in seen_content_ids:
+            duplicate_content_ids.add(content_id)
+        seen_content_ids.add(content_id)
+        if content_id and traceable_content_ids and content_id not in traceable_content_ids:
+            item_errors.append(f"{content_id} is not traceable to S2PJT03 action or asset ledger")
+        if observed is None:
+            item_errors.append(f"{content_id or index} observed_date must be YYYY-MM-DD")
+        elif start is not None and end is not None and not (start <= observed <= end):
+            item_errors.append(f"{content_id or index} observed_date must be inside the weekly window")
+        if not actual_state:
+            state_errors.append(f"{content_id or index} actual_state is required")
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            item_errors.append(f"{content_id or index} evidence_refs must be a non-empty list")
+        if not section_tags:
+            item_errors.append(f"{content_id or index} section_tags must be non-empty")
+        normalized_items.append(
+            {
+                **dict(item),
+                "content_id": content_id,
+                "actual_state": actual_state,
+                "observed_date": str(item.get("observed_date") or ""),
+                "section_tags": section_tags,
+            }
+        )
+    if not normalized_items:
+        item_errors.append("weekly_items must be a non-empty list")
+    if duplicate_content_ids:
+        item_errors.append("duplicate weekly content_id: " + ", ".join(sorted(duplicate_content_ids)))
+
+    item_ids = {item["content_id"] for item in normalized_items if item.get("content_id")}
+    section_errors: list[str] = []
+    normalized_sections: dict[str, dict[str, Any]] = {}
+    for section in S2PJT04_REQUIRED_SECTIONS:
+        value = weekly_sections.get(section) if isinstance(weekly_sections, Mapping) else None
+        if not isinstance(value, Mapping):
+            section_errors.append(f"weekly_sections.{section} must be a mapping")
+            continue
+        content_ids = [str(content_id) for content_id in value.get("content_ids", []) if str(content_id).strip()]
+        if not content_ids:
+            section_errors.append(f"weekly_sections.{section}.content_ids must be non-empty")
+        missing = [content_id for content_id in content_ids if content_id not in item_ids]
+        if missing:
+            section_errors.append(f"weekly_sections.{section}.content_ids not in weekly_items: " + ", ".join(missing))
+        summary = str(value.get("summary") or "")
+        if not summary:
+            section_errors.append(f"weekly_sections.{section}.summary is required")
+        normalized_sections[section] = {**dict(value), "content_ids": content_ids, "summary": summary}
+
+    focus_errors: list[str] = []
+    normalized_focus: list[dict[str, Any]] = []
+    for index, focus in enumerate(next_week_focus):
+        focus_id = str(focus.get("focus_id") or "")
+        source_content_ids = [str(content_id) for content_id in focus.get("source_content_ids", []) if str(content_id).strip()]
+        rationale = str(focus.get("rationale") or "")
+        try:
+            priority = int(focus.get("priority"))
+        except (TypeError, ValueError):
+            priority = 0
+        if not focus_id:
+            focus_errors.append(f"focus {index} missing focus_id")
+        if not source_content_ids:
+            focus_errors.append(f"{focus_id or index} source_content_ids must be non-empty")
+        missing = [content_id for content_id in source_content_ids if content_id not in item_ids]
+        if missing:
+            focus_errors.append(f"{focus_id or index} source_content_ids not in weekly_items: " + ", ".join(missing))
+        if not rationale:
+            focus_errors.append(f"{focus_id or index} rationale is required")
+        if not 1 <= priority <= 5:
+            focus_errors.append(f"{focus_id or index} priority must be between 1 and 5")
+        normalized_focus.append({**dict(focus), "focus_id": focus_id, "source_content_ids": source_content_ids, "priority": priority})
+    if not normalized_focus:
+        focus_errors.append("next_week_focus must be a non-empty list")
+
+    production_errors: list[str] = []
+    for key in (*S2PJT04_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    state_counts: dict[str, int] = {}
+    for item in normalized_items:
+        state = str(item.get("actual_state") or "")
+        if state:
+            state_counts[state] = state_counts.get(state, 0) + 1
+    section_counts = {
+        section: len(normalized_sections.get(section, {}).get("content_ids", []))
+        for section in S2PJT04_REQUIRED_SECTIONS
+    }
+
+    gates = {
+        "action_roi_gate": action_roi_gate,
+        "week_window_gate": "pass" if not week_errors else "blocked",
+        "section_trace_gate": "pass" if not section_errors and not item_errors else "blocked",
+        "state_trace_gate": "pass" if not state_errors else "blocked",
+        "no_duplication_gate": "pass" if not duplicate_content_ids else "blocked",
+        "next_focus_gate": "pass" if not focus_errors else "blocked",
+        "deterministic_report_gate": "pass",
+        "no_side_effect_gate": "pass" if not production_errors else "blocked",
+    }
+    blocking_reasons.extend(week_errors)
+    blocking_reasons.extend(item_errors)
+    blocking_reasons.extend(state_errors)
+    blocking_reasons.extend(section_errors)
+    blocking_reasons.extend(focus_errors)
+    blocking_reasons.extend(production_errors)
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    weekly_report_hash = _s2pjt04_weekly_hash(normalized_items, normalized_sections, normalized_focus)
+
+    return {
+        "model_id": S2PJT04_WEEKLY_REPORT_MODEL_ID,
+        "acceptance_id": S2PJT04_ACCEPTANCE_ID,
+        "task_id": S2PJT04_TASK_ID,
+        "phase": "S2PJ",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "week_start": week_start,
+        "week_end": week_end,
+        "status": status,
+        **gates,
+        "required_sections": list(S2PJT04_REQUIRED_SECTIONS),
+        "weekly_items": normalized_items,
+        "weekly_sections": normalized_sections,
+        "next_week_focus": normalized_focus,
+        "state_counts": state_counts,
+        "section_counts": section_counts,
+        "weekly_report_hash": weekly_report_hash,
+        "s2pjt04_weekly_report_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pjt04_weekly_report(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    week_start: str,
+    week_end: str,
+    action_roi_report: Mapping[str, Any],
+    weekly_items: Sequence[Mapping[str, Any]],
+    weekly_sections: Mapping[str, Any],
+    next_week_focus: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PJT04 weekly report evidence without production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pjt04-weekly-report"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pjt04_weekly_report(
+        generated_at=generated_at,
+        week_start=week_start,
+        week_end=week_end,
+        action_roi_report=action_roi_report,
+        weekly_items=weekly_items,
+        weekly_sections=weekly_sections,
+        next_week_focus=next_week_focus,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "weekly_report_path": str(run_dir / "adp-s2pjt04-weekly-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pjt04-weekly-report.json", report)
+        _write_json(state / S2PJT04_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pjt04_weekly_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PJT04_WEEKLY_REPORT_MODEL_ID:
+        errors.append("S2PJT04 model_id must be adp-s2pjt04-weekly-report-v1")
+    if report.get("task_id") != S2PJT04_TASK_ID:
+        errors.append("S2PJT04 task_id must be S2PJT04")
+    if report.get("acceptance_id") != S2PJT04_ACCEPTANCE_ID:
+        errors.append("S2PJT04 acceptance_id must be ACC-S2PJT04-WEEKLY")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PJT04 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PJT04_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PJT04 local weekly report evidence")
+    items = report.get("weekly_items")
+    if not isinstance(items, list) or not items:
+        errors.append("S2PJT04 weekly_items must be a non-empty list")
+        items = []
+    content_ids = [str(item.get("content_id") or "") for item in items if isinstance(item, Mapping)]
+    if len([content_id for content_id in content_ids if content_id]) != len(set(content_id for content_id in content_ids if content_id)):
+        errors.append("S2PJT04 weekly_items must not duplicate content_id")
+    sections = report.get("weekly_sections")
+    if not isinstance(sections, Mapping):
+        errors.append("S2PJT04 weekly_sections must be a mapping")
+        sections = {}
+    for section in S2PJT04_REQUIRED_SECTIONS:
+        if section not in sections:
+            errors.append(f"S2PJT04 weekly_sections missing {section}")
+    focus = report.get("next_week_focus")
+    if not isinstance(focus, list) or not focus:
+        errors.append("S2PJT04 next_week_focus must be a non-empty list")
+        focus = []
+    if report.get("weekly_report_hash") != _s2pjt04_weekly_hash(items, sections, focus):
+        errors.append("S2PJT04 weekly_report_hash must match weekly items, sections, and next_week_focus")
+    for gate in S2PJT04_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PJT04 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PJT04 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pjt04_weekly_report_ready") is not True:
+        errors.append("passing S2PJT04 report requires s2pjt04_weekly_report_ready=true")
     return errors
 
 

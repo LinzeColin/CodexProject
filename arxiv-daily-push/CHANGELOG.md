@@ -447,3 +447,5 @@
 - Added CodexProject governance records for Phase 1.
 
 - Added S2PJT03 local action, capability asset, and expected/actual ROI ledger evidence without production side effects.
+
+- Added S2PJT04 local weekly report and attention reallocation evidence without production side effects.
