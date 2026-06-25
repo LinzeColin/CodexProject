@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pft05_d3_full_governance_qualification,
     run_s2pft04_special_zone_discovery,
     run_s2pft03_key_city_coverage,
     run_s2pft02_hk_mo_independent_profile,
@@ -138,6 +139,7 @@ from .stage2_sources import (
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
+    validate_s2pft05_d3_full_governance_qualification_report,
     validate_s2pft04_special_zone_discovery_report,
     validate_s2pft03_key_city_coverage_report,
     validate_s2pft02_hk_mo_independent_profile_report,
@@ -684,6 +686,22 @@ def build_parser() -> argparse.ArgumentParser:
     s2pft04_zones.add_argument("--zone-records", required=True, help="Special-zone metadata JSON list or object with zone_records.")
     s2pft04_zones.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pft04_zones.add_argument("--json", action="store_true", help="Print JSON special-zone discovery report.")
+
+    s2pft05_d3_full = subparsers.add_parser(
+        "stage2-d3-full-governance-qualification",
+        help="Run S2PFT05/S2P5T05 D3 full governance qualification evidence without production inclusion.",
+    )
+    s2pft05_d3_full.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pft05_d3_full.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pft05_d3_full.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pft05_d3_full.add_argument("--d3-readiness-review-report", required=True, help="Passing S2PDT04 D3 readiness review report JSON.")
+    s2pft05_d3_full.add_argument("--provincial-template-coverage-report", required=True, help="Passing S2PFT01 provincial coverage report JSON.")
+    s2pft05_d3_full.add_argument("--hk-mo-profile-report", required=True, help="Passing S2PFT02 HK/MO profile report JSON.")
+    s2pft05_d3_full.add_argument("--key-city-coverage-report", required=True, help="Passing S2PFT03 key-city coverage report JSON.")
+    s2pft05_d3_full.add_argument("--special-zone-discovery-report", required=True, help="Passing S2PFT04 special-zone discovery report JSON.")
+    s2pft05_d3_full.add_argument("--governance-records", required=True, help="D3 governance records JSON list or object with governance_records.")
+    s2pft05_d3_full.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pft05_d3_full.add_argument("--json", action="store_true", help="Print JSON D3 full governance qualification report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2036,6 +2054,36 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- zone_type_policy_gate: {report.get('zone_type_policy_gate')}")
             print(f"- parent_city_mapping_gate: {report.get('parent_city_mapping_gate')}")
             print(f"- health_tier_gate: {report.get('health_tier_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-d3-full-governance-qualification":
+        report = run_s2pft05_d3_full_governance_qualification(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            d3_readiness_review_report=load_json_mapping(args.d3_readiness_review_report),
+            provincial_template_coverage_report=load_json_mapping(args.provincial_template_coverage_report),
+            hk_mo_profile_report=load_json_mapping(args.hk_mo_profile_report),
+            key_city_coverage_report=load_json_mapping(args.key_city_coverage_report),
+            special_zone_discovery_report=load_json_mapping(args.special_zone_discovery_report),
+            governance_records=load_json_records(args.governance_records, "governance_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pft05_d3_full_governance_qualification_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- component_coverage_gate: {report.get('component_coverage_gate')}")
+            print(f"- quota_balance_gate: {report.get('quota_balance_gate')}")
+            print(f"- health_balance_gate: {report.get('health_balance_gate')}")
+            print(f"- elimination_explanation_gate: {report.get('elimination_explanation_gate')}")
+            print(f"- fallback_route_gate: {report.get('fallback_route_gate')}")
+            print(f"- d3_full_replay_gate: {report.get('d3_full_replay_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
