@@ -13,7 +13,7 @@
 
 - CURRENT 产品合同：`ADP-PRODUCT-CONTRACT-V7.2`
 - V7.1：只读历史基线，不覆盖、不删除。
-- 全局当前任务：`S2PCT02`
+- 全局当前任务：`S2PMT07`
 - 邮件 V1 workstream 状态：`EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
 
 ## 强制规则
@@ -21,8 +21,8 @@
 - 所有 Stage2 agent 在继续新任务前，必须按 V7.2 复审自己已完成的工作。
 - 不满足 V7.2 的已完成工作必须先修复。
 - Email V1 已在 main 上完成 T01-T05 状态收口；后续新增邮件入口必须继续走同一 Email V1 contract/readiness gate，不改公共 Schema、不改 connectors/queue/DB/scheduler/SMTP/Release/3+1 编排，且不得启用生产副作用。
-- 无共享文件冲突的 Stage2 Shadow 数据源开发可以继续。
+- `S2PMT07` final gate precheck 当前为 blocked；在 inherited V7.1 P0/P1 清零、S2PLT04 完成、final bundle 存在、独立 final review 通过前，不得声明 `INTEGRATED_PRODUCTION_ACCEPTED`、`DAILY_OPERATION` 或启动新的生产任务。
 
 ## 唯一下一合同任务
 
-无共享合同文件冲突、无公共 Schema/生产副作用的 Stage2 Shadow 数据源开发可继续，当前全局任务仍是 `S2PCT02`。
+当前全局入口为 `S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`。`S2PCT02` Science metadata-only no-send shadow evidence 是已完成历史记录，不再作为唯一下一任务。

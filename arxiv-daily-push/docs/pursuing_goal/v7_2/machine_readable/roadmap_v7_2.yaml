@@ -3,9 +3,9 @@ roadmap_version: ADP-ROADMAP-V7.2
 contract_version: ADP-PRODUCT-CONTRACT-V7.2
 project_id: arxiv-daily-push
 as_of: "2026-06-24"
-global_current_task: S2PCT02
+global_current_task: S2PMT07
 email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
-stage2_shadow_source_next: S2PCT02
+stage2_shadow_source_next: NONE_WHILE_S2PMT07_BLOCKED
 workstreams:
   - workstream_id: V7_2_BASELINE_UPGRADE
     status: published_on_main_merged_pr_140
@@ -17,7 +17,7 @@ workstreams:
       - S2PHT01V1.1-T03
       - S2PHT01V1.1-T04
       - S2PHT01V1.1-T05
-    next_task: S2PCT02
+    next_task: S2PMT07
     stop_gate: ADP_PRODUCT_CONTRACT_V7_2_CURRENT
   - workstream_id: EMAIL_LEARNING_V1
     status: merged_to_main_no_production_side_effects
@@ -56,9 +56,10 @@ workstreams:
         status: completed
         gate: EMAIL_LEARNING_V1_ACCEPTED
 parallel_policy:
-  stage2_shadow_sources_may_continue: true
+  stage2_shadow_sources_may_continue: false
   conditions:
     - no_shared_v7_2_contract_file_conflict
     - no_public_schema_change
     - no_final_email_or_real_side_effects
     - V7_2_revalidation_receipt_recorded
+  current_blocker: S2PMT07_FINAL_GATE_PRECHECK_BLOCKED

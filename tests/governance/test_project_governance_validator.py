@@ -4629,21 +4629,23 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
         current = validator.load_yaml(arxiv_root / "docs" / "pursuing_goal" / "CURRENT.yaml")
         self.assertEqual(current["current_product_contract"]["version"], "ADP-PRODUCT-CONTRACT-V7.2")
-        self.assertEqual(current["current_pointer_registry"]["global_current_task"], "S2PCT02")
+        self.assertEqual(current["current_pointer_registry"]["global_current_task"], "S2PMT07")
         self.assertEqual(current["current_pointer_registry"]["email_v1_workstream_next"], merged_state)
+        self.assertEqual(current["current_pointer_registry"]["shadow_source_next"], "NONE_WHILE_S2PMT07_BLOCKED")
 
         matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
-        self.assertEqual(matrix["current_iteration"], "ITER-20260625-ADP-S2PA-S2PAT07-EMAIL-V1-POINTER-REPAIR")
-        self.assertEqual(matrix["current_phase"], "S2PA")
-        self.assertEqual(matrix["current_gate"], "S2PAT07_EMAIL_V1_POINTER_REPAIRED_NO_PRODUCTION")
-        self.assertEqual(matrix["current_v7_task_id"], "S2PCT02")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260626-ADP-S2PM-S2PMT07-FINAL-GATE-PRECHECK")
+        self.assertEqual(matrix["current_phase"], "S2PM")
+        self.assertEqual(matrix["current_gate"], "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED")
+        self.assertEqual(matrix["current_v7_task_id"], "S2PMT07")
         self.assertEqual(matrix["current_v6_task_id"], "NOT_APPLICABLE")
         self.assertEqual(matrix["v7_2_email_v1_workstream_next"], merged_state)
 
         roadmap = validator.load_yaml(
             arxiv_root / "docs" / "pursuing_goal" / "v7_2" / "machine_readable" / "roadmap_v7_2.yaml"
         )
-        self.assertEqual(roadmap["global_current_task"], "S2PCT02")
+        self.assertEqual(roadmap["global_current_task"], "S2PMT07")
+        self.assertEqual(roadmap["stage2_shadow_source_next"], "NONE_WHILE_S2PMT07_BLOCKED")
         self.assertEqual(roadmap["email_v1_workstream_next"], merged_state)
         email_workstream = next(item for item in roadmap["workstreams"] if item["workstream_id"] == "EMAIL_LEARNING_V1")
         self.assertEqual(email_workstream["status"], "merged_to_main_no_production_side_effects")
@@ -4660,6 +4662,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
 
         lock = validator.load_yaml(arxiv_root / "docs" / "pursuing_goal" / "v7_2" / "V7_2_ROOT_LOCK.yaml")
+        self.assertEqual(lock["stage2_boundary"]["global_current_task"], "S2PMT07")
+        self.assertEqual(lock["stage2_boundary"]["shadow_source_next"], "NONE_WHILE_S2PMT07_BLOCKED")
         self.assertEqual(lock["stage2_boundary"]["email_v1_workstream_next"], merged_state)
         self.assertFalse(lock["stage2_boundary"]["production_accepted"])
         self.assertEqual(lock["inherited_v7_1_audit_blockers"]["open_p0_findings"], 8)
@@ -10285,6 +10289,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             if project["project_id"] == "PFI_BIG_DATA_SIMULATOR"
         )
         self.assertIn("PFI_BIG_DATA_SIMULATOR", dashboard.render_owner_status(dashboard.load_project(pfi_project)))
+
+    def test_adp_blocked_precheck_readiness_is_not_verified(self) -> None:
+        dashboard = load_dashboard_module()
+        self.assertEqual(dashboard.assurance_status("blocked_precheck"), "BLOCKED_PRECHECK")
 
     def test_review6_owner_status_is_readable_and_prioritized(self) -> None:
         dashboard = load_dashboard_module()
