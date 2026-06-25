@@ -13,6 +13,9 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID,
+    S2PFT05_REQUIRED_COMPONENTS,
+    S2PFT05_REQUIRED_QUOTA_ROLES,
     S2PFT04_REQUIRED_ZONE_IDS,
     S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES,
     S2PFT04_SPECIAL_ZONE_MODEL_ID,
@@ -37,6 +40,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pft05_d3_full_governance_qualification_report,
     build_s2pft04_special_zone_discovery_report,
     build_s2pft03_key_city_coverage_report,
     build_s2pft02_hk_mo_independent_profile_report,
@@ -55,6 +59,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pft05_d3_full_governance_qualification,
     run_s2pft04_special_zone_discovery,
     run_s2pft03_key_city_coverage,
     run_s2pft02_hk_mo_independent_profile,
@@ -71,6 +76,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pft05_d3_full_governance_qualification_report,
     validate_s2pft04_special_zone_discovery_report,
     validate_s2pft03_key_city_coverage_report,
     validate_s2pft02_hk_mo_independent_profile_report,
@@ -1031,6 +1037,61 @@ def special_zone_records() -> list[dict]:
             }
         )
     return records
+
+
+def special_zone_discovery_report() -> dict:
+    return build_s2pft04_special_zone_discovery_report(
+        generated_at=GENERATED_AT,
+        key_city_coverage_report=key_city_coverage_report(),
+        zone_records=special_zone_records(),
+    )
+
+
+def d3_full_governance_records(start: date = date(2026, 5, 1), count: int = 30) -> list[dict]:
+    replay_dates = [(start + timedelta(days=offset)).isoformat() for offset in range(count)]
+    rows = (
+        ("c0_core", "C0 national authoritative backbone", "central_authority", "green"),
+        ("c1_department", "C1 central department source map", "provincial", "green"),
+        ("c2_legal", "C2 legal relation and status guard", "hk_mo", "yellow"),
+        ("c3_local", "C3 provincial and key-city local coverage", "key_city", "yellow"),
+        ("c4_special_zone", "C4 special-zone vertical governance", "special_zone", "red"),
+    )
+    assert tuple(row[0] for row in rows) == S2PFT05_REQUIRED_COMPONENTS
+    assert tuple(row[2] for row in rows) == S2PFT05_REQUIRED_QUOTA_ROLES
+    return [
+        {
+            "component_id": component_id,
+            "component_name": component_name,
+            "quota_role": quota_role,
+            "quota_gate": "pass",
+            "quota_explanation": "fixture quota protects central authority priority while preserving local and special-zone coverage",
+            "health_tier": health_tier,
+            "health_explanation": "fixture health tier records freshness, official identity, source duplication, and fallback review pressure",
+            "elimination_explanation": "low authority, stale, duplicated, or non-official records are excluded before any production consideration",
+            "fallback_route": "fallback to C0/C1 authority evidence and manual review when local evidence is weak",
+            "fallback_gate": "pass",
+            "replay_dates": replay_dates,
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "evidence_refs": [f"fixture:s2pft05:{component_id}"],
+        }
+        for component_id, component_name, quota_role, health_tier in rows
+    ]
+
+
+def d3_full_governance_qualification_report() -> dict:
+    return build_s2pft05_d3_full_governance_qualification_report(
+        generated_at=GENERATED_AT,
+        d3_readiness_review_report=china_d3_readiness_report(),
+        provincial_template_coverage_report=china_provincial_template_report(),
+        hk_mo_profile_report=hk_mo_profile_report(),
+        key_city_coverage_report=key_city_coverage_report(),
+        special_zone_discovery_report=special_zone_discovery_report(),
+        governance_records=d3_full_governance_records(),
+    )
 
 
 def replay_batches(start: date, count: int = 30) -> dict:
@@ -2056,6 +2117,108 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["special_zone_discovery_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pft04_special_zone_discovery_report.json").is_file())
 
+    def test_s2pft05_d3_full_governance_qualification_validates_without_production_acceptance(self) -> None:
+        report = build_s2pft05_d3_full_governance_qualification_report(
+            generated_at=GENERATED_AT,
+            d3_readiness_review_report=china_d3_readiness_report(),
+            provincial_template_coverage_report=china_provincial_template_report(),
+            hk_mo_profile_report=hk_mo_profile_report(),
+            key_city_coverage_report=key_city_coverage_report(),
+            special_zone_discovery_report=special_zone_discovery_report(),
+            governance_records=d3_full_governance_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PFT05-D3-FULL")
+        self.assertEqual(report["task_id"], "S2PFT05")
+        self.assertEqual(report["legacy_task_id"], "S2P5T05")
+        self.assertEqual(report["phase"], "S2PF")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["s2pf_d3_full_governance_qualification_ready"])
+        self.assertTrue(report["d3_full_source_domain_qualified"])
+        self.assertEqual(report["upstream_d3_readiness_gate"], "pass")
+        self.assertEqual(report["component_coverage_gate"], "pass")
+        self.assertEqual(report["quota_balance_gate"], "pass")
+        self.assertEqual(report["health_balance_gate"], "pass")
+        self.assertEqual(report["elimination_explanation_gate"], "pass")
+        self.assertEqual(report["fallback_route_gate"], "pass")
+        self.assertEqual(report["d3_full_replay_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(set(report["components_observed"]), set(S2PFT05_REQUIRED_COMPONENTS))
+        self.assertEqual(set(report["quota_roles_observed"]), set(S2PFT05_REQUIRED_QUOTA_ROLES))
+        self.assertEqual(len(report["replay_dates_observed"]), 30)
+        self.assertFalse(report["d3_full_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["production_restore_executed"])
+        self.assertFalse(report["production_schedule_enabled"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(validate_s2pft05_d3_full_governance_qualification_report(report))
+
+    def test_s2pft05_d3_full_governance_qualification_blocks_missing_quota_replay_and_side_effects(self) -> None:
+        records = [record for record in d3_full_governance_records(count=29) if record["component_id"] != "c4_special_zone"]
+        records[0] = dict(
+            records[0],
+            quota_gate="blocked",
+            elimination_explanation="",
+            fallback_gate="blocked",
+            production_affected=True,
+            real_smtp_sent=True,
+        )
+        report = build_s2pft05_d3_full_governance_qualification_report(
+            generated_at=GENERATED_AT,
+            d3_readiness_review_report=china_d3_readiness_report(),
+            provincial_template_coverage_report=china_provincial_template_report(),
+            hk_mo_profile_report=hk_mo_profile_report(),
+            key_city_coverage_report=key_city_coverage_report(),
+            special_zone_discovery_report=special_zone_discovery_report(),
+            governance_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["component_coverage_gate"], "blocked")
+        self.assertEqual(report["quota_balance_gate"], "blocked")
+        self.assertEqual(report["elimination_explanation_gate"], "blocked")
+        self.assertEqual(report["fallback_route_gate"], "blocked")
+        self.assertEqual(report["d3_full_replay_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["s2pf_d3_full_governance_qualification_ready"])
+        self.assertFalse(report["d3_full_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("c4_special_zone", joined)
+        self.assertIn("quota", joined)
+        self.assertIn("30 distinct", joined)
+        self.assertIn("production", joined)
+        self.assertTrue(validate_s2pft05_d3_full_governance_qualification_report(report))
+
+    def test_s2pft05_d3_full_governance_qualification_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pft05_d3_full_governance_qualification(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                d3_readiness_review_report=china_d3_readiness_report(),
+                provincial_template_coverage_report=china_provincial_template_report(),
+                hk_mo_profile_report=hk_mo_profile_report(),
+                key_city_coverage_report=key_city_coverage_report(),
+                special_zone_discovery_report=special_zone_discovery_report(),
+                governance_records=d3_full_governance_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pft05_d3_full_governance_qualification_report(report))
+            self.assertFalse(report["d3_full_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["d3_full_governance_qualification_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pft05_d3_full_governance_qualification_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -2883,6 +3046,60 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertTrue(payload["special_zone_discovery_modeled"])
         self.assertFalse(payload["special_zone_discovery_enabled"])
         self.assertFalse(payload["d3_full_source_domain_accepted"])
+
+    def test_cli_stage2_d3_full_governance_qualification_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            d3_report_path = Path(tmp) / "d3-readiness-report.json"
+            provincial_report_path = Path(tmp) / "provincial-report.json"
+            hk_mo_report_path = Path(tmp) / "hk-mo-report.json"
+            key_city_report_path = Path(tmp) / "key-city-report.json"
+            zone_report_path = Path(tmp) / "zone-report.json"
+            governance_records_path = Path(tmp) / "governance-records.json"
+            d3_report_path.write_text(json.dumps(china_d3_readiness_report(), ensure_ascii=False), encoding="utf-8")
+            provincial_report_path.write_text(json.dumps(china_provincial_template_report(), ensure_ascii=False), encoding="utf-8")
+            hk_mo_report_path.write_text(json.dumps(hk_mo_profile_report(), ensure_ascii=False), encoding="utf-8")
+            key_city_report_path.write_text(json.dumps(key_city_coverage_report(), ensure_ascii=False), encoding="utf-8")
+            zone_report_path.write_text(json.dumps(special_zone_discovery_report(), ensure_ascii=False), encoding="utf-8")
+            governance_records_path.write_text(
+                json.dumps({"governance_records": d3_full_governance_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-d3-full-governance-qualification",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--d3-readiness-review-report",
+                    str(d3_report_path),
+                    "--provincial-template-coverage-report",
+                    str(provincial_report_path),
+                    "--hk-mo-profile-report",
+                    str(hk_mo_report_path),
+                    "--key-city-coverage-report",
+                    str(key_city_report_path),
+                    "--special-zone-discovery-report",
+                    str(zone_report_path),
+                    "--governance-records",
+                    str(governance_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PFT05")
+        self.assertEqual(payload["legacy_task_id"], "S2P5T05")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["s2pf_d3_full_governance_qualification_ready"])
+        self.assertTrue(payload["d3_full_source_domain_qualified"])
+        self.assertFalse(payload["d3_full_source_domain_accepted"])
+        self.assertFalse(payload["stage2_production_accepted"])
 
 
 if __name__ == "__main__":

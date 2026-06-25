@@ -1508,6 +1508,40 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PFT05"
+    phase: "S2PF"
+    objective: "Qualify the full D3 China official source governance package across C0-C4 evidence, quota roles, quota balance, health balance, elimination explanations, fallback routes, replay, and metadata-only boundaries."
+    scope: "D3 full governance qualification report, CLI, focused tests, governance registrations, phase record, run manifest, and owner-visible no-production status."
+    non_scope: "No formal D3 production inclusion, no SMTP transport, no scheduler trigger or production enablement, no Release upload, no source adapter fetch changes, no ranking or queue algorithm change, no public schema, no DB/migration, no CURRENT pointer change, no V7.1/V7.2 contract file edit, and no mail production runtime change."
+    status: "completed"
+    dependencies: ["S2PDT04", "S2PFT01", "S2PFT02", "S2PFT03", "S2PFT04", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md", "governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json"]
+    acceptance_ids: ["ACC-S2PFT05-D3-FULL"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 67 OK", "semantic extractor checked 71 formulas / 490 parameters", "remaining final validation pending before PR"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md", "governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PFT05 qualifies local D3 governance evidence but does not grant formal source-domain production inclusion, Stage2 production acceptance, integrated production acceptance, SMTP, scheduler, Release, public schema, queue/schema, or mail runtime changes."
+    rollback: "Revert S2PFT05 D3 governance qualification code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime or production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PGT01"
+    phase: "S2PG"
+    objective: "Define EvidencePacket V2 and evidence-level unification after D1-D4 source-domain shadow evidence, preserving old arXiv compatibility and no production side effects until explicit schema gates pass."
+    scope: "Read-only contract audit, compatibility mapping, fixture-level EvidencePacket V2 draft, backward-compatible adapter output tests, governance registration, and no-production-side-effect receipt."
+    non_scope: "No public schema migration without explicit S2PGT01 ownership and acceptance, no SMTP, no scheduler, no Release, no production queue mutation, no CURRENT pointer change, no V7.1/V7.2 contract-file edit unless a separate contract task owns it, and no integrated production acceptance."
+    status: "planned"
+    dependencies: ["S2PFT05", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PGT01-EVIDENCE-V2"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned EvidencePacket V2 compatibility focus", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push # planned", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push # planned"]
+    test_results: ["not executed yet; planned next task only"]
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md"]
+    risk: "EvidencePacket V2 can become a public schema boundary; S2PGT01 must explicitly prove backward compatibility and must not silently migrate queues, ledgers, mail runtime, SMTP, scheduler, Release, or integrated production gates."
+    rollback: "Remove the planned S2PGT01 governance entry if EvidencePacket V2 is deferred or replaced by a narrower compatibility audit."
+    target_version: "0.24.0"
+    completed_version: ""
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."

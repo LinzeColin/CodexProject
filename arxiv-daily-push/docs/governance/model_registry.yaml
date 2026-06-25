@@ -3614,3 +3614,54 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md"
+  -
+    model_id: "MOD-ADP-069"
+    name: "S2PFT05 D3 full governance qualification"
+    kind: "deterministic D3 source governance qualification model"
+    purpose: "Validate full D3 C0-C4 governance coverage, quota balance, health tiers, elimination explanations, fallback routes, 30-date replay evidence, and metadata-only no-production boundaries after S2PFT04."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pft05-d3-full-governance-qualification-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-071"
+    parameter_ids:
+      - "PARAM-ADP-498"
+      - "PARAM-ADP-499"
+      - "PARAM-ADP-500"
+      - "PARAM-ADP-501"
+      - "PARAM-ADP-502"
+      - "PARAM-ADP-503"
+      - "PARAM-ADP-504"
+      - "PARAM-ADP-505"
+      - "PARAM-ADP-506"
+      - "PARAM-ADP-507"
+    inputs:
+      - "passing S2PDT04 D3 readiness review report"
+      - "passing S2PFT01-S2PFT04 local coverage reports"
+      - "D3 governance records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "D3 full governance qualification report"
+      - "component coverage gate"
+      - "quota balance gate"
+      - "health balance gate"
+      - "elimination explanation gate"
+      - "fallback route gate"
+      - "D3 full replay gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md"
