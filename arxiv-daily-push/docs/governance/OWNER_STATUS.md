@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；Stage 2 S2PFT04 已记录 10 个中国特殊功能区 metadata-only discovery 证据但不构成 D3 full source-domain acceptance 或生产启用。
+arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。
 
 ## 2. 本次运行改变了什么
 
@@ -21,7 +21,7 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验�
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT04 as local metadata-only/no-send special-zone discovery evidence pending PR/CI, continue next no-conflict S2PFT05 full D3 governance qualification, and require future mail entrypoints to use the merged Email V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PFT05`
-- responsible_role: `content_owner + engineering_owner`
-- acceptance_ids: `ACC-S2PFT05-D3-FULL`
-- unblock_condition: Read V7.2 current contract and S2PFT04 receipt first, then perform full D3 governance qualification without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT.
+- next_task_id: `S2PGT01`
+- responsible_role: `content_owner + product_owner`
+- acceptance_ids: `ACC-S2PGT01-EVIDENCE-V2`
+- unblock_condition: Run `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned EvidencePacket V2 compatibility focus` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (480/480 active parameters, 70/70 active formulas)
+- implementation_congruence: `VERIFIED` (490/490 active parameters, 71/71 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,42 +52,42 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT04 as local metadata-only/no-send special-zone discovery evidence pending PR/CI, and continue next no-conflict S2PFT05 full D3 governance qualification. | 继续 S2PFT05 full D3 governance qualification under V7.2 boundaries. | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 越过 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
-1. V7.2 contract/CURRENT hash checks, root lock validator, three-base render proof, V7.2 revalidation receipts, Science/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence
+1. V7.2 contract/CURRENT hash checks, S2PFT05 receipt, EvidencePacket V2 compatibility tests, old arXiv compatibility proof, governance validator, lean render proof, and no-production-side-effect evidence
 2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: V7.2 contract/CURRENT hash checks, root lock validator, three-base render proof, V7.2 revalidation receipts, Science/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence
+- evidence_required: V7.2 contract/CURRENT hash checks, S2PFT05 receipt, EvidencePacket V2 compatibility tests, old arXiv compatibility proof, governance validator, lean render proof, and no-production-side-effect evidence
 - principal_risks: 源身份混淆、重复 canonical paper、Nature 元数据被误读为全文/正式出版抽取、许可/全文越权、shadow 数据影响正式 arXiv 邮件
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `68`
-- total_formulas: `70`
-- active_formulas: `70`
-- total_parameters: `497`
-- active_parameters: `480`
+- model_count: `69`
+- total_formulas: `71`
+- active_formulas: `71`
+- total_parameters: `507`
+- active_parameters: `490`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION`
+- release_gate: `S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `65`
+- legacy_unbound_events: `71`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `104`
+- pending_or_stale_events: `110`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961`
-- snapshot_event_time: `2026-06-25T09:20:00+10:00`
+- source_snapshot_hash: `sha256:f1ac93c5c7cbe8465cee49ee1c8af643038cc380a3a46f2e9cb0fad21b834b8e`
+- snapshot_event_time: `2026-06-25T16:40:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PF / S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION`
+- phase/gate: `S2PG / S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PFT05`
-- reason: Continue S2PF with full D3 governance and coverage qualification after S2PFT04 special-zone discovery, still blocked from production inclusion by V7.2 production gates.
+- task_id: `S2PGT01`
+- reason: Define EvidencePacket V2 and evidence-level unification after D1-D4 source-domain shadow evidence, preserving old arXiv compatibility and no production side effects until explicit schema gates pass.

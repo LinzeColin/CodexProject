@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PF
-- Current gate: S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION
+- Current phase: S2PG
+- Current gate: S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION
 - Confirmed iteration count: 96
 - Reconstructed event count: 0
-- Current task: `S2PFT04` / legacy `S2P5T04` has completed local special-zone metadata-only discovery evidence after S2PFT03 first key-city coverage. It validates 10 zone IDs, zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, and no-production boundaries. `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into main; S2PFT04 does not modify mail runtime paths. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PFT05` / legacy `S2P5T05` has completed local full D3 China official-source governance qualification evidence after S2PDT04 and S2PFT01-S2PFT04. It validates C0-C4 component evidence, quota roles, quota and health balance, elimination explanations, fallback routes, 30-date replay, metadata-only boundaries, and no-production boundaries. `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into main; S2PFT05 does not modify mail runtime paths. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -29,9 +29,34 @@ The append-only machine record is `development_events.jsonl`.
 | S2PA | V7.2 current product contract, V7.1 read-only inheritance, and V1.1 compatibility lock | completed | V7.2 root lock, CURRENT pointer, migration matrix, final three-agent review, AGENTS updates, three-base visibility, and validator/test enforcement without Stage 2 production acceptance; PR CI remains the merge attestation | `docs/pursuing_goal/CURRENT.yaml`; `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`; `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml`; `docs/pursuing_goal/v7_2/AUDIT/final_review_matrix.yaml` |
 | S2PB | V7.2-inherited D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production, after V7.2 agent revalidation | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
 | S2PC | V7.2-inherited D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature metadata-only shadow foundation to S2PCT02 Science without D2 source-domain acceptance or production inclusion, after V7.2 agent revalidation | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119`; next `S2PCT02` |
+| S2PF | V7.2-inherited D3 China local and extended official-source coverage | completed_local_validation | S2PFT01-S2PFT05 now cover mainland provincial templates, Hong Kong/Macau profiles, key cities, special zones, and full D3 governance qualification without formal production inclusion | `governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json`; `docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md` |
+| S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | planned | Start from `S2PGT01` EvidencePacket V2 and evidence-level compatibility after D1-D4 source-domain shadow evidence; do not silently migrate public schema or production queues | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; next `S2PGT01` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260625-ADP-S2PF-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PDT04 and S2PFT01-S2PFT04 receipts, D3 governance fixture rows, model/formula/parameter registry diff, and local S2PFT05 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: f48c8a8d5e247e156b6e416f81bbc0eb9022dc31
+- Result commit: PENDING
+- Phase: S2PF
+- Task IDs: `S2PFT05`, legacy alias `S2P5T05`; next task `S2PGT01`
+- Goal: Complete full D3 China official-source governance qualification after C0-C4 coverage, register S2PFT05 governance entries, and preserve V7.2 no-production boundaries.
+- Files changed: S2PFT05 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, three Chinese entry files, and this ledger entry.
+- Model changes: Added `MOD-ADP-069` for S2PFT05 D3 full governance qualification.
+- Formula changes: Added `FORM-ADP-071` with machine-verifiable AST fingerprints bound to the S2PFT05 implementation.
+- Parameter changes: Added `PARAM-ADP-498` through `PARAM-ADP-507` for S2PFT05 model id, acceptance id, task ids, required components, required quota roles, governance gates, replay count, health tiers, and report filename.
+- Commands run: `py_compile`; focused Stage2 source tests; semantic extractor; project dashboard generation.
+- Test results: py_compile PASS; focused Stage2 source tests 67 OK; semantic extractor checked 71 formulas / 490 parameters; generator PASS. Final full ADP unittest, V7.2 validator, project governance, lean render, changed-only validation, parse checks, and diff checks remain pending before PR.
+- Decisions: `ACC-S2PFT05-D3-FULL` is accepted only as local D3 governance qualification evidence. Formal D3 production inclusion, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, and Email V1 production operation all remain false/disabled.
+- Remaining risks: S2PGT01 EvidencePacket V2 is a potential public-schema boundary and must prove backward compatibility before any schema or production queue change. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PFT05 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, three Chinese entry-file updates, and this ledger entry; no runtime or production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PFT05; then continue `S2PGT01` only after reading V7.2 and the S2PFT05 receipt.
 
 ### `ITER-20260625-ADP-S2PH-EMAIL-V1-MAIN-MERGE-STATUS`
 

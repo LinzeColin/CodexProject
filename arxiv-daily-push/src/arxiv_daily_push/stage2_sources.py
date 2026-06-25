@@ -354,6 +354,16 @@ S2PFT04_ALLOWED_POLICY_FOCUS_AREAS = (
 )
 S2PFT04_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
 S2PFT04_REPORT_FILENAME = "stage2_s2pft04_special_zone_discovery_report.json"
+S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID = "adp-s2pft05-d3-full-governance-qualification-v1"
+S2PFT05_ACCEPTANCE_ID = "ACC-S2PFT05-D3-FULL"
+S2PFT05_TASK_ID = "S2PFT05"
+S2PFT05_LEGACY_TASK_ID = "S2P5T05"
+S2PFT05_REQUIRED_COMPONENTS = ("c0_core", "c1_department", "c2_legal", "c3_local", "c4_special_zone")
+S2PFT05_REQUIRED_QUOTA_ROLES = ("central_authority", "provincial", "hk_mo", "key_city", "special_zone")
+S2PFT05_REQUIRED_GOVERNANCE_GATES = ("quota_balance", "health_balance", "elimination_explanation", "fallback_route")
+S2PFT05_REQUIRED_REPLAY_DATES = 30
+S2PFT05_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
+S2PFT05_REPORT_FILENAME = "stage2_s2pft05_d3_full_governance_qualification_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -4222,6 +4232,290 @@ def validate_s2pft04_special_zone_discovery_report(report: Mapping[str, Any]) ->
     return errors
 
 
+def build_s2pft05_d3_full_governance_qualification_report(
+    *,
+    generated_at: str,
+    d3_readiness_review_report: Mapping[str, Any],
+    provincial_template_coverage_report: Mapping[str, Any],
+    hk_mo_profile_report: Mapping[str, Any],
+    key_city_coverage_report: Mapping[str, Any],
+    special_zone_discovery_report: Mapping[str, Any],
+    governance_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build D3 full governance qualification evidence without production inclusion."""
+
+    d3_errors = validate_s2pdt04_china_d3_readiness_review_report(d3_readiness_review_report)
+    provincial_errors = validate_s2pft01_china_provincial_template_coverage_report(provincial_template_coverage_report)
+    hk_mo_errors = validate_s2pft02_hk_mo_independent_profile_report(hk_mo_profile_report)
+    city_errors = validate_s2pft03_key_city_coverage_report(key_city_coverage_report)
+    zone_errors = validate_s2pft04_special_zone_discovery_report(special_zone_discovery_report)
+    upstream_gate = (
+        "pass"
+        if not d3_errors
+        and not provincial_errors
+        and not hk_mo_errors
+        and not city_errors
+        and not zone_errors
+        and d3_readiness_review_report.get("status") == "pass"
+        and d3_readiness_review_report.get("d3_core_readiness_review_ready") is True
+        and provincial_template_coverage_report.get("s2pf_provincial_template_coverage_ready") is True
+        and hk_mo_profile_report.get("s2pf_hk_mo_profile_ready") is True
+        and key_city_coverage_report.get("s2pf_key_city_coverage_ready") is True
+        and special_zone_discovery_report.get("s2pf_special_zone_discovery_ready") is True
+        else "blocked"
+    )
+    governance_rows, row_errors = _s2pft05_governance_rows(governance_records)
+    component_gate = _s2pft05_component_gate(governance_rows)
+    quota_gate = _s2pft05_quota_gate(governance_rows)
+    health_gate = _s2pft05_health_balance_gate(governance_rows)
+    elimination_gate = _s2pft05_elimination_gate(governance_rows)
+    fallback_gate = _s2pft05_fallback_gate(governance_rows)
+    replay_gate = _s2pft05_replay_gate(governance_rows)
+    metadata_gate = _s2pft05_metadata_gate(governance_rows)
+    blocking_reasons = [
+        *d3_errors,
+        *provincial_errors,
+        *hk_mo_errors,
+        *city_errors,
+        *zone_errors,
+        *row_errors,
+        *component_gate["blocking_reasons"],
+        *quota_gate["blocking_reasons"],
+        *health_gate["blocking_reasons"],
+        *elimination_gate["blocking_reasons"],
+        *fallback_gate["blocking_reasons"],
+        *replay_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    if upstream_gate != "pass":
+        blocking_reasons.append("S2PFT05 requires passing S2PDT04 and S2PFT01-S2PFT04 evidence reports")
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate
+        == component_gate["status"]
+        == quota_gate["status"]
+        == health_gate["status"]
+        == elimination_gate["status"]
+        == fallback_gate["status"]
+        == replay_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID,
+        "acceptance_id": S2PFT05_ACCEPTANCE_ID,
+        "task_id": S2PFT05_TASK_ID,
+        "legacy_task_id": S2PFT05_LEGACY_TASK_ID,
+        "phase": "S2PF",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_d3_readiness_gate": upstream_gate,
+        "component_coverage_gate": component_gate["status"],
+        "quota_balance_gate": quota_gate["status"],
+        "health_balance_gate": health_gate["status"],
+        "elimination_explanation_gate": elimination_gate["status"],
+        "fallback_route_gate": fallback_gate["status"],
+        "d3_full_replay_gate": replay_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_components": list(S2PFT05_REQUIRED_COMPONENTS),
+        "components_observed": component_gate["components_observed"],
+        "required_quota_roles": list(S2PFT05_REQUIRED_QUOTA_ROLES),
+        "quota_roles_observed": quota_gate["quota_roles_observed"],
+        "required_governance_gates": list(S2PFT05_REQUIRED_GOVERNANCE_GATES),
+        "required_replay_dates": S2PFT05_REQUIRED_REPLAY_DATES,
+        "replay_dates_observed": replay_gate["replay_dates_observed"],
+        "allowed_health_tiers": list(S2PFT05_ALLOWED_HEALTH_TIERS),
+        "health_tiers_observed": health_gate["health_tiers_observed"],
+        "governance_records": governance_rows,
+        "governance_record_count": len(governance_rows),
+        "component_summary": component_gate,
+        "quota_summary": quota_gate,
+        "health_summary": health_gate,
+        "elimination_summary": elimination_gate,
+        "fallback_summary": fallback_gate,
+        "replay_summary": replay_gate,
+        "metadata_summary": metadata_gate,
+        "s2pf_d3_full_governance_qualification_ready": status == "pass",
+        "d3_full_source_domain_qualified": status == "pass",
+        "d3_full_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "v7_2_mail_or_schema_prerun": False,
+        "production_restore_executed": False,
+        "production_schedule_enabled": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pft05_d3_full_governance_qualification(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    d3_readiness_review_report: Mapping[str, Any],
+    provincial_template_coverage_report: Mapping[str, Any],
+    hk_mo_profile_report: Mapping[str, Any],
+    key_city_coverage_report: Mapping[str, Any],
+    special_zone_discovery_report: Mapping[str, Any],
+    governance_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PFT05 D3 full governance qualification without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pft05-d3-full-governance-qualification"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pft05_d3_full_governance_qualification_report(
+        generated_at=generated_at,
+        d3_readiness_review_report=d3_readiness_review_report,
+        provincial_template_coverage_report=provincial_template_coverage_report,
+        hk_mo_profile_report=hk_mo_profile_report,
+        key_city_coverage_report=key_city_coverage_report,
+        special_zone_discovery_report=special_zone_discovery_report,
+        governance_records=governance_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "d3_full_governance_qualification_report_path": str(
+                run_dir / "adp-s2pft05-d3-full-governance-qualification-report.json"
+            ),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pft05-d3-full-governance-qualification-report.json", report)
+        _write_json(state / S2PFT05_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pft05_d3_full_governance_qualification_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PFT05_D3_FULL_GOVERNANCE_MODEL_ID:
+        errors.append("S2PFT05 D3 governance model_id must be adp-s2pft05-d3-full-governance-qualification-v1")
+    if report.get("task_id") != S2PFT05_TASK_ID:
+        errors.append("S2PFT05 D3 governance task_id must be S2PFT05")
+    if report.get("legacy_task_id") != S2PFT05_LEGACY_TASK_ID:
+        errors.append("S2PFT05 D3 governance legacy_task_id must be S2P5T05")
+    if report.get("acceptance_id") != S2PFT05_ACCEPTANCE_ID:
+        errors.append("S2PFT05 D3 governance acceptance_id must be ACC-S2PFT05-D3-FULL")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PFT05 D3 governance status must be pass or blocked")
+    for key in (
+        "d3_full_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+        "v7_2_mail_or_schema_prerun",
+        "production_restore_executed",
+        "production_schedule_enabled",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PFT05 D3 full governance qualification")
+    records = report.get("governance_records")
+    if not isinstance(records, list):
+        errors.append("S2PFT05 governance_records must be a list")
+        records = []
+    observed_components = set(report.get("components_observed") or [])
+    missing_components = [component for component in S2PFT05_REQUIRED_COMPONENTS if component not in observed_components]
+    if missing_components:
+        errors.append("S2PFT05 missing components: " + ", ".join(missing_components))
+    observed_quota_roles = set(report.get("quota_roles_observed") or [])
+    missing_quota_roles = [role for role in S2PFT05_REQUIRED_QUOTA_ROLES if role not in observed_quota_roles]
+    if missing_quota_roles:
+        errors.append("S2PFT05 missing quota roles: " + ", ".join(missing_quota_roles))
+    if len(set(report.get("replay_dates_observed") or [])) < S2PFT05_REQUIRED_REPLAY_DATES:
+        errors.append("S2PFT05 full D3 governance requires at least 30 replay dates")
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"governance_records[{index}] must be an object")
+            continue
+        if record.get("component_id") not in S2PFT05_REQUIRED_COMPONENTS:
+            errors.append(f"governance_records[{index}].component_id is not supported")
+        quota_role = record.get("quota_role")
+        if quota_role not in S2PFT05_REQUIRED_QUOTA_ROLES:
+            errors.append(f"governance_records[{index}].quota_role is not supported")
+        for field in ("component_name", "quota_explanation", "elimination_explanation", "fallback_route", "evidence_refs"):
+            if not record.get(field):
+                errors.append(f"governance_records[{index}].{field} is required")
+        if record.get("quota_gate") != "pass":
+            errors.append(f"governance_records[{index}].quota_gate must be pass")
+        if record.get("health_tier") not in S2PFT05_ALLOWED_HEALTH_TIERS:
+            errors.append(f"governance_records[{index}].health_tier is not supported")
+        if not record.get("health_explanation"):
+            errors.append(f"governance_records[{index}].health_explanation is required")
+        if record.get("fallback_gate") != "pass":
+            errors.append(f"governance_records[{index}].fallback_gate must be pass")
+        replay_dates = record.get("replay_dates")
+        if not replay_dates:
+            errors.append(f"governance_records[{index}].replay_dates is required")
+        else:
+            for replay_date in replay_dates:
+                if not _is_iso_date(str(replay_date)):
+                    errors.append(f"governance_records[{index}].replay_dates must contain YYYY-MM-DD values")
+                    break
+        if record.get("metadata_only") is not True:
+            errors.append(f"governance_records[{index}].metadata_only must be true")
+        for field in ("pdf_downloaded", "full_text_extracted", "production_affected", "real_smtp_sent"):
+            if record.get(field) is not False:
+                errors.append(f"governance_records[{index}].{field} must be false")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PFT05 D3 governance report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_d3_readiness_gate",
+            "component_coverage_gate",
+            "quota_balance_gate",
+            "health_balance_gate",
+            "elimination_explanation_gate",
+            "fallback_route_gate",
+            "d3_full_replay_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PFT05 D3 governance report requires {key}=pass")
+        if report.get("s2pf_d3_full_governance_qualification_ready") is not True:
+            errors.append("passing S2PFT05 D3 governance report requires s2pf_d3_full_governance_qualification_ready=true")
+        if report.get("d3_full_source_domain_qualified") is not True:
+            errors.append("passing S2PFT05 D3 governance report requires d3_full_source_domain_qualified=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -7213,6 +7507,135 @@ def _s2pft04_zone_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, 
         "metadata_only_record_count": len(rows) - len(violations),
         "record_count": len(rows),
         "blocking_reasons": reasons,
+    }
+
+
+def _s2pft05_governance_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    component_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"governance_records[{index}] must be an object")
+            continue
+        row = dict(record)
+        component_id = str(row.get("component_id") or "")
+        if not component_id:
+            errors.append(f"governance_records[{index}].component_id is required")
+        elif component_id in component_ids:
+            errors.append(f"duplicate S2PFT05 component_id: {component_id}")
+        component_ids.add(component_id)
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pft05_component_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("component_id")) for row in rows if row.get("component_id")})
+    missing = [component for component in S2PFT05_REQUIRED_COMPONENTS if component not in set(observed)]
+    return {
+        "status": "pass" if not missing else "blocked",
+        "components_observed": observed,
+        "blocking_reasons": [f"S2PFT05 missing required components: {', '.join(missing)}"] if missing else [],
+    }
+
+
+def _s2pft05_quota_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("quota_role")) for row in rows if row.get("quota_role")})
+    blocking: list[str] = []
+    missing = [role for role in S2PFT05_REQUIRED_QUOTA_ROLES if role not in set(observed)]
+    if missing:
+        blocking.append("S2PFT05 missing quota roles: " + ", ".join(missing))
+    for row in rows:
+        if row.get("quota_gate") != "pass":
+            blocking.append(f"S2PFT05 quota gate failed for {row.get('component_id')}")
+        if not row.get("quota_explanation"):
+            blocking.append(f"S2PFT05 quota explanation missing for {row.get('component_id')}")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "quota_roles_observed": observed,
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pft05_health_balance_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("health_tier")) for row in rows if row.get("health_tier")})
+    blocking: list[str] = []
+    if not observed:
+        blocking.append("S2PFT05 health tiers are required")
+    unsupported = [tier for tier in observed if tier not in S2PFT05_ALLOWED_HEALTH_TIERS]
+    if unsupported:
+        blocking.append("S2PFT05 unsupported health tiers: " + ", ".join(unsupported))
+    for row in rows:
+        if not row.get("health_explanation"):
+            blocking.append(f"S2PFT05 health explanation missing for {row.get('component_id')}")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "health_tiers_observed": observed,
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pft05_elimination_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking = [
+        f"S2PFT05 elimination explanation missing for {row.get('component_id')}"
+        for row in rows
+        if not row.get("elimination_explanation")
+    ]
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pft05_fallback_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for row in rows:
+        if not row.get("fallback_route"):
+            blocking.append(f"S2PFT05 fallback route missing for {row.get('component_id')}")
+        if row.get("fallback_gate") != "pass":
+            blocking.append(f"S2PFT05 fallback gate failed for {row.get('component_id')}")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pft05_replay_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    replay_dates = sorted(
+        {
+            str(replay_date)
+            for row in rows
+            for replay_date in (row.get("replay_dates") or [])
+            if _is_iso_date(str(replay_date))
+        }
+    )
+    blocking: list[str] = []
+    if len(replay_dates) < S2PFT05_REQUIRED_REPLAY_DATES:
+        blocking.append(f"S2PFT05 full D3 replay requires {S2PFT05_REQUIRED_REPLAY_DATES} distinct dates")
+    for row in rows:
+        row_dates = row.get("replay_dates") or []
+        if not row_dates:
+            blocking.append(f"S2PFT05 replay dates missing for {row.get('component_id')}")
+        elif any(not _is_iso_date(str(replay_date)) for replay_date in row_dates):
+            blocking.append(f"S2PFT05 replay dates invalid for {row.get('component_id')}")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "replay_dates_observed": replay_dates,
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pft05_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for row in rows:
+        if row.get("metadata_only") is not True:
+            blocking.append(f"S2PFT05 metadata_only must be true for {row.get('component_id')}")
+        for key in ("pdf_downloaded", "full_text_extracted", "production_affected", "real_smtp_sent"):
+            if row.get(key) is not False:
+                blocking.append(f"S2PFT05 {key} must be false for {row.get('component_id')}")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "blocking_reasons": blocking,
     }
 
 

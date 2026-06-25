@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-001"
-source_snapshot_hash: "sha256:4a8e16cb413af24c0988cb6f2b687aa726591fcf6115ff8cea1089f618f23961"
+as_of_event_id: "EVENT-20260625-ADP-S2PFT05-D3-FULL-GOVERNANCE-001"
+source_snapshot_hash: "sha256:f1ac93c5c7cbe8465cee49ee1c8af643038cc380a3a46f2e9cb0fad21b834b8e"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-25T09:20:00+10:00"
+snapshot_event_time: "2026-06-25T16:40:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 480
-    total_active_parameters: 480
-    checked_active_formulas: 70
-    total_active_formulas: 70
+    checked_active_parameters: 490
+    total_active_parameters: 490
+    checked_active_formulas: 71
+    total_active_formulas: 71
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 480
-    total_active_parameters: 480
+    checked_active_parameters: 490
+    total_active_parameters: 490
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 65
+    legacy_unbound_events: 71
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION"
+  release_gate: "S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -80,16 +80,16 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PFT04"
+  current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PFT05"
+  task_id: "S2PGT01"
   status: "planned"
-  reason: "Continue S2PF with full D3 governance and coverage qualification after S2PFT04 special-zone discovery, still blocked from production inclusion by V7.2 production gates."
+  reason: "Define EvidencePacket V2 and evidence-level unification after D1-D4 source-domain shadow evidence, preserving old arXiv compatibility and no production side effects until explicit schema gates pass."
   acceptance_ids:
-    - "ACC-S2PFT05-D3-FULL"
-  owner: "content_owner + engineering_owner"
-  human_owner_role: "content_owner + engineering_owner"
-  unblock_condition: "Read V7.2 current contract and S2PFT04 receipt first, then perform full D3 governance qualification without changing public schema, production mail, SMTP, scheduler, Release, or CURRENT."
+    - "ACC-S2PGT01-EVIDENCE-V2"
+  owner: "content_owner + product_owner"
+  human_owner_role: "content_owner + product_owner"
+  unblock_condition: "Run `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned EvidencePacket V2 compatibility focus` and attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -103,24 +103,24 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT04 as local metadata-only/no-send special-zone discovery evidence pending PR/CI, continue next no-conflict S2PFT05 full D3 governance qualification, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate."
-  option_a: "继续 S2PFT05 full D3 governance qualification under V7.2 boundaries。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate."
+  option_a: "继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。"
   option_b: "暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。"
   option_c: "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
   options:
-    - "继续 S2PFT05 full D3 governance qualification under V7.2 boundaries。"
+    - "继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。"
     - "暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。"
     - "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。"
   principal_risks: "源身份混淆、重复 canonical paper、Nature 元数据被误读为全文/正式出版抽取、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "V7.2 contract/CURRENT hash checks, root lock validator, three-base render proof, V7.2 revalidation receipts, Science/top-journal adapter tests, source registry gate, fixture parse, durable replay/shadow reports, arXiv no-regression evidence"
+  evidence_required: "V7.2 contract/CURRENT hash checks, S2PFT05 receipt, EvidencePacket V2 compatibility tests, old arXiv compatibility proof, governance validator, lean render proof, and no-production-side-effect evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."
-  unblock_task_id: "S2PFT05"
+  unblock_task_id: "S2PGT01"
   acceptance_ids:
-    - "ACC-S2PFT05-D3-FULL"
+    - "ACC-S2PGT01-EVIDENCE-V2"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
