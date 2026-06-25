@@ -59,6 +59,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PJT02_REVIEW_SCHEDULE_MODEL_ID,
     S2PJT03_ACTION_ROI_MODEL_ID,
     S2PJT04_WEEKLY_REPORT_MODEL_ID,
+    S2PJT05_MONTHLY_REPORT_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -95,6 +96,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pjt02_review_schedule_report,
     build_s2pjt03_action_asset_roi_report,
     build_s2pjt04_weekly_report,
+    build_s2pjt05_monthly_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -129,6 +131,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
     run_s2pjt04_weekly_report,
+    run_s2pjt05_monthly_report,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -161,6 +164,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
     validate_s2pjt04_weekly_report,
+    validate_s2pjt05_monthly_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -621,6 +625,102 @@ def s2pjt04_next_week_focus() -> list[dict]:
             "source_content_ids": ["content:week", "content:done"],
             "priority": 4,
             "rationale": "Resolve the open counterexample using the reusable checklist.",
+        }
+    ]
+
+
+def s2pjt04_weekly_report() -> dict:
+    return build_s2pjt04_weekly_report(
+        generated_at=GENERATED_AT,
+        week_start="2026-06-22",
+        week_end="2026-06-28",
+        action_roi_report=s2pjt03_action_roi_report(),
+        weekly_items=s2pjt04_weekly_items(),
+        weekly_sections=s2pjt04_weekly_sections(),
+        next_week_focus=s2pjt04_next_week_focus(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pjt05_cognitive_snapshots() -> dict:
+    return {
+        "month_start": {
+            "summary": "At month start, the owner treated mechanisms and counterexamples as separate reading tracks.",
+            "viewpoint_ids": ["vp:mechanism", "vp:counterexample"],
+        },
+        "month_end": {
+            "summary": "At month end, the owner connected mechanisms, counterexamples, action windows, and reusable assets.",
+            "viewpoint_ids": ["vp:mechanism-integrated", "vp:counterexample-resolution", "vp:asset-reuse"],
+        },
+        "changed_viewpoints": [
+            {
+                "viewpoint_id": "vp:mechanism-integrated",
+                "before": "Mechanism notes were standalone observations.",
+                "after": "Mechanism notes now drive action and asset reuse decisions.",
+                "evidence_refs": ["local://weekly/content-today", "local://asset/method-checklist-v1"],
+            }
+        ],
+    }
+
+
+def s2pjt05_monthly_sections(**overrides: object) -> dict:
+    sections = {
+        "monthly_era_mainline": {"summary": "The monthly mainline links mechanisms to reusable action methods.", "content_ids": ["content:today"]},
+        "cognitive_delta": {"summary": "The month-end view merges counterexamples with reusable methods.", "content_ids": ["content:today", "content:week"]},
+        "capability_growth": {"summary": "The reusable method checklist became a durable capability asset.", "content_ids": ["content:done"]},
+        "economic_conversion": {"summary": "One action produced verifiable positive ROI with local evidence.", "content_ids": ["content:done"]},
+        "forecast_review": {"summary": "The counterexample forecast was reviewed against observed outcomes.", "content_ids": ["content:week"]},
+        "next_month_focus": {"summary": "Next month prioritizes resolving counterexamples and reusing the checklist.", "content_ids": ["content:week", "content:done"]},
+    }
+    sections.update(overrides)
+    return sections
+
+
+def s2pjt05_capability_growth() -> list[dict]:
+    return [
+        {
+            "asset_id": "asset:method-checklist-v1",
+            "asset_type": "method_checklist",
+            "growth_type": "reuse_ready",
+            "source_content_ids": ["content:done"],
+            "evidence_refs": ["local://asset/method-checklist-v1"],
+        }
+    ]
+
+
+def s2pjt05_economic_conversions() -> list[dict]:
+    return [
+        {
+            "conversion_id": "conversion:method-checklist-roi",
+            "source_content_ids": ["content:done"],
+            "actual_roi_status": "calculated",
+            "verifiable_cost": 2.0,
+            "verifiable_benefit": 5.0,
+            "evidence_refs": ["local://asset/method-checklist-v1"],
+        }
+    ]
+
+
+def s2pjt05_forecast_reviews() -> list[dict]:
+    return [
+        {
+            "prediction_id": "prediction:counterexample-resolution",
+            "source_content_ids": ["content:week"],
+            "forecast": "Counterexample resolution will require the reusable checklist.",
+            "outcome": "The weekly report routed the counterexample into next-week focus with the checklist.",
+            "accuracy_score": 0.75,
+            "evidence_refs": ["local://weekly/content-week"],
+        }
+    ]
+
+
+def s2pjt05_next_month_focus() -> list[dict]:
+    return [
+        {
+            "focus_id": "focus:method-transfer",
+            "source_content_ids": ["content:week", "content:done"],
+            "priority": 5,
+            "rationale": "Convert counterexample resolution into reusable monthly method transfer.",
         }
     ]
 
@@ -5249,6 +5349,114 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["weekly_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pjt04_weekly_report.json").is_file())
 
+    def test_s2pjt05_monthly_report_passes_cognitive_roi_and_forecast_gates(self) -> None:
+        report = build_s2pjt05_monthly_report(
+            generated_at=GENERATED_AT,
+            month_start="2026-06-01",
+            month_end="2026-06-30",
+            weekly_reports=[s2pjt04_weekly_report()],
+            cognitive_snapshots=s2pjt05_cognitive_snapshots(),
+            monthly_sections=s2pjt05_monthly_sections(),
+            capability_growth=s2pjt05_capability_growth(),
+            economic_conversions=s2pjt05_economic_conversions(),
+            forecast_reviews=s2pjt05_forecast_reviews(),
+            next_month_focus=s2pjt05_next_month_focus(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PJT05_MONTHLY_REPORT_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PJT05-MONTHLY")
+        self.assertEqual(report["task_id"], "S2PJT05")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["weekly_report_gate"], "pass")
+        self.assertEqual(report["month_window_gate"], "pass")
+        self.assertEqual(report["cognitive_delta_gate"], "pass")
+        self.assertEqual(report["capability_growth_gate"], "pass")
+        self.assertEqual(report["conversion_trace_gate"], "pass")
+        self.assertEqual(report["forecast_review_gate"], "pass")
+        self.assertEqual(report["section_trace_gate"], "pass")
+        self.assertEqual(report["deterministic_report_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertIn("content:done", report["monthly_content_ids"])
+        self.assertEqual(report["calculated_conversion_count"], 1)
+        self.assertEqual(report["economic_conversions"][0]["actual_roi_value"], 1.5)
+        self.assertTrue(report["monthly_report_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pjt05_monthly_report_ready"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_s2pjt05_monthly_report(report))
+
+    def test_s2pjt05_monthly_report_blocks_missing_delta_fake_roi_and_bad_forecast(self) -> None:
+        conversion = {
+            "conversion_id": "conversion:bad",
+            "source_content_ids": ["content:missing"],
+            "actual_roi_status": "calculated",
+            "verifiable_cost": 0,
+            "verifiable_benefit": 10,
+        }
+        report = build_s2pjt05_monthly_report(
+            generated_at=GENERATED_AT,
+            month_start="2026-06-01",
+            month_end="2026-07-15",
+            weekly_reports=[{**s2pjt04_weekly_report(), "status": "blocked"}],
+            cognitive_snapshots={"month_start": {"summary": "", "viewpoint_ids": []}, "month_end": {"summary": "", "viewpoint_ids": []}, "changed_viewpoints": []},
+            monthly_sections=s2pjt05_monthly_sections(economic_conversion={"summary": "", "content_ids": []}),
+            capability_growth=[{"asset_id": "", "asset_type": "", "source_content_ids": ["content:missing"], "evidence_refs": []}],
+            economic_conversions=[conversion],
+            forecast_reviews=[{"prediction_id": "", "source_content_ids": ["content:missing"], "forecast": "", "outcome": "", "accuracy_score": 2, "evidence_refs": []}],
+            next_month_focus=[{"focus_id": "", "source_content_ids": ["content:missing"], "priority": 8, "rationale": ""}],
+            production_gate_state=s2pit02_production_gate_state(scheduler_enabled=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["weekly_report_gate"], "blocked")
+        self.assertEqual(report["month_window_gate"], "blocked")
+        self.assertEqual(report["cognitive_delta_gate"], "blocked")
+        self.assertEqual(report["capability_growth_gate"], "blocked")
+        self.assertEqual(report["conversion_trace_gate"], "blocked")
+        self.assertEqual(report["forecast_review_gate"], "blocked")
+        self.assertEqual(report["section_trace_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("weekly report 0 must be a passing S2PJT04 report", joined)
+        self.assertIn("monthly report window must not exceed", joined)
+        self.assertIn("changed_viewpoints must be a non-empty list", joined)
+        self.assertIn("source_content_ids not in monthly weekly evidence", joined)
+        self.assertIn("calculated conversion requires verifiable_cost", joined)
+        self.assertIn("calculated conversion requires evidence_refs", joined)
+        self.assertIn("requires at least one verifiable calculated conversion", joined)
+        self.assertIn("accuracy_score must be between 0 and 1", joined)
+        self.assertIn("production_gate_state.scheduler_enabled", joined)
+        self.assertTrue(validate_s2pjt05_monthly_report(report))
+
+    def test_s2pjt05_monthly_report_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pjt05_monthly_report(
+                state_dir=tmp,
+                date="2026-06-30",
+                generated_at=GENERATED_AT,
+                month_start="2026-06-01",
+                month_end="2026-06-30",
+                weekly_reports=[s2pjt04_weekly_report()],
+                cognitive_snapshots=s2pjt05_cognitive_snapshots(),
+                monthly_sections=s2pjt05_monthly_sections(),
+                capability_growth=s2pjt05_capability_growth(),
+                economic_conversions=s2pjt05_economic_conversions(),
+                forecast_reviews=s2pjt05_forecast_reviews(),
+                next_month_focus=s2pjt05_next_month_focus(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pjt05_monthly_report(report))
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertTrue(Path(report["monthly_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pjt05_monthly_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -6849,6 +7057,84 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["state_counts"]["ASSET"], 1)
         self.assertEqual(payload["section_counts"]["next_week_focus"], 2)
         self.assertTrue(payload["s2pjt04_weekly_report_ready"])
+        self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_monthly_report_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            weekly_reports_path = tmp_path / "weekly-reports.json"
+            cognitive_snapshots_path = tmp_path / "cognitive-snapshots.json"
+            monthly_sections_path = tmp_path / "monthly-sections.json"
+            capability_growth_path = tmp_path / "capability-growth.json"
+            economic_conversions_path = tmp_path / "economic-conversions.json"
+            forecast_reviews_path = tmp_path / "forecast-reviews.json"
+            next_focus_path = tmp_path / "next-month-focus.json"
+            gate_path = tmp_path / "production-gate.json"
+            weekly_reports_path.write_text(
+                json.dumps({"weekly_reports": [s2pjt04_weekly_report()]}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            cognitive_snapshots_path.write_text(json.dumps(s2pjt05_cognitive_snapshots(), ensure_ascii=False), encoding="utf-8")
+            monthly_sections_path.write_text(json.dumps(s2pjt05_monthly_sections(), ensure_ascii=False), encoding="utf-8")
+            capability_growth_path.write_text(
+                json.dumps({"capability_growth": s2pjt05_capability_growth()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            economic_conversions_path.write_text(
+                json.dumps({"economic_conversions": s2pjt05_economic_conversions()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            forecast_reviews_path.write_text(
+                json.dumps({"forecast_reviews": s2pjt05_forecast_reviews()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            next_focus_path.write_text(
+                json.dumps({"next_month_focus": s2pjt05_next_month_focus()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-monthly-report",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-30",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--month-start",
+                    "2026-06-01",
+                    "--month-end",
+                    "2026-06-30",
+                    "--weekly-reports",
+                    str(weekly_reports_path),
+                    "--cognitive-snapshots",
+                    str(cognitive_snapshots_path),
+                    "--monthly-sections",
+                    str(monthly_sections_path),
+                    "--capability-growth",
+                    str(capability_growth_path),
+                    "--economic-conversions",
+                    str(economic_conversions_path),
+                    "--forecast-reviews",
+                    str(forecast_reviews_path),
+                    "--next-month-focus",
+                    str(next_focus_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PJT05_MONTHLY_REPORT_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PJT05")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["calculated_conversion_count"], 1)
+        self.assertTrue(payload["s2pjt05_monthly_report_ready"])
         self.assertFalse(payload["scheduler_enabled"])
         self.assertFalse(payload["integrated_production_accepted"])
 

@@ -4436,3 +4436,62 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT04_WEEKLY_REPORT.md"
+
+  -
+    model_id: "MOD-ADP-085"
+    name: "S2PJT05 monthly cognitive delta, capability growth, and economic conversion report"
+    kind: "deterministic local monthly synthesis evidence model"
+    purpose: "Validate local-only monthly report evidence after S2PJT04 weekly readiness: monthly era mainline, month-start/month-end cognitive delta, capability growth, verifiable calculated economic conversion, forecast review, next-month focus, deterministic report hashing, and no-production side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pjt05-monthly-report-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-087"
+    parameter_ids:
+      - "PARAM-ADP-659"
+      - "PARAM-ADP-660"
+      - "PARAM-ADP-661"
+      - "PARAM-ADP-662"
+      - "PARAM-ADP-663"
+      - "PARAM-ADP-664"
+      - "PARAM-ADP-665"
+      - "PARAM-ADP-666"
+      - "PARAM-ADP-667"
+    inputs:
+      - "S2PJT04 weekly reports"
+      - "cognitive snapshots"
+      - "monthly sections"
+      - "capability growth records"
+      - "economic conversion records"
+      - "forecast reviews"
+      - "next month focus"
+      - "production gate state"
+      - "month_start"
+      - "month_end"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PJT05 monthly report"
+      - "weekly report gate"
+      - "month window gate"
+      - "cognitive delta gate"
+      - "capability growth gate"
+      - "conversion trace gate"
+      - "forecast review gate"
+      - "section trace gate"
+      - "deterministic report gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PJT05_MONTHLY_REPORT.md"

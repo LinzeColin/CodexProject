@@ -858,6 +858,48 @@ S2PJT04_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PJT04_REPORT_FILENAME = "stage2_s2pjt04_weekly_report.json"
+S2PJT05_MONTHLY_REPORT_MODEL_ID = "adp-s2pjt05-monthly-report-v1"
+S2PJT05_ACCEPTANCE_ID = "ACC-S2PJT05-MONTHLY"
+S2PJT05_TASK_ID = "S2PJT05"
+S2PJT05_REQUIRED_SECTIONS = (
+    "monthly_era_mainline",
+    "cognitive_delta",
+    "capability_growth",
+    "economic_conversion",
+    "forecast_review",
+    "next_month_focus",
+)
+S2PJT05_MAX_MONTH_WINDOW_DAYS = 30
+S2PJT05_MIN_VERIFIABLE_CONVERSIONS = 1
+S2PJT05_REQUIRED_GATES = (
+    "weekly_report_gate",
+    "month_window_gate",
+    "cognitive_delta_gate",
+    "capability_growth_gate",
+    "conversion_trace_gate",
+    "forecast_review_gate",
+    "section_trace_gate",
+    "deterministic_report_gate",
+    "no_side_effect_gate",
+)
+S2PJT05_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PJT05_REPORT_FILENAME = "stage2_s2pjt05_monthly_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -8776,6 +8818,487 @@ def validate_s2pjt04_weekly_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("blocked S2PJT04 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pjt04_weekly_report_ready") is not True:
         errors.append("passing S2PJT04 report requires s2pjt04_weekly_report_ready=true")
+    return errors
+
+
+def _s2pjt05_monthly_hash(
+    weekly_reports: Sequence[Mapping[str, Any]],
+    monthly_sections: Mapping[str, Any],
+    cognitive_delta: Mapping[str, Any],
+    capability_growth: Sequence[Mapping[str, Any]],
+    economic_conversions: Sequence[Mapping[str, Any]],
+    forecast_reviews: Sequence[Mapping[str, Any]],
+    next_month_focus: Sequence[Mapping[str, Any]],
+) -> str:
+    payload = {
+        "weekly_report_hashes": sorted(str(report.get("weekly_report_hash") or "") for report in weekly_reports),
+        "sections": {
+            str(key): sorted(str(content_id) for content_id in value.get("content_ids", []) if str(content_id).strip())
+            for key, value in sorted(monthly_sections.items())
+            if isinstance(value, Mapping)
+        },
+        "cognitive_delta": {
+            "start_viewpoint_ids": sorted(str(item) for item in cognitive_delta.get("start_viewpoint_ids", []) if str(item).strip()),
+            "end_viewpoint_ids": sorted(str(item) for item in cognitive_delta.get("end_viewpoint_ids", []) if str(item).strip()),
+            "changed_viewpoints": sorted(str(item.get("viewpoint_id") or "") for item in cognitive_delta.get("changed_viewpoints", []) if isinstance(item, Mapping)),
+        },
+        "capability_growth": sorted(str(item.get("asset_id") or "") for item in capability_growth),
+        "economic_conversions": sorted(str(item.get("conversion_id") or "") for item in economic_conversions),
+        "forecast_reviews": sorted(str(item.get("prediction_id") or "") for item in forecast_reviews),
+        "next_month_focus": sorted(str(item.get("focus_id") or "") for item in next_month_focus),
+    }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pjt05_monthly_report(
+    *,
+    generated_at: str,
+    month_start: str,
+    month_end: str,
+    weekly_reports: Sequence[Mapping[str, Any]],
+    cognitive_snapshots: Mapping[str, Any],
+    monthly_sections: Mapping[str, Any],
+    capability_growth: Sequence[Mapping[str, Any]],
+    economic_conversions: Sequence[Mapping[str, Any]],
+    forecast_reviews: Sequence[Mapping[str, Any]],
+    next_month_focus: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PJT05 monthly cognitive delta, capability, ROI, and forecast evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    blocking_reasons: list[str] = []
+    start = _parse_iso_date(month_start)
+    end = _parse_iso_date(month_end)
+    month_errors: list[str] = []
+    if start is None:
+        month_errors.append("month_start must be YYYY-MM-DD")
+    if end is None:
+        month_errors.append("month_end must be YYYY-MM-DD")
+    if start is not None and end is not None:
+        if end < start:
+            month_errors.append("month_end must be on or after month_start")
+        if (end - start).days > S2PJT05_MAX_MONTH_WINDOW_DAYS:
+            month_errors.append("monthly report window must not exceed 31 inclusive days")
+
+    weekly_errors: list[str] = []
+    normalized_weekly_reports: list[dict[str, Any]] = []
+    monthly_content_ids: set[str] = set()
+    for index, report in enumerate(weekly_reports):
+        errors = validate_s2pjt04_weekly_report(report)
+        if report.get("status") != "pass" or report.get("s2pjt04_weekly_report_ready") is not True or errors:
+            weekly_errors.append(f"weekly report {index} must be a passing S2PJT04 report")
+            weekly_errors.extend(errors)
+        week_start = _parse_iso_date(report.get("week_start"))
+        week_end = _parse_iso_date(report.get("week_end"))
+        if week_start is None or week_end is None:
+            weekly_errors.append(f"weekly report {index} week_start/week_end must be YYYY-MM-DD")
+        elif start is not None and end is not None and not (start <= week_start <= end and start <= week_end <= end):
+            weekly_errors.append(f"weekly report {index} must be inside the monthly window")
+        for item in report.get("weekly_items", []):
+            if isinstance(item, Mapping) and item.get("content_id"):
+                monthly_content_ids.add(str(item.get("content_id")))
+        normalized_weekly_reports.append(dict(report))
+    if not normalized_weekly_reports:
+        weekly_errors.append("weekly_reports must be a non-empty list")
+
+    start_snapshot = cognitive_snapshots.get("month_start") if isinstance(cognitive_snapshots, Mapping) else None
+    end_snapshot = cognitive_snapshots.get("month_end") if isinstance(cognitive_snapshots, Mapping) else None
+    cognitive_errors: list[str] = []
+    if not isinstance(start_snapshot, Mapping):
+        cognitive_errors.append("cognitive_snapshots.month_start must be a mapping")
+        start_snapshot = {}
+    if not isinstance(end_snapshot, Mapping):
+        cognitive_errors.append("cognitive_snapshots.month_end must be a mapping")
+        end_snapshot = {}
+    start_viewpoints = [str(item) for item in start_snapshot.get("viewpoint_ids", []) if str(item).strip()]
+    end_viewpoints = [str(item) for item in end_snapshot.get("viewpoint_ids", []) if str(item).strip()]
+    if not str(start_snapshot.get("summary") or ""):
+        cognitive_errors.append("cognitive_snapshots.month_start.summary is required")
+    if not str(end_snapshot.get("summary") or ""):
+        cognitive_errors.append("cognitive_snapshots.month_end.summary is required")
+    if not start_viewpoints:
+        cognitive_errors.append("cognitive_snapshots.month_start.viewpoint_ids must be non-empty")
+    if not end_viewpoints:
+        cognitive_errors.append("cognitive_snapshots.month_end.viewpoint_ids must be non-empty")
+    changed_viewpoints = cognitive_snapshots.get("changed_viewpoints", []) if isinstance(cognitive_snapshots, Mapping) else []
+    normalized_changes: list[dict[str, Any]] = []
+    if not isinstance(changed_viewpoints, list) or not changed_viewpoints:
+        cognitive_errors.append("cognitive_snapshots.changed_viewpoints must be a non-empty list")
+        changed_viewpoints = []
+    for index, change in enumerate(changed_viewpoints):
+        if not isinstance(change, Mapping):
+            cognitive_errors.append(f"changed_viewpoint {index} must be a mapping")
+            continue
+        viewpoint_id = str(change.get("viewpoint_id") or "")
+        before = str(change.get("before") or "")
+        after = str(change.get("after") or "")
+        evidence_refs = change.get("evidence_refs")
+        if not viewpoint_id:
+            cognitive_errors.append(f"changed_viewpoint {index} missing viewpoint_id")
+        if not before or not after:
+            cognitive_errors.append(f"{viewpoint_id or index} before and after are required")
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            cognitive_errors.append(f"{viewpoint_id or index} evidence_refs must be a non-empty list")
+        normalized_changes.append({**dict(change), "viewpoint_id": viewpoint_id, "before": before, "after": after})
+    cognitive_delta = {
+        "start_summary": str(start_snapshot.get("summary") or ""),
+        "end_summary": str(end_snapshot.get("summary") or ""),
+        "start_viewpoint_ids": start_viewpoints,
+        "end_viewpoint_ids": end_viewpoints,
+        "changed_viewpoints": normalized_changes,
+    }
+
+    asset_errors: list[str] = []
+    normalized_assets: list[dict[str, Any]] = []
+    for index, asset in enumerate(capability_growth):
+        asset_id = str(asset.get("asset_id") or "")
+        asset_type = str(asset.get("asset_type") or "")
+        source_content_ids = [str(content_id) for content_id in asset.get("source_content_ids", []) if str(content_id).strip()]
+        evidence_refs = asset.get("evidence_refs")
+        if not asset_id:
+            asset_errors.append(f"capability {index} missing asset_id")
+        if not asset_type:
+            asset_errors.append(f"{asset_id or index} asset_type is required")
+        if not source_content_ids:
+            asset_errors.append(f"{asset_id or index} source_content_ids must be non-empty")
+        missing = [content_id for content_id in source_content_ids if content_id not in monthly_content_ids]
+        if missing:
+            asset_errors.append(f"{asset_id or index} source_content_ids not in monthly weekly evidence: " + ", ".join(missing))
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            asset_errors.append(f"{asset_id or index} evidence_refs must be a non-empty list")
+        normalized_assets.append({**dict(asset), "asset_id": asset_id, "asset_type": asset_type, "source_content_ids": source_content_ids})
+    if not normalized_assets:
+        asset_errors.append("capability_growth must be a non-empty list")
+
+    conversion_errors: list[str] = []
+    normalized_conversions: list[dict[str, Any]] = []
+    calculated_conversion_count = 0
+    for index, conversion in enumerate(economic_conversions):
+        conversion_id = str(conversion.get("conversion_id") or "")
+        source_content_ids = [str(content_id) for content_id in conversion.get("source_content_ids", []) if str(content_id).strip()]
+        evidence_refs = conversion.get("evidence_refs")
+        actual_status = str(conversion.get("actual_roi_status") or "not_calculable")
+        if not conversion_id:
+            conversion_errors.append(f"conversion {index} missing conversion_id")
+        if not source_content_ids:
+            conversion_errors.append(f"{conversion_id or index} source_content_ids must be non-empty")
+        missing = [content_id for content_id in source_content_ids if content_id not in monthly_content_ids]
+        if missing:
+            conversion_errors.append(f"{conversion_id or index} source_content_ids not in monthly weekly evidence: " + ", ".join(missing))
+        if actual_status not in S2PJT03_ALLOWED_ACTUAL_ROI_STATUSES:
+            conversion_errors.append(f"{conversion_id or index} actual_roi_status must be not_calculable or calculated")
+        cost = conversion.get("verifiable_cost")
+        benefit = conversion.get("verifiable_benefit")
+        has_verifiable_cost_benefit = isinstance(cost, (int, float)) and cost > 0 and isinstance(benefit, (int, float))
+        has_evidence = isinstance(evidence_refs, list) and bool(evidence_refs) and all(str(ref).strip() for ref in evidence_refs)
+        actual_value = None
+        if actual_status == "calculated":
+            if not has_verifiable_cost_benefit:
+                conversion_errors.append(f"{conversion_id or index} calculated conversion requires verifiable_cost > 0 and verifiable_benefit")
+            if not has_evidence:
+                conversion_errors.append(f"{conversion_id or index} calculated conversion requires evidence_refs")
+            if has_verifiable_cost_benefit:
+                actual_value = round((float(benefit) - float(cost)) / float(cost), 6)
+                calculated_conversion_count += 1
+        elif conversion.get("actual_roi_value") not in (None, ""):
+            conversion_errors.append(f"{conversion_id or index} not_calculable conversion must not include actual_roi_value")
+        normalized_conversions.append(
+            {
+                **dict(conversion),
+                "conversion_id": conversion_id,
+                "source_content_ids": source_content_ids,
+                "actual_roi_status": actual_status,
+                "actual_roi_value": actual_value,
+            }
+        )
+    if not normalized_conversions:
+        conversion_errors.append("economic_conversions must be a non-empty list")
+    if calculated_conversion_count < S2PJT05_MIN_VERIFIABLE_CONVERSIONS:
+        conversion_errors.append("monthly report requires at least one verifiable calculated conversion")
+
+    forecast_errors: list[str] = []
+    normalized_forecasts: list[dict[str, Any]] = []
+    for index, forecast in enumerate(forecast_reviews):
+        prediction_id = str(forecast.get("prediction_id") or "")
+        source_content_ids = [str(content_id) for content_id in forecast.get("source_content_ids", []) if str(content_id).strip()]
+        evidence_refs = forecast.get("evidence_refs")
+        try:
+            accuracy_score = float(forecast.get("accuracy_score"))
+        except (TypeError, ValueError):
+            accuracy_score = -1.0
+        if not prediction_id:
+            forecast_errors.append(f"forecast {index} missing prediction_id")
+        if not str(forecast.get("forecast") or ""):
+            forecast_errors.append(f"{prediction_id or index} forecast is required")
+        if not str(forecast.get("outcome") or ""):
+            forecast_errors.append(f"{prediction_id or index} outcome is required")
+        if not 0.0 <= accuracy_score <= 1.0:
+            forecast_errors.append(f"{prediction_id or index} accuracy_score must be between 0 and 1")
+        if not source_content_ids:
+            forecast_errors.append(f"{prediction_id or index} source_content_ids must be non-empty")
+        missing = [content_id for content_id in source_content_ids if content_id not in monthly_content_ids]
+        if missing:
+            forecast_errors.append(f"{prediction_id or index} source_content_ids not in monthly weekly evidence: " + ", ".join(missing))
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            forecast_errors.append(f"{prediction_id or index} evidence_refs must be a non-empty list")
+        normalized_forecasts.append({**dict(forecast), "prediction_id": prediction_id, "source_content_ids": source_content_ids, "accuracy_score": accuracy_score if 0.0 <= accuracy_score <= 1.0 else None})
+    if not normalized_forecasts:
+        forecast_errors.append("forecast_reviews must be a non-empty list")
+
+    focus_errors: list[str] = []
+    normalized_focus: list[dict[str, Any]] = []
+    for index, focus in enumerate(next_month_focus):
+        focus_id = str(focus.get("focus_id") or "")
+        source_content_ids = [str(content_id) for content_id in focus.get("source_content_ids", []) if str(content_id).strip()]
+        rationale = str(focus.get("rationale") or "")
+        try:
+            priority = int(focus.get("priority"))
+        except (TypeError, ValueError):
+            priority = 0
+        if not focus_id:
+            focus_errors.append(f"focus {index} missing focus_id")
+        if not source_content_ids:
+            focus_errors.append(f"{focus_id or index} source_content_ids must be non-empty")
+        missing = [content_id for content_id in source_content_ids if content_id not in monthly_content_ids]
+        if missing:
+            focus_errors.append(f"{focus_id or index} source_content_ids not in monthly weekly evidence: " + ", ".join(missing))
+        if not rationale:
+            focus_errors.append(f"{focus_id or index} rationale is required")
+        if not 1 <= priority <= 5:
+            focus_errors.append(f"{focus_id or index} priority must be between 1 and 5")
+        normalized_focus.append({**dict(focus), "focus_id": focus_id, "source_content_ids": source_content_ids, "priority": priority})
+    if not normalized_focus:
+        focus_errors.append("next_month_focus must be a non-empty list")
+
+    section_errors: list[str] = []
+    normalized_sections: dict[str, dict[str, Any]] = {}
+    for section in S2PJT05_REQUIRED_SECTIONS:
+        value = monthly_sections.get(section) if isinstance(monthly_sections, Mapping) else None
+        if not isinstance(value, Mapping):
+            section_errors.append(f"monthly_sections.{section} must be a mapping")
+            continue
+        content_ids = [str(content_id) for content_id in value.get("content_ids", []) if str(content_id).strip()]
+        if not content_ids:
+            section_errors.append(f"monthly_sections.{section}.content_ids must be non-empty")
+        missing = [content_id for content_id in content_ids if content_id not in monthly_content_ids]
+        if missing:
+            section_errors.append(f"monthly_sections.{section}.content_ids not in monthly weekly evidence: " + ", ".join(missing))
+        summary = str(value.get("summary") or "")
+        if not summary:
+            section_errors.append(f"monthly_sections.{section}.summary is required")
+        normalized_sections[section] = {**dict(value), "content_ids": content_ids, "summary": summary}
+
+    production_errors: list[str] = []
+    for key in (*S2PJT05_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "weekly_report_gate": "pass" if not weekly_errors else "blocked",
+        "month_window_gate": "pass" if not month_errors else "blocked",
+        "cognitive_delta_gate": "pass" if not cognitive_errors else "blocked",
+        "capability_growth_gate": "pass" if not asset_errors else "blocked",
+        "conversion_trace_gate": "pass" if not conversion_errors else "blocked",
+        "forecast_review_gate": "pass" if not forecast_errors and not focus_errors else "blocked",
+        "section_trace_gate": "pass" if not section_errors else "blocked",
+        "deterministic_report_gate": "pass",
+        "no_side_effect_gate": "pass" if not production_errors else "blocked",
+    }
+    blocking_reasons.extend(weekly_errors)
+    blocking_reasons.extend(month_errors)
+    blocking_reasons.extend(cognitive_errors)
+    blocking_reasons.extend(asset_errors)
+    blocking_reasons.extend(conversion_errors)
+    blocking_reasons.extend(forecast_errors)
+    blocking_reasons.extend(focus_errors)
+    blocking_reasons.extend(section_errors)
+    blocking_reasons.extend(production_errors)
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    monthly_report_hash = _s2pjt05_monthly_hash(
+        normalized_weekly_reports,
+        normalized_sections,
+        cognitive_delta,
+        normalized_assets,
+        normalized_conversions,
+        normalized_forecasts,
+        normalized_focus,
+    )
+
+    return {
+        "model_id": S2PJT05_MONTHLY_REPORT_MODEL_ID,
+        "acceptance_id": S2PJT05_ACCEPTANCE_ID,
+        "task_id": S2PJT05_TASK_ID,
+        "phase": "S2PJ",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "month_start": month_start,
+        "month_end": month_end,
+        "status": status,
+        **gates,
+        "required_sections": list(S2PJT05_REQUIRED_SECTIONS),
+        "monthly_content_ids": sorted(monthly_content_ids),
+        "weekly_reports": normalized_weekly_reports,
+        "monthly_sections": normalized_sections,
+        "cognitive_delta": cognitive_delta,
+        "capability_growth": normalized_assets,
+        "economic_conversions": normalized_conversions,
+        "forecast_reviews": normalized_forecasts,
+        "next_month_focus": normalized_focus,
+        "calculated_conversion_count": calculated_conversion_count,
+        "monthly_report_hash": monthly_report_hash,
+        "s2pjt05_monthly_report_ready": status == "pass",
+        "actual_roi_policy": "monthly_actual_roi_requires_verifiable_cost_benefit_and_evidence_refs",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pjt05_monthly_report(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    month_start: str,
+    month_end: str,
+    weekly_reports: Sequence[Mapping[str, Any]],
+    cognitive_snapshots: Mapping[str, Any],
+    monthly_sections: Mapping[str, Any],
+    capability_growth: Sequence[Mapping[str, Any]],
+    economic_conversions: Sequence[Mapping[str, Any]],
+    forecast_reviews: Sequence[Mapping[str, Any]],
+    next_month_focus: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PJT05 monthly report evidence without production side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pjt05-monthly-report"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pjt05_monthly_report(
+        generated_at=generated_at,
+        month_start=month_start,
+        month_end=month_end,
+        weekly_reports=weekly_reports,
+        cognitive_snapshots=cognitive_snapshots,
+        monthly_sections=monthly_sections,
+        capability_growth=capability_growth,
+        economic_conversions=economic_conversions,
+        forecast_reviews=forecast_reviews,
+        next_month_focus=next_month_focus,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "monthly_report_path": str(run_dir / "adp-s2pjt05-monthly-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pjt05-monthly-report.json", report)
+        _write_json(state / S2PJT05_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pjt05_monthly_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PJT05_MONTHLY_REPORT_MODEL_ID:
+        errors.append("S2PJT05 model_id must be adp-s2pjt05-monthly-report-v1")
+    if report.get("task_id") != S2PJT05_TASK_ID:
+        errors.append("S2PJT05 task_id must be S2PJT05")
+    if report.get("acceptance_id") != S2PJT05_ACCEPTANCE_ID:
+        errors.append("S2PJT05 acceptance_id must be ACC-S2PJT05-MONTHLY")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PJT05 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PJT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PJT05 local monthly report evidence")
+    weekly_reports = report.get("weekly_reports")
+    if not isinstance(weekly_reports, list) or not weekly_reports:
+        errors.append("S2PJT05 weekly_reports must be a non-empty list")
+        weekly_reports = []
+    sections = report.get("monthly_sections")
+    if not isinstance(sections, Mapping):
+        errors.append("S2PJT05 monthly_sections must be a mapping")
+        sections = {}
+    for section in S2PJT05_REQUIRED_SECTIONS:
+        if section not in sections:
+            errors.append(f"S2PJT05 monthly_sections missing {section}")
+    cognitive_delta = report.get("cognitive_delta")
+    if not isinstance(cognitive_delta, Mapping):
+        errors.append("S2PJT05 cognitive_delta must be a mapping")
+        cognitive_delta = {}
+    for key in ("start_summary", "end_summary", "start_viewpoint_ids", "end_viewpoint_ids", "changed_viewpoints"):
+        if not cognitive_delta.get(key):
+            errors.append(f"S2PJT05 cognitive_delta.{key} is required")
+    capability_growth = report.get("capability_growth")
+    if not isinstance(capability_growth, list) or not capability_growth:
+        errors.append("S2PJT05 capability_growth must be a non-empty list")
+        capability_growth = []
+    economic_conversions = report.get("economic_conversions")
+    if not isinstance(economic_conversions, list) or not economic_conversions:
+        errors.append("S2PJT05 economic_conversions must be a non-empty list")
+        economic_conversions = []
+    if report.get("calculated_conversion_count", 0) < S2PJT05_MIN_VERIFIABLE_CONVERSIONS:
+        errors.append("S2PJT05 requires at least one verifiable calculated conversion")
+    forecast_reviews = report.get("forecast_reviews")
+    if not isinstance(forecast_reviews, list) or not forecast_reviews:
+        errors.append("S2PJT05 forecast_reviews must be a non-empty list")
+        forecast_reviews = []
+    next_month_focus = report.get("next_month_focus")
+    if not isinstance(next_month_focus, list) or not next_month_focus:
+        errors.append("S2PJT05 next_month_focus must be a non-empty list")
+        next_month_focus = []
+    if report.get("monthly_report_hash") != _s2pjt05_monthly_hash(
+        weekly_reports,
+        sections,
+        cognitive_delta,
+        capability_growth,
+        economic_conversions,
+        forecast_reviews,
+        next_month_focus,
+    ):
+        errors.append("S2PJT05 monthly_report_hash must match monthly evidence")
+    for conversion in economic_conversions:
+        if conversion.get("actual_roi_status") == "not_calculable" and conversion.get("actual_roi_value") is not None:
+            errors.append(f"{conversion.get('conversion_id')} not_calculable conversion must not include actual_roi_value")
+        if conversion.get("actual_roi_status") == "calculated" and conversion.get("actual_roi_value") is None:
+            errors.append(f"{conversion.get('conversion_id')} calculated conversion requires actual_roi_value")
+    for gate in S2PJT05_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PJT05 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PJT05 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pjt05_monthly_report_ready") is not True:
+        errors.append("passing S2PJT05 report requires s2pjt05_monthly_report_ready=true")
     return errors
 
 
