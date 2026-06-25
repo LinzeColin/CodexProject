@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT04_LIFECYCLE_CACHE_LOCAL_ONLY
-- Confirmed iteration count: 111
+- Current gate: S2PMT05_STRESS_E2E_LOCAL_ONLY
+- Confirmed iteration count: 112
 - Reconstructed event count: 0
-- Current task: `S2PMT04` has completed local automatic lifecycle and cache-cleanup evidence. It validates disabled automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation for temp/inflight/outbox/stale locks, durable shutdown receipts, whitelist/symlink guarded dry-run cache cleanup, parseable launchd plist generation, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler installation, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT05` has completed local pressure, fault, time, and E2E evidence. It validates deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, backpressure/degradation gates, deterministic isolation, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler installation, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, inherited P0/P1 closure, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -38,6 +38,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260626-ADP-S2PM-S2PMT05-STRESS-E2E`
+
+- Timestamp: `2026-06-26T15:20:00+10:00`
+- Fact level: EXTRACTED from S2PMT05 stress/fault/time/E2E code, focused tests, model/formula/parameter registry diff, phase record, and local S2PMT05 validation.
+- Base commit: `PENDING`
+- Status: local validation passed.
+- Phase: S2PM
+- Task IDs: `S2PMT05`; acceptance `ACC-S2PMT05-STRESS-E2E`.
+- Goal: Complete local pressure, fault, time, and E2E evidence while preserving V7.2 boundaries.
+- Files changed: S2PMT05 stress/fault/time/E2E helper, focused tests, phase record, run manifest, model/formula/parameter registries, traceability/status files, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-098` local stress/fault/time/E2E model.
+- Formula changes: Added `FORM-ADP-100` with machine-verifiable AST references bound to S2PMT05 and S2PMT03 SMTP crash-window implementations.
+- Parameter changes: Added `PARAM-ADP-802` through `PARAM-ADP-816` for S2PMT05 identifiers, deterministic seed, soak/replay/time/SQLite thresholds, mail products, finding coverage, gates, production-false flags, and E2E sections.
+- Validation: py_compile PASS; focused S2PMT05 tests 8 OK; full arxiv-daily-push unittest PENDING; V7.2 validator PENDING; ADP project governance PENDING; changed-only governance semantic PENDING; lean check-render PENDING; JSONL/YAML/CSV/manifest parse PENDING; git diff --check PENDING.
+- Decisions: `ACC-S2PMT05-STRESS-E2E` is accepted only as local accelerated stress/fault/time/E2E evidence. Real 24h wall-clock production soak, scheduler installation, launchd bootstrap, real SMTP, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: This does not prove a real production 24h soak or authorize live scheduling. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PMT05 stress/fault/time/E2E code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md`; `governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json`; `arxiv-daily-push/tests/test_stage2_stress_e2e.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT05; after merge continue `S2PMT06` runtime hardening under no-production boundaries.
 
 ### `ITER-20260626-ADP-S2PM-S2PMT04-LIFECYCLE-CACHE`
 

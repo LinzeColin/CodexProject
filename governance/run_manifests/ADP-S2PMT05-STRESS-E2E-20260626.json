@@ -1,0 +1,97 @@
+{
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED",
+  "base_commit": "PENDING",
+  "branch": "codex/adp-s2pmt05-stress-fault-time-e2e-20260626",
+  "change_type": "adp_s2pmt05_stress_fault_time_e2e",
+  "commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv"
+  ],
+  "formula_id": "FORM-ADP-100",
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "generated_at": "2026-06-26T15:20:00+10:00",
+  "gates": {
+    "backpressure_degradation": true,
+    "deterministic_test_isolation": true,
+    "dst_clock_policy": true,
+    "dual_scheduler_race": true,
+    "fault_injection": true,
+    "load_stress_spike_soak": true,
+    "no_production_side_effect": true,
+    "smtp_crash_window": true,
+    "thirty_five_day_e2e": true
+  },
+  "integrated_production_accepted": false,
+  "model_id": "MOD-ADP-098",
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-802",
+    "PARAM-ADP-803",
+    "PARAM-ADP-804",
+    "PARAM-ADP-805",
+    "PARAM-ADP-806",
+    "PARAM-ADP-807",
+    "PARAM-ADP-808",
+    "PARAM-ADP-809",
+    "PARAM-ADP-810",
+    "PARAM-ADP-811",
+    "PARAM-ADP-812",
+    "PARAM-ADP-813",
+    "PARAM-ADP-814",
+    "PARAM-ADP-815",
+    "PARAM-ADP-816"
+  ],
+  "phase": "S2PM",
+  "production_boundary": {
+    "db_migration_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "scheduler_installed": false,
+    "production_restore_executed": false,
+    "production_side_effects_enabled": false
+  },
+  "report_hash": "b8d7de8f98e2dc3a0158695f8f90c8f060d7382fe2014077b471ed00a6483c79",
+  "required_findings_covered": [
+    "A-015",
+    "A-022",
+    "B-006",
+    "B-007",
+    "B-008",
+    "B-009",
+    "B-010",
+    "B-012",
+    "B-014",
+    "B-016"
+  ],
+  "result": "local_validation_passed",
+  "scope": "Local-only S2PMT05 pressure, fault, time, and E2E evidence under V7.2 no-production boundaries.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PMT05",
+  "tests": {
+    "py_compile": "PASS",
+    "focused_s2pmt05": "8 OK",
+    "full_arxiv_daily_push_unittest": "433 OK",
+    "v7_2_validator": "PASS",
+    "project_governance": "0 errors / 0 warnings",
+    "changed_only_governance_semantic": "0 errors / 0 warnings",
+    "lean_check_render": "drift_count 0 reference_issue_count 0",
+    "parse": "OK",
+    "git_diff_check": "PASS"
+  },
+  "v7_contract": "ADP-PRODUCT-CONTRACT-V7.2"
+}
