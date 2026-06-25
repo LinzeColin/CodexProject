@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 105
-- acceptance_count: 99
+- task_count: 106
+- acceptance_count: 100
 
 ## Delivery Tasks
 
@@ -202,3 +202,5 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - current_result: `ARXIV_PRODUCTION_ACCEPTED`; PR #94 run `28027759062` artifact `7821452823` reports strict 30 real historical as-of dates, 299 persistent CONTENT_LEDGER rows, and no production side effects. PR #82 artifact `7818287996` remains one-time live cloud-chain evidence.
 - target_version: `0.23.0`
 - completed_version: `0.23.0`
+
+| S2PJT03 | Action asset ROI ledger | completed_local_validation | `ACC-S2PJT03-ROI` | Local-only 15m/2h/7d/30d action records, capability assets, expected ROI assumptions/confidence, actual ROI only with verifiable evidence, deterministic ledger hash, and no production side effects. |

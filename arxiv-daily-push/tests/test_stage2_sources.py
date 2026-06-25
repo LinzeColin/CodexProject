@@ -57,6 +57,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PJT01_REQUIRED_STATES,
     S2PJT02_DEFAULT_REVIEW_INTERVAL_DAYS,
     S2PJT02_REVIEW_SCHEDULE_MODEL_ID,
+    S2PJT03_ACTION_ROI_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -91,6 +92,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pit02_runtime_dashboard_report,
     build_s2pjt01_lifecycle_state_report,
     build_s2pjt02_review_schedule_report,
+    build_s2pjt03_action_asset_roi_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -123,6 +125,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pit02_runtime_dashboard,
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
+    run_s2pjt03_action_asset_roi,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -153,6 +156,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
+    validate_s2pjt03_action_asset_roi_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -467,6 +471,90 @@ def s2pjt02_schedule_policy(**overrides: object) -> dict:
     }
     policy.update(overrides)
     return policy
+
+
+def s2pjt02_review_schedule_report() -> dict:
+    return build_s2pjt02_review_schedule_report(
+        generated_at=GENERATED_AT,
+        service_date="2026-06-25",
+        lifecycle_state_report=s2pjt01_lifecycle_state_report(),
+        review_records=s2pjt02_review_records(),
+        schedule_policy=s2pjt02_schedule_policy(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pjt03_action_records() -> list[dict]:
+    return [
+        {
+            "action_id": "act:15m",
+            "content_id": "content:today",
+            "horizon": "15m",
+            "status": "completed",
+            "expected_roi": {
+                "value": "clarify one mechanism and one follow-up question",
+                "assumptions": ["15 minute note is enough to preserve the paper's reusable method"],
+                "confidence": 0.72,
+            },
+            "actual_roi": {
+                "status": "not_calculable",
+                "reason": "no verifiable cost/benefit evidence yet",
+            },
+        },
+        {
+            "action_id": "act:2h",
+            "content_id": "content:today",
+            "horizon": "2h",
+            "status": "planned",
+            "expected_roi": {
+                "value": "build a reusable method checklist",
+                "assumptions": ["method checklist can transfer to adjacent papers"],
+                "confidence": 0.66,
+            },
+            "actual_roi": {"status": "not_calculable"},
+        },
+        {
+            "action_id": "act:7d",
+            "content_id": "content:week",
+            "horizon": "7d",
+            "status": "planned",
+            "expected_roi": {
+                "value": "compare three papers and extract a reusable framework",
+                "assumptions": ["the comparison set remains stable for one week"],
+                "confidence": 0.61,
+            },
+            "actual_roi": {"status": "not_calculable"},
+        },
+        {
+            "action_id": "act:30d",
+            "content_id": "content:done",
+            "horizon": "30d",
+            "status": "completed",
+            "expected_roi": {
+                "value": "convert method notes into a durable capability asset",
+                "assumptions": ["asset reuse saves future review time"],
+                "confidence": 0.7,
+            },
+            "actual_roi": {
+                "status": "calculated",
+                "verifiable_cost": 2.0,
+                "verifiable_benefit": 5.0,
+                "evidence_refs": ["local://asset/method-checklist-v1"],
+            },
+        },
+    ]
+
+
+def s2pjt03_capability_assets() -> list[dict]:
+    return [
+        {
+            "asset_id": "asset:method-checklist-v1",
+            "content_id": "content:done",
+            "asset_type": "method_checklist",
+            "evidence_refs": ["local://notes/method-checklist-v1.md"],
+            "reuse_scenarios": ["future_paper_review", "weekly_synthesis"],
+        }
+    ]
 
 
 def top_journal_publication_events() -> list:
@@ -4890,6 +4978,104 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["review_schedule_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pjt02_review_schedule_report.json").is_file())
 
+    def test_s2pjt03_action_asset_roi_passes_expected_and_actual_roi_gates(self) -> None:
+        report = build_s2pjt03_action_asset_roi_report(
+            generated_at=GENERATED_AT,
+            service_date="2026-06-25",
+            review_schedule_report=s2pjt02_review_schedule_report(),
+            action_records=s2pjt03_action_records(),
+            capability_assets=s2pjt03_capability_assets(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PJT03_ACTION_ROI_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PJT03-ROI")
+        self.assertEqual(report["task_id"], "S2PJT03")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["review_schedule_gate"], "pass")
+        self.assertEqual(report["action_window_gate"], "pass")
+        self.assertEqual(report["expected_roi_gate"], "pass")
+        self.assertEqual(report["actual_roi_gate"], "pass")
+        self.assertEqual(report["asset_trace_gate"], "pass")
+        self.assertEqual(report["deterministic_ledger_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["action_counts"], {"15m": 1, "2h": 1, "7d": 1, "30d": 1})
+        self.assertEqual(report["actual_roi_status_counts"], {"not_calculable": 3, "calculated": 1})
+        calculated = [row for row in report["action_records"] if row["actual_roi_status"] == "calculated"][0]
+        self.assertEqual(calculated["actual_roi_value"], 1.5)
+        not_calculable = [row for row in report["action_records"] if row["actual_roi_status"] == "not_calculable"]
+        self.assertTrue(all(row["actual_roi_value"] is None for row in not_calculable))
+        self.assertTrue(report["ledger_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pjt03_action_roi_ready"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_s2pjt03_action_asset_roi_report(report))
+
+    def test_s2pjt03_action_asset_roi_blocks_fake_precision_and_missing_evidence(self) -> None:
+        actions = s2pjt03_action_records()
+        actions[0] = {
+            **actions[0],
+            "horizon": "1h",
+            "expected_roi": {"value": "too vague", "assumptions": [], "confidence": 1.5},
+            "actual_roi": {"status": "not_calculable", "value": 0.42},
+        }
+        actions[1] = {
+            **actions[1],
+            "action_id": actions[2]["action_id"],
+            "actual_roi": {"status": "calculated", "verifiable_cost": 0, "verifiable_benefit": 10},
+        }
+        report = build_s2pjt03_action_asset_roi_report(
+            generated_at=GENERATED_AT,
+            service_date="2026-06-25",
+            review_schedule_report={**s2pjt02_review_schedule_report(), "status": "blocked"},
+            action_records=actions,
+            capability_assets=[{"asset_id": "", "content_id": "", "asset_type": "", "evidence_refs": []}],
+            production_gate_state=s2pit02_production_gate_state(queue_mutation_allowed=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["review_schedule_gate"], "blocked")
+        self.assertEqual(report["action_window_gate"], "blocked")
+        self.assertEqual(report["expected_roi_gate"], "blocked")
+        self.assertEqual(report["actual_roi_gate"], "blocked")
+        self.assertEqual(report["asset_trace_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("S2PJT02 review schedule report must pass", joined)
+        self.assertIn("horizon must be one of", joined)
+        self.assertIn("expected_roi.assumptions", joined)
+        self.assertIn("expected_roi.confidence", joined)
+        self.assertIn("not_calculable actual ROI must not include a precise value", joined)
+        self.assertIn("calculated actual ROI requires verifiable_cost", joined)
+        self.assertIn("calculated actual ROI requires evidence_refs", joined)
+        self.assertIn("duplicate action_id", joined)
+        self.assertIn("missing required action windows", joined)
+        self.assertIn("evidence_refs must be a non-empty list", joined)
+        self.assertIn("production_gate_state.queue_mutation_allowed", joined)
+        self.assertTrue(validate_s2pjt03_action_asset_roi_report(report))
+
+    def test_s2pjt03_action_asset_roi_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pjt03_action_asset_roi(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                review_schedule_report=s2pjt02_review_schedule_report(),
+                action_records=s2pjt03_action_records(),
+                capability_assets=s2pjt03_capability_assets(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pjt03_action_asset_roi_report(report))
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertTrue(Path(report["action_roi_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pjt03_action_asset_roi_ledger_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -6382,6 +6568,56 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["computed_counts"]["due_today"], 1)
         self.assertEqual(payload["computed_counts"]["due_next_7_days"], 2)
         self.assertTrue(payload["s2pjt02_review_schedule_ready"])
+        self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_action_roi_ledger_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            review_schedule_path = tmp_path / "review-schedule.json"
+            action_records_path = tmp_path / "action-records.json"
+            capability_assets_path = tmp_path / "capability-assets.json"
+            gate_path = tmp_path / "production-gate.json"
+            review_schedule_path.write_text(json.dumps(s2pjt02_review_schedule_report(), ensure_ascii=False), encoding="utf-8")
+            action_records_path.write_text(
+                json.dumps({"action_records": s2pjt03_action_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            capability_assets_path.write_text(
+                json.dumps({"capability_assets": s2pjt03_capability_assets()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-action-roi-ledger",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--review-schedule-report",
+                    str(review_schedule_path),
+                    "--action-records",
+                    str(action_records_path),
+                    "--capability-assets",
+                    str(capability_assets_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PJT03_ACTION_ROI_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PJT03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["action_counts"]["15m"], 1)
+        self.assertEqual(payload["actual_roi_status_counts"]["calculated"], 1)
+        self.assertTrue(payload["s2pjt03_action_roi_ready"])
         self.assertFalse(payload["scheduler_enabled"])
         self.assertFalse(payload["integrated_production_accepted"])
 
