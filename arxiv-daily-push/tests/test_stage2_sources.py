@@ -47,6 +47,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
     S2PET01_US_TA_SOURCE_MODEL_ID,
     S2PET02_US_LG_BACKBONE_MODEL_ID,
+    S2PET03_US_FM_BACKBONE_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -75,6 +76,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pdt01_china_c0_source_foundation_report,
     build_s2pet01_us_ta_source_foundation_report,
     build_s2pet02_us_lg_legal_backbone_report,
+    build_s2pet03_us_fm_source_backbone_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -101,6 +103,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pdt01_china_c0_source_foundation,
     run_s2pet01_us_ta_source_foundation,
     run_s2pet02_us_lg_legal_backbone,
+    run_s2pet03_us_fm_source_backbone,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -125,6 +128,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pet01_us_ta_source_foundation_report,
     validate_s2pet02_us_lg_legal_backbone_report,
+    validate_s2pet03_us_fm_source_backbone_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -883,6 +887,221 @@ def us_lg_relation_records() -> list[dict]:
             "evidence_refs": evidence_refs,
         }
         for relation_id, relation_type, source_document_id, target_document_id, relation_explanation, evidence_refs in rows
+    ]
+
+
+def us_lg_legal_backbone_report() -> dict:
+    return build_s2pet02_us_lg_legal_backbone_report(
+        generated_at=GENERATED_AT,
+        us_ta_source_foundation_report=us_ta_source_foundation_report(),
+        legal_records=us_lg_legal_records(),
+        relation_records=us_lg_relation_records(),
+    )
+
+
+def us_fm_finance_records() -> list[dict]:
+    base = {
+        "metadata_only": True,
+        "pdf_downloaded": False,
+        "full_text_extracted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "queue_mutation_allowed": False,
+        "schema_migration_required": False,
+        "investment_advice_provided": False,
+        "trading_signal_generated": False,
+        "automated_trading_enabled": False,
+        "paid_market_data_used": False,
+        "live_source_fetch_executed": False,
+    }
+    sec_forms = [
+        ("8-K", "sec:company:8k", "Current report metadata", "company:0000320193", "company", ["asset:equity:US0378331005"]),
+        ("10-K", "sec:company:10k", "Annual report metadata", "company:0000320193", "company", ["asset:equity:US0378331005"]),
+        ("10-Q", "sec:company:10q", "Quarterly report metadata", "company:0000320193", "company", ["asset:equity:US0378331005"]),
+        ("S-1", "sec:company:s1", "Registration statement metadata", "company:0000789019", "company", ["asset:equity:US5949181045"]),
+        ("13D", "sec:ownership:13d", "Beneficial ownership 13D metadata", "company:0000320193", "company", ["asset:equity:US0378331005"]),
+        ("13G", "sec:ownership:13g", "Beneficial ownership 13G metadata", "company:0000789019", "company", ["asset:equity:US5949181045"]),
+        ("13F", "sec:manager:13f", "Institutional investment manager 13F metadata", "fund:0001067983", "fund", ["asset:equity:US0378331005"]),
+        ("FORM-4", "sec:insider:form4", "Insider ownership Form 4 metadata", "company:0000320193", "company", ["asset:equity:US0378331005"]),
+        ("N-PORT", "sec:fund:nport", "Registered fund portfolio metadata", "fund:0001000275", "fund", ["asset:fund:series-1", "asset:equity:US0378331005"]),
+        ("N-CEN", "sec:fund:ncen", "Registered fund census metadata", "fund:0001000275", "fund", ["asset:fund:class-a"]),
+    ]
+    records = [
+        {
+            **base,
+            "record_id": record_id,
+            "source_system": "sec_edgar",
+            "signal_type": "sec_fund_filing" if entity_type == "fund" else "sec_company_filing",
+            "record_title": title,
+            "official_domain": "sec.gov",
+            "source_url": f"https://www.sec.gov/Archives/edgar/data/320193/0000320193-26-{index:06d}-index.html",
+            "published_date": f"2026-05-{index:02d}",
+            "record_identifier": f"SEC-{form_type}-2026-{index:04d}",
+            "form_type": form_type,
+            "cik": "0001000275" if entity_type == "fund" else "0000320193",
+            "accession_number": f"0000320193-26-{index:06d}",
+            "entity_id": entity_id,
+            "entity_type": entity_type,
+            "related_entity_ids": related,
+            "asset_class": "fund" if entity_type == "fund" else "equity",
+            "identity_state": "official_publication_portal",
+            "evidence_refs": [f"fixture:us-fm-sec-{form_type.lower()}"],
+        }
+        for index, (form_type, record_id, title, entity_id, entity_type, related) in enumerate(sec_forms, start=1)
+    ]
+    records.extend(
+        [
+            {
+                **base,
+                "record_id": "us-fm:fed:fomc",
+                "source_system": "federal_reserve",
+                "signal_type": "macro_policy_release",
+                "record_title": "Federal Reserve FOMC statement metadata",
+                "official_domain": "federalreserve.gov",
+                "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260501a.htm",
+                "published_date": "2026-05-11",
+                "record_identifier": "FED-FOMC-2026-05-01",
+                "form_type": "",
+                "cik": "",
+                "accession_number": "",
+                "entity_id": "macro:fed:fomc",
+                "entity_type": "macro_release",
+                "related_entity_ids": ["asset:rates:fed-funds", "asset:treasury:10y"],
+                "asset_class": "rates",
+                "identity_state": "official_domain",
+                "evidence_refs": ["fixture:us-fm-fed-fomc"],
+            },
+            {
+                **base,
+                "record_id": "us-fm:treasury:auction",
+                "source_system": "treasury",
+                "signal_type": "treasury_market_data",
+                "record_title": "Treasury auction metadata",
+                "official_domain": "treasury.gov",
+                "source_url": "https://home.treasury.gov/news/press-releases/example-auction",
+                "published_date": "2026-05-12",
+                "record_identifier": "TREAS-AUCTION-2026-05-12",
+                "form_type": "",
+                "cik": "",
+                "accession_number": "",
+                "entity_id": "asset:treasury:10y",
+                "entity_type": "asset",
+                "related_entity_ids": ["macro:fed:fomc"],
+                "asset_class": "treasury",
+                "identity_state": "official_domain",
+                "evidence_refs": ["fixture:us-fm-treasury-auction"],
+            },
+            {
+                **base,
+                "record_id": "us-fm:cftc:cot",
+                "source_system": "cftc",
+                "signal_type": "derivatives_market_data",
+                "record_title": "CFTC commitments of traders metadata",
+                "official_domain": "cftc.gov",
+                "source_url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+                "published_date": "2026-05-13",
+                "record_identifier": "CFTC-COT-2026-05-13",
+                "form_type": "",
+                "cik": "",
+                "accession_number": "",
+                "entity_id": "asset:commodity:oil-futures",
+                "entity_type": "asset",
+                "related_entity_ids": ["asset:rates:fed-funds"],
+                "asset_class": "derivatives",
+                "identity_state": "official_publication_portal",
+                "evidence_refs": ["fixture:us-fm-cftc-cot"],
+            },
+            {
+                **base,
+                "record_id": "us-fm:occ:bulletin",
+                "source_system": "occ",
+                "signal_type": "bank_supervision_notice",
+                "record_title": "OCC bank supervision bulletin metadata",
+                "official_domain": "occ.gov",
+                "source_url": "https://www.occ.gov/news-issuances/bulletins/2026/bulletin-2026-1.html",
+                "published_date": "2026-05-14",
+                "record_identifier": "OCC-BULLETIN-2026-1",
+                "form_type": "",
+                "cik": "",
+                "accession_number": "",
+                "entity_id": "sector:banking",
+                "entity_type": "sector",
+                "related_entity_ids": ["asset:rates:fed-funds"],
+                "asset_class": "banking",
+                "identity_state": "official_domain",
+                "evidence_refs": ["fixture:us-fm-occ-bulletin"],
+            },
+            {
+                **base,
+                "record_id": "us-fm:fdic:notice",
+                "source_system": "fdic",
+                "signal_type": "deposit_insurance_notice",
+                "record_title": "FDIC deposit insurance notice metadata",
+                "official_domain": "fdic.gov",
+                "source_url": "https://www.fdic.gov/news/financial-institution-letters/2026/fil2601.html",
+                "published_date": "2026-05-15",
+                "record_identifier": "FDIC-FIL-2026-01",
+                "form_type": "",
+                "cik": "",
+                "accession_number": "",
+                "entity_id": "sector:deposit-insurance",
+                "entity_type": "sector",
+                "related_entity_ids": ["sector:banking"],
+                "asset_class": "banking",
+                "identity_state": "official_domain",
+                "evidence_refs": ["fixture:us-fm-fdic-notice"],
+            },
+            {
+                **base,
+                "record_id": "us-fm:cfpb:notice",
+                "source_system": "cfpb",
+                "signal_type": "consumer_finance_notice",
+                "record_title": "CFPB consumer finance notice metadata",
+                "official_domain": "consumerfinance.gov",
+                "source_url": "https://www.consumerfinance.gov/about-us/newsroom/example-notice/",
+                "published_date": "2026-05-16",
+                "record_identifier": "CFPB-NOTICE-2026-01",
+                "form_type": "",
+                "cik": "",
+                "accession_number": "",
+                "entity_id": "sector:consumer-finance",
+                "entity_type": "sector",
+                "related_entity_ids": ["sector:banking"],
+                "asset_class": "consumer_finance",
+                "identity_state": "official_domain",
+                "evidence_refs": ["fixture:us-fm-cfpb-notice"],
+            },
+        ]
+    )
+    return records
+
+
+def us_fm_relation_records() -> list[dict]:
+    base = {
+        "metadata_only": True,
+        "production_affected": False,
+        "schema_migration_required": False,
+        "trading_signal_generated": False,
+    }
+    rows = [
+        ("us-fm:relation:8k-company", "filing_to_company", "sec:company:8k", "company:0000320193", "SEC 8-K metadata links to company CIK entity."),
+        ("us-fm:relation:nport-fund", "filing_to_fund", "sec:fund:nport", "fund:0001000275", "SEC N-PORT metadata links to registered fund entity."),
+        ("us-fm:relation:13f-asset", "filing_to_asset", "sec:manager:13f", "asset:equity:US0378331005", "SEC 13F metadata links to reported equity asset."),
+        ("us-fm:relation:company-cik", "company_to_cik", "sec:company:10k", "company:0000320193", "Company filing metadata preserves CIK entity mapping."),
+        ("us-fm:relation:fund-series", "fund_to_series_class", "sec:fund:ncen", "asset:fund:class-a", "Fund N-CEN metadata links to series/class asset entity."),
+        ("us-fm:relation:macro-asset", "macro_release_to_asset_class", "us-fm:fed:fomc", "asset:rates:fed-funds", "Federal Reserve macro release metadata links to rate asset class without trading signals."),
+    ]
+    return [
+        {
+            **base,
+            "relation_id": relation_id,
+            "relation_type": relation_type,
+            "source_record_id": source_record_id,
+            "target_entity_id": target_entity_id,
+            "relation_explanation": relation_explanation,
+            "evidence_refs": [f"fixture:{relation_id}"],
+        }
+        for relation_id, relation_type, source_record_id, target_entity_id, relation_explanation in rows
     ]
 
 
@@ -2443,6 +2662,115 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["schema_migration_allowed"])
             self.assertTrue(Path(report["legal_backbone_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pet02_us_lg_legal_backbone_report.json").is_file())
+
+    def test_s2pet03_us_fm_source_backbone_validates_forms_and_relations_without_production(self) -> None:
+        report = build_s2pet03_us_fm_source_backbone_report(
+            generated_at=GENERATED_AT,
+            us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+            finance_records=us_fm_finance_records(),
+            relation_records=us_fm_relation_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PET03_US_FM_BACKBONE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PET03-US-FM")
+        self.assertEqual(report["task_id"], "S2PET03")
+        self.assertEqual(report["legacy_task_id"], "S2P4T03")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d4_us_fm_source_backbone_ready"])
+        self.assertEqual(report["upstream_us_lg_legal_backbone_gate"], "pass")
+        self.assertEqual(report["source_system_coverage_gate"], "pass")
+        self.assertEqual(report["signal_type_gate"], "pass")
+        self.assertEqual(report["sec_form_coverage_gate"], "pass")
+        self.assertEqual(report["identifier_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["document_traceability_gate"], "pass")
+        self.assertEqual(report["finance_relation_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertTrue(set(report["required_source_systems"]).issubset(set(report["source_systems_observed"])))
+        self.assertTrue(set(report["required_sec_form_types"]).issubset(set(report["sec_form_types_observed"])))
+        self.assertTrue(set(report["required_relation_types"]).issubset(set(report["relation_types_observed"])))
+        self.assertFalse(report["d4_us_official_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["investment_advice_provided"])
+        self.assertFalse(report["trading_signal_generated"])
+        self.assertFalse(report["automated_trading_enabled"])
+        self.assertFalse(report["paid_market_data_used"])
+        self.assertFalse(report["v7_2_contract_files_modified"])
+        self.assertFalse(validate_s2pet03_us_fm_source_backbone_report(report))
+
+    def test_s2pet03_us_fm_source_backbone_blocks_missing_identifier_relation_and_trading_side_effects(self) -> None:
+        records = us_fm_finance_records()
+        records[0] = dict(
+            records[0],
+            source_url="https://mirror.example.com/sec-8k",
+            cik="",
+            accession_number="",
+            identity_state="mirror",
+            paid_market_data_used=True,
+            trading_signal_generated=True,
+            investment_advice_provided=True,
+            production_affected=True,
+        )
+        relations = us_fm_relation_records()
+        relations[0] = dict(relations[0], target_entity_id="missing:company", evidence_refs=[])
+
+        report = build_s2pet03_us_fm_source_backbone_report(
+            generated_at=GENERATED_AT,
+            us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+            finance_records=records,
+            relation_records=relations,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["identifier_gate"], "blocked")
+        self.assertEqual(report["official_identity_gate"], "blocked")
+        self.assertEqual(report["finance_relation_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d4_us_fm_source_backbone_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("CIK, Accession", joined)
+        self.assertIn("relations require", joined)
+        self.assertIn("trading", joined)
+
+    def test_s2pet03_us_fm_source_backbone_requires_passing_s2pet02_upstream(self) -> None:
+        upstream = dict(us_lg_legal_backbone_report(), status="blocked", d4_us_lg_legal_backbone_ready=False)
+
+        report = build_s2pet03_us_fm_source_backbone_report(
+            generated_at=GENERATED_AT,
+            us_lg_legal_backbone_report=upstream,
+            finance_records=us_fm_finance_records(),
+            relation_records=us_fm_relation_records(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["upstream_us_lg_legal_backbone_gate"], "blocked")
+        self.assertFalse(report["d4_us_fm_source_backbone_ready"])
+        self.assertIn("upstream S2PET02 report must pass", " ".join(report["blocking_reasons"]))
+
+    def test_s2pet03_us_fm_source_backbone_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pet03_us_fm_source_backbone(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                us_lg_legal_backbone_report=us_lg_legal_backbone_report(),
+                finance_records=us_fm_finance_records(),
+                relation_records=us_fm_relation_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pet03_us_fm_source_backbone_report(report))
+            self.assertFalse(report["d4_us_official_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertFalse(report["automated_trading_enabled"])
+            self.assertTrue(Path(report["finance_backbone_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pet03_us_fm_source_backbone_report.json").is_file())
 
     def test_s2pdt02_china_c1_department_source_map_validates_alias_routes_without_production(self) -> None:
         report = build_s2pdt02_china_c1_department_source_map_report(
@@ -4242,6 +4570,44 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d4_us_lg_legal_backbone_ready"])
         self.assertFalse(payload["d4_us_official_source_domain_accepted"])
+
+    def test_cli_stage2_us_fm_source_backbone_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            us_lg_report_path = Path(tmp) / "us-lg-legal-backbone-report.json"
+            finance_records_path = Path(tmp) / "finance-records.json"
+            relation_records_path = Path(tmp) / "relation-records.json"
+            us_lg_report_path.write_text(json.dumps(us_lg_legal_backbone_report(), ensure_ascii=False), encoding="utf-8")
+            finance_records_path.write_text(json.dumps({"finance_records": us_fm_finance_records()}, ensure_ascii=False), encoding="utf-8")
+            relation_records_path.write_text(json.dumps({"relation_records": us_fm_relation_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-us-fm-source-backbone",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--us-lg-legal-backbone-report",
+                    str(us_lg_report_path),
+                    "--finance-records",
+                    str(finance_records_path),
+                    "--relation-records",
+                    str(relation_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PET03_US_FM_BACKBONE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PET03")
+        self.assertEqual(payload["legacy_task_id"], "S2P4T03")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d4_us_fm_source_backbone_ready"])
+        self.assertFalse(payload["d4_us_official_source_domain_accepted"])
+        self.assertFalse(payload["automated_trading_enabled"])
 
     def test_cli_stage2_china_c1_department_source_map_outputs_json(self) -> None:
         buffer = io.StringIO()

@@ -125,6 +125,7 @@ from .stage2_sources import (
     run_s2pdt01_china_c0_source_foundation,
     run_s2pet01_us_ta_source_foundation,
     run_s2pet02_us_lg_legal_backbone,
+    run_s2pet03_us_fm_source_backbone,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -139,6 +140,7 @@ from .stage2_sources import (
     validate_s2pdt01_china_c0_source_foundation_report,
     validate_s2pet01_us_ta_source_foundation_report,
     validate_s2pet02_us_lg_legal_backbone_report,
+    validate_s2pet03_us_fm_source_backbone_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -676,6 +678,19 @@ def build_parser() -> argparse.ArgumentParser:
     s2pet02_us_lg.add_argument("--relation-records", required=True, help="US-LG legal relation JSON list or object with relation_records.")
     s2pet02_us_lg.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pet02_us_lg.add_argument("--json", action="store_true", help="Print JSON US-LG legal backbone report.")
+
+    s2pet03_us_fm = subparsers.add_parser(
+        "stage2-us-fm-source-backbone",
+        help="Run S2PET03/S2P4T03 US finance, market, and macro metadata-only source backbone evidence.",
+    )
+    s2pet03_us_fm.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pet03_us_fm.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pet03_us_fm.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pet03_us_fm.add_argument("--us-lg-legal-backbone-report", required=True, help="Passing S2PET02 US-LG legal backbone report JSON.")
+    s2pet03_us_fm.add_argument("--finance-records", required=True, help="US-FM finance metadata JSON list or object with finance_records.")
+    s2pet03_us_fm.add_argument("--relation-records", required=True, help="US-FM finance relation JSON list or object with relation_records.")
+    s2pet03_us_fm.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pet03_us_fm.add_argument("--json", action="store_true", help="Print JSON US-FM source backbone report.")
 
     s2pft01_china_provinces = subparsers.add_parser(
         "stage2-china-provincial-template-coverage",
@@ -2103,6 +2118,32 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- source_system_coverage_gate: {report.get('source_system_coverage_gate')}")
             print(f"- document_type_gate: {report.get('document_type_gate')}")
             print(f"- legal_relation_gate: {report.get('legal_relation_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-us-fm-source-backbone":
+        report = run_s2pet03_us_fm_source_backbone(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            us_lg_legal_backbone_report=load_json_mapping(args.us_lg_legal_backbone_report),
+            finance_records=load_json_records(args.finance_records, "finance_records"),
+            relation_records=load_json_records(args.relation_records, "relation_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pet03_us_fm_source_backbone_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- upstream_us_lg_legal_backbone_gate: {report.get('upstream_us_lg_legal_backbone_gate')}")
+            print(f"- source_system_coverage_gate: {report.get('source_system_coverage_gate')}")
+            print(f"- sec_form_coverage_gate: {report.get('sec_form_coverage_gate')}")
+            print(f"- identifier_gate: {report.get('identifier_gate')}")
+            print(f"- finance_relation_gate: {report.get('finance_relation_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

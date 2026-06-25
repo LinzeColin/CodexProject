@@ -240,6 +240,35 @@ S2PET02_ALLOWED_IDENTITY_STATES = (
 S2PET02_REQUIRED_TRACE_FIELDS = ("source_system", "official_domain", "source_url", "published_date", "document_identifier")
 S2PET02_REQUIRED_RELATION_FIELDS = ("relation_id", "relation_type", "source_document_id", "target_document_id", "evidence_refs")
 S2PET02_REPORT_FILENAME = "stage2_s2pet02_us_lg_legal_backbone_report.json"
+S2PET03_US_FM_BACKBONE_MODEL_ID = "adp-s2pet03-us-fm-source-backbone-v1"
+S2PET03_ACCEPTANCE_ID = "ACC-S2PET03-US-FM"
+S2PET03_TASK_ID = "S2PET03"
+S2PET03_LEGACY_TASK_ID = "S2P4T03"
+S2PET03_REQUIRED_SOURCE_SYSTEMS = ("sec_edgar", "federal_reserve", "treasury", "cftc", "occ", "fdic", "cfpb")
+S2PET03_REQUIRED_SEC_FORM_TYPES = ("8-K", "10-K", "10-Q", "S-1", "13D", "13G", "13F", "FORM-4", "N-PORT", "N-CEN")
+S2PET03_REQUIRED_SIGNAL_TYPES = (
+    "sec_company_filing",
+    "sec_fund_filing",
+    "macro_policy_release",
+    "treasury_market_data",
+    "derivatives_market_data",
+    "bank_supervision_notice",
+    "deposit_insurance_notice",
+    "consumer_finance_notice",
+)
+S2PET03_REQUIRED_RELATION_TYPES = (
+    "filing_to_company",
+    "filing_to_fund",
+    "filing_to_asset",
+    "company_to_cik",
+    "fund_to_series_class",
+    "macro_release_to_asset_class",
+)
+S2PET03_ALLOWED_IDENTITY_STATES = ("official_domain", "official_api_or_feed", "official_publication_portal")
+S2PET03_REQUIRED_TRACE_FIELDS = ("source_system", "official_domain", "source_url", "published_date", "record_identifier")
+S2PET03_REQUIRED_IDENTIFIER_FIELDS = ("cik", "accession_number")
+S2PET03_REQUIRED_RELATION_FIELDS = ("relation_id", "relation_type", "source_record_id", "target_entity_id", "evidence_refs")
+S2PET03_REPORT_FILENAME = "stage2_s2pet03_us_fm_source_backbone_report.json"
 S2PFT01_CHINA_PROVINCIAL_MODEL_ID = "adp-s2pft01-china-provincial-template-coverage-v1"
 S2PFT01_ACCEPTANCE_ID = "ACC-S2PFT01-PROVINCES"
 S2PFT01_TASK_ID = "S2PFT01"
@@ -4008,6 +4037,334 @@ def validate_s2pet02_us_lg_legal_backbone_report(report: Mapping[str, Any]) -> l
                 errors.append(f"passing S2PET02 US-LG report requires {key}=pass")
         if report.get("d4_us_lg_legal_backbone_ready") is not True:
             errors.append("passing S2PET02 US-LG report requires d4_us_lg_legal_backbone_ready=true")
+    return errors
+
+
+def build_s2pet03_us_fm_source_backbone_report(
+    *,
+    generated_at: str,
+    us_lg_legal_backbone_report: Mapping[str, Any],
+    finance_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build US-FM finance, market, and macro metadata evidence without trading or production inclusion."""
+
+    us_lg_errors = validate_s2pet02_us_lg_legal_backbone_report(us_lg_legal_backbone_report)
+    us_lg_gate = (
+        "pass"
+        if not us_lg_errors
+        and us_lg_legal_backbone_report.get("status") == "pass"
+        and us_lg_legal_backbone_report.get("d4_us_lg_legal_backbone_ready") is True
+        else "blocked"
+    )
+    finance_rows, finance_row_errors = _s2pet03_finance_rows(finance_records)
+    relation_rows, relation_row_errors = _s2pet03_finance_relation_rows(relation_records)
+    source_gate = _s2pet03_source_system_gate(finance_rows)
+    signal_gate = _s2pet03_signal_type_gate(finance_rows)
+    sec_form_gate = _s2pet03_sec_form_gate(finance_rows)
+    identifier_gate = _s2pet03_identifier_gate(finance_rows)
+    identity_gate = _s2pet03_official_identity_gate(finance_rows)
+    traceability_gate = _s2pet03_traceability_gate(finance_rows)
+    relation_gate = _s2pet03_relation_gate(finance_rows, relation_rows)
+    metadata_gate = _s2pet03_metadata_gate(finance_rows, relation_rows)
+    upstream_reasons = [f"upstream S2PET02: {error}" for error in us_lg_errors]
+    if us_lg_gate != "pass":
+        upstream_reasons.append("upstream S2PET02 report must pass before S2PET03 US-FM source backbone evidence")
+    blocking_reasons = [
+        *upstream_reasons,
+        *finance_row_errors,
+        *relation_row_errors,
+        *source_gate["blocking_reasons"],
+        *signal_gate["blocking_reasons"],
+        *sec_form_gate["blocking_reasons"],
+        *identifier_gate["blocking_reasons"],
+        *identity_gate["blocking_reasons"],
+        *traceability_gate["blocking_reasons"],
+        *relation_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and us_lg_gate
+        == source_gate["status"]
+        == signal_gate["status"]
+        == sec_form_gate["status"]
+        == identifier_gate["status"]
+        == identity_gate["status"]
+        == traceability_gate["status"]
+        == relation_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PET03_US_FM_BACKBONE_MODEL_ID,
+        "acceptance_id": S2PET03_ACCEPTANCE_ID,
+        "task_id": S2PET03_TASK_ID,
+        "legacy_task_id": S2PET03_LEGACY_TASK_ID,
+        "phase": "S2PE",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_us_lg_legal_backbone_gate": us_lg_gate,
+        "source_system_coverage_gate": source_gate["status"],
+        "signal_type_gate": signal_gate["status"],
+        "sec_form_coverage_gate": sec_form_gate["status"],
+        "identifier_gate": identifier_gate["status"],
+        "official_identity_gate": identity_gate["status"],
+        "document_traceability_gate": traceability_gate["status"],
+        "finance_relation_gate": relation_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_source_systems": list(S2PET03_REQUIRED_SOURCE_SYSTEMS),
+        "source_systems_observed": source_gate["source_systems_observed"],
+        "required_signal_types": list(S2PET03_REQUIRED_SIGNAL_TYPES),
+        "signal_types_observed": signal_gate["signal_types_observed"],
+        "required_sec_form_types": list(S2PET03_REQUIRED_SEC_FORM_TYPES),
+        "sec_form_types_observed": sec_form_gate["sec_form_types_observed"],
+        "required_relation_types": list(S2PET03_REQUIRED_RELATION_TYPES),
+        "relation_types_observed": relation_gate["relation_types_observed"],
+        "required_trace_fields": list(S2PET03_REQUIRED_TRACE_FIELDS),
+        "required_identifier_fields": list(S2PET03_REQUIRED_IDENTIFIER_FIELDS),
+        "required_relation_fields": list(S2PET03_REQUIRED_RELATION_FIELDS),
+        "finance_records": finance_rows,
+        "relation_records": relation_rows,
+        "finance_record_count": len(finance_rows),
+        "relation_record_count": len(relation_rows),
+        "source_system_summary": source_gate,
+        "signal_summary": signal_gate,
+        "sec_form_summary": sec_form_gate,
+        "identifier_summary": identifier_gate,
+        "identity_summary": identity_gate,
+        "traceability_summary": traceability_gate,
+        "relation_summary": relation_gate,
+        "metadata_summary": metadata_gate,
+        "d4_us_fm_source_backbone_ready": status == "pass",
+        "d4_us_official_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "public_schema_changed": False,
+        "investment_advice_provided": False,
+        "trading_signal_generated": False,
+        "automated_trading_enabled": False,
+        "paid_market_data_used": False,
+        "live_source_fetch_executed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_modified": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pet03_us_fm_source_backbone(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    us_lg_legal_backbone_report: Mapping[str, Any],
+    finance_records: Sequence[Mapping[str, Any]],
+    relation_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PET03 US-FM source backbone evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pet03-us-fm-source-backbone"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pet03_us_fm_source_backbone_report(
+        generated_at=generated_at,
+        us_lg_legal_backbone_report=us_lg_legal_backbone_report,
+        finance_records=finance_records,
+        relation_records=relation_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "finance_backbone_report_path": str(run_dir / "adp-s2pet03-us-fm-source-backbone-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pet03-us-fm-source-backbone-report.json", report)
+        _write_json(state / S2PET03_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pet03_us_fm_source_backbone_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PET03_US_FM_BACKBONE_MODEL_ID:
+        errors.append("S2PET03 US-FM model_id must be adp-s2pet03-us-fm-source-backbone-v1")
+    if report.get("task_id") != S2PET03_TASK_ID:
+        errors.append("S2PET03 US-FM task_id must be S2PET03")
+    if report.get("legacy_task_id") != S2PET03_LEGACY_TASK_ID:
+        errors.append("S2PET03 US-FM legacy_task_id must be S2P4T03")
+    if report.get("acceptance_id") != S2PET03_ACCEPTANCE_ID:
+        errors.append("S2PET03 US-FM acceptance_id must be ACC-S2PET03-US-FM")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PET03 US-FM status must be pass or blocked")
+    for key in (
+        "d4_us_official_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "public_schema_changed",
+        "investment_advice_provided",
+        "trading_signal_generated",
+        "automated_trading_enabled",
+        "paid_market_data_used",
+        "live_source_fetch_executed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_modified",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PET03 US-FM source backbone")
+    records = report.get("finance_records")
+    if not isinstance(records, list):
+        errors.append("S2PET03 finance_records must be a list")
+        records = []
+    relations = report.get("relation_records")
+    if not isinstance(relations, list):
+        errors.append("S2PET03 relation_records must be a list")
+        relations = []
+    observed_sources = set(report.get("source_systems_observed") or [])
+    missing_sources = [system for system in S2PET03_REQUIRED_SOURCE_SYSTEMS if system not in observed_sources]
+    if missing_sources:
+        errors.append("S2PET03 missing required source systems: " + ", ".join(missing_sources))
+    observed_signals = set(report.get("signal_types_observed") or [])
+    missing_signals = [signal for signal in S2PET03_REQUIRED_SIGNAL_TYPES if signal not in observed_signals]
+    if missing_signals:
+        errors.append("S2PET03 missing required signal types: " + ", ".join(missing_signals))
+    observed_forms = set(report.get("sec_form_types_observed") or [])
+    missing_forms = [form_type for form_type in S2PET03_REQUIRED_SEC_FORM_TYPES if form_type not in observed_forms]
+    if missing_forms:
+        errors.append("S2PET03 missing required SEC form types: " + ", ".join(missing_forms))
+    observed_relations = set(report.get("relation_types_observed") or [])
+    missing_relations = [relation_type for relation_type in S2PET03_REQUIRED_RELATION_TYPES if relation_type not in observed_relations]
+    if missing_relations:
+        errors.append("S2PET03 missing required relation types: " + ", ".join(missing_relations))
+    record_ids: set[str] = set()
+    entity_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"finance_records[{index}] must be an object")
+            continue
+        record_id = str(record.get("record_id") or "")
+        if not record_id:
+            errors.append(f"finance_records[{index}].record_id is required")
+        if record_id in record_ids:
+            errors.append(f"duplicate S2PET03 record_id: {record_id}")
+        record_ids.add(record_id)
+        entity_id = str(record.get("entity_id") or "")
+        if entity_id:
+            entity_ids.add(entity_id)
+        for related in record.get("related_entity_ids") or []:
+            if related:
+                entity_ids.add(str(related))
+        if record.get("source_system") not in S2PET03_REQUIRED_SOURCE_SYSTEMS:
+            errors.append(f"finance_records[{index}].source_system is not supported")
+        if record.get("signal_type") not in S2PET03_REQUIRED_SIGNAL_TYPES:
+            errors.append(f"finance_records[{index}].signal_type is not supported")
+        if record.get("source_system") == "sec_edgar" and record.get("form_type") not in S2PET03_REQUIRED_SEC_FORM_TYPES:
+            errors.append(f"finance_records[{index}].form_type is not supported for SEC EDGAR")
+        if record.get("identity_state") not in S2PET03_ALLOWED_IDENTITY_STATES:
+            errors.append(f"finance_records[{index}].identity_state is not accepted")
+        for field in S2PET03_REQUIRED_TRACE_FIELDS:
+            if not record.get(field):
+                errors.append(f"finance_records[{index}].{field} is required")
+        if record.get("source_system") == "sec_edgar":
+            for field in S2PET03_REQUIRED_IDENTIFIER_FIELDS:
+                if not record.get(field):
+                    errors.append(f"finance_records[{index}].{field} is required for SEC EDGAR")
+        if not record.get("record_title"):
+            errors.append(f"finance_records[{index}].record_title is required")
+        if not record.get("evidence_refs"):
+            errors.append(f"finance_records[{index}].evidence_refs is required")
+        for key in (
+            "metadata_only",
+            "pdf_downloaded",
+            "full_text_extracted",
+            "production_affected",
+            "investment_advice_provided",
+            "trading_signal_generated",
+            "automated_trading_enabled",
+            "paid_market_data_used",
+            "live_source_fetch_executed",
+        ):
+            expected = True if key == "metadata_only" else False
+            if record.get(key) is not expected:
+                errors.append(f"finance_records[{index}].{key} must be {str(expected).lower()}")
+    relation_ids: set[str] = set()
+    for index, relation in enumerate(relations):
+        if not isinstance(relation, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_id = str(relation.get("relation_id") or "")
+        if not relation_id:
+            errors.append(f"relation_records[{index}].relation_id is required")
+        if relation_id in relation_ids:
+            errors.append(f"duplicate S2PET03 relation_id: {relation_id}")
+        relation_ids.add(relation_id)
+        if relation.get("relation_type") not in S2PET03_REQUIRED_RELATION_TYPES:
+            errors.append(f"relation_records[{index}].relation_type is not supported")
+        if relation.get("source_record_id") not in record_ids:
+            errors.append(f"relation_records[{index}].source_record_id must reference finance_records")
+        if relation.get("target_entity_id") not in entity_ids:
+            errors.append(f"relation_records[{index}].target_entity_id must reference finance record entities")
+        if not relation.get("evidence_refs"):
+            errors.append(f"relation_records[{index}].evidence_refs is required")
+        if relation.get("metadata_only") is not True:
+            errors.append(f"relation_records[{index}].metadata_only must be true")
+        if relation.get("production_affected") is not False:
+            errors.append(f"relation_records[{index}].production_affected must be false")
+        if relation.get("schema_migration_required") is not False:
+            errors.append(f"relation_records[{index}].schema_migration_required must be false")
+        if relation.get("trading_signal_generated") is not False:
+            errors.append(f"relation_records[{index}].trading_signal_generated must be false")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PET03 US-FM report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "upstream_us_lg_legal_backbone_gate",
+            "source_system_coverage_gate",
+            "signal_type_gate",
+            "sec_form_coverage_gate",
+            "identifier_gate",
+            "official_identity_gate",
+            "document_traceability_gate",
+            "finance_relation_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PET03 US-FM report requires {key}=pass")
+        if report.get("d4_us_fm_source_backbone_ready") is not True:
+            errors.append("passing S2PET03 US-FM report requires d4_us_fm_source_backbone_ready=true")
     return errors
 
 
@@ -8887,6 +9244,299 @@ def _s2pet02_legal_metadata_gate(
         "metadata_only_legal_record_count": len(legal_rows) - len(legal_violations),
         "metadata_only_relation_record_count": len(relation_rows) - len(relation_violations),
         "legal_record_count": len(legal_rows),
+        "relation_record_count": len(relation_rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_finance_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    record_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"finance_records[{index}] must be an object")
+            continue
+        record_id = str(record.get("record_id") or "").strip()
+        official_domain = str(record.get("official_domain") or "").strip().lower()
+        source_url = str(record.get("source_url") or "").strip()
+        row = {
+            "record_id": record_id,
+            "source_system": str(record.get("source_system") or "").strip(),
+            "signal_type": str(record.get("signal_type") or "").strip(),
+            "record_title": str(record.get("record_title") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "published_date": str(record.get("published_date") or "").strip(),
+            "record_identifier": str(record.get("record_identifier") or "").strip(),
+            "form_type": str(record.get("form_type") or "").strip(),
+            "cik": str(record.get("cik") or "").strip(),
+            "accession_number": str(record.get("accession_number") or "").strip(),
+            "entity_id": str(record.get("entity_id") or "").strip(),
+            "entity_type": str(record.get("entity_type") or "").strip(),
+            "related_entity_ids": [str(item) for item in record.get("related_entity_ids") or [] if item],
+            "asset_class": str(record.get("asset_class") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "queue_mutation_allowed": record.get("queue_mutation_allowed") is True,
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "investment_advice_provided": record.get("investment_advice_provided") is True,
+            "trading_signal_generated": record.get("trading_signal_generated") is True,
+            "automated_trading_enabled": record.get("automated_trading_enabled") is True,
+            "paid_market_data_used": record.get("paid_market_data_used") is True,
+            "live_source_fetch_executed": record.get("live_source_fetch_executed") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not record_id:
+            errors.append(f"finance_records[{index}].record_id is required")
+        if record_id in record_ids:
+            errors.append(f"duplicate S2PET03 record_id: {record_id}")
+        record_ids.add(record_id)
+        if official_domain and source_url and official_domain not in source_url.lower():
+            errors.append(f"finance_records[{index}].source_url must contain official_domain")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET03 requires at least one US-FM finance record")
+    return rows, errors
+
+
+def _s2pet03_finance_relation_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    relation_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"relation_records[{index}] must be an object")
+            continue
+        relation_id = str(record.get("relation_id") or "").strip()
+        row = {
+            "relation_id": relation_id,
+            "relation_type": str(record.get("relation_type") or "").strip(),
+            "source_record_id": str(record.get("source_record_id") or "").strip(),
+            "target_entity_id": str(record.get("target_entity_id") or "").strip(),
+            "relation_explanation": str(record.get("relation_explanation") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "production_affected": record.get("production_affected") is True,
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "trading_signal_generated": record.get("trading_signal_generated") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not relation_id:
+            errors.append(f"relation_records[{index}].relation_id is required")
+        if relation_id in relation_ids:
+            errors.append(f"duplicate S2PET03 relation_id: {relation_id}")
+        relation_ids.add(relation_id)
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET03 requires at least one finance relation record")
+    return rows, errors
+
+
+def _s2pet03_source_system_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("source_system") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET03_REQUIRED_SOURCE_SYSTEMS) - observed)
+    unsupported = sorted(observed - set(S2PET03_REQUIRED_SOURCE_SYSTEMS))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET03 US-FM missing required source systems: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET03 US-FM has unsupported source systems: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_source_systems": list(S2PET03_REQUIRED_SOURCE_SYSTEMS),
+        "source_systems_observed": sorted(system for system in observed if system),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_signal_type_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("signal_type") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET03_REQUIRED_SIGNAL_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET03_REQUIRED_SIGNAL_TYPES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET03 US-FM missing required signal types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET03 US-FM has unsupported signal types: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_signal_types": list(S2PET03_REQUIRED_SIGNAL_TYPES),
+        "signal_types_observed": sorted(signal for signal in observed if signal),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_sec_form_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {
+        str(row.get("form_type") or "")
+        for row in rows
+        if isinstance(row, Mapping) and row.get("source_system") == "sec_edgar"
+    }
+    missing = sorted(set(S2PET03_REQUIRED_SEC_FORM_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET03_REQUIRED_SEC_FORM_TYPES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET03 US-FM missing required SEC form types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET03 US-FM has unsupported SEC form types: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_sec_form_types": list(S2PET03_REQUIRED_SEC_FORM_TYPES),
+        "sec_form_types_observed": sorted(form_type for form_type in observed if form_type),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_identifier_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    sec_rows = [row for row in rows if isinstance(row, Mapping) and row.get("source_system") == "sec_edgar"]
+    invalid = [
+        row
+        for row in sec_rows
+        if any(not row.get(field) for field in S2PET03_REQUIRED_IDENTIFIER_FIELDS)
+        or not row.get("record_identifier")
+        or not row.get("entity_id")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PET03 US-FM SEC rows require CIK, Accession, record identifier, and entity_id")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_identifier_fields": list(S2PET03_REQUIRED_IDENTIFIER_FIELDS),
+        "verified_sec_identifier_count": len(sec_rows) - len(invalid),
+        "sec_record_count": len(sec_rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_official_identity_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("identity_state") not in S2PET03_ALLOWED_IDENTITY_STATES
+        or not str(row.get("official_domain") or "")
+        or not str(row.get("source_url") or "")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PET03 US-FM identity requires accepted identity_state, official_domain, and source_url")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_identity_states": list(S2PET03_ALLOWED_IDENTITY_STATES),
+        "verified_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_traceability_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing_rows = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            missing_rows.append(row)
+            continue
+        if any(not row.get(field) for field in S2PET03_REQUIRED_TRACE_FIELDS) or not row.get("record_title") or not row.get("evidence_refs"):
+            missing_rows.append(row)
+    reasons: list[str] = []
+    if missing_rows:
+        reasons.append("S2PET03 US-FM traceability requires source_system, official_domain, source_url, published_date, record_identifier, record_title, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_trace_fields": list(S2PET03_REQUIRED_TRACE_FIELDS),
+        "traceable_record_count": len(rows) - len(missing_rows),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_relation_gate(
+    finance_rows: Sequence[Mapping[str, Any]],
+    relation_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    record_ids = {str(row.get("record_id") or "") for row in finance_rows if isinstance(row, Mapping)}
+    entity_ids: set[str] = set()
+    for row in finance_rows:
+        if not isinstance(row, Mapping):
+            continue
+        if row.get("entity_id"):
+            entity_ids.add(str(row.get("entity_id")))
+        for related in row.get("related_entity_ids") or []:
+            if related:
+                entity_ids.add(str(related))
+    observed = {str(row.get("relation_type") or "") for row in relation_rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET03_REQUIRED_RELATION_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET03_REQUIRED_RELATION_TYPES))
+    invalid_refs = [
+        row
+        for row in relation_rows
+        if not isinstance(row, Mapping)
+        or row.get("source_record_id") not in record_ids
+        or row.get("target_entity_id") not in entity_ids
+        or not row.get("evidence_refs")
+        or not row.get("relation_explanation")
+    ]
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET03 US-FM missing required relation types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET03 US-FM has unsupported relation types: " + ", ".join(unsupported))
+    if invalid_refs:
+        reasons.append("S2PET03 US-FM relations require valid source record ids, target entities, explanation, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_relation_types": list(S2PET03_REQUIRED_RELATION_TYPES),
+        "relation_types_observed": sorted(relation_type for relation_type in observed if relation_type),
+        "verified_relation_count": len(relation_rows) - len(invalid_refs),
+        "relation_count": len(relation_rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet03_metadata_gate(
+    finance_rows: Sequence[Mapping[str, Any]],
+    relation_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    finance_violations = [
+        row
+        for row in finance_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+        or row.get("queue_mutation_allowed") is not False
+        or row.get("schema_migration_required") is not False
+        or row.get("investment_advice_provided") is not False
+        or row.get("trading_signal_generated") is not False
+        or row.get("automated_trading_enabled") is not False
+        or row.get("paid_market_data_used") is not False
+        or row.get("live_source_fetch_executed") is not False
+    ]
+    relation_violations = [
+        row
+        for row in relation_rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("production_affected") is not False
+        or row.get("schema_migration_required") is not False
+        or row.get("trading_signal_generated") is not False
+    ]
+    reasons: list[str] = []
+    if finance_violations or relation_violations:
+        reasons.append("S2PET03 US-FM records must be metadata-only with no PDF/full-text, investment-advice, trading, paid-market-data, live-fetch, production, SMTP, schema, or queue side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_finance_record_count": len(finance_rows) - len(finance_violations),
+        "metadata_only_relation_record_count": len(relation_rows) - len(relation_violations),
+        "finance_record_count": len(finance_rows),
         "relation_record_count": len(relation_rows),
         "blocking_reasons": reasons,
     }

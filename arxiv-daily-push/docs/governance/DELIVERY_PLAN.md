@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 99
-- acceptance_count: 93
+- task_count: 100
+- acceptance_count: 94
 
 ## Delivery Tasks
 
@@ -115,6 +115,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PGT05 | S2PG | completed | ACC-S2PGT05-CALIBRATION | Private cross-board calibration and explainable queue evidence passed for B1-B6 percentile calibration, D1-D4 source balance, waiting credit, selected/queued/deferred readable reasons, deterministic order, stable queue hash, and no-production/no-schema/no-email-frontstage side-effect gates; no production ranking, real queue mutation, SMTP, scheduler, Release, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PGT05_CROSS_BOARD_CALIBRATION.md`; `governance/run_manifests/ADP-S2PGT05-CROSS-BOARD-CALIBRATION-20260625.json` |
 | S2PET01 | S2PE | completed | ACC-S2PET01-US-TA | US-TA official technology-agency source foundation passed for NSF, DARPA, DOE, NIH, NASA, NIST, USPTO, FDA agency coverage, signal taxonomy, official identity, traceability, and metadata-only boundaries; no live source fetch, D4 production inclusion, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md`; `governance/run_manifests/ADP-S2PET01-US-TA-SOURCE-FOUNDATION-20260625.json` |
 | S2PET02 | S2PE | completed | ACC-S2PET02-US-LG | US-LG legal backbone passed for Federal Register, Regulations.gov, GovInfo, Congress.gov coverage, required legal document types, Docket/FR/CFR/bill/report/public-law/certified-text relations, official identity, traceability, upstream S2PET01 gate, and metadata-only boundaries; no live source fetch, PDF/full-text download, legal advice, D4 production inclusion, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PET02_US_LG_LEGAL_BACKBONE.md`; `governance/run_manifests/ADP-S2PET02-US-LG-LEGAL-BACKBONE-20260625.json` |
+| S2PET03 | S2PE | completed | ACC-S2PET03-US-FM | US-FM finance and macro source backbone passed for SEC/EDGAR, Federal Reserve, Treasury, CFTC, OCC, FDIC, CFPB coverage, SEC form classification, CIK and Accession identifiers, company/fund/asset relations, official identity, traceability, upstream S2PET02 gate, and metadata-only boundaries; no live source fetch, paid market data, investment advice, trading signal, automated trading, D4 production inclusion, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PET03_US_FM_SOURCE_BACKBONE.md`; `governance/run_manifests/ADP-S2PET03-US-FM-SOURCE-BACKBONE-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
