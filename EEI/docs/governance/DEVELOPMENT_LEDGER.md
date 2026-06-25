@@ -10,13 +10,112 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `C`
-- Current gate: `TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-CI-ATTESTED-RELEASE-BLOCKED`
+- Current phase: `D`
+- Current gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 4
-- Current task: `TASK-T1301/A202 operator review packet freshness remote CI binding with A209 background continuation`
-- Current A209 point-in-time heartbeat: operator PID `82041` and watchdog PID `61030` are reported RUNNING; committed heartbeat evidence is refreshed to `190/288` successful windows, `0` failed windows, `98` remaining, `65.97%` completion and `release_gate_closed_by_background_heartbeat=false`. Live checkpoint evidence observed after this local sync advanced to at least `194/288` successful windows with `0` failed windows, but later checkpoints remain progress-only until 288/288 validates.
-- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; `190/288` committed heartbeat evidence and later live checkpoint progress are non-closure evidence only. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Current task: `TASK-T1307/A209 isolated 24h rerun background evidence task`
+- Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
+- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, `0` failed, `browser_slices_completed=20`, `browser_measurement_error=null`, and monitor status is `RUNNING_PARTIAL`.
+- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+
+## EVENT-20260626-003 - T1307/A209 isolated 24h rerun started
+
+- Timestamp: 2026-06-26T09:06:08+10:00
+- Fact level: EXTRACTED
+- Base commit: `058c792f8376312842784533016d8716f9177dae`
+- Scope: start a fresh detached A209 24h operator rerun in `/private/tmp/eei-a209-rerun-20260626-0918/` after preserving the failed canonical `7/288` chain as incident evidence.
+- Non-claims: this does not close A209, does not overwrite canonical failed evidence, and does not count as release-ready until the rerun reaches `288/288` successful windows and is promoted/validated explicitly.
+- Runtime evidence: supervisor launched operator PID `80478`; watchdog PID `80732` is observing the same isolated checkpoint; first checkpoint window `1/288` PASS, `0` failed, `completion_percent=0.35`, `browser_slices_completed=20`, `browser_measurement_error=null`.
+- Next step: continue monitoring the isolated rerun as a background evidence task while committing/pushing the product/governance changes and binding CI.
+
+## ITER-20260626-003 - Isolated A209 24h rerun background evidence task
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `058c792f8376312842784533016d8716f9177dae`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Acceptance IDs: `A209`
+- Goal: keep solving the 24h soak gate in the background without blocking MVP implementation or overwriting the failed canonical evidence chain.
+- Files changed: governance ledger, JSONL event stream, VERSION_MATRIX, HANDOFF, changelog, MVP development record and regenerated release artifacts.
+- Model changes: none.
+- Parameter changes: no active parameter or threshold value changed.
+- Commands run: supervisor start with isolated output/checkpoint/pid/log paths; watchdog detach with matching paths; progress monitor after `make verify`.
+- Test results: operator PID `80478` running, watchdog PID `80732` recorded, first isolated checkpoint window PASS, `windows_completed=1`, `windows_failed=0`, monitor status `RUNNING_PARTIAL`.
+- Decision: keep canonical failed `artifacts/tests/a209/t1307_operator_soak_24h.*` as incident evidence; promote isolated rerun to canonical only after completion and release-ready validation.
+- Remaining risks: host sleep or browser/runtime failures can still interrupt the 24h rerun; the /private/tmp evidence must be preserved before promotion.
+- Rollback: stop only PID `80478` and watchdog PID `80732` if the isolated run is wrong, leaving canonical failed evidence untouched.
+
+## EVENT-20260626-002 - T1307/A209 failed-evidence validator sync
+
+- Timestamp: 2026-06-26T09:18:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `058c792f8376312842784533016d8716f9177dae`
+- Scope: separate a structurally invalid A209 evidence artifact from a truthfully declared failed operator run, regenerate the A209 heartbeat/evidence/finalization artifacts from the failed `7/288` chain, and refresh dependent A203/A204/A205 release preflights plus clean-room/release artifacts from that fail-closed state.
+- Non-claims: this does not close A209, does not make failed soak evidence release-ready, does not close A026/A027/A202/A210, and does not activate release-manager or MVP release readiness.
+- A209 state: evidence validator reports `FAILED_OPERATOR_EVIDENCE`, heartbeat reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, finalization reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, and `validate_operator_soak_evidence.py validate --require-release-ready` still exits non-zero.
+- Validation: py_compile PASS, ruff PASS, A209 evidence/finalization unit tests PASS `25/25`, A209 generate/validate targets PASS, and fixed-point dependent release/preflight/clean-room/release artifact validation PASS.
+- Next step: preserve the failed canonical checkpoint as incident evidence, start a fresh detached 24h rerun without overwriting it, then commit/push EEI-only changes and bind CI.
+
+## ITER-20260626-002 - A209 failed-evidence validator sync and fixed-point release refresh
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `058c792f8376312842784533016d8716f9177dae`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, with dependent blocked release evidence for `TASK-T1302` and `TASK-T1303`.
+- Acceptance IDs: `A209`, with blocked dependent `A203`, `A204` and `A205`.
+- Goal: let normal governance validation accept the current failed A209 state as a valid fail-closed record while preserving a hard release-ready gate for future 288/288 zero-failure evidence.
+- Files changed: `scripts/validate_operator_soak_evidence.py`, `scripts/record_operator_soak_heartbeat.py`, `scripts/finalize_operator_soak_evidence.py`, A209 unit tests, release-manager activation unit tests, A209 generated artifacts, A203/A205 dependent preflights, release artifacts and governance companion files.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend route or publication policy changed.
+- Parameter changes: no active model parameter value changed; `operator-soak-heartbeat` profile advanced to `9` and `operator-soak-finalization` advanced to `2` to track fail-closed intervention-state validation semantics.
+- Commands run: A209 py_compile/ruff/unit tests; release-manager activation focused ruff/unit tests; A209 heartbeat/evidence/finalization generate/validate; `validate_operator_soak_evidence.py validate --require-release-ready` expected failure; fixed-point release-manager/A203/MVP/external-release/development/risk/clean-room/release generation and validation.
+- Test results: A209 focused unit tests PASS `25/25`; release-manager activation focused tests PASS `2/2` with `operator_24h=FAILED_RUN`; failed evidence artifact status is `FAILED_OPERATOR_EVIDENCE`; heartbeat validation accepts `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED` only with failed windows and release gate open; finalization blocks downstream refresh with `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`; release-ready validation remains blocked.
+- Successes: `make verify` can now validate the current intervention state without falsifying release readiness, and downstream preflights now hash the current failed-evidence state instead of stale running partial state.
+- Failures: A209 still lacks final 24h release-ready evidence; a fresh background run is still required.
+- Decisions: keep A209 `IN_PROGRESS`; do not auto-resume a failed checkpoint; do not overwrite the failed canonical checkpoint before preserving incident evidence.
+- Remaining risks: long-run browser/runtime failures may recur; host process visibility can be restricted by sandbox; background rerun evidence must later be copied into canonical artifacts only after completion and validation.
+- Rollback: revert the validator/heartbeat/finalizer semantic changes and regenerated A209/A203/A205/release artifacts, restore VERSION_MATRIX to `ITER-20260626-001`, then rerun the A209 validation subset; preserve failed checkpoint/log evidence.
+- Next step: launch a fresh detached A209 24h rerun in an isolated runtime path, monitor checkpoints, run full `make verify`, then commit/push and bind CI.
+
+## EVENT-20260626-001 - T1307/A209 NO_OUTPUT soak harness repair and T904/A026-A027 operator labeling packet
+
+- Timestamp: 2026-06-26T08:55:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `058c792f8376312842784533016d8716f9177dae`
+- Scope: record the A209 clean 24h attempt failure at `7/288`, harden the browser soak child harness so browser failures write structured `measurement_error` payloads instead of black-box `NO_OUTPUT`, surface browser slice diagnostics in operator checkpoints, add an explicit watchdog verification flag for the correct fail-closed `OPERATOR_INTERVENTION_REQUIRED` state, and add a source-bound T904 operator labeling packet for the exact A026/A027 human-labeling workload.
+- Non-claims: this does not close A209, does not provide final 24h soak evidence, does not close A026/A027, does not create production gold labels, does not create A202/A210 clearance, and does not activate release-manager or MVP release readiness.
+- A209 state: latest 24h checkpoint chain is failed at `7/288` with `1` failed window; no live soak process is running. Short `3s` child/operator probes after the repair passed and are diagnostic proof only.
+- T904 state: `artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json` contains exactly `50` entity slots and `100` relationship slots with `production_gold_set=false`, `release_gate_closure_allowed=false`, `label_payload_generated=false` and blank operator fields.
+- Next step: run the full focused validation/regeneration set, then start a fresh detached A209 24h evidence run only after the harness repair is committed or otherwise preserved.
+
+## ITER-20260626-001 - T1307/A209 NO_OUTPUT repair and T904/A026-A027 operator labeling packet
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `058c792f8376312842784533016d8716f9177dae`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307` and `TASK-T904`, with dependent release-gate context for `TASK-T1303`.
+- Acceptance IDs: `A209`, `A026` and `A027`, with blocked dependent release evidence for `A204` and `A205`.
+- Goal: prevent repeated A209 black-box `NO_OUTPUT` failures, preserve the failed 24h evidence accurately, and make the A026/A027 operator labeling workload implementation-ready without falsely closing gold-quality gates.
+- Files changed: `scripts/run_soak_smoke.mjs`, `scripts/run_operator_soak.mjs`, `scripts/watch_operator_soak.py`, `scripts/validate_gold_quality_evaluation.py`, `scripts/validate_external_release_evidence_bundle.py`, gold-quality/operator-soak tests, A026/A027/A203/A205 generated artifacts, governance ledgers, traceability, status narrative, handoff and release artifacts.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
+- Parameter changes: no active model parameter value changed; the gold-quality evidence packet schema version advanced as an operator worksheet artifact only.
+- Commands run: A209 checkpoint/process inspection; `node --check` on the soak scripts; short direct child soak probe; short operator-runner probe; watchdog focused py_compile/ruff/unit tests; gold-quality generation/validation and focused unit tests before governance sync.
+- Test results: A209 checkpoint inspection confirms `7/288` with `1` failed window; A209 short probes PASS with structured browser diagnostics; watchdog focused unit tests PASS `19/19` and preserve fail-closed payload status; T904 operator labeling packet validates with `50` entity slots and `100` relationship slots; A026/A027 remain `IN_PROGRESS`.
+- Successes: future browser child failures should produce structured evidence, and the release operator intake packet now points to a bounded A026/A027 labeling packet rather than only a generic template.
+- Failures: the real A209 24h evidence chain is failed and must be rerun from a clean checkpoint; no production gold label payload exists.
+- Decisions: keep A209, A026 and A027 `IN_PROGRESS`; do not treat short probes, worksheets, templates or failed 24h chains as release-ready evidence.
+- Remaining risks: the next 24h run can still fail due host sleep, Playwright runtime closure, resource pressure or wall-clock budget drift; operator worksheets can still be misread as labels if fail-closed fields are ignored.
+- Rollback: revert the A209 harness changes, T904 operator packet generator/tests, regenerated A026/A027/A205 artifacts and governance companion records, then rerun gold-quality and release validators; preserve the failed A209 checkpoint/log as incident evidence.
+- Next step: complete validation, regenerate release artifacts/checksums, commit/push EEI-only changes, then launch a fresh detached A209 24h run with checkpoint monitoring.
 
 ## EVENT-20260625-023 - T1301/A202 operator review packet freshness remote CI binding
 

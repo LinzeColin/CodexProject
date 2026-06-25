@@ -62,6 +62,7 @@ Enterprise_Ecosystem_Intelligence_release
 ├── artifacts
 │   ├── tests
 │   │   ├── a026
+│   │   │   ├── t904_a026_a027_operator_labeling_packet.json
 │   │   │   ├── t904_a026_a027_production_gold_label_intake_template.json
 │   │   │   └── t904_entity_resolution_gold_evaluation_contract.json
 │   │   ├── a027

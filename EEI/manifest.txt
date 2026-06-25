@@ -86,6 +86,7 @@ artifacts/release_operation_log_t1211.jsonl
 artifacts/requirement_function_task_test_traceability_t1213.csv
 artifacts/risk_control_mapping_t1214.csv
 artifacts/risk_control_summary_t1214.json
+artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json
 artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json
 artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json
 artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json

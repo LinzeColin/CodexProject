@@ -199,6 +199,8 @@ function summarizeChildPayload(payload) {
       measured_duration_seconds: 0,
       browser_heap_growth_bytes: null,
       browser_dom_node_growth: null,
+      browser_slices_completed: null,
+      browser_measurement_error: null,
       worker_jobs_completed: null,
       worker_jobs_total: null,
       worker_event_loop_lag_p95_ms: null
@@ -209,6 +211,8 @@ function summarizeChildPayload(payload) {
     measured_duration_seconds: payload.measured_duration_seconds,
     browser_heap_growth_bytes: payload.browser?.heap_growth_bytes ?? null,
     browser_dom_node_growth: payload.browser?.dom_node_growth ?? null,
+    browser_slices_completed: payload.browser?.slices_completed ?? null,
+    browser_measurement_error: payload.browser?.measurement_error?.message ?? null,
     worker_jobs_completed: payload.worker?.jobs_completed ?? null,
     worker_jobs_total: payload.worker?.jobs_total ?? null,
     worker_event_loop_lag_p95_ms: payload.worker?.event_loop_lag_ms?.p95 ?? null
@@ -266,6 +270,8 @@ async function runWindow({ args, index, durationSeconds }) {
       output_path: displayPath(outputPath),
       browser_heap_growth_bytes: childSummary.browser_heap_growth_bytes,
       browser_dom_node_growth: childSummary.browser_dom_node_growth,
+      browser_slices_completed: childSummary.browser_slices_completed,
+      browser_measurement_error: childSummary.browser_measurement_error,
       worker_jobs_completed: childSummary.worker_jobs_completed,
       worker_jobs_total: childSummary.worker_jobs_total,
       worker_event_loop_lag_p95_ms: childSummary.worker_event_loop_lag_p95_ms
@@ -395,6 +401,8 @@ function buildSummary({ args, parameters, checkpointPath, outputPath, windows, s
       output_path: window.output_path,
       browser_heap_growth_bytes: window.browser_heap_growth_bytes,
       browser_dom_node_growth: window.browser_dom_node_growth,
+      browser_slices_completed: window.browser_slices_completed,
+      browser_measurement_error: window.browser_measurement_error,
       worker_jobs_completed: window.worker_jobs_completed,
       worker_jobs_total: window.worker_jobs_total,
       worker_event_loop_lag_p95_ms: window.worker_event_loop_lag_p95_ms

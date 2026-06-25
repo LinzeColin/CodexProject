@@ -144,9 +144,13 @@ validate-mvp-release-gate-preflight:
 	$(UV) run python scripts/validate_mvp_release_gate.py validate
 
 generate-gold-quality-evaluation-artifacts:
+	$(UV) run python scripts/validate_gold_quality_evaluation.py generate-template
+	$(UV) run python scripts/validate_gold_quality_evaluation.py generate-packet
 	$(UV) run python scripts/validate_gold_quality_evaluation.py generate
 
 validate-gold-quality-evaluation:
+	$(UV) run python scripts/validate_gold_quality_evaluation.py validate-template
+	$(UV) run python scripts/validate_gold_quality_evaluation.py validate-packet
 	$(UV) run python scripts/validate_gold_quality_evaluation.py validate
 
 generate-t905-release-rehearsal-artifacts:
@@ -201,7 +205,7 @@ supervise-operator-soak:
 	$(UV) run python scripts/supervise_operator_soak.py --write-output /tmp/eei-a209-operator-soak-supervisor.json --quiet
 
 watch-operator-soak:
-	$(UV) run python scripts/watch_operator_soak.py --cycles 1 --write-output /tmp/eei-a209-operator-soak-watchdog.json --quiet
+	$(UV) run python scripts/watch_operator_soak.py --cycles 1 --write-output /tmp/eei-a209-operator-soak-watchdog.json --allow-operator-intervention-status --quiet
 
 generate-operator-soak-background-heartbeat:
 	$(UV) run python scripts/record_operator_soak_heartbeat.py generate --quiet

@@ -43,6 +43,9 @@ DEFAULT_RELATIONSHIP_GOLD_EVALUATION = (
 DEFAULT_GOLD_INTAKE_TEMPLATE = (
     ROOT / "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json"
 )
+DEFAULT_GOLD_OPERATOR_LABELING_PACKET = (
+    ROOT / "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json"
+)
 DEFAULT_OPERATOR_SOAK_FINALIZATION = (
     ROOT / "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json"
 )
@@ -435,6 +438,7 @@ def build_operator_intake_packet(
     a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    gold_operator_labeling_packet_path: Path = DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
     operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
@@ -484,6 +488,7 @@ def build_operator_intake_packet(
             acceptance_id="A026",
             label="A026 production entity-resolution gold labels",
             required_source=source_ref(gold_intake_template_path),
+            supporting_sources=[source_ref(gold_operator_labeling_packet_path)],
             validation_command=(
                 "make generate-gold-quality-evaluation-artifacts "
                 "validate-gold-quality-evaluation"
@@ -500,6 +505,7 @@ def build_operator_intake_packet(
             acceptance_id="A027",
             label="A027 production relationship-extraction gold labels",
             required_source=source_ref(gold_intake_template_path),
+            supporting_sources=[source_ref(gold_operator_labeling_packet_path)],
             validation_command=(
                 "make generate-gold-quality-evaluation-artifacts "
                 "validate-gold-quality-evaluation"
@@ -565,6 +571,9 @@ def build_operator_intake_packet(
             "a202_operator_review_packet": source_ref(a202_operator_review_packet_path),
             "a210_brand_clearance_intake_template": source_ref(brand_intake_template_path),
             "a026_a027_gold_label_intake_template": source_ref(gold_intake_template_path),
+            "a026_a027_operator_labeling_packet": source_ref(
+                gold_operator_labeling_packet_path
+            ),
             "a209_operator_soak_finalization_preflight": source_ref(
                 operator_soak_finalization_path
             ),
@@ -665,6 +674,7 @@ def validate_operator_intake_packet(
     a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    gold_operator_labeling_packet_path: Path = DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
     operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
 ) -> None:
     expected = build_operator_intake_packet(
@@ -673,6 +683,7 @@ def validate_operator_intake_packet(
         a202_operator_review_packet_path=a202_operator_review_packet_path,
         brand_intake_template_path=brand_intake_template_path,
         gold_intake_template_path=gold_intake_template_path,
+        gold_operator_labeling_packet_path=gold_operator_labeling_packet_path,
         operator_soak_finalization_path=operator_soak_finalization_path,
         generated_at=payload.get("generated_at"),
     )
@@ -758,6 +769,11 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         type=Path,
         default=DEFAULT_GOLD_INTAKE_TEMPLATE,
     )
+    parser.add_argument(
+        "--gold-operator-labeling-packet",
+        type=Path,
+        default=DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -815,6 +831,7 @@ def main() -> int:
             a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
+            gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
             operator_soak_finalization_path=args.operator_soak_finalization,
         )
         validate_operator_intake_packet(
@@ -824,6 +841,7 @@ def main() -> int:
             a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
+            gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
             operator_soak_finalization_path=args.operator_soak_finalization,
         )
         write_json(args.packet_output, payload)
@@ -837,6 +855,7 @@ def main() -> int:
             a202_operator_review_packet_path=args.a202_operator_review_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
+            gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
             operator_soak_finalization_path=args.operator_soak_finalization,
         )
         if not args.quiet:

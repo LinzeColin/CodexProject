@@ -30,6 +30,11 @@ DEFAULT_A027_OUTPUT = (
 DEFAULT_INTAKE_TEMPLATE_OUTPUT = (
     ROOT / "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json"
 )
+DEFAULT_OPERATOR_PACKET_OUTPUT = (
+    ROOT / "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json"
+)
+DEFAULT_REVIEW_PACKET = ROOT / "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
+DEFAULT_FACT_CANDIDATES = ROOT / "data/golden_vertical_fact_candidates.json"
 
 ENTITY_MIN_CASES = 50
 ENTITY_MIN_PRECISION = 0.95
@@ -277,6 +282,329 @@ def build_intake_template(*, generated_at: str | None = None) -> dict[str, Any]:
             "--allow-production-gold-set and complete production_gold_evidence.",
         ],
     }
+
+
+def sha256_file(path: Path) -> str:
+    import hashlib
+
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def anchor_lookup(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> dict[str, dict]:
+    anchors: dict[str, dict] = {}
+    for anchor in review_packet.get("anchors", []):
+        if isinstance(anchor, dict) and isinstance(anchor.get("anchor_id"), str):
+            anchors[anchor["anchor_id"]] = anchor
+    for snapshot in fact_candidates.get("source_snapshots", []):
+        if isinstance(snapshot, dict) and isinstance(snapshot.get("anchor_id"), str):
+            anchors[snapshot["anchor_id"]] = snapshot
+    return anchors
+
+
+def entity_terms_from_sources(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    anchors = anchor_lookup(review_packet, fact_candidates)
+    terms: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    source_snapshots = fact_candidates.get("source_snapshots", [])
+    for snapshot in source_snapshots:
+        if not isinstance(snapshot, dict):
+            continue
+        anchor_id = str(snapshot.get("anchor_id") or "").strip()
+        raw_terms = str(snapshot.get("expected_entities_or_stages") or "")
+        for raw in raw_terms.split(";"):
+            value = raw.strip()
+            if not value:
+                continue
+            key = (value.lower(), anchor_id)
+            if key in seen:
+                continue
+            seen.add(key)
+            terms.append(
+                {
+                    "input_text": value,
+                    "source_anchor_id": anchor_id,
+                    "source_ref": f"data/golden_vertical_fact_candidates.json#{anchor_id}",
+                    "official_publisher": snapshot.get("official_publisher"),
+                    "source_title": snapshot.get("title"),
+                    "source_url": snapshot.get("url") or snapshot.get("source_url"),
+                }
+            )
+    for anchor in anchors.values():
+        title = str(anchor.get("title") or "").strip()
+        if not title:
+            continue
+        anchor_id = str(anchor.get("anchor_id") or "").strip()
+        key = (title.lower(), anchor_id)
+        if key in seen:
+            continue
+        seen.add(key)
+        terms.append(
+            {
+                "input_text": title,
+                "source_anchor_id": anchor_id,
+                "source_ref": (
+                    "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
+                    f"#{anchor_id}"
+                ),
+                "official_publisher": anchor.get("official_publisher"),
+                "source_title": anchor.get("title"),
+                "source_url": anchor.get("source_url"),
+            }
+        )
+    if not terms:
+        raise ValueError(
+            "operator labeling packet requires at least one source-derived entity term"
+        )
+    return terms
+
+
+def relationship_candidates_from_sources(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    candidates = review_packet.get("relationship_candidate_review_queue") or fact_candidates.get(
+        "relationship_candidates"
+    )
+    if not isinstance(candidates, list) or not candidates:
+        raise ValueError("operator labeling packet requires relationship candidates")
+    result = [candidate for candidate in candidates if isinstance(candidate, dict)]
+    if not result:
+        raise ValueError("operator labeling packet relationship candidates must be objects")
+    return result
+
+
+def build_entity_labeling_slots(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    terms = entity_terms_from_sources(review_packet, fact_candidates)
+    slots: list[dict[str, Any]] = []
+    for index in range(ENTITY_MIN_CASES):
+        term = terms[index % len(terms)]
+        slots.append(
+            {
+                "slot_id": f"ENT-PROD-SLOT-{index + 1:03d}",
+                "label_status": "OPERATOR_TO_LABEL",
+                "input_text": term["input_text"],
+                "predicted_entity_id": "",
+                "operator_expected_entity_id": "",
+                "operator_true_negative": None,
+                "required_evidence_refs": [term["source_ref"]],
+                "source_coverage": {
+                    "required_source_ids": [term["source_anchor_id"]],
+                    "observed_source_ids": [],
+                    "counter_evidence_reviewed": None,
+                },
+                "source_context": {
+                    "official_publisher": term.get("official_publisher"),
+                    "source_title": term.get("source_title"),
+                    "source_url": term.get("source_url"),
+                },
+                "required_operator_fields": [
+                    "labeler",
+                    "labeled_at",
+                    "expected_entity_id",
+                    "predicted_entity_id",
+                    "evidence_refs",
+                    "source_coverage.counter_evidence_reviewed",
+                ],
+            }
+        )
+    return slots
+
+
+def build_relationship_labeling_slots(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    candidates = relationship_candidates_from_sources(review_packet, fact_candidates)
+    slots: list[dict[str, Any]] = []
+    for index in range(RELATIONSHIP_MIN_CASES):
+        candidate = candidates[index % len(candidates)]
+        candidate_key = str(candidate.get("candidate_key") or f"candidate-{index + 1}")
+        required_anchor_ids = candidate.get("required_source_anchor_ids") or [
+            item
+            for item in [
+                candidate.get("source_anchor_id"),
+                *(candidate.get("supporting_source_anchor_ids") or []),
+            ]
+            if item
+        ]
+        slots.append(
+            {
+                "slot_id": f"REL-PROD-SLOT-{index + 1:03d}",
+                "candidate_key": candidate_key,
+                "label_status": "OPERATOR_TO_LABEL",
+                "subject_candidate_name": candidate.get("subject_candidate_name"),
+                "relationship_type": candidate.get("relationship_type"),
+                "object_candidate_name": candidate.get("object_candidate_name"),
+                "predicted_relation_present": True,
+                "predicted_relationship_key": candidate_key,
+                "operator_expected_relation_present": None,
+                "operator_expected_relationship_key": "",
+                "required_evidence_refs": [
+                    f"data/golden_vertical_fact_candidates.json#{candidate_key}",
+                    "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
+                ],
+                "required_source_anchor_ids": required_anchor_ids,
+                "source_coverage": {
+                    "required_source_ids": required_anchor_ids,
+                    "observed_source_ids": [],
+                    "counter_evidence_reviewed": None,
+                },
+                "support_excerpt": candidate.get("support_excerpt"),
+                "counter_evidence_prompt": (
+                    "Operator must review contrary official evidence before setting "
+                    "counter_evidence_reviewed=true."
+                ),
+                "required_operator_fields": [
+                    "labeler",
+                    "labeled_at",
+                    "expected_relation_present",
+                    "predicted_relation_present",
+                    "expected_relationship_key",
+                    "predicted_relationship_key",
+                    "evidence_refs",
+                    "source_coverage.counter_evidence_reviewed",
+                ],
+            }
+        )
+    return slots
+
+
+def build_operator_labeling_packet(
+    *,
+    review_packet_path: Path = DEFAULT_REVIEW_PACKET,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    review_packet = read_json(review_packet_path)
+    fact_candidates = read_json(fact_candidates_path)
+    return {
+        "schema_version": "eei-a026-a027-operator-labeling-packet-v1",
+        "artifact_id": "t904-a026-a027-operator-labeling-packet",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T904",
+        "acceptance_ids": ["A026", "A027"],
+        "status": "READY_FOR_OPERATOR_LABELING",
+        "scope": "golden-vertical:nvidia",
+        "production_gold_set": False,
+        "release_gate_closure_allowed": False,
+        "production_claim_allowed": False,
+        "relationship_publication_allowed": False,
+        "label_payload_generated": False,
+        "thresholds": {
+            "A026": {
+                "minimum_cases": ENTITY_MIN_CASES,
+                "minimum_precision": ENTITY_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+            "A027": {
+                "minimum_cases": RELATIONSHIP_MIN_CASES,
+                "minimum_precision": RELATIONSHIP_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+        },
+        "source_files": {
+            "a202_operator_review_packet": relative(review_packet_path),
+            "a202_operator_review_packet_sha256": sha256_file(review_packet_path),
+            "golden_vertical_fact_candidates": relative(fact_candidates_path),
+            "golden_vertical_fact_candidates_sha256": sha256_file(fact_candidates_path),
+            "gold_quality_intake_template": relative(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
+            "gold_quality_intake_template_sha256": (
+                sha256_file(DEFAULT_INTAKE_TEMPLATE_OUTPUT)
+                if DEFAULT_INTAKE_TEMPLATE_OUTPUT.exists()
+                else None
+            ),
+        },
+        "operator_payload_requirements": {
+            "schema_version": LABEL_SCHEMA_VERSION,
+            "production_gold_evidence": production_intake_policy(),
+            "entity_resolution_cases_required": ENTITY_MIN_CASES,
+            "relationship_cases_required": RELATIONSHIP_MIN_CASES,
+            "forbidden": {
+                "repository_fixture_refs": list(PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES),
+                "fixture_labelers": sorted(PRODUCTION_GOLD_FORBIDDEN_LABELERS),
+            },
+        },
+        "entity_resolution_labeling_slots": build_entity_labeling_slots(
+            review_packet,
+            fact_candidates,
+        ),
+        "relationship_labeling_slots": build_relationship_labeling_slots(
+            review_packet,
+            fact_candidates,
+        ),
+        "validation_commands": {
+            "convert_completed_packet_to_labels": (
+                "Fill this packet into an eei-gold-quality-labels-v1 JSON payload; "
+                "this repository does not auto-convert incomplete slots."
+            ),
+            "generate_contract": (
+                "python scripts/validate_gold_quality_evaluation.py generate "
+                "--labels <operator-production-gold-labels.json> "
+                "--allow-production-gold-set"
+            ),
+            "validate_contract": "python scripts/validate_gold_quality_evaluation.py validate",
+        },
+        "non_claims": [
+            "This packet is an operator labeling worksheet, not a production gold label set.",
+            "This packet does not close A026 or A027.",
+            "Blank slots, repository fixtures, unsigned labels and unreviewed payloads "
+            "do not count as production evidence.",
+            "A202 source/legal/owner clearance, A209 24h soak and A210 brand clearance "
+            "remain separate gates.",
+        ],
+    }
+
+
+def validate_operator_labeling_packet(packet: dict[str, Any]) -> None:
+    if packet.get("schema_version") != "eei-a026-a027-operator-labeling-packet-v1":
+        raise ValueError("operator labeling packet schema_version drift")
+    if packet.get("status") != "READY_FOR_OPERATOR_LABELING":
+        raise ValueError("operator labeling packet status drift")
+    for key in (
+        "production_gold_set",
+        "release_gate_closure_allowed",
+        "production_claim_allowed",
+        "relationship_publication_allowed",
+        "label_payload_generated",
+    ):
+        if packet.get(key) is not False:
+            raise ValueError(f"operator labeling packet {key} must be false")
+    entity_slots = packet.get("entity_resolution_labeling_slots")
+    relationship_slots = packet.get("relationship_labeling_slots")
+    if not isinstance(entity_slots, list) or len(entity_slots) != ENTITY_MIN_CASES:
+        raise ValueError("operator labeling packet must contain exactly 50 entity slots")
+    if (
+        not isinstance(relationship_slots, list)
+        or len(relationship_slots) != RELATIONSHIP_MIN_CASES
+    ):
+        raise ValueError("operator labeling packet must contain exactly 100 relationship slots")
+    if len({slot.get("slot_id") for slot in entity_slots}) != ENTITY_MIN_CASES:
+        raise ValueError("entity slot ids must be unique")
+    if len({slot.get("slot_id") for slot in relationship_slots}) != RELATIONSHIP_MIN_CASES:
+        raise ValueError("relationship slot ids must be unique")
+    for slot in entity_slots + relationship_slots:
+        if slot.get("label_status") != "OPERATOR_TO_LABEL":
+            raise ValueError("all labeling slots must remain OPERATOR_TO_LABEL")
+        required_refs = slot.get("required_evidence_refs")
+        if not isinstance(required_refs, list) or not required_refs:
+            raise ValueError("labeling slots require evidence refs")
+        coverage = slot.get("source_coverage")
+        if not isinstance(coverage, dict) or not coverage.get("required_source_ids"):
+            raise ValueError("labeling slots require source coverage")
+        if coverage.get("counter_evidence_reviewed") is not None:
+            raise ValueError("blank operator slots must not pre-claim counter-evidence review")
 
 
 def validate_production_gold_evidence(payload: dict[str, Any]) -> dict[str, Any]:
@@ -770,6 +1098,52 @@ def validate_template(args: argparse.Namespace) -> int:
     return 0
 
 
+def generate_packet(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    packet = build_operator_labeling_packet(
+        review_packet_path=Path(args.review_packet),
+        fact_candidates_path=Path(args.fact_candidates),
+    )
+    validate_operator_labeling_packet(packet)
+    write_json(output, packet)
+    print(
+        json.dumps(
+            {
+                "generated": True,
+                "status": packet["status"],
+                "release_gate_closure_allowed": packet["release_gate_closure_allowed"],
+                "output": relative(output),
+                "entity_slots": len(packet["entity_resolution_labeling_slots"]),
+                "relationship_slots": len(packet["relationship_labeling_slots"]),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def validate_packet(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    packet = read_json(output)
+    validate_operator_labeling_packet(packet)
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "status": packet["status"],
+                "release_gate_closure_allowed": packet["release_gate_closure_allowed"],
+                "output": relative(output),
+                "entity_slots": len(packet["entity_resolution_labeling_slots"]),
+                "relationship_slots": len(packet["relationship_labeling_slots"]),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def generate(args: argparse.Namespace) -> int:
     labels = Path(args.labels)
     contract = build_contract(
@@ -848,6 +1222,14 @@ def main() -> int:
         default=str(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
     )
     validate_template_parser.set_defaults(func=validate_template)
+    generate_packet_parser = subparsers.add_parser("generate-packet")
+    generate_packet_parser.add_argument("--output", default=str(DEFAULT_OPERATOR_PACKET_OUTPUT))
+    generate_packet_parser.add_argument("--review-packet", default=str(DEFAULT_REVIEW_PACKET))
+    generate_packet_parser.add_argument("--fact-candidates", default=str(DEFAULT_FACT_CANDIDATES))
+    generate_packet_parser.set_defaults(func=generate_packet)
+    validate_packet_parser = subparsers.add_parser("validate-packet")
+    validate_packet_parser.add_argument("--output", default=str(DEFAULT_OPERATOR_PACKET_OUTPUT))
+    validate_packet_parser.set_defaults(func=validate_packet)
     args = parser.parse_args()
     return int(args.func(args))
 

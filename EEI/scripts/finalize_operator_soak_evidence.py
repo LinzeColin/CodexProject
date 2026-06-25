@@ -121,7 +121,7 @@ def finalization_status(
     evidence_summary: dict[str, Any],
     heartbeat_errors: list[str],
 ) -> str:
-    if heartbeat_errors or evidence_summary["status"] == "FAIL":
+    if heartbeat_errors or evidence_summary["status"] in {"FAIL", "FAILED_OPERATOR_EVIDENCE"}:
         return "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
     if evidence_summary["status"] == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW":
         if (

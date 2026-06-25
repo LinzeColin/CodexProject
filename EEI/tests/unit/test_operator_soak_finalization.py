@@ -50,6 +50,7 @@ def heartbeat(*, windows_completed: int, windows_failed: int = 0) -> dict:
 
 
 def evidence(status: str) -> dict:
+    failed_status = status in {"FAIL", "FAILED_OPERATOR_EVIDENCE"}
     return {
         "schema_version": "eei-a209-operator-soak-evidence-validation-v1",
         "system_name": "EEI",
@@ -71,6 +72,8 @@ def evidence(status: str) -> dict:
                 "label": "operator_24h",
                 "status": "PASS"
                 if status == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
+                else "FAILED_RUN"
+                if status == "FAILED_OPERATOR_EVIDENCE"
                 else "MISSING",
                 "windows_completed": 288
                 if status == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
@@ -81,7 +84,7 @@ def evidence(status: str) -> dict:
                 "completed_duration_seconds": 86400
                 if status == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
                 else None,
-                "errors": [] if status != "FAIL" else ["window 2 status must be PASS"],
+                "errors": [] if not failed_status else ["window 2 status must be PASS"],
                 "missing": [] if status != "PARTIAL_OPERATOR_EVIDENCE" else ["output_json"],
             },
         ],
@@ -143,4 +146,25 @@ def test_finalization_requires_intervention_on_failed_evidence(tmp_path: Path) -
     assert payload["status"] == "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
     assert "Inspect heartbeat_validation_errors" in payload["operator_next_actions"][0]
     assert payload["downstream_release_gate_refresh_allowed"] is False
+    validate_preflight(payload, heartbeat_path=heartbeat_path, evidence_path=evidence_path)
+
+
+def test_finalization_requires_intervention_on_failed_operator_evidence(
+    tmp_path: Path,
+) -> None:
+    heartbeat_path = write_json(tmp_path / "heartbeat.json", heartbeat(windows_completed=6))
+    evidence_path = write_json(
+        tmp_path / "evidence.json",
+        evidence("FAILED_OPERATOR_EVIDENCE"),
+    )
+
+    payload = build_preflight(
+        heartbeat_path=heartbeat_path,
+        evidence_path=evidence_path,
+        generated_at="2026-06-24T00:00:00Z",
+    )
+
+    assert payload["status"] == "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
+    assert payload["downstream_release_gate_refresh_allowed"] is False
+    assert payload["a209_evidence_ready_for_release_manager"] is False
     validate_preflight(payload, heartbeat_path=heartbeat_path, evidence_path=evidence_path)

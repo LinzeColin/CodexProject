@@ -2,7 +2,7 @@
 
 ## 2026-06-25 - T1301/A202 operator review packet freshness remote CI binding
 
-Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`; A202 STILL IN PROGRESS; A209 STILL RUNNING; DOWNSTREAM RELEASE GATES STILL BLOCKED
+Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`; A202 STILL IN PROGRESS; A209 WAS RUNNING AT CI-BINDING TIME BUT WAS SUPERSEDED BY THE 2026-06-26 `7/288` FAILURE; DOWNSTREAM RELEASE GATES STILL BLOCKED
 
 ### Scope
 
@@ -13,8 +13,9 @@ Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`
 
 ### Current Evidence
 
-- Committed A209 point-in-time heartbeat remains `190/288` PASS windows, `0` failed and `65.97%` completion.
-- Live A209 checkpoint observed after the CI-bound commit reached at least `198/288` PASS with `0` failed; watchdog PID `61030` and operator PID `82041` were still running, with child window `199` active.
+- Committed A209 point-in-time heartbeat for this historical CI-binding event was `190/288` PASS windows, `0` failed and `65.97%` completion.
+- Live A209 checkpoint observed after the CI-bound commit reached at least `198/288` PASS with `0` failed; watchdog PID `61030` and operator PID `82041` were still running, with child window `199` active at that time.
+- Superseding current fact: the later clean 24h attempt failed on 2026-06-25T22:08:58Z at `7/288` with `child_status=NO_OUTPUT`; see the 2026-06-26 A209 repair entry below.
 - A209 finalization remains blocked until the 24h summary/checkpoint chain validates `288/288` successful windows with zero failures.
 
 ### Acceptance Mapping
@@ -28,7 +29,7 @@ Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`
 
 - Project Governance run `28194420709` / job `83517222542`: PASS.
 - EEI validation run `28194420774` / job `83517223204`: PASS.
-- A209 live checkpoint observation: `198/288` PASS with `0` failed; progress-only and not release-ready evidence.
+- A209 live checkpoint observation at this historical point: `198/288` PASS with `0` failed; progress-only and not release-ready evidence.
 
 ### Remaining Gaps
 
@@ -6006,3 +6007,157 @@ Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; DOWNSTREAM RELEASE GATE
 
 - Revert the refreshed A202/A205/A209 artifacts and governance companion records, then regenerate release artifacts from the previous packet hash.
 - Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
+
+## 2026-06-26 - T1307/A209 NO_OUTPUT soak harness repair
+
+Status: LOCAL REPAIR IN PROGRESS; A209 STILL IN PROGRESS; 24H EVIDENCE FAILED AT 7/288
+
+### Scope
+
+- Inspected the repository-local A209 24h checkpoint chain after the clean restart.
+- Recorded the failed state: 7 checkpoint rows, 6 PASS windows, 1 FAIL window, latest generated_at `2026-06-25T22:08:58Z`.
+- Window 7 failed with `child_status=NO_OUTPUT`, `exit_status=1` and Playwright `page.evaluate: Target page, context or browser has been closed`; `/private/tmp/eei-operator-soak-61143-7.json` was absent.
+- Hardened `scripts/run_soak_smoke.mjs` so a long browser measurement is split into short slices, Playwright browser path can fall back to `/private/tmp/eei-ms-playwright`, browser/worker outcomes are collected with `Promise.allSettled`, and measurement errors are written into structured output.
+- Hardened `scripts/run_operator_soak.mjs` so checkpoints include `browser_slices_completed` and `browser_measurement_error`.
+- Hardened `scripts/watch_operator_soak.py` verification semantics with `--allow-operator-intervention-status`; the default script still exits non-zero for operator intervention, while the Makefile verification target can accept the correct fail-closed status without mutating the payload or closing A209.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for 4h/24h soak evidence and fail-closed finalization.
+- This repair does not close A209 and does not replace 24h evidence.
+
+### Validation
+
+- `node --check scripts/run_soak_smoke.mjs`: PASS.
+- `node --check scripts/run_operator_soak.mjs`: PASS.
+- `node scripts/run_soak_smoke.mjs --mode ci_smoke_slice_probe --duration-seconds 3 --browser-slice-seconds 1 --output /tmp/eei-soak-slice-probe.json --fail-on-budget --quiet`: PASS; `slices_completed=3`, `measurement_error=null`, local Playwright fallback used.
+- `node scripts/run_operator_soak.mjs --mode ci_smoke_slice_probe --duration-seconds 3 --window-seconds 3 --output /tmp/eei-operator-slice-probe.json --checkpoint /tmp/eei-operator-slice-probe.checkpoints.jsonl --fail-on-budget --quiet`: PASS; `1/1` checkpoint window PASS.
+- `ruff check scripts/watch_operator_soak.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS `19/19`.
+
+### Remaining Gaps
+
+- A209 still requires a new clean 24h run reaching `288/288` windows with zero failures and release-ready validation.
+- Failed `7/288` evidence must remain incident evidence only.
+
+### Rollback
+
+- Revert `scripts/run_soak_smoke.mjs` and `scripts/run_operator_soak.mjs`, restore prior release artifacts/checksums, and keep the failed checkpoint/log files for incident analysis.
+
+
+## 2026-06-26 - T904/A026-A027 operator labeling packet
+
+Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Added a source-bound operator labeling packet generated from the current A202 operator review packet and Golden Vertical fact candidates.
+- The packet contains exactly 50 A026 entity-resolution slots and 100 A027 relationship-extraction slots.
+- Each slot remains `OPERATOR_TO_LABEL` and requires operator-provided labeler, timestamp, expected/predicted fields, evidence refs and counter-evidence review.
+- The packet is explicitly not a production gold set: `production_gold_set=false`, `release_gate_closure_allowed=false`, `production_claim_allowed=false`, `relationship_publication_allowed=false` and `label_payload_generated=false`.
+- Bound the packet into the external release operator intake packet as supporting source evidence for A026/A027.
+
+### Acceptance Mapping
+
+- T904 -> A026/A027 for production gold quality evaluation readiness.
+- T1303 -> A204/A205 for external release operator intake packet visibility.
+- This packet does not close A026/A027; only a completed, signed, non-repository production gold label payload can do that.
+
+### Validation
+
+- `make generate-gold-quality-evaluation-artifacts`: PASS before governance sync.
+- `make validate-gold-quality-evaluation`: PASS before governance sync.
+- `.venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py -p no:cacheprovider`: PASS `13/13`.
+- `.venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle`: PASS before governance sync.
+
+### Remaining Gaps
+
+- A026 still requires at least 50 real operator-supplied human-labeled entity-resolution cases with precision >=95%.
+- A027 still requires at least 100 real operator-supplied human-labeled relationship cases with precision >=90%.
+- A202 source/legal/owner clearance, A209 24h soak and A210 brand clearance remain separate release gates.
+
+### Rollback
+
+- Revert the operator packet generator/tests and generated packet, regenerate A026/A027/A205 artifacts without the packet source, and rerun gold-quality plus external release validators.
+
+
+## 2026-06-26 - T1307/A209 failed-evidence validator sync
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; RELEASE-READY MODE STILL BLOCKED
+
+### Scope
+
+- Updated `scripts/validate_operator_soak_evidence.py` so a truthfully declared failed operator run is recorded as `FAILED_OPERATOR_EVIDENCE` instead of a structural validator failure.
+- Kept structural invalid evidence fail-closed: a purported PASS artifact that misses duration, window, schema, path, release-gate or worker-binding requirements still returns `FAIL`.
+- Updated `scripts/record_operator_soak_heartbeat.py` so `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED` validates only when failed windows are present, the release gate remains open and the failed operator is not still claimed as running.
+- Updated `scripts/finalize_operator_soak_evidence.py` so `FAILED_OPERATOR_EVIDENCE` produces `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED` and keeps downstream release-gate refresh blocked.
+- Regenerated A209 heartbeat/evidence/finalization artifacts and dependent A203/A204/A205 release preflights from the current failed `7/288` state.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for fail-closed 24h soak evidence validation and finalization semantics.
+- T1302 -> A203 and T1303 -> A204/A205 only for dependent blocked release-preflight hash refresh.
+- This does not close A209, release-manager activation, MVP release readiness, A202, A210, A026 or A027.
+
+### Validation
+
+- `py_compile` for A209 validator/heartbeat/finalizer/tests: PASS.
+- `ruff check` for A209 validator/heartbeat/finalizer/tests: PASS.
+- `.venv/bin/uv run pytest tests/unit/test_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py -q`: PASS `25/25`.
+- `make generate-operator-soak-background-heartbeat generate-operator-soak-evidence-artifact generate-operator-soak-finalization-preflight validate-operator-soak-background-heartbeat validate-operator-soak-evidence validate-operator-soak-finalization-preflight`: PASS.
+- `python3 scripts/validate_operator_soak_evidence.py validate --require-release-ready --quiet`: EXPECTED FAIL; the failed 24h chain is not release-ready.
+- Fixed-point release artifact refresh/validation: release-manager activation, A203 production API preflight, MVP release gate, external release evidence bundle, development status, risk control, clean-room release and release artifacts all PASS.
+
+### Current Evidence State
+
+- `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`: `FAILED_OPERATOR_EVIDENCE`.
+- `artifacts/tests/a209/t1307_operator_soak_background_progress.json`: `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, `6` completed windows, `1` failed window.
+- `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json`: `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, `downstream_release_gate_refresh_allowed=false`.
+
+### Remaining Gaps
+
+- A209 still requires a fresh 24h run with `288/288` PASS windows and `0` failed windows.
+- The failed canonical checkpoint remains incident evidence and must not be overwritten before being preserved.
+- Background rerun evidence is not release-ready until copied into canonical artifacts and validated after completion.
+
+### Rollback
+
+- Revert the validator/heartbeat/finalizer semantic changes, A209 tests, regenerated A209/A203/A205/release artifacts and VERSION_MATRIX iteration update.
+- Preserve failed `7/288` checkpoint/log evidence for incident analysis.
+
+
+## 2026-06-26 - T1307/A209 isolated 24h rerun started
+
+Status: BACKGROUND RERUN STARTED; A209 STILL IN PROGRESS; RELEASE-READY MODE STILL BLOCKED
+
+### Scope
+
+- Started a fresh detached A209 24h operator rerun under `/private/tmp/eei-a209-rerun-20260626-0918/`.
+- Preserved the failed canonical `artifacts/tests/a209/t1307_operator_soak_24h.*` chain as incident evidence and did not overwrite repository-local failed evidence.
+- Started the operator and watchdog against the same isolated output, checkpoint, PID and log paths.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for 24h operator-soak evidence recovery.
+- This does not close A209; completion still requires `288/288` successful windows, zero failed windows, promotion to canonical evidence and `validate_operator_soak_evidence.py validate --require-release-ready` PASS.
+
+### Runtime Evidence
+
+- Isolated checkpoint: `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`.
+- First observed checkpoint: window `1/288` PASS, `0` failed, generated at `2026-06-25T23:04:42Z`, `browser_slices_completed=20`, `browser_measurement_error=null`, `worker_jobs_completed=12/12`.
+- Operator PID: `80478`.
+- Watchdog PID: `80732`.
+- Process check: both PIDs were observed running after the first checkpoint.
+
+### Remaining Gaps
+
+- A209 remains open until the isolated rerun reaches `288/288` PASS windows with `0` failed and is explicitly promoted/validated.
+- Host sleep, Playwright closure, browser/runtime resource pressure or stale checkpoint windows can still require operator recovery.
+- `/private/tmp` evidence must be preserved before any promotion to repository-local canonical artifacts.
+
+### Rollback
+
+- If this isolated rerun is invalid, stop only operator PID `80478` and watchdog PID `80732` after explicit operator authorization.
+- Leave the canonical failed `7/288` evidence untouched and rerun from a new isolated checkpoint path.

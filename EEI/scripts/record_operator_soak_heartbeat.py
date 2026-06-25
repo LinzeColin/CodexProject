@@ -38,6 +38,7 @@ VALID_PROGRESS_STATUSES = {
     "COMPLETE_SUMMARY_PENDING",
     "COMPLETE_READY_FOR_EVIDENCE_VALIDATION",
     "MISSING_OR_NOT_STARTED",
+    "FAILED_WINDOW",
 }
 
 
@@ -182,12 +183,7 @@ def validate_heartbeat_payload(payload: dict[str, Any]) -> list[str]:
     require(
         errors,
         payload.get("progress_status") in VALID_PROGRESS_STATUSES,
-        "progress_status must be a non-failed background state",
-    )
-    require(
-        errors,
-        payload.get("status") != "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
-        "failed window or intervention-required state cannot validate as heartbeat",
+        "progress_status must be a known background state",
     )
     progress = payload.get("progress")
     require(errors, isinstance(progress, dict), "progress must be an object")
@@ -196,8 +192,23 @@ def validate_heartbeat_payload(payload: dict[str, Any]) -> list[str]:
         windows_completed = progress.get("windows_completed")
         windows_failed = progress.get("windows_failed")
         windows_remaining = progress.get("windows_remaining")
+        progress_status = payload.get("progress_status")
+        intervention_required = (
+            payload.get("status") == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
+            or progress_status == "FAILED_WINDOW"
+        )
         require(errors, target_windows == 288, "A209 heartbeat must target 288 windows")
-        require(errors, windows_failed == 0, "A209 heartbeat must have zero failed windows")
+        require(
+            errors,
+            (isinstance(windows_failed, int) and windows_failed > 0)
+            if intervention_required
+            else windows_failed == 0,
+            (
+                "A209 intervention heartbeat must expose failed windows"
+                if intervention_required
+                else "A209 heartbeat must have zero failed windows"
+            ),
+        )
         require(
             errors,
             isinstance(windows_completed, int) and 0 <= windows_completed <= 288,
@@ -228,6 +239,12 @@ def validate_heartbeat_payload(payload: dict[str, Any]) -> list[str]:
             contract.get("failed_window_policy"),
             "failed_window_policy must be documented",
         )
+        if payload.get("status") == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED":
+            require(
+                errors,
+                contract.get("operator_process_status") != "RUNNING",
+                "intervention heartbeat must not claim the failed operator is still running",
+            )
     non_closure = payload.get("non_closure")
     require(errors, isinstance(non_closure, list), "non_closure must be a list")
     if isinstance(non_closure, list):

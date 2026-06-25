@@ -55,12 +55,12 @@
     "operator_soak_finalization": {
       "a209_evidence_ready_for_release_manager": false,
       "downstream_release_gate_refresh_allowed": false,
-      "progress_status": "RUNNING_PARTIAL",
+      "progress_status": "FAILED_WINDOW",
       "release_gate_closed_by_finalizer": false,
-      "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
+      "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "windows_completed": 2,
-      "windows_failed": 0
+      "windows_completed": 6,
+      "windows_failed": 1
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-25T21:48:45Z",
+  "generated_at": "2026-06-25T22:51:35Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -169,9 +169,14 @@
       "label": "A026 production entity-resolution gold labels",
       "required_source": {
         "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
-        "sha256": "0f7f623a3400f7a2ecae8aa3ea8d32b8e2d2f731548a2c1d407ee526a5252bba"
+        "sha256": "f930c1fa425f24857ed3fc9a47f6ffca411a8a5e623cdd2f6aa24a45995a257a"
       },
-      "supporting_sources": [],
+      "supporting_sources": [
+        {
+          "path": "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json",
+          "sha256": "ef11a47350c801490d2df5e2b468bfb0c75fc5377e11410c979b92973f90f110"
+        }
+      ],
       "template_or_partial_evidence_counts_as_clearance": false,
       "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation"
     },
@@ -188,15 +193,20 @@
       "label": "A027 production relationship-extraction gold labels",
       "required_source": {
         "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
-        "sha256": "0f7f623a3400f7a2ecae8aa3ea8d32b8e2d2f731548a2c1d407ee526a5252bba"
+        "sha256": "f930c1fa425f24857ed3fc9a47f6ffca411a8a5e623cdd2f6aa24a45995a257a"
       },
-      "supporting_sources": [],
+      "supporting_sources": [
+        {
+          "path": "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json",
+          "sha256": "ef11a47350c801490d2df5e2b468bfb0c75fc5377e11410c979b92973f90f110"
+        }
+      ],
       "template_or_partial_evidence_counts_as_clearance": false,
       "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation"
     },
     {
       "acceptance_id": "A209",
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 2/288 windows",
+      "blocking_reason": "A209 finalization does not allow downstream refresh at 6/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
@@ -208,7 +218,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "9f17443e65e8d39661d14e9efe8eb8a251c20f6fb4a6a96b9cb3c9eb5f4507f2"
+        "sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -219,7 +229,11 @@
   "source_files": {
     "a026_a027_gold_label_intake_template": {
       "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
-      "sha256": "0f7f623a3400f7a2ecae8aa3ea8d32b8e2d2f731548a2c1d407ee526a5252bba"
+      "sha256": "f930c1fa425f24857ed3fc9a47f6ffca411a8a5e623cdd2f6aa24a45995a257a"
+    },
+    "a026_a027_operator_labeling_packet": {
+      "path": "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json",
+      "sha256": "ef11a47350c801490d2df5e2b468bfb0c75fc5377e11410c979b92973f90f110"
     },
     "a202_operator_review_packet": {
       "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
@@ -231,7 +245,7 @@
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "9f17443e65e8d39661d14e9efe8eb8a251c20f6fb4a6a96b9cb3c9eb5f4507f2"
+      "sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -239,7 +253,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "e99eb992a6859d802150aab7f2b7f3f786e8679f3736e4eecbd8ae9a0b0a9621"
+      "sha256": "0712c943866a42378c2f637442bdd6356b1c85ab7cf58dee606f8327480c1be9"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

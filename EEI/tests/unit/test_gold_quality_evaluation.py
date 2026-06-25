@@ -219,6 +219,37 @@ def test_production_gold_label_intake_template_is_fail_closed() -> None:
     gold.validate_intake_template(template)
 
 
+def test_operator_labeling_packet_is_bounded_and_fail_closed() -> None:
+    packet = gold.build_operator_labeling_packet(generated_at="2026-06-25T00:00:00Z")
+
+    assert packet["status"] == "READY_FOR_OPERATOR_LABELING"
+    assert packet["production_gold_set"] is False
+    assert packet["release_gate_closure_allowed"] is False
+    assert packet["production_claim_allowed"] is False
+    assert packet["relationship_publication_allowed"] is False
+    assert packet["label_payload_generated"] is False
+    assert len(packet["entity_resolution_labeling_slots"]) == 50
+    assert len(packet["relationship_labeling_slots"]) == 100
+    assert packet["thresholds"]["A026"]["minimum_cases"] == 50
+    assert packet["thresholds"]["A027"]["minimum_cases"] == 100
+    assert packet["source_files"]["a202_operator_review_packet_sha256"]
+    assert packet["source_files"]["golden_vertical_fact_candidates_sha256"]
+
+    relationship_slot = packet["relationship_labeling_slots"][0]
+    assert relationship_slot["candidate_key"].startswith("GV-FACT-")
+    assert relationship_slot["source_coverage"]["counter_evidence_reviewed"] is None
+    assert relationship_slot["label_status"] == "OPERATOR_TO_LABEL"
+    gold.validate_operator_labeling_packet(packet)
+
+
+def test_operator_labeling_packet_validator_rejects_premature_claims() -> None:
+    packet = gold.build_operator_labeling_packet(generated_at="2026-06-25T00:00:00Z")
+    packet["release_gate_closure_allowed"] = True
+
+    with pytest.raises(ValueError, match="release_gate_closure_allowed must be false"):
+        gold.validate_operator_labeling_packet(packet)
+
+
 def test_production_gold_label_intake_template_validator_catches_drift() -> None:
     template = gold.build_intake_template(generated_at="2026-06-24T00:00:00Z")
     template["thresholds"]["A027"]["minimum_cases"] = 99

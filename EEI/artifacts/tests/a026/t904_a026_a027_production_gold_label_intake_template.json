@@ -4,7 +4,7 @@
     "A027"
   ],
   "artifact_id": "t904-a026-a027-production-gold-label-intake-template",
-  "generated_at": "2026-06-24T11:41:40Z",
+  "generated_at": "2026-06-25T22:29:10Z",
   "label_payload_skeleton": {
     "dataset_id": "<operator-production-gold-dataset-id>",
     "entity_resolution_cases": {

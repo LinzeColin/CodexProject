@@ -341,6 +341,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--start-if-missing", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--detach", action="store_true")
+    parser.add_argument(
+        "--allow-operator-intervention-status",
+        action="store_true",
+        help=(
+            "Return exit code 0 when the watchdog records an operator-intervention "
+            "state. The payload still remains fail-closed and does not close A209."
+        ),
+    )
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -369,10 +377,11 @@ def main() -> int:
         )
     if not args.quiet:
         print(json.dumps(payload, ensure_ascii=False, indent=2))
-    return 2 if payload.get("status") in {
+    intervention_status = payload.get("status") in {
         "OPERATOR_INTERVENTION_REQUIRED",
         "RUNNING_STALE_OPERATOR_INTERVENTION_REQUIRED",
-    } else 0
+    }
+    return 2 if intervention_status and not args.allow_operator_intervention_status else 0
 
 
 if __name__ == "__main__":
