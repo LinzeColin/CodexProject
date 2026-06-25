@@ -8,6 +8,11 @@ Updated: 2026-06-21 Australia/Sydney
 
 ## Current Status
 
+- 2026-06-26 A209 repair update: the previous 24h operator soak was stopped and quarantined after 224 windows because windows 15-19 exceeded the validator wall-clock budget (`elapsed_wall_seconds > measured_duration_seconds + max(60, measured_duration_seconds * 0.25)`). Continuing that run would not produce release-ready A209 evidence.
+- A209 runner hardening is in progress: `scripts/run_operator_soak.mjs` now marks a child window `FAIL` immediately when wall-clock time exceeds the same budget enforced by `scripts/validate_operator_soak_evidence.py`.
+- A clean A209 24h run was restarted at `2026-06-25T21:33:19Z` / `2026-06-26 07:33 AEST`; operator PID `61143`, watchdog PID `61390`, checkpoint `artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl`.
+- First clean window evidence: window 1 `PASS`, `wall_clock_within_budget=true`, `elapsed_wall_seconds=305.0837`, `max_expected_wall_seconds=375`.
+- Quarantine/recovery evidence is outside the repo at `/Users/linzezhang/Downloads/codex_crash_recovery_eei_20260626_0716/a209_invalid_wall_budget_run_20260626T0731AEST/`.
 - GitHub target: `LinzeColin/CodexProject/EEI`
 - Current gate: Phase 1 / G4 - Recursive exploration and live context
 - Gate status: IN PROGRESS

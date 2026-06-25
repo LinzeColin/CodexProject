@@ -42,15 +42,15 @@
       "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 60.07,
+      "completion_percent": 0.69,
       "counts_as_release_ready": false,
       "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
-      "windows_completed": 173,
+      "windows_completed": 2,
       "windows_failed": 0,
-      "windows_remaining": 115
+      "windows_remaining": 286
     },
     "release_decision": {
       "public_brand_launch_allowed": false,
@@ -75,7 +75,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-25T17:15:28Z",
+  "generated_at": "2026-06-25T21:48:43Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -107,11 +107,11 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "6c9fedc4c5629b129c5c3c010555f4033042a40ca8705fea2c9b7ad901b0605f",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "155f62e6ec61a33619a5c1d6e90b02545141ba8932a999941892cfde4854e62c",
+    "operator_soak_heartbeat_sha256": "8356508e665248691252138f3dfef477ecd5ecc7363d0665128788d574ff7bad",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "2d0155ca2b922f33f1e023128de9d4386fc926b52cdf8cec3e7a638ac525ccc4",
+    "release_decision_contract_sha256": "b9c8bbf84300ad15d69b9d6d4b1b089b8948a75f8f28dc970498b641424a7c53",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "40d7a6f3dd99b2f2239b246f3335b8d01d05ca134ec5a582ff14296e3c07e5a5"
+    "release_manager_preflight_sha256": "adb794cae7685bb9eea812fd8d96e092d2138aa08a330a6dfddd1ecf91f60dab"
   },
   "status": "A203_PRODUCTION_API_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

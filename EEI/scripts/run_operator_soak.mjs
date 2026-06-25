@@ -155,6 +155,13 @@ function numberOrNull(value, digits = 4) {
   return Number.isFinite(value) ? Number(value.toFixed(digits)) : null;
 }
 
+function maxExpectedWallSeconds(measuredDurationSeconds) {
+  if (!Number.isFinite(measuredDurationSeconds) || measuredDurationSeconds <= 0) {
+    return null;
+  }
+  return measuredDurationSeconds + Math.max(60, measuredDurationSeconds * 0.25);
+}
+
 async function readJsonIfPresent(filePath) {
   try {
     return JSON.parse(await readFile(filePath, "utf8"));
@@ -232,8 +239,16 @@ async function runWindow({ args, index, durationSeconds }) {
   const endedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   const childPayload = await readJsonIfPresent(outputPath);
   const childSummary = summarizeChildPayload(childPayload);
+  const maxWallSeconds = maxExpectedWallSeconds(childSummary.measured_duration_seconds);
+  const wallClockWithinBudget =
+    maxWallSeconds !== null && Number.isFinite(elapsedSeconds) && elapsedSeconds <= maxWallSeconds;
   const status =
-    result.status === 0 && childPayload && childPayload.status !== "FAIL" ? "PASS" : "FAIL";
+    result.status === 0 &&
+    childPayload &&
+    childPayload.status !== "FAIL" &&
+    wallClockWithinBudget
+      ? "PASS"
+      : "FAIL";
   return {
     schema_version: "eei-operator-soak-checkpoint-v1",
     task_id: "T1307",
@@ -259,6 +274,8 @@ async function runWindow({ args, index, durationSeconds }) {
       script: "scripts/run_soak_smoke.mjs",
       exit_status: result.status,
       signal: result.signal,
+      wall_clock_within_budget: wallClockWithinBudget,
+      max_expected_wall_seconds: numberOrNull(maxWallSeconds),
       stderr_tail: result.stderr ? result.stderr.slice(-2000) : ""
     },
     child_payload: childPayload

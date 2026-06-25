@@ -38,18 +38,18 @@
       "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 65.97,
+      "completion_percent": 0.69,
       "counts_as_release_ready": false,
-      "latest_successful_window_index": 190,
+      "latest_successful_window_index": 2,
       "operator_process_status": "RUNNING",
       "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
       "watchdog_process_status": "RUNNING",
-      "windows_completed": 190,
+      "windows_completed": 2,
       "windows_failed": 0,
-      "windows_remaining": 98
+      "windows_remaining": 286
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -71,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-25T18:48:46Z",
+  "generated_at": "2026-06-25T21:48:42Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -103,7 +103,7 @@
     },
     {
       "gate_id": "A209_24h_operator_soak",
-      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 190/288 windows, 0 failed, RUNNING_PARTIAL"
+      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 2/288 windows, 0 failed, RUNNING_PARTIAL"
     }
   ],
   "non_claims": [
@@ -135,7 +135,7 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "6c9fedc4c5629b129c5c3c010555f4033042a40ca8705fea2c9b7ad901b0605f",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "ba394353cfa4d33e0c1abac3801085082d2cb346262589a76b2942ef77739f8f",
+    "operator_soak_heartbeat_sha256": "8356508e665248691252138f3dfef477ecd5ecc7363d0665128788d574ff7bad",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "27b138a5f052a48357af9617ee912cc78ecde614a96a7d3076c74c7e01893535",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
