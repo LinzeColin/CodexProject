@@ -1,0 +1,42 @@
+{
+  "manifest_id": "ADP-S2PIT04-CONTENT-LEDGER-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PIT04",
+  "acceptance_id": "ACC-S2PIT04-LEDGER",
+  "phase": "S2PI",
+  "model_id": "MOD-ADP-088",
+  "formula_id": "FORM-ADP-090",
+  "parameter_ids": [
+    "PARAM-ADP-692",
+    "PARAM-ADP-693",
+    "PARAM-ADP-694",
+    "PARAM-ADP-695",
+    "PARAM-ADP-696",
+    "PARAM-ADP-697",
+    "PARAM-ADP-698",
+    "PARAM-ADP-699",
+    "PARAM-ADP-700"
+  ],
+  "base_commit": "92e022e95fa34e227405146bd68191a1782faac9",
+  "created_at": "2026-06-26T05:20:00+10:00",
+  "scope": "Local-only content/mail/review/action/asset/ROI ledger reconciliation evidence.",
+  "non_scope": "No SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, live source fetch, Email V1 runtime/frontstage, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT04_CONTENT_LEDGER.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 146 OK",
+    "full arxiv-daily-push unittest: 375 OK",
+    "semantic extractor: 90 formulas / 683 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "lean check-render: drift 0 / reference issues 0",
+    "JSON/YAML/JSONL/CSV parse OK",
+    "git diff --check PASS"
+  ]
+}

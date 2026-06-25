@@ -130,6 +130,7 @@ from .stage2_sources import (
     run_s2pit01_user_center,
     run_s2pit02_runtime_dashboard,
     run_s2pit03_source_model_view,
+    run_s2pit04_content_ledger,
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
@@ -155,6 +156,7 @@ from .stage2_sources import (
     validate_s2pit01_user_center_report,
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pit03_source_model_view_report,
+    validate_s2pit04_content_ledger_report,
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
@@ -897,6 +899,23 @@ def build_parser() -> argparse.ArgumentParser:
     s2pit03_source_model.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
     s2pit03_source_model.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pit03_source_model.add_argument("--json", action="store_true", help="Print JSON source/model view report.")
+
+    s2pit04_content_ledger = subparsers.add_parser(
+        "stage2-content-ledger-view",
+        help="Build S2PIT04 local content, mail, review, action, asset, and ROI ledger evidence.",
+    )
+    s2pit04_content_ledger.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pit04_content_ledger.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pit04_content_ledger.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pit04_content_ledger.add_argument("--runtime-dashboard-report", required=True, help="Passing S2PIT02 runtime dashboard report JSON.")
+    s2pit04_content_ledger.add_argument("--source-model-view-report", required=True, help="Passing S2PIT03 source/model view report JSON.")
+    s2pit04_content_ledger.add_argument("--lifecycle-state-report", required=True, help="Passing S2PJT01 lifecycle state report JSON.")
+    s2pit04_content_ledger.add_argument("--review-schedule-report", required=True, help="Passing S2PJT02 review schedule report JSON.")
+    s2pit04_content_ledger.add_argument("--action-roi-report", required=True, help="Passing S2PJT03 action/asset/ROI report JSON.")
+    s2pit04_content_ledger.add_argument("--ledger-records", required=True, help="Ledger records JSON list or object with ledger_records.")
+    s2pit04_content_ledger.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pit04_content_ledger.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pit04_content_ledger.add_argument("--json", action="store_true", help="Print JSON content ledger report.")
 
     s2pjt01_lifecycle = subparsers.add_parser(
         "stage2-lifecycle-state",
@@ -2693,6 +2712,41 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- queue_view_gate: {report.get('queue_view_gate')}")
             print(f"- traceability_gate: {report.get('traceability_gate')}")
             print(f"- deterministic_view_gate: {report.get('deterministic_view_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-content-ledger-view":
+        production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        report = run_s2pit04_content_ledger(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            runtime_dashboard_report=load_json_mapping(args.runtime_dashboard_report),
+            source_model_view_report=load_json_mapping(args.source_model_view_report),
+            lifecycle_state_report=load_json_mapping(args.lifecycle_state_report),
+            review_schedule_report=load_json_mapping(args.review_schedule_report),
+            action_roi_report=load_json_mapping(args.action_roi_report),
+            ledger_records=load_json_records(args.ledger_records, "ledger_records"),
+            production_gate_state=production_gate_state,
+            write=not args.no_write,
+        )
+        errors = validate_s2pit04_content_ledger_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- runtime_dashboard_gate: {report.get('runtime_dashboard_gate')}")
+            print(f"- source_model_view_gate: {report.get('source_model_view_gate')}")
+            print(f"- lifecycle_state_gate: {report.get('lifecycle_state_gate')}")
+            print(f"- review_schedule_gate: {report.get('review_schedule_gate')}")
+            print(f"- action_roi_gate: {report.get('action_roi_gate')}")
+            print(f"- ledger_record_gate: {report.get('ledger_record_gate')}")
+            print(f"- traceability_gate: {report.get('traceability_gate')}")
+            print(f"- count_conservation_gate: {report.get('count_conservation_gate')}")
+            print(f"- deterministic_ledger_gate: {report.get('deterministic_ledger_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

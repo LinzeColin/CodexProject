@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 110
-- acceptance_count: 104
+- task_count: 111
+- acceptance_count: 105
 
 ## Delivery Tasks
 
@@ -119,6 +119,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PET04 | S2PE | completed | ACC-S2PET04-D4 | US-TP and D4 qualification passed for OSTP, BIS, FTC, FCC, CISA, CHIPS Program coverage, required technology policy signals, upstream S2PET01-S2PET03 gates, D4 30-date replay, 2-day shadow, B4/B5/B6 routing, 35/15/30/20 budget explanations, official identity, traceability, and metadata-only boundaries; no live source fetch, D4 production inclusion, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json` |
 | S2PIT01 | S2PI | completed | ACC-S2PIT01-USER-CENTER | Chinese `00_用户中心` and one-edit owner-control entry evidence passed for four separated control domains, two-click reachability, `config/owner_controls.yaml` as the only editable fact source, read-only storage inspect input, compatible config compilation, and no-production/no-schema/no-email-frontstage side-effect gates; no owner-experience final acceptance, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapter, CURRENT, V7.2 contract, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PIT01_USER_CENTER.md`; `governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json` |
 | S2PIT02 | S2PI | completed | ACC-S2PIT02-RUNTIME-DASHBOARD | Local runtime dashboard evidence passed by aggregating S2PIT01, runtime audit, watchdog, read-only storage inspect, and production-boundary reports into a local status report and read-only Chinese owner status page without production side effects | `docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md`; `governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json`; `docs/owner/00_用户中心/01_当前状态.md` |
+| S2PIT04 | S2PI | completed | ACC-S2PIT04-LEDGER | Local content/mail/review/action/asset/ROI ledger evidence passed for dependency readiness, content/evidence/run/mail/feedback/lifecycle/review/action/asset/ROI traceability, deterministic ledger hash, and no-production/no-schema/no-email-frontstage side-effect gates; no real email, scheduler, DB migration, public schema, queue mutation, or production operation is claimed | `docs/phase_records/PHASE_S2PIT04_CONTENT_LEDGER.md`; `governance/run_manifests/ADP-S2PIT04-CONTENT-LEDGER-20260626.json` |
 | S2PJT01 | S2PJ | completed | ACC-S2PJT01-LIFECYCLE | Local lifecycle state evidence passed for REVIEW_DUE, ACTION, ASSET, CONVERSION, MASTERED, append-only history, count conservation, ledger mapping, dry-run rollback migration proof, and no-production/no-schema/no-email-frontstage boundaries; no real DB migration or production operation is claimed | `docs/phase_records/PHASE_S2PJT01_LIFECYCLE_STATE.md`; `governance/run_manifests/ADP-S2PJT01-LIFECYCLE-STATE-20260625.json` |
 | S2PJT02 | S2PJ | completed | ACC-S2PJT02-REVIEW | Local review schedule evidence passed for 1/3/7/14/30/90 intervals, feedback-adjustment readiness, due-today/7-day/overdue/completed counts, deterministic due queue hash, and no scheduler/no-production side-effect gates | `docs/phase_records/PHASE_S2PJT02_REVIEW_SCHEDULE.md`; `governance/run_manifests/ADP-S2PJT02-REVIEW-SCHEDULE-20260626.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
