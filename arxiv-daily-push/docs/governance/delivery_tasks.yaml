@@ -2082,3 +2082,22 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+
+  - task_id: "S2PMT06"
+    phase: "S2PM"
+    objective: "Implement local-only Chinese owner UX, interaction feedback, navigation, safe controls, traceability, and accessibility evidence under V7.2 no-production boundaries."
+    scope: "Owner first screen, fixed Chinese navigation, status state matrix, recoverable error cards, safe config-change flow, append-only revision ledger, queue search/filter/export/drilldown, safe retry/cancel/requeue/skip/regenerate previews, visible feedback loop, accessibility/mail-client compatibility, production false flags, focused tests, model/formula/parameter registration, phase record, and run manifest."
+    non_scope: "No real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PIT05", "S2PMT03", "S2PMT05", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py", "arxiv-daily-push/tests/test_stage2_owner_ux.py", "arxiv-daily-push/docs/owner/00_用户中心/00_开始这里.md", "arxiv-daily-push/docs/owner/00_用户中心/01_当前状态.md"]
+    acceptance_ids: ["ACC-S2PMT06-UX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py arxiv-daily-push/tests/test_stage2_owner_ux.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_owner_ux.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT06 tests: 9 OK", "full arxiv-daily-push unittest: 442 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse: OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md", "governance/run_manifests/ADP-S2PMT06-OWNER-UX-20260626.json", "arxiv-daily-push/tests/test_stage2_owner_ux.py"]
+    risk: "S2PMT06 local evidence can be misread as production UI enablement or inherited P0/P1 closure; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT06 owner UX module, tests, owner docs, governance registrations, phase record, manifest, and events; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []

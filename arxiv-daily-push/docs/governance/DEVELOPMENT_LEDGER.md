@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT05_STRESS_E2E_LOCAL_ONLY
-- Confirmed iteration count: 112
+- Current gate: S2PMT06_OWNER_UX_SAFE_CONTROLS_LOCAL_ONLY
+- Confirmed iteration count: 113
 - Reconstructed event count: 0
-- Current task: `S2PMT05` has completed local pressure, fault, time, and E2E evidence. It validates deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, backpressure/degradation gates, deterministic isolation, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler installation, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, inherited P0/P1 closure, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT06` has completed local Chinese owner UX, interaction feedback, navigation, safe controls, traceability, and accessibility evidence. It validates the first-screen owner status, fixed top/bottom navigation, breadcrumbs, related links, source-to-ROI traceability, not-run/loading/no-update/partial-success/degraded/failed/stale status feedback, recoverable error cards, safe config-change preview-to-rollback flow, append-only revision ledger, queue search/filter/sort/export/drilldown, safe manual actions, feedback visibility, accessibility/mail-client compatibility, C-001 through C-015 coverage, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler installation, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, inherited P0/P1 closure, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -38,6 +38,26 @@ The append-only machine record is `development_events.jsonl`.
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260626-ADP-S2PM-S2PMT06-OWNER-UX`
+
+- Timestamp: `2026-06-26T16:00:00+10:00`
+- Fact level: EXTRACTED from S2PMT06 owner UX code, focused tests, owner-center documents, model/formula/parameter registry diff, phase record, and local S2PMT06 validation.
+- Base commit: `82716f943237baf164ac78f9ece0a749aec4f6a8`
+- Status: local validation passed.
+- Phase: S2PM
+- Task IDs: `S2PMT06`; acceptance `ACC-S2PMT06-UX`.
+- Goal: Complete local Chinese owner UX, interaction feedback, navigation, safe controls, traceability, accessibility, and no-production evidence while preserving V7.2 boundaries.
+- Files changed: S2PMT06 owner UX helper, focused tests, Chinese owner-center pages, phase record, run manifest, model/formula/parameter registries, traceability/status files, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-099` local owner UX and safe-control model.
+- Formula changes: Added `FORM-ADP-101` with machine-verifiable AST references bound to S2PMT06 owner UX implementations.
+- Parameter changes: Added `PARAM-ADP-817` through `PARAM-ADP-829` for S2PMT06 identifiers, accessibility thresholds, finding coverage, navigation items, status states, safe edit steps, error-card fields, safe actions, and production-false flags.
+- Validation: py_compile PASS; focused S2PMT06 tests 9 OK; full arxiv-daily-push unittest PENDING; V7.2 validator PENDING; ADP project governance PENDING; changed-only governance semantic PENDING; lean check-render PENDING; JSONL/YAML/CSV/manifest parse PENDING; git diff --check PENDING.
+- Decisions: `ACC-S2PMT06-UX` is accepted only as local owner UX and safe-control evidence. Real SMTP, scheduler installation, launchd bootstrap, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: This does not authorize live production UI operation or close inherited P0/P1 blockers. S2PMT07 still controls any production acceptance claim.
+- Rollback: Revert S2PMT06 owner UX code, tests, owner-center pages, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md`; `governance/run_manifests/ADP-S2PMT06-OWNER-UX-20260626.json`; `arxiv-daily-push/tests/test_stage2_owner_ux.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT06; after merge continue `S2PMT07` independent review under no-production boundaries.
 
 ### `ITER-20260626-ADP-S2PM-S2PMT05-STRESS-E2E`
 

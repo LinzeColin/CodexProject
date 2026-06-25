@@ -5176,3 +5176,55 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"
+
+  -
+    model_id: "MOD-ADP-099"
+    name: "S2PMT06 local owner UX and safe-control model"
+    purpose: "Validate local S2PMT06 Chinese owner first screen, global navigation, status feedback, recoverable error cards, safe config-change flow, append-only revision ledger, queue search/filter/export/drilldown, safe manual actions, visible feedback loop, accessibility/mail compatibility, trace chain, and no production side effects under V7.2."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-101"
+    parameter_ids:
+      - "PARAM-ADP-817"
+      - "PARAM-ADP-818"
+      - "PARAM-ADP-819"
+      - "PARAM-ADP-820"
+      - "PARAM-ADP-821"
+      - "PARAM-ADP-822"
+      - "PARAM-ADP-823"
+      - "PARAM-ADP-824"
+      - "PARAM-ADP-825"
+      - "PARAM-ADP-826"
+      - "PARAM-ADP-827"
+      - "PARAM-ADP-828"
+      - "PARAM-ADP-829"
+    inputs:
+      - "Chinese owner first-screen fixture"
+      - "owner navigation contract"
+      - "status state matrix"
+      - "recoverable error-card fixture"
+      - "safe config-change fixture"
+      - "queue view contract"
+      - "safe manual action previews"
+      - "feedback-loop contract"
+      - "accessibility matrix"
+    outputs:
+      - "owner first-screen evidence"
+      - "global navigation and trace-chain evidence"
+      - "status feedback matrix"
+      - "safe config-change and revision-ledger receipt"
+      - "queue view and safe-action evidence"
+      - "accessibility and mail-client compatibility evidence"
+      - "no production side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT06-OWNER-UX-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md"

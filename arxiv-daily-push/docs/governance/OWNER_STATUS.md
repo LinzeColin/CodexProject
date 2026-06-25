@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (799/799 active parameters, 100/100 active formulas)
+- implementation_congruence: `VERIFIED` (812/812 active parameters, 101/101 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `98`
-- total_formulas: `100`
-- active_formulas: `100`
-- total_parameters: `816`
-- active_parameters: `799`
+- model_count: `99`
+- total_formulas: `101`
+- active_formulas: `101`
+- total_parameters: `829`
+- active_parameters: `812`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT05_STRESS_E2E_LOCAL_ONLY`
+- release_gate: `S2PMT06_OWNER_UX_SAFE_CONTROLS_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `100`
+- legacy_unbound_events: `102`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `139`
+- pending_or_stale_events: `141`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:f8d2c2c5a00d14c85da4346460a8a1839462d6111aea65af51921eb9fa69b606`
-- snapshot_event_time: `2026-06-26T15:20:00+10:00`
+- source_snapshot_hash: `sha256:0581d1ede8d7c9a6352717f0057e99a31b5108a569097cb5ff529b112573aef1`
+- snapshot_event_time: `2026-06-26T16:00:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PM / S2PMT05_STRESS_E2E_LOCAL_ONLY`
+- phase/gate: `S2PM / S2PMT06_OWNER_UX_SAFE_CONTROLS_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
