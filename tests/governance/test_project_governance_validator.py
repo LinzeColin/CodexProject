@@ -3720,6 +3720,49 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
         self.assertEqual(selected, [])
 
+    def test_adp_s2pat07_email_v1_pointer_repair_is_current_contract_safe(self) -> None:
+        validator = load_validator_module()
+        arxiv_root = ROOT / "arxiv-daily-push"
+        merged_state = "EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS"
+
+        current = validator.load_yaml(arxiv_root / "docs" / "pursuing_goal" / "CURRENT.yaml")
+        self.assertEqual(current["current_product_contract"]["version"], "ADP-PRODUCT-CONTRACT-V7.2")
+        self.assertEqual(current["current_pointer_registry"]["global_current_task"], "S2PCT02")
+        self.assertEqual(current["current_pointer_registry"]["email_v1_workstream_next"], merged_state)
+
+        matrix = validator.load_yaml(arxiv_root / "docs" / "governance" / "VERSION_MATRIX.yaml")
+        self.assertEqual(matrix["current_iteration"], "ITER-20260625-ADP-S2PA-S2PAT07-EMAIL-V1-POINTER-REPAIR")
+        self.assertEqual(matrix["current_phase"], "S2PA")
+        self.assertEqual(matrix["current_gate"], "S2PAT07_EMAIL_V1_POINTER_REPAIRED_NO_PRODUCTION")
+        self.assertEqual(matrix["current_v7_task_id"], "S2PCT02")
+        self.assertEqual(matrix["current_v6_task_id"], "NOT_APPLICABLE")
+        self.assertEqual(matrix["v7_2_email_v1_workstream_next"], merged_state)
+
+        roadmap = validator.load_yaml(
+            arxiv_root / "docs" / "pursuing_goal" / "v7_2" / "machine_readable" / "roadmap_v7_2.yaml"
+        )
+        self.assertEqual(roadmap["global_current_task"], "S2PCT02")
+        self.assertEqual(roadmap["email_v1_workstream_next"], merged_state)
+        email_workstream = next(item for item in roadmap["workstreams"] if item["workstream_id"] == "EMAIL_LEARNING_V1")
+        self.assertEqual(email_workstream["status"], "merged_to_main_no_production_side_effects")
+        self.assertEqual(
+            {item["task_id"]: item["status"] for item in email_workstream["tasks"]},
+            {
+                "S2PHT01V1.1-T00": "completed",
+                "S2PHT01V1.1-T01": "completed",
+                "S2PHT01V1.1-T02": "completed",
+                "S2PHT01V1.1-T03": "completed",
+                "S2PHT01V1.1-T04": "completed",
+                "S2PHT01V1.1-T05": "completed",
+            },
+        )
+
+        lock = validator.load_yaml(arxiv_root / "docs" / "pursuing_goal" / "v7_2" / "V7_2_ROOT_LOCK.yaml")
+        self.assertEqual(lock["stage2_boundary"]["email_v1_workstream_next"], merged_state)
+        self.assertFalse(lock["stage2_boundary"]["production_accepted"])
+        self.assertEqual(lock["inherited_v7_1_audit_blockers"]["open_p0_findings"], 8)
+        self.assertEqual(lock["inherited_v7_1_audit_blockers"]["open_p1_findings"], 37)
+
     def test_manual_acceptance_count_drift_is_reported(self) -> None:
         validator = load_validator_module()
         with tempfile.TemporaryDirectory() as tmp:
