@@ -4,7 +4,7 @@ Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intellige
 
 ## 2026-06-25 - T1301/A202 signed-intake source-boundary hardening
 
-Status: FOCUSED LOCAL VALIDATION PENDING; CI PENDING
+Status: LOCAL VALIDATION PASS; REMOTE CI PASS; RELEASE STILL BLOCKED
 
 Completed:
 
@@ -14,7 +14,8 @@ Completed:
 
 Verification status:
 
-- Focused py_compile, ruff, unit tests, artifact generation, semantic extraction, full verify, changed-only governance and remote CI are pending for this iteration.
+- Focused py_compile PASS, focused ruff PASS, focused A202 unit tests PASS `17/17`, A202 artifact generation/validation PASS, semantic extraction PASS with 88 parameters, task-pack validation PASS, full `make verify` PASS with 117 unit tests, changed-only Project Governance PASS, and remote CI PASS for commit `a246df94bf73b6fba7111805f3c5a02b6edeb070`.
+- Remote CI evidence: Project Governance run `28179389094` PASS; EEI validation run `28179389156` PASS.
 - A209 continues as a background 24h gate and is not replaced by this A202 source-boundary hardening.
 
 Still blocked:
