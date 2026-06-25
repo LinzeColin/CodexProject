@@ -45,6 +45,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PDT03_LEGAL_METADATA_MODEL_ID,
     S2PDT02_CHINA_C1_SOURCE_MODEL_ID,
     S2PDT01_CHINA_C0_SOURCE_MODEL_ID,
+    S2PET01_US_TA_SOURCE_MODEL_ID,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
     S2PCT06_AUTHORITATIVE_REPORT_MODEL_ID,
     S2PCT05_ENGINEERING_SIGNAL_MODEL_ID,
@@ -71,6 +72,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pdt03_china_legal_metadata_relation_shadow_report,
     build_s2pdt02_china_c1_department_source_map_report,
     build_s2pdt01_china_c0_source_foundation_report,
+    build_s2pet01_us_ta_source_foundation_report,
     build_s2pct04_top_journal_profile_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
@@ -95,6 +97,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
+    run_s2pet01_us_ta_source_foundation,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
@@ -117,6 +120,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pdt03_china_legal_metadata_relation_shadow_report,
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
+    validate_s2pet01_us_ta_source_foundation_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
@@ -508,6 +512,163 @@ def china_c1_department_records() -> list[dict]:
             "pdf_downloaded": False,
             "full_text_extracted": False,
             "evidence_refs": ["fixture:china-c1-nea"],
+        },
+    ]
+
+
+def us_ta_agency_records() -> list[dict]:
+    return [
+        {
+            "source_id": "us-ta:nsf:award-search",
+            "agency_id": "NSF",
+            "agency_name": "National Science Foundation",
+            "signal_type": "grant_award",
+            "record_title": "NSF award metadata record",
+            "official_domain": "nsf.gov",
+            "source_url": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=2600001",
+            "published_date": "2026-05-01",
+            "identifier": "NSF-AWD-2600001",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-nsf-award"],
+        },
+        {
+            "source_id": "us-ta:darpa:program",
+            "agency_id": "DARPA",
+            "agency_name": "Defense Advanced Research Projects Agency",
+            "signal_type": "program_announcement",
+            "record_title": "DARPA program announcement metadata",
+            "official_domain": "darpa.mil",
+            "source_url": "https://www.darpa.mil/research/programs/example-program",
+            "published_date": "2026-05-02",
+            "identifier": "DARPA-PROGRAM-EXAMPLE",
+            "identity_state": "official_publication_portal",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-darpa-program"],
+        },
+        {
+            "source_id": "us-ta:doe:research",
+            "agency_id": "DOE",
+            "agency_name": "Department of Energy",
+            "signal_type": "research_project",
+            "record_title": "DOE research project metadata",
+            "official_domain": "energy.gov",
+            "source_url": "https://www.energy.gov/science/example-research-project",
+            "published_date": "2026-05-03",
+            "identifier": "DOE-SC-2600001",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-doe-research"],
+        },
+        {
+            "source_id": "us-ta:nih:project",
+            "agency_id": "NIH",
+            "agency_name": "National Institutes of Health",
+            "signal_type": "research_project",
+            "record_title": "NIH RePORTER project metadata",
+            "official_domain": "nih.gov",
+            "source_url": "https://reporter.nih.gov/project-details/2600001",
+            "published_date": "2026-05-04",
+            "identifier": "NIH-R01-2600001",
+            "identity_state": "official_api_or_feed",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-nih-project"],
+        },
+        {
+            "source_id": "us-ta:nasa:program",
+            "agency_id": "NASA",
+            "agency_name": "National Aeronautics and Space Administration",
+            "signal_type": "program_announcement",
+            "record_title": "NASA technology program metadata",
+            "official_domain": "nasa.gov",
+            "source_url": "https://www.nasa.gov/technology/example-program/",
+            "published_date": "2026-05-05",
+            "identifier": "NASA-TECH-2600001",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-nasa-program"],
+        },
+        {
+            "source_id": "us-ta:nist:standard",
+            "agency_id": "NIST",
+            "agency_name": "National Institute of Standards and Technology",
+            "signal_type": "standard_reference",
+            "record_title": "NIST standard reference metadata",
+            "official_domain": "nist.gov",
+            "source_url": "https://www.nist.gov/publications/example-standard-reference",
+            "published_date": "2026-05-06",
+            "identifier": "NIST-SP-2600",
+            "identity_state": "official_publication_portal",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-nist-standard"],
+        },
+        {
+            "source_id": "us-ta:uspto:patent",
+            "agency_id": "USPTO",
+            "agency_name": "United States Patent and Trademark Office",
+            "signal_type": "patent_publication",
+            "record_title": "USPTO patent publication metadata",
+            "official_domain": "uspto.gov",
+            "source_url": "https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html",
+            "published_date": "2026-05-07",
+            "identifier": "US-2026-000001-A1",
+            "identity_state": "official_publication_portal",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-uspto-patent"],
+        },
+        {
+            "source_id": "us-ta:fda:reg-sci",
+            "agency_id": "FDA",
+            "agency_name": "Food and Drug Administration",
+            "signal_type": "regulatory_science_notice",
+            "record_title": "FDA regulatory science notice metadata",
+            "official_domain": "fda.gov",
+            "source_url": "https://www.fda.gov/science-research/example-regulatory-science-notice",
+            "published_date": "2026-05-08",
+            "identifier": "FDA-RSN-2600001",
+            "identity_state": "official_domain",
+            "metadata_only": True,
+            "pdf_downloaded": False,
+            "full_text_extracted": False,
+            "production_affected": False,
+            "real_smtp_sent": False,
+            "queue_mutation_allowed": False,
+            "evidence_refs": ["fixture:us-ta-fda-reg-sci"],
         },
     ]
 
@@ -1895,6 +2056,78 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["schema_migration_allowed"])
             self.assertTrue(Path(report["source_foundation_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pdt01_china_c0_source_foundation_report.json").is_file())
+
+    def test_s2pet01_us_ta_source_foundation_validates_official_agency_trace_without_production(self) -> None:
+        report = build_s2pet01_us_ta_source_foundation_report(
+            generated_at=GENERATED_AT,
+            agency_records=us_ta_agency_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PET01_US_TA_SOURCE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PET01-US-TA")
+        self.assertEqual(report["task_id"], "S2PET01")
+        self.assertEqual(report["legacy_task_id"], "S2P4T01")
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["d4_us_ta_source_foundation_ready"])
+        self.assertEqual(report["agency_coverage_gate"], "pass")
+        self.assertEqual(report["signal_type_gate"], "pass")
+        self.assertEqual(report["official_identity_gate"], "pass")
+        self.assertEqual(report["document_traceability_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(report["agency_record_count"], 8)
+        self.assertTrue(set(report["required_agencies"]).issubset(set(report["agencies_observed"])))
+        self.assertTrue(set(report["required_signal_types"]).issubset(set(report["signal_types_observed"])))
+        self.assertFalse(report["d4_us_official_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["v7_2_contract_files_modified"])
+        self.assertFalse(validate_s2pet01_us_ta_source_foundation_report(report))
+
+    def test_s2pet01_us_ta_source_foundation_blocks_unofficial_missing_trace_and_side_effects(self) -> None:
+        records = us_ta_agency_records()
+        records[0] = dict(
+            records[0],
+            source_url="https://mirror.example.com/nsf-award",
+            published_date="",
+            identity_state="mirror",
+            pdf_downloaded=True,
+            production_affected=True,
+        )
+
+        report = build_s2pet01_us_ta_source_foundation_report(
+            generated_at=GENERATED_AT,
+            agency_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["official_identity_gate"], "blocked")
+        self.assertEqual(report["document_traceability_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["d4_us_official_source_domain_accepted"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("source_url must contain official_domain", joined)
+        self.assertIn("traceability requires", joined)
+        self.assertIn("metadata-only", joined)
+
+    def test_s2pet01_us_ta_source_foundation_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pet01_us_ta_source_foundation(
+                state_dir=tmp,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                agency_records=us_ta_agency_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pet01_us_ta_source_foundation_report(report))
+            self.assertFalse(report["d4_us_official_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["source_foundation_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pet01_us_ta_source_foundation_report.json").is_file())
 
     def test_s2pdt02_china_c1_department_source_map_validates_alias_routes_without_production(self) -> None:
         report = build_s2pdt02_china_c1_department_source_map_report(
@@ -3628,6 +3861,35 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertTrue(payload["d3_c0_source_foundation_ready"])
         self.assertFalse(payload["d3_core_source_domain_accepted"])
+
+    def test_cli_stage2_us_ta_source_foundation_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            agency_records_path = Path(tmp) / "agency-records.json"
+            agency_records_path.write_text(json.dumps({"agency_records": us_ta_agency_records()}, ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-us-ta-source-foundation",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-24",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--agency-records",
+                    str(agency_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PET01_US_TA_SOURCE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PET01")
+        self.assertEqual(payload["legacy_task_id"], "S2P4T01")
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["d4_us_ta_source_foundation_ready"])
+        self.assertFalse(payload["d4_us_official_source_domain_accepted"])
 
     def test_cli_stage2_china_c1_department_source_map_outputs_json(self) -> None:
         buffer = io.StringIO()

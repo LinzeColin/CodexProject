@@ -123,6 +123,7 @@ from .stage2_sources import (
     run_s2pdt03_china_legal_metadata_relation_shadow,
     run_s2pdt02_china_c1_department_source_map,
     run_s2pdt01_china_c0_source_foundation,
+    run_s2pet01_us_ta_source_foundation,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -135,6 +136,7 @@ from .stage2_sources import (
     validate_s2pdt03_china_legal_metadata_relation_shadow_report,
     validate_s2pdt02_china_c1_department_source_map_report,
     validate_s2pdt01_china_c0_source_foundation_report,
+    validate_s2pet01_us_ta_source_foundation_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -648,6 +650,17 @@ def build_parser() -> argparse.ArgumentParser:
     s2pdt04_china_readiness.add_argument("--board-route-records", required=True, help="D3 board route records JSON list or object with board_route_records.")
     s2pdt04_china_readiness.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pdt04_china_readiness.add_argument("--json", action="store_true", help="Print JSON D3 readiness review report.")
+
+    s2pet01_us_ta = subparsers.add_parser(
+        "stage2-us-ta-source-foundation",
+        help="Run S2PET01/S2P4T01 US official technology-agency metadata-only source foundation evidence.",
+    )
+    s2pet01_us_ta.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pet01_us_ta.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pet01_us_ta.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pet01_us_ta.add_argument("--agency-records", required=True, help="US-TA official agency metadata JSON list or object with agency_records.")
+    s2pet01_us_ta.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pet01_us_ta.add_argument("--json", action="store_true", help="Print JSON US-TA source foundation report.")
 
     s2pft01_china_provinces = subparsers.add_parser(
         "stage2-china-provincial-template-coverage",
@@ -2028,6 +2041,28 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- d3_replay_gate: {report.get('d3_replay_gate')}")
             print(f"- d3_shadow_gate: {report.get('d3_shadow_gate')}")
             print(f"- board_routing_gate: {report.get('board_routing_gate')}")
+            print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-us-ta-source-foundation":
+        report = run_s2pet01_us_ta_source_foundation(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            agency_records=load_json_records(args.agency_records, "agency_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pet01_us_ta_source_foundation_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- agency_coverage_gate: {report.get('agency_coverage_gate')}")
+            print(f"- signal_type_gate: {report.get('signal_type_gate')}")
+            print(f"- official_identity_gate: {report.get('official_identity_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

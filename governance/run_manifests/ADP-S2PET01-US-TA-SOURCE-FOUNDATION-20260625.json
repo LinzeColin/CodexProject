@@ -1,0 +1,85 @@
+{
+  "artifact_id": "ADP-S2PET01-US-TA-SOURCE-FOUNDATION-20260625",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PET01",
+  "legacy_task_id": "S2P4T01",
+  "acceptance_ids": [
+    "ACC-S2PET01-US-TA"
+  ],
+  "phase": "S2PE",
+  "generated_at": "2026-06-25T23:10:00+10:00",
+  "base_commit": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "result": "completed_local_validation_passed_pending_pr_ci",
+  "summary": "Defined metadata-only D4 US-TA official technology-agency source foundation evidence for NSF, DARPA, DOE, NIH, NASA, NIST, USPTO, and FDA with agency, signal, official identity, traceability, and no-side-effect gates.",
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/CHANGELOG.md"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_semantic3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_project3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pet01_render2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "JSON/YAML/JSONL/CSV parse check with /opt/anaconda3/bin/python"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 91 OK",
+    "full arxiv-daily-push unittest: 320 OK",
+    "semantic extractor: 77 formulas / 551 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/YAML/JSONL/CSV parse OK"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-075"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-077"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-560",
+    "PARAM-ADP-561",
+    "PARAM-ADP-562",
+    "PARAM-ADP-563",
+    "PARAM-ADP-564",
+    "PARAM-ADP-565",
+    "PARAM-ADP-566",
+    "PARAM-ADP-567",
+    "PARAM-ADP-568"
+  ],
+  "public_schema_changed": false,
+  "queue_schema_changed": false,
+  "queue_mutation_allowed": false,
+  "ranking_algorithm_changed": false,
+  "mail_production_code_changed": false,
+  "email_frontstage_changed": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "production_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "v7_1_current_switched": false,
+  "v7_2_contract_files_changed": false,
+  "v7_2_revalidation_receipt_recorded": true,
+  "rollback": "Revert S2PET01 source-foundation code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime production state change was made."
+}

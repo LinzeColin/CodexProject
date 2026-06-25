@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 97
-- acceptance_count: 91
+- task_count: 98
+- acceptance_count: 92
 
 ## Delivery Tasks
 
@@ -113,6 +113,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PGT03 | S2PG | completed | ACC-S2PGT03-ROUTING | Private D1-D4 to B1-B6 multi-label routing evidence passed for source domains, primary and cross-cutting boards, route reasons, explanations, evidence refs, source-domain rules, and no-production/no-schema side-effect gates; no public routing schema, queue mutation, source production inclusion, SMTP, scheduler, Release, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PGT03_SOURCE_BOARD_ROUTING.md`; `governance/run_manifests/ADP-S2PGT03-SOURCE-BOARD-ROUTING-20260625.json` |
 | S2PGT04 | S2PG | completed | ACC-S2PGT04-DELTA-RESONANCE | Private support/refute/frontier delta and signal-resonance evidence passed for upstream routing, delta types, supported/refuted evidence states, resonance groups, signal strengths, explanations, evidence refs, and no-production/no-schema/no-email-frontstage gates; no visible Email V1 frontstage, public schema, queue mutation, SMTP, scheduler, Release, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PGT04_DELTA_RESONANCE.md`; `governance/run_manifests/ADP-S2PGT04-DELTA-RESONANCE-20260625.json` |
 | S2PGT05 | S2PG | completed | ACC-S2PGT05-CALIBRATION | Private cross-board calibration and explainable queue evidence passed for B1-B6 percentile calibration, D1-D4 source balance, waiting credit, selected/queued/deferred readable reasons, deterministic order, stable queue hash, and no-production/no-schema/no-email-frontstage side-effect gates; no production ranking, real queue mutation, SMTP, scheduler, Release, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PGT05_CROSS_BOARD_CALIBRATION.md`; `governance/run_manifests/ADP-S2PGT05-CROSS-BOARD-CALIBRATION-20260625.json` |
+| S2PET01 | S2PE | completed | ACC-S2PET01-US-TA | US-TA official technology-agency source foundation passed for NSF, DARPA, DOE, NIH, NASA, NIST, USPTO, FDA agency coverage, signal taxonomy, official identity, traceability, and metadata-only boundaries; no live source fetch, D4 production inclusion, SMTP, Release, scheduler, public schema, queue/schema, mail runtime, or integrated production acceptance is claimed | `docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md`; `governance/run_manifests/ADP-S2PET01-US-TA-SOURCE-FOUNDATION-20260625.json` |
 | S2P1T01 | S2P1 | deprecated | ADP-ACC-S2P1T01-SOURCE-PROMOTION | legacy alias only; new root-governance routing uses `S2PBT01` | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md` |
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |

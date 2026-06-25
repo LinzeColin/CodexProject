@@ -3912,3 +3912,50 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PGT05-CROSS-BOARD-CALIBRATION-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT05_CROSS_BOARD_CALIBRATION.md"
+
+  -
+    model_id: "MOD-ADP-075"
+    name: "S2PET01 US-TA source foundation"
+    kind: "deterministic metadata-only US official technology agency source foundation model"
+    purpose: "Validate NSF, DARPA, DOE, NIH, NASA, NIST, USPTO, and FDA official source metadata coverage, signal taxonomy, traceability, and disabled production side-effect flags before any D4 production inclusion."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pet01-us-ta-source-foundation-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-077"
+    parameter_ids:
+      - "PARAM-ADP-560"
+      - "PARAM-ADP-561"
+      - "PARAM-ADP-562"
+      - "PARAM-ADP-563"
+      - "PARAM-ADP-564"
+      - "PARAM-ADP-565"
+      - "PARAM-ADP-566"
+      - "PARAM-ADP-567"
+      - "PARAM-ADP-568"
+    inputs:
+      - "US-TA official agency metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "US-TA source foundation report"
+      - "agency coverage gate"
+      - "signal type gate"
+      - "official identity gate"
+      - "document traceability gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PET01-US-TA-SOURCE-FOUNDATION-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PET01_US_TA_SOURCE_FOUNDATION.md"
