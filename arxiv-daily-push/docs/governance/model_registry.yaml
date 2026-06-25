@@ -4879,3 +4879,60 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PKT04-M3-MAIL-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PKT04_M3_MAIL.md"
+  -
+    model_id: "MOD-ADP-093"
+    name: "S2PKT05 M4 local mail orchestration evidence model"
+    purpose: "Validate local-only S2PKT05 M4 3+1 mail orchestration across S2PKT01 contract readiness, terminal M1/M2/M3 local reports, M4/B1-B6 scope, default staggered windows, cycle watermark, duplicate and silent-drop prevention, required cross-board summary sections, action/review reminders, deterministic M4 hash, and no-production side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-095"
+    parameter_ids:
+      - "PARAM-ADP-747"
+      - "PARAM-ADP-748"
+      - "PARAM-ADP-749"
+      - "PARAM-ADP-750"
+      - "PARAM-ADP-751"
+      - "PARAM-ADP-752"
+      - "PARAM-ADP-753"
+      - "PARAM-ADP-754"
+      - "PARAM-ADP-755"
+      - "PARAM-ADP-756"
+      - "PARAM-ADP-757"
+    inputs:
+      - "S2PKT01 mail contract report"
+      - "S2PKT02 M1 mail report"
+      - "S2PKT03 M2 mail report"
+      - "S2PKT04 M3 mail report"
+      - "S2PIT04 content ledger report"
+      - "S2PJT03 action asset ROI report"
+      - "S2PJT02 review schedule report"
+      - "M4 orchestration evidence record"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PKT05 M4 mail orchestration report"
+      - "terminal mail gates"
+      - "M4 scope gate"
+      - "staggered schedule gate"
+      - "watermark gate"
+      - "duplicate suppression gate"
+      - "section coverage gate"
+      - "cross-board synthesis gate"
+      - "action review gate"
+      - "hash status gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PKT05-M4-MAIL-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md"

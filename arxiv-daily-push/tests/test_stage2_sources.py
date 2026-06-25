@@ -68,6 +68,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PKT02_M1_MAIL_MODEL_ID,
     S2PKT03_M2_MAIL_MODEL_ID,
     S2PKT04_M3_MAIL_MODEL_ID,
+    S2PKT05_M4_MAIL_MODEL_ID,
     S2PHT05_CONTENT_QUALITY_MODEL_ID,
     S2PHT05_REQUIRED_GOLD_DIMENSIONS,
     S2PCT07_D2_QUALIFICATION_MODEL_ID,
@@ -108,6 +109,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pkt02_m1_mail_report,
     build_s2pkt03_m2_mail_report,
     build_s2pkt04_m3_mail_report,
+    build_s2pkt05_m4_mail_report,
     build_s2pjt01_lifecycle_state_report,
     build_s2pjt02_review_schedule_report,
     build_s2pjt03_action_asset_roi_report,
@@ -150,6 +152,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pkt02_m1_mail,
     run_s2pkt03_m2_mail,
     run_s2pkt04_m3_mail,
+    run_s2pkt05_m4_mail,
     run_s2pjt01_lifecycle_state,
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
@@ -190,6 +193,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pkt02_m1_mail_report,
     validate_s2pkt03_m2_mail_report,
     validate_s2pkt04_m3_mail_report,
+    validate_s2pkt05_m4_mail_report,
     validate_s2pjt01_lifecycle_state_report,
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
@@ -1011,6 +1015,110 @@ def s2pkt04_m3_mail_report() -> dict:
         content_ledger_report=s2pit04_content_ledger_report(),
         action_roi_report=s2pjt03_action_roi_report(),
         m3_mail_record=s2pkt04_m3_mail_record(),
+        production_gate_state=s2pit02_production_gate_state(),
+    )
+
+
+def s2pkt05_m4_orchestration_record() -> dict:
+    m1 = s2pkt02_m1_mail_report()
+    m2 = s2pkt03_m2_mail_report()
+    m3 = s2pkt04_m3_mail_report()
+    common = {
+        "content_ids": ["content:today", "content:week"],
+        "evidence_refs": ["local://mail/m1", "local://mail/m2", "local://mail/m3"],
+    }
+    return {
+        "mail_product_id": "M4",
+        "contract_id": "EMAIL_LEARNING_V1",
+        "template_version": "1.0.0",
+        "primary_board": "B1-B6",
+        "cross_cutting_boards": ["B4", "B5", "B6"],
+        "cycle_id": "cycle:2026-06-26",
+        "status": "ready_no_send",
+        "terminal_inputs": [
+            {
+                "mail_product_id": "M1",
+                "task_id": "S2PKT02",
+                "status": "pass",
+                "ready": True,
+                "mail_hash": m1["m1_mail_hash"],
+            },
+            {
+                "mail_product_id": "M2",
+                "task_id": "S2PKT03",
+                "status": "pass",
+                "ready": True,
+                "mail_hash": m2["m2_mail_hash"],
+            },
+            {
+                "mail_product_id": "M3",
+                "task_id": "S2PKT04",
+                "status": "pass",
+                "ready": True,
+                "mail_hash": m3["m3_mail_hash"],
+            },
+        ],
+        "schedule_windows": [
+            {"mail_product_id": "M1", "time": "07:30"},
+            {"mail_product_id": "M2", "time": "11:30"},
+            {"mail_product_id": "M3", "time": "17:00"},
+            {"mail_product_id": "M4", "time": "21:30"},
+        ],
+        "watermark": {
+            "cycle_id": "cycle:2026-06-26",
+            "terminal_mail_products": ["M1", "M2", "M3"],
+            "late_arrival_policy": "revision_required_no_send",
+        },
+        "duplicate_count": 0,
+        "silent_drop_count": 0,
+        "legacy_five_mail_active": False,
+        "action_ids": ["act:2h", "act:7d", "act:30d"],
+        "review_content_ids": ["content:overdue", "content:today", "content:week"],
+        "sections": [
+            {**common, "section_id": "cross_source_resonance", "evidence_labels": ["FACT", "INFERENCE"]},
+            {**common, "section_id": "contradictions", "evidence_labels": ["FACT", "OBSERVATION"]},
+            {**common, "section_id": "era_mainline", "evidence_labels": ["INFERENCE", "OBSERVATION"]},
+            {
+                **common,
+                "section_id": "personal_action_mix",
+                "evidence_labels": ["FACT", "OPINION"],
+                "action_ids": ["act:2h", "act:7d", "act:30d"],
+            },
+            {
+                **common,
+                "section_id": "review_reminders",
+                "evidence_labels": ["FACT", "OBSERVATION"],
+                "review_content_ids": ["content:overdue", "content:today", "content:week"],
+            },
+        ],
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+    }
+
+
+def s2pkt05_m4_mail_report() -> dict:
+    return build_s2pkt05_m4_mail_report(
+        generated_at=GENERATED_AT,
+        mail_contract_report=s2pkt01_mail_contract_report(),
+        m1_mail_report=s2pkt02_m1_mail_report(),
+        m2_mail_report=s2pkt03_m2_mail_report(),
+        m3_mail_report=s2pkt04_m3_mail_report(),
+        content_ledger_report=s2pit04_content_ledger_report(),
+        action_roi_report=s2pjt03_action_roi_report(),
+        review_schedule_report=s2pjt02_review_schedule_report(),
+        m4_orchestration_record=s2pkt05_m4_orchestration_record(),
         production_gate_state=s2pit02_production_gate_state(),
     )
 
@@ -6217,6 +6325,177 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["m3_mail_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pkt04_m3_mail_report.json").is_file())
 
+    def test_s2pkt05_m4_mail_passes_3plus1_orchestration_watermark_and_no_send_gates(self) -> None:
+        report = build_s2pkt05_m4_mail_report(
+            generated_at=GENERATED_AT,
+            mail_contract_report=s2pkt01_mail_contract_report(),
+            m1_mail_report=s2pkt02_m1_mail_report(),
+            m2_mail_report=s2pkt03_m2_mail_report(),
+            m3_mail_report=s2pkt04_m3_mail_report(),
+            content_ledger_report=s2pit04_content_ledger_report(),
+            action_roi_report=s2pjt03_action_roi_report(),
+            review_schedule_report=s2pjt02_review_schedule_report(),
+            m4_orchestration_record=s2pkt05_m4_orchestration_record(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PKT05_M4_MAIL_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PKT05-M4")
+        self.assertEqual(report["task_id"], "S2PKT05")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["mail_contract_gate"], "pass")
+        self.assertEqual(report["m1_terminal_gate"], "pass")
+        self.assertEqual(report["m2_terminal_gate"], "pass")
+        self.assertEqual(report["m3_terminal_gate"], "pass")
+        self.assertEqual(report["m4_scope_gate"], "pass")
+        self.assertEqual(report["staggered_schedule_gate"], "pass")
+        self.assertEqual(report["watermark_gate"], "pass")
+        self.assertEqual(report["duplicate_suppression_gate"], "pass")
+        self.assertEqual(report["section_coverage_gate"], "pass")
+        self.assertEqual(report["cross_board_synthesis_gate"], "pass")
+        self.assertEqual(report["action_review_gate"], "pass")
+        self.assertEqual(report["hash_status_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["mail_product_id"], "M4")
+        self.assertEqual(report["primary_board"], "B1-B6")
+        self.assertEqual(report["terminal_mail_count"], 3)
+        self.assertEqual(report["section_count"], 5)
+        self.assertEqual(report["action_count"], 3)
+        self.assertEqual(report["review_reminder_count"], 3)
+        self.assertEqual(report["default_staggered_windows"], ["M1=07:30", "M2=11:30", "M3=17:00", "M4=21:30"])
+        self.assertTrue(report["m4_mail_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pkt05_m4_mail_ready"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["smtp_transport_allowed"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["db_migration_executed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["email_frontstage_changed"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(validate_s2pkt05_m4_mail_report(report))
+
+    def test_s2pkt05_m4_mail_blocks_missing_terminal_watermark_duplicate_and_side_effect_drift(self) -> None:
+        record = s2pkt05_m4_orchestration_record()
+        record["mail_product_id"] = "M1"
+        record["primary_board"] = "B1"
+        record["cross_cutting_boards"] = ["B4", "B5"]
+        record["terminal_inputs"] = [
+            {"mail_product_id": "M1", "task_id": "S2PKT02", "status": "blocked", "ready": False, "mail_hash": "sha256:stale"}
+        ]
+        record["schedule_windows"] = [
+            {"mail_product_id": "M1", "time": "07:30"},
+            {"mail_product_id": "M2", "time": "07:30"},
+        ]
+        record["watermark"] = {"cycle_id": "cycle:other", "terminal_mail_products": ["M1"], "late_arrival_policy": "send_anyway"}
+        record["duplicate_count"] = 1
+        record["silent_drop_count"] = 1
+        record["legacy_five_mail_active"] = True
+        record["action_ids"] = ["act:missing"]
+        record["review_content_ids"] = ["content:missing"]
+        record["m4_mail_hash"] = "sha256:stale"
+        record["real_smtp_sent"] = True
+        record["sections"] = [
+            {
+                "section_id": "cross_source_resonance",
+                "content_ids": ["content:missing"],
+                "evidence_refs": [],
+                "evidence_labels": ["UNKNOWN"],
+            },
+            {
+                "section_id": "personal_action_mix",
+                "content_ids": ["content:missing"],
+                "evidence_refs": ["local://bad"],
+                "evidence_labels": ["FACT"],
+                "action_ids": ["act:missing"],
+            },
+        ]
+        report = build_s2pkt05_m4_mail_report(
+            generated_at=GENERATED_AT,
+            mail_contract_report={**s2pkt01_mail_contract_report(), "status": "blocked"},
+            m1_mail_report={**s2pkt02_m1_mail_report(), "status": "blocked"},
+            m2_mail_report={**s2pkt03_m2_mail_report(), "status": "blocked"},
+            m3_mail_report={**s2pkt04_m3_mail_report(), "status": "blocked"},
+            content_ledger_report={**s2pit04_content_ledger_report(), "status": "blocked"},
+            action_roi_report={**s2pjt03_action_roi_report(), "status": "blocked"},
+            review_schedule_report={**s2pjt02_review_schedule_report(), "status": "blocked"},
+            m4_orchestration_record=record,
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["mail_contract_gate"], "blocked")
+        self.assertEqual(report["m1_terminal_gate"], "blocked")
+        self.assertEqual(report["m2_terminal_gate"], "blocked")
+        self.assertEqual(report["m3_terminal_gate"], "blocked")
+        self.assertEqual(report["m4_scope_gate"], "blocked")
+        self.assertEqual(report["staggered_schedule_gate"], "blocked")
+        self.assertEqual(report["watermark_gate"], "blocked")
+        self.assertEqual(report["duplicate_suppression_gate"], "blocked")
+        self.assertEqual(report["section_coverage_gate"], "blocked")
+        self.assertEqual(report["cross_board_synthesis_gate"], "blocked")
+        self.assertEqual(report["action_review_gate"], "blocked")
+        self.assertEqual(report["hash_status_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("S2PKT01 mail contract report must pass", joined)
+        self.assertIn("S2PKT02 M1 mail report must pass and be terminal", joined)
+        self.assertIn("S2PKT03 M2 mail report must pass and be terminal", joined)
+        self.assertIn("S2PKT04 M3 mail report must pass and be terminal", joined)
+        self.assertIn("S2PIT04 content ledger report must pass", joined)
+        self.assertIn("S2PJT03 action/asset/ROI report must pass", joined)
+        self.assertIn("S2PJT02 review schedule report must pass", joined)
+        self.assertIn("mail_product_id must be M4", joined)
+        self.assertIn("primary_board must be B1-B6", joined)
+        self.assertIn("cross_cutting_boards must be B4/B5/B6", joined)
+        self.assertIn("terminal input M1 must be pass and ready", joined)
+        self.assertIn("missing terminal input M2", joined)
+        self.assertIn("scheduled window must be 11:30", joined)
+        self.assertIn("scheduled windows must be staggered", joined)
+        self.assertIn("watermark.cycle_id must match cycle_id", joined)
+        self.assertIn("watermark must wait for M1/M2/M3", joined)
+        self.assertIn("duplicate_count must be 0", joined)
+        self.assertIn("silent_drop_count must be 0", joined)
+        self.assertIn("legacy_five_mail_active must be false", joined)
+        self.assertIn("missing section contradictions", joined)
+        self.assertIn("content_id content:missing not traceable to S2PIT04", joined)
+        self.assertIn("evidence_refs must be non-empty", joined)
+        self.assertIn("evidence label UNKNOWN is not allowed", joined)
+        self.assertIn("action_id act:missing not traceable to S2PJT03", joined)
+        self.assertIn("review_content_id content:missing not traceable to S2PJT02", joined)
+        self.assertIn("m4_mail_hash must match", joined)
+        self.assertIn("real_smtp_sent must be false", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertFalse(validate_s2pkt05_m4_mail_report(report))
+
+    def test_s2pkt05_m4_mail_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pkt05_m4_mail(
+                state_dir=tmp,
+                date="2026-06-26",
+                generated_at=GENERATED_AT,
+                mail_contract_report=s2pkt01_mail_contract_report(),
+                m1_mail_report=s2pkt02_m1_mail_report(),
+                m2_mail_report=s2pkt03_m2_mail_report(),
+                m3_mail_report=s2pkt04_m3_mail_report(),
+                content_ledger_report=s2pit04_content_ledger_report(),
+                action_roi_report=s2pjt03_action_roi_report(),
+                review_schedule_report=s2pjt02_review_schedule_report(),
+                m4_orchestration_record=s2pkt05_m4_orchestration_record(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pkt05_m4_mail_report(report))
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["smtp_transport_allowed"])
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["email_frontstage_changed"])
+            self.assertTrue(Path(report["m4_mail_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pkt05_m4_mail_report.json").is_file())
+
     def test_s2pjt01_lifecycle_state_passes_local_model_and_no_migration_gates(self) -> None:
         report = build_s2pjt01_lifecycle_state_report(
             generated_at=GENERATED_AT,
@@ -8536,6 +8815,74 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["section_count"], 5)
         self.assertEqual(payload["action_windows"], ["2h", "30d"])
         self.assertTrue(payload["s2pkt04_m3_mail_ready"])
+        self.assertFalse(payload["real_smtp_sent"])
+        self.assertFalse(payload["smtp_transport_allowed"])
+        self.assertFalse(payload["scheduler_enabled"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_cli_stage2_m4_mail_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            mail_contract_path = tmp_path / "mail-contract-report.json"
+            m1_path = tmp_path / "m1-report.json"
+            m2_path = tmp_path / "m2-report.json"
+            m3_path = tmp_path / "m3-report.json"
+            content_ledger_path = tmp_path / "content-ledger.json"
+            action_roi_path = tmp_path / "action-roi.json"
+            review_schedule_path = tmp_path / "review-schedule.json"
+            m4_record_path = tmp_path / "m4-record.json"
+            gate_path = tmp_path / "production-gate.json"
+            mail_contract_path.write_text(json.dumps(s2pkt01_mail_contract_report(), ensure_ascii=False), encoding="utf-8")
+            m1_path.write_text(json.dumps(s2pkt02_m1_mail_report(), ensure_ascii=False), encoding="utf-8")
+            m2_path.write_text(json.dumps(s2pkt03_m2_mail_report(), ensure_ascii=False), encoding="utf-8")
+            m3_path.write_text(json.dumps(s2pkt04_m3_mail_report(), ensure_ascii=False), encoding="utf-8")
+            content_ledger_path.write_text(json.dumps(s2pit04_content_ledger_report(), ensure_ascii=False), encoding="utf-8")
+            action_roi_path.write_text(json.dumps(s2pjt03_action_roi_report(), ensure_ascii=False), encoding="utf-8")
+            review_schedule_path.write_text(json.dumps(s2pjt02_review_schedule_report(), ensure_ascii=False), encoding="utf-8")
+            m4_record_path.write_text(json.dumps(s2pkt05_m4_orchestration_record(), ensure_ascii=False), encoding="utf-8")
+            gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-m4-mail",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-26",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--mail-contract-report",
+                    str(mail_contract_path),
+                    "--m1-mail-report",
+                    str(m1_path),
+                    "--m2-mail-report",
+                    str(m2_path),
+                    "--m3-mail-report",
+                    str(m3_path),
+                    "--content-ledger-report",
+                    str(content_ledger_path),
+                    "--action-roi-report",
+                    str(action_roi_path),
+                    "--review-schedule-report",
+                    str(review_schedule_path),
+                    "--m4-orchestration-record",
+                    str(m4_record_path),
+                    "--production-gate-state",
+                    str(gate_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PKT05_M4_MAIL_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PKT05")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["mail_product_id"], "M4")
+        self.assertEqual(payload["terminal_mail_count"], 3)
+        self.assertEqual(payload["section_count"], 5)
+        self.assertEqual(payload["review_reminder_count"], 3)
+        self.assertTrue(payload["s2pkt05_m4_mail_ready"])
         self.assertFalse(payload["real_smtp_sent"])
         self.assertFalse(payload["smtp_transport_allowed"])
         self.assertFalse(payload["scheduler_enabled"])
