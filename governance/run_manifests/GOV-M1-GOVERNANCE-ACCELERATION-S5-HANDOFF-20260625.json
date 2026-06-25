@@ -73,6 +73,7 @@
     "git_base_or_status_error_fail_closed": true,
     "zero_write_guard": "pre_post_delta",
     "pull_request_ready_for_review_trigger": true,
+    "workflow_job_env_uses_static_pycache_prefix": true,
     "root_or_unknown_fanout_check_render": "deferred_report_only",
     "full_governance_location": "schedule_or_workflow_dispatch_all"
   },
@@ -100,6 +101,7 @@
     "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
     "python -B scripts/lean_governance.py validate --all --semantic --drift-report",
     "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_pr_governance_keeps_full_computation_out_of_pr_path -q",
+    "GitHub Actions run 28169751902 parse failure reviewed; job-level env no longer references runner context",
     "bash rollback tee success and pipefail failure simulation",
     "git diff --check"
   ],
@@ -109,6 +111,7 @@
     "compact_ci": "PASS",
     "workflow_full_all": "PASS_WITH_EXISTING_SYNC_WARNINGS_IN_OUTPUT",
     "pull_request_ready_for_review_trigger_contract": "PASS",
+    "workflow_parse_context_fix": "PENDING_REAL_CI_RERUN",
     "rollback_artifact_and_pipefail": "PASS",
     "diff_check": "PASS"
   },

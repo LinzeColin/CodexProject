@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 10
     env:
       PYTHONDONTWRITEBYTECODE: "1"
-      PYTHONPYCACHEPREFIX: ${{ runner.temp }}/python-pycache
+      PYTHONPYCACHEPREFIX: /tmp/python-pycache
       PYTEST_ADDOPTS: "-p no:cacheprovider"
     steps:
       - uses: actions/checkout@v4

@@ -4892,6 +4892,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("PYTHONDONTWRITEBYTECODE", workflow)
         self.assertIn("PYTHONPYCACHEPREFIX", workflow)
+        self.assertNotIn("${{ runner.temp }}/python-pycache", workflow)
         self.assertIn("PYTEST_ADDOPTS", workflow)
         self.assertIn("-p no:cacheprovider", workflow)
         self.assertIn("GOVERNANCE_EVIDENCE_DIR", workflow)
