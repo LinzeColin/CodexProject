@@ -4556,3 +4556,56 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PHT05_CONTENT_QUALITY_GATE.md"
+  -
+    model_id: "MOD-ADP-087"
+    name: "S2PIT03 source, board, parameter, and queue view"
+    kind: "deterministic local owner-view evidence model"
+    purpose: "Validate local-only S2PIT03 owner-facing source/model view evidence for D1-D4 source-domain health, B1-B6 reading-board health, parameter default/range/rollback/impact/code/test readability, first-screen progressive disclosure, queue view traceability/exportability, deterministic view hashing, and no-production side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pit03-source-model-view-v1"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-089"
+    parameter_ids:
+      - "PARAM-ADP-682"
+      - "PARAM-ADP-683"
+      - "PARAM-ADP-684"
+      - "PARAM-ADP-685"
+      - "PARAM-ADP-686"
+      - "PARAM-ADP-687"
+      - "PARAM-ADP-688"
+      - "PARAM-ADP-689"
+      - "PARAM-ADP-690"
+      - "PARAM-ADP-691"
+    inputs:
+      - "S2PIT01 user-center report"
+      - "D1-D4 source-domain records"
+      - "B1-B6 reading-board records"
+      - "parameter disclosure records"
+      - "queue view records"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PIT03 source/model view report"
+      - "source-domain gate"
+      - "reading-board gate"
+      - "parameter disclosure gate"
+      - "queue view gate"
+      - "traceability gate"
+      - "deterministic view gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PIT03-SOURCE-MODEL-VIEW-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT03_SOURCE_MODEL_VIEW.md"

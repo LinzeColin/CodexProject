@@ -1729,6 +1729,24 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PIT03"
+    phase: "S2PI"
+    objective: "Implement local-only source-domain, reading-board, model-parameter, and queue view evidence."
+    scope: "D1-D4 source-domain health, B1-B6 reading-board health, all parameter default/range/rollback/impact/code/test readability, first-screen progressive disclosure, queue view traceability/exportability, deterministic view hash, focused tests, CLI, and governance registration."
+    non_scope: "No live source fetch, no source adapter production inclusion, no queue mutation, no ranking change, no SMTP, no scheduler, no Release, no public schema change, no DB migration, no Email V1 runtime/frontstage change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no owner-experience final acceptance, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PIT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PIT03-SOURCE-MODEL"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit03_compile3 python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit03_tests3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit03_fulltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit03_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit03_gov2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit03_rendercheck2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 142 OK", "full arxiv-daily-push unittest: 371 OK", "semantic extractor: 89 formulas / 674 parameters checked", "V7.2 validator PASS", "ADP project governance: 0 errors / 0 warnings", "lean check-render: drift 0 / reference issues 0", "JSON/YAML/JSONL/CSV parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PIT03_SOURCE_MODEL_VIEW.md", "governance/run_manifests/ADP-S2PIT03-SOURCE-MODEL-VIEW-20260626.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PIT03 can be mistaken for production source inclusion, queue operation, or final owner-experience acceptance; it is local source/model view evidence only and keeps all production side-effect gates false."
+    rollback: "Revert S2PIT03 source/model view code, CLI, tests, governance registrations, phase record, manifest, and events; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2PJT01"
     phase: "S2PJ"
     objective: "Implement local-only review/action/asset/conversion/mastery lifecycle state model evidence."

@@ -722,6 +722,49 @@ S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
 )
 S2PIT02_OWNER_STATUS_PATH = "docs/owner/00_用户中心/01_当前状态.md"
 S2PIT02_REPORT_FILENAME = "stage2_s2pit02_runtime_dashboard_report.json"
+S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID = "adp-s2pit03-source-model-view-v1"
+S2PIT03_ACCEPTANCE_ID = "ACC-S2PIT03-SOURCE-MODEL"
+S2PIT03_TASK_ID = "S2PIT03"
+S2PIT03_REQUIRED_SOURCE_DOMAINS = ("D1", "D2", "D3", "D4")
+S2PIT03_REQUIRED_READING_BOARDS = ("B1", "B2", "B3", "B4", "B5", "B6")
+S2PIT03_REQUIRED_PARAMETER_FIELDS = (
+    "parameter_id",
+    "default_value",
+    "value_range",
+    "rollback_value",
+    "impact",
+    "code_refs",
+    "test_refs",
+)
+S2PIT03_MAX_FIRST_SCREEN_PARAMETERS = 20
+S2PIT03_REQUIRED_GATES = (
+    "user_center_gate",
+    "source_domain_gate",
+    "reading_board_gate",
+    "parameter_disclosure_gate",
+    "queue_view_gate",
+    "traceability_gate",
+    "deterministic_view_gate",
+    "no_side_effect_gate",
+)
+S2PIT03_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PIT03_REPORT_FILENAME = "stage2_s2pit03_source_model_view_report.json"
 S2PJT01_LIFECYCLE_STATE_MODEL_ID = "adp-s2pjt01-lifecycle-state-v1"
 S2PJT01_ACCEPTANCE_ID = "ACC-S2PJT01-LIFECYCLE"
 S2PJT01_TASK_ID = "S2PJT01"
@@ -7674,6 +7717,328 @@ def validate_s2pit02_runtime_dashboard_report(report: Mapping[str, Any]) -> list
         errors.append("blocked S2PIT02 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pit02_runtime_dashboard_ready") is not True:
         errors.append("passing S2PIT02 report requires s2pit02_runtime_dashboard_ready=true")
+    return errors
+
+
+def _s2pit03_view_hash(
+    *,
+    source_domain_records: Sequence[Mapping[str, Any]],
+    reading_board_records: Sequence[Mapping[str, Any]],
+    parameter_records: Sequence[Mapping[str, Any]],
+    queue_view_records: Sequence[Mapping[str, Any]],
+) -> str:
+    payload = {
+        "source_domain_records": list(source_domain_records),
+        "reading_board_records": list(reading_board_records),
+        "parameter_records": list(parameter_records),
+        "queue_view_records": list(queue_view_records),
+    }
+    canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def build_s2pit03_source_model_view_report(
+    *,
+    generated_at: str,
+    user_center_report: Mapping[str, Any],
+    source_domain_records: Sequence[Mapping[str, Any]],
+    reading_board_records: Sequence[Mapping[str, Any]],
+    parameter_records: Sequence[Mapping[str, Any]],
+    queue_view_records: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PIT03 source/model/parameter/queue view evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    user_errors = validate_s2pit01_user_center_report(user_center_report)
+    user_gate = "pass" if user_center_report.get("status") == "pass" and not user_errors else "blocked"
+
+    source_records = [dict(row) for row in source_domain_records]
+    source_domains = sorted({str(row.get("domain_id") or "") for row in source_records})
+    missing_domains = [domain for domain in S2PIT03_REQUIRED_SOURCE_DOMAINS if domain not in source_domains]
+    source_errors: list[str] = []
+    for row in source_records:
+        domain = str(row.get("domain_id") or "")
+        if domain and domain not in S2PIT03_REQUIRED_SOURCE_DOMAINS:
+            source_errors.append(f"unknown source domain: {domain}")
+        if row.get("health_status") not in {"pass", "ready"}:
+            source_errors.append(f"source domain {domain or '<missing>'} health_status must be pass or ready")
+        if not row.get("source_refs"):
+            source_errors.append(f"source domain {domain or '<missing>'} requires source_refs")
+        if not row.get("evidence_refs"):
+            source_errors.append(f"source domain {domain or '<missing>'} requires evidence_refs")
+    source_errors.extend(f"missing source domain: {domain}" for domain in missing_domains)
+
+    board_records = [dict(row) for row in reading_board_records]
+    board_ids = sorted({str(row.get("board_id") or "") for row in board_records})
+    missing_boards = [board for board in S2PIT03_REQUIRED_READING_BOARDS if board not in board_ids]
+    board_errors: list[str] = []
+    for row in board_records:
+        board = str(row.get("board_id") or "")
+        if board and board not in S2PIT03_REQUIRED_READING_BOARDS:
+            board_errors.append(f"unknown reading board: {board}")
+        if row.get("health_status") not in {"pass", "ready"}:
+            board_errors.append(f"reading board {board or '<missing>'} health_status must be pass or ready")
+        refs = {str(ref) for ref in row.get("source_domain_refs") or []}
+        if not refs:
+            board_errors.append(f"reading board {board or '<missing>'} requires source_domain_refs")
+        elif not refs.issubset(set(S2PIT03_REQUIRED_SOURCE_DOMAINS)):
+            board_errors.append(f"reading board {board or '<missing>'} has unknown source_domain_refs")
+        if not row.get("evidence_refs"):
+            board_errors.append(f"reading board {board or '<missing>'} requires evidence_refs")
+    board_errors.extend(f"missing reading board: {board}" for board in missing_boards)
+
+    parameters = [dict(row) for row in parameter_records]
+    parameter_errors: list[str] = []
+    parameter_ids = [str(row.get("parameter_id") or "") for row in parameters]
+    if not parameters:
+        parameter_errors.append("S2PIT03 requires parameter records")
+    if len({pid for pid in parameter_ids if pid}) != len([pid for pid in parameter_ids if pid]):
+        parameter_errors.append("S2PIT03 parameter_id values must be unique")
+    first_screen = [row for row in parameters if row.get("first_screen") is True]
+    if not first_screen:
+        parameter_errors.append("S2PIT03 requires at least one first-screen parameter")
+    if len(first_screen) > S2PIT03_MAX_FIRST_SCREEN_PARAMETERS:
+        parameter_errors.append(f"S2PIT03 first-screen parameters must be <= {S2PIT03_MAX_FIRST_SCREEN_PARAMETERS}")
+    for index, row in enumerate(parameters):
+        parameter_id = str(row.get("parameter_id") or f"index:{index}")
+        for field in S2PIT03_REQUIRED_PARAMETER_FIELDS:
+            value = row.get(field)
+            if value is None or value == "" or value == []:
+                parameter_errors.append(f"parameter {parameter_id} missing {field}")
+        if row.get("searchable") is not True:
+            parameter_errors.append(f"parameter {parameter_id} must be searchable")
+        if row.get("disclosure_tier") not in {"core", "advanced", "engineering"}:
+            parameter_errors.append(f"parameter {parameter_id} disclosure_tier must be core, advanced, or engineering")
+
+    queue_records = [dict(row) for row in queue_view_records]
+    queue_errors: list[str] = []
+    if not queue_records:
+        queue_errors.append("S2PIT03 requires queue view records")
+    for index, row in enumerate(queue_records):
+        item_id = str(row.get("content_id") or row.get("queue_id") or f"index:{index}")
+        if str(row.get("source_domain") or "") not in S2PIT03_REQUIRED_SOURCE_DOMAINS:
+            queue_errors.append(f"queue item {item_id} source_domain must be D1-D4")
+        if str(row.get("board_id") or "") not in S2PIT03_REQUIRED_READING_BOARDS:
+            queue_errors.append(f"queue item {item_id} board_id must be B1-B6")
+        if not row.get("evidence_refs"):
+            queue_errors.append(f"queue item {item_id} requires evidence_refs")
+        if not row.get("detail_ref"):
+            queue_errors.append(f"queue item {item_id} requires detail_ref")
+        if row.get("exportable") is not True:
+            queue_errors.append(f"queue item {item_id} must be exportable")
+
+    trace_errors: list[str] = []
+    for label, rows in (
+        ("source_domain", source_records),
+        ("reading_board", board_records),
+        ("parameter", parameters),
+        ("queue", queue_records),
+    ):
+        for index, row in enumerate(rows):
+            if not row.get("evidence_refs"):
+                trace_errors.append(f"{label}[{index}] missing evidence_refs")
+    for row in parameters:
+        parameter_id = str(row.get("parameter_id") or "<missing>")
+        if not row.get("code_refs") or not row.get("test_refs"):
+            trace_errors.append(f"parameter {parameter_id} requires code_refs and test_refs")
+
+    side_effect_errors: list[str] = []
+    for key in (*S2PIT03_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed"):
+        if production_gate.get(key, False) is not False:
+            side_effect_errors.append(f"production_gate_state.{key} must be false")
+    for label, rows in (
+        ("source_domain", source_records),
+        ("reading_board", board_records),
+        ("parameter", parameters),
+        ("queue", queue_records),
+    ):
+        for index, row in enumerate(rows):
+            for key in (
+                "live_fetch_executed",
+                "source_adapter_changed",
+                "queue_mutation_allowed",
+                "ranking_algorithm_changed",
+                "public_schema_changed",
+                "real_smtp_sent",
+                "scheduler_enabled",
+                "release_upload_allowed",
+            ):
+                if row.get(key, False) is not False:
+                    side_effect_errors.append(f"{label}[{index}].{key} must be false")
+
+    view_hash = _s2pit03_view_hash(
+        source_domain_records=source_records,
+        reading_board_records=board_records,
+        parameter_records=parameters,
+        queue_view_records=queue_records,
+    )
+    gates = {
+        "user_center_gate": user_gate,
+        "source_domain_gate": "pass" if not source_errors else "blocked",
+        "reading_board_gate": "pass" if not board_errors else "blocked",
+        "parameter_disclosure_gate": "pass" if not parameter_errors else "blocked",
+        "queue_view_gate": "pass" if not queue_errors else "blocked",
+        "traceability_gate": "pass" if not trace_errors else "blocked",
+        "deterministic_view_gate": "pass",
+        "no_side_effect_gate": "pass" if not side_effect_errors else "blocked",
+    }
+    blocking_reasons = [
+        *user_errors,
+        *source_errors,
+        *board_errors,
+        *parameter_errors,
+        *queue_errors,
+        *trace_errors,
+        *side_effect_errors,
+    ]
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    return {
+        "model_id": S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID,
+        "acceptance_id": S2PIT03_ACCEPTANCE_ID,
+        "task_id": S2PIT03_TASK_ID,
+        "phase": "S2PI",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_source_domains": list(S2PIT03_REQUIRED_SOURCE_DOMAINS),
+        "source_domains_observed": source_domains,
+        "required_reading_boards": list(S2PIT03_REQUIRED_READING_BOARDS),
+        "reading_boards_observed": board_ids,
+        "source_domain_records": source_records,
+        "reading_board_records": board_records,
+        "parameter_records": parameters,
+        "parameter_count": len(parameters),
+        "first_screen_parameter_ids": [str(row.get("parameter_id") or "") for row in first_screen],
+        "max_first_screen_parameters": S2PIT03_MAX_FIRST_SCREEN_PARAMETERS,
+        "queue_view_records": queue_records,
+        "queue_view_count": len(queue_records),
+        "view_hash": view_hash,
+        "s2pit03_source_model_view_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pit03_source_model_view(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    user_center_report: Mapping[str, Any],
+    source_domain_records: Sequence[Mapping[str, Any]],
+    reading_board_records: Sequence[Mapping[str, Any]],
+    parameter_records: Sequence[Mapping[str, Any]],
+    queue_view_records: Sequence[Mapping[str, Any]],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PIT03 local source/model/parameter/queue view evidence."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pit03-source-model-view"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pit03_source_model_view_report(
+        generated_at=generated_at,
+        user_center_report=user_center_report,
+        source_domain_records=source_domain_records,
+        reading_board_records=reading_board_records,
+        parameter_records=parameter_records,
+        queue_view_records=queue_view_records,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "source_model_view_report_path": str(run_dir / "adp-s2pit03-source-model-view-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pit03-source-model-view-report.json", report)
+        _write_json(state / S2PIT03_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pit03_source_model_view_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID:
+        errors.append("S2PIT03 model_id must be adp-s2pit03-source-model-view-v1")
+    if report.get("task_id") != S2PIT03_TASK_ID:
+        errors.append("S2PIT03 task_id must be S2PIT03")
+    if report.get("acceptance_id") != S2PIT03_ACCEPTANCE_ID:
+        errors.append("S2PIT03 acceptance_id must be ACC-S2PIT03-SOURCE-MODEL")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PIT03 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PIT03_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PIT03 source/model view evidence")
+    missing_domains = [
+        domain for domain in S2PIT03_REQUIRED_SOURCE_DOMAINS if domain not in set(report.get("source_domains_observed") or [])
+    ]
+    if missing_domains:
+        errors.append("S2PIT03 missing source domains: " + ", ".join(missing_domains))
+    missing_boards = [
+        board for board in S2PIT03_REQUIRED_READING_BOARDS if board not in set(report.get("reading_boards_observed") or [])
+    ]
+    if missing_boards:
+        errors.append("S2PIT03 missing reading boards: " + ", ".join(missing_boards))
+    parameters = report.get("parameter_records")
+    if not isinstance(parameters, list) or not parameters:
+        errors.append("S2PIT03 parameter_records must be a non-empty list")
+        parameters = []
+    if int(report.get("parameter_count") or 0) != len(parameters):
+        errors.append("S2PIT03 parameter_count must match parameter_records")
+    first_screen_ids = report.get("first_screen_parameter_ids") or []
+    if not first_screen_ids:
+        errors.append("S2PIT03 first_screen_parameter_ids must be non-empty")
+    if len(first_screen_ids) > S2PIT03_MAX_FIRST_SCREEN_PARAMETERS:
+        errors.append(f"S2PIT03 first_screen_parameter_ids must be <= {S2PIT03_MAX_FIRST_SCREEN_PARAMETERS}")
+    queue_records = report.get("queue_view_records")
+    if not isinstance(queue_records, list) or not queue_records:
+        errors.append("S2PIT03 queue_view_records must be a non-empty list")
+        queue_records = []
+    expected_hash = _s2pit03_view_hash(
+        source_domain_records=report.get("source_domain_records") or [],
+        reading_board_records=report.get("reading_board_records") or [],
+        parameter_records=parameters,
+        queue_view_records=queue_records,
+    )
+    if report.get("view_hash") != expected_hash:
+        errors.append("S2PIT03 view_hash must match source, board, parameter, and queue records")
+    for gate in S2PIT03_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PIT03 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PIT03 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pit03_source_model_view_ready") is not True:
+        errors.append("passing S2PIT03 report requires s2pit03_source_model_view_ready=true")
     return errors
 
 
