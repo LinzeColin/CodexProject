@@ -42,6 +42,13 @@ Public raw and Live discovery are blocked by access policy:
 - Keep `artifacts/latest/` public-safe.
 - Keep local cache, virtualenv, private profiles, and generated bulk outputs out of Git unless explicitly approved and sanitized.
 
+## S5PBT01 Structure Boundary
+
+- Active source and tests stay in `tab-research-pipeline/`.
+- `legacy/fifa-analysis-system/` is read-only historical code and must not become a default run path.
+- `artifacts/` is generated-output territory; use the Wave 2 manifest before any archive movement.
+- `ops/` is local operational reference, not application source.
+
 ## Verification
 
 Preferred checks:

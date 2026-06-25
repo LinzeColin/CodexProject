@@ -1,0 +1,42 @@
+schema_version: "codexproject.structure_contract.v1"
+project_id: "FIFA"
+task_id: "S5PBT01"
+acceptance_id: "ACC-S5PBT01"
+mode: "BOUNDARY_ONLY_NO_RUNTIME_REWRITE"
+active_pipeline:
+  path: "FIFA/tab-research-pipeline"
+  default_entry: true
+  owns:
+    - "parser"
+    - "validation"
+    - "export smoke"
+    - "application scripts"
+legacy:
+  path: "FIFA/legacy/fifa-analysis-system"
+  default_entry: false
+  read_only: true
+  migration_action: "kept_in_place_for_traceability"
+artifacts:
+  path: "FIFA/artifacts"
+  default_entry: false
+  generated_layer: true
+  archive_manifest_ref: "governance/stage_gates/s5pa/wave2_archive_manifest.json"
+  archive_action: "candidate_only_no_move_in_s5pbt01"
+ops_docs:
+  path: "FIFA/ops"
+  default_entry: false
+  runtime_source: false
+  action: "kept_as_local_ops_reference"
+smoke_tests:
+  log_ref: "governance/stage_gates/s5pb/fifa_smoke_tests.log"
+  parser_validation_export: "PASS"
+stop_conditions:
+  legacy_participates_default_run: false
+  active_pipeline_path_changed: false
+  generated_artifacts_used_as_source_truth: false
+  ops_docs_used_as_runtime_source: false
+  betting_automation_enabled: false
+  private_values_emitted: false
+rollback:
+  mode: "revert_s5pbt01_boundary_docs_and_manifest_only"
+  note: "Legacy remains read-only in place; active pipeline paths are unchanged."

@@ -1,0 +1,193 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625",
+  "project_id": "FIFA",
+  "task_id": "S5PBT01",
+  "acceptance_ids": [
+    "ACC-S5PBT01"
+  ],
+  "iteration_id": "ITER-OTHER8-S5PBT01-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "de8eee3eb6e763d992d1b3a15446f92357101266",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S5PAT02-WAVE2-ARCHIVE-PRIVACY-MANIFEST-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:2adfdeb8dea0cef94a8834012c51d642d389947f7ae437d3ce4b61fca9d278d4",
+  "changed_files_declared": [
+    "FIFA/AGENTS.md",
+    "FIFA/README.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+    "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "FIFA/AGENTS.md",
+    "FIFA/README.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+    "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "FIFA/docs/FIFA_structure_report.md",
+    "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+    "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "FIFA/AGENTS.md",
+    "FIFA/README.md",
+    "FIFA/docs/FIFA_structure_report.md",
+    "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+    "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage5_fifa_structure_boundary",
+    "active_pipeline_legacy_artifacts_ops_separation",
+    "parser_validation_export_smoke_bound",
+    "no_runtime_rewrite",
+    "no_artifact_move"
+  ],
+  "stage_gate_status": {
+    "S5PAT02": "PASSED_AND_BOUND",
+    "S5PBT01": "LOCAL_PRECOMMIT_PASSED",
+    "S5PB-GATE": "IN_PROGRESS",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "next_allowed_task": "S5PBT02"
+  },
+  "next_allowed_task": "S5PBT02",
+  "structure_boundary": {
+    "active_pipeline": "FIFA/tab-research-pipeline",
+    "legacy": "FIFA/legacy/fifa-analysis-system",
+    "artifacts": "FIFA/artifacts",
+    "ops_docs": "FIFA/ops",
+    "contract_ref": "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+    "report_ref": "FIFA/docs/FIFA_structure_report.md"
+  },
+  "archive_manifest_reconciliation": {
+    "wave2_manifest_ref": "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "fifa_generated_candidate_count": 42,
+    "moved_in_s5pbt01": 0,
+    "reason": "S5PBT01 binds the active/legacy/artifact/ops boundary and keeps generated artifact candidates checksum-bound for future owner-reviewed movement."
+  },
+  "smoke_summary": {
+    "log_ref": "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+    "test_count": 6,
+    "result": "PASS",
+    "coverage": [
+      "parser",
+      "validation",
+      "export"
+    ]
+  },
+  "stop_conditions": {
+    "legacy_participates_default_run": false,
+    "active_pipeline_path_changed": false,
+    "generated_artifacts_moved": false,
+    "generated_artifacts_used_as_source_truth": false,
+    "ops_docs_used_as_runtime_source": false,
+    "betting_automation_enabled": false,
+    "private_values_emitted": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "OpenAIDatabase",
+      "PFI",
+      "Serenity-Alipay",
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": false,
+    "allowed_project": "FIFA",
+    "tracked_diff_command": "git diff --name-only origin/main -- OpenAIDatabase PFI Serenity-Alipay EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT"
+  },
+  "model_delta": "NOT_CHANGED: S5PBT01 documents and binds FIFA structure boundaries only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No FIFA product version change. Active parser, validation, and export paths are unchanged.",
+  "test_commands": [
+    "set PYTHONPATH=C:\\Users\\linze\\Documents\\Codex\\2026-06-23\\xian\\work\\test_stubs;.&& C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_pipeline.PipelineTests.test_parse_market_pairs tests.test_pipeline.PipelineTests.test_parse_market_pairs_rejects_invalid_decimal_odds_tokens tests.test_pipeline.PipelineTests.test_matches_gate_blocks_invalid_raw_decimal_odds tests.test_pipeline.PipelineTests.test_write_outputs tests.test_pipeline.PipelineTests.test_write_outputs_fails_closed_without_success_deliverables_when_gate_blocks tests.test_pipeline.PipelineTests.test_write_outputs_legacy_blocked_export_requires_explicit_flag -q",
+    "python -B tools/structure_audit.py --project FIFA",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pbt01_fifa_structure_boundary_and_smoke_evidence -q",
+    "python -B scripts/lean_governance.py check-render --project FIFA",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --name-only origin/main -- OpenAIDatabase PFI Serenity-Alipay EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "FIFA focused parser/validation/export smoke",
+      "result": "PASS",
+      "evidence": "Ran 6 tests OK using bundled Python and local fcntl stub path"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pbt01_fifa_structure_boundary_and_smoke_evidence -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json",
+      "result": "PASS",
+      "evidence": "manifest JSON parsed"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --project FIFA",
+      "result": "PASS",
+      "evidence": "node_count=312 edge_count=406"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project FIFA",
+      "result": "PASS",
+      "evidence": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "evidence": "projects changed: FIFA; errors=0 warnings=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "evidence": "root and 10 projects checked; errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --name-only origin/main -- OpenAIDatabase PFI Serenity-Alipay EEI arxiv-daily-push",
+      "result": "PASS",
+      "evidence": "no forbidden project diff output"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "evidence": "no whitespace errors"
+    }
+  ],
+  "evidence_refs": [
+    "FIFA/docs/FIFA_structure_report.md",
+    "governance/stage_gates/s5pb/fifa_structure_contract.yaml",
+    "governance/stage_gates/s5pb/fifa_smoke_tests.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S5PBT01 FIFA active, legacy, artifacts, and ops structure boundary",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "unresolved_risks": [
+    "FIFA generated artifacts remain tracked in place; future movement must use the Wave 2 checksum manifest.",
+    "FIFA active delivery readiness remains blocked by previously recorded TAB access and authorization constraints.",
+    "S5PBT02 still must migrate OpenAIDatabase before S5PB-GATE can pass."
+  ],
+  "rollback": {
+    "mode": "remove_s5pbt01_boundary_docs_manifest_and_smoke_log_only",
+    "reason": "S5PBT01 performs no runtime rewrite, no archive move, and no product behavior change."
+  }
+}
