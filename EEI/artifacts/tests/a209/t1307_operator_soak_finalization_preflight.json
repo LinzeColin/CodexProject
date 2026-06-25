@@ -1,0 +1,98 @@
+{
+  "a209_evidence_ready_for_release_manager": false,
+  "a209_task_status_required": "IN_PROGRESS",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "artifact_id": "t1307-a209-operator-soak-finalization-preflight",
+  "downstream_refresh_commands": [
+    "make generate-production-api-release-preflight",
+    "make generate-release-manager-activation-artifact",
+    "make generate-mvp-release-gate-preflight",
+    "make generate-clean-room-release generate-release-artifacts",
+    "make verify"
+  ],
+  "downstream_release_gate_refresh_allowed": false,
+  "generated_at": "2026-06-25T22:49:25Z",
+  "non_claims": [
+    "This finalizer does not close A209 by itself.",
+    "This finalizer does not replace validate_operator_soak_evidence.py.",
+    "This finalizer does not publish production graph or score artifacts.",
+    "This finalizer does not replace A202, A210, A026 or A027 evidence."
+  ],
+  "operator_next_actions": [
+    "Inspect heartbeat_validation_errors and evidence result errors.",
+    "Do not auto-resume if any failed window is present."
+  ],
+  "release_gate_closed_by_finalizer": false,
+  "rollback": [
+    "Regenerate heartbeat and evidence-validation artifacts from source logs.",
+    "Do not delete the live 24h checkpoint or log during rollback.",
+    "If status requires operator intervention, inspect failed windows before resume."
+  ],
+  "schema_version": "eei-a209-operator-soak-finalization-preflight-v1",
+  "source_files": {
+    "evidence_validation": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "evidence_validation_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
+    "heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "heartbeat_sha256": "3aa3d9ff19898d2043c00faa0ca7c9a08a085ea76629d5945d7d6ac61de166bb"
+  },
+  "source_statuses": {
+    "evidence_validation": {
+      "a209_task_status_required": "IN_PROGRESS",
+      "release_gate_closed_by_validator": false,
+      "results": {
+        "operator_24h": {
+          "checkpoint_windows": 6,
+          "completed_duration_seconds": 1800,
+          "errors": [
+            "run status must be PASS",
+            "completed duration is below target",
+            "windows_failed must be 0",
+            "covers_24h_target false",
+            "window duration sum below target",
+            "checkpoint duration sum below target",
+            "window 7 status must be PASS",
+            "window 7 child_status must be PASS or PARTIAL",
+            "window 7 measured_duration_seconds must be positive",
+            "window 7 elapsed_wall_seconds exceeds parallel window budget",
+            "window 7 browser_heap_growth_bytes exceeds budget",
+            "window 7 browser_dom_node_growth exceeds budget",
+            "window 7 worker_event_loop_lag_p95_ms exceeds budget"
+          ],
+          "missing": [],
+          "status": "FAILED_RUN",
+          "windows_completed": 6
+        },
+        "operator_4h": {
+          "checkpoint_windows": 48,
+          "completed_duration_seconds": 14400,
+          "errors": [],
+          "missing": [],
+          "status": "PASS",
+          "windows_completed": 48
+        }
+      },
+      "status": "FAILED_OPERATOR_EVIDENCE"
+    },
+    "heartbeat": {
+      "completion_percent": 2.08,
+      "operator_pid": 61143,
+      "operator_process_status": "NOT_RUNNING",
+      "progress_status": "FAILED_WINDOW",
+      "release_gate_closed_by_background_heartbeat": false,
+      "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+      "target_windows": 288,
+      "watchdog_pid": 61390,
+      "watchdog_process_status": "RUNNING",
+      "windows_completed": 6,
+      "windows_failed": 1,
+      "windows_remaining": 282
+    },
+    "heartbeat_validation_errors": []
+  },
+  "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "task_id": "T1307"
+}

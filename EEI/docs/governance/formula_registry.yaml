@@ -1,6 +1,10 @@
 governance_spec_version: "1.0.0"
 project_id: "EEI"
 # 2026-06-22 audit: T1304/A206 scheduler closure changes delivery status only; formula expressions, weights and extraction logic are unchanged.
+# 2026-06-24 audit: T1303/A204-A205 apply CLI changes activation and recompute operations only; formula expressions, weights and thresholds are unchanged.
+# 2026-06-25 audit: T1302/A203 implementation closure and A209 35/288 heartbeat refresh update release evidence only; formula expressions, weights, thresholds and extraction logic are unchanged.
+# 2026-06-25 audit: T1302/A203 E2E CI repair updates status-screen evidence expectations only; formula expressions, weights, thresholds and extraction logic are unchanged.
+# 2026-06-25 audit: T1303/A204-A205 external release operator intake packet changes no formula expressions, weights, thresholds or extraction logic.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"
@@ -672,7 +676,7 @@ formulas:
       - "ASM-004"
     status: "active"
     expression: "value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured."
-    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration and gold-quality gate parameters without a scoring formula."
+    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard, signed-intake source-boundary, gold-quality gate and external release operator intake parameters without a scoring formula."
     variables:
       - name: "configured_value"
         data_type: "number|string|boolean"
@@ -698,16 +702,26 @@ formulas:
       - "parameter-specific range from parameter_registry.csv"
       - "calibration.auto_activate must be false"
       - "calibration cadence remains 14 days"
+      - "workspace layer controls remain disabled until stateReady and a supported layer-to-lens mapping exists"
       - "gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass"
+      - "gold-label intake template evidence must not close A026 or A027"
+      - "A202 signed-intake closure rejects repository fixtures, templates, docs, config, data and test sources unless under approved operator input paths"
+      - "external release operator intake packet cannot close release gates directly"
     missing_policy: "fallback_to_default_or_UNKNOWN_with_task"
     normalization: "NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation."
     output_range: "parameter_specific"
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
+      - "EEI/scripts/validate_model_config.py:validate_thresholds"
+      - "EEI/scripts/validate_model_config.py:validate_motion_tokens"
       - "EEI/scripts/validate_a202_operator_review_packet.py"
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/scripts/validate_gold_quality_evaluation.py"
+      - "EEI/scripts/apply_model_config.py"
+      - "EEI/scripts/validate_external_release_evidence_bundle.py"
+      - "EEI/apps/web/src/app/page.tsx"
       - "EEI/config/thresholds/default-v2.json"
+      - "EEI/config/ui/motion-tokens.json"
       - "EEI/config/model_runtime_defaults.yaml"
     test_refs:
       - "EEI/scripts/validate_model_config.py:49-71"
@@ -716,19 +730,36 @@ formulas:
       - "EEI/scripts/validate_release_decision_bundle.py"
       - "EEI/tests/unit/test_release_decision_bundle.py"
       - "EEI/tests/unit/test_gold_quality_evaluation.py"
+      - "EEI/tests/unit/test_model_config_apply.py"
+      - "EEI/tests/unit/test_external_release_evidence_bundle.py"
+      - "EEI/tests/e2e/home.spec.ts"
     evidence_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json:1"
+      - "EEI/config/ui/motion-tokens.json:1"
       - "EEI/config/model_runtime_defaults.yaml:1"
+      - "EEI/apps/web/src/app/page.tsx"
       - "EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
+      - "EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json"
       - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
       - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
-    unknown_task_ids:
-      - "TASK-T1206"
-    semantic_status: "HUMAN_REVIEW_REQUIRED"
-    implementation_refs: []
-    implementation_fingerprint: "NOT_APPLICABLE (GOV-SEMANTIC-EEI-001: threshold-control rule spans generated runtime/config surfaces and remains under human semantic review)"
-    last_verified_commit: ""
-    verified_at: ""
-    evidence_hash: "UNKNOWN (GOV-SEMANTIC-EEI-001: machine fingerprint pending for threshold-control rule)"
-    semantic_review_task_ids: ["GOV-SEMANTIC-EEI-001"]
+      - "EEI/artifacts/model_config_import_preview.json"
+      - "EEI/artifacts/tests/a205/t1303_external_release_operator_intake_packet.json"
+    unknown_task_ids: []
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "EEI/scripts/validate_model_config.py::validate_thresholds"
+      - "EEI/scripts/validate_model_config.py::validate_motion_tokens"
+      - "EEI/scripts/validate_gold_quality_evaluation.py::blockers"
+      - "json_path:EEI/config/thresholds/default-v2.json::evidence"
+      - "json_path:EEI/config/thresholds/default-v2.json::graph"
+      - "json_path:EEI/config/thresholds/default-v2.json::alerts"
+      - "json_path:EEI/config/thresholds/default-v2.json::refresh"
+      - "json_path:EEI/config/thresholds/default-v2.json::visual"
+      - "json_path:EEI/config/thresholds/default-v2.json::calibration"
+      - "json_path:EEI/config/ui/motion-tokens.json::durations_ms"
+    implementation_fingerprint: "sha256:66ca0f1b835401c39c7d5261de557bfd99115c5d886a773a34e7925d1c4af8ef"
+    last_verified_commit: "df6f59f76014825d9aa028a38013d10ec23fc228"
+    verified_at: "2026-06-23T04:05:00Z"
+    evidence_hash: "sha256:675ac626b642a1dedc7245dc91f92f9c0b58536a4b84b190b477d6c7811498ed"
+    semantic_review_task_ids: []

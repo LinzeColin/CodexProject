@@ -1,0 +1,181 @@
+{
+  "acceptance_ids": [
+    "A202"
+  ],
+  "artifact_id": "t1301-a202-release-decision-intake-template",
+  "attestation": {
+    "signature": "",
+    "signed_at": "",
+    "signed_by": ""
+  },
+  "bundle_status": "TEMPLATE_ONLY",
+  "candidate_source_anchor_requirements": {
+    "GV-FACT-001": [
+      "GV-SNAPSHOT-001",
+      "GV-SNAPSHOT-003"
+    ],
+    "GV-FACT-002": [
+      "GV-SNAPSHOT-002",
+      "GV-SNAPSHOT-004"
+    ]
+  },
+  "decision_scope": {
+    "graph_edge_publication": false,
+    "legal_release_clearance": false,
+    "production_owner_activation": false,
+    "relationship_fact_publication": false,
+    "source_public_reuse": false
+  },
+  "generated_at": "2026-06-25T18:48:45Z",
+  "legal_release_clearance": {
+    "clearance_scope": "",
+    "clearance_status": "PENDING_REVIEW",
+    "legal_reviewer": "",
+    "risk_waiver_id_or_opinion_ref": "",
+    "signature": "",
+    "signed_at": ""
+  },
+  "non_claims": [
+    "This template is not source-license approval.",
+    "This template is not passage-level relationship approval.",
+    "This template is not production owner approval.",
+    "This template is not legal release clearance.",
+    "This template does not publish relationship facts or graph edges.",
+    "This template does not close A202, A209, A210 or release-manager activation."
+  ],
+  "passage_level_relationship_reviews": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "counter_evidence_reviewed": null,
+      "decision": "PENDING_REVIEW",
+      "object_candidate_name": "NVIDIA Corporation",
+      "relationship_type": "wafer_foundry_for",
+      "required_anchor_ids": [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003"
+      ],
+      "reviewed_at": "",
+      "reviewer": "",
+      "signature": "",
+      "subject_candidate_name": "TSMC",
+      "supporting_anchor_ids": [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003"
+      ],
+      "supporting_passage_locator": ""
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "counter_evidence_reviewed": null,
+      "decision": "PENDING_REVIEW",
+      "object_candidate_name": "TSMC",
+      "relationship_type": "equipment_provider_to",
+      "required_anchor_ids": [
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004"
+      ],
+      "reviewed_at": "",
+      "reviewer": "",
+      "signature": "",
+      "subject_candidate_name": "ASML",
+      "supporting_anchor_ids": [
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004"
+      ],
+      "supporting_passage_locator": ""
+    }
+  ],
+  "production_owner_signoffs": [
+    {
+      "authority_scope": "",
+      "candidate_key": "GV-FACT-001",
+      "owner_actor": "",
+      "owner_role": "",
+      "signature": "",
+      "signed_at": ""
+    },
+    {
+      "authority_scope": "",
+      "candidate_key": "GV-FACT-002",
+      "owner_actor": "",
+      "owner_role": "",
+      "signature": "",
+      "signed_at": ""
+    }
+  ],
+  "relationship_publication_allowed": false,
+  "release_gate_closure_allowed": false,
+  "schema_version": "eei-a202-release-decision-intake-v1",
+  "source_files": {
+    "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
+    "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
+    "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
+    "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6"
+  },
+  "source_license_reviews": [
+    {
+      "allowed_use_scope": "",
+      "anchor_id": "GV-SNAPSHOT-001",
+      "evidence_uri": "",
+      "official_publisher": "SEC EDGAR / NVIDIA Form 10-K",
+      "reviewed_at": "",
+      "reviewer": "",
+      "signature": "",
+      "source_license_status": "PENDING_REVIEW",
+      "source_title": "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm"
+    },
+    {
+      "allowed_use_scope": "",
+      "anchor_id": "GV-SNAPSHOT-002",
+      "evidence_uri": "",
+      "official_publisher": "ASML Stories",
+      "reviewed_at": "",
+      "reviewer": "",
+      "signature": "",
+      "source_license_status": "PENDING_REVIEW",
+      "source_title": "Busting ASML myths",
+      "source_url": "https://www.asml.com/news/stories/2022/busting-asml-myths"
+    },
+    {
+      "allowed_use_scope": "",
+      "anchor_id": "GV-SNAPSHOT-003",
+      "evidence_uri": "",
+      "official_publisher": "TSMC Press Center",
+      "reviewed_at": "",
+      "reviewer": "",
+      "signature": "",
+      "source_license_status": "PENDING_REVIEW",
+      "source_title": "NVIDIA and TSMC Celebrate New Milestone: 500 Million Processors",
+      "source_url": "https://pr.tsmc.com/english/news/1408"
+    },
+    {
+      "allowed_use_scope": "",
+      "anchor_id": "GV-SNAPSHOT-004",
+      "evidence_uri": "",
+      "official_publisher": "TSMC Press Center",
+      "reviewed_at": "",
+      "reviewer": "",
+      "signature": "",
+      "source_license_status": "PENDING_REVIEW",
+      "source_title": "TSMC and ASML Reach Agreement to Develop Next Generation Lithography Technologies as an Extension of Long-Term Partnership",
+      "source_url": "https://pr.tsmc.com/english/news/1734"
+    }
+  ],
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301"
+  ],
+  "template_counts_as_clearance": false,
+  "validation_policy": {
+    "a209_24h_operator_soak_required_separately": true,
+    "a210_brand_clearance_required_separately": true,
+    "signed_intake_counts_as_release_ready": false,
+    "signed_intake_must_cover_all_candidate_source_anchors": true,
+    "signed_intake_must_include_counter_evidence_review": true,
+    "signed_intake_required_for_a202_closure": true,
+    "template_only_counts_as_clearance": false
+  }
+}

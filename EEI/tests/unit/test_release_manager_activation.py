@@ -30,7 +30,24 @@ def test_release_manager_preflight_is_fail_closed_for_repository_state() -> None
         is False
     )
     assert payload["gate_statuses"]["operator_soak"]["operator_4h"] == "PASS"
-    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "MISSING"
+    assert payload["gate_statuses"]["operator_soak"]["status"] == "FAILED_OPERATOR_EVIDENCE"
+    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "FAILED_RUN"
+    heartbeat = payload["gate_statuses"]["operator_soak_background_heartbeat"]
+    assert heartbeat["status"] == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
+    assert heartbeat["counts_as_release_ready"] is False
+    assert heartbeat["release_gate_closed_by_background_heartbeat"] is False
+    assert isinstance(heartbeat["windows_completed"], int)
+    assert "operator_soak_heartbeat" in payload["source_files"]
+    assert "background heartbeat reports" in next(
+        gate["reason"]
+        for gate in payload["missing_gates"]
+        if gate["gate_id"] == "A209_24h_operator_soak"
+    )
+    assert "1 failed" in next(
+        gate["reason"]
+        for gate in payload["missing_gates"]
+        if gate["gate_id"] == "A209_24h_operator_soak"
+    )
 
 
 def write_json(path: Path, payload: dict) -> Path:
@@ -87,11 +104,21 @@ def test_release_manager_preflight_can_be_ready_only_with_all_real_gates(
             "a210_status": "DONE",
         }
     )
+    heartbeat = copy.deepcopy(preflight.read_json(preflight.DEFAULT_OPERATOR_SOAK_HEARTBEAT))
+    heartbeat["status"] = "BACKGROUND_SOAK_COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
+    heartbeat["progress_status"] = "COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
+    heartbeat["release_gate_closed_by_background_heartbeat"] = False
+    heartbeat["progress"]["windows_completed"] = 288
+    heartbeat["progress"]["windows_failed"] = 0
+    heartbeat["progress"]["windows_remaining"] = 0
+    heartbeat["progress"]["completion_percent"] = 100.0
+    heartbeat["progress"]["latest_successful_window"]["index"] = 288
 
     payload = preflight.build_preflight(
         release_decision_contract_path=write_json(tmp_path / "decision.json", decision_contract),
         signed_decision_bundle_path=write_json(tmp_path / "signed.json", signed_bundle),
         operator_soak_evidence_path=write_json(tmp_path / "soak.json", soak),
+        operator_soak_heartbeat_path=write_json(tmp_path / "heartbeat.json", heartbeat),
         entity_gold_evaluation_path=write_json(tmp_path / "entity-gold.json", entity_gold),
         relationship_gold_evaluation_path=write_json(
             tmp_path / "relationship-gold.json",
@@ -104,3 +131,13 @@ def test_release_manager_preflight_can_be_ready_only_with_all_real_gates(
     assert payload["status"] == "RELEASE_MANAGER_ACTIVATION_READY"
     assert payload["activation_ready"] is True
     assert payload["missing_gates"] == []
+    preflight.validate_preflight(
+        payload,
+        release_decision_contract_path=tmp_path / "decision.json",
+        signed_decision_bundle_path=tmp_path / "signed.json",
+        operator_soak_evidence_path=tmp_path / "soak.json",
+        operator_soak_heartbeat_path=tmp_path / "heartbeat.json",
+        entity_gold_evaluation_path=tmp_path / "entity-gold.json",
+        relationship_gold_evaluation_path=tmp_path / "relationship-gold.json",
+        brand_preflight_path=tmp_path / "brand.json",
+    )

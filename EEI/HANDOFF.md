@@ -1,6 +1,6 @@
 # HANDOFF
 
-Updated: 2026-06-21 Australia/Sydney
+Updated: 2026-06-26 Australia/Sydney
 
 ## Current Goal
 
@@ -8,6 +8,15 @@ Updated: 2026-06-21 Australia/Sydney
 
 ## Current Status
 
+- 2026-06-26 CI retry note: Project Governance run `28207602139` failed before changed-scope validation because the forced update from `064caf7f` to `1d6ea340` left `GOVERNANCE_BASE_REF=064caf7f32e4ff612fb95d4b15f24944fd9da0c6` unavailable in the runner checkout. Use a normal follow-up push from `1d6ea340` so the next push `before` SHA resolves; no A209 release gate is closed by this retry.
+- 2026-06-26 A209 repair update: the clean 24h operator soak restarted at `2026-06-25T21:33:19Z` / `2026-06-26 07:33 AEST` failed at checkpoint window `7/288`.
+- Latest A209 failure evidence: `artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl` has 7 rows, 6 PASS windows and 1 FAIL window; window 7 reports `child_status=NO_OUTPUT`, `exit_status=1`, and `page.evaluate: Target page, context or browser has been closed`; `/private/tmp/eei-operator-soak-61143-7.json` is missing.
+- No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS`; finalization cannot run until a new 24h chain reaches `288/288` windows with zero failures and validates.
+- A209 runner hardening is locally validated: `scripts/run_soak_smoke.mjs` now uses short browser measurement slices, structured `measurement_error` payloads, local `/private/tmp/eei-ms-playwright` fallback before lazy Playwright load, and `Promise.allSettled` browser/worker collection; `scripts/run_operator_soak.mjs` surfaces `browser_slices_completed` and `browser_measurement_error` in checkpoints.
+- A209 failed-state governance is locally synchronized: `t1307_operator_soak_evidence_validation.json` reports `FAILED_OPERATOR_EVIDENCE`, `t1307_operator_soak_background_progress.json` reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, and `t1307_operator_soak_finalization_preflight.json` reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`; `validate_operator_soak_evidence.py validate --require-release-ready` still fails as required.
+- A209 isolated rerun is running in the background outside the repo at `/private/tmp/eei-a209-rerun-20260626-0918/`; it preserves the failed canonical `7/288` evidence and first observed checkpoint is `1/288` PASS with `0` failed, operator PID `80478`, watchdog PID `80732`, and checkpoint `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`.
+- Local short-window probes and focused A209 tests passed after the repair: direct child harness `3s` with `--browser-slice-seconds 1` produced 3 slices and `measurement_error=null`; operator runner `3s` produced `1/1` PASS window with `wall_clock_within_budget=true`; A209 focused unit tests pass `25/25`. These probes are repair evidence only, not A209 closure.
+- Quarantine/recovery evidence is outside the repo at `/Users/linzezhang/Downloads/codex_crash_recovery_eei_20260626_0716/a209_invalid_wall_budget_run_20260626T0731AEST/`.
 - GitHub target: `LinzeColin/CodexProject/EEI`
 - Current gate: Phase 1 / G4 - Recursive exploration and live context
 - Gate status: IN PROGRESS

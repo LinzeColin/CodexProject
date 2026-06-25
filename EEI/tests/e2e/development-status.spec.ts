@@ -57,7 +57,7 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-task-T1302")).toContainText(
     "Complete production API"
   );
-  await expect(page.getByTestId("status-task-T1302")).toContainText("IN PROGRESS");
+  await expect(page.getByTestId("status-task-T1302")).toContainText("DONE");
   await expect(page.getByTestId("status-acceptance-panel")).toContainText("DONE");
   await expect(page.getByTestId("status-risk-control-panel")).toContainText("R001");
   await expect(page.getByTestId("status-risk-control-panel")).toContainText("critical");

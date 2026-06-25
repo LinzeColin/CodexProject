@@ -29,6 +29,9 @@ DEFAULT_SIGNED_DECISION_BUNDLE = (
 DEFAULT_OPERATOR_SOAK_EVIDENCE = (
     ROOT / "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json"
 )
+DEFAULT_OPERATOR_SOAK_HEARTBEAT = (
+    ROOT / "artifacts/tests/a209/t1307_operator_soak_background_progress.json"
+)
 DEFAULT_ENTITY_GOLD_EVALUATION = (
     ROOT / "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
 )
@@ -127,6 +130,36 @@ def soak_status(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def soak_heartbeat_status(payload: dict[str, Any]) -> dict[str, Any]:
+    progress = payload.get("progress") if isinstance(payload.get("progress"), dict) else {}
+    latest = (
+        progress.get("latest_successful_window")
+        if isinstance(progress.get("latest_successful_window"), dict)
+        else {}
+    )
+    contract = (
+        payload.get("background_resolution_contract")
+        if isinstance(payload.get("background_resolution_contract"), dict)
+        else {}
+    )
+    return {
+        "status": payload.get("status"),
+        "progress_status": payload.get("progress_status"),
+        "release_gate_closed_by_background_heartbeat": payload.get(
+            "release_gate_closed_by_background_heartbeat"
+        ),
+        "counts_as_release_ready": False,
+        "target_windows": progress.get("target_windows"),
+        "windows_completed": progress.get("windows_completed"),
+        "windows_failed": progress.get("windows_failed"),
+        "windows_remaining": progress.get("windows_remaining"),
+        "completion_percent": progress.get("completion_percent"),
+        "latest_successful_window_index": latest.get("index"),
+        "operator_process_status": contract.get("operator_process_status"),
+        "watchdog_process_status": contract.get("watchdog_process_status"),
+    }
+
+
 def gold_status(payload: dict[str, Any], focus_id: str) -> dict[str, Any]:
     focus = payload.get("focus_quality_result") or {}
     metrics = focus.get("metrics") or {}
@@ -161,6 +194,7 @@ def missing_gates(
     *,
     release_decision: dict[str, Any],
     soak: dict[str, Any],
+    soak_heartbeat: dict[str, Any],
     entity_gold: dict[str, Any],
     relationship_gold: dict[str, Any],
     brand: dict[str, Any],
@@ -217,10 +251,22 @@ def missing_gates(
             }
         )
     if soak["release_gate_closed_by_validator"] is not True or soak["operator_24h"] != "PASS":
+        heartbeat_reason = ""
+        if soak_heartbeat.get("windows_completed") is not None:
+            heartbeat_reason = (
+                "; background heartbeat reports "
+                f"{soak_heartbeat.get('windows_completed')}/"
+                f"{soak_heartbeat.get('target_windows')} windows, "
+                f"{soak_heartbeat.get('windows_failed')} failed, "
+                f"{soak_heartbeat.get('progress_status')}"
+            )
         gates.append(
             {
                 "gate_id": "A209_24h_operator_soak",
-                "reason": "24h operator soak evidence is missing or not release-ready",
+                "reason": (
+                    "24h operator soak evidence is missing or not release-ready"
+                    f"{heartbeat_reason}"
+                ),
             }
         )
     return gates
@@ -231,6 +277,7 @@ def build_preflight(
     release_decision_contract_path: Path = DEFAULT_RELEASE_DECISION_CONTRACT,
     signed_decision_bundle_path: Path = DEFAULT_SIGNED_DECISION_BUNDLE,
     operator_soak_evidence_path: Path = DEFAULT_OPERATOR_SOAK_EVIDENCE,
+    operator_soak_heartbeat_path: Path = DEFAULT_OPERATOR_SOAK_HEARTBEAT,
     entity_gold_evaluation_path: Path = DEFAULT_ENTITY_GOLD_EVALUATION,
     relationship_gold_evaluation_path: Path = DEFAULT_RELATIONSHIP_GOLD_EVALUATION,
     brand_preflight_path: Path = DEFAULT_BRAND_PREFLIGHT,
@@ -241,12 +288,14 @@ def build_preflight(
         read_json(signed_decision_bundle_path),
     )
     soak = soak_status(read_json(operator_soak_evidence_path))
+    soak_heartbeat = soak_heartbeat_status(read_json(operator_soak_heartbeat_path))
     entity_gold = gold_status(read_json(entity_gold_evaluation_path), "A026")
     relationship_gold = gold_status(read_json(relationship_gold_evaluation_path), "A027")
     brand = brand_status(read_json(brand_preflight_path))
     blockers = missing_gates(
         release_decision=release_decision,
         soak=soak,
+        soak_heartbeat=soak_heartbeat,
         entity_gold=entity_gold,
         relationship_gold=relationship_gold,
         brand=brand,
@@ -275,6 +324,8 @@ def build_preflight(
             "signed_decision_bundle_sha256": sha256_file(signed_decision_bundle_path),
             "operator_soak_evidence": relative(operator_soak_evidence_path),
             "operator_soak_evidence_sha256": sha256_file(operator_soak_evidence_path),
+            "operator_soak_heartbeat": relative(operator_soak_heartbeat_path),
+            "operator_soak_heartbeat_sha256": sha256_file(operator_soak_heartbeat_path),
             "entity_gold_evaluation": relative(entity_gold_evaluation_path),
             "entity_gold_evaluation_sha256": sha256_file(entity_gold_evaluation_path),
             "relationship_gold_evaluation": relative(relationship_gold_evaluation_path),
@@ -286,6 +337,7 @@ def build_preflight(
         "gate_statuses": {
             "release_decision": release_decision,
             "operator_soak": soak,
+            "operator_soak_background_heartbeat": soak_heartbeat,
             "entity_gold": entity_gold,
             "relationship_gold": relationship_gold,
             "brand": brand,
@@ -295,12 +347,14 @@ def build_preflight(
             "repository_fixtures_count_as_clearance": False,
             "release_manager_must_fail_closed_until_all_gates_ready": True,
             "a209_24h_must_be_release_ready": True,
+            "a209_background_heartbeat_counts_as_release_ready": False,
             "production_gold_set_required": True,
         },
         "non_claims": [
             "This preflight does not certify legal, source-license, brand or market clearance.",
             "This preflight does not convert repository fixtures into production approval.",
             "This preflight does not replace A209 24h operator soak evidence.",
+            "This preflight treats A209 background heartbeat as progress context only.",
             "This preflight does not activate a release manager while missing_gates is non-empty.",
         ],
     }
@@ -312,6 +366,7 @@ def validate_preflight(
     release_decision_contract_path: Path = DEFAULT_RELEASE_DECISION_CONTRACT,
     signed_decision_bundle_path: Path = DEFAULT_SIGNED_DECISION_BUNDLE,
     operator_soak_evidence_path: Path = DEFAULT_OPERATOR_SOAK_EVIDENCE,
+    operator_soak_heartbeat_path: Path = DEFAULT_OPERATOR_SOAK_HEARTBEAT,
     entity_gold_evaluation_path: Path = DEFAULT_ENTITY_GOLD_EVALUATION,
     relationship_gold_evaluation_path: Path = DEFAULT_RELATIONSHIP_GOLD_EVALUATION,
     brand_preflight_path: Path = DEFAULT_BRAND_PREFLIGHT,
@@ -320,6 +375,7 @@ def validate_preflight(
         release_decision_contract_path=release_decision_contract_path,
         signed_decision_bundle_path=signed_decision_bundle_path,
         operator_soak_evidence_path=operator_soak_evidence_path,
+        operator_soak_heartbeat_path=operator_soak_heartbeat_path,
         entity_gold_evaluation_path=entity_gold_evaluation_path,
         relationship_gold_evaluation_path=relationship_gold_evaluation_path,
         brand_preflight_path=brand_preflight_path,
@@ -344,10 +400,26 @@ def validate_preflight(
     ):
         if payload.get(key) != expected.get(key):
             raise ValueError(f"release-manager preflight field drift: {key}")
-    if payload.get("activation_ready") is not False:
-        raise ValueError("repository preflight must remain blocked until external gates are real")
-    if not payload.get("missing_gates"):
-        raise ValueError("blocked preflight must list missing gates")
+    activation_ready = payload.get("activation_ready") is True
+    missing_gates = payload.get("missing_gates") or []
+    if activation_ready:
+        if payload.get("status") != "RELEASE_MANAGER_ACTIVATION_READY":
+            raise ValueError("ready preflight must report RELEASE_MANAGER_ACTIVATION_READY")
+        if missing_gates:
+            raise ValueError("ready preflight cannot list missing gates")
+        if payload.get("release_manager_activation_allowed") is not True:
+            raise ValueError("ready preflight must allow release-manager activation")
+        if payload.get("relationship_publication_allowed") is not True:
+            raise ValueError("ready preflight must allow relationship publication")
+        if payload.get("public_brand_launch_allowed") is not True:
+            raise ValueError("ready preflight must allow public brand launch")
+    else:
+        if payload.get("status") != "RELEASE_MANAGER_ACTIVATION_BLOCKED":
+            raise ValueError("blocked preflight must report RELEASE_MANAGER_ACTIVATION_BLOCKED")
+        if not missing_gates:
+            raise ValueError("blocked preflight must list missing gates")
+        if payload.get("release_manager_activation_allowed") is not False:
+            raise ValueError("blocked preflight must not allow release-manager activation")
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:
@@ -365,6 +437,11 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         "--operator-soak-evidence",
         type=Path,
         default=DEFAULT_OPERATOR_SOAK_EVIDENCE,
+    )
+    parser.add_argument(
+        "--operator-soak-heartbeat",
+        type=Path,
+        default=DEFAULT_OPERATOR_SOAK_HEARTBEAT,
     )
     parser.add_argument(
         "--entity-gold-evaluation",
@@ -385,6 +462,7 @@ def generate(args: argparse.Namespace) -> None:
         release_decision_contract_path=args.release_decision_contract,
         signed_decision_bundle_path=args.signed_decision_bundle,
         operator_soak_evidence_path=args.operator_soak_evidence,
+        operator_soak_heartbeat_path=args.operator_soak_heartbeat,
         entity_gold_evaluation_path=args.entity_gold_evaluation,
         relationship_gold_evaluation_path=args.relationship_gold_evaluation,
         brand_preflight_path=args.brand_preflight,
@@ -394,6 +472,7 @@ def generate(args: argparse.Namespace) -> None:
         release_decision_contract_path=args.release_decision_contract,
         signed_decision_bundle_path=args.signed_decision_bundle,
         operator_soak_evidence_path=args.operator_soak_evidence,
+        operator_soak_heartbeat_path=args.operator_soak_heartbeat,
         entity_gold_evaluation_path=args.entity_gold_evaluation,
         relationship_gold_evaluation_path=args.relationship_gold_evaluation,
         brand_preflight_path=args.brand_preflight,
@@ -408,6 +487,7 @@ def validate(args: argparse.Namespace) -> None:
         release_decision_contract_path=args.release_decision_contract,
         signed_decision_bundle_path=args.signed_decision_bundle,
         operator_soak_evidence_path=args.operator_soak_evidence,
+        operator_soak_heartbeat_path=args.operator_soak_heartbeat,
         entity_gold_evaluation_path=args.entity_gold_evaluation,
         relationship_gold_evaluation_path=args.relationship_gold_evaluation,
         brand_preflight_path=args.brand_preflight,

@@ -155,6 +155,13 @@ function numberOrNull(value, digits = 4) {
   return Number.isFinite(value) ? Number(value.toFixed(digits)) : null;
 }
 
+function maxExpectedWallSeconds(measuredDurationSeconds) {
+  if (!Number.isFinite(measuredDurationSeconds) || measuredDurationSeconds <= 0) {
+    return null;
+  }
+  return measuredDurationSeconds + Math.max(60, measuredDurationSeconds * 0.25);
+}
+
 async function readJsonIfPresent(filePath) {
   try {
     return JSON.parse(await readFile(filePath, "utf8"));
@@ -192,6 +199,8 @@ function summarizeChildPayload(payload) {
       measured_duration_seconds: 0,
       browser_heap_growth_bytes: null,
       browser_dom_node_growth: null,
+      browser_slices_completed: null,
+      browser_measurement_error: null,
       worker_jobs_completed: null,
       worker_jobs_total: null,
       worker_event_loop_lag_p95_ms: null
@@ -202,6 +211,8 @@ function summarizeChildPayload(payload) {
     measured_duration_seconds: payload.measured_duration_seconds,
     browser_heap_growth_bytes: payload.browser?.heap_growth_bytes ?? null,
     browser_dom_node_growth: payload.browser?.dom_node_growth ?? null,
+    browser_slices_completed: payload.browser?.slices_completed ?? null,
+    browser_measurement_error: payload.browser?.measurement_error?.message ?? null,
     worker_jobs_completed: payload.worker?.jobs_completed ?? null,
     worker_jobs_total: payload.worker?.jobs_total ?? null,
     worker_event_loop_lag_p95_ms: payload.worker?.event_loop_lag_ms?.p95 ?? null
@@ -232,8 +243,16 @@ async function runWindow({ args, index, durationSeconds }) {
   const endedAt = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   const childPayload = await readJsonIfPresent(outputPath);
   const childSummary = summarizeChildPayload(childPayload);
+  const maxWallSeconds = maxExpectedWallSeconds(childSummary.measured_duration_seconds);
+  const wallClockWithinBudget =
+    maxWallSeconds !== null && Number.isFinite(elapsedSeconds) && elapsedSeconds <= maxWallSeconds;
   const status =
-    result.status === 0 && childPayload && childPayload.status !== "FAIL" ? "PASS" : "FAIL";
+    result.status === 0 &&
+    childPayload &&
+    childPayload.status !== "FAIL" &&
+    wallClockWithinBudget
+      ? "PASS"
+      : "FAIL";
   return {
     schema_version: "eei-operator-soak-checkpoint-v1",
     task_id: "T1307",
@@ -251,6 +270,8 @@ async function runWindow({ args, index, durationSeconds }) {
       output_path: displayPath(outputPath),
       browser_heap_growth_bytes: childSummary.browser_heap_growth_bytes,
       browser_dom_node_growth: childSummary.browser_dom_node_growth,
+      browser_slices_completed: childSummary.browser_slices_completed,
+      browser_measurement_error: childSummary.browser_measurement_error,
       worker_jobs_completed: childSummary.worker_jobs_completed,
       worker_jobs_total: childSummary.worker_jobs_total,
       worker_event_loop_lag_p95_ms: childSummary.worker_event_loop_lag_p95_ms
@@ -259,6 +280,8 @@ async function runWindow({ args, index, durationSeconds }) {
       script: "scripts/run_soak_smoke.mjs",
       exit_status: result.status,
       signal: result.signal,
+      wall_clock_within_budget: wallClockWithinBudget,
+      max_expected_wall_seconds: numberOrNull(maxWallSeconds),
       stderr_tail: result.stderr ? result.stderr.slice(-2000) : ""
     },
     child_payload: childPayload
@@ -378,6 +401,8 @@ function buildSummary({ args, parameters, checkpointPath, outputPath, windows, s
       output_path: window.output_path,
       browser_heap_growth_bytes: window.browser_heap_growth_bytes,
       browser_dom_node_growth: window.browser_dom_node_growth,
+      browser_slices_completed: window.browser_slices_completed,
+      browser_measurement_error: window.browser_measurement_error,
       worker_jobs_completed: window.worker_jobs_completed,
       worker_jobs_total: window.worker_jobs_total,
       worker_event_loop_lag_p95_ms: window.worker_event_loop_lag_p95_ms

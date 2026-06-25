@@ -1,0 +1,193 @@
+{
+  "schema_version": "eei-a210-brand-clearance-intake-v1",
+  "artifact_id": "t1309-a210-brand-clearance-intake-template",
+  "generated_at": "2026-06-23T17:18:56+00:00",
+  "system_name": "EEI",
+  "system": {
+    "zh_name": "商域图谱",
+    "en_name": "Enterprise Ecosystem Intelligence",
+    "abbreviation": "EEI",
+    "subtitle": "企业商业版图与供应链递归探索系统"
+  },
+  "task_id": "T1309",
+  "acceptance_ids": [
+    "A210"
+  ],
+  "bundle_status": "TEMPLATE_ONLY",
+  "release_gate_closure_allowed": false,
+  "public_brand_launch_allowed": false,
+  "template_counts_as_clearance": false,
+  "decision_scope": {
+    "public_domain_registration": false,
+    "app_store_publication": false,
+    "public_saas_launch": false,
+    "trademark_filing": false,
+    "paid_public_marketing_campaign": false
+  },
+  "trademark_knockout_reviews": [
+    {
+      "jurisdiction": "AU",
+      "registry_or_search_system": "",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "jurisdiction": "CN",
+      "registry_or_search_system": "",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "jurisdiction": "EU",
+      "registry_or_search_system": "",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "jurisdiction": "UK",
+      "registry_or_search_system": "",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "jurisdiction": "US",
+      "registry_or_search_system": "",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    }
+  ],
+  "market_surface_searches": [
+    {
+      "surface": "app_store",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "surface": "company_name",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "surface": "domain",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "surface": "github",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "surface": "npm",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "surface": "pypi",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    },
+    {
+      "surface": "social_handle",
+      "search_query": "Enterprise Ecosystem Intelligence",
+      "searched_at": "",
+      "result_summary": "",
+      "blocking_conflicts_found": null,
+      "evidence_uri": "",
+      "reviewer": "",
+      "signature": ""
+    }
+  ],
+  "phonetic_semantic_review": {
+    "chinese_reviewer": "",
+    "english_reviewer": "",
+    "reviewed_at": "",
+    "decision": "PENDING_REVIEW",
+    "evidence_uri": "",
+    "signature": ""
+  },
+  "legal_or_owner_decision": {
+    "decision": "PENDING_REVIEW",
+    "scope": "",
+    "opinion_or_waiver_ref": "",
+    "signed_by": "",
+    "signed_role": "",
+    "signed_at": "",
+    "signature": ""
+  },
+  "attestation": {
+    "signed_by": "",
+    "signed_at": "",
+    "signature": ""
+  },
+  "validation_policy": {
+    "template_only_counts_as_clearance": false,
+    "signed_bundle_required_for_a210_closure": true,
+    "signed_bundle_must_cover_all_required_jurisdictions": true,
+    "signed_bundle_must_cover_all_required_market_surfaces": true,
+    "signed_bundle_with_blocking_conflicts_must_fail": true,
+    "signed_bundle_counts_as_release_ready": false
+  },
+  "non_claims": [
+    "This template is not a legal opinion.",
+    "This template is not trademark clearance.",
+    "This template is not market clearance.",
+    "This template does not permit public launch or paid marketing.",
+    "This template does not change the product name from EEI."
+  ]
+}

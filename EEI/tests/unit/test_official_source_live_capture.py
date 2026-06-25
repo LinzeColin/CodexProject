@@ -269,9 +269,31 @@ def test_a202_operator_review_packet_stays_fail_closed() -> None:
 
     assert packet["status"] == review_packet.REQUIRED_PACKET_STATUS
     assert packet["counts"]["anchors_total"] == 3
+    assert packet["counts"]["relationship_candidates_ready_for_review"] == 2
+    assert packet["counts"]["relationship_candidate_source_anchors"] == 4
     assert packet["counts"]["anchors_with_source_text_committed"] == 0
     assert packet["publication_policy"]["relationship_fact_publication_allowed"] is False
     assert packet["publication_policy"]["release_clearance"] is False
+    assert [item["candidate_key"] for item in packet["relationship_candidate_review_queue"]] == [
+        "GV-FACT-001",
+        "GV-FACT-002",
+    ]
+    assert packet["relationship_candidate_review_queue"][0]["required_source_anchor_ids"] == [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003",
+    ]
+    assert packet["relationship_candidate_review_queue"][1]["required_source_anchor_ids"] == [
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004",
+    ]
+    for item in packet["relationship_candidate_review_queue"]:
+        assert item["source_threshold_met"] is True
+        assert item["publication_controls"] == {
+            "relationship_fact_publication_allowed": False,
+            "relationship_edge_publication_allowed": False,
+            "release_clearance": False,
+        }
+        assert item["required_decision_fields"] == review_packet.REQUIRED_CANDIDATE_DECISION_FIELDS
     assert {
         gate["gate_id"]: gate["status"] for gate in packet["closure_gates"]
     } == {
@@ -303,4 +325,22 @@ def test_a202_operator_review_packet_rejects_claimed_clearance() -> None:
     packet["anchors"][0]["publication_controls"]["release_clearance"] = True
 
     with pytest.raises(ValueError, match="release_clearance must be false"):
+        review_packet.validate_review_packet(packet, capture_artifact_path=capture_path)
+
+
+def test_a202_operator_review_packet_rejects_candidate_publication() -> None:
+    capture_path = review_packet.DEFAULT_CAPTURE_ARTIFACT
+    packet = review_packet.build_review_packet(
+        review_packet.read_json(capture_path),
+        capture_artifact_path=capture_path,
+        generated_at="2026-06-22T00:00:00Z",
+    )
+    packet["relationship_candidate_review_queue"][0]["publication_controls"][
+        "relationship_fact_publication_allowed"
+    ] = True
+
+    with pytest.raises(
+        ValueError,
+        match="relationship_candidate_review_queue does not match fact candidates",
+    ):
         review_packet.validate_review_packet(packet, capture_artifact_path=capture_path)

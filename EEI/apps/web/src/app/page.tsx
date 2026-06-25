@@ -351,6 +351,16 @@ const workspaceLayerItems: {
   { key: "strategic_signals", label: "战略信号", state: "stub" }
 ];
 
+function lensForWorkspaceLayer(layer: WorkspaceLayerKey): LensKey | null {
+  if (layer === "business_segments" || layer === "group_structure") {
+    return "business_segments";
+  }
+  if (layer === "supply_chain") return "supply_chain";
+  if (layer === "capital_network") return "capital_transactions";
+  if (layer === "policy_environment") return "policy_risk";
+  return null;
+}
+
 const structureRows: {
   kind: StructureKind;
   label: string;
@@ -2733,18 +2743,13 @@ export default function Home() {
               <button
                 data-layer-key={item.key}
                 data-layer-state={item.state}
+                disabled={!stateReady || lensForWorkspaceLayer(item.key) === null}
                 data-testid={`workspace-layer-${item.key}`}
                 key={item.key}
                 onClick={() => {
-                  if (item.key === "business_segments" || item.key === "group_structure") {
-                    setActiveLens("business_segments");
-                  } else if (item.key === "supply_chain") {
-                    setActiveLens("supply_chain");
-                  } else if (item.key === "capital_network") {
-                    setActiveLens("capital_transactions");
-                  } else if (item.key === "policy_environment") {
-                    setActiveLens("policy_risk");
-                  }
+                  const nextLens = lensForWorkspaceLayer(item.key);
+                  if (!nextLens) return;
+                  applyWorkspaceState({ ...workspaceState, activeLens: nextLens });
                 }}
                 type="button"
               >

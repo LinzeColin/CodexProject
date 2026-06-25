@@ -1,0 +1,80 @@
+{
+  "schema_version": "eei-a209-operator-soak-background-heartbeat-v1",
+  "artifact_id": "t1307-a209-background-operator-soak-heartbeat",
+  "system_name": "EEI",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "task_id": "T1307",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "generated_at": "2026-06-25T22:49:22Z",
+  "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+  "progress_status": "FAILED_WINDOW",
+  "release_gate_closed_by_background_heartbeat": false,
+  "a209_task_status_required": "IN_PROGRESS",
+  "background_resolution_contract": {
+    "operator_process_status": "NOT_RUNNING",
+    "operator_pid": 61143,
+    "watchdog_process_status": "RUNNING",
+    "watchdog_pid": 61390,
+    "watchdog_pid_path": "artifacts/tests/a209/t1307_operator_soak_watchdog.pid",
+    "auto_resume_expected": true,
+    "double_start_prevention": "supervisor observes live operator PID and never replaces it",
+    "stale_pid_policy": "watchdog reports stale live PIDs; it does not kill them",
+    "failed_window_policy": "operator intervention is required before any resume"
+  },
+  "progress": {
+    "target_seconds": 86400.0,
+    "target_windows": 288,
+    "operator_window_seconds": 300.0,
+    "windows_completed": 6,
+    "windows_failed": 1,
+    "windows_remaining": 282,
+    "completed_duration_seconds": 1800.0,
+    "completion_percent": 2.08,
+    "latest_successful_window": {
+      "index": 6,
+      "status": "PASS",
+      "child_status": "PARTIAL",
+      "requested_duration_seconds": 300,
+      "measured_duration_seconds": 300,
+      "elapsed_wall_seconds": 302.7288,
+      "started_at": "2026-06-25T21:58:54Z",
+      "ended_at": "2026-06-25T22:03:57Z",
+      "output_path": "/private/tmp/eei-operator-soak-61143-6.json",
+      "browser_heap_growth_bytes": 165488,
+      "browser_dom_node_growth": 0,
+      "worker_jobs_completed": 12,
+      "worker_jobs_total": 12,
+      "worker_event_loop_lag_p95_ms": 2.2709
+    }
+  },
+  "artifacts": {
+    "operator_output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+    "operator_checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
+    "operator_pid_path": "artifacts/tests/a209/t1307_operator_soak_24h.pid",
+    "operator_log_path": "artifacts/tests/a209/t1307_operator_soak_24h.log",
+    "background_heartbeat_path": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "operator_summary_json_present": true,
+    "operator_checkpoint_jsonl_present": true
+  },
+  "supervisor_snapshot": {
+    "status": "operator_intervention_required",
+    "launch_status": "NOT_REQUESTED",
+    "release_gate_closed_by_supervisor": false,
+    "resume_command": "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json --checkpoint artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl --fail-on-budget --quiet",
+    "validate_command": "python scripts/validate_operator_soak_evidence.py validate",
+    "release_gate_command": "python scripts/validate_operator_soak_evidence.py validate --require-release-ready"
+  },
+  "non_closure": [
+    "does_not_close_A209_24h_operator_soak",
+    "does_not_replace_validate_operator_soak_evidence",
+    "does_not_replace_final_24h_summary_json",
+    "does_not_replace_release_manager_activation"
+  ],
+  "rollback": [
+    "Regenerate this heartbeat after the next supervisor check if stale.",
+    "Do not stop or restart the operator soak from this heartbeat script.",
+    "If validation reports operator intervention, inspect the checkpoint and log first."
+  ]
+}

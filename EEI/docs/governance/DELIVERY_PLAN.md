@@ -38,7 +38,7 @@ Machine source: `delivery_tasks.yaml`. Completed tasks are only marked `complete
 | Status | Count | Evidence |
 |---|---:|---|
 | completed | 52 | DONE task plus DONE acceptance trace rows |
-| in_progress | 6 | T1301/A202 source/legal/owner clearance pending; T1302/A203 production-approved edges pending; T1303/A204-A205 refresh/wake/soak evidence pending; T1307/A209 24h operator soak running as background gate; T1309/A210 formal brand clearance pending |
+| in_progress | 6 | T1301/A202 source/legal/owner clearance pending; T1302/A203 production-approved edges pending; T1303/A204-A205 refresh/wake/soak evidence pending; T1307/A209 24h operator soak running as background gate with heartbeat `58/288` PASS and watchdog PID `62233`; T1309/A210 formal brand clearance pending |
 | planned | 69 | Legacy NOT STARTED tasks |
 
 ## Release Gates

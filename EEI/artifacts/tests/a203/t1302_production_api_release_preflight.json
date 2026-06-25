@@ -1,0 +1,134 @@
+{
+  "acceptance_ids": [
+    "A202",
+    "A203",
+    "A204",
+    "A205",
+    "A209"
+  ],
+  "api_surface_ready": true,
+  "artifact_id": "t1302-a203-production-api-release-preflight",
+  "gate_statuses": {
+    "a203_contract": {
+      "api_path_coverage": {
+        "/v1/catalogs": true,
+        "/v1/evidence/{objectType}/{objectId}": true,
+        "/v1/explore": true,
+        "/v1/paths": true,
+        "/v1/scoring/explain/{objectType}/{objectId}": true
+      },
+      "contract_status": "DONE",
+      "implemented_slice_count": 20,
+      "minimum_independent_sources": 2,
+      "publish_requires_human_review": true,
+      "publish_requires_source_threshold": true,
+      "relationship_fact_candidates_in_graph_edges": false,
+      "score_object_type_coverage": {
+        "entity": true,
+        "event": true,
+        "facility": true,
+        "industry": true,
+        "relationship": true,
+        "relationship_fact_candidate": true,
+        "score_result": true,
+        "source_document": true,
+        "theme": true
+      }
+    },
+    "operator_soak": {
+      "operator_24h": "FAILED_RUN",
+      "operator_4h": "PASS",
+      "release_gate_closed_by_validator": false,
+      "status": "FAILED_OPERATOR_EVIDENCE"
+    },
+    "operator_soak_background_heartbeat": {
+      "completion_percent": 2.08,
+      "counts_as_release_ready": false,
+      "progress_status": "FAILED_WINDOW",
+      "release_gate_closed_by_background_heartbeat": false,
+      "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+      "target_windows": 288,
+      "windows_completed": 6,
+      "windows_failed": 1,
+      "windows_remaining": 282
+    },
+    "release_decision": {
+      "public_brand_launch_allowed": false,
+      "relationship_publication_allowed": false,
+      "release_gate_closed_by_contract": false,
+      "status": "PENDING_SIGNED_DECISIONS"
+    },
+    "release_manager": {
+      "activation_ready": false,
+      "missing_gate_ids": [
+        "A202_source_license_reviews",
+        "A202_passage_level_relationship_reviews",
+        "A202_production_owner_signoffs",
+        "A202_legal_release_clearance",
+        "A210_brand_clearance_or_risk_waiver",
+        "A026_entity_resolution_production_gold_set",
+        "A027_relationship_extraction_production_gold_set",
+        "A209_24h_operator_soak"
+      ],
+      "relationship_publication_allowed": false,
+      "release_manager_activation_allowed": false,
+      "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
+    }
+  },
+  "generated_at": "2026-06-25T22:51:34Z",
+  "missing_gates": [
+    {
+      "gate_id": "A202_relationship_publication_clearance",
+      "reason": "real source/license/passage/owner/legal clearance is incomplete"
+    },
+    {
+      "gate_id": "A204_A205_release_manager_activation",
+      "reason": "release-manager activation is blocked by external gates"
+    },
+    {
+      "gate_id": "A209_24h_operator_soak",
+      "reason": "24h operator soak evidence is missing or not release-ready"
+    }
+  ],
+  "non_claims": [
+    "This preflight does not publish relationship fact candidates into graph edges.",
+    "This preflight does not certify source-license, passage, owner or legal clearance.",
+    "This preflight does not replace release-manager activation.",
+    "This preflight does not replace A209 24h operator soak evidence.",
+    "This preflight does not close A203 while missing_gates is non-empty."
+  ],
+  "production_graph_publication_allowed": false,
+  "release_ready": false,
+  "schema_version": "eei-t1302-a203-production-api-release-preflight-v1",
+  "score_publication_allowed": false,
+  "source_files": {
+    "a203_contract": "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+    "a203_contract_sha256": "49dcfacb16721a74305a88bb8619fa522cf24b8c9793b16a060a1b5398b7ae0c",
+    "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
+    "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "operator_soak_heartbeat_sha256": "3aa3d9ff19898d2043c00faa0ca7c9a08a085ea76629d5945d7d6ac61de166bb",
+    "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
+    "release_decision_contract_sha256": "b9c8bbf84300ad15d69b9d6d4b1b089b8948a75f8f28dc970498b641424a7c53",
+    "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
+    "release_manager_preflight_sha256": "f9fa19ad361d35a2c739fff67e2120ed25c6052385c888520d1519ed5c440e1c"
+  },
+  "status": "A203_PRODUCTION_API_RELEASE_BLOCKED",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301",
+    "T1302",
+    "T1303",
+    "T1307"
+  ],
+  "validation_policy": {
+    "a209_background_heartbeat_counts_as_release_ready": false,
+    "api_surface_can_be_ready_before_release": true,
+    "release_requires_a202_relationship_publication_clearance": true,
+    "release_requires_a209_24h_soak": true,
+    "release_requires_release_manager_activation": true,
+    "repository_fixtures_count_as_production_edges": false
+  }
+}

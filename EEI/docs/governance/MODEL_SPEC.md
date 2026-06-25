@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 68
+- parameter_count: 88
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -30,6 +30,23 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-23 T1301/A202 source-withdrawal and counter-evidence fail-closed rehearsal adds publication-control checks for disputed raw source snapshots, disputed ingestion evidence-chain rows and unreviewed evidence-chain counter-evidence; no scoring model, graph traversal formula, extraction formula, formula weight or threshold value changed.
 - 2026-06-23 T1303/A204-A205 release-manager activation preflight aggregates existing A202/A026/A027/A209/A210 release evidence and fails closed while external gates are missing; no scoring model, graph traversal formula, extraction formula, formula weight or threshold value changed.
 - 2026-06-23 T904/A026-A027 production gold-label intake adds explicit `--allow-production-gold-set` and `production_gold_evidence` metadata requirements for real operator-supplied labels; PARAM-064 through PARAM-068 threshold values remain unchanged and repository fixtures still fail closed.
+- 2026-06-23 T1307/A209 background soak governance adds operational evidence parameters `PARAM-069` through `PARAM-071` for watchdog cadence, stale-PID detection and heartbeat schema binding; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T904/A026-A027 production gold-label intake template adds an operator-fillable template artifact for required production-label metadata and case schemas; PARAM-064 through PARAM-068 values remain unchanged and the template is not release-ready evidence.
+- 2026-06-24 T1309/A210 brand-clearance intake adds governance evidence parameters `PARAM-072` through `PARAM-075` for schema version, required trademark jurisdictions, required market surfaces and accepted signed-clearance decisions; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1301/A202 release-decision intake adds governance evidence parameter `PARAM-076` for the A202 intake schema version covering source-license, passage-level, owner and legal review fields; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1301/A202 signed-intake preflight adds governance evidence parameter `PARAM-081` for the A202 preflight schema version that turns a template or future signed intake into a hash-bound gate artifact; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1302/A203 production API release preflight adds governance evidence parameter `PARAM-077` for the A203 preflight schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1303/A204-A205 MVP release-gate preflight adds governance evidence parameter `PARAM-078` for the final fail-closed release aggregator schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1307/A209 operator-soak finalization preflight adds governance evidence parameter `PARAM-079` for the finalizer schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1303 external release evidence bundle preflight adds governance evidence parameter `PARAM-080` for the bundle schema version; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T1307/A209 background heartbeat refresh adds governance evidence parameter `PARAM-082` for the invariant policy `soak.background_heartbeat_counts_as_release_ready=false`; no scoring model, graph traversal formula, extraction formula, formula weight or business scoring threshold changed.
+- 2026-06-24 T904/A026-A027 governance sync adds `PARAM-083` for the production gold-set forbidden fixture-ref/labeler exclusion; no scoring model, formula weight or precision threshold value changed.
+- 2026-06-25 T1301/A202 signed-decision hardening adds `PARAM-085` for exact signed candidate/source/owner coverage rejection prefixes; no scoring model, graph traversal formula, extraction formula, formula weight or business threshold changed.
+- 2026-06-25 T1301/A202 live official capture freshness refresh adds `PARAM-086` for the non-clearance policy `capture_policy.release_clearance=false`; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold or publication policy changed.
+- 2026-06-25 T1303 external release operator intake packet adds `PARAM-087` for the operator checklist packet schema version; it organizes required A202/A210/A026/A027/A209 inputs and does not close release-manager activation, public launch, scoring, formula, threshold or publication gates.
+- 2026-06-25 T1301/A202 signed-intake source-boundary hardening adds `PARAM-088` for disallowed repository fixture/source prefixes; signed intake closure now rejects repository fixtures, templates, docs, config, data and test sources unless the file is outside the repository or under an approved operator-input directory. No scoring model, graph traversal formula, extraction formula, formula weight, business threshold or publication policy changed.
+- 2026-06-25 T1302/A203 API implementation contract closure marks A203 implementation coverage DONE and refreshes A209 heartbeat to `35/288`; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
+- 2026-06-25 T1302/A203 E2E CI repair updates development-status evidence expectations and generated release artifacts only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 
 ## A. Model Overview
 
@@ -234,19 +251,19 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202/A210 release-decision bundle schema validation/publication binding, and A026/A027 gold-quality gates.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202 release-decision intake, signed-intake preflight and signed-intake source-boundary gates, A202/A210 release-decision bundle schema validation/publication binding, A026/A027 gold-quality/intake gates, A209 background heartbeat controls, A210 brand-clearance intake gates and T1303 external release operator intake packet gates.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
-- Implementation reference: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py
+- Implementation reference: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_a202_signed_intake_preflight.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/scripts/watch_operator_soak.py, EEI/scripts/record_operator_soak_heartbeat.py, EEI/scripts/validate_brand_clearance.py, EEI/scripts/validate_external_release_evidence_bundle.py
 - Inputs: parameter_key; configured_value; default_value; min_value; max_value
 - Outputs: validated operational parameter value
 - Use cases: research prioritization, explainable visual focus, governance validation, and bounded exploration support.
 - Non-use cases: investment return prediction, live trading signal generation, hidden-truth inference, or production factual claims without evidence.
 - Formula IDs: FORM-012
-- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063, PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068
-- Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py
-- Evidence references: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json, EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json, EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json
+- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063, PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068, PARAM-069, PARAM-070, PARAM-071, PARAM-072, PARAM-073, PARAM-074, PARAM-075, PARAM-076, PARAM-077, PARAM-078, PARAM-079, PARAM-080, PARAM-081, PARAM-082, PARAM-083, PARAM-084, PARAM-085, PARAM-086, PARAM-087, PARAM-088
+- Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/scripts/record_operator_soak_heartbeat.py, EEI/scripts/validate_brand_clearance.py, EEI/scripts/validate_external_release_evidence_bundle.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py, EEI/tests/unit/test_operator_soak_evidence.py, EEI/tests/unit/test_brand_clearance.py, EEI/tests/unit/test_external_release_evidence_bundle.py
+- Evidence references: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json, EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json, EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json, EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json, EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json, EEI/artifacts/tests/a205/t1303_external_release_operator_intake_packet.json
 - Failure modes: missing runtime motion config; threshold out of schema range; auto activation enabled
 
 ## B. Assumptions
@@ -476,16 +493,16 @@ Machine source: `formula_registry.yaml`. Legacy `F-*` IDs are preserved as `lega
 - Model: `MOD-012`
 - Status: `active`
 - Mathematical formula or exact pseudocode: `value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured.`
-- Natural language explanation: Operational deterministic lookup for threshold, motion, visual, refresh, and calibration parameters without a scoring formula.
+- Natural language explanation: Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard and gold-quality gate parameters without a scoring formula.
 - Variables: configured_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); default_value (number|string|boolean, parameter_specific, parameter_registry min_value..max_value); min_value (number|string|boolean, parameter_specific, catalog constraint); max_value (number|string|boolean, parameter_specific, catalog constraint)
 - Output range: parameter_specific
 - Normalization: NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation.
-- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days
+- Constraints: parameter-specific range from parameter_registry.csv; calibration.auto_activate must be false; calibration cadence remains 14 days; workspace layer controls must remain disabled until stateReady and a supported layer-to-lens mapping exists; gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass; gold-label intake templates must remain non-closure evidence
 - Missing data handling: fallback_to_default_or_UNKNOWN_with_task
 - Boundary conditions: respect per-variable input domain and configured min/max bounds; invalid configuration fails validation.
 - Fallback: use configured default or previous valid snapshot; Unavailable values remain disclosed and task-linked.
-- Implementation position: EEI/data/parameter_catalog.csv:43-61, EEI/config/thresholds/default-v2.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py
-- Test position: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py
+- Implementation position: EEI/data/parameter_catalog.csv:43-84, EEI/apps/web/src/app/page.tsx, EEI/config/thresholds/default-v2.json, EEI/config/ui/motion-tokens.json, EEI/config/model_runtime_defaults.yaml, EEI/scripts/validate_model_config.py:validate_motion_tokens, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py
+- Test position: EEI/tests/e2e/home.spec.ts, EEI/scripts/validate_model_config.py, EEI/scripts/validate_governance.py:108-121, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py
 
 ## D. Parameters
 
@@ -494,13 +511,13 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 ## E. Methodology
 
 - Why current method: existing EEI Task Pack defines deterministic, explainable scoring and threshold controls for research ordering and visual focus.
-- Alternatives considered: UNKNOWN; no comparative model-selection evidence was found in the allowed governance scope. Linked task: TASK-T1206.
+- Alternatives considered: no alternative runtime motion source was adopted; `config/ui/motion-tokens.json` is the machine-verified source for motion duration controls. Broader comparative model-selection evidence remains UNKNOWN and task-linked to production model review.
 - Objective: explainable prioritization and bounded UI/research workflow support, not prediction of returns.
 - Calibration method: extracted governance cadence is every 14 days with `auto_activate=false`; no live empirical calibration evidence is confirmed.
 - Training/backtest/experiment method: UNKNOWN for production scoring; validators and E2E tests prove catalog/config/UI contracts only. Linked task: TASK-T1206.
 - Baseline: `balanced-v2@2`, `default-v2@2`, `model_runtime_defaults` version 14.
 - Data split and out-of-sample: UNKNOWN for model quality evaluation. Linked task: TASK-T1206.
-- Sensitivity analysis: parameter step/range validation exists; empirical sensitivity results are UNKNOWN. Linked task: TASK-T1206.
+- Sensitivity analysis: parameter step/range validation exists, including motion token range and step checks; empirical sensitivity results are UNKNOWN. Linked task: TASK-T1206.
 - Known limitations: production calculation engine and real data benchmarks are not fully evidenced in current governance inputs.
 
 ## F. Strategy Logic
@@ -520,7 +537,9 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 - Baseline: `balanced-v2@2`, `default-v2@2`.
 - Dataset or fixture: existing EEI fixtures and catalogs; live production data not confirmed.
 - Test command: `python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json`.
+- Test command: `python scripts/apply_model_config.py --profile config/model_profiles/supply-chain-v3.json --thresholds config/thresholds/default-v2.json --dry-run`.
 - Test command: `python scripts/validate_governance.py`.
+- Current operator activation boundary: `scripts/apply_model_config.py` dry-run is hash-bound and non-writing; `--execute` requires a PostgreSQL URL and delegates to the repository transaction layer. This changes the operator entrypoint only, not active formula, weight or threshold values.
 - Current result: see `DEVELOPMENT_LEDGER.md` after GOV-G2 validation run.
 - Result date: 2026-06-20.
 - Uncovered scenarios: live data calibration, empirical model quality, exact per-task historical stdout for all reconstructed tasks.

@@ -36,6 +36,7 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {
     "T1300": "A201",
+    "T1302": "A203",
     "T1304": "A206",
     "T1305": "A207",
     "T1306": "A208",
@@ -44,13 +45,12 @@ IMPLEMENTED_TASKS = {
 
 PARTIAL_TASKS = {
     "T1301": "A202",
-    "T1302": "A203",
     "T1303": "A204",
     "T1307": "A209",
     "T1309": "A210",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A209", "A210"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A204", "A205", "A209", "A210"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -105,6 +105,20 @@ IMPLEMENTED_EVIDENCE = {
         "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
         "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
     },
+    "T1302": {
+        "apps/api/app/domain.py",
+        "apps/api/app/domain_repository.py",
+        "apps/web/src/app/explore-api-client.ts",
+        "apps/web/src/app/page.tsx",
+        "scripts/job_scheduler.py",
+        "scripts/validate_production_api_release_preflight.py",
+        "specs/api_contract.yaml",
+        "tests/integration/test_database_migrations.py",
+        "tests/unit/test_production_api_release_preflight.py",
+        "tests/e2e/state-contract.spec.ts",
+        "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+        "artifacts/tests/a203/t1302_production_api_release_preflight.json",
+    },
     "T1308": {
         "apps/web/src/app/workspace-context.tsx",
         "apps/web/src/app/workspace-navigation.tsx",
@@ -135,6 +149,7 @@ PARTIAL_EVIDENCE = {
         "scripts/load_live_official_captures.py",
         "scripts/publish_reviewed_relationship_facts.py",
         "scripts/validate_release_decision_bundle.py",
+        "scripts/validate_a202_signed_intake_preflight.py",
         "scripts/validate_gold_quality_evaluation.py",
         "tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json",
         "tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json",
@@ -148,6 +163,7 @@ PARTIAL_EVIDENCE = {
         "tests/integration/test_database_migrations.py",
         "tests/unit/test_official_source_live_capture.py",
         "tests/unit/test_gold_quality_evaluation.py",
+        "tests/unit/test_a202_signed_intake_preflight.py",
         "artifacts/tests/a202/t1301_curated_official_ingestion_contract.json",
         "artifacts/tests/a202/t1301_context_anchor_semantic_revision_contract.json",
         "artifacts/tests/a202/t1301_official_full_text_dry_run_contract.json",
@@ -156,19 +172,9 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
         "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
         "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
+        "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
         "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
         "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
-    },
-    "T1302": {
-        "apps/api/app/domain.py",
-        "apps/api/app/domain_repository.py",
-        "apps/web/src/app/explore-api-client.ts",
-        "apps/web/src/app/page.tsx",
-        "scripts/job_scheduler.py",
-        "specs/api_contract.yaml",
-        "tests/integration/test_database_migrations.py",
-        "tests/e2e/state-contract.spec.ts",
-        "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
     },
     "T1303": {
         "infra/db/migrations/0006_model_activation_refresh_state/up.sql",
@@ -186,19 +192,32 @@ PARTIAL_EVIDENCE = {
         "apps/web/src/app/page.tsx",
         "tests/e2e/state-contract.spec.ts",
         "scripts/validate_release_manager_activation.py",
+        "scripts/validate_mvp_release_gate.py",
         "tests/unit/test_release_manager_activation.py",
+        "tests/unit/test_mvp_release_gate.py",
+        "tests/unit/test_external_release_evidence_bundle.py",
         "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
         "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
+        "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
         "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
+        "artifacts/tests/a205/t1303_mvp_release_gate_preflight.json",
+        "scripts/validate_external_release_evidence_bundle.py",
     },
     "T1307": {
         "scripts/run_soak_smoke.mjs",
         "scripts/run_operator_soak.mjs",
         "scripts/validate_operator_soak_evidence.py",
+        "scripts/monitor_operator_soak.py",
+        "scripts/supervise_operator_soak.py",
+        "scripts/watch_operator_soak.py",
+        "scripts/record_operator_soak_heartbeat.py",
+        "scripts/finalize_operator_soak_evidence.py",
         "artifacts/tests/a209/t1307_soak_smoke.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.json",
         "artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl",
         "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+        "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+        "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
     },
     "T1309": {
         "config/brand_policy.yaml",

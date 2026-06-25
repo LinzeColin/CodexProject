@@ -3,14 +3,17 @@ import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 
 const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const requireFromWeb = createRequire(new URL("../apps/web/package.json", import.meta.url));
-const { chromium } = requireFromWeb("@playwright/test");
+let chromium = null;
 
 const DEFAULT_SMOKE_SECONDS = 3;
+const DEFAULT_BROWSER_SLICE_SECONDS = 15;
+const BROWSER_SAMPLE_EVERY_MS = 50;
+const LOCAL_PLAYWRIGHT_BROWSERS_PATH = "/private/tmp/eei-ms-playwright";
 const MAX_HEAP_GROWTH_BYTES = 8 * 1024 * 1024;
 const MAX_DOM_GROWTH_NODES = 12;
 const MAX_TIMER_LEAKS = 0;
@@ -25,6 +28,7 @@ function parseArgs(argv) {
   const args = {
     mode: "ci_smoke",
     durationSeconds: DEFAULT_SMOKE_SECONDS,
+    browserSliceSeconds: null,
     output: "/tmp/eei-soak-smoke.json",
     failOnBudget: false,
     quiet: false
@@ -35,6 +39,8 @@ function parseArgs(argv) {
       args.mode = argv[++index];
     } else if (item === "--duration-seconds") {
       args.durationSeconds = Number.parseFloat(argv[++index]);
+    } else if (item === "--browser-slice-seconds") {
+      args.browserSliceSeconds = Number.parseFloat(argv[++index]);
     } else if (item === "--output") {
       args.output = argv[++index];
     } else if (item === "--fail-on-budget") {
@@ -47,6 +53,12 @@ function parseArgs(argv) {
   }
   if (!Number.isFinite(args.durationSeconds) || args.durationSeconds <= 0) {
     throw new Error("--duration-seconds must be positive");
+  }
+  if (args.browserSliceSeconds === null) {
+    args.browserSliceSeconds = Math.min(DEFAULT_BROWSER_SLICE_SECONDS, args.durationSeconds);
+  }
+  if (!Number.isFinite(args.browserSliceSeconds) || args.browserSliceSeconds <= 0) {
+    throw new Error("--browser-slice-seconds must be positive");
   }
   return args;
 }
@@ -107,6 +119,35 @@ async function readWorkerDeploymentBinding() {
   }
 }
 
+async function resolvePlaywrightBrowserPath() {
+  if (process.env.PLAYWRIGHT_BROWSERS_PATH) {
+    return {
+      source: "environment",
+      path: process.env.PLAYWRIGHT_BROWSERS_PATH
+    };
+  }
+  try {
+    await access(LOCAL_PLAYWRIGHT_BROWSERS_PATH);
+    process.env.PLAYWRIGHT_BROWSERS_PATH = LOCAL_PLAYWRIGHT_BROWSERS_PATH;
+    return {
+      source: "local_fallback",
+      path: LOCAL_PLAYWRIGHT_BROWSERS_PATH
+    };
+  } catch {
+    return {
+      source: "playwright_default",
+      path: null
+    };
+  }
+}
+
+function getChromium() {
+  if (!chromium) {
+    ({ chromium } = requireFromWeb("@playwright/test"));
+  }
+  return chromium;
+}
+
 function percentile(values, percentileValue) {
   if (values.length === 0) {
     return 0;
@@ -125,6 +166,15 @@ function percentile(values, percentileValue) {
 }
 
 function summary(values) {
+  if (values.length === 0) {
+    return {
+      min: 0,
+      p50: 0,
+      p95: 0,
+      p99: 0,
+      max: 0
+    };
+  }
   return {
     min: Number(Math.min(...values).toFixed(4)),
     p50: Number(percentile(values, 0.5).toFixed(4)),
@@ -134,111 +184,197 @@ function summary(values) {
   };
 }
 
-async function runBrowserSoak(durationSeconds) {
-  const browser = await chromium.launch({
+async function runBrowserSoakSlice(page, durationMs) {
+  return await page.evaluate(
+    async ({ durationMs, sampleEveryMs }) => {
+      const namespace = "http://www.w3.org/2000/svg";
+      const root = document.getElementById("soak-root");
+      if (!root) {
+        throw new Error("soak-root missing");
+      }
+      const longTasks = [];
+      let observer = null;
+      if ("PerformanceObserver" in window) {
+        try {
+          observer = new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+              longTasks.push(entry.duration);
+            }
+          });
+          observer.observe({ entryTypes: ["longtask"] });
+        } catch {
+          observer = null;
+        }
+      }
+
+      let listenerBalance = 0;
+      let timerBalance = 0;
+      const heapSamples = [];
+      const domSamples = [];
+      const frameDeltas = [];
+      const startHeap =
+        performance.memory && Number.isFinite(performance.memory.usedJSHeapSize)
+          ? performance.memory.usedJSHeapSize
+          : null;
+      const endAt = performance.now() + durationMs;
+
+      while (performance.now() < endAt) {
+        const beforeFrame = await new Promise((resolve) => requestAnimationFrame(resolve));
+        const svg = document.createElementNS(namespace, "svg");
+        svg.setAttribute("viewBox", "0 0 320 180");
+        const fragment = document.createDocumentFragment();
+        for (let index = 0; index < 80; index += 1) {
+          const line = document.createElementNS(namespace, "line");
+          line.setAttribute("x1", String(index % 32));
+          line.setAttribute("y1", String((index * 3) % 180));
+          line.setAttribute("x2", String(320 - (index % 32)));
+          line.setAttribute("y2", String((index * 5) % 180));
+          fragment.append(line);
+        }
+        svg.append(fragment);
+        const handler = () => undefined;
+        svg.addEventListener("click", handler);
+        listenerBalance += 1;
+        const timer = window.setTimeout(() => undefined, 0);
+        timerBalance += 1;
+        root.replaceChildren(svg);
+        svg.removeEventListener("click", handler);
+        listenerBalance -= 1;
+        window.clearTimeout(timer);
+        timerBalance -= 1;
+        const afterFrame = await new Promise((resolve) => requestAnimationFrame(resolve));
+        frameDeltas.push(afterFrame - beforeFrame);
+        const heap =
+          performance.memory && Number.isFinite(performance.memory.usedJSHeapSize)
+            ? performance.memory.usedJSHeapSize
+            : null;
+        if (heap !== null) {
+          heapSamples.push(heap);
+        }
+        domSamples.push(document.querySelectorAll("*").length);
+        await new Promise((resolve) => setTimeout(resolve, sampleEveryMs));
+      }
+      if (observer) {
+        observer.disconnect();
+      }
+      const endHeap =
+        performance.memory && Number.isFinite(performance.memory.usedJSHeapSize)
+          ? performance.memory.usedJSHeapSize
+          : null;
+      const domGrowth =
+        domSamples.length === 0 ? 0 : Math.max(...domSamples) - Math.min(...domSamples);
+      return {
+        heap_sample_available: startHeap !== null && endHeap !== null,
+        heap_growth_bytes:
+          startHeap === null || endHeap === null ? null : Math.max(0, endHeap - startHeap),
+        heap_samples: heapSamples,
+        dom_node_growth: Math.max(0, domGrowth),
+        dom_node_samples: domSamples,
+        frame_delta_ms: frameDeltas,
+        listener_balance: listenerBalance,
+        timer_balance: timerBalance,
+        long_task_count: longTasks.length,
+        max_long_task_ms: longTasks.length === 0 ? 0 : Math.max(...longTasks)
+      };
+    },
+    { durationMs, sampleEveryMs: BROWSER_SAMPLE_EVERY_MS }
+  );
+}
+
+function mergeBrowserSlices(slices, sliceSeconds) {
+  const heapSamples = slices.flatMap((slice) => slice.heap_samples);
+  const domSamples = slices.flatMap((slice) => slice.dom_node_samples);
+  const frameDeltas = slices.flatMap((slice) => slice.frame_delta_ms);
+  const heapGrowthValues = slices
+    .map((slice) => slice.heap_growth_bytes)
+    .filter((value) => Number.isFinite(value));
+  const domGrowthValues = slices
+    .map((slice) => slice.dom_node_growth)
+    .filter((value) => Number.isFinite(value));
+  return {
+    heap_sample_available: slices.some((slice) => slice.heap_sample_available),
+    heap_growth_bytes: heapGrowthValues.length === 0 ? null : Math.max(...heapGrowthValues),
+    heap_samples: heapSamples,
+    dom_node_growth: domGrowthValues.length === 0 ? 0 : Math.max(...domGrowthValues),
+    dom_node_samples: domSamples,
+    frame_delta_ms: frameDeltas,
+    listener_balance: slices.reduce((total, slice) => total + slice.listener_balance, 0),
+    timer_balance: slices.reduce((total, slice) => total + slice.timer_balance, 0),
+    long_task_count: slices.reduce((total, slice) => total + slice.long_task_count, 0),
+    max_long_task_ms: slices.reduce(
+      (maximum, slice) => Math.max(maximum, slice.max_long_task_ms),
+      0
+    ),
+    slices_completed: slices.length,
+    slice_seconds: sliceSeconds,
+    measurement_error: null
+  };
+}
+
+async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
+  const browser = await getChromium().launch({
     headless: true,
     args: ["--disable-dev-shm-usage", "--disable-gpu", "--enable-precise-memory-info", "--no-sandbox"]
   });
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.setContent("<!doctype html><meta charset='utf-8'><div id='soak-root'></div>");
-    return await page.evaluate(
-      async ({ durationMs, sampleEveryMs }) => {
-        const namespace = "http://www.w3.org/2000/svg";
-        const root = document.getElementById("soak-root");
-        if (!root) {
-          throw new Error("soak-root missing");
-        }
-        const longTasks = [];
-        let observer = null;
-        if ("PerformanceObserver" in window) {
-          try {
-            observer = new PerformanceObserver((list) => {
-              for (const entry of list.getEntries()) {
-                longTasks.push(entry.duration);
-              }
-            });
-            observer.observe({ entryTypes: ["longtask"] });
-          } catch {
-            observer = null;
-          }
-        }
-
-        let listenerBalance = 0;
-        let timerBalance = 0;
-        const heapSamples = [];
-        const domSamples = [];
-        const frameDeltas = [];
-        const startHeap =
-          performance.memory && Number.isFinite(performance.memory.usedJSHeapSize)
-            ? performance.memory.usedJSHeapSize
-            : null;
-        const endAt = performance.now() + durationMs;
-
-        while (performance.now() < endAt) {
-          const beforeFrame = await new Promise((resolve) => requestAnimationFrame(resolve));
-          const svg = document.createElementNS(namespace, "svg");
-          svg.setAttribute("viewBox", "0 0 320 180");
-          const fragment = document.createDocumentFragment();
-          for (let index = 0; index < 80; index += 1) {
-            const line = document.createElementNS(namespace, "line");
-            line.setAttribute("x1", String(index % 32));
-            line.setAttribute("y1", String((index * 3) % 180));
-            line.setAttribute("x2", String(320 - (index % 32)));
-            line.setAttribute("y2", String((index * 5) % 180));
-            fragment.append(line);
-          }
-          svg.append(fragment);
-          const handler = () => undefined;
-          svg.addEventListener("click", handler);
-          listenerBalance += 1;
-          const timer = window.setTimeout(() => undefined, 0);
-          timerBalance += 1;
-          root.replaceChildren(svg);
-          svg.removeEventListener("click", handler);
-          listenerBalance -= 1;
-          window.clearTimeout(timer);
-          timerBalance -= 1;
-          const afterFrame = await new Promise((resolve) => requestAnimationFrame(resolve));
-          frameDeltas.push(afterFrame - beforeFrame);
-          const heap =
-            performance.memory && Number.isFinite(performance.memory.usedJSHeapSize)
-              ? performance.memory.usedJSHeapSize
-              : null;
-          if (heap !== null) {
-            heapSamples.push(heap);
-          }
-          domSamples.push(document.querySelectorAll("*").length);
-          await new Promise((resolve) => setTimeout(resolve, sampleEveryMs));
-        }
-        if (observer) {
-          observer.disconnect();
-        }
-        const endHeap =
-          performance.memory && Number.isFinite(performance.memory.usedJSHeapSize)
-            ? performance.memory.usedJSHeapSize
-            : null;
-        const domGrowth =
-          domSamples.length === 0 ? 0 : Math.max(...domSamples) - Math.min(...domSamples);
-        return {
-          heap_sample_available: startHeap !== null && endHeap !== null,
-          heap_growth_bytes:
-            startHeap === null || endHeap === null ? null : Math.max(0, endHeap - startHeap),
-          heap_samples: heapSamples,
-          dom_node_growth: Math.max(0, domGrowth),
-          dom_node_samples: domSamples,
-          frame_delta_ms: frameDeltas,
-          listener_balance: listenerBalance,
-          timer_balance: timerBalance,
-          long_task_count: longTasks.length,
-          max_long_task_ms: longTasks.length === 0 ? 0 : Math.max(...longTasks)
-        };
-      },
-      { durationMs: durationSeconds * 1000, sampleEveryMs: 50 }
-    );
+    const slices = [];
+    let measuredMs = 0;
+    const durationMs = durationSeconds * 1000;
+    const browserSliceMs = Math.min(browserSliceSeconds * 1000, durationMs);
+    while (measuredMs < durationMs) {
+      const sliceMs = Math.min(browserSliceMs, durationMs - measuredMs);
+      slices.push(await runBrowserSoakSlice(page, sliceMs));
+      measuredMs += sliceMs;
+    }
+    return mergeBrowserSlices(slices, browserSliceSeconds);
   } finally {
-    await browser.close();
+    await browser.close().catch(() => undefined);
   }
+}
+
+function describeError(error) {
+  if (!error) {
+    return null;
+  }
+  return {
+    name: error.name || "Error",
+    message: error.message || String(error),
+    stack_tail: error.stack ? error.stack.slice(-1200) : ""
+  };
+}
+
+function failedBrowserResult(error, browserSliceSeconds) {
+  return {
+    heap_sample_available: false,
+    heap_growth_bytes: null,
+    heap_samples: [],
+    dom_node_growth: 0,
+    dom_node_samples: [],
+    frame_delta_ms: [],
+    listener_balance: 0,
+    timer_balance: 0,
+    long_task_count: 0,
+    max_long_task_ms: 0,
+    slices_completed: 0,
+    slice_seconds: browserSliceSeconds,
+    measurement_error: describeError(error)
+  };
+}
+
+function failedWorkerResult(error) {
+  return {
+    jobs_total: 0,
+    jobs_completed: 0,
+    retries_observed: 0,
+    recoveries_observed: 0,
+    dead_letters_observed: 0,
+    event_loop_lag_ms: summary([]),
+    cpu_user_ms: 0,
+    cpu_system_ms: 0,
+    measurement_error: describeError(error)
+  };
 }
 
 async function runWorkerSoak(durationSeconds) {
@@ -294,11 +430,13 @@ function evaluate(browserResult, workerResult) {
   const heapGrowth = browserResult.heap_growth_bytes ?? 0;
   const frame = summary(browserResult.frame_delta_ms);
   const browserPass =
+    !browserResult.measurement_error &&
     heapGrowth <= MAX_HEAP_GROWTH_BYTES &&
     browserResult.dom_node_growth <= MAX_DOM_GROWTH_NODES &&
     browserResult.listener_balance <= MAX_LISTENER_LEAKS &&
     browserResult.timer_balance <= MAX_TIMER_LEAKS;
   const workerPass =
+    !workerResult.measurement_error &&
     workerResult.jobs_completed === workerResult.jobs_total &&
     workerResult.retries_observed > 0 &&
     workerResult.recoveries_observed > 0 &&
@@ -321,11 +459,20 @@ async function main() {
   const args = parseArgs(process.argv);
   const parameters = await readSoakParameters();
   const workerDeploymentBinding = await readWorkerDeploymentBinding();
+  const browserPathResolution = await resolvePlaywrightBrowserPath();
   const measurementStartedAt = performance.now();
-  const [browserResult, workerResult] = await Promise.all([
-    runBrowserSoak(args.durationSeconds),
+  const [browserOutcome, workerOutcome] = await Promise.allSettled([
+    runBrowserSoak(args.durationSeconds, args.browserSliceSeconds),
     runWorkerSoak(args.durationSeconds)
   ]);
+  const browserResult =
+    browserOutcome.status === "fulfilled"
+      ? browserOutcome.value
+      : failedBrowserResult(browserOutcome.reason, args.browserSliceSeconds);
+  const workerResult =
+    workerOutcome.status === "fulfilled"
+      ? workerOutcome.value
+      : failedWorkerResult(workerOutcome.reason);
   const elapsedWallSeconds = (performance.now() - measurementStartedAt) / 1000;
   const evaluation = evaluate(browserResult, workerResult);
   const targetSeconds = [
@@ -347,11 +494,14 @@ async function main() {
       node: process.version,
       platform: `${os.platform()}-${os.release()}-${os.arch()}`,
       cpu_count: os.cpus().length,
-      browser: "chromium"
+      browser: "chromium",
+      playwright_browsers_path_source: browserPathResolution.source,
+      playwright_browsers_path: browserPathResolution.path
     },
     configured_targets: {
       short_duration_hours: parameters.short_duration_hours,
-      long_duration_hours: parameters.long_duration_hours
+      long_duration_hours: parameters.long_duration_hours,
+      browser_slice_seconds: args.browserSliceSeconds
     },
     measured_duration_seconds: args.durationSeconds,
     measurement: {
@@ -361,8 +511,8 @@ async function main() {
       browser_worker_parallel: true
     },
     coverage: {
-      browser_soak_measured: true,
-      worker_soak_measured: true,
+      browser_soak_measured: !browserResult.measurement_error,
+      worker_soak_measured: !workerResult.measurement_error,
       full_4h_24h_measured: fullDurationMeasured,
       worker_supervisor_binding_available:
         workerDeploymentBinding?.status === "PASS" &&
@@ -403,7 +553,10 @@ async function main() {
       listener_balance: browserResult.listener_balance,
       timer_balance: browserResult.timer_balance,
       long_task_count: browserResult.long_task_count,
-      max_long_task_ms: Number(browserResult.max_long_task_ms.toFixed(4))
+      max_long_task_ms: Number(browserResult.max_long_task_ms.toFixed(4)),
+      slices_completed: browserResult.slices_completed,
+      slice_seconds: browserResult.slice_seconds,
+      measurement_error: browserResult.measurement_error
     },
     worker: workerResult,
     remaining_to_close_a209: fullDurationMeasured

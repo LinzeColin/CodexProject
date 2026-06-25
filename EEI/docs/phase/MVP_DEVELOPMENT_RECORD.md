@@ -1,6 +1,221 @@
 # MVP Development Record
 
+## 2026-06-25 - T1301/A202 operator review packet freshness remote CI binding
+
+Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`; A202 STILL IN PROGRESS; A209 WAS RUNNING AT CI-BINDING TIME BUT WAS SUPERSEDED BY THE 2026-06-26 `7/288` FAILURE; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Bound the committed A202 operator review packet freshness repair and dependent fail-closed A202/A205/A209 release preflight refresh to GitHub Actions evidence.
+- Project Governance run `28194420709` completed PASS for commit `236d25354db7d8f9774d1f91981ae30d69b0234e`.
+- EEI validation run `28194420774` completed PASS for the same commit, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route, legal/source clearance or publication policy changed.
+
+### Current Evidence
+
+- Committed A209 point-in-time heartbeat for this historical CI-binding event was `190/288` PASS windows, `0` failed and `65.97%` completion.
+- Live A209 checkpoint observed after the CI-bound commit reached at least `198/288` PASS with `0` failed; watchdog PID `61030` and operator PID `82041` were still running, with child window `199` active at that time.
+- Superseding current fact: the later clean 24h attempt failed on 2026-06-25T22:08:58Z at `7/288` with `child_status=NO_OUTPUT`; see the 2026-06-26 A209 repair entry below.
+- A209 finalization remains blocked until the 24h summary/checkpoint chain validates `288/288` successful windows with zero failures.
+
+### Acceptance Mapping
+
+- T1301 -> A202 for the operator review packet freshness repair and CI binding.
+- T1303 -> A204/A205 for dependent external release-evidence, release-manager and MVP gate preflight context.
+- T1307 -> A209 for background soak progress and finalization context.
+- This CI binding does not close A202, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- Project Governance run `28194420709` / job `83517222542`: PASS.
+- EEI validation run `28194420774` / job `83517223204`: PASS.
+- A209 live checkpoint observation at this historical point: `198/288` PASS with `0` failed; progress-only and not release-ready evidence.
+
+### Remaining Gaps
+
+- A202 still requires signed source-license review, passage-level relationship review, production owner sign-off, legal release clearance and final attestation.
+- A210 formal brand clearance or waiver, A026/A027 production gold labels, A209 24h final evidence and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
+
+## 2026-06-25 - T1303/A205 A202 operator-review evidence binding
+
+Status: LOCAL FOCUSED VALIDATED; CI PENDING; RELEASE STILL BLOCKED
+
+Completed:
+
+- Bound the existing `artifacts/tests/a202/t1301_operator_review_packet_contract.json` into the T1303 external release-evidence bundle `source_files`.
+- Added an `a202_operator_review` gate summary to the external release-evidence bundle so release-manager evidence now shows `live_capture_ready_for_review=true`, `relationship_fact_candidates_allowed=0`, `relationships_publishable=0`, `release_clearance=false` and all signed source/license/passage/owner/legal gates still missing.
+- Added the A202 operator review packet as a supporting source for the A202 operator intake item without treating it as clearance.
+- Regenerated the external release-evidence bundle, operator intake packet, release-manager activation preflight and MVP release-gate preflight; all remain fail-closed.
+
+Verification status:
+
+- `py_compile` PASS for `scripts/validate_external_release_evidence_bundle.py` and `tests/unit/test_external_release_evidence_bundle.py`.
+- Focused `ruff check` PASS for the same files.
+- `pytest -q tests/unit/test_external_release_evidence_bundle.py -p no:cacheprovider`: PASS, `7/7`.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight`: PASS.
+
+Still blocked:
+
+- This binding is review-readiness traceability only. It does not provide source-license review, passage-level approval, production owner sign-off, legal clearance, relationship publication, brand clearance, production gold labels, A209 24h completion, release-manager activation or MVP release readiness.
+
+## 2026-06-25 - T1307/A209 live 24h soak heartbeat refresh to 173/288
+
+Status: LOCAL FOCUSED VALIDATED; CI PENDING; A209 STILL IN PROGRESS
+
+Completed:
+
+- Refreshed A209 background heartbeat to the current clean operator soak run: `173/288` windows PASS, `0` failed, `115` remaining and `60.07%` completion.
+- Confirmed operator PID `82041` and watchdog PID `61030` remain the active background resolution path; no double-start was performed.
+- Refreshed A209 finalization, A203 production API release, external release-evidence bundle, release-manager activation and MVP release-gate artifacts from the current heartbeat.
+- Kept `release_gate_closed_by_background_heartbeat=false`, `release_gate_closed_by_finalizer=false`, `downstream_release_gate_refresh_allowed=false` and every dependent release gate fail-closed.
+
+Verification status:
+
+- A209 heartbeat/evidence/finalization generate and validate PASS.
+- A203 production API release preflight generate/validate PASS.
+- External release-evidence bundle and operator intake packet generate/validate PASS.
+- Release-manager activation and MVP release-gate generate/validate PASS.
+
+Still blocked:
+
+- A209 is not complete until `288/288` windows and final 24h summary evidence validate release-ready.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
+## 2026-06-25 - T1307/A209 live 24h soak heartbeat refresh to 152/288
+
+Status: LOCAL VERIFY PASS; CI PENDING
+
+Completed:
+
+- Refreshed A209 background heartbeat to the current clean operator soak run: `152/288` windows PASS, `0` failed, `136` remaining and `52.78%` completion.
+- Confirmed operator PID `82041` and watchdog PID `61030` are both RUNNING in the heartbeat contract.
+- Refreshed A209 finalization, A203 production API release, external release-evidence bundle, release-manager activation and MVP release-gate artifacts from the current heartbeat.
+- Kept `release_gate_closed_by_background_heartbeat=false`, `release_gate_closed_by_finalizer=false`, `downstream_release_gate_refresh_allowed=false` and every dependent release gate fail-closed.
+
+Verification status:
+
+- A209 heartbeat/evidence/finalization generate and validate PASS.
+- A203 production API release preflight generate/validate PASS.
+- External release-evidence bundle and operator intake packet generate/validate PASS.
+- Release-manager activation and MVP release-gate generate/validate PASS.
+- Full `make verify` PASS with `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright` and `117` unit tests.
+
+Still blocked:
+
+- A209 is not complete until `288/288` windows and final 24h summary evidence validate release-ready.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
+## 2026-06-25 - T1301/A202 signed-intake source-boundary hardening
+
+Status: LOCAL VALIDATION PASS; REMOTE CI PASS; RELEASE STILL BLOCKED
+
+Completed:
+
+- Added a source-boundary policy to the A202 signed-intake validator: repository fixtures, templates, docs, config, data and test sources cannot close A202.
+- Allowed only external operator files or approved repository operator-input directories (`artifacts/operator_inputs/`, `operator_inputs/`, `work/operator_inputs/`) to serve as signed-intake closure sources.
+- Added `PARAM-088` / `release_decision_intake.signed_source_boundary` to bind the disallowed repository prefixes into machine-verified governance.
+
+Verification status:
+
+- Focused py_compile PASS, focused ruff PASS, focused A202 unit tests PASS `17/17`, A202 artifact generation/validation PASS, semantic extraction PASS with 88 parameters, task-pack validation PASS, full `make verify` PASS with 117 unit tests, changed-only Project Governance PASS, and remote CI PASS for commit `a246df94bf73b6fba7111805f3c5a02b6edeb070`.
+- Remote CI evidence: Project Governance run `28179389094` PASS; EEI validation run `28179389156` PASS.
+- A209 continues as a background 24h gate and is not replaced by this A202 source-boundary hardening.
+
+Still blocked:
+
+- A202 still lacks real source-license review, passage-level relationship approval, production owner approval, legal release clearance and production relationship publication.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
+## 2026-06-25 - T1307/A209 live 24h soak heartbeat refresh
+
+Status: FOCUSED LOCAL VALIDATION PASS; GOVERNANCE/RELEASE ARTIFACT VALIDATION AND CI PENDING
+
+Completed:
+
+- Refreshed A209 background heartbeat to the current clean operator soak run: `135/288` windows PASS, `0` failed, `153` remaining and `46.88%` completion.
+- Refreshed A209 finalization, A203 production API release, release-manager activation, MVP release-gate and external release-evidence artifacts from the current heartbeat.
+- Kept `release_gate_closed_by_background_heartbeat=false`, `release_gate_closed_by_finalizer=false` and every dependent release gate fail-closed.
+
+Verification status:
+
+- A209 heartbeat/evidence/finalization generate and validate PASS.
+- A203 production API release preflight generate PASS.
+- Release-manager activation, MVP release-gate and external release-evidence bundle generate and validate PASS.
+
+Still blocked:
+
+- A209 is not complete until `288/288` windows and final 24h summary evidence validate.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
+## 2026-06-25 - T1303/A204-A205 external release operator intake packet
+
+Status: FOCUSED LOCAL VALIDATION PASS; GOVERNANCE/RELEASE ARTIFACT VALIDATION AND CI PENDING
+
+Completed:
+
+- Added `artifacts/tests/a205/t1303_external_release_operator_intake_packet.json` as the operator-facing checklist for A202 source/license/owner/legal release, A210 brand clearance, A026/A027 production gold labels and A209 24h soak finalization.
+- Added validator and Makefile coverage so the packet is generated and validated with the external release-evidence bundle.
+- Added `PARAM-087` governance binding for the packet schema version.
+
+Verification status:
+
+- Focused ruff PASS for the validator and tests.
+- `tests/unit/test_external_release_evidence_bundle.py` PASS `6/6`.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle` PASS, including packet generation and validation.
+
+Still blocked:
+
+- The packet reports `WAITING_FOR_OPERATOR_INPUTS`, `release_gate_closed_by_operator_packet=false` and no release clearance.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+- A209 remains background `IN_PROGRESS` until 24h evidence reaches `288/288` and release-ready validation passes.
+
+## 2026-06-25 - T1302/A203 E2E CI repair, release still blocked
+
+Status: LOCAL VALIDATION PASS; CI PENDING
+
+Completed:
+
+- Updated the development-status E2E contract so T1302/A203 is expected as `DONE` after implementation closure.
+- Rebound governance companion records for the push-base CI delta without changing runtime behavior or release readiness.
+- Re-generated clean-room and release artifacts after the E2E/governance repair.
+
+Verification status:
+
+- `make test-e2e` PASS `32/32`.
+- `make verify` PASS with `112` unit tests.
+- Changed-only governance reproduction PASS with `errors=0` and `warnings=0`.
+
+Still blocked:
+
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
+## 2026-06-25 - T1302/A203 API implementation done, release still blocked
+
+Status: LOCAL FOCUSED VALIDATION PASS; CHANGED-ONLY GOVERNANCE AND CI PENDING
+
+Completed:
+
+- Marked T1302/A203 production API implementation contract `DONE` for graph, path, catalog, evidence and scoring API coverage.
+- Removed `A203_contract_status` from A203 production API preflight missing gates.
+- Refreshed A209 background heartbeat and dependent release preflights to `35/288` successful windows, `0` failed, `253` remaining and `12.15%` completion.
+
+Still blocked:
+
+- A203 does not publish production graph edges or scores.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+- A209 remains background `IN_PROGRESS` until 24h evidence reaches `288/288` and release-ready validation passes.
+
+Verification status:
+
+- Focused A203/A209/A205 unit, ruff, artifact, semantic, V5 readiness, task-pack and structured parse validation passed locally for this iteration.
+- Changed-only governance, final full validation, commit, push and CI are pending.
 
 ## 2026-06-19 - Phase 1 / G1 start
 
@@ -4789,6 +5004,43 @@ Status: REMOTE CI VALIDATED FOR THIS SLICE; A204/A205/A209/A210/A026/A027 STILL 
 
 - Revert this CI-binding governance update and restore the preflight manifest to remote-pending if the cited GitHub Actions evidence is invalidated.
 
+## 2026-06-24 - T1303/A204-A205 model config apply operator CLI
+
+Status: LOCAL VALIDATED; REMOTE CI PENDING; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Upgraded `scripts/apply_model_config.py` from preview-only to a fail-closed operator CLI.
+- `--dry-run` validates the model profile and threshold files, emits hash-bound A204/A205 preview evidence and performs no database write.
+- `--execute` now requires `DATABASE_URL` or `--database-url` and reuses `DomainRepository` to create a draft profile version, atomically activate it and enqueue a score recompute job.
+- Added `tests/unit/test_model_config_apply.py` with a fake repository to assert call order, refresh-token propagation and recompute enqueue semantics without touching a live database.
+- Added `scripts/apply_model_config.py` to `make lint`.
+- Regenerated `artifacts/model_config_import_preview.json` under the new `eei-model-config-apply-contract-v1` schema.
+
+### Acceptance Mapping
+
+- T1303 -> A204 for immutable draft creation, transactional activation and operation entrypoint readiness.
+- T1303 -> A205 for refresh-token propagation and score recompute enqueue from the activated context.
+- A204/A205 remain `IN_PROGRESS`, not `DONE`, because final release-manager activation still requires real A202 source/license/owner/legal clearance, A026/A027 production gold labels, A209 24h soak and A210 brand clearance.
+
+### Validation
+
+- `python -m py_compile scripts/apply_model_config.py tests/unit/test_model_config_apply.py`: PASS.
+- `ruff check scripts/apply_model_config.py tests/unit/test_model_config_apply.py`: PASS after import ordering and line-length fixes.
+- `pytest -q tests/unit/test_model_config_apply.py tests/unit/test_release_manager_activation.py`: PASS, 5/5.
+- `python scripts/apply_model_config.py --profile config/model_profiles/supply-chain-v3.json --thresholds config/thresholds/default-v2.json --reason 'T1303/A204-A205 model config apply dry-run evidence' --dry-run`: PASS, generated `artifacts/model_config_import_preview.json`.
+
+### Non-Closure Rules
+
+- The dry-run artifact has `release_gate_closed_by_apply_model_config=false`.
+- The CLI does not close A202, A209, A210, A026 or A027.
+- Unit tests with a fake repository prove call contracts only; PostgreSQL execution remains covered by existing integration/CI paths and by any future operator `--execute` run against a real database.
+
+### Rollback
+
+- Revert `scripts/apply_model_config.py`, `tests/unit/test_model_config_apply.py`, Makefile lint inclusion, `artifacts/model_config_import_preview.json` and the associated governance records.
+- Rerun focused T1303 tests, regenerate release artifacts and rerun `make verify`.
+
 ## 2026-06-23 - T904/A026-A027 production gold-label intake contract
 
 Status: LOCAL VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABELS EXIST
@@ -4915,3 +5167,997 @@ Status: LOCAL VALIDATED; A202 STILL IN PROGRESS
 
 - Revert `scripts/validate_release_decision_bundle.py`, release-decision fixtures, `tests/unit/test_release_decision_bundle.py`, the A202 contract artifact and governance records.
 - Regenerate development, clean-room and release artifacts, then rerun validation.
+
+## 2026-06-23 - GOV-SEMANTIC-EEI-001 active parameter/formula machine binding closure
+
+Status: LOCAL VALIDATED; RELEASE GATES STILL OPEN
+
+### Scope
+
+- Added motion token validation to `scripts/validate_model_config.py`.
+- Bound `PARAM-052` through `PARAM-058` to `config/ui/motion-tokens.json::durations_ms`.
+- Bound FORM-012 deterministic configuration lookup to machine implementation refs and evidence hash.
+- Marked `GOV-SEMANTIC-EEI-001` as done and `governance/projects.yaml` semantic coverage as `machine_verified`.
+
+### Acceptance mapping
+
+- `GOV-SEMANTIC-EEI-001` -> `ACC-SEMANTIC-EEI-001`.
+- This closes active parameter/formula machine-source coverage only.
+- It does not close A026/A027 production gold labels, A202 source/legal/owner approval, A209 24h soak, A210 formal brand clearance, or release-manager activation.
+
+### Parameters and formulas
+
+- No runtime numeric value changed.
+- Motion active values now extract from `config/ui/motion-tokens.json`: instant 80ms, local 160ms, panel 220ms, data update 280ms, lens change 320ms, reroot 380ms, full relayout max 480ms.
+- FORM-012 remains a deterministic configuration lookup contract, not a scoring formula.
+
+### Validation
+
+- `python3 scripts/validate_semantic_extractors.py EEI`: PASS, `semantic_parameters_checked=68`, `semantic_formulas_checked=11`.
+- `python3 scripts/validate_project_governance.py --project EEI --semantic`: PASS, errors 0, warnings 0.
+- `.venv/bin/python scripts/validate_model_config.py config/model_profiles/balanced-v2.json config/thresholds/default-v2.json`: PASS.
+- `.venv/bin/python scripts/validate_model_config.py config/model_profiles/supply-chain-v3.json config/thresholds/default-v2.json`: PASS.
+- parameter registry CSV width check: PASS, 68 rows, width 34.
+- `git diff --check`: PASS.
+
+### Remaining gaps
+
+- A026/A027 still require production human-labeled gold cases.
+- A202 still requires real source-license review, passage-level approval, owner sign-off, legal clearance, and relationship publication clearance.
+- A209 24h soak remains a background independent gate.
+- A210 formal brand legal/market clearance or signed risk waiver remains missing.
+- Release-manager activation remains blocked by the external gates above.
+
+### Rollback
+
+- Revert the model-config validator, parameter/formula registry, governance project status, task status, and event/ledger records.
+- Regenerate governance, clean-room, and release artifacts, then rerun semantic validation.
+
+## 2026-06-23 - T1301/A202 operator review candidate queue binding
+
+Status: LOCAL FOCUSED VALIDATED; A202/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Extended `scripts/validate_a202_operator_review_packet.py` so the A202 operator/legal review packet reads `data/golden_vertical_fact_candidates.json`.
+- Added `relationship_candidate_review_queue` to `artifacts/tests/a202/t1301_operator_review_packet_contract.json`.
+- Bound `GV-FACT-001` and `GV-FACT-002` to required official-source anchors `GV-SNAPSHOT-001..004`, with required source-license, passage-level relationship, production-owner and legal-clearance decision fields.
+- Preserved fail-closed publication controls: no relationship fact publication, no graph-edge publication, no release clearance and no production approval.
+- Regenerated the dependent A202/A210 release-decision bundle and T1303 release-manager activation preflight so downstream hashes remain current.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`: this is a review handoff queue, not real source-license review, passage approval, production owner approval, legal clearance, brand clearance, relationship publication or release-manager activation.
+- A209 24h soak remains a background release gate and does not block this bounded A202 review-packet hardening.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or active runtime parameter changed.
+- `operator-review-packet` governance profile version moves from `1` to `2` because the packet now exposes candidate-level review requirements.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache .venv/bin/python -m py_compile scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_official_source_live_capture.py -p no:cacheprovider`: PASS, 13 passed.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_a202_operator_review_packet.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS with `release_ready=false`.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py generate`: PASS.
+- `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS with release-manager activation blocked.
+
+### Remaining gaps
+
+- Real source-license review, passage-level human approval, production owner sign-off, legal/brand clearance and relationship publication are still absent.
+- Production gold labels and A209 24h soak evidence remain external gates.
+- The operator review queue is machine-generated review input and cannot be treated as public-use clearance.
+
+### Rollback
+
+- Revert `scripts/validate_a202_operator_review_packet.py`, `tests/unit/test_official_source_live_capture.py`, the regenerated A202/A210 and T1303 preflight artifacts, and the governance records for this iteration.
+- Regenerate development, clean-room and release artifacts, then rerun the A202 validation subset and root governance validation.
+
+## 2026-06-23 - T1307/A209 operator soak monitor and recovery contract
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/monitor_operator_soak.py` as a read-only status contract for the detached 24h operator soak.
+- The monitor reads the 24h output JSON, checkpoint JSONL, PID file and log file, then reports process status, target windows, successful windows, failed windows, remaining windows, completion percent, latest successful window and a `--resume` command.
+- The monitor explicitly reports `release_gate_closed_by_monitor=false` and keeps `a209_task_status_required=IN_PROGRESS`.
+- Added `make monitor-operator-soak` so operators and CI-style checks can inspect progress without mutating the run.
+- Extended A209 unit coverage for missing, resumable partial, failed-window and complete-summary-pending states.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: this monitor proves progress visibility and recovery behavior only.
+- The running 24h checkpoint and output artifacts are not committed by this slice; they must be committed only after all 288 windows complete and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- The monitor reads existing soak parameters: `soak.long_duration_hours=24` and `soak.operator_window_seconds=300`.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python -m py_compile scripts/monitor_operator_soak.py scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/monitor_operator_soak.py scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 8 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-monitor-pycache .venv/bin/python scripts/monitor_operator_soak.py --write-output /private/tmp/eei-a209-operator-soak-progress.json --quiet`: PASS; observed `RUNNING_PARTIAL`, PID `12478`, 14/288 windows and `release_gate_closed_by_monitor=false`.
+- Live checkpoint inspection after monitor run observed 15/288 PASS windows, latest window `index=15`, `worker_jobs_completed=12`, `worker_jobs_total=12`, `worker_event_loop_lag_p95_ms=12.5951`.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+- If the detached process exits or a window fails, the checkpoint must be resumed or rerun and validated before any A209 closure review.
+
+### Rollback
+
+- Revert `scripts/monitor_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance record.
+- Keep A209 `IN_PROGRESS`; do not remove valid partial checkpoint evidence unless it is corrupted or explicitly superseded.
+
+## 2026-06-23 - T1307/A209 operator soak supervisor and background recovery contract
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/supervise_operator_soak.py` as an explicit A209 background supervisor contract.
+- The supervisor consumes the existing 24h progress monitor payload, observes a live PID without launching a second process, and writes `release_gate_closed_by_supervisor=false`.
+- Paused runs are dry-run recovery candidates by default; actual launch requires both `--auto-resume` and `--execute`.
+- Failed checkpoint windows block recovery and require operator inspection before any resume.
+- Added `make supervise-operator-soak` as a safe default dry-run target and lint coverage for the supervisor.
+- Extended A209 unit tests for live-process observation, explicit auto-resume requirement, dry-run recovery and failed-window blocking.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: supervisor evidence proves background recovery control only.
+- Partial 24h checkpoints remain local runtime evidence and must not be committed or treated as release-ready until all 288 windows pass and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- The supervisor reads existing soak parameters and command defaults: 24 hours total, 300 seconds per operator window.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache .venv/bin/python -m py_compile scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 12 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-supervisor-pycache .venv/bin/python scripts/supervise_operator_soak.py --write-output /private/tmp/eei-a209-operator-soak-supervisor.json --quiet`: PASS; observed `observe_existing_run`, PID `12478`, `25/288` windows, `release_gate_closed_by_supervisor=false` and no second process launch.
+- Live checkpoint inspection after supervisor dry-run observed 25/288 PASS windows, latest window `index=25`, `worker_jobs_completed=12`, `worker_jobs_total=12`, `worker_event_loop_lag_p95_ms=2.8238`.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+- The supervisor must not be run with `--execute` while the existing PID is alive; the default target intentionally dry-runs.
+
+### Rollback
+
+- Revert `scripts/supervise_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance record.
+- Keep A209 `IN_PROGRESS`; do not remove valid partial checkpoint evidence unless it is corrupted or explicitly superseded.
+
+## 2026-06-23 - T1307/A209 operator soak supervisor clean-room package binding
+
+Status: LOCAL VALIDATED; A209 STILL IN PROGRESS; 24H SOAK RUNNING IN BACKGROUND
+
+### Scope
+
+- Bound `scripts/supervise_operator_soak.py` into the clean-room release package boundary via `scripts/manage_clean_room_release.py`.
+- Regenerated clean-room ZIP, release evidence, checksums, manifest and directory tree so the release package includes the supervisor script.
+- Preserved A209 non-closure semantics: package inclusion proves deliverability of the supervisor, not completion of the 24h soak.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS` until all 288 five-minute windows pass and the release-ready A209 validator passes.
+
+### Validation
+
+- `make validate-clean-room-release validate-release-artifacts`: PASS; clean-room package paths 414; release manifest paths 421; checksum paths 420.
+- `make verify`: PASS; includes clean-room validation, scale benchmark operator path, soak smoke, ruff, typecheck and 77 unit tests.
+- GitHub Actions `28029125423` previously failed before this binding because the clean-room ZIP missed `scripts/supervise_operator_soak.py`; this section records the local fix prepared for retry.
+
+### Remaining gaps
+
+- The background 24h soak remains partial runtime evidence until complete.
+- A209 monitor/supervisor/package evidence must not be used as release-ready A209 closure.
+
+## 2026-06-23 - T1307/A209 operator soak watchdog detached background recovery
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNING IN BACKGROUND
+
+### Scope
+
+- Added `scripts/watch_operator_soak.py` as an A209 watchdog layer over the existing progress monitor and supervisor.
+- The watchdog runs one CI-safe dry-run cycle by default and is exposed through `make watch-operator-soak`.
+- Real background recovery requires `--detach --execute --auto-resume`; it observes an existing live PID without double-starting and resumes only paused, successful checkpoints.
+- Live PID staleness is detected with `stale_after_seconds=900` and reported as operator intervention required; the watchdog does not kill or replace a live process.
+- Bound the watchdog into lint, `make verify`, v5 production readiness synchronization and clean-room release packaging.
+- Started a detached watchdog for the current 24h run: watchdog PID `62233`, operator soak PID `12478`, `cycles=300`, `interval_seconds=300`.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- A209 remains `IN_PROGRESS`: watchdog evidence proves background watch/recovery control only.
+- Partial 24h checkpoints remain local runtime evidence and must not be committed or treated as release-ready until all 288 windows pass and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime parameter changed.
+- The watchdog uses existing soak duration/window parameters and adds no new governed model parameter; operational defaults are `interval_seconds=300` and `stale_after_seconds=900`.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache .venv/bin/python -m py_compile scripts/watch_operator_soak.py scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py scripts/manage_clean_room_release.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/watch_operator_soak.py scripts/supervise_operator_soak.py scripts/monitor_operator_soak.py tests/unit/test_operator_soak_evidence.py scripts/validate_v5_production_readiness_sync.py scripts/manage_clean_room_release.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, 16 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/watch_operator_soak.py --cycles 1 --write-output /private/tmp/eei-a209-operator-soak-watchdog.json`: PASS; observed `OBSERVING_RUNNING_SOAK`, PID `12478`, `38/288` windows and `release_gate_closed_by_watchdog=false`.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-watchdog-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/watch_operator_soak.py --detach --execute --auto-resume --cycles 300 --interval-seconds 300 --write-output /private/tmp/eei-a209-operator-soak-watchdog-detached.json`: PASS; launched detached watchdog PID `62233`.
+- `/bin/ps -p 12478 -o pid=,ppid=,stat=,etime=,command=`: PASS; operator soak process running.
+- `/bin/ps -p 62233 -o pid=,ppid=,stat=,etime=,command=`: PASS; watchdog process running with PPID `1`.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-verify-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache make verify`: PASS; includes `watch-operator-soak`, clean-room/release validation, scale/soak smoke, secret scan, ruff, web typecheck and unit tests `81 passed`.
+- Post-verify A209 supervisor check: PASS; observed `RUNNING_PARTIAL`, PID `12478`, `40/288` windows, latest window generated at `2026-06-23T13:59:27Z`, detached watchdog PID `62233` still running, and `release_gate_closed_by_supervisor=false`.
+
+### Remaining gaps
+
+- Full 24h evidence is still missing until 288 successful 300-second windows complete and the final summary JSON exists.
+- Release-manager activation remains blocked by A202, A209, A210 and production gold-label gates.
+- If the watchdog reports a stale live PID, operator intervention is required; the watchdog intentionally avoids killing live soak processes.
+
+### Rollback
+
+- Stop only watchdog PID `62233` if watchdog monitoring must be disabled.
+- Revert `scripts/watch_operator_soak.py`, `tests/unit/test_operator_soak_evidence.py`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py`, `scripts/manage_clean_room_release.py` and this governance record.
+- Keep valid A209 partial checkpoints; do not remove or commit them as release-ready evidence until final validation passes.
+## 2026-06-24 - T1307/A209 Background Heartbeat Evidence
+
+- Task: `T1307`
+- Acceptance IDs: `A209`
+- Scope: add `scripts/record_operator_soak_heartbeat.py`, repository-local heartbeat artifact, Makefile targets, unit validation, v5 readiness sync and clean-room package inclusion.
+- Current heartbeat artifact: `artifacts/tests/a209/t1307_operator_soak_background_progress.json`
+- Current heartbeat state: operator PID `12478` RUNNING; watchdog PID `62233` RUNNING; `65/288` successful windows; `0` failed; `223` remaining; `22.57%` complete.
+- Non-closure: `release_gate_closed_by_background_heartbeat=false`; A209 remains `IN_PROGRESS` until the 24h summary JSON exists and `scripts/validate_operator_soak_evidence.py validate --require-release-ready` passes.
+- Validation: py_compile PASS; focused ruff PASS; `tests/unit/test_operator_soak_evidence.py` PASS `18/18`; heartbeat generate/validate PASS; v5 production readiness sync PASS.
+
+## 2026-06-24 - T1303/A204-A205 Release-Manager Ready-State Validator
+
+Status: LOCAL FOCUSED VALIDATED; A204/A205/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Updated `scripts/validate_release_manager_activation.py` so it validates the evidence-derived release-manager preflight state instead of hard-coding repository preflight validation to `activation_ready=false`.
+- Preserved the committed repository default: `artifacts/tests/a205/t1303_release_manager_activation_preflight.json` still validates as `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
+- Added unit coverage proving an all-real-gates fixture can validate `RELEASE_MANAGER_ACTIVATION_READY` only when A202 signed clearance, A026/A027 production gold labels, A209 24h soak and A210 brand clearance artifacts are all ready.
+- Refreshed A209 repository heartbeat evidence to `65/288` successful windows, `0` failed, operator PID `12478` RUNNING and watchdog PID `62233` RUNNING.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- T1307 -> A209 heartbeat evidence only.
+- A204/A205 remain `IN_PROGRESS`: this validator unblocks future final activation validation but does not activate release-manager state.
+- A209 remains `IN_PROGRESS`: heartbeat evidence is background progress, not 24h release-ready evidence.
+- A202, A026, A027 and A210 remain external release gates.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight, threshold value or runtime scoring parameter changed.
+- Release-manager validation now uses existing gate artifacts as the source of truth for READY/BLOCKED state.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache .venv/bin/python -m py_compile scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python -m pytest -q tests/unit/test_release_manager_activation.py -p no:cacheprovider`: PASS, 2 passed.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS, default artifact still blocked.
+- `python3 scripts/record_operator_soak_heartbeat.py generate --quiet`: PASS, observed `65/288` windows.
+- `python3 scripts/record_operator_soak_heartbeat.py validate --quiet`: PASS, `release_gate_closed_by_background_heartbeat=false`.
+- `python3 scripts/validate_operator_soak_evidence.py validate`: PASS, `PARTIAL_OPERATOR_EVIDENCE`; `operator_24h` still missing final summary JSON.
+- `python3 scripts/validate_gold_quality_evaluation.py validate`: PASS, A026/A027 remain `IN_PROGRESS`.
+
+### Remaining gaps
+
+- A209 must still reach all 288 successful windows and pass `scripts/validate_operator_soak_evidence.py validate --require-release-ready`.
+- A026/A027 still require production human-labeled gold cases.
+- A202 still requires real signed source-license review, passage-level approval, owner sign-off and legal release clearance.
+- A210 formal brand legal/market clearance or signed risk waiver remains missing.
+
+### Rollback
+
+- Revert `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, refreshed A209 heartbeat artifact and the governance/documentation updates from this section.
+- Regenerate release-manager and A209 heartbeat artifacts, then rerun focused release-manager and A209 validators.
+
+## 2026-06-24 - T904/A026-A027 production gold-label intake template
+
+Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABELS EXIST
+
+### Scope
+
+- Added `generate-template` and `validate-template` subcommands to `scripts/validate_gold_quality_evaluation.py`.
+- Generated `artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` as a shared A026/A027 operator-fillable template for production label evidence.
+- The template binds the required `production_gold_evidence` fields, A026/A027 minimum case counts, entity-resolution case schema, relationship case schema and downstream validation commands.
+- Added unit coverage proving the template is fail-closed and that threshold drift is rejected.
+
+### Acceptance mapping
+
+- T904 -> A026/A027.
+- A026 remains `IN_PROGRESS`: the repository still has no real 50-case operator-supplied entity-resolution gold set.
+- A027 remains `IN_PROGRESS`: the repository still has no real 100-case operator-supplied relationship gold set.
+- The template does not close A202, A209, A210 or release-manager activation.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight or threshold value changed.
+- Existing thresholds remain unchanged: A026 sample >= 50 and precision >= 95.00%; A027 sample >= 100 and precision >= 90.00%; minimum source coverage = 1.00.
+
+### Validation
+
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py generate-template`: PASS, generated `TEMPLATE_ONLY` artifact with `release_gate_closure_allowed=false`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate-template`: PASS.
+- `.venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py -p no:cacheprovider`: PASS, 9 passed.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate`: PASS, A026/A027 remain `IN_PROGRESS`.
+
+### Remaining gaps
+
+- Real production labels are still not present.
+- External source-license, passage-level, owner, legal, brand and 24h soak gates remain incomplete.
+- A209 live supervisor currently observes the background 24h soak as `RUNNING_PARTIAL`; this template does not affect A209 closure.
+
+### Rollback
+
+- Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, `artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused T904 validation.
+
+## 2026-06-24 - T904/A026-A027 production gold-set fixture-ref exclusion
+
+Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS UNTIL REAL PRODUCTION LABELS EXIST
+
+### Scope
+
+- Hardened `scripts/validate_gold_quality_evaluation.py` so `production_gold_set=true` rejects repository fixture evidence references before A026/A027 can close.
+- Rejected production gold cases whose `evidence_refs` start with `data/`, `tests/` or `fixture://`.
+- Rejected `fixture_reviewer` and `fixture_*` labelers for production gold sets.
+- Exposed the forbidden reference prefixes and forbidden labelers in the A026/A027 production gold-label intake template.
+- Updated unit tests so the release-capable production contract-test payload uses `operator-gold-evidence:*` refs rather than copied repository fixture refs.
+
+### Acceptance mapping
+
+- T904 -> A026/A027.
+- A026 remains `IN_PROGRESS`: no real 50-case operator-supplied entity-resolution gold set is committed.
+- A027 remains `IN_PROGRESS`: no real 100-case operator-supplied relationship gold set is committed.
+- This hardening does not close A202, A209, A210 or release-manager activation.
+
+### Parameters and formulas
+
+- No scoring formula changed.
+- No graph traversal, extraction model, model weight or threshold value changed.
+- Existing thresholds remain unchanged: A026 sample >= 50 and precision >= 95.00%; A027 sample >= 100 and precision >= 90.00%; minimum source coverage = 1.00.
+- This is a validation-rule hardening for the existing gold-quality gate.
+
+### Validation
+
+- `python3 -m py_compile scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `.venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py`: PASS, 11 passed.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py generate`: PASS with `release_gate_closure_allowed=false`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate`: PASS with A026/A027 `IN_PROGRESS`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py generate-template`: PASS with `TEMPLATE_ONLY`.
+- `.venv/bin/python scripts/validate_gold_quality_evaluation.py validate-template`: PASS.
+
+### Remaining gaps
+
+- Real production labels are still not present.
+- External source-license, passage-level, owner, legal, brand and 24h soak gates remain incomplete.
+- A209 continues as a background 24h soak gate and is not affected by this T904 hardening.
+
+### Rollback
+
+- Revert `scripts/validate_gold_quality_evaluation.py`, `tests/unit/test_gold_quality_evaluation.py`, A026/A027 artifacts and this governance/documentation update.
+- Regenerate clean-room and release artifacts, then rerun focused T904 validation.
+
+## 2026-06-24 - T1309/A210 brand-clearance intake template
+
+Status: LOCAL FOCUSED VALIDATED; A210 STILL IN PROGRESS
+
+### Scope
+
+- Added `generate-template`, `validate-template` and `validate-signed --bundle` subcommands to `scripts/validate_brand_clearance.py`.
+- Generated `artifacts/tests/a210/t1309_brand_clearance_intake_template.json` as the operator/legal fill-in contract for formal brand legal and market clearance evidence.
+- Added `tests/unit/test_brand_clearance.py` covering fail-closed template behavior, signed-bundle field requirements and non-release-ready semantics.
+- Wired `validate-template` into `make verify` through `validate-brand-clearance`.
+
+### Acceptance mapping
+
+- T1309 -> A210.
+- A210 remains `IN_PROGRESS`: the committed template is `TEMPLATE_ONLY` and does not provide legal advice, trademark availability, market clearance, signed risk waiver, public launch approval or A210 closure.
+
+### Evidence and controls
+
+- Required trademark knockout jurisdictions: CN, US, EU, UK and AU.
+- Required market search surfaces: company name, domain, social handle, app store, GitHub, npm and PyPI.
+- Required signed sections: phonetic/semantic Chinese-English review, legal-or-owner decision and final attestation.
+- Signed-bundle validation can prove `a210_clearance_complete=true` for a supplied bundle but still returns `release_ready=false` until A202, A026/A027, A209 and release-manager activation are complete.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_brand_clearance.py generate-template`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_brand_clearance.py validate-template`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_brand_clearance.py validate`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a210-pycache .venv/bin/python -m pytest -q tests/unit/test_brand_clearance.py -p no:cacheprovider`: PASS, 3 passed.
+- `PYTHONDONTWRITEBYTECODE=1 RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/validate_brand_clearance.py tests/unit/test_brand_clearance.py`: PASS.
+
+### Remaining gaps
+
+- Real trademark, company-name, domain, social, app-store, package-index, phonetic/semantic, legal/owner clearance evidence is not supplied.
+- A202 source/legal/owner clearance, A026/A027 production gold labels, A209 24h soak and release-manager activation remain incomplete.
+
+### Rollback
+
+- Revert `scripts/validate_brand_clearance.py`, `tests/unit/test_brand_clearance.py`, `artifacts/tests/a210/t1309_brand_clearance_intake_template.json`, `Makefile` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused A210 validation.
+
+## 2026-06-24 - T1301/A202 release-decision intake template
+
+Status: LOCAL FOCUSED VALIDATED; A202/A209/A210/A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Added `generate-template`, `validate-template` and `validate-signed-intake --bundle` subcommands to `scripts/validate_release_decision_bundle.py`.
+- Generated `artifacts/tests/a202/t1301_a202_release_decision_intake_template.json` as the operator/legal fill-in contract for source-license review, passage-level relationship review, production owner sign-off, legal release clearance and final attestation.
+- Wired `validate-template` into `make verify` through `validate-release-decision-bundle`.
+- Added unit coverage proving the committed template is fail-closed and that a complete signed A202 intake still reports `release_ready=false` until A210, A026/A027, A209 and release-manager activation are complete.
+
+### Acceptance mapping
+
+- T1301 -> A202.
+- A202 remains `IN_PROGRESS`: the committed intake artifact is `TEMPLATE_ONLY` and does not provide source-license approval, passage-level relationship approval, production owner approval, legal clearance, relationship publication or A202 closure.
+- A209 remains a background independent gate and is not replaced by A202 intake evidence.
+
+### Parameters and formulas
+
+- Added `PARAM-076` / `release_decision_intake.schema_version = eei-a202-release-decision-intake-v1`.
+- No scoring formula, graph traversal formula, extraction model, model weight, threshold value or runtime scoring behavior changed.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py generate-template`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate-template`: PASS with `release_gate_closure_allowed=false`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --template-only`: PASS with `release_ready=false`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json`: PASS with `release_ready=false`.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-intake-pycache .venv/bin/python -m pytest -q tests/unit/test_release_decision_bundle.py -p no:cacheprovider`: PASS, 8 passed.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ruff check scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py`: PASS.
+
+### Remaining gaps
+
+- Real source-license reviews, passage-level approvals, production owner sign-offs and legal release clearance are still not supplied.
+- A210 brand clearance, A026/A027 production gold labels, A209 24h soak and release-manager activation remain incomplete.
+
+### Rollback
+
+- Revert `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, `artifacts/tests/a202/t1301_a202_release_decision_intake_template.json`, `artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json`, `Makefile` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused A202 release-decision validation.
+
+## 2026-06-24 - T1303/A204-A205 release-manager A209 heartbeat context
+
+Status: LOCAL FOCUSED VALIDATED; A204/A205/A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `operator_soak_background_heartbeat` to `scripts/validate_release_manager_activation.py`.
+- Source-hashed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` into `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`.
+- Refreshed the A209 heartbeat to `92/288` successful windows, `0` failed, `31.94%` completion.
+- Kept `counts_as_release_ready=false`, `activation_ready=false` and `release_manager_activation_allowed=false`.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- T1307 -> A209 as referenced background context only.
+- A209 remains `IN_PROGRESS` until all `288/288` 24h windows and final release-ready validation pass.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-release-manager-pycache .venv/bin/python -m pytest -q tests/unit/test_release_manager_activation.py -p no:cacheprovider`: PASS, 2 passed.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/ruff check scripts/validate_release_manager_activation.py tests/unit/test_release_manager_activation.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/record_operator_soak_heartbeat.py validate --quiet`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_manager_activation.py validate`: PASS.
+
+### Remaining gaps
+
+- A209 24h run is still partial: `92/288` windows at the time of this record.
+- A202 source/legal/owner decisions, A210 clearance and A026/A027 production gold labels remain external release blockers.
+
+### Rollback
+
+- Revert `scripts/validate_release_manager_activation.py`, `tests/unit/test_release_manager_activation.py`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, the heartbeat refresh and generated release artifacts; keep live A209 checkpoints/logs.
+
+## 2026-06-24 - T1302/A203 production API release preflight
+
+Status: LOCAL FOCUSED VALIDATED; A203/A209 STILL IN PROGRESS
+
+### Scope
+
+- Added `scripts/validate_production_api_release_preflight.py`.
+- Generated `artifacts/tests/a203/t1302_production_api_release_preflight.json`.
+- Added `tests/unit/test_production_api_release_preflight.py`.
+- Wired `generate-production-api-release-preflight` and `validate-production-api-release-preflight` into `Makefile`.
+- Registered the preflight in `scripts/validate_v5_production_readiness_sync.py`.
+
+### Product and functional boundary
+
+- Covers the EEI navigation surfaces that depend on production graph/scoring/evidence APIs: 商业版图, 供应链, 资本网络, 控制关系, 证据中心, 模型中心 and 系统状态.
+- Confirms the A203 API surface is present for `/v1/explore`, `/v1/paths`, `/v1/catalogs`, `/v1/scoring/explain/{objectType}/{objectId}` and `/v1/evidence/{objectType}/{objectId}`.
+- Confirms scoring object-family coverage for `entity`, `theme`, `facility`, `event`, `industry`, `source_document`, `score_result`, `relationship_fact_candidate` and `relationship`.
+- Keeps relationship fact candidates outside production graph edges unless A202 publication clearance is real and current.
+
+### Acceptance mapping
+
+- T1302 -> A203.
+- T1301/A202, T1303/A204-A205 and T1307/A209 are upstream/downstream release gates referenced by this preflight.
+- A203 remains `IN_PROGRESS`: `api_surface_ready=true` does not imply `release_ready=true`, graph publication, score publication, legal/source clearance, owner approval or 24h soak closure.
+
+### Parameters and formulas
+
+- Added `PARAM-077` / `production_api.release_preflight_schema_version = eei-t1302-a203-production-api-release-preflight-v1`.
+- No scoring formula, graph traversal formula, extraction model, model weight, threshold value or runtime scoring behavior changed.
+- Release readiness formula is fail-closed: A203 contract status must be DONE or RELEASE_READY, required API paths and object families must be covered, candidate publication boundary must hold, A202 relationship publication must be allowed, A204/A205 release-manager activation must be allowed and A209 24h operator soak validator must pass.
+
+### A209 background status
+
+- Refreshed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` to `98/288` successful windows, `0` failed, `34.03%` completion.
+- The detached watchdog and operator process remain the active A209 resolution path.
+- Heartbeat evidence remains `counts_as_release_ready=false` and does not close A209.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a203-preflight-pycache python3 -m py_compile scripts/validate_production_api_release_preflight.py tests/unit/test_production_api_release_preflight.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/validate_production_api_release_preflight.py tests/unit/test_production_api_release_preflight.py scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a203-preflight-pycache .venv/bin/python -m pytest -q tests/unit/test_production_api_release_preflight.py -p no:cacheprovider`: PASS, 2 passed.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a203-preflight-pycache .venv/bin/python scripts/validate_production_api_release_preflight.py validate`: PASS.
+
+### Remaining gaps
+
+- A203 is still blocked by missing production-approved relationship publication, A202 external source/legal/owner clearance, A204/A205 release-manager activation and A209 24h operator soak evidence.
+- A209 is actively running in the background but remains partial until all `288/288` windows and final release-ready validation pass.
+
+### Rollback
+
+- Revert `scripts/validate_production_api_release_preflight.py`, `tests/unit/test_production_api_release_preflight.py`, `artifacts/tests/a203/t1302_production_api_release_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance/documentation update.
+- Regenerate development, clean-room and release artifacts, then rerun focused A203 and A209 heartbeat validation.
+
+## 2026-06-24 - T1303/A204-A205 MVP release gate preflight
+
+Status: LOCAL FOCUSED VALIDATED; MVP RELEASE BLOCKED BY EXTERNAL GATES; A209 BACKGROUND SOAK STILL RUNNING
+
+### Scope
+
+- Added `scripts/validate_mvp_release_gate.py`.
+- Generated `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json`.
+- Added `tests/unit/test_mvp_release_gate.py`.
+- Wired `generate-mvp-release-gate-preflight` and `validate-mvp-release-gate-preflight` into `Makefile` and `make verify`.
+- Registered the new artifact in `scripts/validate_v5_production_readiness_sync.py`.
+
+### Product and functional boundary
+
+- This is the final v0.1 release-readiness aggregator for EEI / 商域图谱, not a production release action.
+- It checks A202 relationship publication clearance, A203 production API release preflight, A204/A205 release-manager activation, A209 24h operator soak, A210 brand clearance or risk waiver, A026 entity-resolution production gold set and A027 relationship-extraction production gold set.
+- It intentionally keeps `release_ready=false`, `production_publication_allowed=false`, `score_publication_allowed=false` and `public_brand_launch_allowed=false` until every required external gate is real and current.
+
+### Acceptance mapping
+
+- T1303 -> A204, A205.
+- Upstream/downstream gates surfaced by this preflight: T1301/A202, T1302/A203, T1307/A209, T1309/A210 and T904/A026-A027.
+- Every proposed closure path remains bounded by the corresponding gate artifact and Acceptance ID; templates, fixtures and A209 heartbeat progress do not count as production clearance.
+
+### Parameters and formulas
+
+- Added `PARAM-078` / `mvp_release_gate.preflight_schema_version = eei-t1303-mvp-release-gate-preflight-v1`.
+- No scoring formula, graph traversal formula, extraction model, model weight, business threshold, route behavior or runtime scoring behavior changed.
+- Release readiness formula is fail-closed: all required gate IDs must pass and no `missing_gates` rows may remain.
+
+### A209 background status
+
+- Background process check at `2026-06-23T19:43:25Z`: screen PID `12452`, operator PID `12478` and watchdog PID `62233` were running.
+- Repository heartbeat was refreshed to `110/288` successful windows, `0` failed, `178` remaining and `38.19%` complete; the latest successful window recorded in the artifact is `operator_24h:window-110`.
+- A209 remains open until the full 24h summary and checkpoint evidence pass `validate_operator_soak_evidence.py` as release-ready.
+
+### Validation
+
+- `python3 -m py_compile scripts/validate_mvp_release_gate.py tests/unit/test_mvp_release_gate.py`: PASS.
+- focused `ruff check` for the new script/test: PASS.
+- `pytest -q tests/unit/test_mvp_release_gate.py`: PASS, 2 passed.
+- `scripts/validate_mvp_release_gate.py generate`: PASS; generated artifact status `MVP_RELEASE_BLOCKED` with seven explicit missing gates.
+- Semantic extractor: PASS with `semantic_parameters_checked=78` and `semantic_formulas_checked=11`.
+- Generated development/risk/clean-room/release artifacts after staging MVP release-gate files: PASS with `package_paths=428`, `manifest_paths=435` and `checksum_paths=434`.
+
+### Remaining gaps
+
+- A202 source/license/owner/legal relationship publication clearance is not supplied.
+- A210 brand legal/market clearance or signed risk waiver is not supplied.
+- A026/A027 production human-labeled gold sets are not supplied.
+- A204/A205 release-manager activation remains blocked until every external gate is real.
+- A209 24h soak is still running and has not completed `288/288` windows.
+
+### Rollback
+
+- Revert `scripts/validate_mvp_release_gate.py`, `tests/unit/test_mvp_release_gate.py`, `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json`, `Makefile`, `scripts/validate_v5_production_readiness_sync.py` and this governance/documentation update.
+- Preserve live A209 checkpoint, log and watchdog artifacts so the background soak can continue independently.
+
+
+## 2026-06-24 - T1307/A209 operator soak finalization preflight
+
+### Scope
+
+- Added `scripts/finalize_operator_soak_evidence.py` and `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json` as the operator handoff between background soak progress and downstream release-gate regeneration.
+- Added `tests/unit/test_operator_soak_finalization.py` to prove three states: partial running blocks downstream refresh, 288/288 release-ready evidence allows downstream regeneration, and failed evidence requires operator intervention.
+- Wired `make generate-operator-soak-finalization-preflight`, `make validate-operator-soak-finalization-preflight`, `make verify` and v5 readiness sync to include the finalization artifact.
+
+### Current A209 evidence
+
+- Detached screen/operator/watchdog are still the active 24h path; this run did not stop, restart or close them.
+- Repository heartbeat refreshed to `119/288` successful windows, `0` failed, `169` remaining, `41.32%` complete, operator PID `12478` RUNNING and watchdog PID `62233` RUNNING.
+- Finalization artifact status is `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; `downstream_release_gate_refresh_allowed=false`; `release_gate_closed_by_finalizer=false`.
+
+### Acceptance mapping
+
+- T1307 -> A209.
+- The finalizer does not satisfy A209 completion. It bounds the remaining operator procedure: keep soak running, refresh heartbeat, validate evidence, and regenerate A203/release-manager/MVP release-gate artifacts only after 288/288 release-ready evidence exists.
+
+### Validation
+
+- `python3 -m py_compile scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py`: PASS.
+- focused `ruff check scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py`: PASS.
+- `pytest -q tests/unit/test_operator_soak_finalization.py`: PASS, 3 passed.
+- `scripts/finalize_operator_soak_evidence.py generate --refresh-upstream`: PASS; generated `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` at `119/288`.
+- Development/risk/clean-room/release artifact generation after staging finalizer files: PASS; clean-room `package_paths=434`, release `manifest_paths=441`, `checksum_paths=440`.
+
+### Remaining gaps
+
+- Full A209 closure still requires the 24h summary/checkpoint evidence to validate at `288/288` windows with zero failures.
+- A202, A210, A026/A027 and A204/A205 remain external release blockers for MVP v0.1.
+
+### Rollback
+
+- Revert the finalizer script, unit tests, Makefile target, v5 sync registration, finalization artifact and governance rows. Preserve `artifacts/tests/a209/t1307_operator_soak_24h.*` and `/private/tmp/eei-operator-soak-*` so the background soak can continue independently.
+
+
+## 2026-06-24 - T1303 external release evidence bundle preflight
+
+### Scope
+
+- Added `scripts/validate_external_release_evidence_bundle.py` and `artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json`.
+- Added `tests/unit/test_external_release_evidence_bundle.py` with blocked, ready and drift-detection coverage.
+- Wired `make generate-external-release-evidence-bundle`, `make validate-external-release-evidence-bundle`, `make verify` and v5 readiness sync.
+
+### Current evidence
+
+- Artifact status: `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`.
+- `external_release_evidence_ready=false`; `release_manager_preflight_refresh_allowed=false`; `mvp_release_gate_refresh_allowed=false`; `release_gate_closed_by_bundle_preflight=false`.
+- Missing external inputs: A202 source/license/passage/owner/legal release, A210 brand legal/market clearance or risk waiver, A026 production entity-resolution gold set, A027 production relationship-extraction gold set, and A209 24h operator-soak finalization.
+
+### Acceptance mapping
+
+- T1303 -> A204/A205.
+- Upstream inputs remain mapped to existing acceptance IDs: T1301/A202, T1309/A210, T904/A026-A027 and T1307/A209.
+- This bundle does not close any upstream gate; it bounds the operator evidence packet required before release-manager refresh.
+
+### Validation
+
+- `python3 -m py_compile scripts/validate_external_release_evidence_bundle.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- focused `ruff check scripts/validate_external_release_evidence_bundle.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- `pytest -q tests/unit/test_external_release_evidence_bundle.py`: PASS, 3 passed.
+- `scripts/validate_external_release_evidence_bundle.py generate`: PASS; generated `EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED`.
+
+### Remaining gaps
+
+- A202, A210, A026/A027 and A209 remain incomplete external gates.
+- A204/A205 release-manager activation remains blocked until the external bundle, release-manager preflight and MVP release-gate preflight are all ready with real evidence.
+
+### Rollback
+
+- Revert the external bundle script, unit tests, Makefile targets, v5 sync registration, generated artifact and governance rows.
+- Preserve live A209 checkpoint/log files and any future operator-supplied signed evidence bundles.
+
+
+## 2026-06-25 - T1307/A209 current heartbeat and release preflight refresh
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Refreshed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` and `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json` from the live clean-restart 24h operator soak.
+- Serially regenerated `artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json`, `artifacts/tests/a205/t1303_release_manager_activation_preflight.json`, `artifacts/tests/a203/t1302_production_api_release_preflight.json` and `artifacts/tests/a205/t1303_mvp_release_gate_preflight.json` so their `source_files` hashes bind to the latest upstream artifacts.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route or publication policy changed.
+
+### Current A209 evidence
+
+- Operator PID `82041` and watchdog PID `61030` are reported RUNNING in the committed heartbeat artifact.
+- Latest committed point-in-time heartbeat: `27/288` windows PASS, `0` failed, `261` remaining, `9.38%` completion.
+- Finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; `a209_evidence_ready_for_release_manager=false`; `downstream_release_gate_refresh_allowed=false`; `release_gate_closed_by_finalizer=false`.
+- The live checkpoint may advance beyond this committed snapshot while CI runs; that is expected and remains progress-only evidence until `288/288` validates.
+
+### Acceptance mapping
+
+- T1307 -> A209 for background soak progress and finalization preflight.
+- T1302 -> A203 for the dependent production API release preflight refresh.
+- T1303 -> A204/A205 for the dependent external bundle, release-manager activation and MVP release-gate preflight refresh.
+- This refresh does not close A202, A203, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- `scripts/record_operator_soak_heartbeat.py validate --quiet`: PASS.
+- `scripts/finalize_operator_soak_evidence.py validate --quiet`: PASS.
+- `scripts/validate_external_release_evidence_bundle.py validate`: PASS.
+- `scripts/validate_release_manager_activation.py validate`: PASS.
+- `scripts/validate_production_api_release_preflight.py validate`: PASS.
+- `scripts/validate_mvp_release_gate.py validate`: PASS.
+
+### Remaining gaps
+
+- Full A209 closure still requires a 24h summary/checkpoint chain at `288/288` successful windows with zero failures and release-ready validation.
+- A202 source/license/passage/owner/legal clearance, A210 formal brand clearance or waiver, A026/A027 production gold labels and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert this heartbeat/preflight artifact refresh and governance companion records, then regenerate release artifacts from the prior heartbeat if required.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
+
+## 2026-06-25 - T1307/A209 173/288 heartbeat remote CI binding
+
+Status: REMOTE CI ATTESTED FOR COMMIT `edddaad16a42d7eb15c7da3b662b2ee05107a618`; A209 STILL IN PROGRESS; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Bound the committed T1307/A209 `173/288` heartbeat and dependent fail-closed release preflight refresh to GitHub Actions evidence.
+- Project Governance run `28188342130` completed PASS for commit `edddaad16a42d7eb15c7da3b662b2ee05107a618`.
+- EEI validation run `28188342002` completed PASS for the same commit, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route or publication policy changed.
+
+### Current A209 evidence
+
+- Committed point-in-time heartbeat: `173/288` windows PASS, `0` failed, `115` remaining, `60.07%` completion.
+- Live checkpoint observed after the CI-bound commit: at least `176/288` windows PASS, `0` failed.
+- Finalization remains blocked until the 24h summary/checkpoint chain validates `288/288` successful windows with zero failures.
+
+### Acceptance mapping
+
+- T1307 -> A209 for background soak progress and finalization preflight.
+- T1302 -> A203 for the dependent production API release preflight refresh.
+- T1303 -> A204/A205 for the dependent external bundle, release-manager activation and MVP release-gate preflight refresh.
+- This CI binding does not close A202, A203, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- Project Governance run `28188342130`: PASS.
+- EEI validation run `28188342002`: PASS.
+- A209 live checkpoint observation: `176/288` PASS with `0` failed; progress-only and not release-ready evidence.
+
+### Remaining gaps
+
+- Full A209 closure still requires a 24h summary/checkpoint chain at `288/288` successful windows with zero failures and release-ready validation.
+- A202 source/license/passage/owner/legal clearance, A210 formal brand clearance or waiver, A026/A027 production gold labels and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
+
+## 2026-06-25 - T1301/A202 operator review packet freshness repair
+
+Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Repaired the validator-detected hash drift between `artifacts/tests/a202/t1301_operator_review_packet_contract.json` and the current `artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`.
+- Refreshed dependent A202 release-decision intake template, A202/A210 release-decision bundle and A202 signed-intake preflight after `validate-release-decision-bundle` exposed template drift.
+- Refreshed dependent T1303/A205 external release-evidence bundle, operator intake packet, release-manager activation preflight and MVP release-gate preflight.
+- Refreshed T1307/A209 background heartbeat and finalization preflight to the current clean-run point-in-time snapshot.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route, legal/source clearance or publication policy changed.
+
+### Current Evidence
+
+- Pre-repair validation failed with `source_capture_artifact_sha256 does not match capture artifact`.
+- Refreshed A202 packet validates with `status=PENDING_OWNER_LEGAL_CLEARANCE`, `relationship_fact_candidates_allowed=0`, `relationships_publishable=0` and no committed source text.
+- A209 point-in-time heartbeat reports `190/288` PASS windows, `0` failed, `98` remaining and `65.97%` completion.
+- A209 finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; partial heartbeat evidence does not count as release-ready evidence.
+
+### Acceptance Mapping
+
+- T1301 -> A202 for the operator review packet freshness repair.
+- T1303 -> A204/A205 for dependent external release-evidence, release-manager and MVP gate preflight refresh.
+- T1307 -> A209 for the background heartbeat/finalization snapshot.
+- This repair does not close A202, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- `scripts/validate_a202_operator_review_packet.py generate`: PASS.
+- `scripts/validate_a202_operator_review_packet.py validate`: PASS.
+- `scripts/validate_release_decision_bundle.py generate-template/generate/validate-template/validate/validate-bundle`: PASS.
+- `scripts/validate_a202_signed_intake_preflight.py generate/validate`: PASS.
+- `scripts/record_operator_soak_heartbeat.py generate/validate`: PASS.
+- `scripts/finalize_operator_soak_evidence.py generate/validate`: PASS.
+- `scripts/validate_external_release_evidence_bundle.py generate/validate/generate-packet/validate-packet`: PASS.
+- `scripts/validate_release_manager_activation.py generate/validate`: PASS.
+- `scripts/validate_mvp_release_gate.py generate/validate`: PASS.
+
+### Remaining Gaps
+
+- A202 still requires signed source-license review, passage-level relationship review, production owner sign-off, legal release clearance and final attestation.
+- A210 formal brand clearance or waiver, A026/A027 production gold labels, A209 24h final evidence and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert the refreshed A202/A205/A209 artifacts and governance companion records, then regenerate release artifacts from the previous packet hash.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
+
+## 2026-06-26 - T1307/A209 NO_OUTPUT soak harness repair
+
+Status: LOCAL REPAIR IN PROGRESS; A209 STILL IN PROGRESS; 24H EVIDENCE FAILED AT 7/288
+
+### Scope
+
+- Inspected the repository-local A209 24h checkpoint chain after the clean restart.
+- Recorded the failed state: 7 checkpoint rows, 6 PASS windows, 1 FAIL window, latest generated_at `2026-06-25T22:08:58Z`.
+- Window 7 failed with `child_status=NO_OUTPUT`, `exit_status=1` and Playwright `page.evaluate: Target page, context or browser has been closed`; `/private/tmp/eei-operator-soak-61143-7.json` was absent.
+- Hardened `scripts/run_soak_smoke.mjs` so a long browser measurement is split into short slices, Playwright browser path can fall back to `/private/tmp/eei-ms-playwright`, browser/worker outcomes are collected with `Promise.allSettled`, and measurement errors are written into structured output.
+- Hardened `scripts/run_operator_soak.mjs` so checkpoints include `browser_slices_completed` and `browser_measurement_error`.
+- Hardened `scripts/watch_operator_soak.py` verification semantics with `--allow-operator-intervention-status`; the default script still exits non-zero for operator intervention, while the Makefile verification target can accept the correct fail-closed status without mutating the payload or closing A209.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for 4h/24h soak evidence and fail-closed finalization.
+- This repair does not close A209 and does not replace 24h evidence.
+
+### Validation
+
+- `node --check scripts/run_soak_smoke.mjs`: PASS.
+- `node --check scripts/run_operator_soak.mjs`: PASS.
+- `node scripts/run_soak_smoke.mjs --mode ci_smoke_slice_probe --duration-seconds 3 --browser-slice-seconds 1 --output /tmp/eei-soak-slice-probe.json --fail-on-budget --quiet`: PASS; `slices_completed=3`, `measurement_error=null`, local Playwright fallback used.
+- `node scripts/run_operator_soak.mjs --mode ci_smoke_slice_probe --duration-seconds 3 --window-seconds 3 --output /tmp/eei-operator-slice-probe.json --checkpoint /tmp/eei-operator-slice-probe.checkpoints.jsonl --fail-on-budget --quiet`: PASS; `1/1` checkpoint window PASS.
+- `ruff check scripts/watch_operator_soak.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `.venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS `19/19`.
+
+### Remaining Gaps
+
+- A209 still requires a new clean 24h run reaching `288/288` windows with zero failures and release-ready validation.
+- Failed `7/288` evidence must remain incident evidence only.
+
+### Rollback
+
+- Revert `scripts/run_soak_smoke.mjs` and `scripts/run_operator_soak.mjs`, restore prior release artifacts/checksums, and keep the failed checkpoint/log files for incident analysis.
+
+
+## 2026-06-26 - T904/A026-A027 operator labeling packet
+
+Status: LOCAL FOCUSED VALIDATED; A026/A027 STILL IN PROGRESS
+
+### Scope
+
+- Added a source-bound operator labeling packet generated from the current A202 operator review packet and Golden Vertical fact candidates.
+- The packet contains exactly 50 A026 entity-resolution slots and 100 A027 relationship-extraction slots.
+- Each slot remains `OPERATOR_TO_LABEL` and requires operator-provided labeler, timestamp, expected/predicted fields, evidence refs and counter-evidence review.
+- The packet is explicitly not a production gold set: `production_gold_set=false`, `release_gate_closure_allowed=false`, `production_claim_allowed=false`, `relationship_publication_allowed=false` and `label_payload_generated=false`.
+- Bound the packet into the external release operator intake packet as supporting source evidence for A026/A027.
+
+### Acceptance Mapping
+
+- T904 -> A026/A027 for production gold quality evaluation readiness.
+- T1303 -> A204/A205 for external release operator intake packet visibility.
+- This packet does not close A026/A027; only a completed, signed, non-repository production gold label payload can do that.
+
+### Validation
+
+- `make generate-gold-quality-evaluation-artifacts`: PASS before governance sync.
+- `make validate-gold-quality-evaluation`: PASS before governance sync.
+- `.venv/bin/python -m pytest -q tests/unit/test_gold_quality_evaluation.py -p no:cacheprovider`: PASS `13/13`.
+- `.venv/bin/ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle`: PASS before governance sync.
+
+### Remaining Gaps
+
+- A026 still requires at least 50 real operator-supplied human-labeled entity-resolution cases with precision >=95%.
+- A027 still requires at least 100 real operator-supplied human-labeled relationship cases with precision >=90%.
+- A202 source/legal/owner clearance, A209 24h soak and A210 brand clearance remain separate release gates.
+
+### Rollback
+
+- Revert the operator packet generator/tests and generated packet, regenerate A026/A027/A205 artifacts without the packet source, and rerun gold-quality plus external release validators.
+
+
+## 2026-06-26 - T1307/A209 failed-evidence validator sync
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; RELEASE-READY MODE STILL BLOCKED
+
+### Scope
+
+- Updated `scripts/validate_operator_soak_evidence.py` so a truthfully declared failed operator run is recorded as `FAILED_OPERATOR_EVIDENCE` instead of a structural validator failure.
+- Kept structural invalid evidence fail-closed: a purported PASS artifact that misses duration, window, schema, path, release-gate or worker-binding requirements still returns `FAIL`.
+- Updated `scripts/record_operator_soak_heartbeat.py` so `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED` validates only when failed windows are present, the release gate remains open and the failed operator is not still claimed as running.
+- Updated `scripts/finalize_operator_soak_evidence.py` so `FAILED_OPERATOR_EVIDENCE` produces `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED` and keeps downstream release-gate refresh blocked.
+- Regenerated A209 heartbeat/evidence/finalization artifacts and dependent A203/A204/A205 release preflights from the current failed `7/288` state.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for fail-closed 24h soak evidence validation and finalization semantics.
+- T1302 -> A203 and T1303 -> A204/A205 only for dependent blocked release-preflight hash refresh.
+- This does not close A209, release-manager activation, MVP release readiness, A202, A210, A026 or A027.
+
+### Validation
+
+- `py_compile` for A209 validator/heartbeat/finalizer/tests: PASS.
+- `ruff check` for A209 validator/heartbeat/finalizer/tests: PASS.
+- `.venv/bin/uv run pytest tests/unit/test_operator_soak_evidence.py tests/unit/test_operator_soak_finalization.py -q`: PASS `25/25`.
+- `make generate-operator-soak-background-heartbeat generate-operator-soak-evidence-artifact generate-operator-soak-finalization-preflight validate-operator-soak-background-heartbeat validate-operator-soak-evidence validate-operator-soak-finalization-preflight`: PASS.
+- `python3 scripts/validate_operator_soak_evidence.py validate --require-release-ready --quiet`: EXPECTED FAIL; the failed 24h chain is not release-ready.
+- Fixed-point release artifact refresh/validation: release-manager activation, A203 production API preflight, MVP release gate, external release evidence bundle, development status, risk control, clean-room release and release artifacts all PASS.
+
+### Current Evidence State
+
+- `artifacts/tests/a209/t1307_operator_soak_evidence_validation.json`: `FAILED_OPERATOR_EVIDENCE`.
+- `artifacts/tests/a209/t1307_operator_soak_background_progress.json`: `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, `6` completed windows, `1` failed window.
+- `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json`: `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, `downstream_release_gate_refresh_allowed=false`.
+
+### Remaining Gaps
+
+- A209 still requires a fresh 24h run with `288/288` PASS windows and `0` failed windows.
+- The failed canonical checkpoint remains incident evidence and must not be overwritten before being preserved.
+- Background rerun evidence is not release-ready until copied into canonical artifacts and validated after completion.
+
+### Rollback
+
+- Revert the validator/heartbeat/finalizer semantic changes, A209 tests, regenerated A209/A203/A205/release artifacts and VERSION_MATRIX iteration update.
+- Preserve failed `7/288` checkpoint/log evidence for incident analysis.
+
+
+## 2026-06-26 - T1307/A209 isolated 24h rerun started
+
+Status: BACKGROUND RERUN STARTED; A209 STILL IN PROGRESS; RELEASE-READY MODE STILL BLOCKED
+
+### Scope
+
+- Started a fresh detached A209 24h operator rerun under `/private/tmp/eei-a209-rerun-20260626-0918/`.
+- Preserved the failed canonical `artifacts/tests/a209/t1307_operator_soak_24h.*` chain as incident evidence and did not overwrite repository-local failed evidence.
+- Started the operator and watchdog against the same isolated output, checkpoint, PID and log paths.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for 24h operator-soak evidence recovery.
+- This does not close A209; completion still requires `288/288` successful windows, zero failed windows, promotion to canonical evidence and `validate_operator_soak_evidence.py validate --require-release-ready` PASS.
+
+### Runtime Evidence
+
+- Isolated checkpoint: `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`.
+- First observed checkpoint: window `1/288` PASS, `0` failed, generated at `2026-06-25T23:04:42Z`, `browser_slices_completed=20`, `browser_measurement_error=null`, `worker_jobs_completed=12/12`.
+- Operator PID: `80478`.
+- Watchdog PID: `80732`.
+- Process check: both PIDs were observed running after the first checkpoint.
+
+### Remaining Gaps
+
+- A209 remains open until the isolated rerun reaches `288/288` PASS windows with `0` failed and is explicitly promoted/validated.
+- Host sleep, Playwright closure, browser/runtime resource pressure or stale checkpoint windows can still require operator recovery.
+- `/private/tmp` evidence must be preserved before any promotion to repository-local canonical artifacts.
+
+### Rollback
+
+- If this isolated rerun is invalid, stop only operator PID `80478` and watchdog PID `80732` after explicit operator authorization.
+- Leave the canonical failed `7/288` evidence untouched and rerun from a new isolated checkpoint path.
