@@ -2046,3 +2046,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PMT04"
+    phase: "S2PM"
+    objective: "Implement local-only automatic lifecycle and cache cleanup evidence under V7.2 no-production boundaries."
+    scope: "Disabled automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, shutdown receipt, whitelist/symlink guarded cache cleanup dry-run, parseable launchd plist generation, production false flags, focused tests, model/formula/parameter registration, phase record, and run manifest."
+    non_scope: "No scheduler install, no launchd bootstrap, no real SMTP send, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT03", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py", "arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py", "arxiv-daily-push/tests/test_local_runner.py"]
+    acceptance_ids: ["ACC-S2PMT04-LIFECYCLE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt04_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py arxiv-daily-push/src/arxiv_daily_push/local_runner.py arxiv-daily-push/tests/test_stage2_lifecycle_cache.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt04_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lifecycle_cache.py arxiv-daily-push/tests/test_local_runner.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT04/local-runner tests: 12 OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md", "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json", "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py", "arxiv-daily-push/tests/test_local_runner.py"]
+    risk: "S2PMT04 local evidence can be misread as automatic scheduler installation, live cache deletion, production restore, or SMTP enablement; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT04 lifecycle/cache module, local runner plist patch, tests, governance registrations, phase record, manifest, and events; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
