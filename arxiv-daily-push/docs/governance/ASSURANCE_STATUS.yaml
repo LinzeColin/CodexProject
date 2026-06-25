@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PGT01-EVIDENCE-PACKET-V2-001"
-source_snapshot_hash: "sha256:005471348a502b0f8fe53dc550ed79a44da381f824caf29f59f0e0d7d934d851"
+as_of_event_id: "EVENT-20260625-ADP-S2PGT02-KNOWLEDGE-GRAPH-SPINE-001"
+source_snapshot_hash: "sha256:4586c5ec2ea8238541939b8a7b47b369a3e513e382951f82f8fc3144924bf07c"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-25T17:40:00+10:00"
+snapshot_event_time: "2026-06-25T18:40:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 498
-    total_active_parameters: 498
-    checked_active_formulas: 72
-    total_active_formulas: 72
+    checked_active_parameters: 507
+    total_active_parameters: 507
+    checked_active_formulas: 73
+    total_active_formulas: 73
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 498
-    total_active_parameters: 498
+    checked_active_parameters: 507
+    total_active_parameters: 507
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 72
+    legacy_unbound_events: 73
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY_READY_NO_PRODUCTION"
+  release_gate: "S2PGT02_KNOWLEDGE_GRAPH_SPINE_READY_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,14 +82,13 @@ delivery_readiness:
   parallel_shadow_source_task: "S2PBT01"
   current_v7_task_id: "S2PCT02"
 next_executable_task:
-  task_id: "S2PGT02"
-  status: "planned"
-  reason: "Build cross-source identity resolution and knowledge-graph relation spine for DOI, PMID, arXiv, Chinese document numbers, Federal Register, CIK, and related identifiers after S2PGT01."
-  acceptance_ids:
-    - "ACC-S2PGT02-KG"
-  owner: "content_owner + product_owner"
-  human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned knowledge-graph relation focus` and attach the listed evidence refs."
+  task_id: "NONE"
+  status: "not_applicable"
+  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
+  acceptance_ids: []
+  owner: "project owner"
+  human_owner_role: "project_owner"
+  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

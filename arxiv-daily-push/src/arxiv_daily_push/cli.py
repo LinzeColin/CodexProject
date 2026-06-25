@@ -107,6 +107,7 @@ from .stage1_runtime import (
     validate_stage1_runtime_report,
 )
 from .stage2_sources import (
+    run_s2pgt02_knowledge_graph_spine,
     run_s2pgt01_evidence_packet_v2_compatibility,
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
@@ -141,6 +142,7 @@ from .stage2_sources import (
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
     validate_s2pft05_d3_full_governance_qualification_report,
+    validate_s2pgt02_knowledge_graph_spine_report,
     validate_s2pgt01_evidence_packet_v2_compatibility_report,
     validate_s2pft04_special_zone_discovery_report,
     validate_s2pft03_key_city_coverage_report,
@@ -716,6 +718,19 @@ def build_parser() -> argparse.ArgumentParser:
     s2pgt01_packets.add_argument("--packet-records", required=True, help="EvidencePacket input records JSON list or object with packet_records.")
     s2pgt01_packets.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pgt01_packets.add_argument("--json", action="store_true", help="Print JSON EvidencePacket V2 compatibility report.")
+
+    s2pgt02_graph = subparsers.add_parser(
+        "stage2-knowledge-graph-spine",
+        help="Run S2PGT02 private identity and knowledge-graph spine evidence without schema or production side effects.",
+    )
+    s2pgt02_graph.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pgt02_graph.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pgt02_graph.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pgt02_graph.add_argument("--evidence-packet-report", required=True, help="Passing S2PGT01 EvidencePacket report JSON.")
+    s2pgt02_graph.add_argument("--identity-records", required=True, help="Identity records JSON list or object with identity_records.")
+    s2pgt02_graph.add_argument("--relation-records", required=True, help="Relation records JSON list or object with relation_records.")
+    s2pgt02_graph.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pgt02_graph.add_argument("--json", action="store_true", help="Print JSON knowledge-graph spine report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2122,6 +2137,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- packet_shape_gate: {report.get('packet_shape_gate')}")
             print(f"- evidence_level_gate: {report.get('evidence_level_gate')}")
             print(f"- old_arxiv_compatibility_gate: {report.get('old_arxiv_compatibility_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-knowledge-graph-spine":
+        report = run_s2pgt02_knowledge_graph_spine(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            evidence_packet_report=load_json_mapping(args.evidence_packet_report),
+            identity_records=load_json_records(args.identity_records, "identity_records"),
+            relation_records=load_json_records(args.relation_records, "relation_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pgt02_knowledge_graph_spine_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- identifier_coverage_gate: {report.get('identifier_coverage_gate')}")
+            print(f"- canonical_dedupe_gate: {report.get('canonical_dedupe_gate')}")
+            print(f"- relation_evidence_gate: {report.get('relation_evidence_gate')}")
+            print(f"- idempotent_update_gate: {report.get('idempotent_update_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

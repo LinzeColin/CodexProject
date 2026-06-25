@@ -2249,3 +2249,23 @@ None for this new project baseline.
 - Rollback: Revert S2PFT04 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md`; `governance/run_manifests/ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run full validation, commit, push, and open PR for S2PFT04.
+
+### `ITER-20260625-ADP-S2PG-S2PGT02-KNOWLEDGE-GRAPH-SPINE`
+
+- Timestamp: `2026-06-25T18:40:00+10:00`
+- Fact level: EXTRACTED from S2PGT01 receipt, cross-source identity/relation fixtures, model/formula/parameter registry diff, and local S2PGT02 validation.
+- Base commit: `475028ce73854d0beddbe3edd8f2b495bcdc957f`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PG
+- Task IDs: `S2PGT02`, legacy alias `S2P6T01`; next task `S2PGT03`
+- Goal: Complete private cross-source identity-resolution and knowledge-graph relation spine evidence after S2PGT01, register S2PGT02 governance entries, and preserve V7.2 no-production boundaries.
+- Files changed: S2PGT02 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-071` knowledge-graph relation spine model.
+- Formula changes: Added `FORM-ADP-073` with machine-verifiable AST fingerprints bound to the S2PGT02 implementation.
+- Parameter changes: Added `PARAM-ADP-516` through `PARAM-ADP-524` for S2PGT02 model id, acceptance id, task ids, required identifier types, allowed relation types, required relation fields, required gates, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 75 OK; full arxiv-daily-push unittest 304 OK; semantic extractor 73 formulas / 507 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSON/YAML/JSONL/CSV parse OK; `git diff --check` PASS.
+- Decisions: `ACC-S2PGT02-KG` is accepted only as private identity/relation spine evidence. Public schema migration, production queue mutation, source-domain production inclusion, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, scheduler, V7.2 contract edits, and Email V1 production operation all remain false/disabled.
+- Remaining risks: S2PGT03 source-reading mapping and S2PGT04 delta/resonance relation evidence remain unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PGT02 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT02_KNOWLEDGE_GRAPH_SPINE.md`; `governance/run_manifests/ADP-S2PGT02-KNOWLEDGE-GRAPH-SPINE-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PGT02.
