@@ -6643,6 +6643,144 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["rollback"]["requires_file_restore"])
         self.assertFalse(manifest["rollback"]["requires_archive_restore"])
 
+    def test_other8_s6pat02_eva_owner_flow_is_single_project_and_reversible(self) -> None:
+        readme_path = ROOT / "EVA_OS" / "README.md"
+        matrix_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.csv"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PAT02-EVA-OWNER-FLOW-20260625.json"
+        )
+        self.assertTrue(readme_path.is_file(), readme_path)
+        self.assertTrue(matrix_path.is_file(), matrix_path)
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+
+        readme = readme_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        with matrix_path.open(encoding="utf-8", newline="") as handle:
+            matrix_rows = list(csv.DictReader(handle))
+
+        first_lines = "\n".join(readme.splitlines()[:12])
+        for required in {
+            "S6PAT02 中文 Owner 快速入口",
+            "用户可读优先",
+            "中文优先，默认全局中文",
+            "EVA_OS/README.md",
+            "docs/Index.md",
+            "docs/EVA_OS.md",
+            "docs/governance/",
+            "governance/archive/other8_wave1_pending/EVA_OS/",
+            "S6PA-GATE",
+            "Owner 操作路径",
+            "当前状态",
+            "运行/测试",
+            "证据",
+            "python -m pytest tests/test_eva_identity.py -q",
+            "No module named pytest",
+            "2 passed",
+            "EVA_OS/docs/EVA_structure_report.md",
+            "回滚",
+            "不改运行代码",
+            "不移动文件",
+            "不触发实盘交易或外部自动化",
+        }:
+            self.assertIn(required, readme)
+        self.assertIn("中文", first_lines)
+        self.assertIn("用户可读优先", first_lines)
+
+        eva_rows = [row for row in matrix_rows if row["project_id"] == "EVA_OS"]
+        self.assertEqual({row["priority"] for row in eva_rows}, {"P0", "P1"})
+        self.assertTrue(all(row["s6pat02_candidate"] == "true" for row in eva_rows))
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "EVA_OS")
+        self.assertEqual(manifest["task_id"], "S6PAT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PAT02"])
+        self.assertEqual(
+            manifest["depends_on"],
+            [
+                "GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625",
+                "GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625",
+            ],
+        )
+        self.assertEqual(manifest["stage_gate_status"]["S6PAT01"], "PASSED_AND_BOUND")
+        self.assertEqual(manifest["stage_gate_status"]["S6PAT02_ALPHA"], "PASSED_AND_MERGED_TO_MAIN")
+        self.assertEqual(manifest["stage_gate_status"]["S6PA-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["stage_gate_status"]["next_allowed_project_slice"], "OpMe_System")
+        self.assertEqual(manifest["next_allowed_task"], "S6PAT02")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+
+        scope = manifest["s6pat02_scope"]
+        self.assertEqual(scope["project_id"], "EVA_OS")
+        self.assertEqual(scope["implemented_candidate_count"], 2)
+        self.assertLessEqual(scope["implemented_candidate_count"], scope["max_candidates_per_project"])
+        self.assertLessEqual(scope["max_candidates_per_project"], 3)
+        self.assertEqual(
+            scope["implemented_candidates"],
+            [
+                "EVA_OS-P0-owner-current-state-next-gate-risk",
+                "EVA_OS-P1-owner-operation-path-current-entry-run-test-evidence",
+            ],
+        )
+        self.assertTrue(scope["single_project_pr"])
+        self.assertTrue(scope["readme_only"])
+
+        for key, value in manifest["interaction_feedback"].items():
+            self.assertTrue(value, key)
+        self.assertEqual(manifest["smoke_test_evidence"]["cwd"], "EVA_OS")
+        self.assertEqual(
+            manifest["smoke_test_evidence"]["command"],
+            "python -B -m pytest tests/test_eva_identity.py -q",
+        )
+        self.assertEqual(manifest["smoke_test_evidence"]["result"], "NOT_RUN_ENV_BLOCKER_RECORDED")
+        self.assertIn("pytest", manifest["smoke_test_evidence"]["blocker"])
+
+        scope_guard = manifest["scope_guard"]
+        self.assertEqual(scope_guard["projects_changed"], ["EVA_OS"])
+        self.assertFalse(scope_guard["other_projects_changed"])
+        self.assertFalse(scope_guard["runtime_code_changed"])
+        self.assertFalse(scope_guard["ui_framework_added"])
+        self.assertFalse(scope_guard["external_automation_triggered"])
+        self.assertFalse(scope_guard["trading_or_broker_action_triggered"])
+        self.assertFalse(scope_guard["files_moved"])
+        for key, value in manifest["stop_conditions"].items():
+            self.assertFalse(value, key)
+
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "EVA_OS/README.md",
+                "governance/run_manifests/GOV-OTHER8-S6PAT02-EVA-OWNER-FLOW-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertEqual(set(manifest["changed_files_declared"]), changed)
+        self.assertEqual(set(manifest["required_governance_files"]), changed)
+        self.assertEqual(set(manifest["updated_governance_files"]), changed)
+        self.assertFalse(any(path.startswith(("Alpha/", "FIFA/", "OpMe_System/")) for path in changed))
+        self.assertFalse(
+            any(
+                path.startswith(
+                    (
+                        "OpenAIDatabase/",
+                        "PFI/",
+                        "Serenity-Alipay/",
+                        "whkmSalary/",
+                        "EEI/",
+                        "arxiv-daily-push/",
+                    )
+                )
+                for path in changed
+            )
+        )
+        self.assertFalse(manifest["rollback"]["requires_file_restore"])
+        self.assertFalse(manifest["rollback"]["requires_archive_restore"])
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
