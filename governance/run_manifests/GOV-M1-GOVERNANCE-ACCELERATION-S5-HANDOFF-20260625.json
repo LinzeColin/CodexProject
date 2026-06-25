@@ -20,7 +20,7 @@
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "ci_attestation_subject": "M1 governance acceleration changed-only compact CI and rollback handoff",
   "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
-  "owner_readable_summary": "治理真相仍由 legacy validator、Lean canonical facts、Roadmap、run manifests 和 CI artifacts 保留；普通 PR/push 开发路径只运行 changed-only compact CI，把完整治理计算移到 schedule/workflow_dispatch all 或 full evidence artifact。",
+  "owner_readable_summary": "治理真相仍由 legacy validator、Lean canonical facts、Roadmap、run manifests 和 CI artifacts 保留；普通 PR/push/ready_for_review 开发路径只运行 changed-only compact CI，把完整治理计算移到 schedule/workflow_dispatch all 或 full evidence artifact。",
   "started_at": "2026-06-25T00:00:00Z",
   "finished_at": "2026-06-25T00:00:00Z",
   "head_before_change": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
@@ -72,6 +72,7 @@
     "selector_parity_fail_closed": true,
     "git_base_or_status_error_fail_closed": true,
     "zero_write_guard": "pre_post_delta",
+    "pull_request_ready_for_review_trigger": true,
     "root_or_unknown_fanout_check_render": "deferred_report_only",
     "full_governance_location": "schedule_or_workflow_dispatch_all"
   },
@@ -98,6 +99,7 @@
     "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
     "python -B scripts/lean_governance.py ci --changed-only --base-ref HEAD",
     "python -B scripts/lean_governance.py validate --all --semantic --drift-report",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_pr_governance_keeps_full_computation_out_of_pr_path -q",
     "bash rollback tee success and pipefail failure simulation",
     "git diff --check"
   ],
@@ -106,6 +108,7 @@
     "changed_only_validate": "PASS",
     "compact_ci": "PASS",
     "workflow_full_all": "PASS_WITH_EXISTING_SYNC_WARNINGS_IN_OUTPUT",
+    "pull_request_ready_for_review_trigger_contract": "PASS",
     "rollback_artifact_and_pipefail": "PASS",
     "diff_check": "PASS"
   },
@@ -118,5 +121,5 @@
     "Two post-merge real GitHub Governance runs cannot be proven before PR/merge.",
     "Branch protection truth remains external and must be checked by owner/GitHub settings."
   ],
-  "next_unique_task": "Open/verify PR, confirm required check name remains `Project Governance / governance`, then monitor two real Governance runs before final closure."
+  "next_unique_task": "Verify PR #196 ready_for_review/synchronize run, confirm required check name remains `Project Governance / governance`, then monitor two real Governance runs before final closure."
 }

@@ -4876,6 +4876,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_pr_governance_keeps_full_computation_out_of_pr_path(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("github.event_name == 'pull_request'", workflow)
+        self.assertIn("types: [opened, synchronize, reopened, ready_for_review]", workflow)
         self.assertIn("github.event.pull_request.base.sha", workflow)
         self.assertIn("scripts/lean_governance.py ci --changed-only", workflow)
         self.assertNotIn("scripts/validate_project_governance.py --changed-only", workflow)
