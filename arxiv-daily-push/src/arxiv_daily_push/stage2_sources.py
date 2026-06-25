@@ -535,6 +535,43 @@ S2PGT04_REQUIRED_GATES = (
     "no_side_effect_gate",
 )
 S2PGT04_REPORT_FILENAME = "stage2_s2pgt04_delta_resonance_report.json"
+S2PGT05_CALIBRATION_MODEL_ID = "adp-s2pgt05-cross-board-calibration-v1"
+S2PGT05_ACCEPTANCE_ID = "ACC-S2PGT05-CALIBRATION"
+S2PGT05_TASK_ID = "S2PGT05"
+S2PGT05_LEGACY_TASK_ID = "S2P6T02"
+S2PGT05_REQUIRED_BOARD_IDS = ("B1", "B2", "B3", "B4", "B5", "B6")
+S2PGT05_REQUIRED_SOURCE_DOMAINS = (
+    "d1_research_preprint",
+    "d2_authoritative_publication",
+    "d3_china_official",
+    "d4_us_official",
+)
+S2PGT05_REQUIRED_DECISIONS = ("selected", "queued", "deferred")
+S2PGT05_REQUIRED_CANDIDATE_FIELDS = (
+    "candidate_id",
+    "delta_id",
+    "board_id",
+    "source_domain",
+    "source_id",
+    "raw_score",
+    "waiting_days",
+    "evidence_refs",
+)
+S2PGT05_SELECTED_COUNT = 4
+S2PGT05_WAITLIST_COUNT = 1
+S2PGT05_MAX_SOURCE_SHARE = 0.5
+S2PGT05_MAX_WAITING_DAYS = 30
+S2PGT05_MAX_WAITING_CREDIT = 0.15
+S2PGT05_REQUIRED_GATES = (
+    "upstream_delta_resonance_gate",
+    "percentile_calibration_gate",
+    "source_balance_gate",
+    "waiting_credit_gate",
+    "queue_reason_gate",
+    "deterministic_order_gate",
+    "no_side_effect_gate",
+)
+S2PGT05_REPORT_FILENAME = "stage2_s2pgt05_calibration_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -5488,6 +5525,226 @@ def validate_s2pgt04_delta_resonance_report(report: Mapping[str, Any]) -> list[s
     return errors
 
 
+def build_s2pgt05_cross_board_calibration_report(
+    *,
+    generated_at: str,
+    delta_resonance_report: Mapping[str, Any],
+    queue_candidate_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build private cross-board calibration and explainable queue evidence."""
+
+    delta_errors = validate_s2pgt04_delta_resonance_report(delta_resonance_report)
+    delta_index = _s2pgt05_delta_index(delta_resonance_report.get("delta_records") or [])
+    candidate_rows, candidate_errors = _s2pgt05_candidate_rows(queue_candidate_records, delta_index)
+    calibrated_rows = _s2pgt05_calibrated_rows(candidate_rows)
+    queue_rows = _s2pgt05_queue_rows(calibrated_rows)
+    upstream_gate = _s2pgt05_upstream_delta_gate(delta_resonance_report, delta_errors)
+    percentile_gate = _s2pgt05_percentile_calibration_gate(queue_rows)
+    source_balance_gate = _s2pgt05_source_balance_gate(queue_rows)
+    waiting_credit_gate = _s2pgt05_waiting_credit_gate(queue_rows)
+    queue_reason_gate = _s2pgt05_queue_reason_gate(queue_rows)
+    deterministic_gate = _s2pgt05_deterministic_order_gate(queue_rows)
+    side_effect_gate = _s2pgt05_no_side_effect_gate(queue_rows)
+    calibrated_queue_hash = _s2pgt05_queue_state_hash(queue_rows)
+    blocking_reasons = [
+        *upstream_gate["blocking_reasons"],
+        *candidate_errors,
+        *percentile_gate["blocking_reasons"],
+        *source_balance_gate["blocking_reasons"],
+        *waiting_credit_gate["blocking_reasons"],
+        *queue_reason_gate["blocking_reasons"],
+        *deterministic_gate["blocking_reasons"],
+        *side_effect_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and upstream_gate["status"]
+        == percentile_gate["status"]
+        == source_balance_gate["status"]
+        == waiting_credit_gate["status"]
+        == queue_reason_gate["status"]
+        == deterministic_gate["status"]
+        == side_effect_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PGT05_CALIBRATION_MODEL_ID,
+        "acceptance_id": S2PGT05_ACCEPTANCE_ID,
+        "task_id": S2PGT05_TASK_ID,
+        "legacy_task_id": S2PGT05_LEGACY_TASK_ID,
+        "phase": "S2PG",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "upstream_s2pgt04_status": delta_resonance_report.get("status"),
+        "required_board_ids": list(S2PGT05_REQUIRED_BOARD_IDS),
+        "board_ids_observed": percentile_gate["board_ids_observed"],
+        "required_source_domains": list(S2PGT05_REQUIRED_SOURCE_DOMAINS),
+        "source_domains_observed": source_balance_gate["source_domains_observed"],
+        "required_decisions": list(S2PGT05_REQUIRED_DECISIONS),
+        "queue_decisions_observed": queue_reason_gate["queue_decisions_observed"],
+        "required_candidate_fields": list(S2PGT05_REQUIRED_CANDIDATE_FIELDS),
+        "required_gates": list(S2PGT05_REQUIRED_GATES),
+        "selected_count_target": S2PGT05_SELECTED_COUNT,
+        "waitlist_count_target": S2PGT05_WAITLIST_COUNT,
+        "max_source_share": S2PGT05_MAX_SOURCE_SHARE,
+        "max_waiting_days": S2PGT05_MAX_WAITING_DAYS,
+        "max_waiting_credit": S2PGT05_MAX_WAITING_CREDIT,
+        "upstream_delta_resonance_gate": upstream_gate["status"],
+        "percentile_calibration_gate": percentile_gate["status"],
+        "source_balance_gate": source_balance_gate["status"],
+        "waiting_credit_gate": waiting_credit_gate["status"],
+        "queue_reason_gate": queue_reason_gate["status"],
+        "deterministic_order_gate": deterministic_gate["status"],
+        "no_side_effect_gate": side_effect_gate["status"],
+        "selected_source_counts": source_balance_gate["selected_source_counts"],
+        "source_share_by_domain": source_balance_gate["source_share_by_domain"],
+        "candidate_count": len(queue_rows),
+        "calibrated_queue_records": queue_rows,
+        "calibrated_queue_hash": calibrated_queue_hash,
+        "schema_migration_required": False,
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "v7_2_contract_files_changed": False,
+        "email_frontstage_changed": False,
+        "s2pgt05_calibration_ready": status == "pass",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pgt05_cross_board_calibration(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    delta_resonance_report: Mapping[str, Any],
+    queue_candidate_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PGT05 private calibration evidence without mutating queues."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pgt05-calibration"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pgt05_cross_board_calibration_report(
+        generated_at=generated_at,
+        delta_resonance_report=delta_resonance_report,
+        queue_candidate_records=queue_candidate_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "calibration_report_path": str(run_dir / "adp-s2pgt05-calibration-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pgt05-calibration-report.json", report)
+        _write_json(state / S2PGT05_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pgt05_cross_board_calibration_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PGT05_CALIBRATION_MODEL_ID:
+        errors.append("S2PGT05 model_id must be adp-s2pgt05-cross-board-calibration-v1")
+    if report.get("task_id") != S2PGT05_TASK_ID:
+        errors.append("S2PGT05 task_id must be S2PGT05")
+    if report.get("legacy_task_id") != S2PGT05_LEGACY_TASK_ID:
+        errors.append("S2PGT05 legacy_task_id must be S2P6T02")
+    if report.get("acceptance_id") != S2PGT05_ACCEPTANCE_ID:
+        errors.append("S2PGT05 acceptance_id must be ACC-S2PGT05-CALIBRATION")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PGT05 status must be pass or blocked")
+    for key in (
+        "schema_migration_required",
+        "public_schema_changed",
+        "queue_mutation_allowed",
+        "ranking_algorithm_changed",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "production_affected",
+        "real_smtp_sent",
+        "v7_2_contract_files_changed",
+        "email_frontstage_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PGT05 calibration")
+    boards = set(report.get("board_ids_observed") or [])
+    missing_boards = [board for board in S2PGT05_REQUIRED_BOARD_IDS if board not in boards]
+    if missing_boards:
+        errors.append("S2PGT05 missing boards: " + ", ".join(missing_boards))
+    source_domains = set(report.get("source_domains_observed") or [])
+    missing_domains = [domain for domain in S2PGT05_REQUIRED_SOURCE_DOMAINS if domain not in source_domains]
+    if missing_domains:
+        errors.append("S2PGT05 missing source domains: " + ", ".join(missing_domains))
+    decisions = set(report.get("queue_decisions_observed") or [])
+    missing_decisions = [decision for decision in S2PGT05_REQUIRED_DECISIONS if decision not in decisions]
+    if missing_decisions:
+        errors.append("S2PGT05 missing queue decisions: " + ", ".join(missing_decisions))
+    rows = report.get("calibrated_queue_records")
+    if not isinstance(rows, list) or not rows:
+        errors.append("S2PGT05 calibrated_queue_records must be a non-empty list")
+        rows = []
+    candidate_ids: set[str] = set()
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping):
+            errors.append(f"calibrated_queue_records[{index}] must be an object")
+            continue
+        for field in (*S2PGT05_REQUIRED_CANDIDATE_FIELDS, "percentile_score", "waiting_credit", "calibrated_score", "queue_decision", "queue_reason_code", "queue_reason"):
+            if row.get(field) in (None, "", []):
+                errors.append(f"calibrated_queue_records[{index}].{field} is required")
+        candidate_id = str(row.get("candidate_id") or "")
+        if candidate_id in candidate_ids:
+            errors.append(f"calibrated_queue_records[{index}].candidate_id must be unique")
+        candidate_ids.add(candidate_id)
+        if row.get("board_id") not in S2PGT05_REQUIRED_BOARD_IDS:
+            errors.append(f"calibrated_queue_records[{index}].board_id is not supported")
+        if row.get("source_domain") not in S2PGT05_REQUIRED_SOURCE_DOMAINS:
+            errors.append(f"calibrated_queue_records[{index}].source_domain is not supported")
+        if row.get("queue_decision") not in S2PGT05_REQUIRED_DECISIONS:
+            errors.append(f"calibrated_queue_records[{index}].queue_decision is not supported")
+        for score_field in ("raw_score", "percentile_score", "calibrated_score"):
+            value = row.get(score_field)
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                errors.append(f"calibrated_queue_records[{index}].{score_field} must be numeric")
+        if not isinstance(row.get("waiting_days"), int) or isinstance(row.get("waiting_days"), bool):
+            errors.append(f"calibrated_queue_records[{index}].waiting_days must be an integer")
+    selected_rows = [row for row in rows if isinstance(row, Mapping) and row.get("queue_decision") == "selected"]
+    if len(selected_rows) != S2PGT05_SELECTED_COUNT:
+        errors.append(f"S2PGT05 selected queue count must be {S2PGT05_SELECTED_COUNT}")
+    source_balance = _s2pgt05_source_balance_gate(rows)
+    if source_balance["status"] != "pass":
+        errors.extend(source_balance["blocking_reasons"])
+    if report.get("calibrated_queue_hash") != _s2pgt05_queue_state_hash(rows):
+        errors.append("S2PGT05 calibrated_queue_hash must match calibrated_queue_records")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PGT05 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in S2PGT05_REQUIRED_GATES:
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PGT05 report requires {key}=pass")
+        if report.get("s2pgt05_calibration_ready") is not True:
+            errors.append("passing S2PGT05 report requires s2pgt05_calibration_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -9364,6 +9621,301 @@ def _s2pgt04_resonance_links(rows: Sequence[Mapping[str, Any]]) -> list[dict[str
 
 def _s2pgt04_resonance_state_hash(deltas: Sequence[Mapping[str, Any]]) -> str:
     payload = {"delta_records": sorted([dict(delta) for delta in deltas], key=lambda item: str(item.get("delta_id") or ""))}
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _s2pgt05_delta_index(deltas: Sequence[Any]) -> dict[str, Mapping[str, Any]]:
+    index: dict[str, Mapping[str, Any]] = {}
+    for delta in deltas:
+        if not isinstance(delta, Mapping):
+            continue
+        delta_id = str(delta.get("delta_id") or "").strip()
+        if delta_id:
+            index[delta_id] = delta
+    return index
+
+
+def _s2pgt05_candidate_rows(
+    records: Sequence[Mapping[str, Any]],
+    delta_index: Mapping[str, Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    candidate_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"queue_candidate_records[{index}] must be an object")
+            continue
+        delta_id = str(record.get("delta_id") or "").strip()
+        delta = delta_index.get(delta_id)
+        board_id = str(record.get("board_id") or "").strip()
+        source_domain = str(record.get("source_domain") or "").strip()
+        source_id = str(record.get("source_id") or "").strip()
+        raw_score, raw_error = _s2pgt05_bounded_float(record.get("raw_score"), 0.0, 100.0)
+        waiting_days, waiting_error = _s2pgt05_waiting_days(record.get("waiting_days"))
+        evidence_refs = [str(ref) for ref in (record.get("evidence_refs") or []) if str(ref)]
+        candidate_id = str(record.get("candidate_id") or f"candidate:{delta_id}:{board_id}").strip()
+        row = {
+            "candidate_id": candidate_id,
+            "delta_id": delta_id,
+            "board_id": board_id,
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "raw_score": raw_score,
+            "waiting_days": waiting_days,
+            "evidence_refs": evidence_refs,
+            "candidate_explanation": str(record.get("candidate_explanation") or "").strip(),
+            "signal_strength": float((delta or {}).get("signal_strength") or 0.0),
+            "support_status": str((delta or {}).get("support_status") or ""),
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "public_schema_changed": record.get("public_schema_changed") is True,
+            "queue_mutation_allowed": record.get("queue_mutation_allowed") is True,
+            "ranking_algorithm_changed": record.get("ranking_algorithm_changed") is True,
+            "production_affected": record.get("production_affected") is True,
+            "email_frontstage_changed": record.get("email_frontstage_changed") is True,
+        }
+        for field in S2PGT05_REQUIRED_CANDIDATE_FIELDS:
+            if row.get(field) in (None, "", []):
+                errors.append(f"queue_candidate_records[{index}].{field} is required")
+        if candidate_id in candidate_ids:
+            errors.append(f"queue_candidate_records[{index}].candidate_id must be unique")
+        candidate_ids.add(candidate_id)
+        if delta_id and delta_id not in delta_index:
+            errors.append(f"queue_candidate_records[{index}].delta_id must reference an S2PGT04 delta_id")
+        if delta:
+            if source_id != delta.get("source_id"):
+                errors.append(f"queue_candidate_records[{index}].source_id must match delta source_id")
+            if source_domain != delta.get("source_domain"):
+                errors.append(f"queue_candidate_records[{index}].source_domain must match delta source_domain")
+        if board_id and board_id not in S2PGT05_REQUIRED_BOARD_IDS:
+            errors.append(f"queue_candidate_records[{index}].board_id is not supported")
+        if source_domain and source_domain not in S2PGT05_REQUIRED_SOURCE_DOMAINS:
+            errors.append(f"queue_candidate_records[{index}].source_domain is not supported")
+        if raw_error:
+            errors.append(f"queue_candidate_records[{index}].raw_score must be between 0 and 100")
+        if waiting_error:
+            errors.append(f"queue_candidate_records[{index}].waiting_days must be an integer between 0 and {S2PGT05_MAX_WAITING_DAYS}")
+        for flag in (
+            "schema_migration_required",
+            "public_schema_changed",
+            "queue_mutation_allowed",
+            "ranking_algorithm_changed",
+            "production_affected",
+            "email_frontstage_changed",
+        ):
+            if row[flag]:
+                errors.append(f"queue_candidate_records[{index}].{flag} must be false")
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pgt05_bounded_float(value: Any, minimum: float, maximum: float) -> tuple[float, bool]:
+    if isinstance(value, bool):
+        return 0.0, True
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return 0.0, True
+    if not minimum <= parsed <= maximum:
+        return parsed, True
+    return round(parsed, 6), False
+
+
+def _s2pgt05_waiting_days(value: Any) -> tuple[int, bool]:
+    if isinstance(value, bool):
+        return 0, True
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return 0, True
+    if parsed < 0 or parsed > S2PGT05_MAX_WAITING_DAYS:
+        return parsed, True
+    return parsed, False
+
+
+def _s2pgt05_calibrated_rows(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    by_board: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        by_board.setdefault(str(row.get("board_id") or ""), []).append(row)
+    percentile_by_candidate: dict[str, float] = {}
+    for board_rows in by_board.values():
+        ordered = sorted(
+            board_rows,
+            key=lambda item: (float(item.get("raw_score") or 0.0), str(item.get("candidate_id") or "")),
+        )
+        denominator = max(len(ordered) - 1, 1)
+        for rank, item in enumerate(ordered):
+            percentile_by_candidate[str(item.get("candidate_id") or "")] = 1.0 if len(ordered) == 1 else round(rank / denominator, 6)
+    calibrated: list[dict[str, Any]] = []
+    for row in rows:
+        candidate_id = str(row.get("candidate_id") or "")
+        percentile = percentile_by_candidate.get(candidate_id, 0.0)
+        waiting_credit = round((int(row.get("waiting_days") or 0) / S2PGT05_MAX_WAITING_DAYS) * S2PGT05_MAX_WAITING_CREDIT, 6)
+        signal_strength = float(row.get("signal_strength") or 0.0)
+        support_penalty = 0.08 if row.get("support_status") == "refuted" else 0.0
+        calibrated_score = round((0.65 * percentile) + (0.20 * signal_strength) + waiting_credit - support_penalty, 6)
+        calibrated.append(
+            {
+                **dict(row),
+                "percentile_score": percentile,
+                "waiting_credit": waiting_credit,
+                "support_penalty": support_penalty,
+                "calibrated_score": calibrated_score,
+            }
+        )
+    return calibrated
+
+
+def _s2pgt05_queue_rows(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    ordered = sorted(
+        rows,
+        key=lambda item: (
+            -float(item.get("calibrated_score") or 0.0),
+            str(item.get("source_domain") or ""),
+            str(item.get("board_id") or ""),
+            str(item.get("candidate_id") or ""),
+        ),
+    )
+    max_per_source = max(1, int(S2PGT05_SELECTED_COUNT * S2PGT05_MAX_SOURCE_SHARE))
+    selected_ids: set[str] = set()
+    source_counts: dict[str, int] = {}
+    rows_with_decisions: list[dict[str, Any]] = []
+    cap_blocked_ids: set[str] = set()
+    for item in ordered:
+        source_domain = str(item.get("source_domain") or "")
+        candidate_id = str(item.get("candidate_id") or "")
+        if len(selected_ids) < S2PGT05_SELECTED_COUNT and source_counts.get(source_domain, 0) < max_per_source:
+            selected_ids.add(candidate_id)
+            source_counts[source_domain] = source_counts.get(source_domain, 0) + 1
+        elif source_counts.get(source_domain, 0) >= max_per_source:
+            cap_blocked_ids.add(candidate_id)
+    queued_remaining = S2PGT05_WAITLIST_COUNT
+    for rank, item in enumerate(ordered, start=1):
+        row = dict(item)
+        candidate_id = str(row.get("candidate_id") or "")
+        if candidate_id in selected_ids:
+            row["queue_decision"] = "selected"
+            row["queue_reason_code"] = "selected_after_percentile_waiting_and_balance"
+            row["queue_reason"] = "Selected after board-percentile calibration, waiting credit, signal strength, and source-balance cap."
+        elif candidate_id in cap_blocked_ids:
+            row["queue_decision"] = "deferred"
+            row["queue_reason_code"] = "deferred_source_balance_cap"
+            row["queue_reason"] = "Deferred because selecting it would exceed the per-source selected share cap."
+        elif queued_remaining > 0:
+            row["queue_decision"] = "queued"
+            row["queue_reason_code"] = "queued_next_best_calibrated"
+            row["queue_reason"] = "Queued as the next best calibrated candidate after selected slots were filled."
+            queued_remaining -= 1
+        else:
+            row["queue_decision"] = "deferred"
+            row["queue_reason_code"] = "deferred_below_selected_and_waitlist"
+            row["queue_reason"] = "Deferred because selected and waitlist slots were filled by higher calibrated candidates."
+        row["calibrated_rank"] = rank
+        rows_with_decisions.append(row)
+    return rows_with_decisions
+
+
+def _s2pgt05_upstream_delta_gate(
+    delta_resonance_report: Mapping[str, Any],
+    delta_errors: Sequence[str],
+) -> dict[str, Any]:
+    blocking = [f"S2PGT04: {error}" for error in delta_errors]
+    if delta_resonance_report.get("status") != "pass":
+        blocking.append("S2PGT05 requires passing S2PGT04 delta resonance evidence")
+    if delta_resonance_report.get("s2pgt04_delta_resonance_ready") is not True:
+        blocking.append("S2PGT05 requires s2pgt04_delta_resonance_ready=true")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt05_percentile_calibration_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("board_id") or "") for row in rows if row.get("board_id")})
+    blocking = [f"S2PGT05 missing board {board}" for board in S2PGT05_REQUIRED_BOARD_IDS if board not in observed]
+    for index, row in enumerate(rows):
+        percentile = row.get("percentile_score")
+        if not isinstance(percentile, (int, float)) or isinstance(percentile, bool) or not 0 <= float(percentile) <= 1:
+            blocking.append(f"calibrated_queue_records[{index}].percentile_score must be between 0 and 1")
+    return {"status": "pass" if not blocking else "blocked", "board_ids_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt05_source_balance_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("source_domain") or "") for row in rows if row.get("source_domain")})
+    blocking = [f"S2PGT05 missing source domain {domain}" for domain in S2PGT05_REQUIRED_SOURCE_DOMAINS if domain not in observed]
+    selected = [row for row in rows if row.get("queue_decision") == "selected"]
+    counts: dict[str, int] = {}
+    for row in selected:
+        domain = str(row.get("source_domain") or "")
+        counts[domain] = counts.get(domain, 0) + 1
+    shares = {
+        domain: round(count / max(len(selected), 1), 6)
+        for domain, count in sorted(counts.items())
+    }
+    for domain, share in shares.items():
+        if share > S2PGT05_MAX_SOURCE_SHARE:
+            blocking.append(f"S2PGT05 selected source share for {domain} exceeds {S2PGT05_MAX_SOURCE_SHARE}")
+    if len(selected) != S2PGT05_SELECTED_COUNT:
+        blocking.append(f"S2PGT05 selected queue count must be {S2PGT05_SELECTED_COUNT}")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "source_domains_observed": observed,
+        "selected_source_counts": dict(sorted(counts.items())),
+        "source_share_by_domain": shares,
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pgt05_waiting_credit_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for index, row in enumerate(rows):
+        waiting_days = row.get("waiting_days")
+        waiting_credit = row.get("waiting_credit")
+        if not isinstance(waiting_days, int) or isinstance(waiting_days, bool) or not 0 <= waiting_days <= S2PGT05_MAX_WAITING_DAYS:
+            blocking.append(f"calibrated_queue_records[{index}].waiting_days must be 0..{S2PGT05_MAX_WAITING_DAYS}")
+        if not isinstance(waiting_credit, (int, float)) or isinstance(waiting_credit, bool) or not 0 <= float(waiting_credit) <= S2PGT05_MAX_WAITING_CREDIT:
+            blocking.append(f"calibrated_queue_records[{index}].waiting_credit must be 0..{S2PGT05_MAX_WAITING_CREDIT}")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt05_queue_reason_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("queue_decision") or "") for row in rows if row.get("queue_decision")})
+    blocking = [f"S2PGT05 missing queue decision {decision}" for decision in S2PGT05_REQUIRED_DECISIONS if decision not in observed]
+    if not rows:
+        blocking.append("S2PGT05 requires at least one calibrated queue record")
+    for index, row in enumerate(rows):
+        if not row.get("queue_reason_code"):
+            blocking.append(f"calibrated_queue_records[{index}].queue_reason_code is required")
+        if not row.get("queue_reason"):
+            blocking.append(f"calibrated_queue_records[{index}].queue_reason is required")
+    return {"status": "pass" if not blocking else "blocked", "queue_decisions_observed": observed, "blocking_reasons": blocking}
+
+
+def _s2pgt05_deterministic_order_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    ranks = [row.get("calibrated_rank") for row in rows if isinstance(row, Mapping)]
+    expected = list(range(1, len(rows) + 1))
+    blocking: list[str] = []
+    if ranks != expected:
+        blocking.append("S2PGT05 calibrated ranks must be deterministic and contiguous")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt05_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for index, row in enumerate(rows):
+        for flag in (
+            "schema_migration_required",
+            "public_schema_changed",
+            "queue_mutation_allowed",
+            "ranking_algorithm_changed",
+            "production_affected",
+            "email_frontstage_changed",
+        ):
+            if row.get(flag) is not False:
+                blocking.append(f"calibrated_queue_records[{index}].{flag} must be false")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt05_queue_state_hash(rows: Sequence[Mapping[str, Any]]) -> str:
+    payload = {"calibrated_queue_records": sorted([dict(row) for row in rows], key=lambda item: str(item.get("candidate_id") or ""))}
     encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
