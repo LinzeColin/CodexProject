@@ -4,6 +4,7 @@ Active Codex-related project hub for LinzeColin.
 
 ## Governance Entry
 
+- Execution contract: [AGENTS.md](AGENTS.md)
 - Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
 - Project human-entry files: `功能清单`, `开发记录`, `模型参数文件`
 
@@ -49,11 +50,5 @@ to an artifact directory instead of the tracked repository root:
 ```bash
 python3 scripts/generate_governance_dashboard.py --write --changed-only --base-ref origin/main --root-artifact-dir /tmp/governance-generated-views
 ```
-
-## Current Governance Snapshot
-
-- Other8 remediation baseline: `main@e25be8d65e67fe89af18e18e1562191a60066449`
-- Roadmap kind: `portfolio_remediation`; it must stay separate from product roadmaps in project `开发记录`.
-- S1 review evidence is local, untracked evidence under `.git/codex-review/other8-s1pa-e25be8d6/`, `.git/codex-review/other8-s1pb-e25be8d6/`, and `.git/codex-review/other8-s1pc-e25be8d6/`.
 
 This repository is the source-level project hub. Each project directory must keep Lean v2 canonical facts and human-entry files synchronized with implementation evidence. Root dashboards and portfolio summaries are generated on demand as CI artifacts instead of committed source files.

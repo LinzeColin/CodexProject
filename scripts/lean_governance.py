@@ -8,9 +8,11 @@ import contextlib
 import hashlib
 import io
 import json
+import os
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +20,8 @@ import validate_project_governance as governance
 
 
 sys.dont_write_bytecode = True
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = governance.ROOT
 PROJECTS_FILE = governance.PROJECTS_FILE
@@ -42,6 +46,7 @@ ROOT_GOVERNANCE_PREFIXES = (
     ".codex/",
     ".github/workflows/project-governance.yml",
     "AGENTS.md",
+    "README.md",
     "docs/governance/",
     "governance/",
     "scripts/",
@@ -832,10 +837,72 @@ def git_status_porcelain(root: Path = ROOT) -> list[str]:
     return [line for line in result.stdout.splitlines() if line.strip()]
 
 
-def run_validator_capture(validate_argv: list[str]) -> dict[str, Any]:
+def git_status_has_error(status: list[str]) -> bool:
+    return any(line.startswith("git_status_error:") or line.startswith("git_status_failed:") for line in status)
+
+
+def ci_clean_start_required() -> bool:
+    return bool(os.environ.get("GITHUB_ACTIONS") or os.environ.get("CI"))
+
+
+def worktree_write_delta(
+    before_status: list[str],
+    after_status: list[str],
+    *,
+    clean_start_required: bool,
+) -> dict[str, Any]:
+    before = sorted(set(before_status))
+    after = sorted(set(after_status))
+    new_status = sorted(set(after) - set(before))
+    resolved_status = sorted(set(before) - set(after))
+    status_errors = [line for line in before + after if line.startswith(("git_status_error:", "git_status_failed:"))]
+    clean_start_ok = not clean_start_required or not before
+    clean = not status_errors and clean_start_ok and not new_status
+    return {
+        "schema_version": 1,
+        "mode": "pre_post_delta",
+        "clean": clean,
+        "clean_start_required": clean_start_required,
+        "clean_start_ok": clean_start_ok,
+        "preexisting_changed_count": len(before),
+        "post_changed_count": len(after),
+        "new_changed_count": len(new_status),
+        "resolved_changed_count": len(resolved_status),
+        "preexisting_changed_files": before[:20],
+        "post_changed_files": after[:20],
+        "new_changed_files": new_status[:20],
+        "resolved_changed_files": resolved_status[:20],
+        "status_error": bool(status_errors),
+        "status_errors": status_errors[:5],
+    }
+
+
+def legacy_zero_diff_view(delta: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "clean": bool(delta.get("clean", False)),
+        "changed_count": int(delta.get("new_changed_count", 0)),
+        "changed_files": list(delta.get("new_changed_files") or [])[:20],
+        "preexisting_changed_count": int(delta.get("preexisting_changed_count", 0)),
+        "post_changed_count": int(delta.get("post_changed_count", 0)),
+        "clean_start_required": bool(delta.get("clean_start_required", False)),
+        "clean_start_ok": bool(delta.get("clean_start_ok", True)),
+        "status_error": bool(delta.get("status_error", False)),
+    }
+
+
+def run_validator_capture(validate_argv: list[str], *, changed_files: list[str] | None = None) -> dict[str, Any]:
     stdout = io.StringIO()
-    with contextlib.redirect_stdout(stdout):
-        exit_code = governance.main(validate_argv)
+    original_git_changed_files = governance.git_changed_files
+    if changed_files is not None:
+        def _fixed_changed_files(base_ref: str | None = None) -> list[str]:
+            return list(changed_files)
+
+        governance.git_changed_files = _fixed_changed_files
+    try:
+        with contextlib.redirect_stdout(stdout):
+            exit_code = governance.main(validate_argv)
+    finally:
+        governance.git_changed_files = original_git_changed_files
     return {
         "argv": validate_argv,
         "exit_code": exit_code,
@@ -843,15 +910,385 @@ def run_validator_capture(validate_argv: list[str]) -> dict[str, Any]:
     }
 
 
+def validator_checked_project_count(validation: dict[str, Any]) -> int | None:
+    for line in validation.get("output", []):
+        if not isinstance(line, str) or not line.startswith("projects checked: "):
+            continue
+        value = line.split(": ", 1)[1].strip()
+        if value == "none":
+            return 0
+        return len([item for item in value.split(",") if item.strip()])
+    return None
+
+
+def compact_error(error_code: str, message: str, *, base_ref: str = "", command: str = "") -> dict[str, Any]:
+    return {
+        "owner_status_zh": f"治理检查停止：{message}",
+        "schema_version": 1,
+        "language": "zh-CN",
+        "decision": "STOP",
+        "command": command,
+        "error_code": error_code,
+        "base_ref": base_ref,
+        "base_ref_status": "unresolved" if error_code == "UNRESOLVED_BASE" else "error",
+        "candidate_report_only": True,
+        "rollback_or_stop_condition": "保持 legacy-authoritative；修复错误后重跑 changed-only gate。",
+    }
+
+
+def compact_check_plan(summary: dict[str, Any]) -> dict[str, Any]:
+    check_plan = summary.get("check_plan") if isinstance(summary.get("check_plan"), dict) else {}
+    return {
+        "selected_project_count": int(check_plan.get("selected_project_count", 0)),
+        "changed_file_count": int(check_plan.get("changed_file_count", 0)),
+        "root_governance_changed": bool(check_plan.get("root_governance_changed", False)),
+        "escalation_reasons": list(check_plan.get("escalation_reasons") or [])[:5],
+        "next_action_zh": check_plan.get("next_action_zh", "查看 full_evidence_ref。"),
+    }
+
+
+def evidence_directory(root: Path = ROOT) -> tuple[Path, str]:
+    configured = os.environ.get("GOVERNANCE_EVIDENCE_DIR")
+    if configured:
+        return Path(configured), "ci_artifact" if os.environ.get("GITHUB_ACTIONS") else "configured"
+    return root / ".git" / "codex-review" / "lean-governance", "local_only"
+
+
+def write_full_evidence(summary: dict[str, Any], *, root: Path = ROOT) -> dict[str, Any]:
+    evidence_dir, retention_scope = evidence_directory(root)
+    payload = json.dumps(summary, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    digest = hashlib.sha256(payload).hexdigest()
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    path = evidence_dir / f"ci-{int(time.time() * 1000)}-{os.getpid()}-{digest[:12]}-{uuid.uuid4().hex[:8]}.json"
+    path.write_bytes(payload + b"\n")
+    artifact = os.environ.get("GOVERNANCE_EVIDENCE_ARTIFACT", "")
+    return {
+        "evidence_id": digest[:12],
+        "path_or_artifact_ref": artifact or str(path),
+        "sha256": f"sha256:{digest}",
+        "schema_version": summary.get("schema_version", 1),
+        "retention_scope": retention_scope,
+    }
+
+
+def compact_ci_summary(summary: dict[str, Any], exit_code: int, full_evidence_ref: dict[str, Any]) -> dict[str, Any]:
+    changed_scope = summary.get("changed_scope") if isinstance(summary.get("changed_scope"), dict) else {}
+    validation = summary.get("validation") if isinstance(summary.get("validation"), dict) else {}
+    zero_diff = summary.get("zero_diff") if isinstance(summary.get("zero_diff"), dict) else {}
+    selector = summary.get("selector_parity") if isinstance(summary.get("selector_parity"), dict) else {}
+    decision = "SHIP" if exit_code == 0 else "STOP"
+    owner_status = "治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。" if exit_code == 0 else "治理检查停止：legacy 或候选保护发现阻塞。"
+    evidence_ref = full_evidence_ref.get("path_or_artifact_ref", "")
+    return {
+        "owner_status_zh": owner_status,
+        "schema_version": 1,
+        "language": "zh-CN",
+        "decision": decision,
+        "command": "ci",
+        "scope": summary.get("scope", "changed-only"),
+        "legacy_exit_code": int(validation.get("exit_code", exit_code)),
+        "process_exit_code": exit_code,
+        "candidate_report_only": True,
+        "base_ref_status": changed_scope.get("base_ref_status", "resolved"),
+        "changed_file_count": len(changed_scope.get("changed_files") or []),
+        "selected_project_count": int(changed_scope.get("selected_project_count", 0)),
+        "validation_checked_project_count": selector.get("validation_checked_project_count"),
+        "zero_tracked_write": bool(zero_diff.get("clean", False)),
+        "stable_summary_hash": summary.get("stable_summary_hash", ""),
+        "check_plan": compact_check_plan(summary),
+        "timing_telemetry": summary.get("timing_telemetry", {}),
+        "output_telemetry": summary.get("output_telemetry", {}),
+        "acceptance_ids": ["M1-S2PC-PRE-S3", "S3PAT01", "S3PAT02", "S3PBT01", "S3PBT02", "S3PBT03", "S3PBT04"],
+        "evidence_refs": [evidence_ref] if evidence_ref else [],
+        "rollback_or_stop_condition": (
+            "无 tracked 回滚；full evidence 见 full_evidence_ref。"
+            if exit_code == 0
+            else "停止推进；查看 full_evidence_ref 后修复阻塞再重跑。"
+        ),
+        "full_evidence_ref": full_evidence_ref,
+    }
+
+
+def compact_json_bytes(payload: dict[str, Any]) -> bytes:
+    return json.dumps(payload, ensure_ascii=False, sort_keys=False, separators=(",", ":")).encode("utf-8")
+
+
+def attach_compact_stdout_bytes(payload: dict[str, Any]) -> dict[str, Any]:
+    output_telemetry = payload.setdefault("output_telemetry", {})
+    if not isinstance(output_telemetry, dict):
+        output_telemetry = {}
+        payload["output_telemetry"] = output_telemetry
+    for _ in range(3):
+        output_telemetry["compact_stdout_bytes"] = len(compact_json_bytes(payload))
+    return payload
+
+
+def stable_ci_projection(summary: dict[str, Any]) -> dict[str, Any]:
+    changed_scope = summary.get("changed_scope") if isinstance(summary.get("changed_scope"), dict) else {}
+    check_render = summary.get("check_render") if isinstance(summary.get("check_render"), dict) else {}
+    check_render_report = check_render.get("report") if isinstance(check_render.get("report"), dict) else {}
+    zero_write_delta = summary.get("zero_write_delta") if isinstance(summary.get("zero_write_delta"), dict) else {}
+    validation = summary.get("validation") if isinstance(summary.get("validation"), dict) else {}
+    return {
+        "schema_version": summary.get("schema_version", 1),
+        "command": summary.get("command", ""),
+        "scope": summary.get("scope", ""),
+        "base_ref": summary.get("base_ref", ""),
+        "changed_scope": {
+            "base_ref_status": changed_scope.get("base_ref_status", ""),
+            "error_code": changed_scope.get("error_code", ""),
+            "root_governance_changed": bool(changed_scope.get("root_governance_changed", False)),
+            "unknown_changed_files": list(changed_scope.get("unknown_changed_files") or []),
+            "full_scope_required": bool(changed_scope.get("full_scope_required", False)),
+            "changed_files": list(changed_scope.get("changed_files") or []),
+            "selected_project_count": int(changed_scope.get("selected_project_count", 0)),
+            "selected_projects": list(changed_scope.get("selected_projects") or []),
+        },
+        "check_plan": summary.get("check_plan", {}),
+        "validation": {
+            "argv": list(validation.get("argv") or []),
+            "exit_code": int(validation.get("exit_code", 1)),
+            "checked_project_count": validator_checked_project_count(validation),
+        },
+        "check_render": {
+            "checked_count": int(check_render.get("checked_count", 0)),
+            "skipped_count": int(check_render.get("skipped_count", 0)),
+            "skipped": list(check_render.get("skipped") or []),
+            "report": {
+                "drift_count": int(check_render_report.get("drift_count", 0)),
+                "reference_issue_count": int(check_render_report.get("reference_issue_count", 0)),
+                "error_count": int(check_render_report.get("error_count", 0)),
+                "deferred_count": int(check_render_report.get("deferred_count", 0)),
+                "blocking_required_exit": bool(check_render_report.get("blocking_required_exit", False)),
+            },
+        },
+        "selector_parity": summary.get("selector_parity", {}),
+        "zero_write_delta": {
+            "clean": bool(zero_write_delta.get("clean", False)),
+            "clean_start_required": bool(zero_write_delta.get("clean_start_required", False)),
+            "clean_start_ok": bool(zero_write_delta.get("clean_start_ok", True)),
+            "preexisting_changed_count": int(zero_write_delta.get("preexisting_changed_count", 0)),
+            "new_changed_count": int(zero_write_delta.get("new_changed_count", 0)),
+            "status_error": bool(zero_write_delta.get("status_error", False)),
+        },
+    }
+
+
+def stable_ci_summary_hash(summary: dict[str, Any]) -> str:
+    payload = json.dumps(
+        stable_ci_projection(summary),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(payload).hexdigest()
+
+
+def with_stable_summary_hash(summary: dict[str, Any]) -> dict[str, Any]:
+    summary["stable_summary_hash"] = stable_ci_summary_hash(summary)
+    return summary
+
+
+def build_check_plan(
+    scope: dict[str, Any],
+    validate_argv: list[str],
+    *,
+    selected_project_count: int,
+    total_project_count: int,
+) -> dict[str, Any]:
+    changed_files = list(scope.get("changed_files") or [])
+    escalation_reasons: list[str] = []
+    if scope.get("root_governance_changed"):
+        escalation_reasons.append("root_governance_fanout")
+    if scope.get("unknown_changed_files"):
+        escalation_reasons.append("unknown_path_full_scope")
+    if scope.get("base_ref_status") != "resolved":
+        escalation_reasons.append("base_ref_unresolved")
+    if not changed_files:
+        escalation_reasons.append("empty_diff")
+    if int(scope.get("selected_required_project_count", selected_project_count)) < int(
+        scope.get("required_project_count", selected_project_count)
+    ):
+        escalation_reasons.append("required_scope_gap")
+    if not escalation_reasons:
+        escalation_reasons.append("changed_project_scope")
+    selected_projects = [
+        {
+            "project_id": str(project.get("project_id") or ""),
+            "path": str(project.get("path") or ""),
+            "ci_mode": str(project.get("ci_mode") or ""),
+        }
+        for project in scope.get("selected_projects", [])
+    ]
+    return {
+        "schema_version": 1,
+        "mode": "candidate-shadow-report-only",
+        "legacy_authoritative": True,
+        "candidate_report_only": True,
+        "changed_file_count": len(changed_files),
+        "selected_project_count": selected_project_count,
+        "total_project_count": total_project_count,
+        "root_governance_changed": bool(scope.get("root_governance_changed", False)),
+        "unknown_changed_files": list(scope.get("unknown_changed_files") or []),
+        "full_scope_required": bool(scope.get("full_scope_required", False)),
+        "escalation_reasons": escalation_reasons,
+        "commands": [
+            {"name": "validate", "argv": validate_argv},
+            {"name": "check-render", "project_count": selected_project_count},
+        ],
+        "selected_projects": selected_projects,
+        "next_action_zh": "失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。",
+    }
+
+
 def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> tuple[int, dict[str, Any]]:
     started = time.perf_counter()
+    timings: dict[str, float] = {}
+    timing_start = time.perf_counter()
     baseline = build_baseline(root, projects_file)
-    scope = build_changed_scope(base_ref, root, projects_file)
+    timings["baseline_seconds"] = round(time.perf_counter() - timing_start, 3)
+    clean_start_required = ci_clean_start_required()
+    before_status = git_status_porcelain(root)
+    if git_status_has_error(before_status) or (clean_start_required and before_status):
+        after_status = git_status_porcelain(root)
+        zero_write_delta = worktree_write_delta(
+            before_status,
+            after_status,
+            clean_start_required=clean_start_required,
+        )
+        status_message = (
+            "git status failed; cannot prove read-only governance run"
+            if git_status_has_error(before_status)
+            else "CI clean-start required but repository was dirty before governance run"
+        )
+        summary = {
+            "schema_version": 1,
+            "command": "ci",
+            "scope": "changed-only",
+            "base_ref": base_ref or "",
+            "write": False,
+            "changed_scope": {
+                "schema_version": 1,
+                "command": "changed-scope",
+                "base_ref": base_ref or "",
+                "base_ref_status": "blocked",
+                "error_code": "GIT_STATUS_FAILED" if git_status_has_error(before_status) else "DIRTY_CI_CLEAN_START",
+                "error": status_message,
+            },
+            "validation": {"argv": [], "exit_code": 1, "output": [status_message]},
+            "check_render": {"checked": [], "checked_count": 0, "skipped": [], "skipped_count": 0},
+            "selector_parity": {
+                "selected_project_count": 0,
+                "validation_checked_project_count": None,
+                "matches": False,
+            },
+            "check_plan": {
+                "schema_version": 1,
+                "mode": "candidate-shadow-report-only",
+                "legacy_authoritative": True,
+                "candidate_report_only": True,
+                "changed_file_count": 0,
+                "selected_project_count": 0,
+                "total_project_count": baseline["totals"]["projects"],
+                "root_governance_changed": False,
+                "escalation_reasons": ["git_status_failed" if git_status_has_error(before_status) else "dirty_ci_clean_start"],
+                "commands": [],
+                "selected_projects": [],
+                "next_action_zh": "修复 Git 状态后重跑；无法证明零写入时必须停止。",
+            },
+            "budget_telemetry": {
+                "schema_version": 1,
+                "mode": "changed-only-fast-gate",
+                "unit": "project-scope-proxy",
+                "selected_project_count": 0,
+                "total_project_count": baseline["totals"]["projects"],
+                "full_project_scan_avoided_count": 0,
+                "semantic_scope": "changed-only",
+                "write": False,
+                "full_governance_location": "schedule_or_workflow_dispatch_all",
+            },
+            "zero_write_delta": zero_write_delta,
+            "zero_diff": legacy_zero_diff_view(zero_write_delta),
+            "timing_telemetry": {**timings, "total_seconds": round(time.perf_counter() - started, 3)},
+            "output_telemetry": {"validator_output_line_count": 1, "validator_stdout_bytes": len(status_message.encode("utf-8"))},
+            "duration_seconds": round(time.perf_counter() - started, 3),
+        }
+        return 1, with_stable_summary_hash(summary)
+    try:
+        timing_start = time.perf_counter()
+        scope = build_changed_scope(base_ref, root, projects_file)
+        timings["changed_scope_seconds"] = round(time.perf_counter() - timing_start, 3)
+    except governance.GovernanceDiffError as exc:
+        after_status = git_status_porcelain(root)
+        zero_write_delta = worktree_write_delta(
+            before_status,
+            after_status,
+            clean_start_required=clean_start_required,
+        )
+        summary = {
+            "schema_version": 1,
+            "command": "ci",
+            "scope": "changed-only",
+            "base_ref": base_ref or "",
+            "write": False,
+            "changed_scope": {
+                "schema_version": 1,
+                "command": "changed-scope",
+                "base_ref": exc.base_ref or base_ref or "",
+                "base_ref_status": "unresolved" if exc.error_code == "UNRESOLVED_BASE" else "error",
+                "error_code": exc.error_code,
+                "error": str(exc),
+            },
+            "validation": {"argv": [], "exit_code": 1, "output": [str(exc)]},
+            "check_render": {"checked": [], "checked_count": 0, "skipped": [], "skipped_count": 0},
+            "budget_telemetry": {
+                "schema_version": 1,
+                "mode": "changed-only-fast-gate",
+                "unit": "project-scope-proxy",
+                "selected_project_count": 0,
+                "total_project_count": baseline["totals"]["projects"],
+                "full_project_scan_avoided_count": 0,
+                "semantic_scope": "changed-only",
+                "write": False,
+                "full_governance_location": "schedule_or_workflow_dispatch_all",
+            },
+            "selector_parity": {
+                "selected_project_count": 0,
+                "validation_checked_project_count": None,
+                "matches": False,
+            },
+            "check_plan": {
+                "schema_version": 1,
+                "mode": "candidate-shadow-report-only",
+                "legacy_authoritative": True,
+                "candidate_report_only": True,
+                "changed_file_count": 0,
+                "selected_project_count": 0,
+                "total_project_count": baseline["totals"]["projects"],
+                "root_governance_changed": False,
+                "escalation_reasons": ["base_ref_unresolved"],
+                "commands": [],
+                "selected_projects": [],
+                "next_action_zh": "修复 base-ref 后重跑；diff 不可信时必须 fail-closed。",
+            },
+            "zero_write_delta": zero_write_delta,
+            "zero_diff": legacy_zero_diff_view(zero_write_delta),
+            "timing_telemetry": {**timings, "changed_scope_seconds": round(time.perf_counter() - started, 3), "total_seconds": round(time.perf_counter() - started, 3)},
+            "output_telemetry": {"validator_output_line_count": 1, "validator_stdout_bytes": len(str(exc).encode("utf-8"))},
+            "duration_seconds": round(time.perf_counter() - started, 3),
+        }
+        return 1, with_stable_summary_hash(summary)
     validate_argv = ["--changed-only", "--enforce-sync", "--semantic"]
     if base_ref:
         validate_argv.extend(["--base-ref", base_ref])
-    validation = run_validator_capture(validate_argv)
+    timing_start = time.perf_counter()
+    validation = run_validator_capture(validate_argv, changed_files=list(scope.get("changed_files") or []))
+    timings["validation_seconds"] = round(time.perf_counter() - timing_start, 3)
 
+    selected_project_count = int(scope.get("selected_project_count", len(scope["selected_projects"])))
+    total_project_count = int(scope.get("total_project_count", baseline["totals"]["projects"]))
+    defer_check_render = bool(scope.get("root_governance_changed") or scope.get("unknown_changed_files")) and selected_project_count > 1
+    timing_start = time.perf_counter()
     check_render_results: list[dict[str, Any]] = []
     check_render_skipped: list[dict[str, str]] = []
     check_render_failed = False
@@ -859,6 +1296,15 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
         project_id = str(project.get("project_id") or "")
         project_path = str(project.get("path") or "").replace("\\", "/").rstrip("/")
         project_root = root / project_path
+        if defer_check_render:
+            check_render_skipped.append(
+                {
+                    "project_id": project_id,
+                    "path": project_path,
+                    "reason": "deferred_root_or_unknown_fanout",
+                }
+            )
+            continue
         if not has_check_render_inputs(project_root):
             check_render_skipped.append(
                 {
@@ -889,11 +1335,33 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
         if result["drift_count"] or result["reference_issue_count"]:
             check_render_failed = True
         check_render_results.append(result)
+    timings["check_render_seconds"] = round(time.perf_counter() - timing_start, 3)
 
-    dirty = git_status_porcelain(root)
-    zero_diff = not dirty
-    selected_project_count = int(scope.get("selected_project_count", len(scope["selected_projects"])))
-    total_project_count = int(scope.get("total_project_count", baseline["totals"]["projects"]))
+    after_status = git_status_porcelain(root)
+    zero_write_delta = worktree_write_delta(
+        before_status,
+        after_status,
+        clean_start_required=clean_start_required,
+    )
+    validation_checked_project_count = validator_checked_project_count(validation)
+    selector_matches = validation_checked_project_count is None or validation_checked_project_count == selected_project_count
+    check_plan = build_check_plan(
+        scope,
+        validate_argv,
+        selected_project_count=selected_project_count,
+        total_project_count=total_project_count,
+    )
+    validation_stdout = "\n".join(str(line) for line in validation.get("output", []))
+    check_render_report = {
+        "report_only": True,
+        "drift_count": sum(int(item.get("drift_count", 0)) for item in check_render_results),
+        "reference_issue_count": sum(int(item.get("reference_issue_count", 0)) for item in check_render_results),
+        "error_count": len([item for item in check_render_results if item.get("error")]),
+        "deferred_count": len(
+            [item for item in check_render_skipped if item.get("reason") == "deferred_root_or_unknown_fanout"]
+        ),
+        "blocking_required_exit": False,
+    }
     summary = {
         "schema_version": 1,
         "command": "ci",
@@ -907,18 +1375,26 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
             "legacy_governance_missing": baseline["totals"]["legacy_governance_missing"],
         },
         "changed_scope": scope,
+        "check_plan": check_plan,
         "validation": validation,
         "check_render": {
             "checked": check_render_results,
             "checked_count": len(check_render_results),
             "skipped": check_render_skipped,
             "skipped_count": len(check_render_skipped),
+            "report": check_render_report,
+        },
+        "selector_parity": {
+            "selected_project_count": selected_project_count,
+            "validation_checked_project_count": validation_checked_project_count,
+            "matches": selector_matches,
         },
         "budget_telemetry": {
             "schema_version": 1,
             "mode": "changed-only-fast-gate",
             "unit": "project-scope-proxy",
             "selected_project_count": selected_project_count,
+            "validation_checked_project_count": validation_checked_project_count,
             "total_project_count": total_project_count,
             "full_project_scan_avoided_count": max(total_project_count - selected_project_count, 0),
             "semantic_scope": "changed-only",
@@ -927,15 +1403,34 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
             "write": False,
             "full_governance_location": "schedule_or_workflow_dispatch_all",
         },
-        "zero_diff": {
-            "clean": zero_diff,
-            "changed_count": len(dirty),
-            "changed_files": dirty[:20],
+        "candidate_shadow_comparison": {
+            "schema_version": 1,
+            "legacy_exit_code": int(validation.get("exit_code", 1)),
+            "candidate_report_only": True,
+            "selector_parity_matches": selector_matches,
+            "zero_write_delta_clean": bool(zero_write_delta.get("clean", False)),
+            "required_exit_code_sources": ["legacy_validation", "read_only_guard", "selector_parity_guard"],
+            "differences_report_only": (
+                ["check_render_drift_or_reference_issue"] if check_render_failed else []
+            ),
+        },
+        "zero_write_delta": zero_write_delta,
+        "zero_diff": legacy_zero_diff_view(zero_write_delta),
+        "timing_telemetry": {**timings, "total_seconds": round(time.perf_counter() - started, 3)},
+        "output_telemetry": {
+            "validator_output_line_count": len(validation.get("output", [])),
+            "validator_stdout_bytes": len(validation_stdout.encode("utf-8")),
         },
         "duration_seconds": round(time.perf_counter() - started, 3),
     }
-    exit_code = 0 if validation["exit_code"] == 0 and not check_render_failed and zero_diff else 1
-    return exit_code, summary
+    exit_code = (
+        0
+        if validation["exit_code"] == 0
+        and zero_write_delta.get("clean", False)
+        and selector_matches
+        else 1
+    )
+    return exit_code, with_stable_summary_hash(summary)
 
 
 def build_validate_argv(args: argparse.Namespace) -> list[str]:
@@ -977,25 +1472,25 @@ def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects
         raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
     changed = governance.git_changed_files(base_ref)
     projects = [item for item in governance.as_list(config.get("projects")) if isinstance(item, dict)]
-    root_required = {
-        str(item).replace("\\", "/")
-        for item in governance.as_list((config.get("root_governance") or {}).get("required_files"))
-    }
-    root_changed = any(is_root_governance_change(path, root_required) for path in changed)
-    excluded = root_changed_scope_excluded_projects(config) if root_changed else set()
-    selected = (
-        [project for project in projects if str(project.get("project_id") or "") not in excluded]
-        if root_changed
-        else [project for project in projects if governance.project_matches_changed(project, changed)]
-    )
+    selection = governance.changed_scope_selection(config, changed)
+    selected = list(selection["projects"])
     return {
         "schema_version": 1,
         "command": "changed-scope",
         "base_ref": base_ref or "",
+        "base_ref_status": "resolved",
         "changed_files": changed,
-        "root_governance_changed": root_changed,
-        "all_projects_required": bool(root_changed and not excluded),
-        "root_scope_excluded_projects": sorted(excluded),
+        "root_governance_changed": bool(selection["root_governance_changed"]),
+        "unknown_changed_files": list(selection["unknown_changed_files"]),
+        "full_scope_required": bool(selection["full_scope_required"]),
+        "all_projects_required": bool(selection["all_required_projects_covered"]),
+        "configured_root_scope_excluded_projects": list(selection["configured_root_scope_excluded_projects"]),
+        "root_scope_excluded_projects": list(selection["root_scope_excluded_projects"]),
+        "root_scope_configured_excluded_required_projects": list(
+            selection["root_scope_configured_excluded_required_projects"]
+        ),
+        "required_project_count": int(selection["required_project_count"]),
+        "selected_required_project_count": int(selection["selected_required_project_count"]),
         "selected_projects": [
             {
                 "project_id": str(project.get("project_id") or ""),
@@ -1045,26 +1540,66 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "changed-scope":
-        summary = build_changed_scope(args.base_ref, ROOT, PROJECTS_FILE)
+        try:
+            summary = build_changed_scope(args.base_ref, ROOT, PROJECTS_FILE)
+        except governance.GovernanceDiffError as exc:
+            print(
+                json.dumps(
+                    compact_error(exc.error_code, str(exc), base_ref=exc.base_ref or args.base_ref or "", command="changed-scope"),
+                    ensure_ascii=False,
+                    sort_keys=False,
+                    separators=(",", ":"),
+                )
+            )
+            return 1
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "render":
-        summary = render_registered_project(
-            args.project,
-            write=args.write,
-            view=args.view,
-            root=ROOT,
-            projects_file=PROJECTS_FILE,
-        )
+        try:
+            summary = render_registered_project(
+                args.project,
+                write=args.write,
+                view=args.view,
+                root=ROOT,
+                projects_file=PROJECTS_FILE,
+            )
+        except ValueError as exc:
+            print(
+                json.dumps(
+                    compact_error("UNKNOWN_PROJECT", str(exc), command="render"),
+                    ensure_ascii=False,
+                    sort_keys=False,
+                    separators=(",", ":"),
+                )
+            )
+            return 1
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "check-render":
-        summary = check_render_registered_project(args.project, view=args.view, root=ROOT, projects_file=PROJECTS_FILE)
+        try:
+            summary = check_render_registered_project(args.project, view=args.view, root=ROOT, projects_file=PROJECTS_FILE)
+        except ValueError as exc:
+            print(
+                json.dumps(
+                    compact_error("UNKNOWN_PROJECT", str(exc), command="check-render"),
+                    ensure_ascii=False,
+                    sort_keys=False,
+                    separators=(",", ":"),
+                )
+            )
+            return 1
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "ci":
         exit_code, summary = run_changed_only_ci(args.base_ref, root=ROOT, projects_file=PROJECTS_FILE)
-        print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+        try:
+            full_evidence_ref = write_full_evidence(summary, root=ROOT)
+            output = compact_ci_summary(summary, exit_code, full_evidence_ref)
+        except OSError as exc:
+            output = compact_error("EVIDENCE_WRITE_FAILED", str(exc), command="ci")
+            exit_code = 1
+        output = attach_compact_stdout_bytes(output)
+        print(compact_json_bytes(output).decode("utf-8"))
         return exit_code
     if args.command == "validate":
         return governance.main(build_validate_argv(args))

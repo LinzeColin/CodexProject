@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625",
+  "project_id": "ROOT",
+  "task_id": "M1-PRE-S3-CORRECTIVE-FIX",
+  "acceptance_ids": [
+    "ACC-M1-S2PC-P1-CLOSURE"
+  ],
+  "iteration_id": "ITER-20260625-M1-PRE-S3-CORRECTIVE-FIX",
+  "generated_at": "2026-06-25T20:15:00+10:00",
+  "implementation_base_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "depends_on": [
+    "S2PC-GATE:STOP in .git/codex-review/m1/m1-20260625-s1pa-3944f62d/final_adjudication.json"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:PRECOMMIT_PENDING_FINAL_DIFF_HASH",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "M1 pre-S3 corrective fix for S2PC P1 blockers before PROCEED_SHADOW re-adjudication",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_priority_enforced": true,
+  "stage_gate_status": {
+    "S1-GATE": "SHIP_READ_ONLY_EVIDENCE",
+    "S2PA-GATE": "SHIP",
+    "S2PB-GATE": "PASSED_THREE_ROUND2_REPORTS",
+    "S2PC-GATE": "STOP_BEFORE_THIS_FIX",
+    "M1-PRE-S3-CORRECTIVE-FIX": "IN_PROGRESS_PENDING_REVALIDATION"
+  },
+  "next_allowed_task": "RERUN_S2PC_AFTER_LOCAL_AND_CI_VALIDATION",
+  "closed_or_addressed_blockers": [
+    "S2-ADJ-001 selector false-negative: shared selector and selector_parity nonzero mismatch gate",
+    "S2-ADJ-002 required project root coverage: ci_mode=required projects remain covered despite configured exclusions",
+    "S2-ADJ-003 invalid base fail-open: changed-scope and ci expose unresolved base as STOP/nonzero",
+    "S2-ADJ-004 owner readability: compact zh-CN owner status and acceptance/evidence/rollback fields",
+    "S2-ADJ-005 durable evidence handoff: full_evidence_ref with path/artifact ref and sha256"
+  ],
+  "stop_conditions": {
+    "selector_mismatch_allowed": false,
+    "required_project_excluded_without_companion_proof": false,
+    "invalid_base_success_empty_scope": false,
+    "compact_output_machine_only_english": false,
+    "full_evidence_ref_missing": false,
+    "project_business_directory_touched": false
+  },
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    ".github/workflows/project-governance.yml",
+    "README.md"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+    "scripts/generate_governance_dashboard.py",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "evidence_refs": [
+    ".git/codex-review/m1/m1-20260625-s1pa-3944f62d/final_adjudication.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    ".github/workflows/project-governance.yml",
+    "README.md"
+  ],
+  "test_commands": [
+    "focused M1 S2PC unittest group covering selector/base/compact/evidence/workflow/readme",
+    "python -B scripts/lean_governance.py changed-scope --base-ref __missing_manual_check__",
+    "python -B scripts/lean_governance.py check-render --project __missing_project__",
+    "python -B -m unittest tests.governance.test_project_governance_validator -q (known unrelated historical/current failures remain; targeted M1 tests pass)"
+  ],
+  "test_results": [
+    {
+      "command": "focused M1 S2PC unittest group",
+      "result": "PASS",
+      "observed": "Ran 12 tests in 2.089s; OK."
+    },
+    {
+      "command": "changed-scope invalid base manual check",
+      "result": "PASS",
+      "observed": "compact zh-CN STOP JSON with error_code=UNRESOLVED_BASE; no traceback."
+    },
+    {
+      "command": "check-render unknown project manual check",
+      "result": "PASS",
+      "observed": "compact zh-CN STOP JSON with error_code=UNKNOWN_PROJECT; no traceback."
+    },
+    {
+      "command": "full test_project_governance_validator.py",
+      "result": "KNOWN_EXISTING_FAILURES_OUTSIDE_M1_SCOPE",
+      "observed": "M1 targeted tests pass; unrelated arxiv/Other8/project drift tests fail on current main state."
+    }
+  ],
+  "rollback": {
+    "action": "revert_this_m1_pre_s3_corrective_fix_commit",
+    "requires_file_restore": false,
+    "requires_archive_restore": false,
+    "notes": "本轮只改根治理执行链、测试、workflow、README 入口和 run manifest；不改项目业务目录。"
+  },
+  "unresolved_risks": [
+    "需要重新跑 S2PC 裁决，确认 P1 blockers 是否可关闭并给出 PROCEED_SHADOW。",
+    "需要 GitHub Project Governance CI 验证 changed-only artifact upload 和 required check 身份。",
+    "全量治理测试存在当前 main 历史/项目状态失败，未在本 M1 scope 内修复。"
+  ],
+  "summary": "M1 pre-S3 corrective fix closes the S2PC STOP blockers in code/test contract: shared changed-only selector, required project root coverage, invalid-base fail-closed, Chinese compact owner status, durable full evidence ref, workflow artifact/cache/concurrency guard, and README truth-source cleanup."
+}
