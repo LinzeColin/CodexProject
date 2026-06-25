@@ -128,6 +128,7 @@ from .stage2_sources import (
     run_s2pet03_us_fm_source_backbone,
     run_s2pet04_us_tp_d4_qualification,
     run_s2pit01_user_center,
+    run_s2pit02_runtime_dashboard,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -145,6 +146,7 @@ from .stage2_sources import (
     validate_s2pet03_us_fm_source_backbone_report,
     validate_s2pet04_us_tp_d4_qualification_report,
     validate_s2pit01_user_center_report,
+    validate_s2pit02_runtime_dashboard_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -850,6 +852,21 @@ def build_parser() -> argparse.ArgumentParser:
     s2pit01_user_center.add_argument("--storage-inspect-report", required=True, help="Passing read-only storage inspect report JSON.")
     s2pit01_user_center.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pit01_user_center.add_argument("--json", action="store_true", help="Print JSON user-center report.")
+
+    s2pit02_dashboard = subparsers.add_parser(
+        "stage2-runtime-dashboard",
+        help="Build S2PIT02 local-only runtime dashboard evidence from existing reports.",
+    )
+    s2pit02_dashboard.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pit02_dashboard.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pit02_dashboard.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pit02_dashboard.add_argument("--user-center-report", required=True, help="Passing S2PIT01 user-center report JSON.")
+    s2pit02_dashboard.add_argument("--runtime-audit-report", required=True, help="Passing runtime-audit report JSON.")
+    s2pit02_dashboard.add_argument("--watchdog-report", required=True, help="Passing watchdog report JSON.")
+    s2pit02_dashboard.add_argument("--storage-inspect-report", required=True, help="Passing read-only storage inspect report JSON.")
+    s2pit02_dashboard.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pit02_dashboard.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pit02_dashboard.add_argument("--json", action="store_true", help="Print JSON runtime dashboard report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2493,6 +2510,34 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- click_depth_gate: {report.get('click_depth_gate')}")
             print(f"- compatible_config_gate: {report.get('compatible_config_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-runtime-dashboard":
+        production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        report = run_s2pit02_runtime_dashboard(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            user_center_report=load_json_mapping(args.user_center_report),
+            runtime_audit_report=load_json_mapping(args.runtime_audit_report),
+            watchdog_report=load_json_mapping(args.watchdog_report),
+            storage_inspect_report=load_json_mapping(args.storage_inspect_report),
+            production_gate_state=production_gate_state,
+            write=not args.no_write,
+        )
+        errors = validate_s2pit02_runtime_dashboard_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- owner_center_gate: {report.get('owner_center_gate')}")
+            print(f"- runtime_state_gate: {report.get('runtime_state_gate')}")
+            print(f"- storage_state_gate: {report.get('storage_state_gate')}")
+            print(f"- production_boundary_gate: {report.get('production_boundary_gate')}")
+            print(f"- dashboard_section_gate: {report.get('dashboard_section_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

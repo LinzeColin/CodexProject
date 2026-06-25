@@ -705,6 +705,23 @@ S2PIT01_REQUIRED_GATES = (
 S2PIT01_MAX_CLICK_DEPTH = 2
 S2PIT01_EDITABLE_FACT_SOURCE = "config/owner_controls.yaml"
 S2PIT01_REPORT_FILENAME = "stage2_s2pit01_user_center_report.json"
+S2PIT02_RUNTIME_DASHBOARD_MODEL_ID = "adp-s2pit02-runtime-dashboard-v1"
+S2PIT02_ACCEPTANCE_ID = "ACC-S2PIT02-RUNTIME-DASHBOARD"
+S2PIT02_TASK_ID = "S2PIT02"
+S2PIT02_REQUIRED_SECTIONS = ("owner_center", "runtime", "storage", "production_boundaries", "next_actions")
+S2PIT02_REQUIRED_RUNTIME_ACTIONS = ("runtime_audit", "watchdog")
+S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "v7_2_contract_files_changed",
+)
+S2PIT02_OWNER_STATUS_PATH = "docs/owner/00_用户中心/01_当前状态.md"
+S2PIT02_REPORT_FILENAME = "stage2_s2pit02_runtime_dashboard_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -7197,6 +7214,235 @@ def validate_s2pit01_user_center_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("blocked S2PIT01 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pit01_user_center_ready") is not True:
         errors.append("passing S2PIT01 report requires s2pit01_user_center_ready=true")
+    return errors
+
+
+def build_s2pit02_runtime_dashboard_report(
+    *,
+    generated_at: str,
+    user_center_report: Mapping[str, Any],
+    runtime_audit_report: Mapping[str, Any],
+    watchdog_report: Mapping[str, Any],
+    storage_inspect_report: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build local-only S2PIT02 runtime/state dashboard evidence."""
+
+    production_gate = dict(production_gate_state or {})
+    user_errors = validate_s2pit01_user_center_report(user_center_report)
+    user_gate = "pass" if user_center_report.get("status") == "pass" and not user_errors else "blocked"
+    runtime_errors: list[str] = []
+    runtime_gate = "pass"
+    for action, report in (("runtime_audit", runtime_audit_report), ("watchdog", watchdog_report)):
+        if report.get("model_id") != "adp-stage1-local-runtime-recovery-v1":
+            runtime_errors.append(f"{action} report model_id must be adp-stage1-local-runtime-recovery-v1")
+        if report.get("action") != action:
+            runtime_errors.append(f"{action} report action must be {action}")
+        if report.get("status") != "pass":
+            runtime_errors.append(f"{action} report must pass")
+        for key in ("production_side_effects_enabled", "real_smtp_sent", "real_release_uploaded", "real_scheduler_installed"):
+            if report.get(key) is not False:
+                runtime_errors.append(f"{action}.{key} must be false")
+    if runtime_errors:
+        runtime_gate = "blocked"
+    storage_errors: list[str] = []
+    storage_gate = "pass"
+    if storage_inspect_report.get("model_id") != "adp-sqlite-data-model-v1":
+        storage_errors.append("storage inspect model_id must be adp-sqlite-data-model-v1")
+    if storage_inspect_report.get("action") != "inspect":
+        storage_errors.append("storage inspect action must be inspect")
+    if storage_inspect_report.get("status") != "pass":
+        storage_errors.append("storage inspect report must pass")
+    if int(storage_inspect_report.get("schema_version") or 0) < 1:
+        storage_errors.append("storage inspect schema_version must be >= 1")
+    if storage_errors:
+        storage_gate = "blocked"
+    production_errors: list[str] = []
+    for key in (
+        *S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_restore_executed",
+        "v7_1_current_switched",
+    ):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+    production_gate_status = "pass" if not production_errors else "blocked"
+    sections = {
+        "owner_center": {
+            "task_id": user_center_report.get("task_id"),
+            "status": user_center_report.get("status"),
+            "single_editable_fact_source": user_center_report.get("single_editable_fact_source"),
+            "owner_status_path": S2PIT02_OWNER_STATUS_PATH,
+        },
+        "runtime": {
+            "runtime_audit_status": runtime_audit_report.get("status"),
+            "watchdog_status": watchdog_report.get("status"),
+            "runtime_actions_observed": [runtime_audit_report.get("action"), watchdog_report.get("action")],
+        },
+        "storage": {
+            "status": storage_inspect_report.get("status"),
+            "schema_version": storage_inspect_report.get("schema_version"),
+            "table_count": storage_inspect_report.get("table_count"),
+            "db_path": storage_inspect_report.get("db_path"),
+        },
+        "production_boundaries": {
+            "stage2_production_accepted": False,
+            "integrated_production_accepted": False,
+            "real_smtp_sent": False,
+            "scheduler_enabled": False,
+            "release_upload_allowed": False,
+            "public_schema_changed": False,
+            "queue_schema_changed": False,
+            "v7_2_contract_files_changed": False,
+        },
+        "next_actions": {
+            "next_task_id": "S2PJT01_REVIEW_ACTION_ROI_STATE_MODEL_LOCAL_ONLY",
+            "blocking_policy": "P0/P1 and S2PMT07 still block integrated production acceptance",
+        },
+    }
+    missing_sections = [section for section in S2PIT02_REQUIRED_SECTIONS if section not in sections]
+    section_gate = "pass" if not missing_sections else "blocked"
+    blocking_reasons = [
+        *user_errors,
+        *runtime_errors,
+        *storage_errors,
+        *production_errors,
+        *(f"missing dashboard section: {section}" for section in missing_sections),
+    ]
+    gates = {
+        "owner_center_gate": user_gate,
+        "runtime_state_gate": runtime_gate,
+        "storage_state_gate": storage_gate,
+        "production_boundary_gate": production_gate_status,
+        "dashboard_section_gate": section_gate,
+    }
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+    return {
+        "model_id": S2PIT02_RUNTIME_DASHBOARD_MODEL_ID,
+        "acceptance_id": S2PIT02_ACCEPTANCE_ID,
+        "task_id": S2PIT02_TASK_ID,
+        "phase": "S2PI",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_sections": list(S2PIT02_REQUIRED_SECTIONS),
+        "required_runtime_actions": list(S2PIT02_REQUIRED_RUNTIME_ACTIONS),
+        "dashboard_sections": sections,
+        "owner_status_path": S2PIT02_OWNER_STATUS_PATH,
+        "s2pit02_runtime_dashboard_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pit02_runtime_dashboard(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    user_center_report: Mapping[str, Any],
+    runtime_audit_report: Mapping[str, Any],
+    watchdog_report: Mapping[str, Any],
+    storage_inspect_report: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PIT02 local runtime dashboard evidence without runtime side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pit02-runtime-dashboard"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pit02_runtime_dashboard_report(
+        generated_at=generated_at,
+        user_center_report=user_center_report,
+        runtime_audit_report=runtime_audit_report,
+        watchdog_report=watchdog_report,
+        storage_inspect_report=storage_inspect_report,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "runtime_dashboard_report_path": str(run_dir / "adp-s2pit02-runtime-dashboard-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pit02-runtime-dashboard-report.json", report)
+        _write_json(state / S2PIT02_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pit02_runtime_dashboard_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PIT02_RUNTIME_DASHBOARD_MODEL_ID:
+        errors.append("S2PIT02 model_id must be adp-s2pit02-runtime-dashboard-v1")
+    if report.get("task_id") != S2PIT02_TASK_ID:
+        errors.append("S2PIT02 task_id must be S2PIT02")
+    if report.get("acceptance_id") != S2PIT02_ACCEPTANCE_ID:
+        errors.append("S2PIT02 acceptance_id must be ACC-S2PIT02-RUNTIME-DASHBOARD")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PIT02 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        *S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "queue_mutation_allowed",
+        "ranking_algorithm_changed",
+        "source_adapter_changed",
+        "email_frontstage_changed",
+        "v7_1_current_switched",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PIT02 runtime dashboard evidence")
+    sections = report.get("dashboard_sections")
+    if not isinstance(sections, Mapping):
+        errors.append("S2PIT02 dashboard_sections must be a mapping")
+        sections = {}
+    missing_sections = [section for section in S2PIT02_REQUIRED_SECTIONS if section not in sections]
+    if missing_sections:
+        errors.append("S2PIT02 missing dashboard sections: " + ", ".join(missing_sections))
+    runtime = sections.get("runtime", {}) if isinstance(sections, Mapping) else {}
+    actions = set(runtime.get("runtime_actions_observed") or []) if isinstance(runtime, Mapping) else set()
+    missing_actions = [action for action in S2PIT02_REQUIRED_RUNTIME_ACTIONS if action not in actions]
+    if missing_actions:
+        errors.append("S2PIT02 missing runtime actions: " + ", ".join(missing_actions))
+    if report.get("owner_status_path") != S2PIT02_OWNER_STATUS_PATH:
+        errors.append("S2PIT02 owner_status_path must be docs/owner/00_用户中心/01_当前状态.md")
+    for gate in (
+        "owner_center_gate",
+        "runtime_state_gate",
+        "storage_state_gate",
+        "production_boundary_gate",
+        "dashboard_section_gate",
+    ):
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PIT02 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PIT02 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pit02_runtime_dashboard_ready") is not True:
+        errors.append("passing S2PIT02 report requires s2pit02_runtime_dashboard_ready=true")
     return errors
 
 

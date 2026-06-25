@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PI / S2PIT01_USER_CENTER_LOCAL_EVIDENCE_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `79 / 81 / 617`
-- Active formulas/parameters: `81 / 600`
-- Machine checked formulas/parameters: `81 / 600`
+- Phase/Gate: `S2PI / S2PIT02_RUNTIME_DASHBOARD_LOCAL_ONLY`
+- Models/Formulas/Parameters total: `80 / 82 / 625`
+- Active formulas/parameters: `82 / 608`
+- Machine checked formulas/parameters: `82 / 608`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PIT01_USER_CENTER_LOCAL_EVIDENCE_NO_PRODUCTION`
+- Release gate: `S2PIT02_RUNTIME_DASHBOARD_LOCAL_ONLY`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57`
@@ -45,9 +45,9 @@
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PCT02`
+- Next governance task: `S2PJT01`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `S2PIT02_RUNTIME_DASHBOARD_LOCAL_ONLY`
+- Next executable task: `S2PJT01_REVIEW_ACTION_ROI_STATE_MODEL_LOCAL_ONLY`
 - Pending/stale events: `117`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

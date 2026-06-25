@@ -1712,6 +1712,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PIT02"
+    phase: "S2PI"
+    objective: "Implement local-only runtime dashboard evidence for the Chinese owner center."
+    scope: "Aggregate the completed S2PIT01 user-center report, Stage 1 runtime audit, watchdog, read-only storage inspect, and explicit production-boundary state into a local runtime dashboard report and Chinese current-state page."
+    non_scope: "No live service probe, no SMTP, no scheduler, no Release upload, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no Email V1 runtime change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no owner-experience final acceptance, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PIT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/owner/00_用户中心/01_当前状态.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PIT02-RUNTIME-DASHBOARD"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit02_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pit02_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 114 OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md", "governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json", "arxiv-daily-push/docs/owner/00_用户中心/01_当前状态.md", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PIT02 can be mistaken for live production monitoring or final owner-experience acceptance; it is only local dashboard evidence and must keep all production side-effect gates false."
+    rollback: "Revert S2PIT02 runtime dashboard code, CLI, tests, owner status page, governance registrations, phase record, manifest, and events; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037"
     phase: "E"
     objective: "Correct the manual delivery email and MP4 front-stage after run 27934320671 proved the cloud Release/Gmail path but exposed low-value human-facing format."
