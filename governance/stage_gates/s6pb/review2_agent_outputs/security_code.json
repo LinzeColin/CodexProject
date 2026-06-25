@@ -1,0 +1,59 @@
+{
+  "review_agent": "S6PBT01 Agent 1 security_code",
+  "baseline": {
+    "branch": "main",
+    "head": "951e5848d1970e490ef0e1a0dabb1595faf4aa32",
+    "worktree": "clean"
+  },
+  "mode": "READ_ONLY",
+  "tests_executed": "NOT_RUN",
+  "findings": [
+    {
+      "finding_id": "S6PBT01-A1-LOW-OUTPUT-DIR-GUARD",
+      "severity": "Low",
+      "title": "gate 生成脚本的 --output-dir 未限制在仓库内，存在本地误写路径风险",
+      "evidence_paths": [
+        "tools/wave1_gate.py:541",
+        "tools/wave1_gate.py:554",
+        "tools/wave1_gate.py:581",
+        "tools/wave2_gate.py:605",
+        "tools/wave2_gate.py:618",
+        "tools/wave2_gate.py:645"
+      ],
+      "repro_or_check": "只读检查代码：两个脚本均把 output_dir = repo / args.output_dir 作为写入目标，并在非 --check 模式写入报告文件；若传入绝对路径或 .. 路径，未先 resolve 后校验仍在 repo 下。",
+      "status": "open",
+      "recommendation": "对 --output-dir 做 resolve 后的仓库内路径约束，或移除自定义输出目录能力，仅允许默认 governance/stage_gates 目录。"
+    },
+    {
+      "finding_id": "S6PBT01-A1-LOW-DIFF-RECOMPUTE",
+      "severity": "Low",
+      "title": "S6PA/S6PAT02 安全边界测试主要信任 manifest 自述字段，缺少测试内实时 diff 复算",
+      "evidence_paths": [
+        "tests/governance/test_project_governance_validator.py:7734",
+        "tests/governance/test_project_governance_validator.py:7740",
+        "tests/governance/test_project_governance_validator.py:7748",
+        "tests/governance/test_project_governance_validator.py:7891",
+        "tests/governance/test_project_governance_validator.py:7896"
+      ],
+      "repro_or_check": "只读检查测试实现：测试断言 scope_guard、changed_files_actual、stop_conditions 等 manifest 内容，但未在测试内独立运行 git diff 复算 changed files。抽查未发现 S6PAT02/S6PA 修改运行代码或高风险脚本。",
+      "status": "open",
+      "recommendation": "在治理测试或生成脚本中复算实际 diff，并与 manifest 的 changed_files_actual/content_tree_hash 比对，避免未来 manifest 漏报高风险文件。"
+    },
+    {
+      "finding_id": "S6PBT01-A1-INFO-NO-EXTERNAL-AUTOMATION",
+      "severity": "Info",
+      "title": "未发现 S6PAT02 8 项目 Owner 路径引入 OpenD/邮件/launchd/app 打包/交易触发面",
+      "evidence_paths": [
+        "Serenity-Alipay/README.md:6",
+        "Serenity-Alipay/README.md:14",
+        "OpenAIDatabase/README.md:5",
+        "FIFA/README.md:5",
+        "governance/stage_gates/s6pa/s6pa_gate.md:30"
+      ],
+      "repro_or_check": "只读检查相关提交文件清单与 README 首屏边界；S6PAT02 各项目提交范围为 README + manifest + governance test，未见运行代码、外部自动化脚本、邮件/OpenD/launchd/app 打包入口变更。",
+      "status": "closed",
+      "recommendation": "保持 README 首屏高风险边界与 manifest scope_guard 同步；后续若改运行路径，必须从 S6PBT01 独立复审重新评估。"
+    }
+  ],
+  "critical_high_open_blocker": false
+}

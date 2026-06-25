@@ -21,9 +21,10 @@
     "GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625"
   ],
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f7bd73bdcbab9471610815743edd90b4c4cfc835dbfed3d632206117c2adfa1c",
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "CI_ATTESTED",
   "ci_attestation_subject": "Other8 S6PA-GATE Owner/Agent path closure with CLI evidence",
-  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "PR_181_PROJECT_GOVERNANCE_RUN_28149264171_SUCCESS_AND_MAIN_PUSH_RUN_28149290380_SUCCESS",
+  "result_commit": "951e5848d1970e490ef0e1a0dabb1595faf4aa32",
   "language_rule": "中文优先，默认全局中文",
   "owner_readable_priority_enforced": true,
   "stage_gate_status": {

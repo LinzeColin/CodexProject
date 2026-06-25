@@ -1,0 +1,88 @@
+{
+  "review_agent": "S6PBT01 Agent 2 runtime_stress",
+  "baseline": {
+    "branch": "main",
+    "head": "951e5848d1970e490ef0e1a0dabb1595faf4aa32"
+  },
+  "mode": "READ_ONLY",
+  "tests_executed": "NOT_RUN",
+  "findings": [
+    {
+      "finding_id": "S6PBT01-A2-MED-WHKM-KEY-DRIFT",
+      "severity": "Medium",
+      "title": "S6PAT02 历史状态键名漂移，可能影响机器汇总",
+      "evidence_paths": [
+        "governance/run_manifests/GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+        "governance/run_manifests/GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+        "governance/run_manifests/GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json"
+      ],
+      "repro_or_check": "PFI/Serenity manifest 使用 S6PAT02_WHKMSALARY，最终 S6PA gate 使用 S6PAT02_WHKM_SALARY。",
+      "status": "open",
+      "recommendation": "统一 stage_gate_status 键名，并加 validator 覆盖历史链路键名。"
+    },
+    {
+      "finding_id": "S6PBT01-A2-LOW-S6PA-CI-REFERENCE",
+      "severity": "Low",
+      "title": "S6PA gate manifest 的 CI 引用仍是本地 precommit pending",
+      "evidence_paths": [
+        "governance/run_manifests/GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json",
+        "https://github.com/LinzeColin/CodexProject/actions/runs/28149264171",
+        "https://github.com/LinzeColin/CodexProject/actions/runs/28149290380"
+      ],
+      "repro_or_check": "manifest 记录 LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI；只读 GitHub 查询显示 PR CI 与 main push CI 均为 Project Governance success。",
+      "status": "open",
+      "recommendation": "补 post-merge CI attestation/run id，避免本地 manifest 与远端事实脱节。"
+    },
+    {
+      "finding_id": "S6PBT01-A2-INFO-CI-SUCCESS",
+      "severity": "Info",
+      "title": "PR/main CI 当前可核验为成功",
+      "evidence_paths": [
+        "https://github.com/LinzeColin/CodexProject/pull/181",
+        "https://github.com/LinzeColin/CodexProject/actions/runs/28149264171",
+        "https://github.com/LinzeColin/CodexProject/actions/runs/28149290380"
+      ],
+      "repro_or_check": "PR #181 merged；PR head Project Governance success；main head push Project Governance success。",
+      "status": "closed",
+      "recommendation": "无需阻塞。"
+    },
+    {
+      "finding_id": "S6PBT01-A2-INFO-CHANGED-ONLY",
+      "severity": "Info",
+      "title": "changed-only gate 范围受控且未触碰运行代码",
+      "evidence_paths": [
+        ".github/workflows/project-governance.yml",
+        "scripts/lean_governance.py"
+      ],
+      "repro_or_check": "HEAD~1..HEAD 仅 5 个 governance/test 文件；workflow 对 pull_request/push 运行 ci --changed-only；脚本摘要 write=false 且检查 zero_diff。",
+      "status": "closed",
+      "recommendation": "保持 PR/main fast gate 与 schedule/manual all gate 分离。"
+    },
+    {
+      "finding_id": "S6PBT01-A2-INFO-PASS-NOT-RUN",
+      "severity": "Info",
+      "title": "S6PA-GATE 诚实区分 PASS 与 NOT_RUN",
+      "evidence_paths": [
+        "governance/stage_gates/s6pa/interaction_smoke_tests.log",
+        "governance/stage_gates/s6pa/s6pa_gate.md"
+      ],
+      "repro_or_check": "Alpha/EVA_OS 明确为 NOT_RUN_ENV_BLOCKER_RECORDED；S6PB-GATE 和 S6-GATE 仍为 IN_PROGRESS。",
+      "status": "closed",
+      "recommendation": "无需阻塞。"
+    },
+    {
+      "finding_id": "S6PBT01-A2-INFO-TOKEN-ROI",
+      "severity": "Info",
+      "title": "Token ROI 未发现收益放大证据",
+      "evidence_paths": [
+        "EVA_OS/src/quantlab/value/token_roi.py",
+        "EVA_OS/tests/test_token_roi_ledger.py",
+        "EVA_OS/.gitignore"
+      ],
+      "repro_or_check": "artifact 默认 Unquantified/roi_score null；PendingReview 不进量化汇总；手工价值文件已 gitignored。",
+      "status": "closed",
+      "recommendation": "继续要求 Reviewed + 金额证据后才能量化。"
+    }
+  ],
+  "critical_high_open_blockers": false
+}

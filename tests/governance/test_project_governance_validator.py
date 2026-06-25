@@ -7938,6 +7938,165 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["rollback"]["requires_file_restore"])
         self.assertFalse(manifest["rollback"]["requires_archive_restore"])
 
+    def test_other8_s6pbt01_three_agent_review_records_high_closure(self) -> None:
+        review_dir = ROOT / "governance" / "stage_gates" / "s6pb" / "review2_agent_outputs"
+        closure_path = ROOT / "governance" / "stage_gates" / "s6pb" / "closure_matrix.csv"
+        summary_path = ROOT / "governance" / "stage_gates" / "s6pb" / "s6pbt01_three_agent_review.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json"
+        )
+        for path in (review_dir, closure_path, summary_path, manifest_path):
+            self.assertTrue(path.exists(), path)
+
+        outputs = {
+            "security_code": json.loads((review_dir / "security_code.json").read_text(encoding="utf-8")),
+            "runtime_stress": json.loads((review_dir / "runtime_stress.json").read_text(encoding="utf-8")),
+            "ux_architecture": json.loads((review_dir / "ux_architecture.json").read_text(encoding="utf-8")),
+        }
+        self.assertEqual(set(outputs), {"security_code", "runtime_stress", "ux_architecture"})
+        for name, output in outputs.items():
+            with self.subTest(agent=name):
+                self.assertEqual(output["mode"], "READ_ONLY")
+                self.assertEqual(output["tests_executed"], "NOT_RUN")
+                self.assertTrue(output["findings"])
+
+        with closure_path.open(encoding="utf-8", newline="") as handle:
+            closure_rows = list(csv.DictReader(handle))
+        closure = {row["finding_id"]: row for row in closure_rows}
+        self.assertEqual(len(closure_rows), 16)
+        self.assertEqual(
+            closure["S6PBT01-A3-HIGH-ALPHA-CURRENT-STATE"]["post_fix_status"],
+            "CLOSED_BY_THIS_PR",
+        )
+        self.assertEqual(
+            closure["S6PBT01-A2-MED-WHKM-KEY-DRIFT"]["post_fix_status"],
+            "CLOSED_BY_THIS_PR",
+        )
+        self.assertEqual(
+            closure["S6PBT01-A3-MED-DASHBOARD-DECISION-POLICY"]["post_fix_status"],
+            "OPEN_DEFERRED_S6PBT02",
+        )
+        open_critical_high = [
+            row
+            for row in closure_rows
+            if row["severity"] in {"Critical", "High"} and row["post_fix_status"].startswith("OPEN")
+        ]
+        self.assertEqual(open_critical_high, [])
+
+        alpha_readme = (ROOT / "Alpha" / "README.md").read_text(encoding="utf-8")
+        alpha_first_screen = "\n".join(alpha_readme.splitlines()[:14])
+        for required in {
+            "产品 canonical 当前状态",
+            "`S5` / `S5PA` / `S5PAT01`",
+            "`S5PA-GATE-IN-PROGRESS`",
+            "docs/governance/roadmap.yaml",
+            "功能清单",
+            "开发记录",
+            "本轮 Owner-flow 治理任务",
+            "不改产品 canonical current_task",
+            "S6PA-GATE",
+            "S6PB-GATE",
+            "S6-GATE",
+            "操作路径",
+        }:
+            self.assertIn(required, alpha_first_screen)
+        self.assertNotIn("- 当前任务：`S6PAT02`", alpha_first_screen)
+
+        pfi_manifest_text = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json"
+        ).read_text(encoding="utf-8")
+        serenity_manifest_text = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json"
+        ).read_text(encoding="utf-8")
+        for text in (pfi_manifest_text, serenity_manifest_text):
+            self.assertIn("S6PAT02_WHKM_SALARY", text)
+            self.assertNotIn("S6PAT02_WHKMSALARY", text)
+
+        alpha_manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json"
+            ).read_text(encoding="utf-8")
+        )
+        s6pa_manifest = json.loads(
+            (
+                ROOT
+                / "governance"
+                / "run_manifests"
+                / "GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(alpha_manifest["binding_status"], "CI_ATTESTED")
+        self.assertEqual(alpha_manifest["result_commit"], "fc8b20090494ae51e99a400dc308d958bface441")
+        self.assertIn("28142583948", alpha_manifest["ci_run_reference"])
+        self.assertIn("28142613322", alpha_manifest["ci_run_reference"])
+        self.assertEqual(s6pa_manifest["binding_status"], "CI_ATTESTED")
+        self.assertEqual(s6pa_manifest["result_commit"], "951e5848d1970e490ef0e1a0dabb1595faf4aa32")
+        self.assertIn("28149264171", s6pa_manifest["ci_run_reference"])
+        self.assertIn("28149290380", s6pa_manifest["ci_run_reference"])
+
+        summary = summary_path.read_text(encoding="utf-8")
+        for required in {
+            "S6PBT01 三 Agent 独立复审",
+            "PASSED_AFTER_HIGH_FIX",
+            "中文优先，默认全局中文",
+            "用户可读优先",
+            "High open after",
+            "S6PBT02",
+            "S6PB-GATE",
+            "S6-GATE",
+            "不得在最终 S6-GATE 中无证据忽略",
+        }:
+            self.assertIn(required, summary)
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["task_id"], "S6PBT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PBT01"])
+        self.assertEqual(manifest["stage_gate_status"]["S6PBT01"], "PASSED_AFTER_HIGH_FIX")
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S6PBT02")
+        self.assertEqual(manifest["review_summary"]["agent_count"], 3)
+        self.assertEqual(manifest["review_summary"]["critical_open_after"], 0)
+        self.assertEqual(manifest["review_summary"]["high_open_after"], 0)
+        self.assertEqual(manifest["review_summary"]["high_closed_by_this_pr"], 1)
+        self.assertGreaterEqual(manifest["review_summary"]["medium_open_after"], 1)
+        for key, value in manifest["s6pbt01_stop_conditions"].items():
+            self.assertFalse(value, key)
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "Alpha/README.md",
+                "governance/run_manifests/GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json",
+                "governance/run_manifests/GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+                "governance/run_manifests/GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+                "governance/run_manifests/GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json",
+                "governance/run_manifests/GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json",
+                "governance/stage_gates/s6pb/review2_agent_outputs/security_code.json",
+                "governance/stage_gates/s6pb/review2_agent_outputs/runtime_stress.json",
+                "governance/stage_gates/s6pb/review2_agent_outputs/ux_architecture.json",
+                "governance/stage_gates/s6pb/closure_matrix.csv",
+                "governance/stage_gates/s6pb/s6pbt01_three_agent_review.md",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertEqual(set(manifest["changed_files_declared"]), changed)
+        self.assertFalse(manifest["rollback"]["requires_file_restore"])
+        self.assertFalse(manifest["rollback"]["requires_archive_restore"])
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",

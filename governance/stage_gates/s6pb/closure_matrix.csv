@@ -1,0 +1,17 @@
+finding_id,agent,severity,title,raw_status,post_fix_status,closure_evidence,next_action
+S6PBT01-A1-LOW-OUTPUT-DIR-GUARD,security_code,Low,gate output-dir path guard missing,open,OPEN_DEFERRED_S6PBT02,tools/wave1_gate.py; tools/wave2_gate.py,Add resolved-path guard or remove custom output dir in S6PBT02 if prioritized
+S6PBT01-A1-LOW-DIFF-RECOMPUTE,security_code,Low,manifest changed-files self-report not independently recomputed,open,OPEN_DEFERRED_S6PBT02,tests/governance/test_project_governance_validator.py,Add diff recompute guard in S6PBT02 if prioritized
+S6PBT01-A1-INFO-NO-EXTERNAL-AUTOMATION,security_code,Info,no external automation trigger found,closed,CLOSED_NO_ACTION,Serenity-Alipay/README.md; OpenAIDatabase/README.md; FIFA/README.md,No action required
+S6PBT01-A2-MED-WHKM-KEY-DRIFT,runtime_stress,Medium,S6PAT02 whkmSalary status key drift,open,CLOSED_BY_THIS_PR,PFI and Serenity manifests now use S6PAT02_WHKM_SALARY,Keep validator assertion
+S6PBT01-A2-LOW-S6PA-CI-REFERENCE,runtime_stress,Low,S6PA gate CI reference still local pending,open,CLOSED_BY_THIS_PR,S6PA gate manifest now records PR 181 and main push CI run ids,No action required
+S6PBT01-A2-INFO-CI-SUCCESS,runtime_stress,Info,PR/main CI success verified,closed,CLOSED_NO_ACTION,PR 181 run 28149264171; main run 28149290380,No action required
+S6PBT01-A2-INFO-CHANGED-ONLY,runtime_stress,Info,changed-only gate remains scoped,closed,CLOSED_NO_ACTION,.github/workflows/project-governance.yml; scripts/lean_governance.py,No action required
+S6PBT01-A2-INFO-PASS-NOT-RUN,runtime_stress,Info,S6PA distinguishes PASS and NOT_RUN,closed,CLOSED_NO_ACTION,governance/stage_gates/s6pa/interaction_smoke_tests.log,No action required
+S6PBT01-A2-INFO-TOKEN-ROI,runtime_stress,Info,Token ROI not inflated,closed,CLOSED_NO_ACTION,EVA_OS/src/quantlab/value/token_roi.py,No action required
+S6PBT01-A3-HIGH-ALPHA-CURRENT-STATE,ux_architecture,High,Alpha Owner current state has multiple-source conflict,open,CLOSED_BY_THIS_PR,Alpha README now separates product canonical S5/S5PA/S5PAT01 from S6PAT02 Owner-flow task,Keep Alpha canonical sync assertion
+S6PBT01-A3-MED-S6PA-CI-BINDING,ux_architecture,Medium,S6PA evidence binding mixes PASSED with pending,open,CLOSED_BY_THIS_PR,S6PA gate and Alpha S6PAT02 manifests now record main/CI bound evidence,No action required
+S6PBT01-A3-MED-STRING-ONLY-VALIDATION,ux_architecture,Medium,S6PAT02/S6PA validation is string-heavy,open,PARTIAL_CLOSED_ALPHA_DEFER_REMAINDER,Alpha canonical-vs-owner-flow assertion added; broader cross-project recompute deferred,S6PBT02 should decide whether to broaden sync validator
+S6PBT01-A3-MED-DASHBOARD-DECISION-POLICY,ux_architecture,Medium,dashboard generator hardcodes Owner decision policy,open,OPEN_DEFERRED_S6PBT02,scripts/generate_governance_dashboard.py,Move policy to canonical governance or output UNKNOWN in a separate task
+S6PBT01-A3-LOW-ALPHA-OPERATION-PATH,ux_architecture,Low,Alpha operation path Chinese-first gap,open,CLOSED_BY_THIS_PR,Alpha README now includes 操作路径 in first screen,No action required
+S6PBT01-A3-INFO-CHINESE-FIRST,ux_architecture,Info,S4/S5/S6PA Chinese-first evidence holds,closed,CLOSED_NO_ACTION,governance/stage_gates/s4pc; governance/stage_gates/s5pc; governance/stage_gates/s6pa,No action required
+S6PBT01-A3-INFO-FAST-GATE-SEPARATION,ux_architecture,Info,full governance computation not back in every dev action,closed,CLOSED_NO_ACTION,README.md; AGENTS.md; .github/workflows/project-governance.yml,No action required
