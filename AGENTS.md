@@ -19,7 +19,7 @@ rules in `docs/governance/STANDARD.md`.
   summaries, PR descriptions, CI-facing summaries, owner-facing docs, and
   project human-entry files should use Chinese by default.
 - `开发记录` must directly contain the project's full Roadmap: Stage -> Phase ->
-  Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated hours,
+  Task, a task ID matching `^S[1-9]*P[0-9]T[0-9]{2}$`, estimated hours,
   derived percentages, Stop Conditions, Stop Gates, required evidence, and
   failure actions.
 - If a project exposes `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml`, that lock is
