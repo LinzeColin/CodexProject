@@ -13,6 +13,9 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PFT04_REQUIRED_ZONE_IDS,
+    S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES,
+    S2PFT04_SPECIAL_ZONE_MODEL_ID,
     S2PFT03_KEY_CITY_COVERAGE_MODEL_ID,
     S2PFT03_REQUIRED_CITY_DEPARTMENT_ROLES,
     S2PFT03_REQUIRED_CITY_IDS,
@@ -34,6 +37,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pft04_special_zone_discovery_report,
     build_s2pft03_key_city_coverage_report,
     build_s2pft02_hk_mo_independent_profile_report,
     build_s2pft01_china_provincial_template_coverage_report,
@@ -51,6 +55,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pft04_special_zone_discovery,
     run_s2pft03_key_city_coverage,
     run_s2pft02_hk_mo_independent_profile,
     run_s2pft01_china_provincial_template_coverage,
@@ -66,6 +71,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pft04_special_zone_discovery_report,
     validate_s2pft03_key_city_coverage_report,
     validate_s2pft02_hk_mo_independent_profile_report,
     validate_s2pft01_china_provincial_template_coverage_report,
@@ -971,6 +977,57 @@ def key_city_records() -> list[dict]:
                 "production_affected": False,
                 "real_smtp_sent": False,
                 "evidence_refs": [f"fixture:s2pft03:{city_id}"],
+            }
+        )
+    return records
+
+
+SPECIAL_ZONE_FIXTURE_ROWS = (
+    ("xiongan_new_area", "雄安新区", "national_new_area", ("beijing", "tianjin"), "xiongan.gov.cn", ("technology_innovation", "green_development")),
+    ("shanghai_pudong_new_area", "上海浦东新区", "national_new_area", ("shanghai",), "pudong.gov.cn", ("finance", "technology_innovation")),
+    ("shenzhen_qianhai", "深圳前海深港现代服务业合作区", "cooperation_zone", ("shenzhen",), "qh.sz.gov.cn", ("finance", "cross_border_cooperation")),
+    ("hengqin_guangdong_macao", "横琴粤澳深度合作区", "cooperation_zone", ("zhuhai",), "hengqin.gov.cn", ("cross_border_cooperation", "digital_economy")),
+    ("hainan_free_trade_port", "海南自由贸易港", "free_trade_port", ("guangzhou",), "hainan.gov.cn", ("free_trade", "industrial_upgrade")),
+    ("shanghai_lingang", "上海临港新片区", "new_area_subzone", ("shanghai",), "lingang.gov.cn", ("advanced_manufacturing", "free_trade")),
+    ("beijing_zhongguancun", "北京中关村国家自主创新示范区", "innovation_demonstration_zone", ("beijing",), "zgcgw.beijing.gov.cn", ("technology_innovation", "digital_economy")),
+    ("suzhou_industrial_park", "苏州工业园区", "industrial_park", ("suzhou",), "sipac.gov.cn", ("advanced_manufacturing", "green_development")),
+    ("tianjin_binhai_new_area", "天津滨海新区", "national_new_area", ("tianjin",), "bh.gov.cn", ("advanced_manufacturing", "finance")),
+    ("chongqing_liangjiang_new_area", "重庆两江新区", "national_new_area", ("chongqing",), "ljxq.gov.cn", ("industrial_upgrade", "digital_economy")),
+)
+
+
+def key_city_coverage_report() -> dict:
+    return build_s2pft03_key_city_coverage_report(
+        generated_at=GENERATED_AT,
+        hk_mo_profile_report=hk_mo_profile_report(),
+        city_records=key_city_records(),
+    )
+
+
+def special_zone_records() -> list[dict]:
+    records: list[dict] = []
+    assert tuple(row[0] for row in SPECIAL_ZONE_FIXTURE_ROWS) == S2PFT04_REQUIRED_ZONE_IDS
+    for index, (zone_id, zone_name, zone_type, parent_city_ids, domain, policy_focus_areas) in enumerate(SPECIAL_ZONE_FIXTURE_ROWS):
+        records.append(
+            {
+                "zone_id": zone_id,
+                "zone_name": zone_name,
+                "zone_type": zone_type,
+                "parent_city_ids": list(parent_city_ids),
+                "authority_roles": list(S2PFT04_REQUIRED_ZONE_AUTHORITY_ROLES),
+                "policy_focus_areas": list(policy_focus_areas),
+                "health_tier": ("green", "yellow", "red")[index % 3],
+                "health_explanation": "fixture health tier covers official zone authority, dedupe, parent-city mapping, and metadata freshness",
+                "official_domain": domain,
+                "source_url": f"https://www.{domain}/",
+                "authority_gate": "pass",
+                "dedupe_gate": "pass",
+                "metadata_only": True,
+                "pdf_downloaded": False,
+                "full_text_extracted": False,
+                "production_affected": False,
+                "real_smtp_sent": False,
+                "evidence_refs": [f"fixture:s2pft04:{zone_id}"],
             }
         )
     return records
@@ -1916,6 +1973,89 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["key_city_coverage_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pft03_key_city_coverage_report.json").is_file())
 
+    def test_s2pft04_special_zone_discovery_validates_without_production(self) -> None:
+        report = build_s2pft04_special_zone_discovery_report(
+            generated_at=GENERATED_AT,
+            key_city_coverage_report=key_city_coverage_report(),
+            zone_records=special_zone_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PFT04_SPECIAL_ZONE_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PFT04-ZONES")
+        self.assertEqual(report["task_id"], "S2PFT04")
+        self.assertEqual(report["legacy_task_id"], "S2P5T04")
+        self.assertEqual(report["phase"], "S2PF")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["upstream_key_city_coverage_gate"], "pass")
+        self.assertEqual(report["zone_coverage_gate"], "pass")
+        self.assertEqual(report["zone_authority_role_gate"], "pass")
+        self.assertEqual(report["zone_type_policy_gate"], "pass")
+        self.assertEqual(report["parent_city_mapping_gate"], "pass")
+        self.assertEqual(report["health_tier_gate"], "pass")
+        self.assertEqual(report["metadata_only_gate"], "pass")
+        self.assertEqual(report["required_zone_count"], 10)
+        self.assertEqual(set(report["zone_ids_observed"]), set(S2PFT04_REQUIRED_ZONE_IDS))
+        self.assertTrue(report["s2pf_special_zone_discovery_ready"])
+        self.assertTrue(report["special_zone_discovery_modeled"])
+        self.assertFalse(report["special_zone_discovery_enabled"])
+        self.assertFalse(report["d3_full_source_domain_accepted"])
+        self.assertFalse(report["formal_production_inclusion"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["schema_migration_allowed"])
+        self.assertFalse(report["v7_2_contract_files_changed"])
+        self.assertFalse(report["v7_2_mail_or_schema_prerun"])
+        self.assertFalse(validate_s2pft04_special_zone_discovery_report(report))
+
+    def test_s2pft04_special_zone_discovery_blocks_missing_zone_roles_parent_and_side_effects(self) -> None:
+        records = [record for record in special_zone_records() if record["zone_id"] != "chongqing_liangjiang_new_area"]
+        records[0] = dict(
+            records[0],
+            authority_roles=["government_portal"],
+            parent_city_ids=["not_a_key_city"],
+            production_affected=True,
+            real_smtp_sent=True,
+        )
+        report = build_s2pft04_special_zone_discovery_report(
+            generated_at=GENERATED_AT,
+            key_city_coverage_report=key_city_coverage_report(),
+            zone_records=records,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["zone_coverage_gate"], "blocked")
+        self.assertEqual(report["zone_authority_role_gate"], "blocked")
+        self.assertEqual(report["parent_city_mapping_gate"], "blocked")
+        self.assertEqual(report["metadata_only_gate"], "blocked")
+        self.assertFalse(report["s2pf_special_zone_discovery_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("chongqing_liangjiang_new_area", joined)
+        self.assertIn("authority", joined)
+        self.assertIn("parent_city", joined)
+        self.assertIn("production", joined)
+        self.assertTrue(validate_s2pft04_special_zone_discovery_report(report))
+
+    def test_s2pft04_special_zone_discovery_persists_report_without_production(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pft04_special_zone_discovery(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                key_city_coverage_report=key_city_coverage_report(),
+                zone_records=special_zone_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pft04_special_zone_discovery_report(report))
+            self.assertFalse(report["d3_full_source_domain_accepted"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["schema_migration_allowed"])
+            self.assertTrue(Path(report["special_zone_discovery_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pft04_special_zone_discovery_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -2703,6 +2843,45 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["required_city_count"], 24)
         self.assertTrue(payload["s2pf_key_city_coverage_ready"])
         self.assertTrue(payload["city_coverage_modeled"])
+        self.assertFalse(payload["d3_full_source_domain_accepted"])
+
+    def test_cli_stage2_special_zone_discovery_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            key_city_report_path = Path(tmp) / "key-city-coverage-report.json"
+            zone_records_path = Path(tmp) / "zone-records.json"
+            key_city_report_path.write_text(json.dumps(key_city_coverage_report(), ensure_ascii=False), encoding="utf-8")
+            zone_records_path.write_text(
+                json.dumps({"zone_records": special_zone_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-special-zone-discovery",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--key-city-coverage-report",
+                    str(key_city_report_path),
+                    "--zone-records",
+                    str(zone_records_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PFT04_SPECIAL_ZONE_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PFT04")
+        self.assertEqual(payload["legacy_task_id"], "S2P5T04")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["required_zone_count"], 10)
+        self.assertTrue(payload["s2pf_special_zone_discovery_ready"])
+        self.assertTrue(payload["special_zone_discovery_modeled"])
+        self.assertFalse(payload["special_zone_discovery_enabled"])
         self.assertFalse(payload["d3_full_source_domain_accepted"])
 
 

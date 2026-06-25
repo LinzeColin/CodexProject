@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PH
-- Current gate: ARXIV_PRODUCTION_ACCEPTED_MAINTAINED_AND_EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
+- Current phase: S2PF
+- Current gate: S2PFT04_SPECIAL_ZONE_DISCOVERY_READY_NO_PRODUCTION
 - Confirmed iteration count: 96
 - Reconstructed event count: 0
-- Current task: `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into `main` at `1cdad3d9e41f4543b06f158157f35878a30dbc93`; audited daily delivery, Stage1 B1 report email, local runner previews, scheduled readiness checks, and Stage2 shadow previews now require the shared V1 contract and M1-M4 product ids. `S2PCT02` keeps legacy alias `S2P2T02` for the next no-conflict Science/top-journal metadata-only no-send shadow evidence. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PFT04` / legacy `S2P5T04` has completed local special-zone metadata-only discovery evidence after S2PFT03 first key-city coverage. It validates 10 zone IDs, zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, and no-production boundaries. `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into main; S2PFT04 does not modify mail runtime paths. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -2181,3 +2181,23 @@ None for this new project baseline.
 - GitHub checks: Project Governance success; Stage 1 bootstrap success; live all-ArXiv cloud dry-run success; real 30-day backfill success.
 - Decisions: S2PFT03 remains metadata-only/no-send key-city coverage evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, and special-zone discovery all remain false/disabled.
 - Rollback: Revert only this post-merge governance/status sync. Revert PR #174 separately only if the owner explicitly abandons S2PFT03.
+
+### `ITER-20260625-ADP-S2PF-S2PFT04-SPECIAL-ZONE-DISCOVERY`
+
+- Timestamp: `2026-06-25T15:20:00+10:00`
+- Fact level: EXTRACTED from S2PFT03 receipt, 10 special-zone fixture rows, model/formula/parameter registry diff, and local S2PFT04 validation.
+- Base commit: `42839a260b5768b51678b0575bc42dbbb016a30e`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PF
+- Task IDs: `S2PFT04`, legacy alias `S2P5T04`; next task `S2PFT05`
+- Goal: Complete China special-zone metadata-only discovery evidence after S2PFT03, register S2PFT04 governance entries, and preserve V7.2 no-production boundaries.
+- Files changed: S2PFT04 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-068` special-zone discovery model.
+- Formula changes: Added `FORM-ADP-070` with machine-verifiable AST fingerprints bound to the S2PFT04 implementation.
+- Parameter changes: Added `PARAM-ADP-488` through `PARAM-ADP-497` for S2PFT04 model id, acceptance id, task ids, required zone ids, authority roles, zone types, policy focus areas, health tiers, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 63 OK; full arxiv-daily-push unittest 292 OK; semantic extractor 70 formulas / 480 parameters checked; V7.2 validator PASS; ADP project governance 0/0; changed-only governance semantic 0/0; lean check-render drift 0; JSON/YAML/JSONL/CSV parse OK; git diff --check PASS.
+- Decisions: `ACC-S2PFT04-ZONES` is accepted only as metadata-only special-zone discovery evidence. D3 full source-domain acceptance, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, GitHub production schedule, public schema migration, queue/schema mutation, mail production, and Email V1 production operation all remain false/disabled.
+- Remaining risks: S2PFT05 full D3 governance remains unimplemented. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PFT04 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md`; `governance/run_manifests/ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run full validation, commit, push, and open PR for S2PFT04.

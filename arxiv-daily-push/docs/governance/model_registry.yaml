@@ -3564,3 +3564,53 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PFT03-KEY-CITY-COVERAGE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT03_KEY_CITY_COVERAGE.md"
+  -
+    model_id: "MOD-ADP-068"
+    name: "S2PFT04 special-zone discovery"
+    kind: "deterministic special-zone metadata discovery model"
+    purpose: "Validate 10 China special-zone records with zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority evidence, dedupe evidence, and metadata-only no-production boundaries after S2PFT03."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pft04-special-zone-discovery-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-070"
+    parameter_ids:
+      - "PARAM-ADP-488"
+      - "PARAM-ADP-489"
+      - "PARAM-ADP-490"
+      - "PARAM-ADP-491"
+      - "PARAM-ADP-492"
+      - "PARAM-ADP-493"
+      - "PARAM-ADP-494"
+      - "PARAM-ADP-495"
+      - "PARAM-ADP-496"
+      - "PARAM-ADP-497"
+    inputs:
+      - "passing S2PFT03 key-city coverage report"
+      - "special-zone metadata records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "special-zone discovery report"
+      - "zone coverage gate"
+      - "zone authority role gate"
+      - "zone type policy gate"
+      - "parent-city mapping gate"
+      - "health tier gate"
+      - "authority gate"
+      - "metadata-only gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PFT04-SPECIAL-ZONE-DISCOVERY-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT04_SPECIAL_ZONE_DISCOVERY.md"

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 67
-- formula_count: 69
-- parameter_count: 487
+- model_count: 68
+- formula_count: 70
+- parameter_count: 497
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -150,6 +150,12 @@ Fact levels follow `docs/governance/STANDARD.md`.
   keeping D3 full source-domain acceptance, special-zone discovery, production
   flags, V7.2 contract edits, and V7.2 mail/schema pre-run false.
 
+- `S2PFT04` / legacy `S2P5T04` adds `MOD-ADP-068`. It validates special-zone
+  metadata-only discovery across 10 required zone IDs, supported zone types,
+  authority roles, policy focus areas, parent-city mappings, health tiers,
+  authority and dedupe gates while keeping D3 full source-domain acceptance,
+  production flags, V7.2 contract edits, and V7.2 mail/schema pre-run false.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -220,6 +226,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-065 | S2PFT01 China provincial template coverage | deterministic provincial template coverage model | Validate 31 mainland provincial-level templates, locality types, core department roles, health tiers, official identity, and disabled full-D3/production side-effect flags | active | adp-s2pft01-china-provincial-template-coverage-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-066 | S2PFT02 Hong Kong and Macau independent profile | deterministic jurisdiction profile model | Validate Hong Kong and Macau jurisdiction profiles, legal system states, language profiles, government structures, authority evidence, metadata-only gates, and mainland-template reuse blockers | active | adp-s2pft02-hk-mo-independent-profile-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-067 | S2PFT03 key-city coverage | deterministic key-city metadata coverage model | Validate first 24 China key-city records, aliases, local department roles, region groups, health tiers, authority evidence, and disabled full-D3/production side-effect flags | active | adp-s2pft03-key-city-coverage-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-068 | S2PFT04 special-zone discovery | deterministic special-zone metadata discovery model | Validate 10 China special-zone records, zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, and disabled full-D3/production side-effect flags | active | adp-s2pft04-special-zone-discovery-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -329,6 +336,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-067 validates S2PFT01 China provincial template coverage across upstream S2PDT04 pass evidence, 31 mainland provincial IDs, locality type coverage, core local department roles, health tiers, official identity, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-068 validates S2PFT02 Hong Kong and Macau independent profiles across upstream S2PFT01 pass evidence, required jurisdiction ids, zh_hant/en/pt language profiles, common-law and Portuguese-heritage civil-law legal states, independent government structures, authority evidence, metadata-only no-download boundaries, mainland-template reuse blockers, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-069 validates S2PFT03 key-city coverage across upstream S2PFT02 pass evidence, 24 required city ids, aliases, local department roles, allowed region groups, positive region weights, health tiers, authority evidence, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
+- FORM-ADP-070 validates S2PFT04 special-zone discovery across upstream S2PFT03 pass evidence, 10 required zone ids, supported zone types, required authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -408,6 +416,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PFT01 China provincial template parameters: PARAM-ADP-459 through PARAM-ADP-468.
 - Active S2PFT02 Hong Kong and Macau independent profile parameters: PARAM-ADP-469 through PARAM-ADP-478.
 - Active S2PFT03 key-city coverage parameters: PARAM-ADP-479 through PARAM-ADP-487.
+- Active S2PFT04 special-zone discovery parameters: PARAM-ADP-488 through PARAM-ADP-497.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
