@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 76
-- formula_count: 78
-- parameter_count: 579
+- model_count: 77
+- formula_count: 79
+- parameter_count: 592
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -197,6 +197,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
   frontstage changes, SMTP, scheduler, Release, V7.2 contract edits, and
   integrated production acceptance false.
 
+- `S2PET03` / legacy `S2P4T03` adds `MOD-ADP-077`. It defines metadata-only D4 US financial and macro source backbone evidence for SEC/EDGAR, Federal Reserve, Treasury, CFTC, OCC, FDIC, and CFPB with SEC forms, CIK, Accession, company/fund/asset relations, and no production, investment-advice, trading, or paid-market-data side effects.
 - `S2PET02` / legacy `S2P4T02` adds `MOD-ADP-076`. It defines metadata-only D4 US legal backbone evidence for Federal Register, Regulations.gov, GovInfo, and Congress.gov with Docket/FR/CFR/bill/report/public-law/certified-text relations and no production side effects.
 - `S2PET01` / legacy `S2P4T01` adds `MOD-ADP-075`. It defines metadata-only
   US-TA official technology-agency source foundation evidence across NSF,
@@ -283,6 +284,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-074 | S2PGT05 cross-board calibration | deterministic calibration and queue evidence model | Validate board-percentile calibration, D1-D4 source balance, waiting credit, selected/queued/deferred reasons, deterministic queue order, stable queue hashing, and disabled ranking/queue/schema/production side-effect flags | active | adp-s2pgt05-cross-board-calibration-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-075 | S2PET01 US-TA source foundation | deterministic US official technology agency source foundation model | Validate NSF, DARPA, DOE, NIH, NASA, NIST, USPTO, FDA agency coverage, signal taxonomy, official identity, traceability, metadata-only behavior, and disabled production side-effect flags | active | adp-s2pet01-us-ta-source-foundation-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-076 | S2PET02 US-LG legal backbone | deterministic US legal source relation backbone model | Validate Federal Register, Regulations.gov, GovInfo, Congress.gov coverage, legal document types, Docket/FR/CFR/bill/report/public-law/certified-text relations, traceability, metadata-only behavior, and disabled production side-effect flags | active | adp-s2pet02-us-lg-legal-backbone-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-077 | S2PET03 US-FM source backbone | deterministic US financial and macro source relation backbone model | Validate SEC/EDGAR, Fed, Treasury, CFTC, OCC, FDIC, CFPB coverage, SEC form classification, CIK and Accession identifiers, company/fund/asset relations, traceability, metadata-only behavior, and disabled production/trading side-effect flags | active | adp-s2pet03-us-fm-source-backbone-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -399,6 +401,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-074 validates S2PGT03 private source-board routing across D1-D4 source domains, B1-B3 primary boards, B4-B6 cross-cutting boards, route reasons, explanations, evidence refs, source-domain mapping rules, and disabled public schema, queue, source production inclusion, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
 - FORM-ADP-075 validates S2PGT04 private support/refute/frontier delta resonance across upstream routing, required delta types, supported/refuted evidence states, resonance groups, signal strength, explanations, evidence refs, and disabled public schema, queue, Email V1 frontstage, source production inclusion, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
 - FORM-ADP-076 validates S2PGT05 private cross-board calibration across upstream delta resonance, B1-B6 percentile calibration, D1-D4 source balance, waiting-credit bounds, selected/queued/deferred readable reasons, deterministic order, stable queue hash, and disabled public schema, production queue, production ranking, Email V1 frontstage, source production inclusion, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
+- FORM-ADP-079 validates S2PET03 US-FM source backbone across upstream S2PET02 readiness, required source systems, SEC form types, finance/macro signal types, CIK and Accession identifiers, relation types, official identity, traceability, relation endpoint evidence, and disabled live-fetch, paid-market-data, investment-advice, trading, production, queue, SMTP, scheduler, Release, public schema, V7.1 CURRENT, V7.2 contract, and integrated production acceptance flags.
 - FORM-ADP-078 validates S2PET02 US-LG legal backbone across upstream S2PET01 readiness, required source systems, document types, relation types, official identity, traceability, relation endpoint evidence, and disabled PDF/full-text, legal-advice, live-fetch, production, queue, SMTP, scheduler, Release, public schema, V7.1 CURRENT, V7.2 contract, and integrated production acceptance flags.
 - FORM-ADP-077 validates S2PET01 US-TA source foundation across required US official technology agencies, signal types, official identity, traceability, metadata-only records, and disabled PDF/full-text, production, queue, SMTP, scheduler, Release, public schema, V7.1 CURRENT, V7.2 contract, and integrated production acceptance flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
@@ -489,6 +492,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PGT05 cross-board calibration parameters: PARAM-ADP-545 through PARAM-ADP-559.
 - Active S2PET01 US-TA source foundation parameters: PARAM-ADP-560 through PARAM-ADP-568.
 - Active S2PET02 US-LG legal backbone parameters: PARAM-ADP-569 through PARAM-ADP-579.
+- Active S2PET03 US-FM source backbone parameters: PARAM-ADP-580 through PARAM-ADP-592.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
