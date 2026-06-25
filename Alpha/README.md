@@ -1,3 +1,16 @@
+# Alpha 中文 Owner 快速入口
+
+- 当前任务：`S6PAT02` / `ACC-S6PAT02`
+- 验收口径：用户可读优先；中文优先，默认全局中文。
+- 当前状态：主动源码仍在 `Alpha/backend/`，测试在 `Alpha/tests/`，配置在 `Alpha/configs/`。
+- 历史输出边界：旧 `Alpha/outputs/**` 和旧 `Alpha/HANDOFF.md` 已归档到 `governance/archive/other8_wave1_pending/Alpha/`，不要把它们重新当作主动源码。
+- 下一 Gate：`S6PA-GATE` 仍在进行中；Alpha 本轮只实施 S6PAT01 矩阵中的 P0/P1 Owner 路径改进。
+- 最小 smoke 路径：先进入 `Alpha/`，再运行 `python -m pytest tests/test_backtest_fixture.py -q`。
+- 当前环境 blocker：本机 bundled Python 缺少 `pytest`；运行策略/治理代码前还可能需要 `python -m pip install -e .[dev]` 安装 `pyyaml` 和 pytest 依赖。
+- 成功反馈：测试通过后应看到 backtest fixture deterministic / 1 passed。
+- 失败去向：若出现 `No module named pytest` 或 `No module named yaml`，先处理开发依赖；若出现业务断言失败，再查看 `Alpha/docs/structure_migration_map.md` 和对应测试文件。
+- 回滚：revert S6PAT02 Alpha README 提交即可；本轮不改运行代码、不移动文件、不触发交易或外部自动化。
+
 # Alpha - Personal Quant Agent Workspace
 
 Alpha is a local-first personal quant agent workspace for research, backtesting,
