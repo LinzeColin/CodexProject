@@ -63,6 +63,7 @@
 - `EVENT-20260625-019`: Bound commit `edddaad16a42d7eb15c7da3b662b2ee05107a618` to Project Governance run `28188342130` PASS and EEI validation run `28188342002` PASS; live A209 was observed at `176/288` windows PASS with `0` failed and remains progress-only evidence.
 - `EVENT-20260625-021`: Bound the existing T1301/A202 operator review packet into the T1303 external release-evidence bundle and operator intake packet as source-hashed supporting evidence; A202 review readiness is now visible in A205 release preflight summaries, but source/license/passage/owner/legal clearance, release-manager activation and MVP release remain blocked.
 - `EVENT-20260625-022`: Repaired stale T1301/A202 operator review packet freshness after validation found the packet hash no longer matched the current live selected official-source capture artifact; refreshed dependent A202 release-decision/signed-intake artifacts, A205 release evidence, release-manager and MVP preflights plus A209 heartbeat to `190/288` PASS while keeping every release gate blocked.
+- `EVENT-20260625-023`: Bound the A202 operator review packet freshness repair commit `236d2535` to Project Governance run `28194420709` PASS and EEI validation run `28194420774` PASS; live A209 continued at `198/288` PASS with `0` failed and remains progress-only evidence.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

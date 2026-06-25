@@ -1,5 +1,45 @@
 # MVP Development Record
 
+## 2026-06-25 - T1301/A202 operator review packet freshness remote CI binding
+
+Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`; A202 STILL IN PROGRESS; A209 STILL RUNNING; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Bound the committed A202 operator review packet freshness repair and dependent fail-closed A202/A205/A209 release preflight refresh to GitHub Actions evidence.
+- Project Governance run `28194420709` completed PASS for commit `236d25354db7d8f9774d1f91981ae30d69b0234e`.
+- EEI validation run `28194420774` completed PASS for the same commit, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route, legal/source clearance or publication policy changed.
+
+### Current Evidence
+
+- Committed A209 point-in-time heartbeat remains `190/288` PASS windows, `0` failed and `65.97%` completion.
+- Live A209 checkpoint observed after the CI-bound commit reached at least `198/288` PASS with `0` failed; watchdog PID `61030` and operator PID `82041` were still running, with child window `199` active.
+- A209 finalization remains blocked until the 24h summary/checkpoint chain validates `288/288` successful windows with zero failures.
+
+### Acceptance Mapping
+
+- T1301 -> A202 for the operator review packet freshness repair and CI binding.
+- T1303 -> A204/A205 for dependent external release-evidence, release-manager and MVP gate preflight context.
+- T1307 -> A209 for background soak progress and finalization context.
+- This CI binding does not close A202, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- Project Governance run `28194420709` / job `83517222542`: PASS.
+- EEI validation run `28194420774` / job `83517223204`: PASS.
+- A209 live checkpoint observation: `198/288` PASS with `0` failed; progress-only and not release-ready evidence.
+
+### Remaining Gaps
+
+- A202 still requires signed source-license review, passage-level relationship review, production owner sign-off, legal release clearance and final attestation.
+- A210 formal brand clearance or waiver, A026/A027 production gold labels, A209 24h final evidence and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
 ## 2026-06-25 - T1303/A205 A202 operator-review evidence binding
