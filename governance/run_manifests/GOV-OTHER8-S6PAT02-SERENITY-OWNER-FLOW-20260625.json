@@ -21,9 +21,9 @@
     "GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625"
   ],
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:90fcca56d036cea3dbfd2fb976557e7898c3253427c7f1c0e3c28cbec9bd8868",
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "CI_ATTESTED",
   "ci_attestation_subject": "Other8 S6PAT02 Serenity-Alipay Owner 路径：外部自动化防线与 data/manual runtime/output 边界",
-  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "PR_180_PROJECT_GOVERNANCE_RUN_28148880989_SUCCESS_AND_MAIN_PUSH_RUN_28148908185_SUCCESS",
   "language_rule": "中文优先，默认全局中文",
   "owner_readable_priority_enforced": true,
   "stage_gate_status": {
@@ -35,7 +35,7 @@
     "S6PAT02_FIFA": "PASSED_AND_MERGED_TO_MAIN",
     "S6PAT02_OPENAIDATABASE": "PASSED_AND_MERGED_TO_MAIN",
     "S6PAT02_PFI_BIG_DATA_SIMULATOR": "PASSED_AND_MERGED_TO_MAIN",
-    "S6PAT02_SERENITY_ALIPAY": "SERENITY_SLICE_LOCAL_PRECOMMIT_PASSED",
+    "S6PAT02_SERENITY_ALIPAY": "PASSED_AND_MERGED_TO_MAIN",
     "S6PA-GATE": "IN_PROGRESS",
     "next_allowed_project_slice": "S6PA-GATE-REVIEW"
   },
@@ -161,5 +161,6 @@
     "requires_archive_restore": false,
     "notes": "本次只补 Serenity-Alipay Owner 可读路径、manifest 和测试；不改运行代码、不改算法、不移动文件、不触发 OpenD、真实邮件、launchd 或 app 打包。"
   },
-  "summary": "S6PAT02 Serenity-Alipay 切片补齐 Owner 第一屏：OpenD、真实邮件、launchd、app 打包均不触发，data/manual 与运行历史、通知、MooMoo/OpenD 证据、备份、outputs 的边界可在第一屏判断。S6PA-GATE 仍 in_progress，下一步应进入 S6PA gate review。"
+  "summary": "S6PAT02 Serenity-Alipay 切片补齐 Owner 第一屏：OpenD、真实邮件、launchd、app 打包均不触发，data/manual 与运行历史、通知、MooMoo/OpenD 证据、备份、outputs 的边界可在第一屏判断。S6PA-GATE 仍 in_progress，下一步应进入 S6PA gate review。",
+  "result_commit": "7d68b4b8f31ccea184ea4424c6b2498c0d72e2a8"
 }

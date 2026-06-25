@@ -8097,6 +8097,154 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["rollback"]["requires_file_restore"])
         self.assertFalse(manifest["rollback"]["requires_archive_restore"])
 
+    def test_other8_s6pbt02_deferred_findings_are_closed_without_s6_gate_claim(self) -> None:
+        closure_path = ROOT / "governance" / "stage_gates" / "s6pb" / "s6pbt02_closure_matrix.csv"
+        summary_path = ROOT / "governance" / "stage_gates" / "s6pb" / "s6pbt02_regression_closure.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json"
+        )
+        for path in (closure_path, summary_path, manifest_path):
+            self.assertTrue(path.is_file(), path)
+
+        with closure_path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        closure = {row["finding_id"]: row for row in rows}
+        self.assertEqual(
+            set(closure),
+            {
+                "S6PBT01-A1-LOW-OUTPUT-DIR-GUARD",
+                "S6PBT01-A1-LOW-DIFF-RECOMPUTE",
+                "S6PBT01-A3-MED-STRING-ONLY-VALIDATION",
+                "S6PBT01-A3-MED-DASHBOARD-DECISION-POLICY",
+            },
+        )
+        for finding_id, row in closure.items():
+            with self.subTest(finding_id=finding_id):
+                self.assertEqual(row["s6pbt02_status"], "CLOSED_BY_S6PBT02")
+                self.assertTrue(row["closure_evidence"])
+
+        summary = summary_path.read_text(encoding="utf-8")
+        for required in {
+            "中文优先，默认全局中文",
+            "用户可读优先",
+            "S6PB-GATE",
+            "PASSED",
+            "S6-GATE",
+            "IN_PROGRESS",
+            "治理真相保留",
+            "治理计算不回流到每次开发动作",
+        }:
+            self.assertIn(required, summary)
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["task_id"], "S6PBT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PBT02"])
+        self.assertEqual(manifest["language_rule"], "中文优先，默认全局中文")
+        self.assertTrue(manifest["owner_readable_priority_enforced"])
+        self.assertEqual(manifest["stage_gate_status"]["S6PBT02"], "PASSED_REGRESSION_CLOSURE")
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S6PC")
+        self.assertEqual(set(manifest["closed_findings"]), set(closure))
+        for value in manifest["s6pbt02_stop_conditions"].values():
+            self.assertFalse(value)
+
+    def test_other8_s6pbt02_wave_gate_output_dirs_stay_inside_repo(self) -> None:
+        for module_name, relative_path in {
+            "wave1_gate": "tools/wave1_gate.py",
+            "wave2_gate": "tools/wave2_gate.py",
+        }.items():
+            with self.subTest(module=module_name):
+                spec = importlib.util.spec_from_file_location(module_name, ROOT / relative_path)
+                module = importlib.util.module_from_spec(spec)
+                assert spec.loader is not None
+                spec.loader.exec_module(module)
+
+                inside = module.resolve_output_dir(ROOT, "governance/stage_gates/tmp")
+                self.assertEqual(inside.relative_to(ROOT.resolve()), Path("governance/stage_gates/tmp"))
+
+                with self.assertRaises(SystemExit):
+                    module.resolve_output_dir(ROOT, "..")
+                with tempfile.TemporaryDirectory() as outside:
+                    with self.assertRaises(SystemExit):
+                        module.resolve_output_dir(ROOT, outside)
+
+    def test_other8_s6pbt02_manifest_changed_files_match_result_commits(self) -> None:
+        manifest_names = [
+            "GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json",
+            "GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+            "GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+            "GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json",
+            "GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json",
+        ]
+        for manifest_name in manifest_names:
+            with self.subTest(manifest=manifest_name):
+                manifest = json.loads((ROOT / "governance" / "run_manifests" / manifest_name).read_text(encoding="utf-8"))
+                self.assertEqual(manifest["binding_status"], "CI_ATTESTED")
+                self.assertNotIn("LOCAL_PRECOMMIT_PENDING", manifest["ci_run_reference"])
+                result_commit = manifest["result_commit"]
+                self.assertRegex(result_commit, r"^[0-9a-f]{40}$")
+                completed = subprocess.run(
+                    ["git", "-c", "core.quotePath=false", "show", "--format=", "--name-only", result_commit],
+                    cwd=ROOT,
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    encoding="utf-8",
+                )
+                actual = {line.strip().replace("\\", "/") for line in completed.stdout.splitlines() if line.strip()}
+                self.assertEqual(set(manifest["changed_files_actual"]), actual)
+                self.assertEqual(set(manifest["changed_files_declared"]), actual)
+
+    def test_other8_s6pbt02_dashboard_decision_policy_is_canonical_json(self) -> None:
+        policy_path = ROOT / "governance" / "decision_policies" / "review8_owner_decision_policy.json"
+        self.assertTrue(policy_path.is_file(), policy_path)
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        self.assertEqual(policy["policy_id"], "REVIEW8_OWNER_DECISION_POLICY")
+        self.assertEqual(policy["language_rule"], "中文优先，默认全局中文")
+        self.assertTrue(policy["owner_readable_priority_enforced"])
+        self.assertEqual(len(policy["project_policies"]), 10)
+        self.assertIn("arxiv-daily-push", policy["task_overrides"])
+        self.assertGreaterEqual(len(policy["task_overrides"]["arxiv-daily-push"]), 10)
+
+        dashboard_script = (ROOT / "scripts" / "generate_governance_dashboard.py").read_text(encoding="utf-8")
+        self.assertNotIn("REVIEW8_DECISION_POLICY = {", dashboard_script)
+        self.assertNotIn("DEC-arxiv-daily-push-V5-S1-002", dashboard_script)
+
+        dashboard = load_dashboard_module()
+        self.assertEqual(dashboard.REVIEW8_DECISION_POLICY_PATH, policy_path)
+        alpha_policy = dashboard.decision_policy_for("Alpha", {"task_id": "ANY"})
+        self.assertEqual(alpha_policy["owner_role"], policy["project_policies"]["Alpha"]["owner_role"])
+        override_policy = dashboard.decision_policy_for(
+            "arxiv-daily-push",
+            {"task_id": "S1-08-LOCAL_RUNTIME_RECOVERY-001"},
+        )
+        self.assertEqual(override_policy["decision_id"], "DEC-arxiv-daily-push-V5-S1-002")
+
+    def test_other8_s6pbt02_owner_flow_task_is_not_product_current_task(self) -> None:
+        owner_flow_readmes = [
+            "Alpha/README.md",
+            "EVA_OS/README.md",
+            "OpMe_System/README.md",
+            "whkmSalary/README.md",
+            "FIFA/README.md",
+            "OpenAIDatabase/README.md",
+            "PFI/大数据模拟器/README.md",
+            "Serenity-Alipay/README.md",
+        ]
+        for relative_path in owner_flow_readmes:
+            with self.subTest(path=relative_path):
+                text = (ROOT / relative_path).read_text(encoding="utf-8")
+                first_screen = "\n".join(text.splitlines()[:14])
+                self.assertIn("本轮 Owner-flow 治理任务", first_screen)
+                self.assertIn("不改产品 canonical current_task", first_screen)
+                self.assertNotIn("- 当前任务：`S6PAT02`", first_screen)
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
