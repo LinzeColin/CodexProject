@@ -6923,6 +6923,133 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["rollback"]["requires_file_restore"])
         self.assertFalse(manifest["rollback"]["requires_archive_restore"])
 
+    def test_other8_s6pat02_whkm_owner_flow_is_single_project_and_reversible(self) -> None:
+        readme_path = ROOT / "whkmSalary" / "README.md"
+        matrix_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.csv"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PAT02-WHKM-OWNER-FLOW-20260625.json"
+        )
+        self.assertTrue(readme_path.is_file(), readme_path)
+        self.assertTrue(matrix_path.is_file(), matrix_path)
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+
+        readme = readme_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        with matrix_path.open(encoding="utf-8", newline="") as handle:
+            matrix_rows = list(csv.DictReader(handle))
+
+        first_lines = "\n".join(readme.splitlines()[:14])
+        for required in {
+            "S6PAT02 中文 Owner 快速入口",
+            "用户可读优先",
+            "中文优先，默认全局中文",
+            "S6PA-GATE",
+            "python -m unittest discover -s tests -q",
+            "Ran 10 tests",
+            "OK",
+            "source/config/startup 边界",
+            "src/whkm_salary/",
+            "config/structure_contract.yaml",
+            "不承载工资政策参数",
+            "streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0",
+            "tests/test_salary_logic_boundaries.py",
+            "tests/test_salary_logic_weights.py",
+            "tests/test_salary_logic_rounding.py",
+            "whkmSalary/docs/whkm_structure_report.md",
+            "回滚",
+            "不改运行代码",
+            "不改工资公式",
+            "不移动文件",
+            "不触发外部自动化",
+        }:
+            self.assertIn(required, readme)
+        self.assertIn("中文", first_lines)
+        self.assertIn("用户可读优先", first_lines)
+
+        whkm_rows = [row for row in matrix_rows if row["project_id"] == "whkmSalary"]
+        self.assertEqual({row["priority"] for row in whkm_rows}, {"P0", "P1"})
+        self.assertTrue(all(row["s6pat02_candidate"] == "true" for row in whkm_rows))
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "whkmSalary")
+        self.assertEqual(manifest["task_id"], "S6PAT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PAT02"])
+        self.assertEqual(manifest["stage_gate_status"]["S6PAT01"], "PASSED_AND_BOUND")
+        self.assertEqual(manifest["stage_gate_status"]["S6PAT02_OPME_SYSTEM"], "PASSED_AND_MERGED_TO_MAIN")
+        self.assertEqual(manifest["stage_gate_status"]["S6PA-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["stage_gate_status"]["next_allowed_project_slice"], "FIFA")
+        self.assertEqual(manifest["next_allowed_task"], "S6PAT02")
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+
+        scope = manifest["s6pat02_scope"]
+        self.assertEqual(scope["project_id"], "whkmSalary")
+        self.assertEqual(scope["implemented_candidate_count"], 2)
+        self.assertLessEqual(scope["implemented_candidate_count"], scope["max_candidates_per_project"])
+        self.assertLessEqual(scope["max_candidates_per_project"], 3)
+        self.assertEqual(
+            scope["implemented_candidates"],
+            [
+                "whkmSalary-P0-first-effective-test-path",
+                "whkmSalary-P1-source-config-startup-boundary",
+            ],
+        )
+        self.assertTrue(scope["single_project_pr"])
+        self.assertTrue(scope["readme_only"])
+
+        for key, value in manifest["interaction_feedback"].items():
+            self.assertTrue(value, key)
+        self.assertEqual(manifest["smoke_test_evidence"]["cwd"], "whkmSalary")
+        self.assertEqual(manifest["smoke_test_evidence"]["command"], "python -B -m unittest discover -s tests -q")
+        self.assertEqual(manifest["smoke_test_evidence"]["result"], "PASS")
+        self.assertIn("Ran 10 tests", manifest["smoke_test_evidence"]["observed"])
+
+        scope_guard = manifest["scope_guard"]
+        self.assertEqual(scope_guard["projects_changed"], ["whkmSalary"])
+        self.assertFalse(scope_guard["other_projects_changed"])
+        self.assertFalse(scope_guard["runtime_code_changed"])
+        self.assertFalse(scope_guard["ui_framework_added"])
+        self.assertFalse(scope_guard["external_automation_triggered"])
+        self.assertFalse(scope_guard["trading_or_broker_action_triggered"])
+        self.assertFalse(scope_guard["files_moved"])
+        for key, value in manifest["stop_conditions"].items():
+            self.assertFalse(value, key)
+
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "whkmSalary/README.md",
+                "governance/run_manifests/GOV-OTHER8-S6PAT02-WHKM-OWNER-FLOW-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertEqual(set(manifest["changed_files_declared"]), changed)
+        self.assertEqual(set(manifest["required_governance_files"]), changed)
+        self.assertEqual(set(manifest["updated_governance_files"]), changed)
+        self.assertFalse(any(path.startswith(("Alpha/", "EVA_OS/", "FIFA/", "OpMe_System/")) for path in changed))
+        self.assertFalse(
+            any(
+                path.startswith(
+                    (
+                        "OpenAIDatabase/",
+                        "PFI/",
+                        "Serenity-Alipay/",
+                        "EEI/",
+                        "arxiv-daily-push/",
+                    )
+                )
+                for path in changed
+            )
+        )
+        self.assertFalse(manifest["rollback"]["requires_file_restore"])
+        self.assertFalse(manifest["rollback"]["requires_archive_restore"])
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
