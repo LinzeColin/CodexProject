@@ -13,15 +13,15 @@
     "GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625"
   ],
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:41eb673018517c35fc8bec91d87d86220b42a770614e1d15db773c9f94678c49",
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "CI_ATTESTED",
   "ci_attestation_subject": "Other8 S6PBT02 deferred finding regression closure and S6PB gate readiness",
-  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "PR_187_PROJECT_GOVERNANCE_RUN_28155753709_SUCCESS_OPENAIDATABASE_RUN_28155753702_SUCCESS_AND_MAIN_PUSH_PROJECT_GOVERNANCE_RUN_28155824838_SUCCESS_OPENAIDATABASE_RUN_28155824844_SUCCESS",
   "language_rule": "中文优先，默认全局中文",
   "owner_readable_priority_enforced": true,
   "stage_gate_status": {
     "S6PBT01": "CI_ATTESTED",
-    "S6PBT02": "PASSED_REGRESSION_CLOSURE",
-    "S6PB-GATE": "PASSED",
+    "S6PBT02": "CI_ATTESTED_PASSED_REGRESSION_CLOSURE",
+    "S6PB-GATE": "CI_ATTESTED_PASSED",
     "S6-GATE": "IN_PROGRESS"
   },
   "next_allowed_task": "S6PC",
@@ -169,5 +169,6 @@
   ],
   "summary": "S6PBT02 关闭 S6PBT01 延后的 2 个 Low 和 2 个 Medium：gate 输出目录防越界、manifest changed files 复算、Owner-flow 与产品 current_task 分离、dashboard decision policy 移出生成器。S6PB-GATE 通过；S6-GATE 仍 in_progress，下一步 S6PC。",
   "rebased_on_main_after_creation": true,
-  "rebase_note": "PR base advanced through #183-#186 before final CI; this branch was rebased onto origin/main before final validation."
+  "rebase_note": "PR base advanced through #183-#186 before final CI; this branch was rebased onto origin/main before final validation.",
+  "result_commit": "24dc09ff73e6394646a323ecc6271a05df9b8c12"
 }

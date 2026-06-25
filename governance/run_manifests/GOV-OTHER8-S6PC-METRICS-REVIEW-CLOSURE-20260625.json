@@ -1,0 +1,130 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S6PC-METRICS-REVIEW-CLOSURE-20260625",
+  "project_id": "ROOT",
+  "task_id": "S6PC",
+  "acceptance_ids": [
+    "ACC-S6PC"
+  ],
+  "iteration_id": "ITER-20260625-OTHER8-S6PC-METRICS-REVIEW-CLOSURE",
+  "generated_at": "2026-06-25T08:20:00+00:00",
+  "implementation_base_sha": "24dc09ff73e6394646a323ecc6271a05df9b8c12",
+  "depends_on": [
+    "GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:f47f5ac21ff413742b2ad89ba3b22bf91ef5ce8feac41db9db715310c35c164e",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S6PC metrics/review closure and final S6 gate readiness",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_priority_enforced": true,
+  "stage_gate_status": {
+    "S6PA-GATE": "CI_ATTESTED_PASSED",
+    "S6PB-GATE": "CI_ATTESTED_PASSED",
+    "S6PC": "PASSED_FINAL_REVIEW_CLOSURE",
+    "S6-GATE": "PASSED_PENDING_THIS_PR_MAIN_CI"
+  },
+  "next_allowed_task": "COMPLETE",
+  "closure_summary": {
+    "critical_open_after": 0,
+    "high_open_after": 0,
+    "medium_open_after": 0,
+    "low_open_after": 0,
+    "governance_truth_preserved": true,
+    "governance_computation_out_of_dev_loop": true,
+    "chinese_first_owner_readable": true,
+    "final_gate_requires_this_pr_main_ci": true
+  },
+  "metrics": [
+    "S6PC-M01",
+    "S6PC-M02",
+    "S6PC-M03",
+    "S6PC-M04",
+    "S6PC-M05",
+    "S6PC-M06"
+  ],
+  "s6pc_stop_conditions": {
+    "unverified_ci_claim": false,
+    "s6_gate_claimed_before_s6pc": false,
+    "open_review_findings_ignored": false,
+    "full_governance_write_added_to_pr_or_push": false,
+    "owner_flow_claimed_as_product_current_task": false,
+    "chinese_or_owner_readable_priority_missing": false
+  },
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PC-METRICS-REVIEW-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pc/metrics_matrix.csv",
+    "governance/stage_gates/s6pc/s6pc_final_gate.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PC-METRICS-REVIEW-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pc/metrics_matrix.csv",
+    "governance/stage_gates/s6pc/s6pc_final_gate.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s6pc/metrics_matrix.csv",
+    "governance/stage_gates/s6pc/s6pc_final_gate.md",
+    "governance/run_manifests/GOV-OTHER8-S6PC-METRICS-REVIEW-CLOSURE-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PC-METRICS-REVIEW-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pc/metrics_matrix.csv",
+    "governance/stage_gates/s6pc/s6pc_final_gate.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s6pc/metrics_matrix.csv",
+    "governance/stage_gates/s6pc/s6pc_final_gate.md",
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pb/s6pbt02_closure_matrix.csv",
+    ".github/workflows/project-governance.yml",
+    "README.md",
+    "AGENTS.md",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pc_metrics_review_closure_passes_s6_gate tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pc_fast_gate_keeps_full_governance_out_of_pr_push tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pc_s6pbt02_is_main_ci_attested -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "git diff --check origin/main...HEAD"
+  ],
+  "test_results": [
+    {
+      "command": "focused S6PC unittest group",
+      "result": "PASS",
+      "observed": "Ran 3 tests in 0.040s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "observed": "errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "observed": "validation exit_code=0, errors=0 warnings=0; projects changed: none; zero_diff.clean=true."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "result": "PASS",
+      "observed": "exit_code=0."
+    }
+  ],
+  "rollback": {
+    "action": "revert_this_s6pc_metrics_review_closure_commit",
+    "requires_file_restore": false,
+    "requires_archive_restore": false,
+    "notes": "本轮只记录 S6PC metrics/review closure 和 S6PBT02 CI 绑定；不改产品运行代码、不移动文件、不触发外部自动化。"
+  },
+  "unresolved_risks": [
+    "This manifest is precommit-bound until the S6PC PR and main push CI complete; final chat report must include those run ids.",
+    "Future remediation or new findings should open a new task rather than rewriting this S6-GATE evidence."
+  ],
+  "summary": "S6PC 汇总 S6PA/S6PB 已合并证据、S6PBT02 PR/main CI、changed-only fast gate 与中文 Owner 可读结果；S6-GATE 在本 PR 合并且 main CI 通过后可关闭。"
+}
