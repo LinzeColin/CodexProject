@@ -841,6 +841,136 @@ def git_status_has_error(status: list[str]) -> bool:
     return any(line.startswith("git_status_error:") or line.startswith("git_status_failed:") for line in status)
 
 
+def status_line_paths(line: str) -> list[str]:
+    if len(line) < 4 or line.startswith(("git_status_error:", "git_status_failed:")):
+        return []
+    body = line[3:].strip()
+    if not body:
+        return []
+    if " -> " in body and line[:2].strip()[:1] in {"R", "C"}:
+        old, new = body.split(" -> ", 1)
+        return [old.strip(), new.strip()]
+    return [body]
+
+
+def status_snapshot_paths(status: list[str]) -> list[str]:
+    paths: list[str] = []
+    seen: set[str] = set()
+    for line in status:
+        for path in status_line_paths(line):
+            normalized = path.replace("\\", "/")
+            if normalized and normalized not in seen:
+                seen.add(normalized)
+                paths.append(normalized)
+    return paths
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return "sha256:" + digest.hexdigest()
+
+
+def git_diff_sha256(root: Path, rel_path: str, *, cached: bool) -> tuple[str | None, str | None]:
+    argv = ["git", "diff", "--no-ext-diff", "--binary"]
+    if cached:
+        argv.append("--cached")
+    argv.extend(["--", rel_path])
+    try:
+        result = subprocess.run(
+            argv,
+            cwd=root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=5.0,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        return None, f"git_diff_error:{rel_path}:{exc}"
+    if result.returncode != 0:
+        stderr = result.stderr.decode("utf-8", errors="replace").strip() or f"exit_{result.returncode}"
+        return None, f"git_diff_failed:{rel_path}:{stderr}"
+    return "sha256:" + hashlib.sha256(result.stdout).hexdigest(), None
+
+
+def path_fingerprint(root: Path, rel_path: str) -> tuple[dict[str, Any] | None, str | None]:
+    path = root / rel_path
+    try:
+        exists = path.exists() or path.is_symlink()
+        if not exists:
+            kind = "missing"
+            fingerprint: dict[str, Any] = {"path": rel_path, "kind": kind}
+        elif path.is_symlink():
+            fingerprint = {
+                "path": rel_path,
+                "kind": "symlink",
+                "symlink_target": os.readlink(path),
+            }
+        elif path.is_file():
+            fingerprint = {
+                "path": rel_path,
+                "kind": "file",
+                "file_sha256": file_sha256(path),
+            }
+        elif path.is_dir():
+            fingerprint = {"path": rel_path, "kind": "directory"}
+        else:
+            fingerprint = {"path": rel_path, "kind": "other"}
+    except OSError as exc:
+        return None, f"path_snapshot_error:{rel_path}:{exc}"
+
+    worktree_hash, error = git_diff_sha256(root, rel_path, cached=False)
+    if error:
+        return None, error
+    index_hash, error = git_diff_sha256(root, rel_path, cached=True)
+    if error:
+        return None, error
+    fingerprint["worktree_diff_sha256"] = worktree_hash
+    fingerprint["index_diff_sha256"] = index_hash
+    return fingerprint, None
+
+
+def worktree_status_snapshot(root: Path, status: list[str]) -> dict[str, Any]:
+    status_errors = [line for line in status if line.startswith(("git_status_error:", "git_status_failed:"))]
+    if status_errors:
+        return {
+            "schema_version": 1,
+            "ok": False,
+            "mode": "content_snapshot",
+            "status_lines": sorted(set(status)),
+            "paths": {},
+            "errors": status_errors,
+        }
+    paths = status_snapshot_paths(status)
+    if not root.exists():
+        return {
+            "schema_version": 1,
+            "ok": True,
+            "mode": "status_only_missing_root",
+            "status_lines": sorted(set(status)),
+            "paths": {path: {"path": path, "status_only": True} for path in paths},
+            "errors": [],
+        }
+    fingerprints: dict[str, Any] = {}
+    errors: list[str] = []
+    for rel_path in paths:
+        fingerprint, error = path_fingerprint(root, rel_path)
+        if error:
+            errors.append(error)
+        elif fingerprint is not None:
+            fingerprints[rel_path] = fingerprint
+    return {
+        "schema_version": 1,
+        "ok": not errors,
+        "mode": "content_snapshot",
+        "status_lines": sorted(set(status)),
+        "paths": fingerprints,
+        "errors": errors,
+    }
+
+
 def ci_clean_start_required() -> bool:
     return bool(os.environ.get("GITHUB_ACTIONS") or os.environ.get("CI"))
 
@@ -850,17 +980,34 @@ def worktree_write_delta(
     after_status: list[str],
     *,
     clean_start_required: bool,
+    before_snapshot: dict[str, Any] | None = None,
+    after_snapshot: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     before = sorted(set(before_status))
     after = sorted(set(after_status))
     new_status = sorted(set(after) - set(before))
     resolved_status = sorted(set(before) - set(after))
     status_errors = [line for line in before + after if line.startswith(("git_status_error:", "git_status_failed:"))]
+    snapshot_errors = list((before_snapshot or {}).get("errors") or []) + list((after_snapshot or {}).get("errors") or [])
+    before_paths = dict((before_snapshot or {}).get("paths") or {})
+    after_paths = dict((after_snapshot or {}).get("paths") or {})
+    content_changed_paths = sorted(
+        path
+        for path in set(before_paths) | set(after_paths)
+        if before_paths.get(path) != after_paths.get(path)
+    )
     clean_start_ok = not clean_start_required or not before
-    clean = not status_errors and clean_start_ok and not new_status
+    clean = (
+        not status_errors
+        and not snapshot_errors
+        and clean_start_ok
+        and not new_status
+        and not resolved_status
+        and not content_changed_paths
+    )
     return {
         "schema_version": 1,
-        "mode": "pre_post_delta",
+        "mode": "pre_post_content_delta",
         "clean": clean,
         "clean_start_required": clean_start_required,
         "clean_start_ok": clean_start_ok,
@@ -868,25 +1015,30 @@ def worktree_write_delta(
         "post_changed_count": len(after),
         "new_changed_count": len(new_status),
         "resolved_changed_count": len(resolved_status),
+        "content_changed_count": len(content_changed_paths),
         "preexisting_changed_files": before[:20],
         "post_changed_files": after[:20],
         "new_changed_files": new_status[:20],
         "resolved_changed_files": resolved_status[:20],
+        "content_changed_files": content_changed_paths[:20],
         "status_error": bool(status_errors),
         "status_errors": status_errors[:5],
+        "snapshot_error": bool(snapshot_errors),
+        "snapshot_errors": snapshot_errors[:5],
     }
 
 
 def legacy_zero_diff_view(delta: dict[str, Any]) -> dict[str, Any]:
     return {
         "clean": bool(delta.get("clean", False)),
-        "changed_count": int(delta.get("new_changed_count", 0)),
-        "changed_files": list(delta.get("new_changed_files") or [])[:20],
+        "changed_count": int(delta.get("new_changed_count", 0)) + int(delta.get("content_changed_count", 0)),
+        "changed_files": (list(delta.get("new_changed_files") or []) + list(delta.get("content_changed_files") or []))[:20],
         "preexisting_changed_count": int(delta.get("preexisting_changed_count", 0)),
         "post_changed_count": int(delta.get("post_changed_count", 0)),
         "clean_start_required": bool(delta.get("clean_start_required", False)),
         "clean_start_ok": bool(delta.get("clean_start_ok", True)),
         "status_error": bool(delta.get("status_error", False)),
+        "snapshot_error": bool(delta.get("snapshot_error", False)),
     }
 
 
@@ -1149,12 +1301,16 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
     timings["baseline_seconds"] = round(time.perf_counter() - timing_start, 3)
     clean_start_required = ci_clean_start_required()
     before_status = git_status_porcelain(root)
+    before_snapshot = worktree_status_snapshot(root, before_status)
     if git_status_has_error(before_status) or (clean_start_required and before_status):
         after_status = git_status_porcelain(root)
+        after_snapshot = worktree_status_snapshot(root, after_status)
         zero_write_delta = worktree_write_delta(
             before_status,
             after_status,
             clean_start_required=clean_start_required,
+            before_snapshot=before_snapshot,
+            after_snapshot=after_snapshot,
         )
         status_message = (
             "git status failed; cannot prove read-only governance run"
@@ -1220,10 +1376,13 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
         timings["changed_scope_seconds"] = round(time.perf_counter() - timing_start, 3)
     except governance.GovernanceDiffError as exc:
         after_status = git_status_porcelain(root)
+        after_snapshot = worktree_status_snapshot(root, after_status)
         zero_write_delta = worktree_write_delta(
             before_status,
             after_status,
             clean_start_required=clean_start_required,
+            before_snapshot=before_snapshot,
+            after_snapshot=after_snapshot,
         )
         summary = {
             "schema_version": 1,
@@ -1338,10 +1497,13 @@ def run_changed_only_ci(base_ref: str | None = None, *, root: Path = ROOT, proje
     timings["check_render_seconds"] = round(time.perf_counter() - timing_start, 3)
 
     after_status = git_status_porcelain(root)
+    after_snapshot = worktree_status_snapshot(root, after_status)
     zero_write_delta = worktree_write_delta(
         before_status,
         after_status,
         clean_start_required=clean_start_required,
+        before_snapshot=before_snapshot,
+        after_snapshot=after_snapshot,
     )
     validation_checked_project_count = validator_checked_project_count(validation)
     selector_matches = validation_checked_project_count is None or validation_checked_project_count == selected_project_count

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "bundle_id": "m1_1_review_bundle_20260626",
+  "artifact_id": "git-tree:governance/review_bundles/m1_1",
+  "retention": "repository-retained-until-explicit-removal",
+  "source_run_id": "m1-20260625-s1pa-3944f62d",
+  "source_head_sha": "3944f62daff6287eeb2a7f086dd1594b78b9f311",
+  "sanitized": true,
+  "round1_reports": [
+    "round1/agent1.json",
+    "round1/agent2.json",
+    "round1/agent3.json"
+  ],
+  "round2_reports": [
+    "round2/agent4.json",
+    "round2/agent5.json",
+    "round2/agent6.json"
+  ],
+  "required_files": [
+    "baseline.json",
+    "round1_consolidated.json",
+    "candidate_m1s.json",
+    "final_adjudication.json",
+    "s2pc_readjudication_after_pre_s3_fix.json",
+    "performance_summary.json",
+    "s5pc_gate.json",
+    "SHA256SUMS"
+  ],
+  "sha256s": {
+    "baseline.json": "ed4d3ca46e16e1b1ba79ac67632b5f44abb66abd36024afb68cb02c47bb69a8c",
+    "candidate_m1s.json": "560058aab175b7020c7f615ad2cf19521a9861ff26e195921ab078f8a0bf52b4",
+    "final_adjudication.json": "3cb1a85acec0da7ca3a966f38f0a7d6fe2dee386857d8a1e40ef25ffee8c8fbc",
+    "performance_summary.json": "f931aa33dbcf681e307f134a66b9be3bfd447cb8674b95a3c7934bea19418dda",
+    "round1/agent1.json": "3e8a37e4212a607dd4e4f119a6dfa37bb81c42372951c86fd068169a14f469c6",
+    "round1/agent2.json": "edb3dc85a64748b721c378f1a1be55a629a33a002d11e6cb7072f7fc22c22064",
+    "round1/agent3.json": "129a3bfeddb2d8fcbcf6bf38ebda0f5bc595e9fbf46473223c4490045f94b11d",
+    "round1_consolidated.json": "a45bf6a81ffbce69985ff696bd94d4020fd528e8a03b01c88f67376113d451ed",
+    "round2/agent4.json": "8599db480770c651a29ef414bb905ca1d95eb341ed70fcbb507584462206c3f6",
+    "round2/agent5.json": "0e9b81a2ae601bd7aefedaa6581bd6b7a0d1172bd9362cf334ed518bbe7f91d7",
+    "round2/agent6.json": "18e4e65edc1eb1e1fa696f250e5ebe08c7dedaaa38ce47d364c52cd73c3ff4b1",
+    "s2pc_readjudication_after_pre_s3_fix.json": "03db6d21b61c0465206845bd57e99952925e38e77eaf824663b11950c4f47819",
+    "s5pc_gate.json": "dfd89ab02f3f4e8f6b89cadfc3b4f307a06fbb5378c4712b33afef2d77bf4114"
+  }
+}

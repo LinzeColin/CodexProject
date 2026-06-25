@@ -1,0 +1,1285 @@
+schema_version: "1.0"
+roadmap_kind: "root_governance_execution_optimization"
+title: "CodexProject M1 治理执行链减负与零质量回退 Roadmap"
+observed_baseline:
+  branch: "main"
+  sha: "2d2e6eb9401dceb127f9f1f2041bcce57564d5c6"
+  title: "Add Other8 S4PCT02 whkm structure"
+  note: "执行时必须重新绑定最新 HEAD；此值只是本包生成时观察基线。"
+total_estimated_hours: 60.0
+parental_pursuing_goal: "在不改变现有双平面、三个中文人类入口、完整 Roadmap 与 T0-T3 质量门禁的前提下，降低普通开发任务的重复验证、重复读取和重复写入成本，提升每单位 Token 的可验收交付吞吐率，并保证开发、验收、发布、回滚与后续 Agent 接续的连续性和稳定性。"
+id_policy:
+  canonical_task_regex: "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$"
+  numeric_order: "每个 Stage/Phase/Task 同时提供 numeric_sequence（例如 1.2.3）；canonical ID 保持仓库既有规则，避免破坏 validator。"
+scope:
+  allowed_root_paths:
+    - "scripts/lean_governance.py"
+    - "tests/governance/**"
+    - ".github/workflows/project-governance.yml"
+    - "AGENTS.md"
+    - "README.md"
+    - "docs/governance/STANDARD.md"
+    - "governance/run_manifests/<this-task>.json"
+  forbidden_write_paths:
+    - "EEI/**"
+    - "arxiv-daily-push/**"
+    - "Alpha/**"
+    - "EVA_OS/**"
+    - "FIFA/**"
+    - "OpMe_System/**"
+    - "OpenAIDatabase/**"
+    - "PFI/**"
+    - "Serenity-Alipay/**"
+    - "whkmSalary/**"
+  non_goals:
+    - "新增 CURRENT.md/SHIP.md/projectctl.py"
+    - "重写双平面"
+    - "删除旧 validator"
+    - "改变产品业务行为"
+    - "一次执行全部 Stage"
+stages:
+  - stage_id: "S1"
+    numeric_sequence: "1"
+    name: "基线与第一轮独立审查"
+    parental_pursuing_goal: "在不改变现有双平面、三个中文人类入口、完整 Roadmap 与 T0-T3 质量门禁的前提下，降低普通开发任务的重复验证、重复读取和重复写入成本，提升每单位 Token 的可验收交付吞吐率，并保证开发、验收、发布、回滚与后续 Agent 接续的连续性和稳定性。"
+    pursuing_goal: "锁定真实现状并完成第一轮 3 Agent 互不污染审查，得到证据化问题基线。"
+    estimated_hours: 12.0
+    estimated_pct_total: 20.0
+    phase_count: 3
+    task_count: 8
+    stop_conditions:
+      - "无法绑定当前分支/HEAD"
+      - "任何审查产生 tracked 写入"
+      - "少于三份独立报告"
+      - "阻塞结论缺证据"
+    stop_gate:
+      gate_id: "S1-GATE"
+      pass_mode: "all"
+      criteria:
+        - "基线、测量和三份报告齐全"
+        - "第一轮汇总可重放"
+        - "仓库前后差异为零"
+      evidence_required:
+        - "phase_gate_results"
+        - "consolidated_decision"
+        - "scope_and_zero_write_proof"
+      failure_action: "STOP 或 FIX-ONE；禁止扩大范围或用文档声明代替真实证据"
+      approver_role: "repository_owner"
+    phases:
+      - phase_id: "S1PA"
+        numeric_sequence: "1.1"
+        name: "基线锁定与旧链测量"
+        pursuing_goal: "得到可复现、可比较且不修改仓库的当前事实基线。"
+        estimated_hours: 3.5
+        estimated_pct_total: 5.8333
+        task_count: 3
+        stop_conditions:
+          - "无法确认实际 HEAD 或 base ref"
+          - "基线命令会写 tracked 文件"
+          - "读取范围扩展到无关项目业务源码"
+        stop_gate:
+          gate_id: "S1PA-GATE"
+          pass_mode: "all"
+          criteria:
+            - "完整基线记录存在"
+            - "现有权威命令可复现"
+            - "测试前后 Git 状态差异为零"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S1PAT01"
+            numeric_sequence: "1.1.1"
+            name: "锁定分支、HEAD、工作树与当前 Roadmap 状态"
+            objective: "确认实际执行基线；若 HEAD 已不是观察基线，则只读评估差异并重新绑定。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "记录 branch、full SHA、commit title、工作树状态、当前 Other8 Task；无仓库写入"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: ""
+            parallel_group: "S1PA-PG1"
+          - task_id: "S1PAT02"
+            numeric_sequence: "1.1.2"
+            name: "建立读取、写入与禁区清单"
+            objective: "限定本整改只涉及根治理执行链；EEI、arxiv-daily-push 与项目业务文件均为禁止写入。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "允许/禁止路径明确；Scope Guard 可自动检测；无隐式全仓修改"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: ""
+            parallel_group: "S1PA-PG1"
+          - task_id: "S1PAT03"
+            numeric_sequence: "1.1.3"
+            name: "测量现有权威验证链基线"
+            objective: "重复运行当前 changed-scope 命令并记录耗时、输出体积、选中项目数、退出码和 Git 状态。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "至少 5 次冷/热运行；p50/p95、输出字节、零写入证据齐全；失败场景不被吞掉"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T1"
+            depends_on: []
+            requires_gate: ""
+            parallel_group: "S1PA-PG1"
+      - phase_id: "S1PB"
+        numeric_sequence: "1.2"
+        name: "第一轮三 Agent 独立审查"
+        pursuing_goal: "由三个互不读取彼此结果的只读 Agent，从安全代码、运行压力和信息交互三个角度建立第一轮问题基线。"
+        estimated_hours: 4.5
+        estimated_pct_total: 7.5
+        task_count: 3
+        stop_conditions:
+          - "任一 Agent 读取其他 Agent 输出"
+          - "任一 Agent 修改仓库或运行写模式"
+          - "报告没有可核验证据却判定阻塞"
+        stop_gate:
+          gate_id: "S1PB-GATE"
+          pass_mode: "all"
+          criteria:
+            - "恰好 3 份独立报告完成"
+            - "三份报告均为 read-only"
+            - "输出符合统一 schema"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S1PBT01"
+            numeric_sequence: "1.2.1"
+            name: "Agent 1：安全、代码质量、Bug、竞态、测试稳定性与维护性审查"
+            objective: "只读审查治理入口、验证器、工作流和测试；每项问题必须有路径/符号/命令证据。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "独立报告符合 finding schema；严重度、阻塞、修复与测试建议齐全"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T1"
+            depends_on: []
+            requires_gate: "S1PA-GATE"
+            parallel_group: "S1PB-PG2"
+          - task_id: "S1PBT02"
+            numeric_sequence: "1.2.2"
+            name: "Agent 2：压力、极限流程、生命周期、缓存与数据保存审查"
+            objective: "审查 0/1/多项目范围、重复运行、并发、取消、超时、临时文件、自动调度和清理。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "独立报告覆盖运行启动-执行-关闭-清理；未把未运行测试写成已验证"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T1"
+            depends_on: []
+            requires_gate: "S1PA-GATE"
+            parallel_group: "S1PB-PG2"
+          - task_id: "S1PBT03"
+            numeric_sequence: "1.2.3"
+            name: "Agent 3：人类界面、CLI 反馈、信息架构与功能连接审查"
+            objective: "将 UI/交互审查应用于仓库导航、CLI 输出、错误反馈、Agent 入口、双平面和交接链路。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "独立报告区分必要事实与重复信息；不得建议新增平行真相源"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T1"
+            depends_on: []
+            requires_gate: "S1PA-GATE"
+            parallel_group: "S1PB-PG2"
+      - phase_id: "S1PC"
+        numeric_sequence: "1.3"
+        name: "第一轮证据汇总与决策"
+        pursuing_goal: "去重但不掩盖分歧，形成可供第二轮攻击性复核的候选问题集与 M1-S 候选方案。"
+        estimated_hours: 4.0
+        estimated_pct_total: 6.6667
+        task_count: 2
+        stop_conditions:
+          - "P0/P1 证据无法重放"
+          - "汇总删除了少数意见"
+          - "候选方案改变双平面或弱化 Acceptance/Evidence"
+        stop_gate:
+          gate_id: "S1PC-GATE"
+          pass_mode: "all"
+          criteria:
+            - "第一轮汇总完成"
+            - "所有阻塞项有 owner 可理解的说明"
+            - "第二轮输入不含未验证的完成声明"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S1PCT01"
+            numeric_sequence: "1.3.1"
+            name: "验证证据、去重并登记分歧"
+            objective: "逐项重放路径/命令证据，合并同源问题，保留严重度分歧和证据不足状态。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies:
+              - "S1PBT01"
+              - "S1PBT02"
+              - "S1PBT03"
+            acceptance:
+              - "每个 P0/P1 至少一条可重放证据；重复项有映射；UNKNOWN 不伪装 VERIFIED"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on:
+              - "S1PBT01"
+              - "S1PBT02"
+              - "S1PBT03"
+            requires_gate: "S1PB-GATE"
+            parallel_group: "S1PC-PG3"
+          - task_id: "S1PCT02"
+            numeric_sequence: "1.3.2"
+            name: "形成第一轮风险登记表与 M1-S 候选决策"
+            objective: "给出最小改动候选：影子测量优先，不改变权威门禁，不新增 CURRENT/SHIP 等文件。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "问题含严重度、是否阻塞合并、修复方式；候选方案明确非目标与回滚"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S1PB-GATE"
+            parallel_group: "S1PC-PG3"
+  - stage_id: "S2"
+    numeric_sequence: "2"
+    name: "第二轮对抗复审与跨轮裁决"
+    parental_pursuing_goal: "在不改变现有双平面、三个中文人类入口、完整 Roadmap 与 T0-T3 质量门禁的前提下，降低普通开发任务的重复验证、重复读取和重复写入成本，提升每单位 Token 的可验收交付吞吐率，并保证开发、验收、发布、回滚与后续 Agent 接续的连续性和稳定性。"
+    pursuing_goal: "以全新三 Agent 反复交叉验证第一轮结论，证明候选优化不会牺牲质量、事实和发布安全。"
+    estimated_hours: 10.0
+    estimated_pct_total: 16.6667
+    phase_count: 3
+    task_count: 7
+    stop_conditions:
+      - "第二轮不独立"
+      - "任何 P0/P1 未裁决"
+      - "候选直接替换权威链"
+      - "性能目标没有基线"
+    stop_gate:
+      gate_id: "S2-GATE"
+      pass_mode: "all"
+      criteria:
+        - "两轮共 6 份报告完成"
+        - "跨轮裁决可追踪"
+        - "仅影子实施获得许可"
+      evidence_required:
+        - "phase_gate_results"
+        - "consolidated_decision"
+        - "scope_and_zero_write_proof"
+      failure_action: "STOP 或 FIX-ONE；禁止扩大范围或用文档声明代替真实证据"
+      approver_role: "repository_owner"
+    phases:
+      - phase_id: "S2PA"
+        numeric_sequence: "2.1"
+        name: "候选方案与反例矩阵"
+        pursuing_goal: "把第一轮建议转为可被攻击、可被证明错误的候选设计，而不是直接实施。"
+        estimated_hours: 3.0
+        estimated_pct_total: 5.0
+        task_count: 2
+        stop_conditions:
+          - "候选方案直接成为权威链"
+          - "反例只覆盖成功路径"
+          - "用主观 Token 估计代替真实测量"
+        stop_gate:
+          gate_id: "S2PA-GATE"
+          pass_mode: "all"
+          criteria:
+            - "候选处于 shadow 状态"
+            - "不变量与测试矩阵完整"
+            - "旧链仍是唯一权威结果"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S2PAT01"
+            numeric_sequence: "2.1.1"
+            name: "定义 M1-S 影子候选与不变量"
+            objective: "定义只压缩调用、输出和误触发，不压缩语义、验收、证据、发布门禁。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "双平面/中文三文件/T0-T3/required check/full gate 不变量清单可机器验证"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S1-GATE"
+            parallel_group: "S2PA-PG1"
+          - task_id: "S2PAT02"
+            numeric_sequence: "2.1.2"
+            name: "建立正反例、故障注入与性能比较矩阵"
+            objective: "覆盖合法/非法 fixture、路径变更、base ref 失败、并发、取消和输出预算。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "每个风险至少一个反例；预期退出码和证据明确"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S1-GATE"
+            parallel_group: "S2PA-PG1"
+      - phase_id: "S2PB"
+        numeric_sequence: "2.2"
+        name: "第二轮三 Agent 新鲜上下文交叉验证"
+        pursuing_goal: "使用三名全新 Agent 攻击第一轮汇总和 M1-S 候选，寻找漏检、误判和质量回退。"
+        estimated_hours: 4.5
+        estimated_pct_total: 7.5
+        task_count: 3
+        stop_conditions:
+          - "第二轮 Agent 复用第一轮 Agent 会话"
+          - "三个 Agent 互看未完成结果"
+          - "候选缺陷被以“后续再说”跳过"
+        stop_gate:
+          gate_id: "S2PB-GATE"
+          pass_mode: "all"
+          criteria:
+            - "恰好 3 份新鲜独立报告"
+            - "覆盖第一轮全部 P0/P1"
+            - "产生明确的新增/确认/驳回映射"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S2PBT01"
+            numeric_sequence: "2.2.1"
+            name: "Agent 4：安全与代码对抗复审"
+            objective: "重点攻击 fail-open、分类绕过、缓存污染、供应链、required check 与范围隔离。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "独立报告；能指出第一轮漏项或明确确认无新增；证据可重放"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2PA-GATE"
+            parallel_group: "S2PB-PG2"
+          - task_id: "S2PBT02"
+            numeric_sequence: "2.2.2"
+            name: "Agent 5：压力与故障注入复审"
+            objective: "重点攻击脏工作树、0/1/8 项目、Unicode/rename/delete、并发、取消、超时、重复确定性。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "给出可运行 stress matrix；区分实际运行与待执行"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2PA-GATE"
+            parallel_group: "S2PB-PG2"
+          - task_id: "S2PBT03"
+            numeric_sequence: "2.2.3"
+            name: "Agent 6：信息交互与架构对抗复审"
+            objective: "重点检查压缩后是否造成偏离、遗忘、幻觉、低可读性或新真相源。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "给出人类首屏、错误信息、Agent 入口和交接的可验收标准"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2PA-GATE"
+            parallel_group: "S2PB-PG2"
+      - phase_id: "S2PC"
+        numeric_sequence: "2.3"
+        name: "跨轮裁决与实施许可"
+        pursuing_goal: "交叉验证两轮结论，只允许证据充分且可回滚的影子实施进入下一 Stage。"
+        estimated_hours: 2.5
+        estimated_pct_total: 4.1667
+        task_count: 2
+        stop_conditions:
+          - "存在未裁决 P0/P1"
+          - "候选需要删除旧 validator 才能实施"
+          - "无法证明 EEI/arxiv 零写入"
+        stop_gate:
+          gate_id: "S2PC-GATE"
+          pass_mode: "all"
+          criteria:
+            - "最终风险登记表完成"
+            - "实施边界锁定"
+            - "Owner/Integrator 给出唯一决策"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S2PCT01"
+            numeric_sequence: "2.3.1"
+            name: "跨轮问题映射与严重度裁决"
+            objective: "比较两轮证据、置信度和分歧；严重度向高风险保守收敛，但不夸大无证据问题。"
+            status: "planned"
+            estimated_hours: 1.25
+            estimated_pct_total: 2.0833
+            dependencies: []
+            acceptance:
+              - "每个问题有 round1/round2 状态；P0/P1 无未解释分歧"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2PB-GATE"
+            parallel_group: "S2PC-PG3"
+          - task_id: "S2PCT02"
+            numeric_sequence: "2.3.2"
+            name: "发布 PROCEED_SHADOW / FIX-ONE / STOP 决策"
+            objective: "只有零未决阻塞且影子实施不改变权威结果时才允许进入 S3。"
+            status: "planned"
+            estimated_hours: 1.25
+            estimated_pct_total: 2.0833
+            dependencies: []
+            acceptance:
+              - "决策唯一；允许文件、测试、回滚和 Stop Conditions 明确"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2PB-GATE"
+            parallel_group: "S2PC-PG3"
+  - stage_id: "S3"
+    numeric_sequence: "3"
+    name: "影子实现与零质量回退保护"
+    parental_pursuing_goal: "在不改变现有双平面、三个中文人类入口、完整 Roadmap 与 T0-T3 质量门禁的前提下，降低普通开发任务的重复验证、重复读取和重复写入成本，提升每单位 Token 的可验收交付吞吐率，并保证开发、验收、发布、回滚与后续 Agent 接续的连续性和稳定性。"
+    pursuing_goal: "在现有单一入口中增加影子检查计划、紧凑输出、准确零写入检测和性能遥测，同时保持旧链完全权威。"
+    estimated_hours: 16.0
+    estimated_pct_total: 26.6667
+    phase_count: 3
+    task_count: 9
+    stop_conditions:
+      - "需要新文件体系才能运行"
+      - "权威退出结果改变"
+      - "CI/READ_ONLY 写仓库"
+      - "竞态或残留无法消除"
+    stop_gate:
+      gate_id: "S3-GATE"
+      pass_mode: "all"
+      criteria:
+        - "所有新增测试通过"
+        - "旧 required 结果不变"
+        - "compact/JSON/telemetry 可复现"
+        - "无项目业务文件变更"
+      evidence_required:
+        - "phase_gate_results"
+        - "consolidated_decision"
+        - "scope_and_zero_write_proof"
+      failure_action: "STOP 或 FIX-ONE；禁止扩大范围或用文档声明代替真实证据"
+      approver_role: "repository_owner"
+    phases:
+      - phase_id: "S3PA"
+        numeric_sequence: "3.1"
+        name: "测试先行与输出合同"
+        pursuing_goal: "先用测试固定不变量、零写入和 fail-closed，再碰实现代码。"
+        estimated_hours: 4.0
+        estimated_pct_total: 6.6667
+        task_count: 3
+        stop_conditions:
+          - "先改实现后补测试"
+          - "测试只断言文本不验证退出码/写入"
+          - "任一未知路径 fail-open"
+        stop_gate:
+          gate_id: "S3PA-GATE"
+          pass_mode: "all"
+          criteria:
+            - "红灯测试能复现问题"
+            - "不变量均有测试"
+            - "现有权威测试未被弱化"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S3PAT01"
+            numeric_sequence: "3.1.1"
+            name: "定义 compact plan 与机器 JSON 输出合同"
+            objective: "把 Agent 需要的摘要限制为检查计划、范围、失败和下一动作；完整细节进入临时 JSON。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "compact stdout <= 2 KB；JSON 字段稳定；错误可定位"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2-GATE"
+            parallel_group: "S3PA-PG1"
+          - task_id: "S3PAT02"
+            numeric_sequence: "3.1.2"
+            name: "增加 pre/post Git 状态差异测试"
+            objective: "区分“调用前已有修改”和“验证器新增修改”，避免本地脏工作树误报为验证器写入。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "本地已有无关改动不被当成新写入；CI clean-start 模式仍可严格要求干净"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2-GATE"
+            parallel_group: "S3PA-PG1"
+          - task_id: "S3PAT03"
+            numeric_sequence: "3.1.3"
+            name: "增加分类 fail-closed 与范围隔离测试"
+            objective: "任何未知、Git diff 失败、根契约/schema/validator 变更都必须走完整 changed-scope。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "未知路径不跳检；EEI/arxiv 不被写入；分类不可由 Prompt 自报覆盖"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S2-GATE"
+            parallel_group: "S3PA-PG1"
+      - phase_id: "S3PB"
+        numeric_sequence: "3.2"
+        name: "现有入口内的影子实现"
+        pursuing_goal: "只在现有 lean_governance.py 入口内增加可观测、可比较的候选路径，不创建新控制平面。"
+        estimated_hours: 8.0
+        estimated_pct_total: 13.3333
+        task_count: 4
+        stop_conditions:
+          - "新增 CURRENT.md/SHIP.md/projectctl 或平行事实源"
+          - "重命名 Required Check"
+          - "删除旧 validator"
+          - "修改项目业务目录"
+        stop_gate:
+          gate_id: "S3PB-GATE"
+          pass_mode: "all"
+          criteria:
+            - "旧链仍权威"
+            - "影子输出可关闭"
+            - "所有实现局限于允许文件"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S3PBT01"
+            numeric_sequence: "3.2.1"
+            name: "实现只读 check plan / explain 输出"
+            objective: "根据真实 Git diff 解释选中项目、检查项和升级原因；不改变现有退出结果。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "同一输入输出确定；失败原因可读；无 tracked 写入"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3PA-GATE"
+            parallel_group: "S3PB-PG2"
+          - task_id: "S3PBT02"
+            numeric_sequence: "3.2.2"
+            name: "修复零写入判断为 pre/post delta"
+            objective: "本地模式检测验证器新增差异，CI 模式可保留 clean-start 严格要求。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "脏工作树 fixture、干净 CI fixture、git status 错误 fixture 全通过"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3PA-GATE"
+            parallel_group: "S3PB-PG2"
+          - task_id: "S3PBT03"
+            numeric_sequence: "3.2.3"
+            name: "增加 compact 人类输出与完整临时证据输出"
+            objective: "减少 Agent 上下文，保留完整机器证据；不得吞掉原 validator 退出码和尾部错误。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "stdout 预算达标；失败信息含类别/文件/复现命令/下一动作"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3PA-GATE"
+            parallel_group: "S3PB-PG2"
+          - task_id: "S3PBT04"
+            numeric_sequence: "3.2.4"
+            name: "增加无持久缓存的性能遥测"
+            objective: "记录阶段耗时、选中项目、渲染数和输出体积到 stdout/runner temp；不写仓库。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "无凭据；无 tracked 文件；取消/异常后临时文件清理"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3PA-GATE"
+            parallel_group: "S3PB-PG2"
+      - phase_id: "S3PC"
+        numeric_sequence: "3.3"
+        name: "集成、竞态与确定性验证"
+        pursuing_goal: "证明新观测路径在重复、并发和取消下不会产生竞态、缓存污染或 Git 噪声。"
+        estimated_hours: 4.0
+        estimated_pct_total: 6.6667
+        task_count: 2
+        stop_conditions:
+          - "出现非确定性结果"
+          - "并发共享同一输出文件"
+          - "候选结果参与 required pass/fail"
+        stop_gate:
+          gate_id: "S3PC-GATE"
+          pass_mode: "all"
+          criteria:
+            - "影子实现测试通过"
+            - "无竞态/残留"
+            - "权威行为零变化"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S3PCT01"
+            numeric_sequence: "3.3.1"
+            name: "运行单元、并发、取消与 20 次确定性测试"
+            objective: "并发运行使用每次独立临时目录；取消后无孤儿进程、共享缓存和残留。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "20 次摘要 hash 一致；并发退出码稳定；临时目录清理"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3PB-GATE"
+            parallel_group: "S3PC-PG3"
+          - task_id: "S3PCT02"
+            numeric_sequence: "3.3.2"
+            name: "建立 legacy-authoritative 与 candidate-shadow 对比器"
+            objective: "同一 fixture 同时记录旧结果与候选计划；任何差异只报告，不改变 required 结果。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "差异报告可复现；候选失败不掩盖旧链；零写入"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3PB-GATE"
+            parallel_group: "S3PC-PG3"
+  - stage_id: "S4"
+    numeric_sequence: "4"
+    name: "等价性、压力与真实影子证明"
+    parental_pursuing_goal: "在不改变现有双平面、三个中文人类入口、完整 Roadmap 与 T0-T3 质量门禁的前提下，降低普通开发任务的重复验证、重复读取和重复写入成本，提升每单位 Token 的可验收交付吞吐率，并保证开发、验收、发布、回滚与后续 Agent 接续的连续性和稳定性。"
+    pursuing_goal: "以反例、故障注入、真实 PR 与性能基线证明候选路径既更快又不降低质量。"
+    estimated_hours: 14.0
+    estimated_pct_total: 23.3333
+    phase_count: 3
+    task_count: 8
+    stop_conditions:
+      - "出现任一 false negative"
+      - "候选 fail-open"
+      - "并发/取消残留"
+      - "未达到真实 shadow 数量"
+    stop_gate:
+      gate_id: "S4-GATE"
+      pass_mode: "all"
+      criteria:
+        - "合成与真实 parity 通过"
+        - "性能目标有实测"
+        - "OWNER 给出唯一激活裁决"
+      evidence_required:
+        - "phase_gate_results"
+        - "consolidated_decision"
+        - "scope_and_zero_write_proof"
+      failure_action: "STOP 或 FIX-ONE；禁止扩大范围或用文档声明代替真实证据"
+      approver_role: "repository_owner"
+    phases:
+      - phase_id: "S4PA"
+        numeric_sequence: "4.1"
+        name: "合成语料与故障注入等价性"
+        pursuing_goal: "用足够苛刻的正反例证明候选不会漏掉原有质量问题。"
+        estimated_hours: 5.0
+        estimated_pct_total: 8.3333
+        task_count: 3
+        stop_conditions:
+          - "任何旧链失败样本候选漏报"
+          - "base/Git 错误被当作无变更"
+          - "中文路径解析不稳定"
+        stop_gate:
+          gate_id: "S4PA-GATE"
+          pass_mode: "all"
+          criteria:
+            - "等价矩阵 100% 通过"
+            - "零 false negative"
+            - "失败证据可重放"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S4PAT01"
+            numeric_sequence: "4.1.1"
+            name: "运行合法与非法治理 fixture 全矩阵"
+            objective: "覆盖缺中文文件、非法 Roadmap、completed 无证据、模型/参数漂移和引用断裂。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "所有旧链失败样本候选不得判定可跳过；零 false negative"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3-GATE"
+            parallel_group: "S4PA-PG1"
+          - task_id: "S4PAT02"
+            numeric_sequence: "4.1.2"
+            name: "运行路径、Unicode、rename/delete 与 base-ref 故障矩阵"
+            objective: "验证中文文件名、重命名、删除、首提交、错误 base、detached HEAD 和 Git 错误。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "全部 fail-closed 或给出明确 BLOCKED；无异常吞噬"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3-GATE"
+            parallel_group: "S4PA-PG1"
+          - task_id: "S4PAT03"
+            numeric_sequence: "4.1.3"
+            name: "验证 T0-T3 升级和根治理 fan-out"
+            objective: "测试 0/1/8 项目选择和根契约变化；风险无法确定时走完整检查。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "选中范围与原因正确；EEI/arxiv 排除规则保持；T2/T3 不降级"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S3-GATE"
+            parallel_group: "S4PA-PG1"
+      - phase_id: "S4PB"
+        numeric_sequence: "4.2"
+        name: "性能、操作极限与真实影子运行"
+        pursuing_goal: "用真实数据证明提速，而不是以删除检查或主观 Token 估计制造假收益。"
+        estimated_hours: 5.0
+        estimated_pct_total: 8.3333
+        task_count: 3
+        stop_conditions:
+          - "性能收益来自跳过必要语义/证据检查"
+          - "任一压力测试留下后台进程或缓存"
+          - "真实 shadow 结果不一致"
+        stop_gate:
+          gate_id: "S4PB-GATE"
+          pass_mode: "all"
+          criteria:
+            - "性能目标达成或有透明 FIX-ONE"
+            - "操作极限稳定"
+            - "两个真实样本零质量回退"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S4PBT01"
+            numeric_sequence: "4.2.1"
+            name: "比较 legacy 与 candidate 的 p50/p95、输出和项目 fan-out"
+            objective: "相同 fixture 至少各 10 次，记录 wall time、CPU proxy、stdout bytes、选中项目和检查数。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "T0/T1 p50 <= legacy 70%；p95 <= legacy 85%；完整链回归不超过 10%"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4PA-GATE"
+            parallel_group: "S4PB-PG2"
+          - task_id: "S4PBT02"
+            numeric_sequence: "4.2.2"
+            name: "运行并发、重复、取消、超时和临时清理压力测试"
+            objective: "验证两实例并发、20 次重复、SIGTERM/CI cancellation、超时和清理。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "无孤儿进程、无共享文件冲突、无 tracked cache、数据证据完整"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4PA-GATE"
+            parallel_group: "S4PB-PG2"
+          - task_id: "S4PBT03"
+            numeric_sequence: "4.2.3"
+            name: "在至少两个真实代表性 PR/commit 上 shadow 对比"
+            objective: "选择一个根治理变更和一个单项目 T0/T1 变更；只读比较，不改 required check。"
+            status: "planned"
+            estimated_hours: 1.5
+            estimated_pct_total: 2.5
+            dependencies: []
+            acceptance:
+              - "两次 legacy/candidate 判定一致；差异解释清楚；实际耗时证据存在"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4PA-GATE"
+            parallel_group: "S4PB-PG2"
+      - phase_id: "S4PC"
+        numeric_sequence: "4.3"
+        name: "激活前 Stop Gate"
+        pursuing_goal: "只在等价性、稳定性、性能和回滚同时成立时允许有限激活。"
+        estimated_hours: 4.0
+        estimated_pct_total: 6.6667
+        task_count: 2
+        stop_conditions:
+          - "任何 P0/P1 未关闭"
+          - "存在 false negative"
+          - "性能数据不可复现"
+          - "回滚未验证"
+        stop_gate:
+          gate_id: "S4PC-GATE"
+          pass_mode: "all"
+          criteria:
+            - "S4 Gate 全部通过"
+            - "获得有限激活许可"
+            - "旧链可一键恢复"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S4PCT01"
+            numeric_sequence: "4.3.1"
+            name: "执行 false-negative 与遗漏专项审计"
+            objective: "独立审查所有候选“跳过”决定，确认无关键检查因路径分类或缓存被绕过。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "零 false negative；每个跳过均有规则和测试；UNKNOWN 升级完整检查"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4PB-GATE"
+            parallel_group: "S4PC-PG3"
+          - task_id: "S4PCT02"
+            numeric_sequence: "4.3.2"
+            name: "给出 SHIP / FIX-ONE / STOP 激活裁决"
+            objective: "综合两轮审查、影子测试和性能数据作唯一决定；未达标不得带病激活。"
+            status: "planned"
+            estimated_hours: 2.0
+            estimated_pct_total: 3.3333
+            dependencies: []
+            acceptance:
+              - "裁决有 owner 签署；激活范围和 rollback 开关明确"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4PB-GATE"
+            parallel_group: "S4PC-PG3"
+  - stage_id: "S5"
+    numeric_sequence: "5"
+    name: "受控激活、验收与连续性交接"
+    parental_pursuing_goal: "在不改变现有双平面、三个中文人类入口、完整 Roadmap 与 T0-T3 质量门禁的前提下，降低普通开发任务的重复验证、重复读取和重复写入成本，提升每单位 Token 的可验收交付吞吐率，并保证开发、验收、发布、回滚与后续 Agent 接续的连续性和稳定性。"
+    pursuing_goal: "以最小 CI/文档改动激活安全快路径，完成全量回归、ROI 证明、回滚和后续 Agent 交接。"
+    estimated_hours: 8.0
+    estimated_pct_total: 13.3333
+    phase_count: 3
+    task_count: 8
+    stop_conditions:
+      - "Required Check 身份变化"
+      - "full/nightly/release 质量下降"
+      - "回滚不可执行"
+      - "合并后真实运行失败"
+    stop_gate:
+      gate_id: "S5-GATE"
+      pass_mode: "all"
+      criteria:
+        - "所有验收和 ROI 指标达标"
+        - "两次真实运行成功"
+        - "Owner 接受并可一键回滚"
+      evidence_required:
+        - "phase_gate_results"
+        - "consolidated_decision"
+        - "scope_and_zero_write_proof"
+      failure_action: "STOP 或 FIX-ONE；禁止扩大范围或用文档声明代替真实证据"
+      approver_role: "repository_owner"
+    phases:
+      - phase_id: "S5PA"
+        numeric_sequence: "5.1"
+        name: "受控 CI 激活与文档去漂移"
+        pursuing_goal: "以最小 diff 激活已证明安全的快路径，保持 Required Check 身份、权限和完整门禁。"
+        estimated_hours: 3.0
+        estimated_pct_total: 5.0
+        task_count: 3
+        stop_conditions:
+          - "需要改 branch protection check name"
+          - "workflow 权限扩大"
+          - "完整/nightly/release 门禁被删"
+          - "README 新增另一套 current truth"
+        stop_gate:
+          gate_id: "S5PA-GATE"
+          pass_mode: "all"
+          criteria:
+            - "CI 最小 diff 可审查"
+            - "回滚已演练"
+            - "稳定文档与动态证据分离"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S5PAT01"
+            numeric_sequence: "5.1.1"
+            name: "保持 workflow/check 身份不变并接入受控路径"
+            objective: "不得重命名 Project Governance workflow/job；保留 contents:read、并发取消和 full/nightly。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "Required Check 名称/触发/权限不变；PR 与 push 仍 fail-closed"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4-GATE"
+            parallel_group: "S5PA-PG1"
+          - task_id: "S5PAT02"
+            numeric_sequence: "5.1.2"
+            name: "提供显式回滚开关或单提交回滚路径"
+            objective: "任何异常可立即恢复 legacy-authoritative；不依赖迁移所有项目。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "回滚演练通过；旧命令可用；无数据迁移"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S4-GATE"
+            parallel_group: "S5PA-PG1"
+          - task_id: "S5PAT03"
+            numeric_sequence: "5.1.3"
+            name: "移除 README 中易漂移的动态基线快照"
+            objective: "README 只保留稳定导航和命令；当前组合状态改为 CI artifact 或按需报告。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "README 不再保存旧 SHA/current snapshot；没有新增平行当前文件"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T1"
+            depends_on: []
+            requires_gate: "S4-GATE"
+            parallel_group: "S5PA-PG1"
+      - phase_id: "S5PB"
+        numeric_sequence: "5.2"
+        name: "最终回归、ROI 与 Agent 连续性"
+        pursuing_goal: "验证全链质量、量化真实收益，并让下一名 Agent 无需猜测即可继续。"
+        estimated_hours: 3.0
+        estimated_pct_total: 5.0
+        task_count: 3
+        stop_conditions:
+          - "全量回归失败"
+          - "ROI 只靠主观描述"
+          - "交接需要读取历史压缩包才能理解"
+        stop_gate:
+          gate_id: "S5PB-GATE"
+          pass_mode: "all"
+          criteria:
+            - "质量回归通过"
+            - "ROI 有实测"
+            - "handoff 可独立复现"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S5PBT01"
+            numeric_sequence: "5.2.1"
+            name: "运行 focused、changed-scope、full/nightly 等价回归"
+            objective: "本地/CI 运行相关单元、changed-only 与手动全量模拟；EEI/arxiv 仅只读兼容。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "全部退出码和输出保存；无 project 业务写入；full 质量不下降"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S5PA-GATE"
+            parallel_group: "S5PB-PG2"
+          - task_id: "S5PBT02"
+            numeric_sequence: "5.2.2"
+            name: "生成质量、速度、Token proxy 与 CI 重跑 ROI 报告"
+            objective: "比较前后 p50/p95、输出字节、项目 fan-out、失败可定位性和重跑原因。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "所有指标来自命令/CI；不虚构 Token；未达标项标为风险"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S5PA-GATE"
+            parallel_group: "S5PB-PG2"
+          - task_id: "S5PBT03"
+            numeric_sequence: "5.2.3"
+            name: "完成 Agent Handoff 与下一唯一 Task"
+            objective: "交接包含 HEAD、diff、测试、剩余风险、回滚、当前 Gate 和下一 Task。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "新 Agent 按 handoff 在 5 个文件内找到全部当前事实；无依赖聊天记忆"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S5PA-GATE"
+            parallel_group: "S5PB-PG2"
+      - phase_id: "S5PC"
+        numeric_sequence: "5.3"
+        name: "Owner 验收、合并与短期监控"
+        pursuing_goal: "作出明确发布决策，并在合并后验证两次真实运行，防止只在 fixture 中成功。"
+        estimated_hours: 2.0
+        estimated_pct_total: 3.3333
+        task_count: 2
+        stop_conditions:
+          - "独立审查缺失"
+          - "合并后任一 required run 失败"
+          - "出现项目范围外写入或新漂移"
+        stop_gate:
+          gate_id: "S5PC-GATE"
+          pass_mode: "all"
+          criteria:
+            - "Owner 验收"
+            - "两次真实运行成功"
+            - "任务关闭且下一唯一 Task 明确"
+          evidence_required:
+            - "task_outputs"
+            - "test_or_review_evidence"
+            - "zero_write_or_scoped_diff_proof"
+          failure_action: "BLOCKED; 不得进入下一 Phase；记录唯一阻塞并回滚本 Phase 未验收改动"
+          approver_role: "integration_owner_or_repository_owner"
+        tasks:
+          - task_id: "S5PCT01"
+            numeric_sequence: "5.3.1"
+            name: "最终独立审查与合并决策"
+            objective: "另一审查者核对实际 diff、测试、CI、回滚和未解决风险；仅允许 SHIP/FIX-ONE/STOP。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "P0/P1=0；合并决定唯一；PR 可独立回滚"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T1"
+            depends_on: []
+            requires_gate: "S5PB-GATE"
+            parallel_group: "S5PC-PG3"
+          - task_id: "S5PCT02"
+            numeric_sequence: "5.3.2"
+            name: "监控合并后两次真实 Governance 运行并关闭任务"
+            objective: "检查 push/PR 实际耗时、结果、输出和无写入；异常立即回滚。"
+            status: "planned"
+            estimated_hours: 1.0
+            estimated_pct_total: 1.6667
+            dependencies: []
+            acceptance:
+              - "连续 2 次成功；无新增治理噪声；开发记录/manifest 按真实结果收口"
+            evidence_required:
+              - "command_output"
+              - "file_or_diff_reference"
+              - "review_result"
+            risk_tier: "T2"
+            depends_on: []
+            requires_gate: "S5PB-GATE"
+            parallel_group: "S5PC-PG3"

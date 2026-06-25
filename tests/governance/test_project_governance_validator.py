@@ -26,6 +26,8 @@ ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "scripts" / "validate_project_governance.py"
 LEAN_GOVERNANCE = ROOT / "scripts" / "lean_governance.py"
 STOP_HOOK = ROOT / ".codex" / "hooks" / "governance_stop.py"
+M1_TASKPACK = ROOT / "governance" / "taskpacks" / "CodexProject_M1_Governance_Acceleration_TaskPack_v1"
+M1_REVIEW_BUNDLE = ROOT / "governance" / "review_bundles" / "m1_1"
 
 
 def load_validator_module():
@@ -103,6 +105,18 @@ def load_lean_governance_module():
     if scripts_dir not in sys.path:
         sys.path.insert(0, scripts_dir)
     spec = importlib.util.spec_from_file_location("lean_governance", ROOT / "scripts" / "lean_governance.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_m1_taskpack_validator_module():
+    scripts_dir = str(ROOT / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    spec = importlib.util.spec_from_file_location("m1_taskpack_validate_pack", M1_TASKPACK / "tools" / "validate_pack.py")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     assert spec.loader is not None
@@ -1116,6 +1130,242 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         build_changed_scope.assert_not_called()
         self.assertEqual(summary["changed_scope"]["error_code"], "GIT_STATUS_FAILED")
         self.assertTrue(summary["zero_write_delta"]["status_error"])
+
+    def _init_m1_zero_write_repo(self, tmp_path: Path) -> None:
+        subprocess.run(["git", "init"], cwd=tmp_path, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "config", "user.email", "codex@example.invalid"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Codex Test"], cwd=tmp_path, check=True)
+        (tmp_path / "README.md").write_text("clean\n", encoding="utf-8")
+        subprocess.run(["git", "add", "README.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "initial"], cwd=tmp_path, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    def test_m1_1_zero_write_preexisting_dirty_same_content_passes(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            self._init_m1_zero_write_repo(tmp_path)
+            (tmp_path / "README.md").write_text("dirty before\n", encoding="utf-8")
+            before_status = cli.git_status_porcelain(tmp_path)
+            before_snapshot = cli.worktree_status_snapshot(tmp_path, before_status)
+            after_status = cli.git_status_porcelain(tmp_path)
+            after_snapshot = cli.worktree_status_snapshot(tmp_path, after_status)
+
+        delta = cli.worktree_write_delta(
+            before_status,
+            after_status,
+            clean_start_required=False,
+            before_snapshot=before_snapshot,
+            after_snapshot=after_snapshot,
+        )
+
+        self.assertTrue(delta["clean"])
+        self.assertEqual(delta["new_changed_count"], 0)
+        self.assertEqual(delta["content_changed_count"], 0)
+
+    def test_m1_1_zero_write_same_dirty_file_modified_fails(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            self._init_m1_zero_write_repo(tmp_path)
+            (tmp_path / "README.md").write_text("dirty before\n", encoding="utf-8")
+            before_status = cli.git_status_porcelain(tmp_path)
+            before_snapshot = cli.worktree_status_snapshot(tmp_path, before_status)
+            (tmp_path / "README.md").write_text("dirty after\n", encoding="utf-8")
+            after_status = cli.git_status_porcelain(tmp_path)
+            after_snapshot = cli.worktree_status_snapshot(tmp_path, after_status)
+
+        delta = cli.worktree_write_delta(
+            before_status,
+            after_status,
+            clean_start_required=False,
+            before_snapshot=before_snapshot,
+            after_snapshot=after_snapshot,
+        )
+
+        self.assertFalse(delta["clean"])
+        self.assertEqual(before_status, after_status)
+        self.assertEqual(delta["content_changed_files"], ["README.md"])
+
+    def test_m1_1_zero_write_untracked_content_modified_fails(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            self._init_m1_zero_write_repo(tmp_path)
+            (tmp_path / "scratch.txt").write_text("before\n", encoding="utf-8")
+            before_status = cli.git_status_porcelain(tmp_path)
+            before_snapshot = cli.worktree_status_snapshot(tmp_path, before_status)
+            (tmp_path / "scratch.txt").write_text("after\n", encoding="utf-8")
+            after_status = cli.git_status_porcelain(tmp_path)
+            after_snapshot = cli.worktree_status_snapshot(tmp_path, after_status)
+
+        delta = cli.worktree_write_delta(
+            before_status,
+            after_status,
+            clean_start_required=False,
+            before_snapshot=before_snapshot,
+            after_snapshot=after_snapshot,
+        )
+
+        self.assertFalse(delta["clean"])
+        self.assertEqual(before_status, after_status)
+        self.assertEqual(delta["content_changed_files"], ["scratch.txt"])
+
+    def test_m1_1_zero_write_git_diff_failure_fails_closed(self) -> None:
+        cli = load_lean_governance_module()
+        delta = cli.worktree_write_delta(
+            [" M README.md"],
+            [" M README.md"],
+            clean_start_required=False,
+            before_snapshot={
+                "ok": False,
+                "paths": {},
+                "errors": ["git_diff_failed:README.md:fatal"],
+            },
+            after_snapshot={"ok": True, "paths": {}, "errors": []},
+        )
+
+        self.assertFalse(delta["clean"])
+        self.assertTrue(delta["snapshot_error"])
+        self.assertIn("git_diff_failed", delta["snapshot_errors"][0])
+
+    def test_m1_1_zero_write_rename_delete_and_symlink_change_fail(self) -> None:
+        cli = load_lean_governance_module()
+
+        self.assertEqual(cli.status_snapshot_paths(["R  old.md -> new.md"]), ["old.md", "new.md"])
+
+        resolved = cli.worktree_write_delta(
+            [" M README.md"],
+            [],
+            clean_start_required=False,
+            before_snapshot={"ok": True, "paths": {"README.md": {"kind": "file", "file_sha256": "sha256:a"}}, "errors": []},
+            after_snapshot={"ok": True, "paths": {}, "errors": []},
+        )
+        symlink = cli.worktree_write_delta(
+            [" M link.txt"],
+            [" M link.txt"],
+            clean_start_required=False,
+            before_snapshot={"ok": True, "paths": {"link.txt": {"kind": "symlink", "symlink_target": "a"}}, "errors": []},
+            after_snapshot={"ok": True, "paths": {"link.txt": {"kind": "symlink", "symlink_target": "b"}}, "errors": []},
+        )
+
+        self.assertFalse(resolved["clean"])
+        self.assertEqual(resolved["resolved_changed_files"], [" M README.md"])
+        self.assertFalse(symlink["clean"])
+        self.assertEqual(symlink["content_changed_files"], ["link.txt"])
+
+    def _copy_m1_1_pack_and_bundle(self, tmp_path: Path) -> tuple[Path, Path]:
+        pack_copy = tmp_path / "taskpack"
+        bundle_copy = tmp_path / "review_bundle"
+        shutil.copytree(M1_TASKPACK, pack_copy)
+        shutil.copytree(M1_REVIEW_BUNDLE, bundle_copy)
+        return pack_copy, bundle_copy
+
+    def test_m1_1_taskpack_validator_accepts_repo_pack_and_review_bundle(self) -> None:
+        pack_validator = load_m1_taskpack_validator_module()
+        result = pack_validator.validate_pack(M1_TASKPACK, M1_REVIEW_BUNDLE)
+
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["stages"], 5)
+        self.assertEqual(result["phases"], 15)
+        self.assertEqual(result["tasks"], 40)
+        self.assertEqual(result["hours"], 60.0)
+        self.assertEqual(result["review_bundle"], str(M1_REVIEW_BUNDLE))
+
+    def test_m1_1_taskpack_validator_detects_pack_dead_reference_and_missing_file(self) -> None:
+        pack_validator = load_m1_taskpack_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            pack_copy, bundle_copy = self._copy_m1_1_pack_and_bundle(Path(tmp))
+            (pack_copy / "08_CONTINUITY_AND_ROLLBACK.md").unlink()
+            readme_path = pack_copy / "00_README_FIRST.md"
+            readme_path.write_text(
+                readme_path.read_text(encoding="utf-8").replace(
+                    "08_CONTINUITY_AND_ROLLBACK.md",
+                    "09_CONTINUITY_AND_ROLLBACK.md",
+                ),
+                encoding="utf-8",
+            )
+            result = pack_validator.validate_pack(pack_copy, bundle_copy)
+
+        errors = "\n".join(result["errors"])
+        self.assertFalse(result["ok"], result)
+        self.assertIn("missing required file: 08_CONTINUITY_AND_ROLLBACK.md", errors)
+        self.assertIn("stale 09_CONTINUITY_AND_ROLLBACK.md", errors)
+
+    def test_m1_1_taskpack_validator_detects_roadmap_drift_and_dag_cycle(self) -> None:
+        pack_validator = load_m1_taskpack_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            pack_copy, bundle_copy = self._copy_m1_1_pack_and_bundle(Path(tmp))
+            roadmap_path = pack_copy / "roadmap" / "roadmap.json"
+            roadmap = json.loads(roadmap_path.read_text(encoding="utf-8"))
+            first_task = roadmap["stages"][0]["phases"][0]["tasks"][0]
+            first_task["depends_on"] = [first_task["task_id"]]
+            roadmap_path.write_text(json.dumps(roadmap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = pack_validator.validate_pack(pack_copy, bundle_copy)
+
+        errors = "\n".join(result["errors"])
+        self.assertFalse(result["ok"], result)
+        self.assertIn("roadmap/roadmap.yaml and roadmap/roadmap.json drift", errors)
+        self.assertIn("roadmap DAG cycle", errors)
+
+    def test_m1_1_taskpack_validator_detects_missing_six_agent_report(self) -> None:
+        pack_validator = load_m1_taskpack_validator_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            pack_copy, bundle_copy = self._copy_m1_1_pack_and_bundle(Path(tmp))
+            (bundle_copy / "round2" / "agent6.json").unlink()
+            result = pack_validator.validate_pack(pack_copy, bundle_copy)
+
+        self.assertFalse(result["ok"], result)
+        self.assertIn("review bundle missing file: round2/agent6.json", "\n".join(result["errors"]))
+
+    def test_m1_1_review_bundle_reports_match_wrapper_schema(self) -> None:
+        pack_validator = load_m1_taskpack_validator_module()
+        report_schema = json.loads((M1_TASKPACK / "schemas" / "review_report.schema.json").read_text(encoding="utf-8"))
+        schemas_dir = M1_TASKPACK / "schemas"
+
+        for rel in [
+            "round1/agent1.json",
+            "round1/agent2.json",
+            "round1/agent3.json",
+            "round2/agent4.json",
+            "round2/agent5.json",
+            "round2/agent6.json",
+        ]:
+            with self.subTest(report=rel):
+                errors: list[str] = []
+                report = json.loads((M1_REVIEW_BUNDLE / rel).read_text(encoding="utf-8"))
+                pack_validator.validate_schema_instance(report, report_schema, schemas_dir, rel, errors)
+                self.assertFalse(errors, errors)
+
+    def test_m1_1_acceptance_manifest_binds_owner_attestation_and_repo_artifacts(self) -> None:
+        manifest_path = ROOT / "governance" / "run_manifests" / "GOV-M1-1-CORRECTIVE-ACCEPTANCE-20260626.json"
+        self.assertTrue(manifest_path.is_file(), manifest_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "CodexProject")
+        self.assertEqual(manifest["task_id"], "M1.1-CORRECTIVE-ACCEPTANCE")
+        for acceptance_id in {
+            "ACC-M1-1-ZERO-WRITE-CONTENT",
+            "ACC-M1-1-TASKPACK-REPO-TRACKED",
+            "ACC-M1-1-REVIEW-BUNDLE-RETAINED",
+            "ACC-M1-1-WORKFLOW-NODE24-ACTIONS",
+            "ACC-M1-1-OWNER-REQUIRED-CHECK-ATTESTED",
+        }:
+            self.assertIn(acceptance_id, manifest["acceptance_ids"])
+        self.assertEqual(manifest["review_bundle"]["path"], "governance/review_bundles/m1_1")
+        self.assertEqual(manifest["taskpack"]["path"], "governance/taskpacks/CodexProject_M1_Governance_Acceleration_TaskPack_v1")
+        self.assertEqual(manifest["required_check_contract"]["required_status_check"], "Project Governance / governance")
+        self.assertEqual(manifest["owner_branch_protection_attestation"]["attestation_status"], "OWNER_ACCEPTED")
+        self.assertEqual(manifest["owner_branch_protection_attestation"]["owner_reply"], "3我同意")
+
+    def test_m1_1_project_governance_workflow_uses_node24_action_majors(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        self.assertIn("actions/checkout@v5", workflow)
+        self.assertIn("actions/setup-python@v6", workflow)
+        self.assertIn("actions/upload-artifact@v7", workflow)
+        for stale in ("actions/checkout@v4", "actions/setup-python@v5", "actions/upload-artifact@v4"):
+            self.assertNotIn(stale, workflow)
+        self.assertIn("name: Project Governance", workflow)
 
     def test_m1_s3pbt01_check_plan_is_deterministic_and_report_only(self) -> None:
         cli = load_lean_governance_module()
@@ -4807,7 +5057,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
         self.assertIn("scripts/validate_ci_attestation.py write", workflow)
         self.assertIn("scripts/validate_ci_attestation.py validate", workflow)
-        self.assertIn("actions/upload-artifact@v4", workflow)
+        self.assertIn("actions/upload-artifact@v7", workflow)
         self.assertIn("project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}", workflow)
         self.assertIn("if-no-files-found: error", workflow)
         self.assertIn("scripts/governance_setup_doctor.py --json --check-github", workflow)

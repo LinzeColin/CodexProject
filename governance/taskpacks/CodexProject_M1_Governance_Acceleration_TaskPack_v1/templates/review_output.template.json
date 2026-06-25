@@ -1,0 +1,20 @@
+{
+  "review_id": "M1-<RUN>-R1-A1",
+  "round": 1,
+  "agent_role": "security_code",
+  "baseline_sha": "0000000000000000000000000000000000000000",
+  "run_mode": "read_only",
+  "repository_write_delta": {
+    "tracked_diff": ""
+  },
+  "commands_run": [],
+  "tests_not_run": [],
+  "findings": [],
+  "summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0,
+    "merge_blocking": false
+  }
+}

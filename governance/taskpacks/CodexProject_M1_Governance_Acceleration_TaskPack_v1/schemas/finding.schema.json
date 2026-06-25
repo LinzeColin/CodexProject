@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodexProject M1 review finding",
+  "type": "object",
+  "required": [
+    "finding_id",
+    "round",
+    "agent_role",
+    "category",
+    "title",
+    "severity",
+    "confidence",
+    "merge_blocking",
+    "evidence",
+    "impact",
+    "recommended_fix",
+    "required_tests",
+    "status"
+  ],
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "pattern": "^M1-R[12]-A[1-6]-[0-9]{3}$"
+    },
+    "round": {
+      "type": "integer",
+      "enum": [
+        1,
+        2
+      ]
+    },
+    "agent_role": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "merge_blocking": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "conditional"
+          ]
+        }
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "reference",
+          "result"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reproduction": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "impact": {
+      "type": "string"
+    },
+    "recommended_fix": {
+      "type": "string"
+    },
+    "required_tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "VERIFIED",
+        "PARTIALLY_VERIFIED",
+        "PROPOSED",
+        "UNKNOWN",
+        "CONTRADICTED",
+        "STALE"
+      ]
+    },
+    "related_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

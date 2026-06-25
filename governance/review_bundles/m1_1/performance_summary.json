@@ -1,0 +1,680 @@
+{
+  "schema_version": 1,
+  "stage": "S4PB",
+  "generated_at": "2026-06-25T11:57:05.710Z",
+  "benchmark_policy": "10 runs each through cmd.exe /c after changed_files reuse and root fan-out check-render deferral",
+  "real_samples": {
+    "root_governance_sample": {
+      "kind": "current_worktree",
+      "base_ref": "HEAD",
+      "expected_scope": "root_governance_fanout"
+    },
+    "single_project_sample": {
+      "commit": "f199f75f",
+      "changed_files": [
+        "Serenity-Alipay/HANDOFF.md"
+      ],
+      "expected_scope": "Serenity-Alipay"
+    }
+  },
+  "summary": {
+    "workflow_full_all_legacy": {
+      "count": 10,
+      "min_ms": 1408,
+      "p50_ms": 1451,
+      "p95_ms": 1598,
+      "max_ms": 1598,
+      "avg_ms": 1471.1,
+      "stdout_bytes_avg": 4920,
+      "stderr_bytes_avg": 0,
+      "exit_codes": [
+        0
+      ]
+    },
+    "workflow_project_serenity_candidate_proxy": {
+      "count": 10,
+      "min_ms": 835,
+      "p50_ms": 882,
+      "p95_ms": 972,
+      "max_ms": 972,
+      "avg_ms": 892.9,
+      "stdout_bytes_avg": 859,
+      "stderr_bytes_avg": 0,
+      "exit_codes": [
+        0
+      ]
+    },
+    "pr_changed_only_candidate_ci": {
+      "count": 10,
+      "min_ms": 1440,
+      "p50_ms": 1493,
+      "p95_ms": 1692,
+      "max_ms": 1692,
+      "avg_ms": 1519,
+      "stdout_bytes_avg": 1761.2,
+      "stderr_bytes_avg": 0,
+      "exit_codes": [
+        0
+      ]
+    }
+  },
+  "ratios": {
+    "single_project_vs_full_p50": 0.6078566505858028,
+    "single_project_vs_full_p95": 0.6082603254067585,
+    "root_ci_vs_full_p50": 1.0289455547898,
+    "root_ci_vs_full_p95": 1.0588235294117647
+  },
+  "targets": {
+    "single_project_p50_lte_full_70_percent": true,
+    "single_project_p95_lte_full_85_percent": true,
+    "root_full_regression_lte_10_percent": true
+  },
+  "runs": {
+    "workflow_full_all_legacy": [
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1598,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1494,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1442,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1451,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1412,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1479,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1408,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1468,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1441,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_full_all_legacy",
+        "command": "python -B scripts\\lean_governance.py validate --all --semantic --drift-report",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1518,
+        "stdout_bytes": 4920,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "  \"tree_hash\": \"1368c1adc8909db4a0ed34864f2091d0590cb380\"",
+          "}",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      }
+    ],
+    "workflow_project_serenity_candidate_proxy": [
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 882,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 924,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 866,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 972,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 900,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 933,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 841,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 835,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 923,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "workflow_project_serenity_candidate_proxy",
+        "command": "python -B scripts\\lean_governance.py validate --project Serenity-Alipay --semantic",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 853,
+        "stdout_bytes": 859,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T904-GOLD-LABEL-INTAKE-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "[ERROR] root: governance\\run_manifests\\GOV-EEI-T905-RELEASE-REHEARSAL-20260623.json is PENDING_CI without a matching governance/ci_attestations binding",
+          "CodexProject governance validation",
+          "root: checked",
+          "projects checked: Serenity-Alipay",
+          "errors: 0",
+          "warnings: 0",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      }
+    ],
+    "pr_changed_only_candidate_ci": [
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1467,
+        "stdout_bytes": 1762,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.007,\"changed_scope_seconds\":0.148,\"validation_seconds\":0.973,\"check_render_seconds\":0.0,\"total_seconds\":1.247},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388611963-24276-5a1f462b0e29-ab55a934.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"5a1f462b0e29\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388611963-24276-5a1f462b0e29-ab55a934.json\",\"sha256\":\"sha256:5a1f462b0e29caa6af785308b4c1e585c0e72c46def7a2ac68534870ffd13a7a\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1511,
+        "stdout_bytes": 1761,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.007,\"changed_scope_seconds\":0.125,\"validation_seconds\":1.017,\"check_render_seconds\":0.0,\"total_seconds\":1.27},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1759},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388613468-21748-3cfa8c3c2468-e66b1dbf.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"3cfa8c3c2468\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388613468-21748-3cfa8c3c2468-e66b1dbf.json\",\"sha256\":\"sha256:3cfa8c3c24684b6a80617f873ef68dbeadc1b505782e8edc0629105470906718\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1440,
+        "stdout_bytes": 1762,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.008,\"changed_scope_seconds\":0.128,\"validation_seconds\":0.897,\"check_render_seconds\":0.0,\"total_seconds\":1.171},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388614905-29764-0063a8f8bc94-aa59b949.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"0063a8f8bc94\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388614905-29764-0063a8f8bc94-aa59b949.json\",\"sha256\":\"sha256:0063a8f8bc946b270817f08e48f600743747827cfdff951f316d5ef79269f21a\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1453,
+        "stdout_bytes": 1761,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.007,\"changed_scope_seconds\":0.138,\"validation_seconds\":1.02,\"check_render_seconds\":0.0,\"total_seconds\":1.265},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1759},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388616369-16552-e54b6101b784-4b34a41b.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"e54b6101b784\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388616369-16552-e54b6101b784-4b34a41b.json\",\"sha256\":\"sha256:e54b6101b78496528694df99d904128cfe171509cd4679f0d873410f8b2e305e\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1493,
+        "stdout_bytes": 1762,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.016,\"changed_scope_seconds\":0.192,\"validation_seconds\":0.946,\"check_render_seconds\":0.0,\"total_seconds\":1.319},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388617834-25752-2ab6416a8040-da69cdf9.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"2ab6416a8040\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388617834-25752-2ab6416a8040-da69cdf9.json\",\"sha256\":\"sha256:2ab6416a80403d2c8ad5090c6516c2ca9de8018534cfc3a8fc9d0870d4ca753a\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1692,
+        "stdout_bytes": 1760,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.008,\"changed_scope_seconds\":0.172,\"validation_seconds\":1.105,\"check_render_seconds\":0.0,\"total_seconds\":1.437},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1758},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388619549-6324-93eb23614e1e-ff24c51c.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"93eb23614e1e\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388619549-6324-93eb23614e1e-ff24c51c.json\",\"sha256\":\"sha256:93eb23614e1e4444475a948d50d1ac5759e25ae7739b481dc5a6e309b9e68bef\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1561,
+        "stdout_bytes": 1758,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.007,\"changed_scope_seconds\":0.269,\"validation_seconds\":0.981,\"check_render_seconds\":0.0,\"total_seconds\":1.375},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1756},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388621114-804-193f72f50612-ca8dea0f.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"193f72f50612\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388621114-804-193f72f50612-ca8dea0f.json\",\"sha256\":\"sha256:193f72f506120a43b9e69d0e407e1fe975766ce6e4d6ea75058381f2a5f64d8e\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1475,
+        "stdout_bytes": 1762,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.013,\"changed_scope_seconds\":0.211,\"validation_seconds\":0.932,\"check_render_seconds\":0.0,\"total_seconds\":1.308},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388622577-18680-924a73b9743e-44430e92.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"924a73b9743e\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388622577-18680-924a73b9743e-44430e92.json\",\"sha256\":\"sha256:924a73b9743ee0321a8656755661036f3f0e72adfa90d47fca89a48533681366\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1559,
+        "stdout_bytes": 1762,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.018,\"changed_scope_seconds\":0.195,\"validation_seconds\":0.932,\"check_render_seconds\":0.0,\"total_seconds\":1.288},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388624141-14232-08110bc94b8e-af521adf.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"08110bc94b8e\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388624141-14232-08110bc94b8e-af521adf.json\",\"sha256\":\"sha256:08110bc94b8e968596df19b765cd7fbf3011a0df99367e8efd081b5694b5a9a8\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      },
+      {
+        "label": "pr_changed_only_candidate_ci",
+        "command": "python -B scripts\\lean_governance.py ci --changed-only --base-ref HEAD",
+        "exit_code": 0,
+        "signal": null,
+        "elapsed_ms": 1539,
+        "stdout_bytes": 1762,
+        "stderr_bytes": 0,
+        "stdout_tail": [
+          "{\"owner_status_zh\":\"治理检查通过：legacy 结果仍为唯一权威，candidate 仅报告。\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"SHIP\",\"command\":\"ci\",\"scope\":\"changed-only\",\"legacy_exit_code\":0,\"process_exit_code\":0,\"candidate_report_only\":true,\"base_ref_status\":\"resolved\",\"changed_file_count\":7,\"selected_project_count\":10,\"validation_checked_project_count\":10,\"zero_tracked_write\":true,\"stable_summary_hash\":\"sha256:f40e98fc089ed9bb09a3ab0805003661d8f127767b9c12d404a67afc71144c74\",\"check_plan\":{\"selected_project_count\":10,\"changed_file_count\":7,\"root_governance_changed\":true,\"escalation_reasons\":[\"root_governance_fanout\"],\"next_action_zh\":\"失败时先查看 full_evidence_ref；候选计划只报告，不替代 legacy 结果。\"},\"timing_telemetry\":{\"baseline_seconds\":0.011,\"changed_scope_seconds\":0.173,\"validation_seconds\":1.093,\"check_render_seconds\":0.0,\"total_seconds\":1.388},\"output_telemetry\":{\"validator_output_line_count\":10,\"validator_stdout_bytes\":599,\"compact_stdout_bytes\":1760},\"acceptance_ids\":[\"M1-S2PC-PRE-S3\",\"S3PAT01\",\"S3PAT02\",\"S3PBT01\",\"S3PBT02\",\"S3PBT03\",\"S3PBT04\"],\"evidence_refs\":[\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388625691-25392-77b33482999f-632968bc.json\"],\"rollback_or_stop_condition\":\"无 tracked 回滚；full evidence 见 full_evidence_ref。\",\"full_evidence_ref\":{\"evidence_id\":\"77b33482999f\",\"path_or_artifact_ref\":\"C:\\\\Users\\\\linze\\\\Documents\\\\Codex\\\\2026-06-23\\\\xian\\\\work\\\\CodexProject\\\\.git\\\\codex-review\\\\lean-governance\\\\ci-1782388625691-25392-77b33482999f-632968bc.json\",\"sha256\":\"sha256:77b33482999fa449503370919f3285d3efea2a03ca0e4eddc02fad275b8cbd5f\",\"schema_version\":1,\"retention_scope\":\"local_only\"}}",
+          ""
+        ],
+        "stderr_tail": [
+          ""
+        ]
+      }
+    ]
+  }
+}

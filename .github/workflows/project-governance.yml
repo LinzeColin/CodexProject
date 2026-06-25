@@ -44,10 +44,10 @@ jobs:
       PYTHONPYCACHEPREFIX: /tmp/python-pycache
       PYTEST_ADDOPTS: "-p no:cacheprovider"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Run full governance validator tests
@@ -100,7 +100,7 @@ jobs:
           fi
       - name: Upload changed-only governance evidence artifact
         if: always() && (github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'))
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: governance-changed-only-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/governance-ci-evidence/**
@@ -132,7 +132,7 @@ jobs:
           git diff --exit-code -- ':(glob)**/docs/governance/ASSURANCE_STATUS.yaml' ':(glob)**/docs/governance/STATUS.md' ':(glob)**/docs/governance/OWNER_STATUS.md'
       - name: Upload generated governance views artifact
         if: success() && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all'))
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: governance-generated-views-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/governance-generated-views/**
@@ -158,7 +158,7 @@ jobs:
           python3 scripts/governance_setup_doctor.py --json --check-github > "${GOVERNANCE_ATTESTATION_DIR}/governance-setup-doctor.json"
       - name: Upload CI attestation artifact
         if: success() && github.event_name == 'workflow_dispatch' && inputs.scope == 'all'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: project-governance-ci-attestation-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/governance-ci-attestation/*.json

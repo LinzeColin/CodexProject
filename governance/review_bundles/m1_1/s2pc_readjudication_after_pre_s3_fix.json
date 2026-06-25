@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "gate_id": "S2PC-READJUDICATION-AFTER-PRE-S3-FIX",
+  "status": "PROCEED_SHADOW",
+  "original_gate": "S2PC-GATE STOP preserved in final_adjudication.json",
+  "corrective_manifest": "governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json",
+  "blocker_checks": [
+    {
+      "adjudication_id": "S2-ADJ-001",
+      "blocker": "selector false-negative",
+      "fixed": true,
+      "evidence": [
+        "targeted selector parity tests pass",
+        "validate --changed-only --base-ref HEAD checks all 10 projects for root governance diff"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-002",
+      "blocker": "required project root coverage",
+      "fixed": true,
+      "evidence": [
+        "required-project coverage tests pass",
+        "validate output includes EEI and arxiv-daily-push"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-003",
+      "blocker": "invalid base fail-open",
+      "fixed": true,
+      "evidence": [
+        "changed-scope missing base exits nonzero",
+        "compact error has UNRESOLVED_BASE and no success empty selected_project_count"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-004",
+      "blocker": "Chinese owner compact contract",
+      "fixed": true,
+      "evidence": [
+        "compact summary test asserts language zh-CN, owner_status_zh, acceptance_ids, rollback_or_stop_condition, byte budget"
+      ]
+    },
+    {
+      "adjudication_id": "S2-ADJ-005",
+      "blocker": "durable full evidence handoff",
+      "fixed": true,
+      "evidence": [
+        "compact summary test asserts full_evidence_ref path/artifact ref and sha256",
+        "workflow test asserts changed-only artifact upload"
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "command": "python -B scripts/lean_governance.py changed-scope --base-ref __missing_rejudge_base__",
+      "exit_code": 1,
+      "stdout_excerpt": "{\"owner_status_zh\":\"治理检查停止：Explicit governance diff base does not resolve to a commit: __missing_rejudge_base__\",\"schema_version\":1,\"language\":\"zh-CN\",\"decision\":\"STOP\",\"command\":\"changed-scope\",\"error_code\":\"UNRESOLVED_BASE\",\"base_ref\":\"__missing_rejudge_base__\",\"base_ref_status\":\"unresolved\",\"candidate_report_only\":true,\"rollback_or_stop_condition\":\"保持 legacy-authoritative；修复错误后重跑 changed-only gate。\"}\r\n",
+      "stderr_excerpt": "warning: in the working copy of '.github/workflows/project-governance.yml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/generate_governance_dashboard.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/lean_governance.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/validate_project_governance.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'tests/governance/test_project_governance_validator.py', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref HEAD",
+      "exit_code": 0,
+      "stdout_excerpt": "CodexProject governance sync validation\r\nchanged_files: .github/workflows/project-governance.yml, README.md, governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json, scripts/generate_governance_dashboard.py, scripts/lean_governance.py, scripts/validate_project_governance.py, tests/governance/test_project_governance_validator.py\r\nprojects changed: none\r\nerrors: 0\r\nwarnings: 0\r\nCodexProject governance validation\r\nroot: checked\r\nprojects checked: Alpha, EEI, EVA_OS, FIFA, OpMe_System, OpenAIDatabase, PFI_BIG_DATA_SIMULATOR, Serenity-Alipay, whkmSalary, arxiv-daily-push\r\nerrors: 0\r\nwarnings: 0\r\n",
+      "stderr_excerpt": "warning: in the working copy of '.github/workflows/project-governance.yml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/generate_governance_dashboard.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/lean_governance.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/validate_project_governance.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'tests/governance/test_project_governance_validator.py', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "command": "focused M1 S2PC unittest group",
+      "exit_code": 0,
+      "stdout_excerpt": "",
+      "stderr_excerpt": "----------------------------------------------------------------------\r\nRan 12 tests in 1.970s\r\n\r\nOK\r\n"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "stdout_excerpt": "",
+      "stderr_excerpt": "warning: in the working copy of '.github/workflows/project-governance.yml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/generate_governance_dashboard.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/lean_governance.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/validate_project_governance.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'tests/governance/test_project_governance_validator.py', LF will be replaced by CRLF the next time Git touches it\n"
+    }
+  ],
+  "changed_files": [
+    " M .github/workflows/project-governance.yml",
+    " M README.md",
+    " M scripts/generate_governance_dashboard.py",
+    " M scripts/lean_governance.py",
+    " M scripts/validate_project_governance.py",
+    " M tests/governance/test_project_governance_validator.py",
+    "?? governance/run_manifests/GOV-M1-PRE-S3-CORRECTIVE-FIX-20260625.json"
+  ],
+  "can_enter_s3": true,
+  "next_unique_task": "S3PAT01",
+  "generated_at": "2026-06-25T10:25:26.865Z"
+}
