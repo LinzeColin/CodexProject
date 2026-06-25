@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260623-010"
-source_snapshot_hash: "sha256:9aee5cbcd4c8e00d992e2210712b969939ecceef5b6d4b33f1f4992274dd155b"
-source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
-source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-23T03:10:00Z"
+as_of_event_id: "EVENT-20260625-023"
+source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
+source_base_commit: "12df22b6347fd881d42545afe387ac9e41e56fb4"
+source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
+snapshot_event_time: "2026-06-25T19:26:47Z"
 generator_version: "4.0.0"
-final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+final_commit_binding: "CI_ATTESTED:236d25354db7d8f9774d1f91981ae30d69b0234e https://github.com/LinzeColin/CodexProject/actions/runs/28194420774"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -13,24 +13,22 @@ dimensions:
     evidence_refs:
       - "scripts/validate_project_governance.py"
   implementation_congruence:
-    status: "PARTIAL"
+    status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 61
-    total_active_parameters: 68
-    checked_active_formulas: 10
+    checked_active_parameters: 88
+    total_active_parameters: 88
+    checked_active_formulas: 11
     total_active_formulas: 11
-    unresolved_fact_ids:
-      - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
-      - "FACT-EEI-IMPLEMENTATION-PARAMETER-REVIEW"
+    unresolved_fact_ids: []
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
       - "EEI/docs/governance/formula_registry.yaml"
   parameter_source_quality:
-    status: "PARTIAL"
-    fact_level: "UNKNOWN"
-    checked_active_parameters: 61
-    total_active_parameters: 68
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    checked_active_parameters: 88
+    total_active_parameters: 88
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,22 +62,20 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 13
-    legacy_unbound_events: 17
-    precommit_pending_events: 23
+    commit_bound_events: 18
+    legacy_unbound_events: 19
+    precommit_pending_events: 79
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T904-A026-A027-PRODUCTION-GOLD-INTAKE-IN-PROGRESS"
+  release_gate: "TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-CI-ATTESTED-RELEASE-BLOCKED"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
-    - "FACT-EEI-IMPLEMENTATION-FORMULA-REVIEW"
-    - "FACT-EEI-IMPLEMENTATION-PARAMETER-REVIEW"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
-    - "GOV-SEMANTIC-EEI-001"
     - "TASK-T1206"
-    - "TASK-T1206|GOV-SEMANTIC-EEI-001"
+    - "TASK-T1301"
+    - "TASK-T1307"
 next_executable_task:
   task_id: "TASK-T1301"
   status: "in_progress"
@@ -120,4 +116,4 @@ owner_decision:
   generated_from_refs:
     - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
     - "EEI/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-23T03:10:00Z"
+  last_reviewed_at: "2026-06-25T19:26:47Z"

@@ -18,6 +18,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 SCHEMA_VERSION = "eei-gold-quality-evaluation-contract-v1"
+INTAKE_TEMPLATE_SCHEMA_VERSION = "eei-gold-quality-intake-template-v1"
 LABEL_SCHEMA_VERSION = "eei-gold-quality-labels-v1"
 DEFAULT_LABELS = ROOT / "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
 DEFAULT_A026_OUTPUT = (
@@ -26,6 +27,14 @@ DEFAULT_A026_OUTPUT = (
 DEFAULT_A027_OUTPUT = (
     ROOT / "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
 )
+DEFAULT_INTAKE_TEMPLATE_OUTPUT = (
+    ROOT / "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json"
+)
+DEFAULT_OPERATOR_PACKET_OUTPUT = (
+    ROOT / "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json"
+)
+DEFAULT_REVIEW_PACKET = ROOT / "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
+DEFAULT_FACT_CANDIDATES = ROOT / "data/golden_vertical_fact_candidates.json"
 
 ENTITY_MIN_CASES = 50
 ENTITY_MIN_PRECISION = 0.95
@@ -50,6 +59,14 @@ PRODUCTION_GOLD_REQUIRED_LIST_FIELDS = (
     "source_document_refs",
     "labeler_qualification_refs",
 )
+PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES = (
+    "data/",
+    "tests/",
+    "fixture://",
+)
+PRODUCTION_GOLD_FORBIDDEN_LABELERS = {
+    "fixture_reviewer",
+}
 
 
 @dataclass(frozen=True)
@@ -115,6 +132,23 @@ def required_list(row: dict[str, Any], key: str, *, case_id: str) -> list[str]:
     return result
 
 
+def reject_repository_fixture_refs(refs: list[str], *, case_id: str, field: str) -> None:
+    for ref in refs:
+        if ref.startswith(PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES):
+            raise ValueError(
+                f"{case_id} {field} must not use repository fixture reference {ref!r} "
+                "for production_gold_set"
+            )
+
+
+def reject_fixture_labeler(labeler: str, *, case_id: str) -> None:
+    normalized = labeler.strip().lower()
+    if normalized in PRODUCTION_GOLD_FORBIDDEN_LABELERS or normalized.startswith("fixture_"):
+        raise ValueError(
+            f"{case_id} labeler {labeler!r} is not allowed for production_gold_set"
+        )
+
+
 def production_intake_policy() -> dict[str, Any]:
     return {
         "allow_flag_required": "--allow-production-gold-set",
@@ -125,12 +159,452 @@ def production_intake_policy() -> dict[str, Any]:
             "operator_supplied_labels": True,
             "synthetic_or_fixture_labels": False,
         },
+        "forbidden_repository_ref_prefixes": list(
+            PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES
+        ),
+        "forbidden_labelers": sorted(PRODUCTION_GOLD_FORBIDDEN_LABELERS),
         "release_boundary": {
             "gold_quality_pass_only_closes": ["A026", "A027"],
             "does_not_close": ["A202", "A209", "A210", "release_manager_activation"],
             "relationship_publication_allowed": False,
         },
     }
+
+
+def production_gold_evidence_template() -> dict[str, Any]:
+    return {
+        **{field: "<required>" for field in PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS},
+        "source_document_refs": ["<required-source-document-ref>"],
+        "labeler_qualification_refs": ["<required-labeler-qualification-ref>"],
+        "excludes_repository_fixtures": True,
+        "operator_supplied_labels": True,
+        "synthetic_or_fixture_labels": False,
+    }
+
+
+def entity_resolution_case_template() -> dict[str, Any]:
+    return {
+        "case_id": "ENT-PROD-000",
+        "labeler": "<required-labeler>",
+        "labeled_at": "<required-utc-timestamp>",
+        "expected_entity_id": "<required-or-empty-string-for-true-negative>",
+        "predicted_entity_id": "<required-or-empty-string-for-no-prediction>",
+        "evidence_refs": ["<required-evidence-ref>"],
+        "source_coverage": {
+            "required_source_ids": ["<required-source-id>"],
+            "observed_source_ids": ["<observed-source-id>"],
+            "counter_evidence_reviewed": True,
+        },
+    }
+
+
+def relationship_case_template() -> dict[str, Any]:
+    return {
+        "case_id": "REL-PROD-000",
+        "labeler": "<required-labeler>",
+        "labeled_at": "<required-utc-timestamp>",
+        "expected_relation_present": True,
+        "predicted_relation_present": True,
+        "expected_relationship_key": "<subject|predicate|object>",
+        "predicted_relationship_key": "<subject|predicate|object-or-empty-string>",
+        "evidence_refs": ["<required-evidence-ref>"],
+        "source_coverage": {
+            "required_source_ids": ["<required-source-id>"],
+            "observed_source_ids": ["<observed-source-id>"],
+            "counter_evidence_reviewed": True,
+        },
+    }
+
+
+def build_intake_template(*, generated_at: str | None = None) -> dict[str, Any]:
+    return {
+        "schema_version": INTAKE_TEMPLATE_SCHEMA_VERSION,
+        "artifact_id": "t904-a026-a027-production-gold-label-intake-template",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "task_id": "T904",
+        "acceptance_ids": ["A026", "A027"],
+        "status": "TEMPLATE_ONLY",
+        "release_gate_closure_allowed": False,
+        "production_claim_allowed": False,
+        "relationship_publication_allowed": False,
+        "scope": "golden-vertical:nvidia",
+        "thresholds": {
+            "A026": {
+                "minimum_cases": ENTITY_MIN_CASES,
+                "minimum_precision": ENTITY_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+            "A027": {
+                "minimum_cases": RELATIONSHIP_MIN_CASES,
+                "minimum_precision": RELATIONSHIP_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+        },
+        "production_gold_evidence_schema": production_intake_policy(),
+        "label_payload_skeleton": {
+            "schema_version": LABEL_SCHEMA_VERSION,
+            "system_name": "EEI",
+            "scope": "golden-vertical:nvidia",
+            "dataset_id": "<operator-production-gold-dataset-id>",
+            "fixture_policy": {
+                "production_gold_set": True,
+                "release_clearance": False,
+                "relationship_publication": False,
+            },
+            "production_gold_evidence": production_gold_evidence_template(),
+            "entity_resolution_cases": {
+                "minimum_required_cases": ENTITY_MIN_CASES,
+                "case_template": entity_resolution_case_template(),
+            },
+            "relationship_cases": {
+                "minimum_required_cases": RELATIONSHIP_MIN_CASES,
+                "case_template": relationship_case_template(),
+            },
+        },
+        "validation_commands": {
+            "generate_contract": (
+                "python scripts/validate_gold_quality_evaluation.py generate "
+                "--labels <operator-production-gold-labels.json> "
+                "--allow-production-gold-set"
+            ),
+            "validate_contract": "python scripts/validate_gold_quality_evaluation.py validate",
+            "release_manager_gate": (
+                "python scripts/validate_release_manager_activation.py validate"
+            ),
+        },
+        "non_claims": [
+            "This template is not a production gold label set.",
+            "This template does not close A026 or A027.",
+            "This template does not close A202, A209, A210 or release-manager activation.",
+            "Filled labels still require validate_gold_quality_evaluation.py with "
+            "--allow-production-gold-set and complete production_gold_evidence.",
+        ],
+    }
+
+
+def sha256_file(path: Path) -> str:
+    import hashlib
+
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def anchor_lookup(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> dict[str, dict]:
+    anchors: dict[str, dict] = {}
+    for anchor in review_packet.get("anchors", []):
+        if isinstance(anchor, dict) and isinstance(anchor.get("anchor_id"), str):
+            anchors[anchor["anchor_id"]] = anchor
+    for snapshot in fact_candidates.get("source_snapshots", []):
+        if isinstance(snapshot, dict) and isinstance(snapshot.get("anchor_id"), str):
+            anchors[snapshot["anchor_id"]] = snapshot
+    return anchors
+
+
+def entity_terms_from_sources(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    anchors = anchor_lookup(review_packet, fact_candidates)
+    terms: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    source_snapshots = fact_candidates.get("source_snapshots", [])
+    for snapshot in source_snapshots:
+        if not isinstance(snapshot, dict):
+            continue
+        anchor_id = str(snapshot.get("anchor_id") or "").strip()
+        raw_terms = str(snapshot.get("expected_entities_or_stages") or "")
+        for raw in raw_terms.split(";"):
+            value = raw.strip()
+            if not value:
+                continue
+            key = (value.lower(), anchor_id)
+            if key in seen:
+                continue
+            seen.add(key)
+            terms.append(
+                {
+                    "input_text": value,
+                    "source_anchor_id": anchor_id,
+                    "source_ref": f"data/golden_vertical_fact_candidates.json#{anchor_id}",
+                    "official_publisher": snapshot.get("official_publisher"),
+                    "source_title": snapshot.get("title"),
+                    "source_url": snapshot.get("url") or snapshot.get("source_url"),
+                }
+            )
+    for anchor in anchors.values():
+        title = str(anchor.get("title") or "").strip()
+        if not title:
+            continue
+        anchor_id = str(anchor.get("anchor_id") or "").strip()
+        key = (title.lower(), anchor_id)
+        if key in seen:
+            continue
+        seen.add(key)
+        terms.append(
+            {
+                "input_text": title,
+                "source_anchor_id": anchor_id,
+                "source_ref": (
+                    "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
+                    f"#{anchor_id}"
+                ),
+                "official_publisher": anchor.get("official_publisher"),
+                "source_title": anchor.get("title"),
+                "source_url": anchor.get("source_url"),
+            }
+        )
+    if not terms:
+        raise ValueError(
+            "operator labeling packet requires at least one source-derived entity term"
+        )
+    return terms
+
+
+def relationship_candidates_from_sources(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    candidates = review_packet.get("relationship_candidate_review_queue") or fact_candidates.get(
+        "relationship_candidates"
+    )
+    if not isinstance(candidates, list) or not candidates:
+        raise ValueError("operator labeling packet requires relationship candidates")
+    result = [candidate for candidate in candidates if isinstance(candidate, dict)]
+    if not result:
+        raise ValueError("operator labeling packet relationship candidates must be objects")
+    return result
+
+
+def build_entity_labeling_slots(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    terms = entity_terms_from_sources(review_packet, fact_candidates)
+    slots: list[dict[str, Any]] = []
+    for index in range(ENTITY_MIN_CASES):
+        term = terms[index % len(terms)]
+        slots.append(
+            {
+                "slot_id": f"ENT-PROD-SLOT-{index + 1:03d}",
+                "label_status": "OPERATOR_TO_LABEL",
+                "input_text": term["input_text"],
+                "predicted_entity_id": "",
+                "operator_expected_entity_id": "",
+                "operator_true_negative": None,
+                "required_evidence_refs": [term["source_ref"]],
+                "source_coverage": {
+                    "required_source_ids": [term["source_anchor_id"]],
+                    "observed_source_ids": [],
+                    "counter_evidence_reviewed": None,
+                },
+                "source_context": {
+                    "official_publisher": term.get("official_publisher"),
+                    "source_title": term.get("source_title"),
+                    "source_url": term.get("source_url"),
+                },
+                "required_operator_fields": [
+                    "labeler",
+                    "labeled_at",
+                    "expected_entity_id",
+                    "predicted_entity_id",
+                    "evidence_refs",
+                    "source_coverage.counter_evidence_reviewed",
+                ],
+            }
+        )
+    return slots
+
+
+def build_relationship_labeling_slots(
+    review_packet: dict[str, Any],
+    fact_candidates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    candidates = relationship_candidates_from_sources(review_packet, fact_candidates)
+    slots: list[dict[str, Any]] = []
+    for index in range(RELATIONSHIP_MIN_CASES):
+        candidate = candidates[index % len(candidates)]
+        candidate_key = str(candidate.get("candidate_key") or f"candidate-{index + 1}")
+        required_anchor_ids = candidate.get("required_source_anchor_ids") or [
+            item
+            for item in [
+                candidate.get("source_anchor_id"),
+                *(candidate.get("supporting_source_anchor_ids") or []),
+            ]
+            if item
+        ]
+        slots.append(
+            {
+                "slot_id": f"REL-PROD-SLOT-{index + 1:03d}",
+                "candidate_key": candidate_key,
+                "label_status": "OPERATOR_TO_LABEL",
+                "subject_candidate_name": candidate.get("subject_candidate_name"),
+                "relationship_type": candidate.get("relationship_type"),
+                "object_candidate_name": candidate.get("object_candidate_name"),
+                "predicted_relation_present": True,
+                "predicted_relationship_key": candidate_key,
+                "operator_expected_relation_present": None,
+                "operator_expected_relationship_key": "",
+                "required_evidence_refs": [
+                    f"data/golden_vertical_fact_candidates.json#{candidate_key}",
+                    "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
+                ],
+                "required_source_anchor_ids": required_anchor_ids,
+                "source_coverage": {
+                    "required_source_ids": required_anchor_ids,
+                    "observed_source_ids": [],
+                    "counter_evidence_reviewed": None,
+                },
+                "support_excerpt": candidate.get("support_excerpt"),
+                "counter_evidence_prompt": (
+                    "Operator must review contrary official evidence before setting "
+                    "counter_evidence_reviewed=true."
+                ),
+                "required_operator_fields": [
+                    "labeler",
+                    "labeled_at",
+                    "expected_relation_present",
+                    "predicted_relation_present",
+                    "expected_relationship_key",
+                    "predicted_relationship_key",
+                    "evidence_refs",
+                    "source_coverage.counter_evidence_reviewed",
+                ],
+            }
+        )
+    return slots
+
+
+def build_operator_labeling_packet(
+    *,
+    review_packet_path: Path = DEFAULT_REVIEW_PACKET,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    review_packet = read_json(review_packet_path)
+    fact_candidates = read_json(fact_candidates_path)
+    return {
+        "schema_version": "eei-a026-a027-operator-labeling-packet-v1",
+        "artifact_id": "t904-a026-a027-operator-labeling-packet",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T904",
+        "acceptance_ids": ["A026", "A027"],
+        "status": "READY_FOR_OPERATOR_LABELING",
+        "scope": "golden-vertical:nvidia",
+        "production_gold_set": False,
+        "release_gate_closure_allowed": False,
+        "production_claim_allowed": False,
+        "relationship_publication_allowed": False,
+        "label_payload_generated": False,
+        "thresholds": {
+            "A026": {
+                "minimum_cases": ENTITY_MIN_CASES,
+                "minimum_precision": ENTITY_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+            "A027": {
+                "minimum_cases": RELATIONSHIP_MIN_CASES,
+                "minimum_precision": RELATIONSHIP_MIN_PRECISION,
+                "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+            },
+        },
+        "source_files": {
+            "a202_operator_review_packet": relative(review_packet_path),
+            "a202_operator_review_packet_sha256": sha256_file(review_packet_path),
+            "golden_vertical_fact_candidates": relative(fact_candidates_path),
+            "golden_vertical_fact_candidates_sha256": sha256_file(fact_candidates_path),
+            "gold_quality_intake_template": relative(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
+            "gold_quality_intake_template_sha256": (
+                sha256_file(DEFAULT_INTAKE_TEMPLATE_OUTPUT)
+                if DEFAULT_INTAKE_TEMPLATE_OUTPUT.exists()
+                else None
+            ),
+        },
+        "operator_payload_requirements": {
+            "schema_version": LABEL_SCHEMA_VERSION,
+            "production_gold_evidence": production_intake_policy(),
+            "entity_resolution_cases_required": ENTITY_MIN_CASES,
+            "relationship_cases_required": RELATIONSHIP_MIN_CASES,
+            "forbidden": {
+                "repository_fixture_refs": list(PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES),
+                "fixture_labelers": sorted(PRODUCTION_GOLD_FORBIDDEN_LABELERS),
+            },
+        },
+        "entity_resolution_labeling_slots": build_entity_labeling_slots(
+            review_packet,
+            fact_candidates,
+        ),
+        "relationship_labeling_slots": build_relationship_labeling_slots(
+            review_packet,
+            fact_candidates,
+        ),
+        "validation_commands": {
+            "convert_completed_packet_to_labels": (
+                "Fill this packet into an eei-gold-quality-labels-v1 JSON payload; "
+                "this repository does not auto-convert incomplete slots."
+            ),
+            "generate_contract": (
+                "python scripts/validate_gold_quality_evaluation.py generate "
+                "--labels <operator-production-gold-labels.json> "
+                "--allow-production-gold-set"
+            ),
+            "validate_contract": "python scripts/validate_gold_quality_evaluation.py validate",
+        },
+        "non_claims": [
+            "This packet is an operator labeling worksheet, not a production gold label set.",
+            "This packet does not close A026 or A027.",
+            "Blank slots, repository fixtures, unsigned labels and unreviewed payloads "
+            "do not count as production evidence.",
+            "A202 source/legal/owner clearance, A209 24h soak and A210 brand clearance "
+            "remain separate gates.",
+        ],
+    }
+
+
+def validate_operator_labeling_packet(packet: dict[str, Any]) -> None:
+    if packet.get("schema_version") != "eei-a026-a027-operator-labeling-packet-v1":
+        raise ValueError("operator labeling packet schema_version drift")
+    if packet.get("status") != "READY_FOR_OPERATOR_LABELING":
+        raise ValueError("operator labeling packet status drift")
+    for key in (
+        "production_gold_set",
+        "release_gate_closure_allowed",
+        "production_claim_allowed",
+        "relationship_publication_allowed",
+        "label_payload_generated",
+    ):
+        if packet.get(key) is not False:
+            raise ValueError(f"operator labeling packet {key} must be false")
+    entity_slots = packet.get("entity_resolution_labeling_slots")
+    relationship_slots = packet.get("relationship_labeling_slots")
+    if not isinstance(entity_slots, list) or len(entity_slots) != ENTITY_MIN_CASES:
+        raise ValueError("operator labeling packet must contain exactly 50 entity slots")
+    if (
+        not isinstance(relationship_slots, list)
+        or len(relationship_slots) != RELATIONSHIP_MIN_CASES
+    ):
+        raise ValueError("operator labeling packet must contain exactly 100 relationship slots")
+    if len({slot.get("slot_id") for slot in entity_slots}) != ENTITY_MIN_CASES:
+        raise ValueError("entity slot ids must be unique")
+    if len({slot.get("slot_id") for slot in relationship_slots}) != RELATIONSHIP_MIN_CASES:
+        raise ValueError("relationship slot ids must be unique")
+    for slot in entity_slots + relationship_slots:
+        if slot.get("label_status") != "OPERATOR_TO_LABEL":
+            raise ValueError("all labeling slots must remain OPERATOR_TO_LABEL")
+        required_refs = slot.get("required_evidence_refs")
+        if not isinstance(required_refs, list) or not required_refs:
+            raise ValueError("labeling slots require evidence refs")
+        coverage = slot.get("source_coverage")
+        if not isinstance(coverage, dict) or not coverage.get("required_source_ids"):
+            raise ValueError("labeling slots require source coverage")
+        if coverage.get("counter_evidence_reviewed") is not None:
+            raise ValueError("blank operator slots must not pre-claim counter-evidence review")
 
 
 def validate_production_gold_evidence(payload: dict[str, Any]) -> dict[str, Any]:
@@ -147,6 +621,20 @@ def validate_production_gold_evidence(payload: dict[str, Any]) -> dict[str, Any]
         raise ValueError("production_gold_evidence.operator_supplied_labels must be true")
     if evidence.get("synthetic_or_fixture_labels") is not False:
         raise ValueError("production_gold_evidence.synthetic_or_fixture_labels must be false")
+    reject_repository_fixture_refs(
+        required_list(evidence, "source_document_refs", case_id="production_gold_evidence"),
+        case_id="production_gold_evidence",
+        field="source_document_refs",
+    )
+    reject_repository_fixture_refs(
+        required_list(
+            evidence,
+            "labeler_qualification_refs",
+            case_id="production_gold_evidence",
+        ),
+        case_id="production_gold_evidence",
+        field="labeler_qualification_refs",
+    )
     return evidence
 
 
@@ -201,11 +689,21 @@ def validate_label_payload(
             if case_id in seen:
                 raise ValueError(f"duplicate case_id: {case_id}")
             seen.add(case_id)
-            required_text(entry, "labeler", case_id=case_id)
+            labeler = required_text(entry, "labeler", case_id=case_id)
             required_text(entry, "labeled_at", case_id=case_id)
             evidence_refs = entry.get("evidence_refs")
             if not isinstance(evidence_refs, list) or not evidence_refs:
                 raise ValueError(f"{case_id} evidence_refs must be non-empty")
+            evidence_refs = [str(ref).strip() for ref in evidence_refs if str(ref).strip()]
+            if not evidence_refs:
+                raise ValueError(f"{case_id} evidence_refs must be non-empty")
+            if production_gold_set:
+                reject_fixture_labeler(labeler, case_id=case_id)
+                reject_repository_fixture_refs(
+                    evidence_refs,
+                    case_id=case_id,
+                    field="evidence_refs",
+                )
             source_coverage(entry, case_id=case_id)
 
 
@@ -497,6 +995,155 @@ def validate_contract(contract: dict[str, Any], *, focus_acceptance_id: str | No
         raise ValueError(f"artifact focus_acceptance_id must be {focus_acceptance_id}")
 
 
+def validate_intake_template(template: dict[str, Any]) -> None:
+    if template.get("schema_version") != INTAKE_TEMPLATE_SCHEMA_VERSION:
+        raise ValueError(f"schema_version must be {INTAKE_TEMPLATE_SCHEMA_VERSION}")
+    if template.get("system_name") != "EEI":
+        raise ValueError("system_name must be EEI")
+    if template.get("task_id") != "T904":
+        raise ValueError("task_id must be T904")
+    if template.get("status") != "TEMPLATE_ONLY":
+        raise ValueError("intake template status must be TEMPLATE_ONLY")
+    if template.get("release_gate_closure_allowed") is not False:
+        raise ValueError("intake template must not close release gates")
+    if template.get("production_claim_allowed") is not False:
+        raise ValueError("intake template must not allow production claims")
+    if template.get("relationship_publication_allowed") is not False:
+        raise ValueError("intake template must not allow relationship publication")
+    if template.get("acceptance_ids") != ["A026", "A027"]:
+        raise ValueError("intake template acceptance_ids drift")
+
+    thresholds = template.get("thresholds")
+    if not isinstance(thresholds, dict):
+        raise ValueError("intake template thresholds missing")
+    expected_thresholds = {
+        "A026": {
+            "minimum_cases": ENTITY_MIN_CASES,
+            "minimum_precision": ENTITY_MIN_PRECISION,
+            "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+        },
+        "A027": {
+            "minimum_cases": RELATIONSHIP_MIN_CASES,
+            "minimum_precision": RELATIONSHIP_MIN_PRECISION,
+            "minimum_source_coverage": SOURCE_COVERAGE_MIN,
+        },
+    }
+    if thresholds != expected_thresholds:
+        raise ValueError("intake template thresholds drift")
+
+    evidence_schema = template.get("production_gold_evidence_schema")
+    if evidence_schema != production_intake_policy():
+        raise ValueError("production_gold_evidence_schema drift")
+    skeleton = template.get("label_payload_skeleton")
+    if not isinstance(skeleton, dict):
+        raise ValueError("label_payload_skeleton missing")
+    if skeleton.get("schema_version") != LABEL_SCHEMA_VERSION:
+        raise ValueError("label_payload_skeleton schema version drift")
+    if (skeleton.get("fixture_policy") or {}).get("production_gold_set") is not True:
+        raise ValueError("template skeleton must target production_gold_set=true")
+    if skeleton.get("production_gold_evidence") != production_gold_evidence_template():
+        raise ValueError("production_gold_evidence template drift")
+    entity_cases = skeleton.get("entity_resolution_cases")
+    relationship_cases = skeleton.get("relationship_cases")
+    if not isinstance(entity_cases, dict) or not isinstance(relationship_cases, dict):
+        raise ValueError("case templates missing")
+    if entity_cases.get("minimum_required_cases") != ENTITY_MIN_CASES:
+        raise ValueError("entity case count drift")
+    if relationship_cases.get("minimum_required_cases") != RELATIONSHIP_MIN_CASES:
+        raise ValueError("relationship case count drift")
+    if entity_cases.get("case_template") != entity_resolution_case_template():
+        raise ValueError("entity case template drift")
+    if relationship_cases.get("case_template") != relationship_case_template():
+        raise ValueError("relationship case template drift")
+
+
+def generate_template(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    template = build_intake_template()
+    validate_intake_template(template)
+    write_json(output, template)
+    print(
+        json.dumps(
+            {
+                "generated": True,
+                "status": template["status"],
+                "release_gate_closure_allowed": template["release_gate_closure_allowed"],
+                "output": relative(output),
+                "a026_minimum_cases": ENTITY_MIN_CASES,
+                "a027_minimum_cases": RELATIONSHIP_MIN_CASES,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def validate_template(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    template = read_json(output)
+    validate_intake_template(template)
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "status": template["status"],
+                "release_gate_closure_allowed": template["release_gate_closure_allowed"],
+                "output": relative(output),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def generate_packet(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    packet = build_operator_labeling_packet(
+        review_packet_path=Path(args.review_packet),
+        fact_candidates_path=Path(args.fact_candidates),
+    )
+    validate_operator_labeling_packet(packet)
+    write_json(output, packet)
+    print(
+        json.dumps(
+            {
+                "generated": True,
+                "status": packet["status"],
+                "release_gate_closure_allowed": packet["release_gate_closure_allowed"],
+                "output": relative(output),
+                "entity_slots": len(packet["entity_resolution_labeling_slots"]),
+                "relationship_slots": len(packet["relationship_labeling_slots"]),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def validate_packet(args: argparse.Namespace) -> int:
+    output = Path(args.output)
+    packet = read_json(output)
+    validate_operator_labeling_packet(packet)
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "status": packet["status"],
+                "release_gate_closure_allowed": packet["release_gate_closure_allowed"],
+                "output": relative(output),
+                "entity_slots": len(packet["entity_resolution_labeling_slots"]),
+                "relationship_slots": len(packet["relationship_labeling_slots"]),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def generate(args: argparse.Namespace) -> int:
     labels = Path(args.labels)
     contract = build_contract(
@@ -559,10 +1206,30 @@ def main() -> int:
         ),
     )
     generate_parser.set_defaults(func=generate)
+    generate_template_parser = subparsers.add_parser("generate-template")
+    generate_template_parser.add_argument(
+        "--output",
+        default=str(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
+    )
+    generate_template_parser.set_defaults(func=generate_template)
     validate_parser = subparsers.add_parser("validate")
     validate_parser.add_argument("--a026-output", default=str(DEFAULT_A026_OUTPUT))
     validate_parser.add_argument("--a027-output", default=str(DEFAULT_A027_OUTPUT))
     validate_parser.set_defaults(func=validate)
+    validate_template_parser = subparsers.add_parser("validate-template")
+    validate_template_parser.add_argument(
+        "--output",
+        default=str(DEFAULT_INTAKE_TEMPLATE_OUTPUT),
+    )
+    validate_template_parser.set_defaults(func=validate_template)
+    generate_packet_parser = subparsers.add_parser("generate-packet")
+    generate_packet_parser.add_argument("--output", default=str(DEFAULT_OPERATOR_PACKET_OUTPUT))
+    generate_packet_parser.add_argument("--review-packet", default=str(DEFAULT_REVIEW_PACKET))
+    generate_packet_parser.add_argument("--fact-candidates", default=str(DEFAULT_FACT_CANDIDATES))
+    generate_packet_parser.set_defaults(func=generate_packet)
+    validate_packet_parser = subparsers.add_parser("validate-packet")
+    validate_packet_parser.add_argument("--output", default=str(DEFAULT_OPERATOR_PACKET_OUTPUT))
+    validate_packet_parser.set_defaults(func=validate_packet)
     args = parser.parse_args()
     return int(args.func(args))
 

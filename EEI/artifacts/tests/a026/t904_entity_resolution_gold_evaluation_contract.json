@@ -40,7 +40,7 @@
       "recall_is_reported_not_release_threshold": true
     }
   },
-  "generated_at": "2026-06-23T01:31:08Z",
+  "generated_at": "2026-06-25T22:29:10Z",
   "manual_review_requirements": [
     "A026 requires at least 50 human-labeled entity-resolution cases and precision >= 95.00%.",
     "A027 requires at least 100 human-labeled relationship cases and precision >= 90.00%.",
@@ -52,6 +52,14 @@
   "production_gold_evidence": null,
   "production_intake_policy": {
     "allow_flag_required": "--allow-production-gold-set",
+    "forbidden_labelers": [
+      "fixture_reviewer"
+    ],
+    "forbidden_repository_ref_prefixes": [
+      "data/",
+      "tests/",
+      "fixture://"
+    ],
     "release_boundary": {
       "does_not_close": [
         "A202",

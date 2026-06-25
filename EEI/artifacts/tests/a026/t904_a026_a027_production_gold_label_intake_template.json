@@ -1,0 +1,165 @@
+{
+  "acceptance_ids": [
+    "A026",
+    "A027"
+  ],
+  "artifact_id": "t904-a026-a027-production-gold-label-intake-template",
+  "generated_at": "2026-06-25T22:29:10Z",
+  "label_payload_skeleton": {
+    "dataset_id": "<operator-production-gold-dataset-id>",
+    "entity_resolution_cases": {
+      "case_template": {
+        "case_id": "ENT-PROD-000",
+        "evidence_refs": [
+          "<required-evidence-ref>"
+        ],
+        "expected_entity_id": "<required-or-empty-string-for-true-negative>",
+        "labeled_at": "<required-utc-timestamp>",
+        "labeler": "<required-labeler>",
+        "predicted_entity_id": "<required-or-empty-string-for-no-prediction>",
+        "source_coverage": {
+          "counter_evidence_reviewed": true,
+          "observed_source_ids": [
+            "<observed-source-id>"
+          ],
+          "required_source_ids": [
+            "<required-source-id>"
+          ]
+        }
+      },
+      "minimum_required_cases": 50
+    },
+    "fixture_policy": {
+      "production_gold_set": true,
+      "relationship_publication": false,
+      "release_clearance": false
+    },
+    "production_gold_evidence": {
+      "dataset_owner": "<required>",
+      "evidence_id": "<required>",
+      "excludes_repository_fixtures": true,
+      "label_freeze_sha256": "<required>",
+      "labeler_qualification_refs": [
+        "<required-labeler-qualification-ref>"
+      ],
+      "labeling_protocol_ref": "<required>",
+      "operator_supplied_labels": true,
+      "owner_role": "<required>",
+      "passage_review_policy_ref": "<required>",
+      "reviewed_at": "<required>",
+      "reviewer": "<required>",
+      "reviewer_signature_hash": "<required>",
+      "sampling_frame": "<required>",
+      "source_document_refs": [
+        "<required-source-document-ref>"
+      ],
+      "source_license_review_ref": "<required>",
+      "synthetic_or_fixture_labels": false
+    },
+    "relationship_cases": {
+      "case_template": {
+        "case_id": "REL-PROD-000",
+        "evidence_refs": [
+          "<required-evidence-ref>"
+        ],
+        "expected_relation_present": true,
+        "expected_relationship_key": "<subject|predicate|object>",
+        "labeled_at": "<required-utc-timestamp>",
+        "labeler": "<required-labeler>",
+        "predicted_relation_present": true,
+        "predicted_relationship_key": "<subject|predicate|object-or-empty-string>",
+        "source_coverage": {
+          "counter_evidence_reviewed": true,
+          "observed_source_ids": [
+            "<observed-source-id>"
+          ],
+          "required_source_ids": [
+            "<required-source-id>"
+          ]
+        }
+      },
+      "minimum_required_cases": 100
+    },
+    "schema_version": "eei-gold-quality-labels-v1",
+    "scope": "golden-vertical:nvidia",
+    "system_name": "EEI"
+  },
+  "non_claims": [
+    "This template is not a production gold label set.",
+    "This template does not close A026 or A027.",
+    "This template does not close A202, A209, A210 or release-manager activation.",
+    "Filled labels still require validate_gold_quality_evaluation.py with --allow-production-gold-set and complete production_gold_evidence."
+  ],
+  "production_claim_allowed": false,
+  "production_gold_evidence_schema": {
+    "allow_flag_required": "--allow-production-gold-set",
+    "forbidden_labelers": [
+      "fixture_reviewer"
+    ],
+    "forbidden_repository_ref_prefixes": [
+      "data/",
+      "tests/",
+      "fixture://"
+    ],
+    "release_boundary": {
+      "does_not_close": [
+        "A202",
+        "A209",
+        "A210",
+        "release_manager_activation"
+      ],
+      "gold_quality_pass_only_closes": [
+        "A026",
+        "A027"
+      ],
+      "relationship_publication_allowed": false
+    },
+    "required_boolean_fields": {
+      "excludes_repository_fixtures": true,
+      "operator_supplied_labels": true,
+      "synthetic_or_fixture_labels": false
+    },
+    "required_list_fields": [
+      "source_document_refs",
+      "labeler_qualification_refs"
+    ],
+    "required_text_fields": [
+      "evidence_id",
+      "dataset_owner",
+      "owner_role",
+      "sampling_frame",
+      "labeling_protocol_ref",
+      "label_freeze_sha256",
+      "reviewer",
+      "reviewed_at",
+      "reviewer_signature_hash",
+      "source_license_review_ref",
+      "passage_review_policy_ref"
+    ]
+  },
+  "relationship_publication_allowed": false,
+  "release_gate_closure_allowed": false,
+  "schema_version": "eei-gold-quality-intake-template-v1",
+  "scope": "golden-vertical:nvidia",
+  "status": "TEMPLATE_ONLY",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "task_id": "T904",
+  "thresholds": {
+    "A026": {
+      "minimum_cases": 50,
+      "minimum_precision": 0.95,
+      "minimum_source_coverage": 1.0
+    },
+    "A027": {
+      "minimum_cases": 100,
+      "minimum_precision": 0.9,
+      "minimum_source_coverage": 1.0
+    }
+  },
+  "validation_commands": {
+    "generate_contract": "python scripts/validate_gold_quality_evaluation.py generate --labels <operator-production-gold-labels.json> --allow-production-gold-set",
+    "release_manager_gate": "python scripts/validate_release_manager_activation.py validate",
+    "validate_contract": "python scripts/validate_gold_quality_evaluation.py validate"
+  }
+}

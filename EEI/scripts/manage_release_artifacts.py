@@ -18,17 +18,12 @@ CHECKSUMS = Path("CHECKSUMS.sha256")
 RELEASE_EVIDENCE = Path("artifacts/release_evidence_t1211.json")
 OPERATION_LOG = Path("artifacts/release_operation_log_t1211.jsonl")
 
-
-def path_id(path: Path) -> str:
-    return path.as_posix()
-
-
 REQUIRED_RELEASE_PATHS = {
-    path_id(MANIFEST),
-    path_id(DIRECTORY_TREE),
-    path_id(CHECKSUMS),
-    path_id(RELEASE_EVIDENCE),
-    path_id(OPERATION_LOG),
+    str(MANIFEST),
+    str(DIRECTORY_TREE),
+    str(CHECKSUMS),
+    str(RELEASE_EVIDENCE),
+    str(OPERATION_LOG),
     "scripts/manage_release_artifacts.py",
 }
 
@@ -36,7 +31,7 @@ TRACKED_PATH_EXCLUDES = {
     "apps/web/next-env.d.ts",
 }
 
-CHECKSUM_EXCLUDES = {path_id(CHECKSUMS)}
+CHECKSUM_EXCLUDES = {str(CHECKSUMS)}
 
 
 def run_git(*args: str) -> str:
@@ -44,48 +39,25 @@ def run_git(*args: str) -> str:
         ["git", *args],
         cwd=ROOT,
         check=True,
-        encoding="utf-8",
+        text=True,
         stdout=subprocess.PIPE,
     )
     return completed.stdout
-
-
-def run_git_bytes(*args: str) -> bytes:
-    completed = subprocess.run(
-        ["git", *args],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-    )
-    return completed.stdout
-
-
-def sha256_bytes(payload: bytes) -> str:
-    return hashlib.sha256(payload).hexdigest()
-
-
-def canonical_file_bytes(path: Path) -> bytes:
-    payload = path.read_bytes()
-    if b"\0" in payload:
-        return payload
-    try:
-        text = payload.decode("utf-8")
-    except UnicodeDecodeError:
-        return payload
-    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
-    return normalized.encode("utf-8")
 
 
 def tracked_paths() -> list[str]:
-    output = run_git_bytes("-c", "core.quotePath=false", "ls-files", "-z")
-    paths = [entry.decode("utf-8") for entry in output.split(b"\0") if entry]
+    paths = run_git("ls-files").splitlines()
     combined = set(paths) | REQUIRED_RELEASE_PATHS
     combined -= TRACKED_PATH_EXCLUDES
     return sorted(path for path in combined if path and not path.endswith("/"))
 
 
 def sha256_file(path: Path) -> str:
-    return sha256_bytes(canonical_file_bytes(path))
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def write_text(path: Path, content: str) -> None:

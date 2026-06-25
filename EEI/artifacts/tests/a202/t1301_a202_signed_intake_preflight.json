@@ -1,0 +1,110 @@
+{
+  "a202_clearance_complete": false,
+  "acceptance_ids": [
+    "A202"
+  ],
+  "artifact_id": "t1301-a202-signed-intake-preflight",
+  "generated_at": "2026-06-25T18:48:45Z",
+  "missing_signed_inputs": [
+    {
+      "input_id": "A202_source_license_reviews",
+      "reason": "source-license review signatures are not supplied"
+    },
+    {
+      "input_id": "A202_passage_level_relationship_reviews",
+      "reason": "passage-level relationship review signatures are not supplied"
+    },
+    {
+      "input_id": "A202_production_owner_signoffs",
+      "reason": "production owner sign-off signatures are not supplied"
+    },
+    {
+      "input_id": "A202_legal_release_clearance",
+      "reason": "legal clearance or signed risk waiver is not supplied"
+    },
+    {
+      "input_id": "A202_final_attestation",
+      "reason": "final release-decision attestation is not supplied"
+    }
+  ],
+  "non_claims": [
+    "This preflight does not create source-license approval.",
+    "This preflight does not create passage-level relationship approval.",
+    "This preflight does not create production owner approval.",
+    "This preflight does not create legal release clearance.",
+    "This preflight does not publish relationship facts or graph edges.",
+    "This preflight does not close A202 by itself.",
+    "This preflight does not close A209, A210, A026/A027 or release-manager activation."
+  ],
+  "operator_next_actions": [
+    "Fill the A202 release-decision intake with real source-license reviews.",
+    "Fill passage-level relationship reviews for GV-FACT-001 and GV-FACT-002.",
+    "Attach production owner sign-offs with authority scope and signatures.",
+    "Attach legal release clearance or signed risk waiver.",
+    "Run validate-a202-signed-intake-preflight against the signed bundle."
+  ],
+  "relationship_publication_allowed": false,
+  "release_gate_closed_by_preflight": false,
+  "release_ready": false,
+  "remaining_external_gates_after_a202_clearance": [
+    "A210_brand_clearance",
+    "A026_A027_production_gold_labels",
+    "A209_24h_operator_soak",
+    "release_manager_activation"
+  ],
+  "rollback": [
+    "Regenerate this preflight from the signed intake or template source.",
+    "Do not delete future operator-supplied signed intake files during rollback.",
+    "Do not treat a committed template preflight as clearance evidence."
+  ],
+  "schema_version": "eei-a202-signed-intake-preflight-v1",
+  "signed_intake_source_boundary": {
+    "closure_allowed": false,
+    "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+    "reason": "default intake template is not signed operator evidence",
+    "repository_relative": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+    "source_kind": "repository_template"
+  },
+  "signed_intake_summary": {
+    "bundle_status": "TEMPLATE_ONLY",
+    "candidate_source_anchor_requirements": {
+      "GV-FACT-001": [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003"
+      ],
+      "GV-FACT-002": [
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004"
+      ]
+    },
+    "legal_clearance_status": "PENDING_REVIEW",
+    "owner_signoffs": 2,
+    "passage_reviews": 2,
+    "source_license_reviews": 4
+  },
+  "source_files": {
+    "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
+    "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
+    "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
+    "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6",
+    "signed_intake": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+    "signed_intake_sha256": "6885e82f97cf59e3f0d99ec1dc64a7c1b248043002edc9d0ec14f8638fcdf138"
+  },
+  "status": "A202_SIGNED_INTAKE_MISSING",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301"
+  ],
+  "validation_policy": {
+    "release_gate_closed_by_preflight": false,
+    "repository_fixtures_and_templates_count_as_clearance": false,
+    "signed_intake_alone_counts_as_release_ready": false,
+    "signed_intake_must_cover_all_candidate_source_anchors": true,
+    "signed_intake_must_include_counter_evidence_review": true,
+    "signed_intake_required_for_a202_closure": true,
+    "signed_intake_source_must_be_operator_supplied": true,
+    "template_only_counts_as_clearance": false
+  }
+}

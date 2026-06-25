@@ -5,9 +5,10 @@
   "acceptance_ids": [
     "A209"
   ],
-  "status": "PARTIAL_OPERATOR_EVIDENCE",
+  "status": "FAILED_OPERATOR_EVIDENCE",
   "release_gate_closed_by_validator": false,
   "a209_task_status_required": "IN_PROGRESS",
+  "failed_operator_evidence_accepted_as_release_ready": false,
   "configured_targets": {
     "short_duration_hours": 4.0,
     "long_duration_hours": 24.0,
@@ -41,19 +42,49 @@
       "errors": [],
       "completed_duration_seconds": 14400,
       "windows_completed": 48,
-      "checkpoint_windows": 48
+      "windows_failed": 0,
+      "checkpoint_windows": 48,
+      "failed_checkpoint_windows": 0,
+      "failed_windows": []
     },
     {
       "label": "operator_24h",
       "mode": "operator_24h",
-      "status": "MISSING",
+      "status": "FAILED_RUN",
       "target_seconds": 86400.0,
       "output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
       "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
-      "errors": [],
-      "missing": [
-        "output_json",
-        "checkpoint_jsonl"
+      "errors": [
+        "run status must be PASS",
+        "completed duration is below target",
+        "windows_failed must be 0",
+        "covers_24h_target false",
+        "window duration sum below target",
+        "checkpoint duration sum below target",
+        "window 7 status must be PASS",
+        "window 7 child_status must be PASS or PARTIAL",
+        "window 7 measured_duration_seconds must be positive",
+        "window 7 elapsed_wall_seconds exceeds parallel window budget",
+        "window 7 browser_heap_growth_bytes exceeds budget",
+        "window 7 browser_dom_node_growth exceeds budget",
+        "window 7 worker_event_loop_lag_p95_ms exceeds budget"
+      ],
+      "completed_duration_seconds": 1800,
+      "windows_completed": 6,
+      "windows_failed": 1,
+      "checkpoint_windows": 6,
+      "failed_checkpoint_windows": 1,
+      "failed_windows": [
+        {
+          "index": 7,
+          "status": "FAIL",
+          "child_status": "NO_OUTPUT",
+          "started_at": "2026-06-25T22:03:57Z",
+          "ended_at": "2026-06-25T22:08:58Z",
+          "output_path": "/private/tmp/eei-operator-soak-61143-7.json",
+          "exit_status": 1,
+          "stderr_tail": "page.evaluate: Target page, context or browser has been closed\n    at runBrowserSoak (/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/CodexProject_eei_mvp_dev_fresh/EEI/scripts/run_soak_smoke.mjs:145:23)\n    at async main (/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/CodexProject_eei_mvp_dev_fresh/EEI/scripts/run_soak_smoke.mjs:325:41) {\n  log: []\n}\n"
+        }
       ]
     }
   ],

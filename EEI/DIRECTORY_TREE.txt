@@ -62,6 +62,8 @@ Enterprise_Ecosystem_Intelligence_release
 ├── artifacts
 │   ├── tests
 │   │   ├── a026
+│   │   │   ├── t904_a026_a027_operator_labeling_packet.json
+│   │   │   ├── t904_a026_a027_production_gold_label_intake_template.json
 │   │   │   └── t904_entity_resolution_gold_evaluation_contract.json
 │   │   ├── a027
 │   │   │   └── t904_relationship_gold_evaluation_contract.json
@@ -94,6 +96,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t1215_clean_room_release.json
 │   │   ├── a202
 │   │   │   ├── t1301_a202_a210_release_decision_bundle_contract.json
+│   │   │   ├── t1301_a202_release_decision_intake_template.json
+│   │   │   ├── t1301_a202_signed_intake_preflight.json
 │   │   │   ├── t1301_context_anchor_semantic_revision_contract.json
 │   │   │   ├── t1301_curated_official_ingestion_contract.json
 │   │   │   ├── t1301_live_capture_postgres_ingestion_contract.json
@@ -103,11 +107,15 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1301_operator_review_packet_contract.json
 │   │   │   └── t1301_operator_source_capture_contract.json
 │   │   ├── a203
-│   │   │   └── t1302_production_api_graph_scoring_contract.json
+│   │   │   ├── t1302_production_api_graph_scoring_contract.json
+│   │   │   └── t1302_production_api_release_preflight.json
 │   │   ├── a204
 │   │   │   └── t1303_transactional_model_activation_contract.json
 │   │   ├── a205
 │   │   │   ├── t1303_atomic_refresh_context_contract.json
+│   │   │   ├── t1303_external_release_evidence_bundle_preflight.json
+│   │   │   ├── t1303_external_release_operator_intake_packet.json
+│   │   │   ├── t1303_mvp_release_gate_preflight.json
 │   │   │   └── t1303_release_manager_activation_preflight.json
 │   │   ├── a206
 │   │   │   ├── t1304_scheduler_retry_dead_letter_contract.json
@@ -124,11 +132,14 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a209
 │   │   │   ├── t1307_operator_soak_4h.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_4h.json
+│   │   │   ├── t1307_operator_soak_background_progress.json
 │   │   │   ├── t1307_operator_soak_evidence_validation.json
+│   │   │   ├── t1307_operator_soak_finalization_preflight.json
 │   │   │   ├── t1307_operator_soak_readiness.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_readiness.json
 │   │   │   └── t1307_soak_smoke.json
 │   │   ├── a210
+│   │   │   ├── t1309_brand_clearance_intake_template.json
 │   │   │   └── t1309_brand_clearance_preflight_contract.json
 │   │   └── a211
 │   │       └── t1308_frontend_workspace_context_contract.json
@@ -236,12 +247,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── VERSION_MATRIX.yaml
 │   │   ├── delivery_tasks.yaml
 │   │   ├── development_events.jsonl
-│   │   ├── events.jsonl
 │   │   ├── formula_registry.yaml
 │   │   ├── model_registry.yaml
-│   │   ├── parameter_registry.csv
-│   │   ├── project.yaml
-│   │   └── roadmap.yaml
+│   │   └── parameter_registry.csv
 │   ├── phase
 │   │   ├── MVP_DEVELOPMENT_RECORD.md
 │   │   └── V5_TASK_PACK_SYNCHRONIZATION.md
@@ -374,6 +382,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── db_tools.py
 │   ├── env_doctor.py
 │   ├── fetch_official_source_full_text.py
+│   ├── finalize_operator_soak_evidence.py
 │   ├── generate_governance_pdf.py
 │   ├── job_scheduler.py
 │   ├── load_curated_ingestion_anchors.py
@@ -386,8 +395,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── manage_release_artifacts.py
 │   ├── manage_risk_control_artifacts.py
 │   ├── migrate.py
+│   ├── monitor_operator_soak.py
 │   ├── preflight.sh
 │   ├── publish_reviewed_relationship_facts.py
+│   ├── record_operator_soak_heartbeat.py
 │   ├── run_browser_scale_benchmarks.mjs
 │   ├── run_codex_autonomous.sh
 │   ├── run_live_e2e_api.sh
@@ -396,16 +407,21 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_soak_smoke.mjs
 │   ├── secret_scan.py
 │   ├── smoke_test_prototype.py
+│   ├── supervise_operator_soak.py
 │   ├── validate_a202_operator_review_packet.py
+│   ├── validate_a202_signed_intake_preflight.py
 │   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
+│   ├── validate_external_release_evidence_bundle.py
 │   ├── validate_github_governance.py
 │   ├── validate_gold_quality_evaluation.py
 │   ├── validate_governance.py
 │   ├── validate_governance_consistency.py
 │   ├── validate_model_config.py
+│   ├── validate_mvp_release_gate.py
 │   ├── validate_operator_soak_evidence.py
+│   ├── validate_production_api_release_preflight.py
 │   ├── validate_prototype_parity.py
 │   ├── validate_release_decision_bundle.py
 │   ├── validate_release_manager_activation.py
@@ -415,7 +431,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_v5_production_readiness_sync.py
 │   ├── validate_visual_coverage.py
 │   ├── validate_worker_deployment.py
-│   └── wait_for_database.py
+│   ├── wait_for_database.py
+│   └── watch_operator_soak.py
 ├── specs
 │   ├── api_contract.yaml
 │   ├── calibration_report_schema.json
@@ -453,11 +470,17 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── README.md
 │   │   └── test_database_migrations.py
 │   └── unit
+│       ├── test_a202_signed_intake_preflight.py
 │       ├── test_api_health.py
-│       ├── test_clean_room_release_paths.py
+│       ├── test_brand_clearance.py
+│       ├── test_external_release_evidence_bundle.py
 │       ├── test_gold_quality_evaluation.py
+│       ├── test_model_config_apply.py
+│       ├── test_mvp_release_gate.py
 │       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
+│       ├── test_operator_soak_finalization.py
+│       ├── test_production_api_release_preflight.py
 │       ├── test_release_decision_bundle.py
 │       ├── test_release_manager_activation.py
 │       ├── test_scale_benchmarks.py
@@ -514,7 +537,4 @@ Enterprise_Ecosystem_Intelligence_release
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 ├── pyproject.toml
-├── uv.lock
-├── 功能清单
-├── 开发记录
-└── 模型参数文件
+└── uv.lock

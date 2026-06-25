@@ -141,6 +141,68 @@ def successful_checkpoint_windows(entries: list[dict[str, Any]]) -> list[dict[st
     ]
 
 
+def failed_checkpoint_windows(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        entry
+        for entry in entries
+        if isinstance(entry.get("window"), dict) and entry["window"].get("status") == "FAIL"
+    ]
+
+
+def failed_window_summaries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    summaries: list[dict[str, Any]] = []
+    for entry in entries:
+        window = entry.get("window") if isinstance(entry.get("window"), dict) else {}
+        child_harness = (
+            entry.get("child_harness") if isinstance(entry.get("child_harness"), dict) else {}
+        )
+        summaries.append(
+            {
+                "index": window.get("index"),
+                "status": window.get("status"),
+                "child_status": window.get("child_status"),
+                "started_at": window.get("started_at"),
+                "ended_at": window.get("ended_at"),
+                "output_path": window.get("output_path"),
+                "exit_status": child_harness.get("exit_status"),
+                "stderr_tail": child_harness.get("stderr_tail"),
+            }
+        )
+    return summaries
+
+
+def is_declared_failed_operator_run(
+    *,
+    payload: dict[str, Any],
+    runner: dict[str, Any],
+    windows: list[dict[str, Any]],
+    failed_checkpoints: list[dict[str, Any]],
+    errors: list[str],
+) -> bool:
+    critical_errors = {
+        "schema drift",
+        "system name must stay EEI",
+        "task_id must be T1307",
+        "A209 acceptance missing",
+        "mode mismatch",
+        "runner must not close A209 release gate by itself",
+        "worker binding status must be PASS",
+        "worker binding process manager must be docker_compose",
+        "runner output path mismatch",
+        "runner checkpoint path mismatch",
+    }
+    if any(error in critical_errors for error in errors):
+        return False
+    failed_windows = [window for window in windows if window.get("status") == "FAIL"]
+    return (
+        payload.get("status") == "FAIL"
+        and isinstance(runner.get("windows_failed"), int)
+        and runner.get("windows_failed") > 0
+        and len(failed_windows) == runner.get("windows_failed")
+        and len(failed_checkpoints) == runner.get("windows_failed")
+    )
+
+
 def validate_window_metrics(
     *,
     errors: list[str],
@@ -246,6 +308,7 @@ def validate_required_run(
     )
     windows = payload.get("windows", []) if isinstance(payload.get("windows"), list) else []
     checkpoint_windows = successful_checkpoint_windows(checkpoints)
+    failed_checkpoints = failed_checkpoint_windows(checkpoints)
 
     require(errors, payload.get("schema_version") == "eei-operator-soak-runner-v1", "schema drift")
     require(errors, payload.get("system_name") == "EEI", "system name must stay EEI")
@@ -339,12 +402,23 @@ def validate_required_run(
         checkpoint = checkpoints_by_index.get(window.get("index"))
         validate_window_metrics(errors=errors, window=window, checkpoint=checkpoint, index=index)
 
+    declared_failed_run = is_declared_failed_operator_run(
+        payload=payload,
+        runner=runner,
+        windows=windows,
+        failed_checkpoints=failed_checkpoints,
+        errors=errors,
+    )
+    result_status = "FAILED_RUN" if declared_failed_run else "FAIL" if errors else "PASS"
     result |= {
-        "status": "FAIL" if errors else "PASS",
+        "status": result_status,
         "target_seconds": target_seconds,
         "completed_duration_seconds": runner.get("completed_duration_seconds"),
         "windows_completed": runner.get("windows_completed"),
+        "windows_failed": runner.get("windows_failed"),
         "checkpoint_windows": len(checkpoint_windows),
+        "failed_checkpoint_windows": len(failed_checkpoints),
+        "failed_windows": failed_window_summaries(failed_checkpoints),
         "errors": errors,
     }
     return result
@@ -361,6 +435,8 @@ def build_validation_payload(
     statuses = {result["status"] for result in results}
     if "FAIL" in statuses:
         status = "FAIL"
+    elif "FAILED_RUN" in statuses:
+        status = "FAILED_OPERATOR_EVIDENCE"
     elif statuses == {"PASS"}:
         status = "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
     elif "PASS" in statuses:
@@ -375,6 +451,7 @@ def build_validation_payload(
         "status": status,
         "release_gate_closed_by_validator": False,
         "a209_task_status_required": "IN_PROGRESS",
+        "failed_operator_evidence_accepted_as_release_ready": False,
         "configured_targets": {
             "short_duration_hours": parameters["soak.short_duration_hours"],
             "long_duration_hours": parameters["soak.long_duration_hours"],

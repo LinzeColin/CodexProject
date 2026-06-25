@@ -37,6 +37,7 @@ DEFAULT_CAPTURE_ARTIFACT = (
 DEFAULT_PACKET_ARTIFACT = (
     ROOT / "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
 )
+DEFAULT_FACT_CANDIDATES = ROOT / "data/golden_vertical_fact_candidates.json"
 REQUIRED_PACKET_STATUS = "PENDING_OWNER_LEGAL_CLEARANCE"
 REQUIRED_GATE_IDS = (
     "live_capture_ready_for_review",
@@ -47,6 +48,42 @@ REQUIRED_GATE_IDS = (
     "a206_scheduler_retry_dead_letter",
     "a209_24h_operator_soak",
 )
+REQUIRED_CANDIDATE_DECISION_FIELDS = {
+    "source_license_review": [
+        "anchor_id",
+        "reviewer",
+        "reviewed_at",
+        "source_license_status",
+        "allowed_use_scope",
+        "evidence_uri",
+        "signature",
+    ],
+    "passage_level_relationship_review": [
+        "candidate_key",
+        "supporting_anchor_ids",
+        "supporting_passage_locator",
+        "counter_evidence_reviewed",
+        "decision",
+        "reviewer",
+        "reviewed_at",
+        "signature",
+    ],
+    "production_owner_signoff": [
+        "candidate_key",
+        "owner_actor",
+        "owner_role",
+        "authority_scope",
+        "signed_at",
+        "signature",
+    ],
+    "legal_release_clearance": [
+        "legal_reviewer",
+        "clearance_status",
+        "clearance_scope",
+        "risk_waiver_id_or_opinion_ref",
+        "signed_at",
+    ],
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -109,14 +146,132 @@ def anchor_review_item(anchor: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def require_text(payload: dict[str, Any], key: str) -> str:
+    value = payload.get(key)
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"missing text field: {key}")
+    return value.strip()
+
+
+def source_snapshot_lookup(fact_candidates: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    snapshots = fact_candidates.get("source_snapshots")
+    if not isinstance(snapshots, list) or not snapshots:
+        raise ValueError("fact candidates must contain source_snapshots")
+    lookup: dict[str, dict[str, Any]] = {}
+    for snapshot in snapshots:
+        if not isinstance(snapshot, dict):
+            raise ValueError("source_snapshots entries must be objects")
+        anchor_id = require_text(snapshot, "anchor_id")
+        if anchor_id in lookup:
+            raise ValueError(f"duplicate source snapshot anchor_id: {anchor_id}")
+        lookup[anchor_id] = snapshot
+    return lookup
+
+
+def source_snapshot_review_item(snapshot: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "anchor_id": require_text(snapshot, "anchor_id"),
+        "title": require_text(snapshot, "title"),
+        "document_date": require_text(snapshot, "source_date"),
+        "official_publisher": require_text(snapshot, "official_publisher"),
+        "source_url": require_text(snapshot, "url"),
+        "evidence_scope": require_text(snapshot, "evidence_scope"),
+        "expected_entities_or_stages": require_text(
+            snapshot,
+            "expected_entities_or_stages",
+        ),
+        "validation_status": require_text(snapshot, "validation_status"),
+    }
+
+
+def relationship_candidate_review_queue(
+    fact_candidates_payload: dict[str, Any],
+) -> list[dict[str, Any]]:
+    source_snapshots = source_snapshot_lookup(fact_candidates_payload)
+    candidates = fact_candidates_payload.get("relationship_candidates")
+    if not isinstance(candidates, list) or not candidates:
+        raise ValueError("fact candidates must contain relationship_candidates")
+    source_threshold_min = int(fact_candidates_payload.get("source_threshold_min") or 2)
+    queue: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            raise ValueError("relationship_candidates entries must be objects")
+        candidate_key = require_text(candidate, "candidate_key")
+        if candidate_key in seen:
+            raise ValueError(f"duplicate relationship candidate: {candidate_key}")
+        seen.add(candidate_key)
+        primary_anchor_id = require_text(candidate, "source_anchor_id")
+        supporting_anchor_ids = candidate.get("supporting_source_anchor_ids")
+        if not isinstance(supporting_anchor_ids, list):
+            raise ValueError(f"{candidate_key} supporting_source_anchor_ids must be a list")
+        required_anchor_ids = [primary_anchor_id]
+        for anchor_id in supporting_anchor_ids:
+            if not isinstance(anchor_id, str) or not anchor_id.strip():
+                raise ValueError(f"{candidate_key} supporting_source_anchor_ids must be text")
+            required_anchor_ids.append(anchor_id.strip())
+        required_anchor_ids = list(dict.fromkeys(required_anchor_ids))
+        unknown_anchor_ids = sorted(set(required_anchor_ids) - set(source_snapshots))
+        if unknown_anchor_ids:
+            raise ValueError(
+                f"{candidate_key} references unknown source anchors: "
+                + ", ".join(unknown_anchor_ids)
+            )
+        independent_source_count = int(candidate.get("independent_source_count") or 0)
+        source_threshold_met = (
+            independent_source_count >= source_threshold_min
+            and len(required_anchor_ids) >= source_threshold_min
+        )
+        queue.append(
+            {
+                "candidate_key": candidate_key,
+                "subject_candidate_name": require_text(candidate, "subject_candidate_name"),
+                "object_candidate_name": require_text(candidate, "object_candidate_name"),
+                "relationship_type": require_text(candidate, "relationship_type"),
+                "relationship_family": require_text(candidate, "relationship_family"),
+                "confidence": candidate.get("confidence"),
+                "independent_source_count": independent_source_count,
+                "source_threshold_min": source_threshold_min,
+                "source_threshold_met": source_threshold_met,
+                "publication_status": require_text(candidate, "publication_status"),
+                "review_status": require_text(candidate, "review_status"),
+                "locator": require_text(candidate, "locator"),
+                "support_excerpt": require_text(candidate, "support_excerpt"),
+                "required_source_anchor_ids": required_anchor_ids,
+                "source_snapshots": [
+                    source_snapshot_review_item(source_snapshots[anchor_id])
+                    for anchor_id in required_anchor_ids
+                ],
+                "counter_evidence_count": len(candidate.get("counter_evidence") or []),
+                "structured_fact": candidate.get("structured_fact") or {},
+                "required_decision_fields": REQUIRED_CANDIDATE_DECISION_FIELDS,
+                "review_required": {
+                    "source_license_review_status": "missing",
+                    "passage_level_relationship_review_status": "missing",
+                    "production_owner_signoff_status": "missing",
+                    "legal_clearance_status": "missing",
+                },
+                "publication_controls": {
+                    "relationship_fact_publication_allowed": False,
+                    "relationship_edge_publication_allowed": False,
+                    "release_clearance": False,
+                },
+            }
+        )
+    return queue
+
+
 def build_review_packet(
     capture_payload: dict[str, Any],
     *,
     capture_artifact_path: Path,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     validation = validate_live_capture_artifact(capture_payload)
     anchors = [anchor_review_item(anchor) for anchor in validation["anchors"]]
+    fact_candidates_payload = read_json(fact_candidates_path)
+    candidate_queue = relationship_candidate_review_queue(fact_candidates_payload)
     source_health_statuses = sorted(
         {str(anchor["source_health"]["status"]) for anchor in anchors}
     )
@@ -134,11 +289,21 @@ def build_review_packet(
         "generated_at": generated_at or utc_now(),
         "source_capture_artifact": relative_artifact_locator(capture_artifact_path),
         "source_capture_artifact_sha256": file_hash(capture_artifact_path),
+        "golden_vertical_fact_candidates": relative_artifact_locator(fact_candidates_path),
+        "golden_vertical_fact_candidates_sha256": file_hash(fact_candidates_path),
         "source_registry": capture_payload["source_registry"],
         "source_registry_sha256": capture_payload["source_registry_sha256"],
         "counts": {
             "anchors_total": len(anchors),
             "anchors_ready_for_review": len(anchors),
+            "relationship_candidates_ready_for_review": len(candidate_queue),
+            "relationship_candidate_source_anchors": len(
+                {
+                    anchor_id
+                    for item in candidate_queue
+                    for anchor_id in item["required_source_anchor_ids"]
+                }
+            ),
             "anchors_with_source_text_committed": 0,
             "anchors_with_release_clearance": 0,
             "relationship_fact_candidates_allowed": 0,
@@ -147,10 +312,13 @@ def build_review_packet(
         "review_packet_scope": [
             "Summarize selected live official-source evidence for operator review.",
             "Bind source URL, source text hash, excerpt, source health and anchor scope.",
+            "Bind Golden Vertical relationship candidates to their required official "
+            "source anchors for passage-level review.",
             "Preserve no-full-text, no-relationship-publication and no-release-clearance controls.",
             "List exact human/legal decision fields required before any stronger claim.",
         ],
         "anchors": anchors,
+        "relationship_candidate_review_queue": candidate_queue,
         "required_decision_fields": {
             "source_license_review": [
                 "reviewer",
@@ -240,6 +408,7 @@ def validate_review_packet(
     packet: dict[str, Any],
     *,
     capture_artifact_path: Path = DEFAULT_CAPTURE_ARTIFACT,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
 ) -> None:
     if packet.get("schema_version") != SCHEMA_VERSION:
         raise ValueError(f"schema_version must be {SCHEMA_VERSION}")
@@ -251,6 +420,8 @@ def validate_review_packet(
         raise ValueError(f"status must be {REQUIRED_PACKET_STATUS}")
     if packet.get("source_capture_artifact_sha256") != file_hash(capture_artifact_path):
         raise ValueError("source_capture_artifact_sha256 does not match capture artifact")
+    if packet.get("golden_vertical_fact_candidates_sha256") != file_hash(fact_candidates_path):
+        raise ValueError("golden_vertical_fact_candidates_sha256 does not match fact candidates")
     counts = packet.get("counts")
     if not isinstance(counts, dict):
         raise ValueError("counts must be present")
@@ -291,6 +462,49 @@ def validate_review_packet(
         for status_key, status in review_required.items():
             if status != "missing":
                 raise ValueError(f"{anchor.get('anchor_id')} {status_key} must be missing")
+
+    candidate_queue = packet.get("relationship_candidate_review_queue")
+    if not isinstance(candidate_queue, list) or not candidate_queue:
+        raise ValueError("relationship_candidate_review_queue must be a non-empty list")
+    expected_queue = relationship_candidate_review_queue(read_json(fact_candidates_path))
+    if candidate_queue != expected_queue:
+        raise ValueError("relationship_candidate_review_queue does not match fact candidates")
+    if counts.get("relationship_candidates_ready_for_review") != len(candidate_queue):
+        raise ValueError(
+            "counts.relationship_candidates_ready_for_review must match review queue length"
+        )
+    source_anchor_count = len(
+        {
+            anchor_id
+            for item in candidate_queue
+            for anchor_id in item["required_source_anchor_ids"]
+        }
+    )
+    if counts.get("relationship_candidate_source_anchors") != source_anchor_count:
+        raise ValueError(
+            "counts.relationship_candidate_source_anchors must match review queue anchors"
+        )
+    for item in candidate_queue:
+        if item.get("source_threshold_met") is not True:
+            raise ValueError(f"{item.get('candidate_key')} source_threshold_met must be true")
+        controls = item.get("publication_controls")
+        if not isinstance(controls, dict):
+            raise ValueError(f"{item.get('candidate_key')} publication_controls missing")
+        for key in (
+            "relationship_fact_publication_allowed",
+            "relationship_edge_publication_allowed",
+            "release_clearance",
+        ):
+            if controls.get(key) is not False:
+                raise ValueError(f"{item.get('candidate_key')} {key} must be false")
+        review_required = item.get("review_required")
+        if not isinstance(review_required, dict):
+            raise ValueError(f"{item.get('candidate_key')} review_required missing")
+        for status_key, status in review_required.items():
+            if status != "missing":
+                raise ValueError(f"{item.get('candidate_key')} {status_key} must be missing")
+        if item.get("required_decision_fields") != REQUIRED_CANDIDATE_DECISION_FIELDS:
+            raise ValueError(f"{item.get('candidate_key')} required_decision_fields mismatch")
 
     gate_ids = {
         str(gate.get("gate_id"))
@@ -335,15 +549,31 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["generate", "validate"])
     parser.add_argument("--capture-artifact", type=Path, default=DEFAULT_CAPTURE_ARTIFACT)
+    parser.add_argument("--fact-candidates", type=Path, default=DEFAULT_FACT_CANDIDATES)
     parser.add_argument("--packet", type=Path, default=DEFAULT_PACKET_ARTIFACT)
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
 
     if args.action == "generate":
-        packet = generate_packet(args.capture_artifact, args.packet)
+        capture_payload = read_json(args.capture_artifact)
+        packet = build_review_packet(
+            capture_payload,
+            capture_artifact_path=args.capture_artifact,
+            fact_candidates_path=args.fact_candidates,
+        )
+        validate_review_packet(
+            packet,
+            capture_artifact_path=args.capture_artifact,
+            fact_candidates_path=args.fact_candidates,
+        )
+        write_json(args.packet, packet)
     else:
         packet = read_json(args.packet)
-        validate_review_packet(packet, capture_artifact_path=args.capture_artifact)
+        validate_review_packet(
+            packet,
+            capture_artifact_path=args.capture_artifact,
+            fact_candidates_path=args.fact_candidates,
+        )
     if not args.quiet:
         print(
             json.dumps(
@@ -352,6 +582,9 @@ def main() -> int:
                     "packet": relative_artifact_locator(args.packet),
                     "capture_artifact": relative_artifact_locator(args.capture_artifact),
                     "anchors_total": packet["counts"]["anchors_total"],
+                    "relationship_candidates_ready_for_review": packet["counts"][
+                        "relationship_candidates_ready_for_review"
+                    ],
                     "publication_allowed": False,
                 },
                 ensure_ascii=False,

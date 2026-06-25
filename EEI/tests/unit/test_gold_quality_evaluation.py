@@ -30,22 +30,25 @@ def production_labels_payload() -> dict:
         "operator_supplied_labels": True,
         "synthetic_or_fixture_labels": False,
     }
-    labels["entity_resolution_cases"] = [
-        {
-            **copy.deepcopy(labels["entity_resolution_cases"][0]),
-            "case_id": f"ENT-PROD-{index:03d}",
-            "labeler": "production_labeler",
-        }
-        for index in range(50)
-    ]
-    labels["relationship_cases"] = [
-        {
-            **copy.deepcopy(labels["relationship_cases"][0]),
-            "case_id": f"REL-PROD-{index:03d}",
-            "labeler": "production_labeler",
-        }
-        for index in range(100)
-    ]
+    entity_cases = []
+    for index in range(50):
+        case_id = f"ENT-PROD-{index:03d}"
+        case = copy.deepcopy(labels["entity_resolution_cases"][0])
+        case["case_id"] = case_id
+        case["labeler"] = "production_labeler"
+        case["evidence_refs"] = [f"operator-gold-evidence:{case_id}"]
+        entity_cases.append(case)
+    labels["entity_resolution_cases"] = entity_cases
+
+    relationship_cases = []
+    for index in range(100):
+        case_id = f"REL-PROD-{index:03d}"
+        case = copy.deepcopy(labels["relationship_cases"][0])
+        case["case_id"] = case_id
+        case["labeler"] = "production_labeler"
+        case["evidence_refs"] = [f"operator-gold-evidence:{case_id}"]
+        relationship_cases.append(case)
+    labels["relationship_cases"] = relationship_cases
     return labels
 
 
@@ -142,6 +145,28 @@ def test_production_gold_set_requires_evidence_metadata(tmp_path) -> None:
         gold.build_contract(labels_path, allow_production_gold_set=True)
 
 
+def test_production_gold_set_rejects_repository_fixture_case_refs(tmp_path) -> None:
+    labels = production_labels_payload()
+    labels["entity_resolution_cases"][0]["evidence_refs"] = [
+        "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
+    ]
+    labels_path = tmp_path / "production_labels_fixture_ref.json"
+    gold.write_json(labels_path, labels)
+
+    with pytest.raises(ValueError, match="must not use repository fixture reference"):
+        gold.build_contract(labels_path, allow_production_gold_set=True)
+
+
+def test_production_gold_set_rejects_fixture_labelers(tmp_path) -> None:
+    labels = production_labels_payload()
+    labels["relationship_cases"][0]["labeler"] = "fixture_reviewer"
+    labels_path = tmp_path / "production_labels_fixture_labeler.json"
+    gold.write_json(labels_path, labels)
+
+    with pytest.raises(ValueError, match="not allowed for production_gold_set"):
+        gold.build_contract(labels_path, allow_production_gold_set=True)
+
+
 def test_complete_production_gold_set_with_evidence_can_close_a026_a027(tmp_path) -> None:
     labels = production_labels_payload()
     labels_path = tmp_path / "production_labels.json"
@@ -172,3 +197,62 @@ def test_missing_counter_evidence_review_is_rejected() -> None:
 
     with pytest.raises(ValueError, match="counter_evidence_reviewed must be true"):
         gold.validate_label_payload(labels)
+
+
+def test_production_gold_label_intake_template_is_fail_closed() -> None:
+    template = gold.build_intake_template(generated_at="2026-06-24T00:00:00Z")
+
+    assert template["status"] == "TEMPLATE_ONLY"
+    assert template["release_gate_closure_allowed"] is False
+    assert template["production_claim_allowed"] is False
+    assert template["relationship_publication_allowed"] is False
+    assert template["thresholds"]["A026"]["minimum_cases"] == 50
+    assert template["thresholds"]["A027"]["minimum_cases"] == 100
+    assert (
+        template["production_gold_evidence_schema"]["required_text_fields"]
+        == list(gold.PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS)
+    )
+    assert (
+        template["production_gold_evidence_schema"]["required_list_fields"]
+        == list(gold.PRODUCTION_GOLD_REQUIRED_LIST_FIELDS)
+    )
+    gold.validate_intake_template(template)
+
+
+def test_operator_labeling_packet_is_bounded_and_fail_closed() -> None:
+    packet = gold.build_operator_labeling_packet(generated_at="2026-06-25T00:00:00Z")
+
+    assert packet["status"] == "READY_FOR_OPERATOR_LABELING"
+    assert packet["production_gold_set"] is False
+    assert packet["release_gate_closure_allowed"] is False
+    assert packet["production_claim_allowed"] is False
+    assert packet["relationship_publication_allowed"] is False
+    assert packet["label_payload_generated"] is False
+    assert len(packet["entity_resolution_labeling_slots"]) == 50
+    assert len(packet["relationship_labeling_slots"]) == 100
+    assert packet["thresholds"]["A026"]["minimum_cases"] == 50
+    assert packet["thresholds"]["A027"]["minimum_cases"] == 100
+    assert packet["source_files"]["a202_operator_review_packet_sha256"]
+    assert packet["source_files"]["golden_vertical_fact_candidates_sha256"]
+
+    relationship_slot = packet["relationship_labeling_slots"][0]
+    assert relationship_slot["candidate_key"].startswith("GV-FACT-")
+    assert relationship_slot["source_coverage"]["counter_evidence_reviewed"] is None
+    assert relationship_slot["label_status"] == "OPERATOR_TO_LABEL"
+    gold.validate_operator_labeling_packet(packet)
+
+
+def test_operator_labeling_packet_validator_rejects_premature_claims() -> None:
+    packet = gold.build_operator_labeling_packet(generated_at="2026-06-25T00:00:00Z")
+    packet["release_gate_closure_allowed"] = True
+
+    with pytest.raises(ValueError, match="release_gate_closure_allowed must be false"):
+        gold.validate_operator_labeling_packet(packet)
+
+
+def test_production_gold_label_intake_template_validator_catches_drift() -> None:
+    template = gold.build_intake_template(generated_at="2026-06-24T00:00:00Z")
+    template["thresholds"]["A027"]["minimum_cases"] = 99
+
+    with pytest.raises(ValueError, match="thresholds drift"):
+        gold.validate_intake_template(template)

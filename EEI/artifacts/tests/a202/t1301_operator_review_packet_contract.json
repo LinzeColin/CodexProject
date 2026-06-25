@@ -67,14 +67,14 @@
         "content_type": "text/html; charset=utf-8",
         "http_status": 200,
         "status": "healthy",
-        "text_char_count": 21040,
+        "text_char_count": 21021,
         "token_coverage": {
           "minimum_ratio": 1.0,
           "ratio": 1.0
         }
       },
       "source_text_excerpt": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for the Next Industrial Revolution | NVIDIA Newsroom Artificial Intelligence Computing Leadership from NVIDIA --> PLATFORMS Autonomous Machines Cloud",
-      "source_text_sha256": "f2e2217445ba6c1fdb2012ef3655c80c2ad63a24caa39edf1e8bebe674221095",
+      "source_text_sha256": "afe6f894a8aa01a96c39cb728c11c7e09d4cfaff53b4ec49cf18a2cbabd8ebf9",
       "source_url": "https://nvidianews.nvidia.com/news/computer-industry-ai-factories-data-centers",
       "source_url_sha256": "69400554ed85016ecedf3865620780c38921d1757cd84ef407de012c35d1a986",
       "title": "Computer Industry Joins NVIDIA to Build AI Factories and Data Centers for Next Industrial Revolution"
@@ -105,14 +105,14 @@
         "content_type": "text/html; charset=UTF-8",
         "http_status": 200,
         "status": "healthy",
-        "text_char_count": 7950,
+        "text_char_count": 7860,
         "token_coverage": {
           "minimum_ratio": 1.0,
           "ratio": 1.0
         }
       },
       "source_text_excerpt": "NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ | NVIDIA Blog Skip to content NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ In his COMPUTEX keynote, Huang unvei",
-      "source_text_sha256": "769af5690063ad9da0e52c9496e06e5ccd0f1a04eafb942c73fbed000daf5cb0",
+      "source_text_sha256": "0ad380f0d70cd5d1ce785bc65ac7cd4f746d4f6de74df4aeda475cec09315705",
       "source_url": "https://blogs.nvidia.com/blog/computex-2025-jensen-huang/",
       "source_url_sha256": "17227c45d8516a41a1903f1ccc043fb10de2474d0c2bc1ca055ea131dbfde5aa",
       "title": "NVIDIA CEO Envisions AI Infrastructure Industry Worth Tens of Trillions of Dollars"
@@ -161,10 +161,14 @@
     "anchors_total": 3,
     "anchors_with_release_clearance": 0,
     "anchors_with_source_text_committed": 0,
+    "relationship_candidate_source_anchors": 4,
+    "relationship_candidates_ready_for_review": 2,
     "relationship_fact_candidates_allowed": 0,
     "relationships_publishable": 0
   },
-  "generated_at": "2026-06-22T06:40:51Z",
+  "generated_at": "2026-06-25T18:42:32Z",
+  "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
+  "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6",
   "parser_version": "nvidia-official-fulltext-live-v1",
   "publication_policy": {
     "reason": "Live capture evidence is ready for review only; source-license, passage-level, owner, legal and A209 gates are not complete.",
@@ -173,6 +177,198 @@
     "release_clearance": false
   },
   "record_mode": "live",
+  "relationship_candidate_review_queue": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "confidence": 0.88,
+      "counter_evidence_count": 0,
+      "independent_source_count": 2,
+      "locator": "SEC NVIDIA Form 10-K FY2026, Manufacturing section",
+      "object_candidate_name": "NVIDIA Corporation",
+      "publication_controls": {
+        "relationship_edge_publication_allowed": false,
+        "relationship_fact_publication_allowed": false,
+        "release_clearance": false
+      },
+      "publication_status": "ready_for_review",
+      "relationship_family": "supply_chain_operations",
+      "relationship_type": "wafer_foundry_for",
+      "required_decision_fields": {
+        "legal_release_clearance": [
+          "legal_reviewer",
+          "clearance_status",
+          "clearance_scope",
+          "risk_waiver_id_or_opinion_ref",
+          "signed_at"
+        ],
+        "passage_level_relationship_review": [
+          "candidate_key",
+          "supporting_anchor_ids",
+          "supporting_passage_locator",
+          "counter_evidence_reviewed",
+          "decision",
+          "reviewer",
+          "reviewed_at",
+          "signature"
+        ],
+        "production_owner_signoff": [
+          "candidate_key",
+          "owner_actor",
+          "owner_role",
+          "authority_scope",
+          "signed_at",
+          "signature"
+        ],
+        "source_license_review": [
+          "anchor_id",
+          "reviewer",
+          "reviewed_at",
+          "source_license_status",
+          "allowed_use_scope",
+          "evidence_uri",
+          "signature"
+        ]
+      },
+      "required_source_anchor_ids": [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003"
+      ],
+      "review_required": {
+        "legal_clearance_status": "missing",
+        "passage_level_relationship_review_status": "missing",
+        "production_owner_signoff_status": "missing",
+        "source_license_review_status": "missing"
+      },
+      "review_status": "machine_verified",
+      "source_snapshots": [
+        {
+          "anchor_id": "GV-SNAPSHOT-001",
+          "document_date": "2026-01-25",
+          "evidence_scope": "NVIDIA foundry and manufacturing supplier disclosure",
+          "expected_entities_or_stages": "NVIDIA Corporation; TSMC; Samsung; SK hynix; Micron; Hon Hai/Foxconn; Wistron; Fabrinet; foundry; wafer; CoWoS; assembly; testing; packaging",
+          "official_publisher": "SEC EDGAR / NVIDIA Form 10-K",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
+          "title": "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+          "validation_status": "verified_official"
+        },
+        {
+          "anchor_id": "GV-SNAPSHOT-003",
+          "document_date": "2006-10-24",
+          "evidence_scope": "TSMC-reported NVIDIA manufacturing partnership history",
+          "expected_entities_or_stages": "TSMC; NVIDIA Corporation; wafer; processor; manufacturing; foundry",
+          "official_publisher": "TSMC Press Center",
+          "source_url": "https://pr.tsmc.com/english/news/1408",
+          "title": "NVIDIA and TSMC Celebrate New Milestone: 500 Million Processors",
+          "validation_status": "verified_official"
+        }
+      ],
+      "source_threshold_met": true,
+      "source_threshold_min": 2,
+      "structured_fact": {
+        "direction_note": "The source states TSMC is a foundry used by NVIDIA; graph traversal may show NVIDIA -> TSMC as a reverse edge.",
+        "path_role": "NVIDIA_TO_TSMC_GOLDEN_VERTICAL",
+        "publication_blocker": "requires human review or production owner approval before publication",
+        "source_threshold_status": "met_by_two_official_sources"
+      },
+      "subject_candidate_name": "TSMC",
+      "support_excerpt": "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers."
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "confidence": 0.84,
+      "counter_evidence_count": 0,
+      "independent_source_count": 2,
+      "locator": "ASML official story, Busting ASML myths",
+      "object_candidate_name": "TSMC",
+      "publication_controls": {
+        "relationship_edge_publication_allowed": false,
+        "relationship_fact_publication_allowed": false,
+        "release_clearance": false
+      },
+      "publication_status": "ready_for_review",
+      "relationship_family": "supply_chain_operations",
+      "relationship_type": "equipment_provider_to",
+      "required_decision_fields": {
+        "legal_release_clearance": [
+          "legal_reviewer",
+          "clearance_status",
+          "clearance_scope",
+          "risk_waiver_id_or_opinion_ref",
+          "signed_at"
+        ],
+        "passage_level_relationship_review": [
+          "candidate_key",
+          "supporting_anchor_ids",
+          "supporting_passage_locator",
+          "counter_evidence_reviewed",
+          "decision",
+          "reviewer",
+          "reviewed_at",
+          "signature"
+        ],
+        "production_owner_signoff": [
+          "candidate_key",
+          "owner_actor",
+          "owner_role",
+          "authority_scope",
+          "signed_at",
+          "signature"
+        ],
+        "source_license_review": [
+          "anchor_id",
+          "reviewer",
+          "reviewed_at",
+          "source_license_status",
+          "allowed_use_scope",
+          "evidence_uri",
+          "signature"
+        ]
+      },
+      "required_source_anchor_ids": [
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004"
+      ],
+      "review_required": {
+        "legal_clearance_status": "missing",
+        "passage_level_relationship_review_status": "missing",
+        "production_owner_signoff_status": "missing",
+        "source_license_review_status": "missing"
+      },
+      "review_status": "machine_verified",
+      "source_snapshots": [
+        {
+          "anchor_id": "GV-SNAPSHOT-002",
+          "document_date": "2022-05-04",
+          "evidence_scope": "ASML lithography systems used by named chipmakers",
+          "expected_entities_or_stages": "ASML; TSMC; Intel; Samsung; DUV; EUV; lithography; equipment",
+          "official_publisher": "ASML Stories",
+          "source_url": "https://www.asml.com/news/stories/2022/busting-asml-myths",
+          "title": "Busting ASML myths",
+          "validation_status": "verified_official"
+        },
+        {
+          "anchor_id": "GV-SNAPSHOT-004",
+          "document_date": "2012-08-05",
+          "evidence_scope": "TSMC-reported ASML lithography technology partnership",
+          "expected_entities_or_stages": "TSMC; ASML; EUV; lithography; equipment; technology",
+          "official_publisher": "TSMC Press Center",
+          "source_url": "https://pr.tsmc.com/english/news/1734",
+          "title": "TSMC and ASML Reach Agreement to Develop Next Generation Lithography Technologies as an Extension of Long-Term Partnership",
+          "validation_status": "verified_official"
+        }
+      ],
+      "source_threshold_met": true,
+      "source_threshold_min": 2,
+      "structured_fact": {
+        "direction_note": "The source supports ASML equipment use by TSMC; graph traversal may show TSMC -> ASML as a reverse edge.",
+        "path_role": "TSMC_TO_ASML_GOLDEN_VERTICAL",
+        "publication_blocker": "requires human review or production owner approval before publication",
+        "source_threshold_status": "met_by_two_official_sources"
+      },
+      "subject_candidate_name": "ASML",
+      "support_excerpt": "ASML says customers such as TSMC use its DUV and EUV lithography systems."
+    }
+  ],
   "required_decision_fields": {
     "legal_release_clearance": [
       "legal_reviewer",
@@ -206,12 +402,13 @@
   "review_packet_scope": [
     "Summarize selected live official-source evidence for operator review.",
     "Bind source URL, source text hash, excerpt, source health and anchor scope.",
+    "Bind Golden Vertical relationship candidates to their required official source anchors for passage-level review.",
     "Preserve no-full-text, no-relationship-publication and no-release-clearance controls.",
     "List exact human/legal decision fields required before any stronger claim."
   ],
   "schema_version": "eei-a202-operator-review-packet-v1",
   "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-  "source_capture_artifact_sha256": "dd74bab057a817b5705a862024b2579331e206d9bd962038f53aa13ea0984ed6",
+  "source_capture_artifact_sha256": "9e8e73ee58338a3d1d17206b46559019ea5d9860e50edc4bc97e142fbde3bd3d",
   "source_registry": "data/nvidia_public_source_anchors.csv",
   "source_registry_sha256": "cf9013872f5b5e8a33367b583e6e5877a7c3d29cce45174728afd4d59871fc2d",
   "status": "PENDING_OWNER_LEGAL_CLEARANCE",
