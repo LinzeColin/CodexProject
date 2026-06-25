@@ -1,3 +1,39 @@
+# OpMe_System S4PCT01 中文结构验收报告
+
+- 任务：`S4PCT01`
+- 验收：`ACC-S4PCT01`
+- 结论：中文 owner 可读验收通过；本报告先给人类可读结论，再保留原技术记录。
+
+## 用户可读结论
+
+OpMe_System 的 S4PCT01 把历史备份和原型工作从主动源码层分离出去。`backend/**`、`frontend/**`、`app_bundle/**`、`samples/**`、运行数据和报告路径保持原有职责，不改变 API、UI、模型、启动器或交付构建行为。
+
+## 中文验收标准
+
+- Owner 不读英文技术表也能知道主动源码、历史归档、demo 输入和运行输出的边界。
+- 三个中文入口继续是人类主视图，archive 只是历史恢复资料。
+- 本任务不得把治理迁移说明写成产品功能承诺。
+
+## 停止条件与结果
+
+- delivery package 与 runtime source 职责未分离：`false`
+- backend/frontend runtime 行为被改变：`false`
+- startup command 改动但 README 未同步：`false`
+- app bundle 构建源码被移动：`false`
+- sample/demo 输入被移动：`false`
+
+## 回滚
+
+优先用 git revert 回退 S4PCT01 任务提交。若必须手工恢复，从 `governance/archive/other8_wave1_pending/OpMe_System/` 按 OLD_TO_NEW_MAP 还原，并复核 S4PAT02 checksum 与 S4PCT01 run manifest。
+
+## 下一步
+
+后续开发只在主动源码层做业务变更；历史备份和原型资料不得重新进入默认开发循环。
+
+---
+
+## 原技术记录
+
 # OpMe_System S4PCT01 Structure Report
 
 Task: `S4PCT01`
