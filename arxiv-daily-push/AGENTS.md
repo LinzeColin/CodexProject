@@ -16,9 +16,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   and alias references; they no longer override V7.2.
 - Every implementation closeout must state the current V7.2 contract, the
   active contextual task, and any legacy alias. Current global Stage2 entry is
-  `S2PMT06` Chinese owner UX, interaction feedback, navigation, safe controls,
-  traceability, and accessibility local evidence; next hardening task is
-  `S2PMT07` independent review under V7.2 no-production boundaries. `S2PCT02`
+  `S2PMT07` final gate precheck, currently `blocked_precheck` because
+  independent reviewer proof, inherited V7.1 P0/P1 zero state, S2PLT04
+  completion, final acceptance bundle, independent signoff, and independent
+  final command execution are not all proven. `S2PCT02`
   (`S2P2T02` legacy alias)
   Science/top-journal metadata-only no-send shadow evidence is completed
   history, not the current task. `S2PCT01`
@@ -54,7 +55,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   cards, safe config-change flow, append-only revision ledger, queue
   search/filter/export/drilldown, safe manual actions, feedback visibility,
   accessibility/mail compatibility, source-to-ROI traceability, and no
-  production side effects. None closes inherited P0/P1 blockers until
+  production side effects. `S2PMT07` local precheck records the current blocked
+  final gate state only; it does not provide independent review signoff, close
+  inherited P0/P1, complete S2PLT04, enable DAILY_OPERATION, or claim
+  `INTEGRATED_PRODUCTION_ACCEPTED`. None closes inherited P0/P1 blockers until
   independent review.
   `ADP-S1P5T05` completed the Stage 1 local production and migration prep after
   `ARXIV_PRODUCTION_ACCEPTED`.
