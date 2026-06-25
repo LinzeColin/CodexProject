@@ -34,7 +34,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
 - responsible_role: `project_owner`
 - acceptance_ids: `ACC-S2PJT03-ROI`
-- unblock_condition: S2PJT01 lifecycle state evidence complete; continue S2PJT04 weekly report locally without production side effects.
+- unblock_condition: S2PJT03 action/asset/ROI ledger evidence complete; continue S2PJT04 weekly report locally without production side effects.
 
 ## 8. 九层 Assurance 状态
 
