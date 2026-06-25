@@ -6408,6 +6408,114 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s6pat01_ux_priority_matrix_is_bounded_and_owner_readable(self) -> None:
+        matrix_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.csv"
+        report_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625.json"
+        )
+        dependency_manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625.json"
+        )
+        for path in (matrix_path, report_path, manifest_path, dependency_manifest_path):
+            self.assertTrue(path.is_file(), path)
+
+        with matrix_path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        dependency = json.loads(dependency_manifest_path.read_text(encoding="utf-8"))
+        report = report_path.read_text(encoding="utf-8")
+
+        expected_projects = {
+            "Alpha",
+            "EVA_OS",
+            "OpMe_System",
+            "whkmSalary",
+            "FIFA",
+            "OpenAIDatabase",
+            "PFI_BIG_DATA_SIMULATOR",
+            "Serenity-Alipay",
+        }
+        rows_by_project: dict[str, list[dict[str, str]]] = {}
+        for row in rows:
+            rows_by_project.setdefault(row["project_id"], []).append(row)
+
+        self.assertEqual(set(rows_by_project), expected_projects)
+        self.assertEqual(len(rows), 16)
+        for project_id, project_rows in rows_by_project.items():
+            self.assertLessEqual(len(project_rows), 3, project_id)
+            self.assertTrue(any(row["priority"] == "P0" for row in project_rows), project_id)
+            for row in project_rows:
+                self.assertEqual(row["task_id"], "S6PAT01")
+                self.assertEqual(row["acceptance_id"], "ACC-S6PAT01")
+                self.assertIn(row["priority"], {"P0", "P1"})
+                self.assertIn(
+                    row["owner_time_goal"],
+                    {"2min-current-state", "5min-understand-operation", "10min-first-test"},
+                )
+                self.assertEqual(row["s6pat02_candidate"], "true")
+                self.assertIn("S6PAT01 只排序不实施", row["implementation_boundary"])
+                self.assertIn("仅保留 P0/P1", row["rollback"])
+                self.assertTrue((ROOT / row["evidence_ref"]).exists(), row["evidence_ref"])
+
+        self.assertIn("中文验收结论", report)
+        self.assertIn("用户可读摘要", report)
+        self.assertIn("S6PAT02", report)
+        self.assertIn("每个项目最多实施 3 项", report)
+        self.assertIn("S6PAT01 不改项目代码、不改 UI", report)
+
+        self.assertEqual(dependency["next_allowed_task"], "S6PAT01")
+        self.assertEqual(manifest["task_id"], "S6PAT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PAT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PCT03-WAVE2-GATE-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PCT03"], "PASSED_AND_BOUND")
+        self.assertEqual(manifest["stage_gate_status"]["S6PA-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S6PAT02")
+        self.assertEqual(manifest["ux_priority_matrix"]["project_count"], 8)
+        self.assertEqual(manifest["ux_priority_matrix"]["candidate_count"], 16)
+        self.assertLessEqual(manifest["ux_priority_matrix"]["max_candidates_per_project"], 3)
+        self.assertEqual(manifest["ux_priority_matrix"]["allowed_priorities"], ["P0", "P1"])
+        self.assertFalse(manifest["ux_priority_matrix"]["implementation_in_s6pat01"])
+        self.assertFalse(manifest["scope_guard"]["project_code_changed"])
+        self.assertFalse(manifest["scope_guard"]["ui_framework_added"])
+        self.assertFalse(manifest["scope_guard"]["runtime_or_product_files_changed"])
+        for key, value in manifest["stop_conditions"].items():
+            self.assertFalse(value, key)
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "governance/stage_gates/s6pa/ux_priority_matrix.csv",
+                "governance/stage_gates/s6pa/ux_priority_matrix.md",
+                "governance/run_manifests/GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertEqual(set(manifest["required_governance_files"]), changed)
+        self.assertEqual(set(manifest["updated_governance_files"]), changed)
+        self.assertFalse(any(path.startswith(("Alpha/", "EVA_OS/", "FIFA/", "OpMe_System/")) for path in changed))
+        self.assertFalse(
+            any(
+                path.startswith(
+                    (
+                        "OpenAIDatabase/",
+                        "PFI/",
+                        "Serenity-Alipay/",
+                        "whkmSalary/",
+                        "EEI/",
+                        "arxiv-daily-push/",
+                    )
+                )
+                for path in changed
+            )
+        )
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
