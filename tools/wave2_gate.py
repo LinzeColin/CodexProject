@@ -608,6 +608,16 @@ def write_outputs(output_dir: Path, report: dict[str, Any]) -> None:
     (output_dir / REPORT_MD).write_text(render_markdown(report), encoding="utf-8")
 
 
+def resolve_output_dir(repo: Path, value: str) -> Path:
+    repo_root_resolved = repo.resolve()
+    output_dir = (repo / value).resolve()
+    try:
+        output_dir.relative_to(repo_root_resolved)
+    except ValueError as exc:
+        raise SystemExit(f"--output-dir must stay inside repository: {value}") from exc
+    return output_dir
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
@@ -615,7 +625,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     repo = repo_root()
-    output_dir = repo / args.output_dir
+    output_dir = resolve_output_dir(repo, args.output_dir)
     report = build_report(repo, output_dir)
     expected = {
         output_dir / REPORT_JSON: machine_json(report),

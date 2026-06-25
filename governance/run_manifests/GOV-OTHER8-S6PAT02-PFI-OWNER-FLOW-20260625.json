@@ -20,9 +20,9 @@
     "GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625"
   ],
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:432d6760189688154a0f0f8b348a874a9388dc3ec5f108ed7aa60be32029a6c5",
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "CI_ATTESTED",
   "ci_attestation_subject": "Other8 S6PAT02 PFI Owner 路径：qbvs/config/tests 边界与最小验证路径",
-  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "PR_178_PROJECT_GOVERNANCE_RUN_28148480253_SUCCESS_AND_MAIN_PUSH_RUN_28148521019_SUCCESS",
   "language_rule": "中文优先，默认全局中文",
   "owner_readable_priority_enforced": true,
   "stage_gate_status": {
@@ -33,7 +33,7 @@
     "S6PAT02_WHKM_SALARY": "PASSED_AND_MERGED_TO_MAIN",
     "S6PAT02_FIFA": "PASSED_AND_MERGED_TO_MAIN",
     "S6PAT02_OPENAIDATABASE": "PASSED_AND_MERGED_TO_MAIN",
-    "S6PAT02_PFI_BIG_DATA_SIMULATOR": "PFI_SLICE_LOCAL_PRECOMMIT_PASSED",
+    "S6PAT02_PFI_BIG_DATA_SIMULATOR": "PASSED_AND_MERGED_TO_MAIN",
     "S6PA-GATE": "IN_PROGRESS",
     "next_allowed_project_slice": "Serenity-Alipay"
   },
@@ -156,5 +156,6 @@
     "requires_archive_restore": false,
     "notes": "本次只补 PFI Owner 可读路径、manifest 和测试；不改运行代码、不改算法、不移动文件、不触发外部自动化。"
   },
-  "summary": "S6PAT02 PFI 切片补齐 Owner 第一屏：active qbvs、config、tests、runs/reports、root contracts/tools 边界和最小 unittest 路径。S6PA-GATE 仍 in_progress，下一单项目切片是 Serenity-Alipay。"
+  "summary": "S6PAT02 PFI 切片补齐 Owner 第一屏：active qbvs、config、tests、runs/reports、root contracts/tools 边界和最小 unittest 路径。S6PA-GATE 仍 in_progress，下一单项目切片是 Serenity-Alipay。",
+  "result_commit": "bf625d4360cd9b72805d7fb80f3e4959418af33b"
 }

@@ -1,0 +1,173 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625",
+  "project_id": "ROOT",
+  "task_id": "S6PBT02",
+  "acceptance_ids": [
+    "ACC-S6PBT02"
+  ],
+  "iteration_id": "ITER-20260625-OTHER8-S6PBT02-REGRESSION-CLOSURE",
+  "generated_at": "2026-06-25T07:15:00+00:00",
+  "implementation_base_sha": "44760cdeee5f0a95d5b70bc168900005dde8af65",
+  "depends_on": [
+    "GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:41eb673018517c35fc8bec91d87d86220b42a770614e1d15db773c9f94678c49",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S6PBT02 deferred finding regression closure and S6PB gate readiness",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_priority_enforced": true,
+  "stage_gate_status": {
+    "S6PBT01": "CI_ATTESTED",
+    "S6PBT02": "PASSED_REGRESSION_CLOSURE",
+    "S6PB-GATE": "PASSED",
+    "S6-GATE": "IN_PROGRESS"
+  },
+  "next_allowed_task": "S6PC",
+  "closed_findings": [
+    "S6PBT01-A1-LOW-OUTPUT-DIR-GUARD",
+    "S6PBT01-A1-LOW-DIFF-RECOMPUTE",
+    "S6PBT01-A3-MED-STRING-ONLY-VALIDATION",
+    "S6PBT01-A3-MED-DASHBOARD-DECISION-POLICY"
+  ],
+  "closure_summary": {
+    "critical_open_after": 0,
+    "high_open_after": 0,
+    "medium_open_after": 0,
+    "low_open_after": 0,
+    "s6pb_gate_ready": true,
+    "s6_gate_ready": false
+  },
+  "s6pbt02_stop_conditions": {
+    "s6_gate_claimed_early": false,
+    "owner_flow_claimed_as_product_current_task": false,
+    "manifest_changed_files_trusted_without_recompute": false,
+    "dashboard_decision_policy_left_in_generator_code": false,
+    "output_dir_allowed_outside_repo": false,
+    "full_governance_computation_required_on_every_pr": false
+  },
+  "changed_files_declared": [
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "governance/decision_policies/review8_owner_decision_policy.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pb/s6pbt02_closure_matrix.csv",
+    "governance/stage_gates/s6pb/s6pbt02_regression_closure.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/README.md"
+  ],
+  "changed_files_actual": [
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "governance/decision_policies/review8_owner_decision_policy.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pb/s6pbt02_closure_matrix.csv",
+    "governance/stage_gates/s6pb/s6pbt02_regression_closure.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/README.md"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s6pb/s6pbt02_closure_matrix.csv",
+    "governance/stage_gates/s6pb/s6pbt02_regression_closure.md",
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/decision_policies/review8_owner_decision_policy.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "EVA_OS/README.md",
+    "FIFA/README.md",
+    "OpMe_System/README.md",
+    "OpenAIDatabase/README.md",
+    "PFI/大数据模拟器/README.md",
+    "Serenity-Alipay/README.md",
+    "governance/decision_policies/review8_owner_decision_policy.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PBT02-REGRESSION-CLOSURE-20260625.json",
+    "governance/stage_gates/s6pb/s6pbt02_closure_matrix.csv",
+    "governance/stage_gates/s6pb/s6pbt02_regression_closure.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "whkmSalary/README.md"
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s6pb/s6pbt02_closure_matrix.csv",
+    "governance/stage_gates/s6pb/s6pbt02_regression_closure.md",
+    "governance/decision_policies/review8_owner_decision_policy.json",
+    "tools/wave1_gate.py",
+    "tools/wave2_gate.py",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-OTHER8-S6PBT01-THREE-AGENT-REVIEW-20260625.json"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pbt02_deferred_findings_are_closed_without_s6_gate_claim tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pbt02_wave_gate_output_dirs_stay_inside_repo tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pbt02_manifest_changed_files_match_result_commits tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pbt02_dashboard_decision_policy_is_canonical_json tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pbt02_owner_flow_task_is_not_product_current_task -q",
+    "python -B scripts/lean_governance.py validate --all",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "git diff --check origin/main...HEAD"
+  ],
+  "test_results": [
+    {
+      "command": "focused S6PBT02 unittest group",
+      "result": "PASS",
+      "observed": "Ran 5 tests in 0.319s; OK."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "observed": "errors=0 warnings=0."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "observed": "validation exit_code=0, errors=0 warnings=0; selected_project_count=8; full_project_scan_avoided_count=2; zero_diff.clean=true."
+    },
+    {
+      "command": "python -B -m py_compile scripts/generate_governance_dashboard.py tools/wave1_gate.py tools/wave2_gate.py",
+      "result": "PASS",
+      "observed": "compile completed with exit_code=0."
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "result": "PASS",
+      "observed": "exit_code=0."
+    }
+  ],
+  "rollback": {
+    "action": "revert_this_s6pbt02_regression_closure_commit",
+    "requires_file_restore": false,
+    "requires_archive_restore": false,
+    "notes": "本轮只关闭 S6PBT01 延后项、收敛 Owner-flow 表述和 dashboard decision policy 事实源；不改产品运行代码、不移动文件、不触发外部自动化。"
+  },
+  "unresolved_risks": [
+    "S6-GATE remains IN_PROGRESS until S6PC metrics/review closure evidence is completed.",
+    "Future owner decision policy edits must update governance/decision_policies/review8_owner_decision_policy.json rather than generator code."
+  ],
+  "summary": "S6PBT02 关闭 S6PBT01 延后的 2 个 Low 和 2 个 Medium：gate 输出目录防越界、manifest changed files 复算、Owner-flow 与产品 current_task 分离、dashboard decision policy 移出生成器。S6PB-GATE 通过；S6-GATE 仍 in_progress，下一步 S6PC。",
+  "rebased_on_main_after_creation": true,
+  "rebase_note": "PR base advanced through #183-#186 before final CI; this branch was rebased onto origin/main before final validation."
+}

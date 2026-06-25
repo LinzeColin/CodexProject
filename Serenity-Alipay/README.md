@@ -1,7 +1,7 @@
 # Serenity-Alipay 中文 Owner 快速入口
 
 - S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
-- 当前任务：`S6PAT02` / `ACC-S6PAT02` 仍在逐项目进行；S5 结构验收回看任务为 `S5PCT02` / `ACC-S5PCT02`。
+- 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02` 仍在逐项目进行，只补 Owner 路径，不改产品 canonical current_task；S5 结构验收回看任务为 `S5PCT02` / `ACC-S5PCT02`。
 - 下一 Gate：`S6PA-GATE` 仍在进行中；S5PC/S5-GATE 的中文验收必须继续以本第一屏和 `docs/Serenity_structure_report.md` 为准。
 - 本轮边界：只补 Owner 可读路径，不改运行代码，不改评分/权重/调度/邮件/OpenD/MooMoo/报告算法，不移动文件，不触发 launchd、app 打包或外部账户动作。
 

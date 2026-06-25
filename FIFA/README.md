@@ -1,7 +1,7 @@
 # FIFA 中文 Owner 快速入口
 
 - S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
-- 当前任务：`S6PAT02` / `ACC-S6PAT02`；下一 Gate：`S6PA-GATE` 仍在进行中。
+- 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02`，只补 Owner 路径，不改产品 canonical current_task；下一 Gate：`S6PA-GATE` 仍在进行中。
 - 本轮边界：只补 Owner 可读路径，不改运行代码，不移动文件，不触发投注、TAB 点击、OpenD、邮件、launchd、app 打包或外部自动化。
 
 | Owner 判断项 | 当前路径 | 状态 |

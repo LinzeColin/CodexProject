@@ -13,9 +13,9 @@
     "GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625"
   ],
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:5d98c47d3f9bf3c0b2764ada7c6825b9b396199a9fc42da03afb3024340bdfa9",
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "CI_ATTESTED",
   "ci_attestation_subject": "Other8 S6PBT01 three independent read-only review agents and high blocker closure",
-  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "PR_182_PROJECT_GOVERNANCE_RUN_28150218588_SUCCESS_AND_MAIN_PUSH_RUN_28150259017_SUCCESS",
   "language_rule": "中文优先，默认全局中文",
   "owner_readable_priority_enforced": true,
   "stage_gate_status": {
@@ -191,5 +191,6 @@
     "requires_archive_restore": false,
     "notes": "本次只记录 S6PBT01 三 Agent 复审、修复 Alpha Owner 当前状态冲突、统一 WHKM key、补 main/CI 绑定；不改运行代码、不移动文件、不触发外部自动化。"
   },
-  "summary": "S6PBT01 三个独立 read-only Agent 已完成复审。唯一 High 阻塞 Alpha Owner 多事实源冲突已在本 PR 关闭；S6PB-GATE 仍 in_progress，下一步是 S6PBT02 处理回归与剩余 Medium/Low。"
+  "summary": "S6PBT01 三个独立 read-only Agent 已完成复审。唯一 High 阻塞 Alpha Owner 多事实源冲突已在本 PR 关闭；S6PB-GATE 仍 in_progress，下一步是 S6PBT02 处理回归与剩余 Medium/Low。",
+  "result_commit": "17c1cf4550ccfe3e0029c9a0247682a505ba2971"
 }
