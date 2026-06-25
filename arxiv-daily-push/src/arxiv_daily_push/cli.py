@@ -134,6 +134,7 @@ from .stage2_sources import (
     run_s2pjt03_action_asset_roi,
     run_s2pjt04_weekly_report,
     run_s2pjt05_monthly_report,
+    run_s2pht05_content_quality_gate,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -157,6 +158,7 @@ from .stage2_sources import (
     validate_s2pjt03_action_asset_roi_report,
     validate_s2pjt04_weekly_report,
     validate_s2pjt05_monthly_report,
+    validate_s2pht05_content_quality_gate_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -956,6 +958,21 @@ def build_parser() -> argparse.ArgumentParser:
     s2pjt05_monthly.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
     s2pjt05_monthly.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pjt05_monthly.add_argument("--json", action="store_true", help="Print JSON monthly report.")
+
+    s2pht05_quality = subparsers.add_parser(
+        "stage2-content-quality-gate",
+        help="Build S2PHT05 local semantic content quality gate evidence without production side effects.",
+    )
+    s2pht05_quality.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pht05_quality.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pht05_quality.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pht05_quality.add_argument("--dependency-receipts", required=True, help="S2PHT01-S2PHT04 dependency receipts JSON list or object with dependency_receipts.")
+    s2pht05_quality.add_argument("--gold-items", required=True, help="Ten-item semantic gold set JSON list or object with gold_items.")
+    s2pht05_quality.add_argument("--stage1-regression-checks", required=True, help="Stage 1 arXiv/evidence/email regression checks JSON list or object with stage1_regression_checks.")
+    s2pht05_quality.add_argument("--manual-review-samples", required=True, help="Manual review samples JSON list or object with manual_review_samples.")
+    s2pht05_quality.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pht05_quality.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pht05_quality.add_argument("--json", action="store_true", help="Print JSON content quality gate report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2783,6 +2800,40 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- forecast_review_gate: {report.get('forecast_review_gate')}")
             print(f"- section_trace_gate: {report.get('section_trace_gate')}")
             print(f"- deterministic_report_gate: {report.get('deterministic_report_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-content-quality-gate":
+        production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        report = run_s2pht05_content_quality_gate(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            dependency_receipts=load_json_records(args.dependency_receipts, "dependency_receipts"),
+            gold_items=load_json_records(args.gold_items, "gold_items"),
+            stage1_regression_checks=load_json_records(args.stage1_regression_checks, "stage1_regression_checks"),
+            manual_review_samples=load_json_records(args.manual_review_samples, "manual_review_samples"),
+            production_gate_state=production_gate_state,
+            write=not args.no_write,
+        )
+        errors = validate_s2pht05_content_quality_gate_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- dependency_receipt_gate: {report.get('dependency_receipt_gate')}")
+            print(f"- gold_dimension_gate: {report.get('gold_dimension_gate')}")
+            print(f"- entailment_gate: {report.get('entailment_gate')}")
+            print(f"- quote_location_gate: {report.get('quote_location_gate')}")
+            print(f"- template_rate_gate: {report.get('template_rate_gate')}")
+            print(f"- counterevidence_gate: {report.get('counterevidence_gate')}")
+            print(f"- personal_action_gate: {report.get('personal_action_gate')}")
+            print(f"- stage1_regression_gate: {report.get('stage1_regression_gate')}")
+            print(f"- manual_review_gate: {report.get('manual_review_gate')}")
+            print(f"- deterministic_gate: {report.get('deterministic_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
