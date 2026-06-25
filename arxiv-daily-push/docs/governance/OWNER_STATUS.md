@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PMT01` 本地 security and evidence boundary evidence；它为来源内容标记 `UNTRUSTED_DATA`，要求 frontstage typed statements，阻断不安全 URL 和 0 critical claim 的错误 100% 覆盖率，并登记本地 supply-chain baseline receipt；SMTP/scheduler/Release/schema/DB/queue/ranking/source adapter/workflow enforcement 全部保持无生产副作用。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PMT01 as local security boundary evidence only, continue S2PMT02 atomic storage/recovery hardening under no-production boundaries, and leave inherited P0/P1 closure to independent review.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PMT02_ATOMIC_STORAGE_AND_RECOVERY_UNDER_V7_2`
+- next_task_id: `NONE`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PMT02-ATOMIC-RECOVERY`
-- unblock_condition: S2PMT01 security boundary evidence is complete locally; continue atomic publish/backup/recovery hardening under V7.2 no-production boundaries and keep SMTP/scheduler/Release/public schema disabled.
+- acceptance_ids: `none`
+- unblock_condition: Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (750/750 active parameters, 96/96 active formulas)
+- implementation_congruence: `VERIFIED` (760/760 active parameters, 97/97 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT05 as local M4 orchestration evidence, continue the next governed Stage2 task under no-production boundaries, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续下一 governed Stage2 task，保持 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 security boundary gate 直接启用生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `94`
-- total_formulas: `96`
-- active_formulas: `96`
-- total_parameters: `767`
-- active_parameters: `750`
+- model_count: `95`
+- total_formulas: `97`
+- active_formulas: `97`
+- total_parameters: `777`
+- active_parameters: `760`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY`
+- release_gate: `S2PMT02_ATOMIC_RECOVERY_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `78`
+- legacy_unbound_events: `98`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `117`
+- pending_or_stale_events: `137`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:f86deee9c5d3349171c36815468ff01b2ce156fc32a52e8156f72e83f266bd7c`
-- snapshot_event_time: `2026-06-25T23:10:00+10:00`
+- source_snapshot_hash: `sha256:b048c054cfb744b9cf87b5ec96c9ffc2b46139839b560a1bc9e3d4cfe4848782`
+- snapshot_event_time: `2026-06-26T12:20:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PM / S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY`
+- phase/gate: `S2PM / S2PMT02_ATOMIC_RECOVERY_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PMT02_ATOMIC_STORAGE_AND_RECOVERY_UNDER_V7_2`
-- reason: S2PMT01 local security boundary evidence is complete; continue atomic storage/recovery hardening under V7.2 no-production boundaries.
+- task_id: `NONE`
+- reason: No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.

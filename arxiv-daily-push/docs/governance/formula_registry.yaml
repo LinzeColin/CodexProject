@@ -5327,3 +5327,56 @@ formulas:
     evidence_hash: "sha256:f5e5e33ad1085b2b5db6649d7a14af6e9326cbe15bd36de82a73fa9e35b390d9"
     last_verified_commit: "2866936e7cc25f7c7e8947cc6a4eb106a8ce1418"
     verified_at: "2026-06-26T11:20:00+10:00"
+  -
+    formula_id: "FORM-ADP-097"
+    model_id: "MOD-ADP-095"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PMT02 local atomic storage and recovery evidence passes only when small explicit local artifacts are written through a staging directory and atomic replace, a manifest records file hashes, manifest verification detects tampering, restore drill copies files only into an explicit drill directory with confirmation, staging is cleaned, and all production restore, SMTP, scheduler, Release, schema, queue, and DB migration flags remain false."
+    variables:
+      -
+        name: "artifacts"
+        data_type: "mapping"
+        unit: "local artifact payloads"
+        input_domain: "small JSON/text/bytes payloads under explicit relative paths"
+      -
+        name: "manifest"
+        data_type: "object"
+        unit: "hash manifest"
+        input_domain: "S2PMT02 manifest with file path, size, and sha256 entries"
+      -
+        name: "restore_drill"
+        data_type: "object"
+        unit: "local drill directory"
+        input_domain: "explicit restore_dir, confirm_restore true, no production restore"
+    constraints: "S2PMT02 is local hardening evidence only. It must not execute production restore, install a scheduler, send email, upload Release assets, migrate DB/public schema, mutate queues, change ranking/source adapters, touch V7.1/V7.2 contract files, or claim integrated production acceptance."
+    missing_policy: "Missing artifact payloads, unsafe relative paths, possible secret content, oversized artifacts, enabled production flags, missing manifest, hash mismatch, uncleared staging directory, missing restore confirmation, restore target overwrite without permission, or any production side-effect flag blocks the report."
+    output_range: "S2PMT02 package, verify, and restore drill reports with pass or blocked status, deterministic manifest hashes, tamper-detection evidence, restore drill evidence, staging cleanup evidence, and all production side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_ATOMIC_RECOVERY_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_ACCEPTANCE_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_TASK_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_MANIFEST_FILENAME"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_STAGING_DIRNAME"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_MAX_ARTIFACT_BYTES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_REQUIRED_DISABLED_ENV_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::build_atomic_recovery_package"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::verify_atomic_recovery_manifest"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::run_restore_drill"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::validate_atomic_recovery_report"
+    implementation_fingerprint: "sha256:f65d17e6e6261096e0865974f32a9fa9b13cb7d07d3b6aa7eeaaae20ab7d953d"
+    evidence_hash: "sha256:ec1a9f416ebed8a2560c8d821508c57934403541f4c2c4d4f8aee1b6ac2d5dcb"
+    last_verified_commit: "a326356e35959c31693122e6b533c49833c1ad91"
+    verified_at: "2026-06-26T12:20:00+10:00"
