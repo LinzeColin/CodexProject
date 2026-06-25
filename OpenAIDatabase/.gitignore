@@ -25,6 +25,9 @@ browser-profile/
 !tests/fixtures/*.zip
 data/raw/
 data/private_imports/
+private_exports/
+exports/private/
+data/private/
 
 # Local run logs / temporary work
 logs/

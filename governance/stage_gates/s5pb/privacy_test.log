@@ -1,0 +1,45 @@
+task_id: S5PBT02
+acceptance_id: ACC-S5PBT02
+project_id: OpenAIDatabase
+mode: PATH_AND_MARKER_ONLY_NO_VALUES
+result: PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED
+
+privacy_source_manifest: governance/stage_gates/s5pa/privacy_manifest.md
+wave2_archive_manifest: governance/stage_gates/s5pa/wave2_archive_manifest.json
+openaidatabase_private_candidate_count: 104
+values_emitted: false
+confirmed_real_secret_or_pii_values_emitted: false
+examples_contain_real_personal_content: false
+private_exports_default_external: true
+private_exports_default_encrypted: true
+private_exports_default_ignored: true
+absolute_local_paths_used_as_default_entry: false
+app_reads_raw_exports_by_default: false
+
+ignored_path_contract:
+- OpenAIDatabase/data/raw/
+- OpenAIDatabase/data/raw_encrypted/
+- OpenAIDatabase/data/private_imports/
+- OpenAIDatabase/private_exports/
+- OpenAIDatabase/exports/private/
+- OpenAIDatabase/data/private/
+
+smoke_commands:
+- command: python -B -m pytest OpenAIDatabase/tests -q
+  result: NOT_RUN
+  evidence: local Python environments do not include pytest
+- command: python -B -m unittest tests.test_s3pdt01_privacy -q
+  result: PASS
+  evidence: Ran 3 tests OK
+- command: python -B -m unittest tests.test_agent_context_pack -q
+  result: PASS
+  evidence: Ran 1 test OK
+- command: python -B -m unittest tests.test_codex_memory_sync -q
+  result: PASS
+  evidence: Ran 1 test OK
+
+stop_conditions:
+- OpenAIDatabase examples contain real personal content: false
+- private export default is tracked plaintext: false
+- absolute local path default entry exists: false
+- S5PBT02 evidence emits private values: false

@@ -1,0 +1,57 @@
+schema_version: "codexproject.structure_contract.v1"
+project_id: "OpenAIDatabase"
+task_id: "S5PBT02"
+acceptance_id: "ACC-S5PBT02"
+mode: "BOUNDARY_ONLY_NO_PRIVATE_VALUE_EMISSION"
+app_layer:
+  path: "OpenAIDatabase/apps/memory-atlas"
+  default_entry: true
+  reads_raw_exports: false
+  reads_redacted_derived_snapshot: true
+skills_layer:
+  path: "OpenAIDatabase/skills/openai-memory-analysis"
+  default_private_export_location: false
+context_layer:
+  paths:
+    - "OpenAIDatabase/context"
+    - "OpenAIDatabase/config/context_sources"
+    - "OpenAIDatabase/data/derived/agent_context"
+  route_first: true
+  broad_data_scan_default: false
+private_exports:
+  default_external: true
+  default_encrypted: true
+  default_ignored: true
+  value_emission_allowed: false
+  private_candidate_count: 104
+  source_manifest_ref: "governance/stage_gates/s5pa/wave2_archive_manifest.json"
+  privacy_manifest_ref: "governance/stage_gates/s5pa/privacy_manifest.md"
+  ignored_paths:
+    - "OpenAIDatabase/data/raw"
+    - "OpenAIDatabase/data/raw_encrypted"
+    - "OpenAIDatabase/data/private_imports"
+    - "OpenAIDatabase/private_exports"
+    - "OpenAIDatabase/exports/private"
+    - "OpenAIDatabase/data/private"
+default_entries:
+  repository_relative_only: true
+  local_absolute_paths_as_default: false
+  entries:
+    - "OpenAIDatabase/AGENTS.md"
+    - "OpenAIDatabase/scripts/route_agent_resources.py"
+    - "OpenAIDatabase/data/derived/agent_context/AGENT_CONTEXT.md"
+smoke_tests:
+  log_ref: "governance/stage_gates/s5pb/privacy_test.log"
+  privacy_unittest: "PASS"
+  agent_context_unittest: "PASS"
+  codex_memory_sync_unittest: "PASS"
+  pytest_command: "NOT_RUN_LOCAL_PYTEST_MISSING"
+stop_conditions:
+  examples_contain_real_personal_content: false
+  private_exports_default_tracked_plaintext: false
+  absolute_local_paths_used_as_default_entry: false
+  private_values_emitted: false
+  app_reads_raw_exports_by_default: false
+rollback:
+  mode: "remove_s5pbt02_boundary_docs_manifest_and_ignore_additions_only"
+  note: "Tracked personal-memory evidence remains in place and checksum-bound; no private data movement occurs in S5PBT02."

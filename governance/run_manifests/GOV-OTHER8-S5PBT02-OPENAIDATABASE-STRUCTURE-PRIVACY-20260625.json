@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625",
+  "project_id": "OpenAIDatabase",
+  "task_id": "S5PBT02",
+  "acceptance_ids": [
+    "ACC-S5PBT02"
+  ],
+  "iteration_id": "ITER-OTHER8-S5PBT02-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "951772a8b505dcd13c2e2dd71ab3482eeeb0a86b",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:66811711da9e961788da415ae826820e7fde20b78497f7d825bc530f4530bb80",
+  "changed_files_declared": [
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+    "governance/stage_gates/s5pb/privacy_test.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+    "governance/stage_gates/s5pb/privacy_test.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+    "governance/stage_gates/s5pb/privacy_test.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "OpenAIDatabase/.gitignore",
+    "OpenAIDatabase/AGENTS.md",
+    "OpenAIDatabase/README.md",
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+    "governance/stage_gates/s5pb/privacy_test.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage5_openaidatabase_structure_privacy_boundary",
+    "app_skills_context_private_exports_separation",
+    "privacy_path_marker_only_no_values",
+    "project_gitignore_private_export_guard",
+    "no_private_data_move",
+    "no_runtime_rewrite"
+  ],
+  "stage_gate_status": {
+    "S5PBT01": "PASSED_AND_BOUND",
+    "S5PBT02": "LOCAL_PRECOMMIT_PASSED",
+    "S5PB-GATE": "LOCAL_PRECOMMIT_PASSED_FOR_FIFA_AND_OPENAIDATABASE",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "privacy_value_emission": "BLOCKED",
+    "next_allowed_task": "S5PCT01"
+  },
+  "next_allowed_task": "S5PCT01",
+  "structure_boundary": {
+    "app_layer": "OpenAIDatabase/apps/memory-atlas",
+    "skills_layer": "OpenAIDatabase/skills/openai-memory-analysis",
+    "context_layer": [
+      "OpenAIDatabase/context",
+      "OpenAIDatabase/config/context_sources",
+      "OpenAIDatabase/data/derived/agent_context"
+    ],
+    "private_exports_policy": "external_encrypted_ignored_by_default",
+    "contract_ref": "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+    "report_ref": "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "privacy_log_ref": "governance/stage_gates/s5pb/privacy_test.log"
+  },
+  "archive_manifest_reconciliation": {
+    "wave2_manifest_ref": "governance/stage_gates/s5pa/wave2_archive_manifest.json",
+    "openaidatabase_private_candidate_count": 104,
+    "moved_in_s5pbt02": 0,
+    "reason": "S5PBT02 binds structure and privacy defaults while keeping tracked personal-memory evidence in place and checksum-bound."
+  },
+  "privacy_summary": {
+    "mode": "PATH_AND_MARKER_ONLY_NO_VALUES",
+    "private_candidate_count": 104,
+    "values_emitted": false,
+    "default_external": true,
+    "default_encrypted": true,
+    "default_ignored": true,
+    "pytest_command_result": "NOT_RUN_LOCAL_PYTEST_MISSING",
+    "unittest_smoke_result": "PASS"
+  },
+  "stop_conditions": {
+    "openaidatabase_examples_contain_real_personal_content": false,
+    "private_exports_default_tracked_plaintext": false,
+    "absolute_local_paths_used_as_default_entry": false,
+    "private_values_emitted": false,
+    "app_reads_raw_exports_by_default": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "FIFA",
+      "PFI",
+      "Serenity-Alipay",
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": false,
+    "allowed_project": "OpenAIDatabase",
+    "tracked_diff_command": "git diff --name-only origin/main -- FIFA PFI Serenity-Alipay EEI arxiv-daily-push",
+    "tracked_diff_result": "PASS_NO_OUTPUT"
+  },
+  "model_delta": "NOT_CHANGED: S5PBT02 documents and binds OpenAIDatabase structure and privacy defaults only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No OpenAIDatabase product version change. App, skills, context, and private data paths are unchanged.",
+  "test_commands": [
+    "python -B -m pytest OpenAIDatabase/tests -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_s3pdt01_privacy -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_agent_context_pack -q",
+    "C:\\Users\\linze\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -B -m unittest tests.test_codex_memory_sync -q",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pbt02_openaidatabase_structure_privacy_boundary_and_smoke -q",
+    "python -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --name-only origin/main -- FIFA PFI Serenity-Alipay EEI arxiv-daily-push",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "python -B -m pytest OpenAIDatabase/tests -q",
+      "result": "NOT_RUN",
+      "evidence": "local Python environments do not include pytest"
+    },
+    {
+      "command": "OpenAIDatabase focused privacy/context unittest smoke",
+      "result": "PASS",
+      "evidence": "tests.test_s3pdt01_privacy ran 3 OK; tests.test_agent_context_pack ran 1 OK; tests.test_codex_memory_sync ran 1 OK"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pbt02_openaidatabase_structure_privacy_boundary_and_smoke -q",
+      "result": "PASS",
+      "evidence": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+      "result": "PASS",
+      "evidence": "manifest JSON parsed"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py check-render --project OpenAIDatabase",
+      "result": "PASS",
+      "evidence": "drift_count=0 reference_issue_count=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "evidence": "projects changed: OpenAIDatabase; errors=0 warnings=0"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "evidence": "root and 10 projects checked; errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --name-only origin/main -- FIFA PFI Serenity-Alipay EEI arxiv-daily-push",
+      "result": "PASS",
+      "evidence": "no forbidden project diff output"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "evidence": "no whitespace errors; Windows line-ending normalization warnings only"
+    }
+  ],
+  "evidence_refs": [
+    "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+    "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+    "governance/stage_gates/s5pb/privacy_test.log",
+    "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S5PBT02 OpenAIDatabase app, skills, context, and private exports structure/privacy boundary",
+  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_PR_AND_MAIN_CI",
+  "unresolved_risks": [
+    "Local environment lacks pytest, so the roadmap pytest command is recorded as NOT_RUN locally while equivalent unittest smoke passed.",
+    "Tracked OpenAIDatabase private candidates remain in place and checksum-bound; future movement must use the Wave 2 manifest and encrypted backup plan.",
+    "S5PCT01 still must migrate PFI before Wave 2 can proceed."
+  ],
+  "rollback": {
+    "mode": "remove_s5pbt02_boundary_docs_manifest_privacy_log_and_ignore_additions_only",
+    "reason": "S5PBT02 performs no runtime rewrite, no private data movement, no archive writes, and no product behavior change."
+  }
+}
