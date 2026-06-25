@@ -1,0 +1,63 @@
+{
+  "artifact_id": "ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PGT01",
+  "acceptance_ids": [
+    "ACC-S2PGT01-EVIDENCE-V2"
+  ],
+  "phase": "S2PG",
+  "generated_at": "2026-06-25T17:40:00+10:00",
+  "base_commit": "032319edd56243f3c6887c7c707e00c91fdd733d",
+  "result": "completed_local_validation_passed_pending_pr_ci",
+  "summary": "Defined private EvidencePacket V2 compatibility evidence across D1-D4 source-domain reports, required packet fields, evidence-level labels, old arXiv compatibility, and no-production/no-schema side-effect gates.",
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl"
+  ],
+  "tests_run": [
+    "PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 71 OK",
+    "semantic extractor checked 72 formulas / 498 parameters"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-070"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-072"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-508",
+    "PARAM-ADP-509",
+    "PARAM-ADP-510",
+    "PARAM-ADP-511",
+    "PARAM-ADP-512",
+    "PARAM-ADP-513",
+    "PARAM-ADP-514",
+    "PARAM-ADP-515"
+  ],
+  "public_schema_changed": false,
+  "queue_schema_changed": false,
+  "mail_production_code_changed": false,
+  "d4_source_adapter_implemented": false,
+  "stage2_production_accepted": false,
+  "integrated_production_accepted": false,
+  "production_schedule_enabled": false,
+  "real_smtp_sent": false,
+  "real_release_uploaded": false,
+  "v7_1_current_switched": false,
+  "v7_2_contract_files_changed": false,
+  "rollback": "Revert S2PGT01 compatibility code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime or production state change was made."
+}

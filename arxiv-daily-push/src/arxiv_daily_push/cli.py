@@ -107,6 +107,7 @@ from .stage1_runtime import (
     validate_stage1_runtime_report,
 )
 from .stage2_sources import (
+    run_s2pgt01_evidence_packet_v2_compatibility,
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
     run_s2pft05_d3_full_governance_qualification,
@@ -140,6 +141,7 @@ from .stage2_sources import (
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
     validate_s2pft05_d3_full_governance_qualification_report,
+    validate_s2pgt01_evidence_packet_v2_compatibility_report,
     validate_s2pft04_special_zone_discovery_report,
     validate_s2pft03_key_city_coverage_report,
     validate_s2pft02_hk_mo_independent_profile_report,
@@ -702,6 +704,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pft05_d3_full.add_argument("--governance-records", required=True, help="D3 governance records JSON list or object with governance_records.")
     s2pft05_d3_full.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pft05_d3_full.add_argument("--json", action="store_true", help="Print JSON D3 full governance qualification report.")
+
+    s2pgt01_packets = subparsers.add_parser(
+        "stage2-evidence-packet-v2-compatibility",
+        help="Run S2PGT01 EvidencePacket V2 compatibility evidence without public schema or production side effects.",
+    )
+    s2pgt01_packets.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pgt01_packets.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pgt01_packets.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pgt01_packets.add_argument("--source-domain-reports", required=True, help="Source-domain reports JSON list or object with source_domain_reports.")
+    s2pgt01_packets.add_argument("--packet-records", required=True, help="EvidencePacket input records JSON list or object with packet_records.")
+    s2pgt01_packets.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pgt01_packets.add_argument("--json", action="store_true", help="Print JSON EvidencePacket V2 compatibility report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2085,6 +2099,30 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- fallback_route_gate: {report.get('fallback_route_gate')}")
             print(f"- d3_full_replay_gate: {report.get('d3_full_replay_gate')}")
             print(f"- metadata_only_gate: {report.get('metadata_only_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-evidence-packet-v2-compatibility":
+        report = run_s2pgt01_evidence_packet_v2_compatibility(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            source_domain_reports=load_json_records(args.source_domain_reports, "source_domain_reports"),
+            packet_records=load_json_records(args.packet_records, "packet_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pgt01_evidence_packet_v2_compatibility_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- source_domain_gate: {report.get('source_domain_gate')}")
+            print(f"- packet_shape_gate: {report.get('packet_shape_gate')}")
+            print(f"- evidence_level_gate: {report.get('evidence_level_gate')}")
+            print(f"- old_arxiv_compatibility_gate: {report.get('old_arxiv_compatibility_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

@@ -3665,3 +3665,49 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md"
+  -
+    model_id: "MOD-ADP-070"
+    name: "S2PGT01 EvidencePacket V2 compatibility"
+    kind: "deterministic evidence compatibility model"
+    purpose: "Define and validate a private EvidencePacket V2 compatibility layer across D1-D4 source-domain reports, required packet fields, evidence levels, old arXiv compatibility, and no-production/no-schema side-effect boundaries."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pgt01-evidence-packet-v2-compatibility-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-072"
+    parameter_ids:
+      - "PARAM-ADP-508"
+      - "PARAM-ADP-509"
+      - "PARAM-ADP-510"
+      - "PARAM-ADP-511"
+      - "PARAM-ADP-512"
+      - "PARAM-ADP-513"
+      - "PARAM-ADP-514"
+      - "PARAM-ADP-515"
+    inputs:
+      - "D1-D4 source-domain reports"
+      - "EvidencePacket V2 packet records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "EvidencePacket V2 compatibility report"
+      - "source-domain gate"
+      - "packet-shape gate"
+      - "evidence-level gate"
+      - "old arXiv compatibility gate"
+      - "no-side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md"

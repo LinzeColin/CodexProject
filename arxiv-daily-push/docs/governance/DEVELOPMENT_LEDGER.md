@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PG
-- Current gate: S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION
+- Current gate: S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY_READY_NO_PRODUCTION
 - Confirmed iteration count: 96
 - Reconstructed event count: 0
-- Current task: `S2PFT05` / legacy `S2P5T05` has completed local full D3 China official-source governance qualification evidence after S2PDT04 and S2PFT01-S2PFT04. It validates C0-C4 component evidence, quota roles, quota and health balance, elimination explanations, fallback routes, 30-date replay, metadata-only boundaries, and no-production boundaries. `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into main; S2PFT05 does not modify mail runtime paths. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
+- Current task: `S2PGT01` has completed private EvidencePacket V2 compatibility evidence after S2PFT05. It validates D1-D4 source-domain report inputs, required packet fields, evidence-level labels, explicit old arXiv/D1 compatibility, and no-production/no-schema side-effect gates without public schema migration or D4 adapter implementation. `S2PHT01V1.1-T05` has verified that PR #152 merged the EMAIL_LEARNING_V1 M1-M4 renderer into main; S2PGT01 does not modify mail runtime paths. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and requires all active/completed Stage2 agents to re-review completed work against V7.2 before new work.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -30,10 +30,33 @@ The append-only machine record is `development_events.jsonl`.
 | S2PB | V7.2-inherited D1 research/preprint source domain | in_progress | Promote bioRxiv and medRxiv through source-level shadow gates without regressing accepted arXiv local production, after V7.2 agent revalidation | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`; legacy alias `S2P1T01` |
 | S2PC | V7.2-inherited D2 top-journal source domain | in_progress | Continue from completed S2PCT01 Nature metadata-only shadow foundation to S2PCT02 Science without D2 source-domain acceptance or production inclusion, after V7.2 agent revalidation | `docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`; `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json`; `https://github.com/LinzeColin/CodexProject/pull/119`; next `S2PCT02` |
 | S2PF | V7.2-inherited D3 China local and extended official-source coverage | completed_local_validation | S2PFT01-S2PFT05 now cover mainland provincial templates, Hong Kong/Macau profiles, key cities, special zones, and full D3 governance qualification without formal production inclusion | `governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json`; `docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md` |
-| S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | planned | Start from `S2PGT01` EvidencePacket V2 and evidence-level compatibility after D1-D4 source-domain shadow evidence; do not silently migrate public schema or production queues | `docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml`; next `S2PGT01` |
+| S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | in_progress | `S2PGT01` private EvidencePacket V2 compatibility is complete; continue later S2PG graph/routing work without silently migrating public schema or production queues | `docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260625-ADP-S2PG-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PGT01 compatibility code, focused packet fixtures, model/formula/parameter registry diff, and local S2PGT01 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: 032319edd56243f3c6887c7c707e00c91fdd733d
+- Result commit: PENDING
+- Phase: S2PG
+- Task IDs: `S2PGT01`; acceptance `ACC-S2PGT01-EVIDENCE-V2`
+- Goal: Define a private EvidencePacket V2 compatibility layer across D1-D4 source-domain reports, required packet fields, evidence-level labels, old arXiv compatibility, and no-production/no-schema side-effect gates.
+- Files changed: S2PGT01 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-070` for S2PGT01 EvidencePacket V2 compatibility.
+- Formula changes: Added `FORM-ADP-072` with machine-verifiable AST fingerprints bound to the S2PGT01 implementation.
+- Parameter changes: Added `PARAM-ADP-508` through `PARAM-ADP-515` for S2PGT01 model id, acceptance id, task id, packet version, required source domains, evidence levels, packet fields, and report filename.
+- Commands run: `py_compile`; focused Stage2 source tests; semantic extractor.
+- Test results: py_compile PASS; focused Stage2 source tests 71 OK; semantic extractor checked 72 formulas / 498 parameters. Final full ADP unittest, V7.2 validator, project governance, lean render, changed-only validation, parse checks, and diff checks remain pending before PR.
+- Decisions: `ACC-S2PGT01-EVIDENCE-V2` is accepted only as private compatibility evidence. It does not implement D4 adapters, migrate public schema, mutate production queues, send SMTP, enable schedules, upload Releases, edit V7.2 contracts, or claim Stage 2/integrated production acceptance.
+- Remaining risks: Later S2PG tasks still need knowledge graph and B1-B6 routing work. D4 source-domain implementation remains owned by S2PE/S2PET tasks and must not be implied by this compatibility layer.
+- Rollback: Revert S2PGT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PGT01; then continue the next S2PG graph/routing task only under V7.2 no-production boundaries.
 
 ### `ITER-20260625-ADP-S2PF-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION`
 

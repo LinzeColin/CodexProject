@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:f1ac93c5c7cbe8465cee49ee1c8af643038cc380a3a46f2e9cb0fad21b834b8e`
-- snapshot_event_time: `2026-06-25T16:40:00+10:00`
+- source_snapshot_hash: `sha256:005471348a502b0f8fe53dc550ed79a44da381f824caf29f59f0e0d7d934d851`
+- snapshot_event_time: `2026-06-25T17:40:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PG / S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `69 / 71 / 507`
-- Active formulas/parameters: `71 / 490`
-- Machine checked formulas/parameters: `71 / 490`
+- Phase/Gate: `S2PG / S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY_READY_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `70 / 72 / 515`
+- Active formulas/parameters: `72 / 498`
+- Machine checked formulas/parameters: `72 / 498`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION`
+- Release gate: `S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY_READY_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8`
 - V7 roadmap hash: `fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56`
@@ -47,9 +47,9 @@
 - Stage 2 integrated accepted: `false`
 - Next governance task: `S2PCT02`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `S2PGT01`
-- Pending/stale events: `110`
+- Next executable task: `S2PGT02`
+- Pending/stale events: `111`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
-- Legacy unbound events: `71`
+- Legacy unbound events: `72`
 - Unresolved fact IDs: `0`

@@ -1528,17 +1528,34 @@ tasks:
   - task_id: "S2PGT01"
     phase: "S2PG"
     objective: "Define EvidencePacket V2 and evidence-level unification after D1-D4 source-domain shadow evidence, preserving old arXiv compatibility and no production side effects until explicit schema gates pass."
-    scope: "Read-only contract audit, compatibility mapping, fixture-level EvidencePacket V2 draft, backward-compatible adapter output tests, governance registration, and no-production-side-effect receipt."
-    non_scope: "No public schema migration without explicit S2PGT01 ownership and acceptance, no SMTP, no scheduler, no Release, no production queue mutation, no CURRENT pointer change, no V7.1/V7.2 contract-file edit unless a separate contract task owns it, and no integrated production acceptance."
-    status: "planned"
+    scope: "Private compatibility report builder, validator, CLI, fixture-level EvidencePacket V2 draft, D1 old arXiv compatibility proof, D1-D4 source-domain report gate, governance registration, and no-production/no-schema receipt."
+    non_scope: "No public schema migration, no source adapter implementation for D4, no SMTP, no scheduler, no Release, no production queue mutation, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no mail production runtime change, and no integrated production acceptance."
+    status: "completed"
     dependencies: ["S2PFT05", "V7_2_AGENT_REVALIDATION_RECEIPT"]
-    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md", "governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json"]
     acceptance_ids: ["ACC-S2PGT01-EVIDENCE-V2"]
-    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned EvidencePacket V2 compatibility focus", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push # planned", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push # planned"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 71 OK", "semantic extractor checked 72 formulas / 498 parameters", "remaining final validation pending before PR"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md", "governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PGT01 defines a private EvidencePacket V2 compatibility layer only. It does not implement D4 source adapters, migrate public schema, mutate production queues, send SMTP, enable scheduler, upload Release, change V7.2 contracts, or grant integrated production acceptance."
+    rollback: "Revert S2PGT01 compatibility code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime production state change was made."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+  - task_id: "S2PGT02"
+    phase: "S2PG"
+    objective: "Build cross-source identity resolution and knowledge-graph relation spine for DOI, PMID, arXiv, Chinese document numbers, Federal Register, CIK, and related identifiers after S2PGT01."
+    scope: "Private graph relation model, canonical identity fixtures, idempotent merge/update checks, evidence-backed relation edges, focused tests, and governance registration."
+    non_scope: "No public schema migration without explicit S2PGT02 ownership and acceptance, no production queue mutation, no SMTP, no scheduler, no Release, no source adapter production inclusion, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, and no integrated production acceptance."
+    status: "planned"
+    dependencies: ["S2PGT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PGT02-KG"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned knowledge-graph relation focus", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push # planned", "PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push # planned"]
     test_results: ["not executed yet; planned next task only"]
-    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md"]
-    risk: "EvidencePacket V2 can become a public schema boundary; S2PGT01 must explicitly prove backward compatibility and must not silently migrate queues, ledgers, mail runtime, SMTP, scheduler, Release, or integrated production gates."
-    rollback: "Remove the planned S2PGT01 governance entry if EvidencePacket V2 is deferred or replaced by a narrower compatibility audit."
+    evidence_refs: ["arxiv-daily-push/docs/pursuing_goal/v7_1/ROADMAP/roadmap_v7.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md"]
+    risk: "S2PGT02 can become a public identity/schema boundary; it must prove duplicate canonical identity count is zero, relation evidence is present, updates are idempotent, and production side effects remain disabled."
+    rollback: "Remove the planned S2PGT02 governance entry if knowledge-graph work is deferred or replaced by a narrower relation audit."
     target_version: "0.24.0"
     completed_version: ""
     unknown_task_ids: []

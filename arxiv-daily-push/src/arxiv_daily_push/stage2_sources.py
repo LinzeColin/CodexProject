@@ -364,6 +364,42 @@ S2PFT05_REQUIRED_GOVERNANCE_GATES = ("quota_balance", "health_balance", "elimina
 S2PFT05_REQUIRED_REPLAY_DATES = 30
 S2PFT05_ALLOWED_HEALTH_TIERS = ("green", "yellow", "red")
 S2PFT05_REPORT_FILENAME = "stage2_s2pft05_d3_full_governance_qualification_report.json"
+S2PGT01_EVIDENCE_PACKET_MODEL_ID = "adp-s2pgt01-evidence-packet-v2-compatibility-v1"
+S2PGT01_ACCEPTANCE_ID = "ACC-S2PGT01-EVIDENCE-V2"
+S2PGT01_TASK_ID = "S2PGT01"
+S2PGT01_PACKET_VERSION = "EvidencePacketV2"
+S2PGT01_REQUIRED_SOURCE_DOMAINS = (
+    "d1_research_preprint",
+    "d2_authoritative_publication",
+    "d3_china_official",
+    "d4_us_official",
+)
+S2PGT01_REQUIRED_EVIDENCE_LEVELS = (
+    "metadata",
+    "abstract",
+    "full_text",
+    "cross_source_verification",
+)
+S2PGT01_REQUIRED_PACKET_FIELDS = (
+    "packet_id",
+    "packet_version",
+    "source_domain",
+    "source_id",
+    "source_type",
+    "source_adapter",
+    "canonical_url",
+    "title",
+    "evidence_levels_available",
+    "claim_ids",
+    "content_ref_ids",
+    "support_statuses",
+    "locator_refs",
+    "board_routes",
+    "metadata_only",
+    "schema_migration_required",
+    "production_affected",
+)
+S2PGT01_REPORT_FILENAME = "stage2_s2pgt01_evidence_packet_v2_compatibility_report.json"
 
 
 def build_s2p1_preprint_promotion_report(
@@ -4516,6 +4552,194 @@ def validate_s2pft05_d3_full_governance_qualification_report(report: Mapping[str
     return errors
 
 
+def build_s2pgt01_evidence_packet_v2_compatibility_report(
+    *,
+    generated_at: str,
+    source_domain_reports: Sequence[Mapping[str, Any]],
+    packet_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build a private EvidencePacket V2 compatibility report without schema migration."""
+
+    domain_rows, domain_errors = _s2pgt01_domain_rows(source_domain_reports)
+    packet_rows, packet_errors = _s2pgt01_packet_rows(packet_records)
+    domain_gate = _s2pgt01_domain_gate(domain_rows)
+    packet_gate = _s2pgt01_packet_gate(packet_rows)
+    level_gate = _s2pgt01_evidence_level_gate(packet_rows)
+    compatibility_gate = _s2pgt01_compatibility_gate(packet_rows)
+    side_effect_gate = _s2pgt01_no_side_effect_gate(packet_rows)
+    blocking_reasons = [
+        *domain_errors,
+        *packet_errors,
+        *domain_gate["blocking_reasons"],
+        *packet_gate["blocking_reasons"],
+        *level_gate["blocking_reasons"],
+        *compatibility_gate["blocking_reasons"],
+        *side_effect_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and domain_gate["status"]
+        == packet_gate["status"]
+        == level_gate["status"]
+        == compatibility_gate["status"]
+        == side_effect_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PGT01_EVIDENCE_PACKET_MODEL_ID,
+        "acceptance_id": S2PGT01_ACCEPTANCE_ID,
+        "task_id": S2PGT01_TASK_ID,
+        "phase": "S2PG",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "packet_version": S2PGT01_PACKET_VERSION,
+        "required_source_domains": list(S2PGT01_REQUIRED_SOURCE_DOMAINS),
+        "source_domains_observed": domain_gate["source_domains_observed"],
+        "required_evidence_levels": list(S2PGT01_REQUIRED_EVIDENCE_LEVELS),
+        "evidence_levels_observed": level_gate["evidence_levels_observed"],
+        "required_packet_fields": list(S2PGT01_REQUIRED_PACKET_FIELDS),
+        "source_domain_gate": domain_gate["status"],
+        "packet_shape_gate": packet_gate["status"],
+        "evidence_level_gate": level_gate["status"],
+        "old_arxiv_compatibility_gate": compatibility_gate["status"],
+        "no_side_effect_gate": side_effect_gate["status"],
+        "source_domain_reports": domain_rows,
+        "evidence_packets": packet_rows,
+        "evidence_packet_count": len(packet_rows),
+        "schema_migration_required": False,
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "v7_2_contract_files_changed": False,
+        "s2pgt01_evidence_packet_v2_compatibility_ready": status == "pass",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pgt01_evidence_packet_v2_compatibility(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    source_domain_reports: Sequence[Mapping[str, Any]],
+    packet_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PGT01 EvidencePacket V2 compatibility evidence without side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pgt01-evidence-packet-v2-compatibility"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pgt01_evidence_packet_v2_compatibility_report(
+        generated_at=generated_at,
+        source_domain_reports=source_domain_reports,
+        packet_records=packet_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "evidence_packet_v2_compatibility_report_path": str(
+                run_dir / "adp-s2pgt01-evidence-packet-v2-compatibility-report.json"
+            ),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pgt01-evidence-packet-v2-compatibility-report.json", report)
+        _write_json(state / S2PGT01_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pgt01_evidence_packet_v2_compatibility_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PGT01_EVIDENCE_PACKET_MODEL_ID:
+        errors.append("S2PGT01 model_id must be adp-s2pgt01-evidence-packet-v2-compatibility-v1")
+    if report.get("task_id") != S2PGT01_TASK_ID:
+        errors.append("S2PGT01 task_id must be S2PGT01")
+    if report.get("acceptance_id") != S2PGT01_ACCEPTANCE_ID:
+        errors.append("S2PGT01 acceptance_id must be ACC-S2PGT01-EVIDENCE-V2")
+    if report.get("packet_version") != S2PGT01_PACKET_VERSION:
+        errors.append("S2PGT01 packet_version must be EvidencePacketV2")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PGT01 status must be pass or blocked")
+    for key in (
+        "schema_migration_required",
+        "public_schema_changed",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "production_affected",
+        "real_smtp_sent",
+        "v7_2_contract_files_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PGT01 compatibility")
+    domains = set(report.get("source_domains_observed") or [])
+    missing_domains = [domain for domain in S2PGT01_REQUIRED_SOURCE_DOMAINS if domain not in domains]
+    if missing_domains:
+        errors.append("S2PGT01 missing source domains: " + ", ".join(missing_domains))
+    levels = set(report.get("evidence_levels_observed") or [])
+    missing_levels = [level for level in S2PGT01_REQUIRED_EVIDENCE_LEVELS if level not in levels]
+    if missing_levels:
+        errors.append("S2PGT01 missing evidence levels: " + ", ".join(missing_levels))
+    packets = report.get("evidence_packets")
+    if not isinstance(packets, list) or not packets:
+        errors.append("S2PGT01 evidence_packets must be a non-empty list")
+        packets = []
+    for index, packet in enumerate(packets):
+        if not isinstance(packet, Mapping):
+            errors.append(f"evidence_packets[{index}] must be an object")
+            continue
+        for field in S2PGT01_REQUIRED_PACKET_FIELDS:
+            if packet.get(field) in (None, "", []):
+                errors.append(f"evidence_packets[{index}].{field} is required")
+        if packet.get("packet_version") != S2PGT01_PACKET_VERSION:
+            errors.append(f"evidence_packets[{index}].packet_version must be EvidencePacketV2")
+        if packet.get("source_domain") not in S2PGT01_REQUIRED_SOURCE_DOMAINS:
+            errors.append(f"evidence_packets[{index}].source_domain is not supported")
+        evidence_levels = set(packet.get("evidence_levels_available") or [])
+        unsupported = sorted(evidence_levels - set(S2PGT01_REQUIRED_EVIDENCE_LEVELS))
+        if unsupported:
+            errors.append(f"evidence_packets[{index}].evidence_levels_available has unsupported levels: {', '.join(unsupported)}")
+        if "metadata" not in evidence_levels:
+            errors.append(f"evidence_packets[{index}].evidence_levels_available must include metadata")
+        for key in ("schema_migration_required", "production_affected"):
+            if packet.get(key) is not False:
+                errors.append(f"evidence_packets[{index}].{key} must be false")
+        if packet.get("source_domain") == "d1_research_preprint" and packet.get("old_arxiv_compatible") is not True:
+            errors.append(f"evidence_packets[{index}].old_arxiv_compatible must be true for D1/arXiv compatibility")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PGT01 report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "source_domain_gate",
+            "packet_shape_gate",
+            "evidence_level_gate",
+            "old_arxiv_compatibility_gate",
+            "no_side_effect_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PGT01 report requires {key}=pass")
+        if report.get("s2pgt01_evidence_packet_v2_compatibility_ready") is not True:
+            errors.append("passing S2PGT01 report requires s2pgt01_evidence_packet_v2_compatibility_ready=true")
+    return errors
+
+
 def fetch_s2p2_top_journal_batches(*, generated_at: str, max_records: int = 3) -> dict[str, dict[str, Any]]:
     return {
         journal: ingest_latest_top_journal(
@@ -7637,6 +7861,179 @@ def _s2pft05_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "status": "pass" if not blocking else "blocked",
         "blocking_reasons": blocking,
     }
+
+
+def _s2pgt01_domain_rows(reports: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for index, report in enumerate(reports):
+        if not isinstance(report, Mapping):
+            errors.append(f"source_domain_reports[{index}] must be an object")
+            continue
+        domain = str(report.get("source_domain") or report.get("source_domain_id") or "").strip()
+        status = str(report.get("status") or "").strip()
+        row = {
+            "source_domain": domain,
+            "task_id": str(report.get("task_id") or ""),
+            "acceptance_id": str(report.get("acceptance_id") or ""),
+            "status": status,
+            "shadow_evidence_ready": report.get("shadow_evidence_ready") is True,
+            "source_domain_qualified": report.get("source_domain_qualified") is True,
+            "report_ref": str(report.get("report_ref") or report.get("evidence_ref") or ""),
+            "production_affected": report.get("production_affected") is True,
+            "schema_migration_required": report.get("schema_migration_required") is True,
+        }
+        if domain not in S2PGT01_REQUIRED_SOURCE_DOMAINS:
+            errors.append(f"source_domain_reports[{index}].source_domain is not supported")
+        if status != "pass":
+            errors.append(f"source_domain_reports[{index}].status must be pass")
+        if not (row["shadow_evidence_ready"] or row["source_domain_qualified"]):
+            errors.append(f"source_domain_reports[{index}] requires shadow_evidence_ready or source_domain_qualified")
+        if not row["report_ref"]:
+            errors.append(f"source_domain_reports[{index}].report_ref is required")
+        if row["production_affected"]:
+            errors.append(f"source_domain_reports[{index}].production_affected must be false")
+        if row["schema_migration_required"]:
+            errors.append(f"source_domain_reports[{index}].schema_migration_required must be false")
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pgt01_packet_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    seen: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"packet_records[{index}] must be an object")
+            continue
+        source_item = record.get("source_item") if isinstance(record.get("source_item"), Mapping) else record
+        claims = record.get("evidence_claims") if isinstance(record.get("evidence_claims"), Sequence) else record.get("claims")
+        claim_rows = [claim for claim in (claims or []) if isinstance(claim, Mapping)]
+        source_id = str(source_item.get("source_id") or record.get("source_id") or "").strip()
+        source_domain = str(record.get("source_domain") or source_item.get("source_domain") or "").strip()
+        packet_id = str(record.get("packet_id") or f"{S2PGT01_PACKET_VERSION}:{source_domain}:{source_id}").strip()
+        levels = _s2pgt01_levels(record, source_item)
+        content_refs = source_item.get("content_refs") if isinstance(source_item.get("content_refs"), list) else []
+        locator_refs = _s2pgt01_locator_refs(claim_rows)
+        row = {
+            "packet_id": packet_id,
+            "packet_version": str(record.get("packet_version") or S2PGT01_PACKET_VERSION),
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "source_type": str(source_item.get("source_type") or record.get("source_type") or ""),
+            "source_adapter": str(source_item.get("source_adapter") or record.get("source_adapter") or ""),
+            "canonical_url": str(source_item.get("canonical_url") or record.get("canonical_url") or ""),
+            "title": str(source_item.get("title") or record.get("title") or ""),
+            "evidence_levels_available": levels,
+            "claim_ids": [str(claim.get("claim_id") or "") for claim in claim_rows if claim.get("claim_id")],
+            "content_ref_ids": [str(ref.get("content_ref_id") or ref.get("ref_id") or ref.get("url") or ref) for ref in content_refs],
+            "support_statuses": sorted({str(claim.get("support_status") or "") for claim in claim_rows if claim.get("support_status")}),
+            "locator_refs": locator_refs,
+            "board_routes": [str(route) for route in (record.get("board_routes") or []) if str(route)],
+            "metadata_only": record.get("metadata_only") is not False,
+            "old_arxiv_compatible": (
+                record.get("old_arxiv_compatible") is True
+                if "old_arxiv_compatible" in record
+                else source_domain == "d1_research_preprint"
+            ),
+            "schema_migration_required": record.get("schema_migration_required") is True,
+            "production_affected": record.get("production_affected") is True,
+        }
+        if not packet_id or packet_id in seen:
+            errors.append(f"packet_records[{index}].packet_id must be unique")
+        seen.add(packet_id)
+        rows.append(row)
+    return rows, errors
+
+
+def _s2pgt01_levels(record: Mapping[str, Any], source_item: Mapping[str, Any]) -> list[str]:
+    raw_levels = record.get("evidence_levels_available") or record.get("evidence_levels") or []
+    levels = {str(level).strip() for level in raw_levels if str(level).strip()}
+    metadata = source_item.get("metadata") if isinstance(source_item.get("metadata"), Mapping) else {}
+    if source_item.get("title") or metadata:
+        levels.add("metadata")
+    if metadata.get("abstract") or metadata.get("summary") or source_item.get("summary"):
+        levels.add("abstract")
+    if record.get("full_text_reference") or record.get("full_text_locator"):
+        levels.add("full_text")
+    if record.get("cross_source_refs") or record.get("cross_source_verification"):
+        levels.add("cross_source_verification")
+    return sorted(levels)
+
+
+def _s2pgt01_locator_refs(claims: Sequence[Mapping[str, Any]]) -> list[str]:
+    refs: list[str] = []
+    for claim in claims:
+        locator = claim.get("locator") if isinstance(claim.get("locator"), Mapping) else {}
+        for key in ("stable_url", "page", "section", "table", "figure", "quote"):
+            value = locator.get(key)
+            if value:
+                refs.append(f"{key}:{value}")
+    return refs
+
+
+def _s2pgt01_domain_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({str(row.get("source_domain")) for row in rows if row.get("source_domain")})
+    blocking = [f"S2PGT01 missing source domain {domain}" for domain in S2PGT01_REQUIRED_SOURCE_DOMAINS if domain not in observed]
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "source_domains_observed": observed,
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pgt01_packet_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    if not rows:
+        blocking.append("S2PGT01 requires at least one EvidencePacket V2 row")
+    for index, row in enumerate(rows):
+        for field in S2PGT01_REQUIRED_PACKET_FIELDS:
+            if row.get(field) in (None, "", []):
+                blocking.append(f"evidence_packets[{index}].{field} is required")
+        if row.get("packet_version") != S2PGT01_PACKET_VERSION:
+            blocking.append(f"evidence_packets[{index}].packet_version must be EvidencePacketV2")
+        if row.get("source_domain") not in S2PGT01_REQUIRED_SOURCE_DOMAINS:
+            blocking.append(f"evidence_packets[{index}].source_domain is not supported")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt01_evidence_level_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = sorted({level for row in rows for level in (row.get("evidence_levels_available") or [])})
+    blocking = [f"S2PGT01 missing evidence level {level}" for level in S2PGT01_REQUIRED_EVIDENCE_LEVELS if level not in observed]
+    unsupported = sorted(set(observed) - set(S2PGT01_REQUIRED_EVIDENCE_LEVELS))
+    blocking.extend(f"S2PGT01 unsupported evidence level {level}" for level in unsupported)
+    for index, row in enumerate(rows):
+        if "metadata" not in set(row.get("evidence_levels_available") or []):
+            blocking.append(f"evidence_packets[{index}] must include metadata level")
+    return {
+        "status": "pass" if not blocking else "blocked",
+        "evidence_levels_observed": observed,
+        "blocking_reasons": blocking,
+    }
+
+
+def _s2pgt01_compatibility_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    d1_rows = [row for row in rows if row.get("source_domain") == "d1_research_preprint"]
+    if not d1_rows:
+        blocking.append("S2PGT01 requires at least one D1 old arXiv-compatible packet")
+    for index, row in enumerate(d1_rows):
+        if row.get("old_arxiv_compatible") is not True:
+            blocking.append(f"D1 packet {index} must be old_arxiv_compatible=true")
+        if not row.get("claim_ids") or not row.get("locator_refs"):
+            blocking.append(f"D1 packet {index} requires claim_ids and locator_refs")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
+
+
+def _s2pgt01_no_side_effect_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    blocking: list[str] = []
+    for index, row in enumerate(rows):
+        if row.get("schema_migration_required") is not False:
+            blocking.append(f"evidence_packets[{index}].schema_migration_required must be false")
+        if row.get("production_affected") is not False:
+            blocking.append(f"evidence_packets[{index}].production_affected must be false")
+    return {"status": "pass" if not blocking else "blocked", "blocking_reasons": blocking}
 
 
 def _is_iso_date(value: str) -> bool:

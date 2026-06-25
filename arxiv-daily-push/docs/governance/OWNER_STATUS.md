@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PGT01`
+- next_task_id: `S2PGT02`
 - responsible_role: `content_owner + product_owner`
-- acceptance_ids: `ACC-S2PGT01-EVIDENCE-V2`
-- unblock_condition: Run `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned EvidencePacket V2 compatibility focus` and attach the listed evidence refs.
+- acceptance_ids: `ACC-S2PGT02-KG`
+- unblock_condition: Run `PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q # planned knowledge-graph relation focus` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (490/490 active parameters, 71/71 active formulas)
+- implementation_congruence: `VERIFIED` (498/498 active parameters, 72/72 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `69`
-- total_formulas: `71`
-- active_formulas: `71`
-- total_parameters: `507`
-- active_parameters: `490`
+- model_count: `70`
+- total_formulas: `72`
+- active_formulas: `72`
+- total_parameters: `515`
+- active_parameters: `498`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION`
+- release_gate: `S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY_READY_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `71`
+- legacy_unbound_events: `72`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `110`
+- pending_or_stale_events: `111`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:f1ac93c5c7cbe8465cee49ee1c8af643038cc380a3a46f2e9cb0fad21b834b8e`
-- snapshot_event_time: `2026-06-25T16:40:00+10:00`
+- source_snapshot_hash: `sha256:005471348a502b0f8fe53dc550ed79a44da381f824caf29f59f0e0d7d934d851`
+- snapshot_event_time: `2026-06-25T17:40:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PG / S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION_READY_NO_PRODUCTION`
+- phase/gate: `S2PG / S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY_READY_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PGT01`
-- reason: Define EvidencePacket V2 and evidence-level unification after D1-D4 source-domain shadow evidence, preserving old arXiv compatibility and no production side effects until explicit schema gates pass.
+- task_id: `S2PGT02`
+- reason: Build cross-source identity resolution and knowledge-graph relation spine for DOI, PMID, arXiv, Chinese document numbers, Federal Register, CIK, and related identifiers after S2PGT01.

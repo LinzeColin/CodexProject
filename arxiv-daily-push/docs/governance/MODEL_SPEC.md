@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 69
-- formula_count: 71
-- parameter_count: 507
+- model_count: 70
+- formula_count: 72
+- parameter_count: 515
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -163,6 +163,13 @@ Fact levels follow `docs/governance/STANDARD.md`.
   inclusion, Stage 2 production acceptance, integrated production acceptance,
   production flags, V7.2 contract edits, and V7.2 mail/schema pre-run false.
 
+- `S2PGT01` adds `MOD-ADP-070`. It defines a private EvidencePacket V2
+  compatibility layer across D1-D4 source-domain reports, required packet
+  fields, evidence-level labels, and old arXiv/D1 compatibility while keeping
+  public schema migration, D4 adapter implementation, production queues, SMTP,
+  scheduler, Release, V7.2 contract edits, and integrated production
+  acceptance false.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -235,6 +242,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-067 | S2PFT03 key-city coverage | deterministic key-city metadata coverage model | Validate first 24 China key-city records, aliases, local department roles, region groups, health tiers, authority evidence, and disabled full-D3/production side-effect flags | active | adp-s2pft03-key-city-coverage-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-068 | S2PFT04 special-zone discovery | deterministic special-zone metadata discovery model | Validate 10 China special-zone records, zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, and disabled full-D3/production side-effect flags | active | adp-s2pft04-special-zone-discovery-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-069 | S2PFT05 D3 full governance qualification | deterministic D3 governance qualification model | Validate C0-C4 component evidence, quota roles, quota/health balance, elimination explanations, fallback routes, 30-date replay, metadata-only gates, and disabled production side-effect flags | active | adp-s2pft05-d3-full-governance-qualification-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-070 | S2PGT01 EvidencePacket V2 compatibility | deterministic evidence compatibility model | Validate D1-D4 source-domain report inputs, EvidencePacket V2 field shape, evidence-level labels, old arXiv compatibility, and disabled schema/production side-effect flags | active | adp-s2pgt01-evidence-packet-v2-compatibility-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -346,6 +354,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-069 validates S2PFT03 key-city coverage across upstream S2PFT02 pass evidence, 24 required city ids, aliases, local department roles, allowed region groups, positive region weights, health tiers, authority evidence, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-070 validates S2PFT04 special-zone discovery across upstream S2PFT03 pass evidence, 10 required zone ids, supported zone types, required authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-071 validates S2PFT05 D3 full governance qualification across upstream S2PDT04 and S2PFT01-S2PFT04 pass evidence, C0-C4 components, quota roles, quota balance, health balance, elimination explanations, fallback routes, 30-date replay, metadata-only no-download boundaries, disabled formal production inclusion and integrated production acceptance flags, and no V7.2 contract/mail/schema pre-run.
+- FORM-ADP-072 validates S2PGT01 EvidencePacket V2 compatibility across D1-D4 source-domain reports, required packet fields, required evidence-level labels, explicit D1/old arXiv compatibility, and disabled public schema migration, queue mutation, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -427,6 +436,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PFT03 key-city coverage parameters: PARAM-ADP-479 through PARAM-ADP-487.
 - Active S2PFT04 special-zone discovery parameters: PARAM-ADP-488 through PARAM-ADP-497.
 - Active S2PFT05 D3 full governance qualification parameters: PARAM-ADP-498 through PARAM-ADP-507.
+- Active S2PGT01 EvidencePacket V2 compatibility parameters: PARAM-ADP-508 through PARAM-ADP-515.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology
