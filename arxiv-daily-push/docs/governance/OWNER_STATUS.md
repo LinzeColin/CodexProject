@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PIT04` 本地 content ledger evidence；它聚合并校验 content、evidence、Run、mail preview、feedback、lifecycle、review、action、asset 与 ROI 的可追踪总账，要求 S2PIT02/S2PIT03/S2PJT01/S2PJT02/S2PJT03 依赖通过，并保持 SMTP/scheduler/Release/schema/queue/ranking/source adapter/Email V1 runtime 全部无生产副作用。
+新增 `S2PKT01` 本地 M1-M4 mail contract evidence；它校验 EMAIL_LEARNING_V1 共享合同、M1/M2/M3/M4 板块差异、B4/B5/B6 横切板块、三层阅读、证据标签、反馈组件、状态与哈希，并保持 SMTP/scheduler/Release/schema/queue/ranking/source adapter/Email V1 runtime 全部无生产副作用。
 
 ## 3. 为什么重要
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY`
+- next_task_id: `S2PKT02_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PKT01-MAIL-CONTRACT`
-- unblock_condition: S2PIT04 content ledger evidence is complete locally; start S2PKT01 only as a local no-production mail contract task and keep SMTP/scheduler/Release/public schema disabled.
+- acceptance_ids: `UNKNOWN_NEXT_ACCEPTANCE_ID`
+- unblock_condition: S2PKT01 mail contract evidence is complete locally; continue only with the next governed Stage2 task under V7.2 no-production boundaries and keep SMTP/scheduler/Release/public schema disabled.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (683/683 active parameters, 90/90 active formulas)
+- implementation_congruence: `VERIFIED` (699/699 active parameters, 91/91 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `88`
-- total_formulas: `90`
-- active_formulas: `90`
-- total_parameters: `700`
-- active_parameters: `683`
+- model_count: `89`
+- total_formulas: `91`
+- active_formulas: `91`
+- total_parameters: `716`
+- active_parameters: `699`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PIT04_CONTENT_LEDGER_LOCAL_ONLY`
+- release_gate: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PI / S2PIT04_CONTENT_LEDGER_LOCAL_ONLY`
+- phase/gate: `S2PK / S2PKT01_MAIL_CONTRACT_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY`
-- reason: S2PIT04 local content ledger evidence is complete; continue S2PKT01 mail contract work only under V7.2 no-production boundaries.
+- task_id: `S2PKT02_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
+- reason: S2PKT01 local mail contract evidence is complete; continue only with the next governed Stage2 task under V7.2 no-production boundaries.

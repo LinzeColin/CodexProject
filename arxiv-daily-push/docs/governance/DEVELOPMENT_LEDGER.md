@@ -2604,3 +2604,22 @@ None for this new project baseline.
 - Rollback: Revert S2PAT07 V7.2 pointer edits, validator change, hashes, governance records, manifest, phase record, event, and this ledger entry; runtime code and V7.1 history are untouched.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PAT07_EMAIL_V1_POINTER_REPAIR.md`; `governance/run_manifests/ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-20260625.json`; `arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py`.
 - Next step: Run final validation, commit, push, and open PR for S2PAT07.
+### `ITER-20260626-ADP-S2PK-S2PKT01-MAIL-CONTRACT`
+
+- Timestamp: `2026-06-26T06:20:00+10:00`
+- Fact level: EXTRACTED from S2PHT05/S2PIT04/S2PJT03 dependency receipts, M1-M4 contract fixtures, model/formula/parameter registry diff, and local S2PKT01 validation.
+- Base commit: `a7527c77ff38ac558d3c8e0b1805871348060bf3`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PK
+- Task IDs: `S2PKT01`; acceptance `ACC-S2PKT01-MAIL-CONTRACT`.
+- Goal: Complete local M1-M4 shared EMAIL_LEARNING_V1 mail contract evidence while preserving V7.2 no-production boundaries.
+- Files changed: S2PKT01 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-089` mail contract evidence model.
+- Formula changes: Added `FORM-ADP-091` with machine-verifiable AST fingerprints bound to the S2PKT01 implementation.
+- Parameter changes: Added `PARAM-ADP-701` through `PARAM-ADP-716` for S2PKT01 contract identifiers, required products, board mapping, reading layers, evidence labels, feedback actions, statuses, gates, side-effect flags, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 150 OK; full arxiv-daily-push unittest 379 OK; semantic extractor 91 formulas / 699 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS.
+- Decisions: `ACC-S2PKT01-MAIL-CONTRACT` is accepted only as local contract readiness evidence. Runtime mail template/frontstage changes, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, Stage 2 production acceptance, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: Downstream S2PK orchestration/reporting tasks still need explicit no-production gates. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PKT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT01_MAIL_CONTRACT.md`; `governance/run_manifests/ADP-S2PKT01-MAIL-CONTRACT-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PKT01.

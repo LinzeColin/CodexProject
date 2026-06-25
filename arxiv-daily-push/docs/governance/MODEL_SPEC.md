@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 88
-- formula_count: 90
-- parameter_count: 700
+- model_count: 89
+- formula_count: 91
+- parameter_count: 716
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -834,3 +834,8 @@ Uncovered planned scenarios:
 - `MOD-ADP-086` / `FORM-ADP-088` define local semantic content quality gate evidence for `S2PHT05`.
 - Passing S2PHT05 requires S2PHT01-S2PHT04 dependency receipts with V7.2 revalidation, at least 10 gold items, all required semantic dimension scores >= 4.0, supported or partially supported claim entailment, quote/source locations, template similarity <= 0.35, counterevidence, boundary conditions, personal action evidence, Stage 1 arXiv/evidence/email regression checks, at least two manual review samples, deterministic quality hashing, and all production/schema/email side-effect flags false.
 - S2PHT05 does not change mail production code and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
+## S2PKT01 Mail Contract Evidence
+
+- `MOD-ADP-089` / `FORM-ADP-091` define local M1-M4 `EMAIL_LEARNING_V1` mail contract readiness evidence.
+- Passing S2PKT01 requires S2PHT05/S2PIT04/S2PJT03 readiness, M1-M4 shared contract identity, template version 1.0.0, board differentiation, B4/B5/B6 cross-cutting boards, three reading layers, evidence labels, feedback actions, allowed no-send statuses, deterministic hashes, and all production/schema/email side-effect flags false.
+- S2PKT01 does not change runtime mail templates/frontstage and does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
