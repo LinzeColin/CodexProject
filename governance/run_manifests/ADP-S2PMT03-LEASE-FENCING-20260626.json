@@ -1,0 +1,48 @@
+{
+  "manifest_id": "ADP-S2PMT03-LEASE-FENCING-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT03",
+  "acceptance_id": "ACC-S2PMT03-LEASE-FENCING-OUTBOX",
+  "phase": "S2PM",
+  "model_id": "MOD-ADP-096",
+  "formula_id": "FORM-ADP-098",
+  "parameter_ids": [
+    "PARAM-ADP-778",
+    "PARAM-ADP-779",
+    "PARAM-ADP-780",
+    "PARAM-ADP-781",
+    "PARAM-ADP-782",
+    "PARAM-ADP-783",
+    "PARAM-ADP-784",
+    "PARAM-ADP-785",
+    "PARAM-ADP-786",
+    "PARAM-ADP-787",
+    "PARAM-ADP-788"
+  ],
+  "base_commit": "5c5c34f68ead6194f3beb71fad9abdf5df4a65a3",
+  "created_at": "2026-06-26T13:20:00+10:00",
+  "scope": "Local S2PMT03 row_version, lease/fencing, state-history consistency, transactional outbox identity, SMTP accept crash-window, M4 cycle watermark, and no-production side-effect gates.",
+  "non_scope": "No real SMTP send, scheduler, Release, production restore, DB migration, public schema, production queue mutation, ranking, source adapter change, live source fetch, workflow change, V7.1/V7.2 contract edit, exactly-once claim, P0/P1 closure claim, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "exactly_once_claimed": false,
+  "delivery_semantics": "at_least_once_with_idempotent_message_id",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md",
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+    "arxiv-daily-push/tests/test_state_machine.py",
+    "arxiv-daily-push/tests/test_smtp_delivery.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused S2PMT03/state/SMTP tests: 14 OK",
+    "full arxiv-daily-push unittest: 419 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse: OK",
+    "git diff --check: PASS"
+  ]
+}

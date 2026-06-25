@@ -90,6 +90,11 @@ def validate_run_record(record: Mapping[str, Any]) -> list[str]:
         errors.append("RunRecord.status cannot be running when current_state is terminal")
     _validate_stages(record.get("stages"), errors)
     _validate_state_history(record.get("state_history", []), errors)
+    history = record.get("state_history", [])
+    if isinstance(history, list) and history:
+        last = history[-1]
+        if isinstance(last, Mapping) and str(last.get("to_state") or "") != current_state:
+            errors.append("RunRecord.current_state must match state_history last to_state")
     for item in record.get("source_items", []) or []:
         errors.extend(validate_source_item(item))
     for claim in record.get("evidence_claims", []) or []:
@@ -157,6 +162,8 @@ def _validate_state_history(history: Any, errors: list[str]) -> None:
         if index == 0:
             if from_state or to_state != "created":
                 errors.append("RunRecord.state_history[0] must initialize to created")
+        elif from_state != previous:
+            errors.append(f"RunRecord.state_history[{index}].from_state must match previous to_state")
         elif previous and validate_transition(previous, to_state):
             errors.append(f"RunRecord.state_history[{index}] transition {previous} -> {to_state} is not allowed")
         previous = to_state
