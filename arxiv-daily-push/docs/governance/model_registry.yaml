@@ -5027,3 +5027,51 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md"
+  -
+    model_id: "MOD-ADP-096"
+    name: "S2PMT03 local lease fencing and transactional outbox model"
+    purpose: "Validate local S2PMT03 row_version compare-and-swap, lease expiry, fencing token, state-history consistency, idempotent transactional outbox, SMTP accept crash-window handling, M4 cycle watermark, and no production side effects under V7.2."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-098"
+    parameter_ids:
+      - "PARAM-ADP-778"
+      - "PARAM-ADP-779"
+      - "PARAM-ADP-780"
+      - "PARAM-ADP-781"
+      - "PARAM-ADP-782"
+      - "PARAM-ADP-783"
+      - "PARAM-ADP-784"
+      - "PARAM-ADP-785"
+      - "PARAM-ADP-786"
+      - "PARAM-ADP-787"
+      - "PARAM-ADP-788"
+    inputs:
+      - "local work item lease rows"
+      - "RunRecord state rows"
+      - "local outbox messages"
+      - "SMTP accept crash-window fixture"
+      - "M1-M3 terminal mail watermarks"
+    outputs:
+      - "lease claim report"
+      - "fenced state transition report"
+      - "transactional outbox identity"
+      - "SMTP accept crash-window reconciliation report"
+      - "M4 cycle watermark report"
+      - "no production side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      - "arxiv-daily-push/tests/test_state_machine.py"
+      - "arxiv-daily-push/tests/test_smtp_delivery.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md"

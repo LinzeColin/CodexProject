@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 95
-- formula_count: 97
-- parameter_count: 777
+- model_count: 96
+- formula_count: 98
+- parameter_count: 788
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -875,3 +875,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-095` / `FORM-ADP-097` define local atomic storage and recovery hardening evidence for S2PMT02.
 - Passing S2PMT02 local validation requires staged writes with atomic replace, manifest hash verification, tamper detection, explicit restore drill into a caller-provided drill directory, staging cleanup, and all production restore/SMTP/scheduler/Release/schema/queue/DB side-effect flags false.
 - S2PMT02 local evidence does not execute production restore, install scheduler, send email, upload Release assets, migrate DB/public schema, mutate queues, change source adapters, change V7.1/V7.2 contracts, or claim integrated production acceptance.
+
+## S2PMT03 Lease Fencing And Transactional Outbox
+
+- `MOD-ADP-096` / `FORM-ADP-098` define local lease fencing, state concurrency, transactional outbox, SMTP accept crash-window, and M4 watermark evidence for S2PMT03.
+- Passing S2PMT03 local validation requires row_version compare-and-swap, unexpired foreign lease blocking, fencing-token stale writer rejection, state-history consistency, idempotent outbox Message-ID by content revision, SMTP accept crash-window blocking without durable provider refs, cycle-scoped M4 watermark readiness/degradation, exactly_once_claimed false, and all production side-effect flags false.
+- S2PMT03 local evidence does not send SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, or claim integrated production acceptance.

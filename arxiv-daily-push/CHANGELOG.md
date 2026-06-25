@@ -463,3 +463,5 @@
 - Added S2PKT05 local M4 cross-board 3+1 mail orchestration evidence without production side effects.
 - Added S2PMT01 local security and evidence-boundary gates without production side effects.
 - Added S2PMT02 local atomic storage and recovery hardening evidence without production side effects.
+
+- Added S2PMT03 local lease fencing, state concurrency, transactional outbox, SMTP crash-window, and M4 watermark evidence without production side effects.

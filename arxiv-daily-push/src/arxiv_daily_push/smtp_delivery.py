@@ -17,6 +17,7 @@ SMTP_DELIVERY_MODEL_ID = "adp-smtp-delivery-v1"
 SMTP_SECRET_ENV_KEYS = ("ADP_SMTP_HOST", "ADP_SMTP_PORT", "ADP_SMTP_USERNAME", "ADP_SMTP_PASSWORD")
 SMTP_TIMEOUT_SECONDS = 30
 SMTP_MAX_TIMEOUT_SECONDS = 300
+SMTP_MESSAGE_ID_DOMAIN = "arxiv-daily-push.local"
 
 SmtpFactory = Callable[..., Any]
 
@@ -142,6 +143,7 @@ def _email_message(notification: EmailNotification, *, sender: str, delivery_id:
     message["To"] = notification.recipient
     message["Subject"] = notification.subject
     message["X-ADP-Delivery-ID"] = delivery_id
+    message["Message-ID"] = f"<{_message_id_local_part(delivery_id)}@{SMTP_MESSAGE_ID_DOMAIN}>"
     message.set_content(notification.body)
     if notification.html_body:
         message.add_alternative(notification.html_body, subtype="html")
@@ -178,6 +180,12 @@ def _blocked(base: Mapping[str, Any], reasons: list[str]) -> dict[str, Any]:
 
 
 def _delivery_id(notification: EmailNotification, generated_at: str) -> str:
-    payload = "|".join([generated_at, notification.recipient, notification.subject])
+    body_hash = hashlib.sha256(notification.body.encode("utf-8")).hexdigest()
+    html_hash = hashlib.sha256(notification.html_body.encode("utf-8")).hexdigest() if notification.html_body else ""
+    payload = "|".join([generated_at, notification.recipient, notification.subject, body_hash, html_hash])
     digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
     return f"smtp-delivery:{digest}"
+
+
+def _message_id_local_part(delivery_id: str) -> str:
+    return "".join(character if character.isalnum() or character in {"-", "."} else "-" for character in delivery_id)

@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT02_ATOMIC_RECOVERY_LOCAL_ONLY
-- Confirmed iteration count: 109
+- Current gate: S2PMT03_LEASE_FENCING_LOCAL_ONLY
+- Confirmed iteration count: 110
 - Reconstructed event count: 0
-- Current task: `S2PMT02` has completed local atomic storage and recovery evidence. It validates staged local artifact writes with atomic replace, manifest hash verification, tamper detection, explicit restore drill into caller-provided drill paths, staging cleanup, malformed/unsafe path blocking, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT03` has completed local lease fencing and transactional outbox evidence. It validates row_version compare-and-swap, lease expiry, fencing-token stale writer rejection, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window handling, M4 cycle watermark readiness/degradation, and no-production side-effect gates without changing CURRENT, V7.1/V7.2 contract files, real SMTP, scheduler, Release, DB migration, public schema, production queue mutation, source adapters, ranking, workflow enforcement, or production acceptance state. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -39,6 +39,27 @@ The append-only machine record is `development_events.jsonl`.
 
 ## Iteration Records
 
+### `ITER-20260626-ADP-S2PM-S2PMT03-LEASE-FENCING`
+
+- Timestamp: `2026-06-26T13:20:00+10:00`
+- Fact level: EXTRACTED from S2PMT03 lease/fencing code, state-machine validation patch, SMTP identity patch, focused tests, model/formula/parameter registry diff, and local S2PMT03 validation.
+- Base commit: `5c5c34f68ead6194f3beb71fad9abdf5df4a65a3`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT03`; acceptance `ACC-S2PMT03-LEASE-FENCING-OUTBOX`.
+- Goal: Complete local lease fencing, state concurrency, transactional outbox, SMTP accept crash-window, and M4 cycle watermark evidence while preserving V7.2 no-production boundaries.
+- Files changed: S2PMT03 lease/fencing helper, state-machine validation, SMTP identity generation, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-096` local lease fencing and transactional outbox model.
+- Formula changes: Added `FORM-ADP-098` with machine-verifiable AST fingerprints bound to S2PMT03, state-machine, and SMTP identity implementations.
+- Parameter changes: Added `PARAM-ADP-778` through `PARAM-ADP-788` for S2PMT03 identifiers, lease durations, terminal mail set, outbox states, gates, production-false flags, and SMTP Message-ID domain.
+- Validation: py_compile PASS; focused S2PMT03/state/SMTP tests 14 OK; full arxiv-daily-push unittest PENDING; V7.2 validator PENDING; ADP project governance PENDING; changed-only governance semantic PENDING; lean check-render PENDING; JSONL/YAML/CSV/manifest parse PENDING; git diff --check PENDING.
+- Decisions: `ACC-S2PMT03-LEASE-FENCING-OUTBOX` is accepted only as local lease/fencing/outbox evidence. Real SMTP, scheduler, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, exactly-once delivery, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: This does not enable production transactional outbox or live SMTP. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PMT03 lease/fencing code, state/SMTP identity patches, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md`; `governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json`; `arxiv-daily-push/tests/test_stage2_lease_fencing.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT03.
+
+
 ### `ITER-20260626-ADP-S2PM-S2PMT02-ATOMIC-RECOVERY`
 
 - Timestamp: `2026-06-26T12:20:00+10:00`
@@ -52,7 +73,7 @@ The append-only machine record is `development_events.jsonl`.
 - Model changes: Added `MOD-ADP-095` local atomic storage and recovery model.
 - Formula changes: Added `FORM-ADP-097` with machine-verifiable AST fingerprints bound to the S2PMT02 implementation.
 - Parameter changes: Added `PARAM-ADP-768` through `PARAM-ADP-777` for S2PMT02 identifiers, manifest/staging names, max artifact size, required gates, production-false flags, and disabled environment flags.
-- Validation: py_compile PASS; focused S2PMT02 tests 5 OK; full arxiv-daily-push unittest PENDING; V7.2 validator PENDING; ADP project governance PENDING; changed-only governance semantic PENDING; lean check-render PENDING; JSONL/YAML/CSV/manifest parse PENDING; git diff --check PENDING.
+- Validation: py_compile PASS; focused S2PMT02 tests 5 OK; full arxiv-daily-push unittest 409 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS.
 - Decisions: `ACC-S2PMT02-ATOMIC-RECOVERY` is accepted only as local atomic storage/recovery evidence. Production restore, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
 - Remaining risks: This does not enable production backup/restore. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
 - Rollback: Revert S2PMT02 atomic recovery code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
