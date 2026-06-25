@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；V7.2 已作为当前产品合同发布到本分支，V7.1 保持只读历史基线，EMAIL_LEARNING_V1 已完成 T01-T05 并以 no-production-side-effects 状态合入 main；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 已完成 no-send evidence；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only shadow foundation 已合并到 main，当前全局入口仍为 S2PCT02 Science metadata-only shadow，但所有 Stage2 agent 必须先按 V7.2 复审已完成工作，且仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；V7.2 已作为当前产品合同发布到本分支，V7.1 保持只读历史基线，EMAIL_LEARNING_V1 已完成 T01-T05 并以 no-production-side-effects 状态合入 main；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 与 S2PCT02 Science metadata-only no-send shadow evidence 均为已完成历史记录；当前全局入口为 S2PMT07 final gate precheck blocked，仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
-current_status: "stage1_accepted_v7_2_current_s2pct02_next_revalidation_required_no_formal_production"
+current_status: "stage1_accepted_v7_2_current_s2pmt07_blocked_precheck_no_formal_production"
 limitations:
   -
     statement: "364/364 active parameters 与 54/54 active formulas 为 MACHINE_VERIFIED；52 个 active models 只从 model_registry EXTRACTED，registry 未提供逐模型 semantic_status，不能写成模型级机器校验。"
@@ -31,13 +31,13 @@ limitations:
       - "EVID-ADP-DEVELOPMENT-EVENTS"
     unknown_task_ids: []
   -
-    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only no-send shadow foundation 已合并到 main，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
+    statement: "S2PBT01/S2P1T01 bioRxiv/medRxiv source promotion 证据已通过 no-send shadow 和真实 30-date replay；S2PCT01 / legacy S2P2T01 Nature/top-journal metadata-only no-send shadow foundation 与 S2PCT02 Science metadata-only no-send shadow evidence 已完成，但不得纳入正式生产、启用 SMTP/Release/GitHub schedule/video，或宣称 D2_SOURCE_DOMAIN_ACCEPTED / STAGE2_PRODUCTION_ACCEPTED / INTEGRATED_PRODUCTION_ACCEPTED。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-REVIEW9-S5PBT05-MANIFEST"
     unknown_task_ids:
-      - "S2PCT02"
+      - "S2PMT07"
   -
     statement: "V7.2 是当前产品合同；V7.1 仍作为只读历史基线保留并继续 hash-check。所有 active/completed Stage2 agent 在继续新任务前必须先提交 V7.2 revalidation；EMAIL_LEARNING_V1 已完成 T01-T05 并合入 main，后续新增邮件入口必须继续走 Email V1 contract/readiness gate，仍不得启用 SMTP、scheduler、Release、公共 Schema 或生产验收。"
     fact_level: "EXTRACTED"
@@ -10190,14 +10190,14 @@ evidence_refs:
     ref: "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
 delivery_readiness:
-  status: "VERIFIED"
-  release_gate: "ARXIV_PRODUCTION_ACCEPTED"
+  status: "BLOCKED_PRECHECK"
+  release_gate: "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED"
   owner_decision_required: true
-  blocked_requirements: 0
+  blocked_requirements: 6
   active_requirements: 9
   partial_requirements: 1
-  next_executable_task_id: "S2PCT02"
-  next_executable_task_status: "planned"
+  next_executable_task_id: "NONE"
+  next_executable_task_status: "blocked_precheck"
 governance_counts:
   active_models: 52
   active_formulas: 54

@@ -2,11 +2,11 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。
+arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PRECHECK`；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 `S2PMT07` final gate precheck 的阻断状态：独立复审者证明、inherited V7.1 P0/P1=0、S2PLT04、最终证据包、独立签收和独立 final command execution 尚未齐备，因此不能进入 `INTEGRATED_PRODUCTION_ACCEPTED` 或 `DAILY_OPERATION`。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -85,9 +85,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `102`
+- legacy_unbound_events: `103`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `141`
+- pending_or_stale_events: `142`
 
 ## 15. UNKNOWN
 
@@ -97,7 +97,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0581d1ede8d7c9a6352717f0057e99a31b5108a569097cb5ff529b112573aef1`
+- source_snapshot_hash: `sha256:890922e68eb2b4fc7e0e467b1b0154d253cf01e5dcc1b247bd5c26f7c750acb5`
 - snapshot_event_time: `2026-06-26T17:00:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`

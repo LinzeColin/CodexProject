@@ -10,7 +10,7 @@ current_contract:
   current_pointer_path: docs/pursuing_goal/CURRENT.yaml
   roadmap_version: ADP-ROADMAP-V7.2
   roadmap_path: docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml
-  roadmap_sha256: db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57
+  roadmap_sha256: 7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1
   migration_matrix_path: docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml
   migration_matrix_sha256: 08696d0211878131b5ddaaef1a8a963b8870e9e844f7d5c70beb6412a5f4c7fc
   final_review_path: docs/pursuing_goal/v7_2/AUDIT/final_review_matrix.yaml
@@ -39,9 +39,9 @@ stage1_boundary:
 stage2_boundary:
   status: in_progress
   production_accepted: false
-  global_current_task: S2PCT02
+  global_current_task: S2PMT07
   email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
-  shadow_source_next: S2PCT02
+  shadow_source_next: NONE_WHILE_S2PMT07_BLOCKED
   final_task: S2PMT07
   stop_gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION
   stage2_continues_in_parallel: true
@@ -51,6 +51,8 @@ agent_revalidation:
 production_forbidden_until:
   - inherited V7.1 P0 findings are zero
   - inherited V7.1 P1 findings are zero
+  - S2PLT04 is completed with evidence
+  - final acceptance bundle exists
   - S2PMT07 independent final review passes
   - INTEGRATED_PRODUCTION_ACCEPTED is written with evidence
 forbidden_actions_until_integrated_gate:

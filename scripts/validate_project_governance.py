@@ -139,6 +139,8 @@ PROJECT_REGISTRY_MIGRATION_VERSIONS = {
     "lean-v2",
 }
 PRODUCT_ROADMAP_KIND = "product"
+ADP_V72_CURRENT_TASK_ID = "S2PMT07"
+ADP_V72_SHADOW_SOURCE_NEXT = "NONE_WHILE_S2PMT07_BLOCKED"
 HUMAN_ENTRY_QUALITY_CONTRACTS = {
     "功能清单": {
         "title": "# 功能清单",
@@ -650,12 +652,12 @@ def validate_arxiv_daily_push_v7_root_lock(
         if matrix.get("current_v7_task_id") != "S2PCT01":
             validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PCT01 for V7.1")
     elif matrix.get("current_v7_contract_version") == "ADP-PRODUCT-CONTRACT-V7.2":
-        if matrix.get("current_v7_task_id") != "S2PCT02":
-            validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_task_id must be S2PCT02 for V7.2")
+        if matrix.get("current_v7_task_id") != ADP_V72_CURRENT_TASK_ID:
+            validation.add(required, scope, f"VERSION_MATRIX.yaml current_v7_task_id must be {ADP_V72_CURRENT_TASK_ID} for V7.2")
     else:
         validation.add(required, scope, "VERSION_MATRIX.yaml missing supported current_v7_contract_version")
-    if matrix.get("current_v7_shadow_source_task_id") != "S2PBT01":
-        validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_shadow_source_task_id must be S2PBT01")
+    if matrix.get("current_v7_shadow_source_task_id") != ADP_V72_SHADOW_SOURCE_NEXT:
+        validation.add(required, scope, f"VERSION_MATRIX.yaml current_v7_shadow_source_task_id must be {ADP_V72_SHADOW_SOURCE_NEXT}")
     if matrix.get("current_v7_final_task_id") != "S2PMT07":
         validation.add(required, scope, "VERSION_MATRIX.yaml current_v7_final_task_id must be S2PMT07")
     if matrix.get("stage1_acceptance_gate") != "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED":
@@ -735,8 +737,8 @@ def validate_arxiv_daily_push_v7_root_lock(
     if v72_review.get("baseline_publication_verdict", {}).get("status") != "pass":
         validation.add(required, scope, "V7.2 final review verdict must pass")
     email_v1_merged_state = "EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS"
-    if v72_roadmap.get("global_current_task") != "S2PCT02":
-        validation.add(required, scope, "V7.2 roadmap global_current_task must remain S2PCT02")
+    if v72_roadmap.get("global_current_task") != ADP_V72_CURRENT_TASK_ID:
+        validation.add(required, scope, f"V7.2 roadmap global_current_task must be {ADP_V72_CURRENT_TASK_ID}")
     if v72_roadmap.get("email_v1_workstream_next") != email_v1_merged_state:
         validation.add(required, scope, "V7.2 roadmap must record Email V1 as merged to main with no production side effects")
     if v72_lock.get("stage2_boundary", {}).get("email_v1_workstream_next") != email_v1_merged_state:
@@ -757,8 +759,8 @@ def validate_arxiv_daily_push_v7_root_lock(
     )
     if not email_required_tasks.issubset(set(as_list(baseline_workstream.get("completed_tasks")))):
         validation.add(required, scope, "V7.2 baseline completed_tasks must include Email V1 T00-T05")
-    if baseline_workstream.get("next_task") != "S2PCT02":
-        validation.add(required, scope, "V7.2 baseline next_task must remain S2PCT02")
+    if baseline_workstream.get("next_task") != ADP_V72_CURRENT_TASK_ID:
+        validation.add(required, scope, f"V7.2 baseline next_task must be {ADP_V72_CURRENT_TASK_ID}")
     email_workstream = next(
         (item for item in as_list(v72_roadmap.get("workstreams")) if item.get("workstream_id") == "EMAIL_LEARNING_V1"),
         {},

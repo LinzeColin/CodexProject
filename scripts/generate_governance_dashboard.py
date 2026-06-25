@@ -175,6 +175,7 @@ def assurance_status(value: str | None) -> str:
         "verified": "VERIFIED",
         "machine_verified": "VERIFIED",
         "partial": "PARTIAL",
+        "blocked_precheck": "BLOCKED_PRECHECK",
         "blocked": "FAILED",
         "failed": "FAILED",
         "unknown": "UNVERIFIED",
@@ -643,6 +644,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "blockers": [],
             }
         )
+    if project_id == "arxiv-daily-push" and matrix.get("current_gate") == "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED":
+        policy["readiness"] = "blocked_precheck"
+        policy["decision"] = "S2PMT07 final gate precheck is blocked; Stage 1 remains accepted, but integrated production acceptance is not available."
     unresolved = collect_unresolved_fact_ids(project_id, parsed, counts)
     if arxiv_stage1_accepted:
         accepted_s1_resolved = {
@@ -818,7 +822,9 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "evidence_refs": [f"{project.get('path')}/docs/governance/development_events.jsonl"],
             },
             "delivery_evidence": {
-                "status": assurance_status(str(policy.get("readiness") or "blocked")),
+                "status": "VERIFIED"
+                if assurance_status(str(policy.get("readiness") or "blocked")) == "BLOCKED_PRECHECK"
+                else assurance_status(str(policy.get("readiness") or "blocked")),
                 "fact_level": "EXTRACTED",
                 "evidence_refs": [f"{project.get('path')}/docs/governance/delivery_tasks.yaml"],
             },

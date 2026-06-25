@@ -4,7 +4,7 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0581d1ede8d7c9a6352717f0057e99a31b5108a569097cb5ff529b112573aef1`
+- source_snapshot_hash: `sha256:890922e68eb2b4fc7e0e467b1b0154d253cf01e5dcc1b247bd5c26f7c750acb5`
 - snapshot_event_time: `2026-06-26T17:00:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
@@ -38,18 +38,18 @@
 - Release gate: `S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
-- V7 roadmap hash: `db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57`
+- V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
 - V7.1 parallel audit: `ADP-V7.2-FINAL-BASELINE-REVIEW`
 - V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
 - Open audit blockers: `P0=8 / P1=37`
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PCT02`
-- Parallel shadow source task: `S2PBT01`
+- Next governance task: `S2PMT07`
+- Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `NONE`
-- Pending/stale events: `141`
+- Pending/stale events: `142`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
-- Legacy unbound events: `102`
+- Legacy unbound events: `103`
 - Unresolved fact IDs: `0`
