@@ -54,6 +54,7 @@
 - `EVENT-20260625-007`: Bound the T1302/A203 development-status E2E CI repair after T1302 moved to `DONE`; local `make test-e2e` passes `32/32`, and A203 remains release-blocked pending A202/A204-A205/A209/A210/A026/A027.
 - `EVENT-20260625-008`: Added a T1303/A204-A205 external release operator intake packet that source-hashes required A202/A210/A026/A027/A209 inputs, validates with `WAITING_FOR_OPERATOR_INPUTS`, and keeps release-manager activation plus MVP release readiness blocked until real operator evidence is supplied.
 - `EVENT-20260625-009`: Refreshed the live T1307/A209 heartbeat, finalization preflight and dependent release preflights to `135/288` windows PASS, `0` failed and `46.88%` completion while keeping A209 `IN_PROGRESS`, `release_gate_closed_by_finalizer=false` and all release gates blocked.
+- `EVENT-20260625-010`: Hardened T1301/A202 signed-intake source boundaries so repository fixtures, templates, docs, config, data and tests cannot close A202; approved operator-input paths and external operator files remain the only accepted signed-intake sources, and release readiness remains blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

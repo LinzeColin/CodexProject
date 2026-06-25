@@ -82,6 +82,11 @@ def test_template_preflight_is_missing_signed_inputs() -> None:
     assert payload["relationship_publication_allowed"] is False
     assert payload["release_gate_closed_by_preflight"] is False
     assert payload["release_ready"] is False
+    assert payload["signed_intake_source_boundary"]["closure_allowed"] is False
+    assert (
+        payload["signed_intake_source_boundary"]["source_kind"]
+        == "repository_template"
+    )
     assert {item["input_id"] for item in payload["missing_signed_inputs"]} == set(
         preflight.MISSING_SIGNED_INPUTS
     )
@@ -104,6 +109,11 @@ def test_signed_intake_preflight_completes_a202_but_not_release(
     assert payload["release_gate_closed_by_preflight"] is False
     assert payload["release_ready"] is False
     assert payload["missing_signed_inputs"] == []
+    assert payload["signed_intake_source_boundary"]["closure_allowed"] is True
+    assert (
+        payload["signed_intake_source_boundary"]["source_kind"]
+        == "external_operator_file"
+    )
     assert payload["signed_intake_summary"]["source_license_reviews"] == 4
     assert payload["signed_intake_summary"]["passage_reviews"] == 2
     assert "A209_24h_operator_soak" in payload[

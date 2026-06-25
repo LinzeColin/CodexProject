@@ -72,6 +72,19 @@ SIGNED_PASSAGE_DECISIONS = {"approved_for_publication"}
 SIGNED_LEGAL_CLEARANCE_STATUSES = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
 SIGNED_BRAND_DECISIONS = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
 SIGNED_A202_INTAKE_STATUS = "SIGNED_A202_RELEASE_DECISION_INTAKE"
+SIGNED_INTAKE_ALLOWED_REPO_PREFIXES = (
+    "artifacts/operator_inputs/",
+    "operator_inputs/",
+    "work/operator_inputs/",
+)
+SIGNED_INTAKE_DISALLOWED_REPO_PREFIXES = (
+    "artifacts/tests/",
+    "data/",
+    "tests/",
+    "docs/",
+    "config/",
+    "brand/",
+)
 EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES = (
     "source_license_reviews duplicate candidate source anchors",
     "source_license_reviews reference unknown candidate source anchors",
@@ -115,6 +128,62 @@ def relative(path: Path) -> str:
         return resolved.relative_to(ROOT).as_posix()
     except ValueError:
         return resolved.as_posix()
+
+
+def signed_intake_source_boundary(path: Path) -> dict[str, Any]:
+    resolved = path.resolve()
+    root = ROOT.resolve()
+    try:
+        repo_relative = resolved.relative_to(root).as_posix()
+    except ValueError:
+        return {
+            "path": resolved.as_posix(),
+            "source_kind": "external_operator_file",
+            "repository_relative": None,
+            "closure_allowed": True,
+            "reason": "signed intake is outside the repository fixture/template tree",
+        }
+    if resolved == DEFAULT_INTAKE_TEMPLATE.resolve():
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_template",
+            "repository_relative": repo_relative,
+            "closure_allowed": False,
+            "reason": "default intake template is not signed operator evidence",
+        }
+    if repo_relative.startswith(SIGNED_INTAKE_ALLOWED_REPO_PREFIXES):
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_operator_input",
+            "repository_relative": repo_relative,
+            "closure_allowed": True,
+            "reason": "signed intake is under an approved operator input directory",
+        }
+    if repo_relative.startswith(SIGNED_INTAKE_DISALLOWED_REPO_PREFIXES):
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_fixture_or_source",
+            "repository_relative": repo_relative,
+            "closure_allowed": False,
+            "reason": "repository fixtures, templates, configs, docs and data cannot close A202",
+        }
+    return {
+        "path": repo_relative,
+        "source_kind": "repository_unapproved_path",
+        "repository_relative": repo_relative,
+        "closure_allowed": False,
+        "reason": "signed intake must be outside the repository or under artifacts/operator_inputs",
+    }
+
+
+def validate_signed_intake_source_path(path: Path) -> dict[str, Any]:
+    boundary = signed_intake_source_boundary(path)
+    if boundary["closure_allowed"] is not True:
+        raise ValueError(
+            "A202 signed intake must be operator-supplied, not "
+            f"{boundary['source_kind']}: {boundary['path']}"
+        )
+    return boundary
 
 
 def require_text(payload: dict[str, Any], key: str) -> str:
@@ -926,6 +995,7 @@ def validate_template(args: argparse.Namespace) -> None:
 
 
 def validate_signed_intake(args: argparse.Namespace) -> None:
+    source_boundary = validate_signed_intake_source_path(args.bundle)
     summary = validate_signed_intake_bundle(
         read_json(args.bundle),
         a202_packet_path=args.a202_packet,
@@ -938,6 +1008,7 @@ def validate_signed_intake(args: argparse.Namespace) -> None:
                 "bundle": relative(args.bundle),
                 "a202_clearance_complete": True,
                 "release_ready": False,
+                "signed_intake_source_boundary": source_boundary,
                 "remaining_external_gates": [
                     "A210_brand_clearance",
                     "A026_A027_production_gold_labels",

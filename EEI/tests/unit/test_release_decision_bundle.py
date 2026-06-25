@@ -171,6 +171,32 @@ def test_signed_a202_intake_validates_but_is_not_release_ready(
     assert result["source_license_reviews"] == 4
     assert result["passage_reviews"] == 2
     assert result["owner_signoffs"] == 2
+    assert result["signed_intake_source_boundary"]["closure_allowed"] is True
+    assert (
+        result["signed_intake_source_boundary"]["source_kind"]
+        == "external_operator_file"
+    )
+
+
+def test_signed_a202_intake_rejects_repository_fixture_path() -> None:
+    fixture_like_path = (
+        bundle.ROOT / "tests/fixtures/release_decision_bundle/signed-a202-intake.json"
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="A202 signed intake must be operator-supplied",
+    ):
+        bundle.validate_signed_intake_source_path(fixture_like_path)
+
+
+def test_signed_a202_intake_allows_operator_input_path() -> None:
+    operator_path = bundle.ROOT / "artifacts/operator_inputs/signed-a202-intake.json"
+
+    boundary = bundle.validate_signed_intake_source_path(operator_path)
+
+    assert boundary["closure_allowed"] is True
+    assert boundary["source_kind"] == "repository_operator_input"
 
 
 def test_signed_decision_bundle_requires_every_signature() -> None:

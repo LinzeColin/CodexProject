@@ -676,7 +676,7 @@ formulas:
       - "ASM-004"
     status: "active"
     expression: "value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured."
-    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard, gold-quality gate and external release operator intake parameters without a scoring formula."
+    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard, signed-intake source-boundary, gold-quality gate and external release operator intake parameters without a scoring formula."
     variables:
       - name: "configured_value"
         data_type: "number|string|boolean"
@@ -705,6 +705,7 @@ formulas:
       - "workspace layer controls remain disabled until stateReady and a supported layer-to-lens mapping exists"
       - "gold-quality closure requires the configured sample-count, precision and source-coverage gates to pass"
       - "gold-label intake template evidence must not close A026 or A027"
+      - "A202 signed-intake closure rejects repository fixtures, templates, docs, config, data and test sources unless under approved operator input paths"
       - "external release operator intake packet cannot close release gates directly"
     missing_policy: "fallback_to_default_or_UNKNOWN_with_task"
     normalization: "NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation."

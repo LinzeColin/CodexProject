@@ -2,6 +2,26 @@
 
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
+## 2026-06-25 - T1301/A202 signed-intake source-boundary hardening
+
+Status: FOCUSED LOCAL VALIDATION PENDING; CI PENDING
+
+Completed:
+
+- Added a source-boundary policy to the A202 signed-intake validator: repository fixtures, templates, docs, config, data and test sources cannot close A202.
+- Allowed only external operator files or approved repository operator-input directories (`artifacts/operator_inputs/`, `operator_inputs/`, `work/operator_inputs/`) to serve as signed-intake closure sources.
+- Added `PARAM-088` / `release_decision_intake.signed_source_boundary` to bind the disallowed repository prefixes into machine-verified governance.
+
+Verification status:
+
+- Focused py_compile, ruff, unit tests, artifact generation, semantic extraction, full verify, changed-only governance and remote CI are pending for this iteration.
+- A209 continues as a background 24h gate and is not replaced by this A202 source-boundary hardening.
+
+Still blocked:
+
+- A202 still lacks real source-license review, passage-level relationship approval, production owner approval, legal release clearance and production relationship publication.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+
 ## 2026-06-25 - T1307/A209 live 24h soak heartbeat refresh
 
 Status: FOCUSED LOCAL VALIDATION PASS; GOVERNANCE/RELEASE ARTIFACT VALIDATION AND CI PENDING

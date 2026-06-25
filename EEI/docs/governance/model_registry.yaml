@@ -625,7 +625,7 @@ models:
   - model_id: "MOD-012"
     name: "运行、视觉与校准阈值控制"
     kind: "deterministic_configuration_rule"
-    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding and gold-quality evaluation/intake gates."
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding, signed-intake source-boundary controls and gold-quality evaluation/intake gates."
     owner: "model owner"
     status: "active"
     fact_level: "RECONSTRUCTED"
@@ -685,6 +685,7 @@ models:
       - "PARAM-085"
       - "PARAM-086"
       - "PARAM-087"
+      - "PARAM-088"
     inputs:
       - "parameter_key"
       - "configured_value"
@@ -693,7 +694,7 @@ models:
       - "max_value"
     outputs:
       - "validated operational parameter value"
-    methodology: "Deterministic lookup and range validation from parameter_catalog rows plus machine-verified threshold, motion, frontend hydration guard and gold-quality validation/intake surfaces and external release operator intake packet surfaces without legacy formula_id."
+    methodology: "Deterministic lookup and range validation from parameter_catalog rows plus machine-verified threshold, motion, frontend hydration guard, signed-intake source-boundary, gold-quality validation/intake and external release operator intake packet surfaces without legacy formula_id."
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-84"
       - "EEI/scripts/run_operator_soak.mjs"

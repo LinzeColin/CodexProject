@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (87/87 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (88/88 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `87`
-- active_parameters: `87`
+- total_parameters: `88`
+- active_parameters: `88`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-OPERATOR-SOAK-HEARTBEAT-135-PENDING-CI`
+- release_gate: `TASK-T1301-A202-SIGNED-INTAKE-SOURCE-BOUNDARY-PENDING-CI`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `14`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `69`
-- pending_or_stale_events: `90`
+- precommit_pending_events: `73`
+- pending_or_stale_events: `94`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:56771ab1961e7273f879c00e918268b940990f9d010935ce6f2502f095fcd463`
-- snapshot_event_time: `2026-06-25T14:03:21Z`
+- source_snapshot_hash: `sha256:64a2ce12d1e3dc5138fdd9dec2026947930f56b9112a9063ddd8feb132d54e9c`
+- snapshot_event_time: `2026-06-25T14:58:00Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1307-A209-OPERATOR-SOAK-HEARTBEAT-135-PENDING-CI`
+- phase/gate: `C / TASK-T1301-A202-SIGNED-INTAKE-SOURCE-BOUNDARY-PENDING-CI`
 
 ## 17. Next Unique Task
 

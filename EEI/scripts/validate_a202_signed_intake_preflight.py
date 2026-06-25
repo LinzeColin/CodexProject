@@ -134,6 +134,7 @@ def build_preflight(
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     signed_intake = read_json(signed_intake_path)
+    source_boundary = decisions.signed_intake_source_boundary(signed_intake_path)
     if signed_intake.get("bundle_status") == "TEMPLATE_ONLY":
         decisions.validate_intake_template(
             signed_intake,
@@ -146,6 +147,9 @@ def build_preflight(
         summary = template_summary(signed_intake)
         missing_inputs = pending_input_rows()
     else:
+        source_boundary = decisions.validate_signed_intake_source_path(
+            signed_intake_path
+        )
         summary = decisions.validate_signed_intake_bundle(
             signed_intake,
             a202_packet_path=a202_packet_path,
@@ -178,6 +182,7 @@ def build_preflight(
             "golden_vertical_fact_candidates": display_path(fact_candidates_path),
             "golden_vertical_fact_candidates_sha256": sha256_file(fact_candidates_path),
         },
+        "signed_intake_source_boundary": source_boundary,
         "signed_intake_summary": summary,
         "missing_signed_inputs": missing_inputs,
         "remaining_external_gates_after_a202_clearance": (
@@ -186,6 +191,8 @@ def build_preflight(
         "validation_policy": {
             "template_only_counts_as_clearance": False,
             "signed_intake_required_for_a202_closure": True,
+            "signed_intake_source_must_be_operator_supplied": True,
+            "repository_fixtures_and_templates_count_as_clearance": False,
             "signed_intake_must_cover_all_candidate_source_anchors": True,
             "signed_intake_must_include_counter_evidence_review": True,
             "signed_intake_alone_counts_as_release_ready": False,
@@ -252,6 +259,7 @@ def validate_preflight(
         "release_ready",
         "source_files",
         "signed_intake_summary",
+        "signed_intake_source_boundary",
         "missing_signed_inputs",
         "remaining_external_gates_after_a202_clearance",
         "validation_policy",

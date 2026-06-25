@@ -4,7 +4,7 @@
     "A202"
   ],
   "artifact_id": "t1301-a202-signed-intake-preflight",
-  "generated_at": "2026-06-24T22:33:34Z",
+  "generated_at": "2026-06-25T14:47:03Z",
   "missing_signed_inputs": [
     {
       "input_id": "A202_source_license_reviews",
@@ -58,6 +58,13 @@
     "Do not treat a committed template preflight as clearance evidence."
   ],
   "schema_version": "eei-a202-signed-intake-preflight-v1",
+  "signed_intake_source_boundary": {
+    "closure_allowed": false,
+    "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+    "reason": "default intake template is not signed operator evidence",
+    "repository_relative": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+    "source_kind": "repository_template"
+  },
   "signed_intake_summary": {
     "bundle_status": "TEMPLATE_ONLY",
     "candidate_source_anchor_requirements": {
@@ -81,7 +88,7 @@
     "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
     "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6",
     "signed_intake": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-    "signed_intake_sha256": "b8da055a5b94c89142c2f1c917bd63d09ecfe689a7117950e2b9501f3683f35e"
+    "signed_intake_sha256": "97d46e7a21143c0f44186736340884de00874889b9f9230c5bc29f6a6fa4b589"
   },
   "status": "A202_SIGNED_INTAKE_MISSING",
   "system_en_name": "Enterprise Ecosystem Intelligence",
@@ -92,10 +99,12 @@
   ],
   "validation_policy": {
     "release_gate_closed_by_preflight": false,
+    "repository_fixtures_and_templates_count_as_clearance": false,
     "signed_intake_alone_counts_as_release_ready": false,
     "signed_intake_must_cover_all_candidate_source_anchors": true,
     "signed_intake_must_include_counter_evidence_review": true,
     "signed_intake_required_for_a202_closure": true,
+    "signed_intake_source_must_be_operator_supplied": true,
     "template_only_counts_as_clearance": false
   }
 }
