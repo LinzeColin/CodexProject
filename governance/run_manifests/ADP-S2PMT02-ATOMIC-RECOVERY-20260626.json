@@ -1,0 +1,43 @@
+{
+  "manifest_id": "ADP-S2PMT02-ATOMIC-RECOVERY-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT02",
+  "acceptance_id": "ACC-S2PMT02-ATOMIC-RECOVERY",
+  "phase": "S2PM",
+  "model_id": "MOD-ADP-095",
+  "formula_id": "FORM-ADP-097",
+  "parameter_ids": [
+    "PARAM-ADP-768",
+    "PARAM-ADP-769",
+    "PARAM-ADP-770",
+    "PARAM-ADP-771",
+    "PARAM-ADP-772",
+    "PARAM-ADP-773",
+    "PARAM-ADP-774",
+    "PARAM-ADP-775",
+    "PARAM-ADP-776",
+    "PARAM-ADP-777"
+  ],
+  "base_commit": "a326356e35959c31693122e6b533c49833c1ad91",
+  "created_at": "2026-06-26T12:20:00+10:00",
+  "scope": "Local S2PMT02 atomic artifact package, manifest verification, tamper detection, restore drill, staging cleanup, and no-production side-effect gates.",
+  "non_scope": "No production restore, SMTP, scheduler, Release, DB migration, public schema, queue mutation, ranking, source adapter change, live source fetch, workflow change, V7.1/V7.2 contract edit, P0/P1 closure claim, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md",
+    "arxiv-daily-push/tests/test_stage2_atomic_recovery.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused S2PMT02 tests: 5 OK",
+    "full arxiv-daily-push unittest: 409 OK",
+    "V7.2 validator PASS",
+    "ADP project governance 0 errors / 0 warnings",
+    "changed-only governance semantic 0 errors / 0 warnings",
+    "lean check-render drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}

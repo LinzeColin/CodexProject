@@ -462,3 +462,4 @@
 - Added S2PKT04 local M3 policy/capital/geopolitical frontier mail evidence without production side effects.
 - Added S2PKT05 local M4 cross-board 3+1 mail orchestration evidence without production side effects.
 - Added S2PMT01 local security and evidence-boundary gates without production side effects.
+- Added S2PMT02 local atomic storage and recovery hardening evidence without production side effects.

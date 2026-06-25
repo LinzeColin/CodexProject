@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 94
-- formula_count: 96
-- parameter_count: 767
+- model_count: 95
+- formula_count: 97
+- parameter_count: 777
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -869,3 +869,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-094` / `FORM-ADP-096` define local security and evidence-boundary gates for S2PMT01.
 - Passing S2PMT01 local validation requires source content to be labeled `UNTRUSTED_DATA`, safe public URL rendering, typed frontstage fact/inference/hypothesis/action statements, claim/evidence bindings for facts, premise/reasoning/confidence bindings for inferences, zero critical claim blocking, local supply-chain baseline controls, and no tool execution, secret access, email send, repository write, or production side effects.
 - S2PMT01 local evidence does not install workflow enforcement, send email, enable scheduler, upload Release assets, migrate DB/public schema, change V7.1/V7.2 contracts, or claim inherited P0/P1 closure before independent review.
+
+## S2PMT02 Atomic Storage And Recovery
+
+- `MOD-ADP-095` / `FORM-ADP-097` define local atomic storage and recovery hardening evidence for S2PMT02.
+- Passing S2PMT02 local validation requires staged writes with atomic replace, manifest hash verification, tamper detection, explicit restore drill into a caller-provided drill directory, staging cleanup, and all production restore/SMTP/scheduler/Release/schema/queue/DB side-effect flags false.
+- S2PMT02 local evidence does not execute production restore, install scheduler, send email, upload Release assets, migrate DB/public schema, mutate queues, change source adapters, change V7.1/V7.2 contracts, or claim integrated production acceptance.

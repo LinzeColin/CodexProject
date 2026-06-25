@@ -4984,3 +4984,46 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md"
+  -
+    model_id: "MOD-ADP-095"
+    name: "S2PMT02 local atomic storage and recovery model"
+    purpose: "Validate local S2PMT02 atomic artifact writes, manifest hash verification, restore drill evidence, tamper detection, staging cleanup, and no production side effects under V7.2."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-097"
+    parameter_ids:
+      - "PARAM-ADP-768"
+      - "PARAM-ADP-769"
+      - "PARAM-ADP-770"
+      - "PARAM-ADP-771"
+      - "PARAM-ADP-772"
+      - "PARAM-ADP-773"
+      - "PARAM-ADP-774"
+      - "PARAM-ADP-775"
+      - "PARAM-ADP-776"
+      - "PARAM-ADP-777"
+    inputs:
+      - "explicit local artifact_dir"
+      - "small artifact payload mapping"
+      - "manifest path"
+      - "explicit restore drill directory"
+      - "production-disabled environment flags"
+    outputs:
+      - "atomic package report"
+      - "manifest verification report"
+      - "restore drill report"
+      - "tamper detection gate"
+      - "staging cleanup gate"
+      - "no production side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md"
