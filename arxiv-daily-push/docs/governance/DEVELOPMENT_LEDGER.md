@@ -2623,3 +2623,23 @@ None for this new project baseline.
 - Rollback: Revert S2PKT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT01_MAIL_CONTRACT.md`; `governance/run_manifests/ADP-S2PKT01-MAIL-CONTRACT-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run final validation, commit, push, and open PR for S2PKT01.
+
+### `ITER-20260626-ADP-S2PK-S2PKT02-M1-MAIL`
+
+- Timestamp: `2026-06-26T07:20:00+10:00`
+- Fact level: EXTRACTED from S2PKT01/S2PHT05/S2PIT04/S2PJT03 dependency receipts, M1 mail fixture, model/formula/parameter registry diff, and local S2PKT02 validation.
+- Base commit: `cb6f4f2da6c70dbc10c3693d41e3a73d36d4c827`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PK
+- Task IDs: `S2PKT02`; acceptance `ACC-S2PKT02-M1`.
+- Goal: Complete local M1 science/theory frontier mail evidence while preserving V7.2 no-production boundaries.
+- Files changed: S2PKT02 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-090` M1 mail evidence model.
+- Formula changes: Added `FORM-ADP-092` with machine-verifiable AST fingerprints bound to the S2PKT02 implementation.
+- Parameter changes: Added `PARAM-ADP-717` through `PARAM-ADP-726` for S2PKT02 M1 identifiers, required sections, required action windows, gates, side-effect flags, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 154 OK; full arxiv-daily-push unittest 383 OK; full semantic extractor checked 92 formulas / 709 parameters with legacy non-current formula fingerprint drift caused by `cli.py::main` changes; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS.
+- Decisions: `ACC-S2PKT02-M1` is accepted only as local M1 mail evidence. Runtime mail template/frontstage changes, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, Stage 2 production acceptance, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: Downstream S2PK M2/M3/M4 tasks still need explicit no-production gates. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PKT02 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PKT02_M1_MAIL.md`; `governance/run_manifests/ADP-S2PKT02-M1-MAIL-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PKT02.
