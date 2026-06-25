@@ -1,0 +1,119 @@
+{
+  "acceptance_id": "ACC-S2PMT06-UX",
+  "actor": "Codex",
+  "base_commit": "82716f943237baf164ac78f9ece0a749aec4f6a8",
+  "current_pointer_changed": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md",
+    "governance/run_manifests/ADP-S2PMT06-OWNER-UX-20260626.json",
+    "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py",
+    "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md",
+    "governance/run_manifests/ADP-S2PMT06-OWNER-UX-20260626.json"
+  ],
+  "findings_covered": [
+    "C-001",
+    "C-002",
+    "C-003",
+    "C-004",
+    "C-005",
+    "C-006",
+    "C-007",
+    "C-008",
+    "C-009",
+    "C-010",
+    "C-011",
+    "C-012",
+    "C-013",
+    "C-014",
+    "C-015"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-101"
+  ],
+  "inherited_p0_p1_closed": false,
+  "integrated_production_accepted": false,
+  "mail_production_code_changed": false,
+  "manifest_id": "ADP-S2PMT06-OWNER-UX-20260626",
+  "model_ids_changed": [
+    "MOD-ADP-099"
+  ],
+  "next_task": "S2PMT07_INDEPENDENT_REVIEW_UNDER_V7_2",
+  "parameter_ids_changed": [
+    "PARAM-ADP-817",
+    "PARAM-ADP-818",
+    "PARAM-ADP-819",
+    "PARAM-ADP-820",
+    "PARAM-ADP-821",
+    "PARAM-ADP-822",
+    "PARAM-ADP-823",
+    "PARAM-ADP-824",
+    "PARAM-ADP-825",
+    "PARAM-ADP-826",
+    "PARAM-ADP-827",
+    "PARAM-ADP-828",
+    "PARAM-ADP-829"
+  ],
+  "phase": "S2PM",
+  "production_acceptance_claimed": false,
+  "production_restore_executed": false,
+  "production_schedule_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "queue_mutation_allowed": false,
+  "queue_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_release_uploaded": false,
+  "real_smtp_sent": false,
+  "release_changed": false,
+  "report_hash": "5ad067f0fc7ed37757c75d905a458d15217aa70308a8b624bc628375a71550ff",
+  "report_status": "pass",
+  "result": "completed_local_validation_passed",
+  "risks": [
+    "S2PMT06 local evidence must not be interpreted as live production UI enablement, inherited P0/P1 closure, or integrated production acceptance.",
+    "S2PMT07 independent review still controls production acceptance."
+  ],
+  "rollback": "Revert S2PMT06 owner UX code, tests, owner docs, governance registrations, phase record, manifest, and events; no runtime production state was changed.",
+  "scheduler_changed": false,
+  "smtp_changed": false,
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "stage2_production_accepted": false,
+  "summary": "Completed S2PMT06 local Chinese owner UX, navigation, status feedback, safe controls, traceability, accessibility, and no-production gates.",
+  "task_id": "S2PMT06",
+  "task_ids": [
+    "S2PMT06",
+    "ACC-S2PMT06-UX"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT06 tests: 9 OK",
+    "full arxiv-daily-push unittest: 442 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse: OK",
+    "git diff --check: PASS",
+    "full semantic extractor: NOT COMPLETED after local interrupt during full-table AST parsing; changed-only semantic governance is the S2PMT06 local gate used for this run"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py arxiv-daily-push/tests/test_stage2_owner_ux.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_owner_ux.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_gov2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt06_checkrender2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "ruby JSONL/YAML/CSV/manifest parse check",
+    "git diff --check"
+  ],
+  "timestamp": "2026-06-26T16:00:00+10:00",
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "v7_2_revalidation_receipt_recorded": true
+}

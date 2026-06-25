@@ -1,0 +1,136 @@
+from __future__ import annotations
+
+import unittest
+
+from arxiv_daily_push.stage2_owner_ux import (
+    S2PMT06_PRODUCTION_FALSE_FLAGS,
+    S2PMT06_REQUIRED_FINDINGS,
+    S2PMT06_REQUIRED_NAV_ITEMS,
+    S2PMT06_REQUIRED_STATUS_STATES,
+    S2PMT06_SAFE_ACTIONS,
+    S2PMT06_SAFE_EDIT_STEPS,
+    build_accessibility_matrix,
+    build_error_card,
+    build_navigation_contract,
+    build_owner_first_screen,
+    build_queue_view_contract,
+    build_s2pmt06_report,
+    build_safe_action_preview,
+    build_safe_config_change,
+    build_status_state_matrix,
+    validate_error_card,
+    validate_s2pmt06_report,
+)
+
+
+class Stage2OwnerUXTests(unittest.TestCase):
+    def test_first_screen_has_required_owner_fields_without_production_claims(self) -> None:
+        screen = build_owner_first_screen(generated_at="2026-06-26T16:00:00+10:00")
+        fields = screen["fields"]
+
+        self.assertEqual(screen["status"], "pass")
+        self.assertTrue(screen["production_disclaimer_visible"])
+        self.assertTrue(screen["no_empty_table_as_status"])
+        self.assertEqual(fields["current_stage_phase_task"], "Stage2 / S2PM / S2PMT06")
+        self.assertEqual(fields["inherited_p0_p1"]["p0"], 8)
+        self.assertEqual(fields["inherited_p0_p1"]["p1"], 37)
+        self.assertFalse(fields["inherited_p0_p1"]["closed_by_this_task"])
+        self.assertEqual(fields["today_3_plus_1_mail"], "local_preview_only_no_send")
+
+    def test_navigation_contract_has_top_bottom_breadcrumb_and_trace_chain(self) -> None:
+        navigation = build_navigation_contract()
+        labels = [page["label"] for page in navigation["pages"]]
+
+        self.assertEqual(navigation["status"], "pass")
+        self.assertEqual(labels, list(S2PMT06_REQUIRED_NAV_ITEMS))
+        for page in navigation["pages"]:
+            self.assertEqual(page["top_navigation"], list(S2PMT06_REQUIRED_NAV_ITEMS))
+            self.assertEqual(page["bottom_navigation"], list(S2PMT06_REQUIRED_NAV_ITEMS))
+            self.assertEqual(page["breadcrumb"], ["00_用户中心", page["label"]])
+            self.assertGreaterEqual(len(page["related_links"]), 2)
+        self.assertEqual(navigation["object_trace_chain"], ["source", "claim", "report", "mail", "review", "action", "roi"])
+
+    def test_status_state_matrix_covers_all_non_happy_path_states(self) -> None:
+        matrix = build_status_state_matrix()
+
+        self.assertEqual(matrix["status"], "pass")
+        self.assertEqual(set(matrix["states"]), set(S2PMT06_REQUIRED_STATUS_STATES))
+        for state in S2PMT06_REQUIRED_STATUS_STATES:
+            self.assertIn("reason", matrix["states"][state])
+            self.assertIn("owner_next_action", matrix["states"][state])
+            self.assertFalse(matrix["states"][state]["empty_table_used_as_status"])
+
+    def test_error_card_has_recovery_owner_runbook_evidence_and_cta(self) -> None:
+        card = build_error_card()
+
+        self.assertEqual(validate_error_card(card), [])
+        self.assertEqual(card["severity"], "P1")
+        self.assertTrue(card["retry_safe"])
+        self.assertIn("runbook", card)
+        self.assertIn("evidence", card)
+
+        tampered = dict(card)
+        tampered.pop("cta")
+        self.assertIn("error_card.cta is required", validate_error_card(tampered))
+
+    def test_safe_config_change_uses_preview_to_rollback_and_append_only_receipt(self) -> None:
+        change = build_safe_config_change(generated_at="2026-06-26T16:00:00+10:00")
+
+        self.assertEqual(change["status"], "pass")
+        self.assertEqual(tuple(change["steps"]), S2PMT06_SAFE_EDIT_STEPS)
+        self.assertTrue(change["confirmation_required"])
+        self.assertFalse(change["apply"]["production_mutation_applied"])
+        self.assertEqual(len(change["append_only_revision_ledger"]), 1)
+        self.assertTrue(change["rollback"]["verified"])
+
+    def test_queue_view_supports_search_filter_sort_export_and_drilldown_without_mutation(self) -> None:
+        queue_view = build_queue_view_contract()
+
+        self.assertEqual(queue_view["status"], "pass")
+        self.assertIn("cycle_id", queue_view["search_fields"])
+        self.assertIn("status", queue_view["filters"])
+        self.assertEqual(set(queue_view["exports"]), {"json", "csv"})
+        self.assertEqual(queue_view["drilldown_trace"], ["queue_item", "source", "claim", "report", "mail", "review", "action", "roi"])
+        self.assertFalse(queue_view["production_queue_mutation_allowed"])
+
+    def test_safe_manual_actions_are_previewed_and_receipted_without_production_mutation(self) -> None:
+        for action in S2PMT06_SAFE_ACTIONS:
+            preview = build_safe_action_preview(action=action)
+            with self.subTest(action=action):
+                self.assertEqual(preview["status"], "pass")
+                self.assertTrue(preview["preview_required"])
+                self.assertTrue(preview["confirmation_required"])
+                self.assertTrue(preview["receipt_required"])
+                self.assertFalse(preview["production_mutation_applied"])
+
+        blocked = build_safe_action_preview(action="delete")
+        self.assertEqual(blocked["status"], "blocked")
+
+    def test_accessibility_matrix_covers_a11y_responsive_and_mail_client_requirements(self) -> None:
+        matrix = build_accessibility_matrix()
+        checks = matrix["checks"]
+
+        self.assertEqual(matrix["status"], "pass")
+        self.assertGreaterEqual(checks["contrast_ratio"], 4.5)
+        self.assertGreaterEqual(checks["touch_target_px"], 44)
+        self.assertTrue(checks["plain_text_equivalent"])
+        self.assertEqual(set(checks["mail_clients"]), {"gmail", "apple_mail", "outlook"})
+
+    def test_full_s2pmt06_report_validates_findings_and_no_production_side_effects(self) -> None:
+        report = build_s2pmt06_report(generated_at="2026-06-26T16:00:00+10:00")
+
+        self.assertEqual(report["status"], "pass")
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["inherited_p0_p1_closed"])
+        self.assertEqual(set(report["findings_covered"]), set(S2PMT06_REQUIRED_FINDINGS))
+        for flag in S2PMT06_PRODUCTION_FALSE_FLAGS:
+            self.assertFalse(report[flag])
+        self.assertEqual(validate_s2pmt06_report(report), [])
+
+        tampered = dict(report)
+        tampered["real_smtp_sent"] = True
+        self.assertIn("real_smtp_sent must be false", validate_s2pmt06_report(tampered))
+
+
+if __name__ == "__main__":
+    unittest.main()
