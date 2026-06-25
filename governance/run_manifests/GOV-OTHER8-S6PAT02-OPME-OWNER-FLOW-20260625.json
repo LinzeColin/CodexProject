@@ -1,0 +1,169 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625",
+  "project_id": "OpMe_System",
+  "task_id": "S6PAT02",
+  "acceptance_ids": [
+    "ACC-S6PAT02"
+  ],
+  "iteration_id": "ITER-OTHER8-S6PAT02-OPME-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "ec0ed557254466a8833dc2444e3b2cefba1d6fe9",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625",
+    "GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625",
+    "GOV-OTHER8-S6PAT02-EVA-OWNER-FLOW-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:ede8a417cf627bd0821d5dc74d2ac91440abb45db40ba26e6b89f99b33889366",
+  "changed_files_declared": [
+    "OpMe_System/README.md",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    "OpMe_System/README.md",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    "OpMe_System/README.md",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "OpMe_System/README.md",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "change_classification": [
+    "other8_stage6_opme_owner_flow",
+    "single_project_s6pat02_slice",
+    "owner_readable_first_global_chinese",
+    "readme_only",
+    "no_runtime_rewrite",
+    "no_external_automation_trigger",
+    "no_file_move"
+  ],
+  "stage_gate_status": {
+    "S6PAT01": "PASSED_AND_BOUND",
+    "S6PAT02_ALPHA": "PASSED_AND_MERGED_TO_MAIN",
+    "S6PAT02_EVA_OS": "PASSED_AND_MERGED_TO_MAIN",
+    "S6PAT02_OPME_SYSTEM": "OPME_SLICE_LOCAL_PRECOMMIT_PASSED",
+    "S6PA-GATE": "IN_PROGRESS",
+    "S6-GATE": "IN_PROGRESS",
+    "next_allowed_project_slice": "whkmSalary"
+  },
+  "next_allowed_task": "S6PAT02",
+  "s6pat02_scope": {
+    "project_id": "OpMe_System",
+    "implemented_candidates": [
+      "OpMe_System-P0-active-source-delivery-bundle-demo-input-boundary",
+      "OpMe_System-P1-smoke-failure-route-and-rollback"
+    ],
+    "implemented_candidate_count": 2,
+    "max_candidates_per_project": 3,
+    "matrix_ref": "governance/stage_gates/s6pa/ux_priority_matrix.csv",
+    "single_project_pr": true,
+    "readme_only": true
+  },
+  "interaction_feedback": {
+    "current_state_visible": true,
+    "in_progress_gate_visible": true,
+    "success_feedback_visible": true,
+    "failure_blocker_visible": true,
+    "rollback_visible": true,
+    "safe_confirmation_or_reversible_action": true
+  },
+  "smoke_test_evidence": {
+    "command": "set PYTHONPATH=backend&& .venv\\Scripts\\python.exe -m pytest backend\\tests -q",
+    "cwd": "OpMe_System",
+    "result": "PASS",
+    "observed": "8 passed, 1 warning in 6.66s"
+  },
+  "scope_guard": {
+    "projects_changed": [
+      "OpMe_System"
+    ],
+    "other_projects_changed": false,
+    "runtime_code_changed": false,
+    "ui_framework_added": false,
+    "external_automation_triggered": false,
+    "trading_or_broker_action_triggered": false,
+    "files_moved": false
+  },
+  "stop_conditions": {
+    "large_ui_framework_added_for_appearance": false,
+    "navigation_changed_without_user_flow_evidence": false,
+    "more_than_one_project_implemented_in_one_task": false,
+    "runtime_code_changed": false,
+    "external_trading_or_broker_action_triggered": false
+  },
+  "model_delta": "NOT_CHANGED: S6PAT02 OpMe_System slice changes README owner flow only.",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "No product version change. OpMe_System README owner path only.",
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pat02_opme_owner_flow_is_single_project_and_reversible -q",
+    "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "set PYTHONPATH=backend&& .venv\\Scripts\\python.exe -m pytest backend\\tests -q",
+      "result": "PASS",
+      "observed": "8 passed, 1 warning in 6.66s."
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s6pat02_opme_owner_flow_is_single_project_and_reversible -q",
+      "result": "PASS",
+      "observed": "Ran 1 S6PAT02 OpMe_System owner-flow governance test; OK."
+    },
+    {
+      "command": "python -B -m json.tool governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+      "result": "PASS",
+      "observed": "Manifest parsed successfully."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "result": "PASS",
+      "observed": "errors=0; warnings=0 across root and 10 registered projects."
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "observed": "No whitespace errors."
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "result": "PASS",
+      "observed": "changed_files=OpMe_System/README.md, S6PAT02 OpMe_System manifest, governance test; projects changed=OpMe_System; errors=0; warnings=0; zero_diff.clean=true."
+    }
+  ],
+  "evidence_refs": [
+    "OpMe_System/README.md",
+    "OpMe_System/docs/OpMe_structure_report.md",
+    "OpMe_System/backend/tests",
+    "governance/stage_gates/s6pa/ux_priority_matrix.csv",
+    "governance/run_manifests/GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-EVA-OWNER-FLOW-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Other8 S6PAT02 OpMe_System owner flow and smoke failure routing",
+  "ci_run_reference": "LOCAL_CHANGED_ONLY_PASS_PENDING_PR_AND_MAIN_CI",
+  "summary": "S6PAT02 continues with OpMe_System only. It implements the S6PAT01 OpMe_System P0/P1 owner-flow candidates in README, records active source/delivery/demo boundaries and a passing minimal backend smoke, and avoids project code, runtime state, file movement, UI framework, live trading, broker, or external automation changes.",
+  "rollback": {
+    "action": "revert_s6pat02_opme_readme_commit",
+    "requires_file_restore": false,
+    "requires_archive_restore": false,
+    "notes": "Only OpMe_System/README.md, this manifest, and governance tests are changed."
+  },
+  "unresolved_risks": [
+    "Frontend production build remains covered by the existing smoke script but was not rerun in this README-only slice.",
+    "Remaining S6PAT02 project slices must still be handled one project at a time."
+  ]
+}

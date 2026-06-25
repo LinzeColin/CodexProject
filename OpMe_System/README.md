@@ -1,5 +1,20 @@
 # 武汉开明智能工业运维助手
 
+- S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
+- 当前任务：`S6PAT02` / `ACC-S6PAT02`；下一 Gate：`S6PA-GATE` 仍在进行中。
+- 本轮边界：只补 Owner 可读路径，不改运行代码，不改 `backend/`、`frontend/`、`app_bundle/`、`samples/`，不移动文件，不触发外部自动化。
+
+| Owner 判断项 | 当前路径 | 状态 |
+|---|---|---|
+| active source | `backend/`、`frontend/` | 主动运行源码，本轮不改 |
+| delivery bundle | `app_bundle/`、`scripts/install_app_entries.sh` | 交付构建输入，本轮不改 |
+| demo input | `samples/` | 演示上传样例，本轮不改 |
+| historical archive | `governance/archive/other8_wave1_pending/OpMe_System/` | 只读历史资料，不重新进入默认开发循环 |
+
+- 最小后端 smoke：进入 `OpMe_System/`，运行 `set PYTHONPATH=backend&& .venv\Scripts\python.exe -m pytest backend\tests -q`；本轮实测结果为 `8 passed, 1 warning`。
+- 失败去向：若出现 `No module named app`，先确认 `PYTHONPATH=backend`；若 `.venv` 或 `pytest` 缺失，先按 `backend/requirements.txt` 恢复依赖；若 API/PDF 断言失败，再查 `OpMe_System/docs/OpMe_structure_report.md` 和 `backend/tests/`。
+- 回滚：revert S6PAT02 OpMe_System README 提交即可；不需要恢复运行数据、报告或 archive。
+
 本项目把原始 `wuhan_kaiming_codex_package.zip` 中的 CLI/规则原型升级为本地 Web + PDF 工业运维控制台，覆盖旋转窑动态调测、回转窑故障诊断、大齿圈修复、机械加工咨询、报告中心和模型配置。
 
 ## 已实现能力
