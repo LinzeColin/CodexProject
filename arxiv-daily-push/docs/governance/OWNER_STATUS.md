@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PJT04` 本地 weekly report evidence；它在 S2PJT03 action/asset/ROI ledger 基础上验证周度主线、反证、复习、行动、资产、下周重点、内容/实际状态追溯和 deterministic report hash，不发送周报或启用生产副作用。
+新增 `S2PJT05` 本地 monthly report evidence；它在 S2PJT04 weekly report 基础上验证月度时代主线、月初/月末认知差分、能力增长、可核验实际 ROI / 经济转化、预测复盘、下月重点和 deterministic report hash，不发送月报或启用生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, continue S2PJT05 monthly report locally, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PIT02 as local runtime dashboard evidence only, treat S2PJT05 as local monthly report evidence and keep S2PKT01 blocked until S2PHT05/S2PIT04 dependencies are satisfied, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PJT05_MONTHLY_REPORT_LOCAL_ONLY`
+- next_task_id: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY_BLOCKED_PENDING_S2PHT05_S2PIT04`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PJT04-WEEKLY`
-- unblock_condition: S2PJT03 action/asset/ROI ledger evidence complete; continue S2PJT05 monthly report locally without production side effects.
+- acceptance_ids: `ACC-S2PJT05-MONTHLY`
+- unblock_condition: S2PJT03 action/asset/ROI ledger evidence complete; treat S2PJT05 as local monthly report evidence and keep S2PKT01 blocked until S2PHT05/S2PIT04 dependencies are satisfied without production side effects.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (641/641 active parameters, 86/86 active formulas)
+- implementation_congruence: `VERIFIED` (650/650 active parameters, 87/87 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `84`
-- total_formulas: `86`
-- active_formulas: `86`
-- total_parameters: `658`
-- active_parameters: `641`
+- model_count: `85`
+- total_formulas: `87`
+- active_formulas: `87`
+- total_parameters: `667`
+- active_parameters: `650`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PJT04_WEEKLY_REPORT_LOCAL_ONLY`
+- release_gate: `S2PJT05_MONTHLY_REPORT_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 

@@ -1,0 +1,42 @@
+{
+  "acceptance_id": "ACC-S2PJT05-MONTHLY",
+  "base_commit": "bd1f6d6ac7bd78cf563e32a75fdb6f01a916a02d",
+  "created_at": "2026-06-26T02:20:00+10:00",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PJT05_MONTHLY_REPORT.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "formula_id": "FORM-ADP-087",
+  "manifest_id": "ADP-S2PJT05-MONTHLY-REPORT-20260626",
+  "model_id": "MOD-ADP-085",
+  "non_scope": "No production SMTP, scheduler, Release, public schema, DB migration, queue mutation, source adapter, ranking, Email V1 runtime/frontstage, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "parameter_ids": [
+    "PARAM-ADP-659",
+    "PARAM-ADP-660",
+    "PARAM-ADP-661",
+    "PARAM-ADP-662",
+    "PARAM-ADP-663",
+    "PARAM-ADP-664",
+    "PARAM-ADP-665",
+    "PARAM-ADP-666",
+    "PARAM-ADP-667"
+  ],
+  "phase": "S2PJ",
+  "production_side_effects": false,
+  "project_id": "arxiv-daily-push",
+  "scope": "Local-only monthly cognitive delta, capability growth, economic conversion, and forecast review evidence.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PJT05",
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 134 OK",
+    "full arxiv-daily-push unittest: 363 OK",
+    "semantic extractor: 87 formulas / 650 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}

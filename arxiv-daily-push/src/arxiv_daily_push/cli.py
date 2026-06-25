@@ -133,6 +133,7 @@ from .stage2_sources import (
     run_s2pjt02_review_schedule,
     run_s2pjt03_action_asset_roi,
     run_s2pjt04_weekly_report,
+    run_s2pjt05_monthly_report,
     run_s2pct07_d2_source_domain_qualification,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct05_engineering_signal_shadow,
@@ -155,6 +156,7 @@ from .stage2_sources import (
     validate_s2pjt02_review_schedule_report,
     validate_s2pjt03_action_asset_roi_report,
     validate_s2pjt04_weekly_report,
+    validate_s2pjt05_monthly_report,
     validate_s2pct07_d2_source_domain_qualification_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct05_engineering_signal_report,
@@ -934,6 +936,26 @@ def build_parser() -> argparse.ArgumentParser:
     s2pjt04_weekly.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
     s2pjt04_weekly.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pjt04_weekly.add_argument("--json", action="store_true", help="Print JSON weekly report.")
+
+    s2pjt05_monthly = subparsers.add_parser(
+        "stage2-monthly-report",
+        help="Build S2PJT05 local monthly cognitive delta, capability, ROI, and forecast evidence without production side effects.",
+    )
+    s2pjt05_monthly.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pjt05_monthly.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pjt05_monthly.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pjt05_monthly.add_argument("--month-start", required=True, help="Monthly report start date YYYY-MM-DD.")
+    s2pjt05_monthly.add_argument("--month-end", required=True, help="Monthly report end date YYYY-MM-DD.")
+    s2pjt05_monthly.add_argument("--weekly-reports", required=True, help="Passing S2PJT04 reports JSON list or object with weekly_reports.")
+    s2pjt05_monthly.add_argument("--cognitive-snapshots", required=True, help="Monthly start/end cognitive snapshots JSON mapping.")
+    s2pjt05_monthly.add_argument("--monthly-sections", required=True, help="Monthly sections JSON mapping.")
+    s2pjt05_monthly.add_argument("--capability-growth", required=True, help="Capability growth JSON list or object with capability_growth.")
+    s2pjt05_monthly.add_argument("--economic-conversions", required=True, help="Economic conversions JSON list or object with economic_conversions.")
+    s2pjt05_monthly.add_argument("--forecast-reviews", required=True, help="Forecast reviews JSON list or object with forecast_reviews.")
+    s2pjt05_monthly.add_argument("--next-month-focus", required=True, help="Next month focus JSON list or object with next_month_focus.")
+    s2pjt05_monthly.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pjt05_monthly.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pjt05_monthly.add_argument("--json", action="store_true", help="Print JSON monthly report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2723,6 +2745,43 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- state_trace_gate: {report.get('state_trace_gate')}")
             print(f"- no_duplication_gate: {report.get('no_duplication_gate')}")
             print(f"- next_focus_gate: {report.get('next_focus_gate')}")
+            print(f"- deterministic_report_gate: {report.get('deterministic_report_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-monthly-report":
+        production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        report = run_s2pjt05_monthly_report(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            month_start=args.month_start,
+            month_end=args.month_end,
+            weekly_reports=load_json_records(args.weekly_reports, "weekly_reports"),
+            cognitive_snapshots=load_json_mapping(args.cognitive_snapshots),
+            monthly_sections=load_json_mapping(args.monthly_sections),
+            capability_growth=load_json_records(args.capability_growth, "capability_growth"),
+            economic_conversions=load_json_records(args.economic_conversions, "economic_conversions"),
+            forecast_reviews=load_json_records(args.forecast_reviews, "forecast_reviews"),
+            next_month_focus=load_json_records(args.next_month_focus, "next_month_focus"),
+            production_gate_state=production_gate_state,
+            write=not args.no_write,
+        )
+        errors = validate_s2pjt05_monthly_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- weekly_report_gate: {report.get('weekly_report_gate')}")
+            print(f"- month_window_gate: {report.get('month_window_gate')}")
+            print(f"- cognitive_delta_gate: {report.get('cognitive_delta_gate')}")
+            print(f"- capability_growth_gate: {report.get('capability_growth_gate')}")
+            print(f"- conversion_trace_gate: {report.get('conversion_trace_gate')}")
+            print(f"- forecast_review_gate: {report.get('forecast_review_gate')}")
+            print(f"- section_trace_gate: {report.get('section_trace_gate')}")
             print(f"- deterministic_report_gate: {report.get('deterministic_report_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):

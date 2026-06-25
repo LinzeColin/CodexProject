@@ -1831,3 +1831,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PJT05"
+    phase: "S2PJ"
+    objective: "Implement local-only monthly cognitive delta, capability growth, economic conversion, and forecast review evidence."
+    scope: "Monthly era mainline, month-start/month-end cognitive delta, changed viewpoints with evidence, capability growth traceability, at least one verifiable calculated economic conversion, forecast review, next-month focus, deterministic report hash, focused tests, CLI, and governance registration."
+    non_scope: "No SMTP, no scheduler, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no Email V1 runtime/frontstage change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no owner-experience final acceptance, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PJT04", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    acceptance_ids: ["ACC-S2PJT05-MONTHLY"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/src/arxiv_daily_push/cli.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_semantic2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_gov2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_changed PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pjt05_rendercheck PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "/opt/anaconda3/bin/python JSONL/YAML/CSV/manifest parse check", "git diff --check"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 134 OK", "full arxiv-daily-push unittest: 363 OK", "semantic extractor: 87 formulas / 650 parameters checked", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PJT05_MONTHLY_REPORT.md", "governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "S2PJT05 can be mistaken for a live monthly email/report operation or actual economic proof; it is local monthly synthesis evidence only and calculated conversion is allowed only with verifiable cost/benefit evidence."
+    rollback: "Revert S2PJT05 monthly report code, CLI, tests, governance registrations, phase record, manifest, and events; no runtime or production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
