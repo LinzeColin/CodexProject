@@ -65,6 +65,22 @@ Do not silently drop memory-affecting changes.
 - Local `node_modules`, `dist`, app bundles, temporary work, and caches are not
   delivery artifacts and must not be committed.
 
+## S5PBT02 Structure Boundary
+
+- `apps/memory-atlas/` is the app layer. It reads redacted derived snapshots
+  and must not read raw OpenAI exports, private imports, or plaintext secrets.
+- `skills/openai-memory-analysis/` is the reusable skill/tooling layer.
+- `context/` and `config/context_sources/` hold routing and source-context
+  contracts; default startup must use route-specific reads instead of broad
+  data scans.
+- Private exports are external-first: raw exports and private imports stay
+  outside git, or under ignored/encrypted local paths such as `data/raw/`,
+  `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
+  `exports/private/`, and `data/private/`.
+- Default entries must be repository-relative (`AGENTS.md`, route scripts, and
+  redacted derived context packs). Local absolute paths are examples only and
+  are never default entry points.
+
 ## Minimum Validation
 
 Run the narrowest useful checks for the change. For personalization/context

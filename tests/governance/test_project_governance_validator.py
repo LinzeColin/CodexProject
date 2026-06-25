@@ -5920,6 +5920,133 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith(("OpenAIDatabase/", "PFI/", "Serenity-Alipay/", "EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s5pbt02_openaidatabase_structure_privacy_boundary_and_smoke(self) -> None:
+        validator = load_validator_module()
+        report_path = ROOT / "OpenAIDatabase" / "docs" / "OpenAIDatabase_structure_report.md"
+        contract_path = ROOT / "governance" / "stage_gates" / "s5pb" / "openaidatabase_structure_contract.yaml"
+        privacy_log_path = ROOT / "governance" / "stage_gates" / "s5pb" / "privacy_test.log"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json"
+        )
+        for path in {report_path, contract_path, privacy_log_path, manifest_path}:
+            self.assertTrue(path.is_file(), path)
+
+        report = report_path.read_text(encoding="utf-8")
+        privacy_log = privacy_log_path.read_text(encoding="utf-8")
+        readme = (ROOT / "OpenAIDatabase" / "README.md").read_text(encoding="utf-8")
+        agents = (ROOT / "OpenAIDatabase" / "AGENTS.md").read_text(encoding="utf-8")
+        gitignore = (ROOT / "OpenAIDatabase" / ".gitignore").read_text(encoding="utf-8")
+        contract = validator.load_yaml(contract_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        for required in {
+            "S5PBT02",
+            "ACC-S5PBT02",
+            "OpenAIDatabase/apps/memory-atlas/",
+            "OpenAIDatabase/skills/openai-memory-analysis/",
+            "OpenAIDatabase/context/",
+            "private_exports/",
+            "PATH_AND_MARKER_ONLY_NO_VALUES",
+            "104",
+            "PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED",
+        }:
+            self.assertIn(required, report)
+        for required in {
+            "S5PBT02 Structure Boundary",
+            "App layer: `apps/memory-atlas/`",
+            "Skill layer: `skills/openai-memory-analysis/`",
+            "Context layer: `context/`, `config/context_sources/`",
+            "Private export layer",
+            "Local absolute paths may appear only as historical examples or test fixtures",
+        }:
+            self.assertIn(required, readme)
+        for required in {
+            "`apps/memory-atlas/` is the app layer",
+            "`skills/openai-memory-analysis/` is the reusable skill/tooling layer",
+            "Private exports are external-first",
+            "Local absolute paths are examples only",
+        }:
+            self.assertIn(required, agents)
+        for required in {"private_exports/", "exports/private/", "data/private/"}:
+            self.assertIn(required, gitignore)
+
+        self.assertEqual(contract["schema_version"], "codexproject.structure_contract.v1")
+        self.assertEqual(contract["project_id"], "OpenAIDatabase")
+        self.assertEqual(contract["task_id"], "S5PBT02")
+        self.assertEqual(contract["acceptance_id"], "ACC-S5PBT02")
+        self.assertEqual(contract["app_layer"]["path"], "OpenAIDatabase/apps/memory-atlas")
+        self.assertTrue(contract["app_layer"]["default_entry"])
+        self.assertFalse(contract["app_layer"]["reads_raw_exports"])
+        self.assertEqual(contract["skills_layer"]["path"], "OpenAIDatabase/skills/openai-memory-analysis")
+        self.assertTrue(contract["context_layer"]["route_first"])
+        self.assertFalse(contract["context_layer"]["broad_data_scan_default"])
+        self.assertTrue(contract["private_exports"]["default_external"])
+        self.assertTrue(contract["private_exports"]["default_encrypted"])
+        self.assertTrue(contract["private_exports"]["default_ignored"])
+        self.assertFalse(contract["private_exports"]["value_emission_allowed"])
+        self.assertEqual(contract["private_exports"]["private_candidate_count"], 104)
+        self.assertTrue(contract["default_entries"]["repository_relative_only"])
+        self.assertFalse(contract["default_entries"]["local_absolute_paths_as_default"])
+        for key, value in contract["stop_conditions"].items():
+            self.assertFalse(value, key)
+
+        for required in {
+            "task_id: S5PBT02",
+            "acceptance_id: ACC-S5PBT02",
+            "result: PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED",
+            "mode: PATH_AND_MARKER_ONLY_NO_VALUES",
+            "openaidatabase_private_candidate_count: 104",
+            "values_emitted: false",
+            "private_exports_default_external: true",
+            "private_exports_default_encrypted: true",
+            "private_exports_default_ignored: true",
+            "absolute_local_paths_used_as_default_entry: false",
+            "python -B -m pytest OpenAIDatabase/tests -q",
+            "result: NOT_RUN",
+            "tests.test_s3pdt01_privacy",
+            "Ran 3 tests OK",
+        }:
+            self.assertIn(required, privacy_log)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "OpenAIDatabase")
+        self.assertEqual(manifest["task_id"], "S5PBT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PBT02"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PBT01-FIFA-STRUCTURE-BOUNDARY-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PB-GATE"], "LOCAL_PRECOMMIT_PASSED_FOR_FIFA_AND_OPENAIDATABASE")
+        self.assertEqual(manifest["next_allowed_task"], "S5PCT01")
+        self.assertEqual(manifest["structure_boundary"]["app_layer"], "OpenAIDatabase/apps/memory-atlas")
+        self.assertEqual(manifest["privacy_summary"]["mode"], "PATH_AND_MARKER_ONLY_NO_VALUES")
+        self.assertEqual(manifest["privacy_summary"]["private_candidate_count"], 104)
+        self.assertFalse(manifest["privacy_summary"]["values_emitted"])
+        self.assertFalse(manifest["stop_conditions"]["openaidatabase_examples_contain_real_personal_content"])
+        self.assertFalse(manifest["stop_conditions"]["private_exports_default_tracked_plaintext"])
+        self.assertFalse(manifest["stop_conditions"]["absolute_local_paths_used_as_default_entry"])
+        self.assertFalse(manifest["stop_conditions"]["private_values_emitted"])
+        self.assertFalse(manifest["scope_guard"]["touched_forbidden_projects"])
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "OpenAIDatabase/.gitignore",
+                "OpenAIDatabase/AGENTS.md",
+                "OpenAIDatabase/README.md",
+                "OpenAIDatabase/docs/OpenAIDatabase_structure_report.md",
+                "governance/stage_gates/s5pb/openaidatabase_structure_contract.yaml",
+                "governance/stage_gates/s5pb/privacy_test.log",
+                "governance/run_manifests/GOV-OTHER8-S5PBT02-OPENAIDATABASE-STRUCTURE-PRIVACY-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("FIFA/", "PFI/", "Serenity-Alipay/", "EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
