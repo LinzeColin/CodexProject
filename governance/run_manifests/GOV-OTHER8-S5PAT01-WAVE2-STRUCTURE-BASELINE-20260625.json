@@ -1,0 +1,200 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625",
+  "project_id": "ROOT",
+  "task_id": "S5PAT01",
+  "acceptance_ids": [
+    "ACC-S5PAT01"
+  ],
+  "iteration_id": "ITER-OTHER8-S5PAT01-20260625",
+  "generated_at": "2026-06-25T00:00:00+10:00",
+  "implementation_base_sha": "ff192e7df711ffd4e13718792e72da0a9415dbb7",
+  "result_commit": "PENDING_PR_HEAD",
+  "depends_on": [
+    "GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625"
+  ],
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:4ed43b20fc630ea6d55366c37099ee9dccb4ac3a34aefd1429884ffeeb43c779",
+  "changed_files_declared": [
+    "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+    "governance/stage_gates/s5pa/archive_plan.md",
+    "governance/stage_gates/s5pa/privacy_scan.log",
+    "governance/stage_gates/s5pa/wave2_reference_graph.json",
+    "governance/stage_gates/s5pa/wave2_structure_map.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py"
+  ],
+  "changed_files_actual": [
+    "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+    "governance/stage_gates/s5pa/archive_plan.md",
+    "governance/stage_gates/s5pa/privacy_scan.log",
+    "governance/stage_gates/s5pa/wave2_reference_graph.json",
+    "governance/stage_gates/s5pa/wave2_structure_map.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py"
+  ],
+  "required_governance_files": [
+    "governance/stage_gates/s5pa/wave2_structure_map.json",
+    "governance/stage_gates/s5pa/wave2_reference_graph.json",
+    "governance/stage_gates/s5pa/privacy_scan.log",
+    "governance/stage_gates/s5pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+    "governance/stage_gates/s5pa/archive_plan.md",
+    "governance/stage_gates/s5pa/privacy_scan.log",
+    "governance/stage_gates/s5pa/wave2_reference_graph.json",
+    "governance/stage_gates/s5pa/wave2_structure_map.json",
+    "tests/governance/test_project_governance_validator.py",
+    "tools/structure_audit.py"
+  ],
+  "change_classification": [
+    "other8_stage5_wave2_structure_baseline",
+    "privacy_artifact_reference_graph_baseline",
+    "root_governance_only_no_project_file_movement"
+  ],
+  "stage_gate_status": {
+    "S4PCT03": "PASSED_AND_BOUND",
+    "S5PAT01": "LOCAL_PRECOMMIT_PASSED",
+    "S5PA-GATE": "IN_PROGRESS",
+    "project_file_movement": "NOT_STARTED",
+    "archive_write": "NOT_STARTED",
+    "privacy_value_emission": "BLOCKED",
+    "next_allowed_task": "S5PAT02"
+  },
+  "wave2_projects": [
+    "FIFA",
+    "OpenAIDatabase",
+    "PFI_BIG_DATA_SIMULATOR",
+    "Serenity-Alipay"
+  ],
+  "structure_audit_summary": {
+    "node_count": 1212,
+    "edge_count": 3047,
+    "tracked_file_counts": {
+      "FIFA": 312,
+      "OpenAIDatabase": 206,
+      "PFI_BIG_DATA_SIMULATOR": 282,
+      "Serenity-Alipay": 412
+    },
+    "category_totals": {
+      "ARCHIVE": 155,
+      "DELETE_CANDIDATE": 0,
+      "GENERATED": 42,
+      "KEEP": 755,
+      "MERGE": 5,
+      "PRIVATE": 255
+    }
+  },
+  "privacy_scan_summary": {
+    "review_finding_count": 688,
+    "secret_keyword_file_count": 34,
+    "email_marker_file_count": 163,
+    "absolute_user_path_file_count": 101,
+    "omitted_review_findings": 608,
+    "verified_real_secret_or_pii_found": false,
+    "values_emitted": false,
+    "log_mode": "PRIVACY_MARKER_SCAN_SUMMARY_NO_VALUES_EMITTED"
+  },
+  "stop_conditions": {
+    "real_secret_or_pii_confirmed": false,
+    "privacy_values_emitted": false,
+    "generated_directory_as_fact_source": false,
+    "project_files_moved": false,
+    "archive_written": false,
+    "delete_candidate_without_owner_approval": false,
+    "forbidden_project_scope_touched": false
+  },
+  "scope_guard": {
+    "forbidden_projects": [
+      "EEI",
+      "arxiv-daily-push"
+    ],
+    "touched_forbidden_projects": [],
+    "allowed_project": "ROOT",
+    "wave2_project_paths": [
+      "FIFA",
+      "OpenAIDatabase",
+      "PFI/大数据模拟器",
+      "Serenity-Alipay"
+    ]
+  },
+  "test_commands": [
+    "python -B tools/structure_audit.py --projects FIFA OpenAIDatabase PFI_BIG_DATA_SIMULATOR Serenity-Alipay",
+    "python -B tools/structure_audit.py --projects FIFA OpenAIDatabase PFI_BIG_DATA_SIMULATOR Serenity-Alipay --check",
+    "python -B tools/structure_audit.py --wave 1 --check",
+    "python -B -m py_compile tools/structure_audit.py",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pat01_wave2_structure_privacy_artifact_baseline -q",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --all",
+    "git diff --check",
+    "git diff --name-only origin/main -- EEI arxiv-daily-push"
+  ],
+  "test_results": [
+    {
+      "command": "python -B tools/structure_audit.py --projects FIFA OpenAIDatabase PFI_BIG_DATA_SIMULATOR Serenity-Alipay",
+      "exit_code": 0,
+      "result": "PASS node_count=1212 edge_count=3047 output_dir=governance/stage_gates/s5pa"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --projects FIFA OpenAIDatabase PFI_BIG_DATA_SIMULATOR Serenity-Alipay --check",
+      "exit_code": 0,
+      "result": "PASS no output drift"
+    },
+    {
+      "command": "python -B tools/structure_audit.py --wave 1 --check",
+      "exit_code": 0,
+      "result": "PASS S4PCT03 gate remains stable"
+    },
+    {
+      "command": "python -B -m py_compile tools/structure_audit.py",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s5pat01_wave2_structure_privacy_artifact_baseline -q",
+      "exit_code": 0,
+      "result": "Ran 1 test OK"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 0,
+      "result": "validation exit_code=0; errors=0 warnings=0; check_render checked_count=8; zero_diff.clean=false precommit"
+    },
+    {
+      "command": "python -B scripts/lean_governance.py validate --all",
+      "exit_code": 0,
+      "result": "errors=0 warnings=0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "ok"
+    },
+    {
+      "command": "git diff --cached --name-only origin/main -- EEI arxiv-daily-push",
+      "exit_code": 0,
+      "result": "no forbidden project changes"
+    }
+  ],
+  "evidence_refs": [
+    "governance/stage_gates/s5pa/wave2_structure_map.json",
+    "governance/stage_gates/s5pa/wave2_reference_graph.json",
+    "governance/stage_gates/s5pa/privacy_scan.log",
+    "governance/stage_gates/s5pa/archive_plan.md",
+    "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+    "governance/run_manifests/GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625.json"
+  ],
+  "unresolved_risks": [
+    "S5PAT01 is a baseline-only task; it does not prove that S5PAT02 archive manifests or project migrations are safe to execute without follow-up checksums.",
+    "Privacy scan findings are marker-based and require owner review before any private/export/data path is moved or archived.",
+    "S5PA-GATE remains in_progress until S5PAT02 generates Wave 2 archive, privacy and rollback manifest evidence."
+  ],
+  "next_allowed_task": "S5PAT02",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Project Governance workflow after PR merge",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI_ATTESTED",
+  "finished_at": "2026-06-25T00:00:00+10:00"
+}

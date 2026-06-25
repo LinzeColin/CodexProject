@@ -5587,6 +5587,91 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s5pat01_wave2_structure_privacy_artifact_baseline(self) -> None:
+        s5pa_root = ROOT / "governance" / "stage_gates" / "s5pa"
+        map_path = s5pa_root / "wave2_structure_map.json"
+        graph_path = s5pa_root / "wave2_reference_graph.json"
+        privacy_path = s5pa_root / "privacy_scan.log"
+        archive_plan_path = s5pa_root / "archive_plan.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json"
+        )
+        for path in {map_path, graph_path, privacy_path, archive_plan_path, manifest_path}:
+            self.assertTrue(path.is_file(), path)
+
+        structure_map = json.loads(map_path.read_text(encoding="utf-8"))
+        reference_graph = json.loads(graph_path.read_text(encoding="utf-8"))
+        privacy_log = privacy_path.read_text(encoding="utf-8")
+        archive_plan = archive_plan_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        expected_projects = ["FIFA", "OpenAIDatabase", "PFI_BIG_DATA_SIMULATOR", "Serenity-Alipay"]
+        expected_categories = ["KEEP", "MERGE", "ARCHIVE", "GENERATED", "PRIVATE", "DELETE_CANDIDATE"]
+
+        self.assertEqual(structure_map["schema_version"], "codexproject.structure_audit.v1")
+        self.assertEqual(structure_map["task_id"], "S5PAT01")
+        self.assertEqual(structure_map["acceptance_id"], "ACC-S5PAT01")
+        self.assertEqual(structure_map["stage"], "S5")
+        self.assertEqual(structure_map["phase"], "S5PA")
+        self.assertEqual(structure_map["wave"], 2)
+        self.assertEqual(structure_map["projects"], expected_projects)
+        self.assertFalse(structure_map["stop_conditions"]["project_files_moved"])
+
+        project_maps = {project["project_id"]: project for project in structure_map["project_maps"]}
+        self.assertEqual(set(project_maps), set(expected_projects))
+        self.assertEqual(project_maps["PFI_BIG_DATA_SIMULATOR"]["project_path"], "PFI/大数据模拟器")
+        self.assertGreater(project_maps["FIFA"]["category_counts"]["GENERATED"], 0)
+        self.assertGreater(project_maps["OpenAIDatabase"]["category_counts"]["PRIVATE"], 0)
+        self.assertGreater(project_maps["PFI_BIG_DATA_SIMULATOR"]["category_counts"]["ARCHIVE"], 0)
+        self.assertGreater(project_maps["Serenity-Alipay"]["category_counts"]["PRIVATE"], 0)
+        for project in project_maps.values():
+            self.assertEqual(set(project["category_counts"]), set(expected_categories))
+            self.assertEqual(project["category_counts"]["DELETE_CANDIDATE"], 0)
+            self.assertEqual(project["tracked_file_count"], len(project["tracked_files"]))
+            for item in project["tracked_files"]:
+                self.assertFalse(item["path"].startswith(("EEI/", "arxiv-daily-push/")), item["path"])
+
+        self.assertEqual(reference_graph["task_id"], "S5PAT01")
+        self.assertEqual(reference_graph["acceptance_id"], "ACC-S5PAT01")
+        self.assertEqual(reference_graph["projects"], expected_projects)
+        self.assertEqual(reference_graph["node_count"], sum(project["tracked_file_count"] for project in project_maps.values()))
+        self.assertEqual(reference_graph["node_count"], len(reference_graph["nodes"]))
+        self.assertEqual(reference_graph["edge_count"], len(reference_graph["edges"]))
+        self.assertTrue(all(not node["id"].startswith(("EEI/", "arxiv-daily-push/")) for node in reference_graph["nodes"]))
+
+        self.assertIn("PRIVACY_MARKER_SCAN_SUMMARY_NO_VALUES_EMITTED", privacy_log)
+        self.assertIn("value_policy: paths and marker classes only", privacy_log)
+        self.assertIn("verified_real_secret_or_pii_found: false", privacy_log)
+        self.assertIn("omitted_review_findings:", privacy_log)
+        self.assertNotIn("S4PAT01", privacy_log)
+        self.assertIn("S5PAT01 does not move, archive, delete, or rewrite project files", archive_plan)
+        self.assertIn("S5PAT02 may generate the Wave 2 archive/privacy manifest", archive_plan)
+        self.assertNotIn("S4PAT01", archive_plan)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "ROOT")
+        self.assertEqual(manifest["task_id"], "S5PAT01")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PAT01"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S4PCT03-WAVE1-GATE-20260625"])
+        self.assertEqual(manifest["next_allowed_task"], "S5PAT02")
+        self.assertEqual(manifest["stage_gate_status"]["S5PAT01"], "LOCAL_PRECOMMIT_PASSED")
+        self.assertFalse(manifest["stop_conditions"]["project_files_moved"])
+        self.assertFalse(manifest["scope_guard"]["touched_forbidden_projects"])
+        changed = set(manifest["changed_files_actual"])
+        for path in {
+            "tools/structure_audit.py",
+            "governance/stage_gates/s5pa/wave2_structure_map.json",
+            "governance/stage_gates/s5pa/wave2_reference_graph.json",
+            "governance/stage_gates/s5pa/privacy_scan.log",
+            "governance/stage_gates/s5pa/archive_plan.md",
+            "governance/run_manifests/GOV-OTHER8-S5PAT01-WAVE2-STRUCTURE-BASELINE-20260625.json",
+            "tests/governance/test_project_governance_validator.py",
+        }:
+            self.assertIn(path, changed)
+        self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
