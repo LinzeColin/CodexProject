@@ -193,6 +193,22 @@ S2PDT04_REQUIRED_SHADOW_DAYS = 2
 S2PDT04_REQUIRED_BOARD_IDS = ("B2_policy", "B3_frontier", "B4_industry", "B5_macro", "B6_risk")
 S2PDT04_REQUIRED_ROUTE_FIELDS = ("board_id", "source_ids", "route_explanation", "authority_gate", "metadata_only")
 S2PDT04_REPORT_FILENAME = "stage2_s2pdt04_china_d3_readiness_review_report.json"
+S2PET01_US_TA_SOURCE_MODEL_ID = "adp-s2pet01-us-ta-source-foundation-v1"
+S2PET01_ACCEPTANCE_ID = "ACC-S2PET01-US-TA"
+S2PET01_TASK_ID = "S2PET01"
+S2PET01_LEGACY_TASK_ID = "S2P4T01"
+S2PET01_REQUIRED_AGENCIES = ("NSF", "DARPA", "DOE", "NIH", "NASA", "NIST", "USPTO", "FDA")
+S2PET01_REQUIRED_SIGNAL_TYPES = (
+    "grant_award",
+    "program_announcement",
+    "research_project",
+    "standard_reference",
+    "patent_publication",
+    "regulatory_science_notice",
+)
+S2PET01_ALLOWED_IDENTITY_STATES = ("official_domain", "official_api_or_feed", "official_publication_portal")
+S2PET01_REQUIRED_TRACE_FIELDS = ("agency_id", "agency_name", "official_domain", "source_url", "published_date")
+S2PET01_REPORT_FILENAME = "stage2_s2pet01_us_ta_source_foundation_report.json"
 S2PFT01_CHINA_PROVINCIAL_MODEL_ID = "adp-s2pft01-china-provincial-template-coverage-v1"
 S2PFT01_ACCEPTANCE_ID = "ACC-S2PFT01-PROVINCES"
 S2PFT01_TASK_ID = "S2PFT01"
@@ -3462,6 +3478,221 @@ def validate_s2pdt04_china_d3_readiness_review_report(report: Mapping[str, Any])
                 errors.append(f"passing S2PDT04 D3 readiness report requires {key}=pass")
         if report.get("d3_core_readiness_review_ready") is not True:
             errors.append("passing S2PDT04 D3 readiness report requires d3_core_readiness_review_ready=true")
+    return errors
+
+
+def build_s2pet01_us_ta_source_foundation_report(
+    *,
+    generated_at: str,
+    agency_records: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build US-TA official technology agency source foundation evidence without production inclusion."""
+
+    agency_rows, row_errors = _s2pet01_agency_rows(agency_records)
+    agency_gate = _s2pet01_agency_coverage_gate(agency_rows)
+    signal_gate = _s2pet01_signal_type_gate(agency_rows)
+    identity_gate = _s2pet01_identity_gate(agency_rows)
+    traceability_gate = _s2pet01_traceability_gate(agency_rows)
+    metadata_gate = _s2pet01_metadata_gate(agency_rows)
+    blocking_reasons = [
+        *row_errors,
+        *agency_gate["blocking_reasons"],
+        *signal_gate["blocking_reasons"],
+        *identity_gate["blocking_reasons"],
+        *traceability_gate["blocking_reasons"],
+        *metadata_gate["blocking_reasons"],
+    ]
+    status = (
+        "pass"
+        if not blocking_reasons
+        and agency_gate["status"]
+        == signal_gate["status"]
+        == identity_gate["status"]
+        == traceability_gate["status"]
+        == metadata_gate["status"]
+        == "pass"
+        else "blocked"
+    )
+    return {
+        "model_id": S2PET01_US_TA_SOURCE_MODEL_ID,
+        "acceptance_id": S2PET01_ACCEPTANCE_ID,
+        "task_id": S2PET01_TASK_ID,
+        "legacy_task_id": S2PET01_LEGACY_TASK_ID,
+        "phase": "S2PE",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        "agency_coverage_gate": agency_gate["status"],
+        "signal_type_gate": signal_gate["status"],
+        "official_identity_gate": identity_gate["status"],
+        "document_traceability_gate": traceability_gate["status"],
+        "metadata_only_gate": metadata_gate["status"],
+        "required_agencies": list(S2PET01_REQUIRED_AGENCIES),
+        "agencies_observed": agency_gate["agencies_observed"],
+        "required_signal_types": list(S2PET01_REQUIRED_SIGNAL_TYPES),
+        "signal_types_observed": signal_gate["signal_types_observed"],
+        "required_trace_fields": list(S2PET01_REQUIRED_TRACE_FIELDS),
+        "agency_records": agency_rows,
+        "agency_record_count": len(agency_rows),
+        "agency_summary": agency_gate,
+        "signal_summary": signal_gate,
+        "identity_summary": identity_gate,
+        "traceability_summary": traceability_gate,
+        "metadata_summary": metadata_gate,
+        "d4_us_ta_source_foundation_ready": status == "pass",
+        "d4_us_official_source_domain_accepted": False,
+        "formal_production_inclusion": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "github_cloud_schedule_enabled": False,
+        "real_smtp_sent": False,
+        "real_release_uploaded": False,
+        "production_affected": False,
+        "queue_mutation_allowed": False,
+        "smtp_transport_allowed": False,
+        "schema_migration_allowed": False,
+        "bulk_scraping_allowed": False,
+        "pdf_download_enabled": False,
+        "full_text_download_enabled": False,
+        "paid_api_used": False,
+        "paywall_bypass_allowed": False,
+        "public_schema_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_modified": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pet01_us_ta_source_foundation(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    agency_records: Sequence[Mapping[str, Any]],
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist S2PET01 US-TA official source foundation evidence without production inclusion."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pet01-us-ta-source-foundation"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pet01_us_ta_source_foundation_report(
+        generated_at=generated_at,
+        agency_records=agency_records,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "source_foundation_report_path": str(run_dir / "adp-s2pet01-us-ta-source-foundation-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pet01-us-ta-source-foundation-report.json", report)
+        _write_json(state / S2PET01_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pet01_us_ta_source_foundation_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PET01_US_TA_SOURCE_MODEL_ID:
+        errors.append("S2PET01 US-TA model_id must be adp-s2pet01-us-ta-source-foundation-v1")
+    if report.get("task_id") != S2PET01_TASK_ID:
+        errors.append("S2PET01 US-TA task_id must be S2PET01")
+    if report.get("legacy_task_id") != S2PET01_LEGACY_TASK_ID:
+        errors.append("S2PET01 US-TA legacy_task_id must be S2P4T01")
+    if report.get("acceptance_id") != S2PET01_ACCEPTANCE_ID:
+        errors.append("S2PET01 US-TA acceptance_id must be ACC-S2PET01-US-TA")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PET01 US-TA status must be pass or blocked")
+    for key in (
+        "d4_us_official_source_domain_accepted",
+        "formal_production_inclusion",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "github_cloud_schedule_enabled",
+        "real_smtp_sent",
+        "real_release_uploaded",
+        "production_affected",
+        "queue_mutation_allowed",
+        "smtp_transport_allowed",
+        "schema_migration_allowed",
+        "bulk_scraping_allowed",
+        "pdf_download_enabled",
+        "full_text_download_enabled",
+        "paid_api_used",
+        "paywall_bypass_allowed",
+        "public_schema_changed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_modified",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PET01 US-TA source foundation")
+    records = report.get("agency_records")
+    if not isinstance(records, list):
+        errors.append("S2PET01 agency_records must be a list")
+        records = []
+    observed_agencies = set(report.get("agencies_observed") or [])
+    missing_agencies = [agency for agency in S2PET01_REQUIRED_AGENCIES if agency not in observed_agencies]
+    if missing_agencies:
+        errors.append("S2PET01 missing required agencies: " + ", ".join(missing_agencies))
+    observed_signals = set(report.get("signal_types_observed") or [])
+    missing_signals = [signal_type for signal_type in S2PET01_REQUIRED_SIGNAL_TYPES if signal_type not in observed_signals]
+    if missing_signals:
+        errors.append("S2PET01 missing required signal types: " + ", ".join(missing_signals))
+    source_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"agency_records[{index}] must be an object")
+            continue
+        source_id = str(record.get("source_id") or "")
+        if not source_id:
+            errors.append(f"agency_records[{index}].source_id is required")
+        if source_id in source_ids:
+            errors.append(f"duplicate S2PET01 source_id: {source_id}")
+        source_ids.add(source_id)
+        if record.get("agency_id") not in S2PET01_REQUIRED_AGENCIES:
+            errors.append(f"agency_records[{index}].agency_id is not supported")
+        if record.get("signal_type") not in S2PET01_REQUIRED_SIGNAL_TYPES:
+            errors.append(f"agency_records[{index}].signal_type is not supported")
+        if record.get("identity_state") not in S2PET01_ALLOWED_IDENTITY_STATES:
+            errors.append(f"agency_records[{index}].identity_state is not accepted")
+        if record.get("metadata_only") is not True:
+            errors.append(f"agency_records[{index}].metadata_only must be true")
+        if record.get("pdf_downloaded") is not False:
+            errors.append(f"agency_records[{index}].pdf_downloaded must be false")
+        if record.get("full_text_extracted") is not False:
+            errors.append(f"agency_records[{index}].full_text_extracted must be false")
+        if record.get("production_affected") is not False:
+            errors.append(f"agency_records[{index}].production_affected must be false")
+        if record.get("real_smtp_sent") is not False:
+            errors.append(f"agency_records[{index}].real_smtp_sent must be false")
+        if record.get("queue_mutation_allowed") is not False:
+            errors.append(f"agency_records[{index}].queue_mutation_allowed must be false")
+        for field in S2PET01_REQUIRED_TRACE_FIELDS:
+            if not record.get(field):
+                errors.append(f"agency_records[{index}].{field} is required")
+        if not record.get("record_title"):
+            errors.append(f"agency_records[{index}].record_title is required")
+        if not record.get("evidence_refs"):
+            errors.append(f"agency_records[{index}].evidence_refs is required")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PET01 US-TA report requires blocking_reasons")
+    if report.get("status") == "pass":
+        for key in (
+            "agency_coverage_gate",
+            "signal_type_gate",
+            "official_identity_gate",
+            "document_traceability_gate",
+            "metadata_only_gate",
+        ):
+            if report.get(key) != "pass":
+                errors.append(f"passing S2PET01 US-TA report requires {key}=pass")
+        if report.get("d4_us_ta_source_foundation_ready") is not True:
+            errors.append("passing S2PET01 US-TA report requires d4_us_ta_source_foundation_ready=true")
     return errors
 
 
@@ -7971,6 +8202,149 @@ def _s2pdt04_metadata_gate(
         "metadata_only_record_count": len(records) - len(violations),
         "evidence_backed_record_count": len(records) - len(evidence_missing),
         "record_count": len(records),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet01_agency_rows(records: Sequence[Mapping[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    source_ids: set[str] = set()
+    for index, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            errors.append(f"agency_records[{index}] must be an object")
+            continue
+        source_id = str(record.get("source_id") or "").strip()
+        official_domain = str(record.get("official_domain") or "").strip().lower()
+        source_url = str(record.get("source_url") or "").strip()
+        row = {
+            "source_id": source_id,
+            "agency_id": str(record.get("agency_id") or "").strip().upper(),
+            "agency_name": str(record.get("agency_name") or "").strip(),
+            "signal_type": str(record.get("signal_type") or "").strip(),
+            "record_title": str(record.get("record_title") or "").strip(),
+            "official_domain": official_domain,
+            "source_url": source_url,
+            "published_date": str(record.get("published_date") or "").strip(),
+            "identifier": str(record.get("identifier") or "").strip(),
+            "identity_state": str(record.get("identity_state") or "").strip(),
+            "metadata_only": record.get("metadata_only") is True,
+            "pdf_downloaded": record.get("pdf_downloaded") is True,
+            "full_text_extracted": record.get("full_text_extracted") is True,
+            "production_affected": record.get("production_affected") is True,
+            "real_smtp_sent": record.get("real_smtp_sent") is True,
+            "queue_mutation_allowed": record.get("queue_mutation_allowed") is True,
+            "evidence_refs": list(record.get("evidence_refs") or []),
+        }
+        if not source_id:
+            errors.append(f"agency_records[{index}].source_id is required")
+        if source_id in source_ids:
+            errors.append(f"duplicate S2PET01 source_id: {source_id}")
+        source_ids.add(source_id)
+        if official_domain and source_url and official_domain not in source_url.lower():
+            errors.append(f"agency_records[{index}].source_url must contain official_domain")
+        rows.append(row)
+    if not rows:
+        errors.append("S2PET01 requires at least one US-TA agency record")
+    return rows, errors
+
+
+def _s2pet01_agency_coverage_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("agency_id") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET01_REQUIRED_AGENCIES) - observed)
+    unsupported = sorted(observed - set(S2PET01_REQUIRED_AGENCIES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET01 US-TA missing required agencies: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET01 US-TA has unsupported agencies: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_agencies": list(S2PET01_REQUIRED_AGENCIES),
+        "agencies_observed": sorted(agency for agency in observed if agency),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet01_signal_type_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    observed = {str(row.get("signal_type") or "") for row in rows if isinstance(row, Mapping)}
+    missing = sorted(set(S2PET01_REQUIRED_SIGNAL_TYPES) - observed)
+    unsupported = sorted(observed - set(S2PET01_REQUIRED_SIGNAL_TYPES))
+    reasons: list[str] = []
+    if missing:
+        reasons.append("S2PET01 US-TA missing required signal types: " + ", ".join(missing))
+    if unsupported:
+        reasons.append("S2PET01 US-TA has unsupported signal types: " + ", ".join(unsupported))
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_signal_types": list(S2PET01_REQUIRED_SIGNAL_TYPES),
+        "signal_types_observed": sorted(signal for signal in observed if signal),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet01_identity_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    invalid = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("identity_state") not in S2PET01_ALLOWED_IDENTITY_STATES
+        or not str(row.get("official_domain") or "")
+        or not str(row.get("source_url") or "")
+    ]
+    reasons: list[str] = []
+    if invalid:
+        reasons.append("S2PET01 US-TA identity requires accepted identity_state, official_domain, and source_url")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "allowed_identity_states": list(S2PET01_ALLOWED_IDENTITY_STATES),
+        "verified_record_count": len(rows) - len(invalid),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet01_traceability_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    missing_rows = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            missing_rows.append(row)
+            continue
+        if any(not row.get(field) for field in S2PET01_REQUIRED_TRACE_FIELDS) or not row.get("record_title") or not row.get("evidence_refs"):
+            missing_rows.append(row)
+    reasons: list[str] = []
+    if missing_rows:
+        reasons.append("S2PET01 US-TA traceability requires agency_id, agency_name, official_domain, source_url, published_date, record_title, and evidence_refs")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "required_trace_fields": list(S2PET01_REQUIRED_TRACE_FIELDS),
+        "traceable_record_count": len(rows) - len(missing_rows),
+        "record_count": len(rows),
+        "blocking_reasons": reasons,
+    }
+
+
+def _s2pet01_metadata_gate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    violations = [
+        row
+        for row in rows
+        if not isinstance(row, Mapping)
+        or row.get("metadata_only") is not True
+        or row.get("pdf_downloaded") is not False
+        or row.get("full_text_extracted") is not False
+        or row.get("production_affected") is not False
+        or row.get("real_smtp_sent") is not False
+        or row.get("queue_mutation_allowed") is not False
+    ]
+    reasons: list[str] = []
+    if violations:
+        reasons.append("S2PET01 US-TA records must be metadata-only with no PDF/full-text, production, SMTP, or queue side effects")
+    return {
+        "status": "pass" if not reasons else "blocked",
+        "metadata_only_record_count": len(rows) - len(violations),
+        "record_count": len(rows),
         "blocking_reasons": reasons,
     }
 

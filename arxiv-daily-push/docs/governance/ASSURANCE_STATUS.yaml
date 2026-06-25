@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260625-ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-001"
-source_snapshot_hash: "sha256:b330a438347b109c5594613a4972573e6eb48a8dfee2b11e54376b5273ca6c66"
+as_of_event_id: "EVENT-20260625-ADP-S2PET01-US-TA-SOURCE-FOUNDATION-001"
+source_snapshot_hash: "sha256:f86deee9c5d3349171c36815468ff01b2ce156fc32a52e8156f72e83f266bd7c"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-25T22:20:00+10:00"
+snapshot_event_time: "2026-06-25T23:10:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 542
-    total_active_parameters: 542
-    checked_active_formulas: 76
-    total_active_formulas: 76
+    checked_active_parameters: 551
+    total_active_parameters: 551
+    checked_active_formulas: 77
+    total_active_formulas: 77
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 542
-    total_active_parameters: 542
+    checked_active_parameters: 551
+    total_active_parameters: 551
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 77
+    legacy_unbound_events: 78
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PAT07_EMAIL_V1_POINTER_REPAIRED_NO_PRODUCTION"
+  release_gate: "S2PET01_US_TA_SOURCE_FOUNDATION_METADATA_ONLY_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
