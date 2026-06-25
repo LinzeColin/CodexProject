@@ -4720,3 +4720,56 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PKT01-MAIL-CONTRACT-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PKT01_MAIL_CONTRACT.md"
+  -
+    model_id: "MOD-ADP-090"
+    name: "S2PKT02 M1 local mail evidence model"
+    purpose: "Validate local-only S2PKT02 M1 science/theory frontier mail evidence across S2PKT01 contract readiness, B1 primary board scope, B4/B5/B6 cross-cutting boards, required M1 sections, evidence/counterevidence labels, personal value, action windows, deterministic M1 hash, and no-production side-effect gates."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-092"
+    parameter_ids:
+      - "PARAM-ADP-717"
+      - "PARAM-ADP-718"
+      - "PARAM-ADP-719"
+      - "PARAM-ADP-720"
+      - "PARAM-ADP-721"
+      - "PARAM-ADP-722"
+      - "PARAM-ADP-723"
+      - "PARAM-ADP-724"
+      - "PARAM-ADP-725"
+      - "PARAM-ADP-726"
+    inputs:
+      - "S2PKT01 mail contract report"
+      - "S2PHT05 content quality gate report"
+      - "S2PIT04 content ledger report"
+      - "S2PJT03 action asset ROI report"
+      - "M1 mail evidence record"
+      - "production gate state"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "S2PKT02 M1 mail report"
+      - "mail contract gate"
+      - "content quality gate"
+      - "content ledger gate"
+      - "action ROI gate"
+      - "M1 scope gate"
+      - "section coverage gate"
+      - "evidence and counterevidence gate"
+      - "personal action gate"
+      - "hash status gate"
+      - "no side effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PKT02-M1-MAIL-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PKT02_M1_MAIL.md"
