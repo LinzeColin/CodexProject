@@ -4,10 +4,10 @@
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:aa4059a2718e1a1120afd1f2a4e0265de3b2bcd37d9017bcf92ea74f58239160`
-- snapshot_event_time: `2026-06-25T15:52:04Z`
+- source_snapshot_hash: `sha256:859eef82f670157a96889aa6a2b6e50f34097b7caeeab6caa91e7baea0c21ff2`
+- snapshot_event_time: `2026-06-25T16:12:00Z`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `CI_ATTESTED:842b4f0999ac3fd0d2ce4ebf023f81fd9fc5f544 Project Governance run 28183575921 PASS; EEI validation run 28183575964 PASS`
 
 ## Current State
 
@@ -39,6 +39,6 @@
 - Next executable task: `TASK-T1301`
 - Pending/stale events: `96`
 - Tree-bound events: `0`
-- Commit-bound events: `15`
+- Commit-bound events: `16`
 - Legacy unbound events: `19`
 - Unresolved fact IDs: `5`
