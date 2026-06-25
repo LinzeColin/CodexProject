@@ -1,0 +1,45 @@
+{
+  "manifest_id": "ADP-S2PMT01-SECURITY-BOUNDARY-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT01",
+  "acceptance_id": "ACC-S2PMT01-SECURITY",
+  "phase": "S2PM",
+  "model_id": "MOD-ADP-094",
+  "formula_id": "FORM-ADP-096",
+  "parameter_ids": [
+    "PARAM-ADP-758",
+    "PARAM-ADP-759",
+    "PARAM-ADP-760",
+    "PARAM-ADP-761",
+    "PARAM-ADP-762",
+    "PARAM-ADP-763",
+    "PARAM-ADP-764",
+    "PARAM-ADP-765",
+    "PARAM-ADP-766",
+    "PARAM-ADP-767"
+  ],
+  "base_commit": "2866936e7cc25f7c7e8947cc6a4eb106a8ce1418",
+  "created_at": "2026-06-26T11:20:00+10:00",
+  "scope": "Local S2PMT01 security and evidence-boundary gates for UNTRUSTED_DATA source content, typed frontstage statements, safe URLs, zero-critical-claim blocking, and local supply-chain baseline evidence.",
+  "non_scope": "No SMTP, scheduler, Release, DB migration, public schema, workflow enforcement, live source fetch, production restore, V7.1/V7.2 contract edit, P0/P1 closure claim, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
+    "arxiv-daily-push/tests/test_security_boundary.py",
+    "arxiv-daily-push/tests/test_lesson.py",
+    "arxiv-daily-push/tests/test_stage1_b1_report.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused security/lesson/B1 tests: 18 OK",
+    "full arxiv-daily-push unittest: 404 OK",
+    "V7.2 validator PASS",
+    "ADP project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS",
+    "full semantic extractor: NOT COMPLETED after local interrupt during full-table AST parsing; changed-only semantic governance is the S2PMT01 local gate used for this run"
+  ]
+}

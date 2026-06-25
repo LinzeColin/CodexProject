@@ -1992,3 +1992,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PMT01"
+    phase: "S2PM"
+    objective: "Implement local-only security and evidence-boundary gates for untrusted source content, typed frontstage statements, safe URLs, zero-critical-claim blocking, and supply-chain baseline evidence."
+    scope: "UNTRUSTED_DATA trust boundary receipt, source URL sanitizer, typed fact/inference/hypothesis/action frontstage statements, B1 report zero-critical-claim block, local supply-chain baseline receipt, focused tests, model/formula/parameter registration, phase record, and run manifest."
+    non_scope: "No SMTP, no scheduler install, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PAT05", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/security_boundary.py", "arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_security_boundary.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    acceptance_ids: ["ACC-S2PMT01-SECURITY"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt01_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/security_boundary.py arxiv-daily-push/src/arxiv_daily_push/lesson.py arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_stage1_b1_report.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt01_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_stage1_b1_report.py -q"]
+    test_results: ["py_compile PASS", "focused security/lesson/B1 tests: 18 OK", "full arxiv-daily-push unittest: 404 OK", "V7.2 validator PASS", "ADP project governance: errors 0 warnings 0", "changed-only governance semantic: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse OK", "git diff --check PASS", "full semantic extractor: NOT COMPLETED after local interrupt during full-table AST parsing; changed-only semantic governance is the S2PMT01 local gate used for this run"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md", "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json", "arxiv-daily-push/tests/test_security_boundary.py", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    risk: "S2PMT01 local evidence can be misread as full inherited P0/P1 closure or production supply-chain enforcement; independent review and later S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT01 security boundary module, lesson/B1 report integrations, tests, governance registrations, phase record, manifest, and events; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
