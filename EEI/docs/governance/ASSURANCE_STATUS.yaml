@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260625-017"
-source_snapshot_hash: "sha256:b76736ada4de2be885527076930d1d67382c883ea020428eb4d93b0e130a3fb6"
+as_of_event_id: "EVENT-20260625-019"
+source_snapshot_hash: "sha256:94e31371b71947016a73ac7b900bb3d067a61094f7dc6575d994483ede1293aa"
 source_base_commit: "12df22b6347fd881d42545afe387ac9e41e56fb4"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-25T16:12:00Z"
+snapshot_event_time: "2026-06-25T17:31:30Z"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:842b4f0999ac3fd0d2ce4ebf023f81fd9fc5f544 Project Governance run 28183575921 PASS; EEI validation run 28183575964 PASS"
+final_commit_binding: "CI_ATTESTED:edddaad16a42d7eb15c7da3b662b2ee05107a618 Project Governance run 28188342130 PASS; EEI validation run 28188342002 PASS"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -62,14 +62,14 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 16
+    commit_bound_events: 17
     legacy_unbound_events: 19
-    precommit_pending_events: 75
+    precommit_pending_events: 76
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1307-A209-BACKGROUND-SOAK-152-OF-288-RELEASE-BLOCKED"
+  release_gate: "TASK-T1307-A209-BACKGROUND-SOAK-170-OF-288-RELEASE-BLOCKED"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -116,4 +116,4 @@ owner_decision:
   generated_from_refs:
     - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
     - "EEI/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-25T16:12:00Z"
+  last_reviewed_at: "2026-06-25T17:31:30Z"

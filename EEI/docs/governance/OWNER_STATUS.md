@@ -82,12 +82,12 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_PENDING:EVENT-20260625-018 local A209 heartbeat 173/288 refresh`
+- final_commit_binding: `CI_ATTESTED:edddaad16a42d7eb15c7da3b662b2ee05107a618 Project Governance run 28188342130 PASS; EEI validation run 28188342002 PASS`
 - tree_bound_events: `0`
-- commit_bound_events: `16`
+- commit_bound_events: `17`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `75`
-- pending_or_stale_events: `96`
+- precommit_pending_events: `76`
+- pending_or_stale_events: `97`
 
 ## 15. UNKNOWN
 
@@ -97,8 +97,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:b76736ada4de2be885527076930d1d67382c883ea020428eb4d93b0e130a3fb6`
-- snapshot_event_time: `2026-06-25T16:12:00Z`
+- source_snapshot_hash: `sha256:94e31371b71947016a73ac7b900bb3d067a61094f7dc6575d994483ede1293aa`
+- snapshot_event_time: `2026-06-25T17:31:30Z`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `C / TASK-T1307-A209-BACKGROUND-SOAK-170-OF-288-RELEASE-BLOCKED`

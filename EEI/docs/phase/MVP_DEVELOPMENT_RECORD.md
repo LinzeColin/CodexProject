@@ -5854,3 +5854,44 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; DOWNSTREAM RELEASE GATE
 
 - Revert this heartbeat/preflight artifact refresh and governance companion records, then regenerate release artifacts from the prior heartbeat if required.
 - Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
+
+## 2026-06-25 - T1307/A209 173/288 heartbeat remote CI binding
+
+Status: REMOTE CI ATTESTED FOR COMMIT `edddaad16a42d7eb15c7da3b662b2ee05107a618`; A209 STILL IN PROGRESS; DOWNSTREAM RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Bound the committed T1307/A209 `173/288` heartbeat and dependent fail-closed release preflight refresh to GitHub Actions evidence.
+- Project Governance run `28188342130` completed PASS for commit `edddaad16a42d7eb15c7da3b662b2ee05107a618`.
+- EEI validation run `28188342002` completed PASS for the same commit, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route or publication policy changed.
+
+### Current A209 evidence
+
+- Committed point-in-time heartbeat: `173/288` windows PASS, `0` failed, `115` remaining, `60.07%` completion.
+- Live checkpoint observed after the CI-bound commit: at least `176/288` windows PASS, `0` failed.
+- Finalization remains blocked until the 24h summary/checkpoint chain validates `288/288` successful windows with zero failures.
+
+### Acceptance mapping
+
+- T1307 -> A209 for background soak progress and finalization preflight.
+- T1302 -> A203 for the dependent production API release preflight refresh.
+- T1303 -> A204/A205 for the dependent external bundle, release-manager activation and MVP release-gate preflight refresh.
+- This CI binding does not close A202, A203, A204, A205, A209, A210, A026 or A027.
+
+### Validation
+
+- Project Governance run `28188342130`: PASS.
+- EEI validation run `28188342002`: PASS.
+- A209 live checkpoint observation: `176/288` PASS with `0` failed; progress-only and not release-ready evidence.
+
+### Remaining gaps
+
+- Full A209 closure still requires a 24h summary/checkpoint chain at `288/288` successful windows with zero failures and release-ready validation.
+- A202 source/license/passage/owner/legal clearance, A210 formal brand clearance or waiver, A026/A027 production gold labels and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
