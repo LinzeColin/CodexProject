@@ -29,12 +29,12 @@
 
 ## 项目验收矩阵
 
-| 项目 | 任务 | 报告 | README 行数 | 中文验收 | 结果 |
-|---|---|---|---:|---|---|
-| `FIFA` | `S5PBT01` | `FIFA/docs/FIFA_structure_report.md` | `92` | `通过` | `通过` |
-| `OpenAIDatabase` | `S5PBT02` | `OpenAIDatabase/docs/OpenAIDatabase_structure_report.md` | `533` | `通过` | `通过` |
-| `PFI_BIG_DATA_SIMULATOR` | `S5PCT01` | `PFI/大数据模拟器/docs/PFI_structure_report.md` | `654` | `通过` | `通过` |
-| `Serenity-Alipay` | `S5PCT02` | `Serenity-Alipay/docs/Serenity_structure_report.md` | `389` | `通过` | `通过` |
+| 项目 | 任务 | 报告 | README 行数 | 第一屏中文 | 中文验收 | 结果 |
+|---|---|---|---:|---|---|---|
+| `FIFA` | `S5PBT01` | `FIFA/docs/FIFA_structure_report.md` | `111` | `通过` | `通过` | `通过` |
+| `OpenAIDatabase` | `S5PBT02` | `OpenAIDatabase/docs/OpenAIDatabase_structure_report.md` | `553` | `通过` | `通过` | `通过` |
+| `PFI_BIG_DATA_SIMULATOR` | `S5PCT01` | `PFI/大数据模拟器/docs/PFI_structure_report.md` | `674` | `通过` | `通过` | `通过` |
+| `Serenity-Alipay` | `S5PCT02` | `Serenity-Alipay/docs/Serenity_structure_report.md` | `409` | `通过` | `通过` | `通过` |
 
 ## 隐私与运行边界
 

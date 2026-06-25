@@ -1,3 +1,23 @@
+# PFI 大数据模拟器中文 Owner 快速入口
+
+- S5/S6 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
+- 当前任务：`S6PAT02` / `ACC-S6PAT02` 仍在逐项目进行；S5 结构验收回看任务为 `S5PCT01` / `ACC-S5PCT01`。
+- 下一 Gate：`S6PA-GATE` 仍在进行中；S5PC/S5-GATE 的中文验收必须继续以本第一屏和 `docs/PFI_structure_report.md` 为准。
+- 本轮边界：只补 Owner 可读路径，不改运行代码，不改算法，不移动 `qbvs/`、`config/`、`tests/`、`runs/`、`reports/`，不触发外部自动化。
+
+| Owner 判断项 | 当前路径 | 状态 |
+|---|---|---|
+| active qbvs | `qbvs/` | 主动运行和算法代码，本轮不改 |
+| config | `config/` | 输入配置层，本轮不改 |
+| tests | `tests/` | 验证层，本轮不改 |
+| runs/reports | `runs/`、`reports/` | 输出证据层，不作为源码事实 |
+| contracts/tools | 根合同、`tools/` | 互操作、恢复、报告生成资料，不是默认算法入口 |
+
+- 最小验证路径：进入 `PFI/大数据模拟器/`，运行 `python -B -m unittest tests.test_s3pct02_lifecycle -q`；本轮实测结果为 `Ran 1 test` / `OK`。
+- active qbvs smoke：`S5PCT01_PFI_ACTIVE_QBVS_SMOKE_PASS specs=240 rows=120`，证据在 `governance/stage_gates/s5pc/pfi_smoke_tests.log`。
+- 失败去向：若出现 `No module named pytest`，先按环境 blocker 处理依赖；若 lifecycle 或 active qbvs 断言失败，再查 `PFI/大数据模拟器/docs/PFI_structure_report.md` 和 `tests/`。
+- 回滚：revert 本次 README/报告/gate 证据提交即可；本轮不改运行代码、不改算法、不移动文件、不触发外部自动化。
+
 # 大数据模拟器（原 QBVS / Quant Behavior Validation System）
 
 ## Governance Baseline

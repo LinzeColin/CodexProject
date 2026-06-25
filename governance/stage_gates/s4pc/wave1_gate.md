@@ -27,12 +27,12 @@
 
 ## 项目验收矩阵
 
-| 项目 | 任务 | 报告 | README 行数 | 中文验收 | 结果 |
-|---|---|---|---:|---|---|
-| `Alpha` | `S4PBT01` | `Alpha/docs/structure_migration_map.md` | `101` | `通过` | `通过` |
-| `EVA_OS` | `S4PBT02` | `EVA_OS/docs/EVA_structure_report.md` | `999` | `通过` | `通过` |
-| `OpMe_System` | `S4PCT01` | `OpMe_System/docs/OpMe_structure_report.md` | `122` | `通过` | `通过` |
-| `whkmSalary` | `S4PCT02` | `whkmSalary/docs/whkm_structure_report.md` | `32` | `通过` | `通过` |
+| 项目 | 任务 | 报告 | README 行数 | 第一屏中文 | 中文验收 | 结果 |
+|---|---|---|---:|---|---|---|
+| `Alpha` | `S4PBT01` | `Alpha/docs/structure_migration_map.md` | `101` | `通过` | `通过` | `通过` |
+| `EVA_OS` | `S4PBT02` | `EVA_OS/docs/EVA_structure_report.md` | `1000` | `通过` | `通过` | `通过` |
+| `OpMe_System` | `S4PCT01` | `OpMe_System/docs/OpMe_structure_report.md` | `122` | `通过` | `通过` | `通过` |
+| `whkmSalary` | `S4PCT02` | `whkmSalary/docs/whkm_structure_report.md` | `32` | `通过` | `通过` | `通过` |
 
 ## 回滚方式
 

@@ -16,7 +16,8 @@ DEFAULT_OUTPUT_DIR = Path("governance/stage_gates/s5pc")
 REPORT_JSON = "wave2_gate_report.json"
 REPORT_MD = "wave2_gate.md"
 README_MAX_LINES = 250
-CHINESE_ACCEPTANCE_TOKENS = ["用户可读", "中文验收", "验收状态", "停止条件", "回滚", "下一步"]
+CHINESE_ACCEPTANCE_TOKENS = ["用户可读优先", "中文验收", "验收状态", "停止条件", "回滚", "下一步"]
+README_OWNER_FIRST_TOKENS = ["用户可读优先", "中文优先，默认全局中文", "最小验证"]
 OWNER_FACING_FORBIDDEN_MACHINE_WORDS = (
     "`PASS`",
     "`FAIL`",
@@ -336,6 +337,8 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
         report = repo / project["report"]
         readme_text = readme.read_text(encoding="utf-8") if readme.exists() else ""
         readme_lines = len(readme_text.splitlines()) if readme.exists() else None
+        readme_first_screen = "\n".join(readme_text.splitlines()[:60])
+        readme_owner_first = all(token in readme_first_screen for token in README_OWNER_FIRST_TOKENS)
         owner_navigation = all(
             token in readme_text
             for token in ("中文人类入口", "功能清单", "开发记录", "模型参数文件", project["task_id"])
@@ -347,6 +350,13 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
             readme_ok,
             f"{project['path']}/README.md",
             f"lines={readme_lines} owner_navigation={owner_navigation}",
+        )
+        add_check(
+            checks,
+            f"readme_owner_first_global_chinese:{project['project_id']}",
+            readme_owner_first,
+            f"{project['path']}/README.md",
+            "first 60 lines must include 用户可读优先, 中文优先，默认全局中文, and 最小验证",
         )
         for entry in human_entries:
             add_check(
@@ -390,6 +400,7 @@ def validate_project_readability(repo: Path, checks: list[dict[str, Any]]) -> li
                 **project,
                 "readme_lines": readme_lines,
                 "owner_navigation": owner_navigation,
+                "readme_owner_first": readme_owner_first,
                 "human_entries_exist": all(path.is_file() for path in human_entries),
                 "structure_report_contract": report_tokens_ok,
                 "chinese_acceptance": chinese_acceptance_ok,
@@ -556,17 +567,26 @@ def render_markdown(report: dict[str, Any]) -> str:
     ]
     for label, result, evidence in summary_rows:
         lines.append(f"| {label} | `{result}` | `{evidence}` |")
-    lines.extend(["", "## 项目验收矩阵", "", "| 项目 | 任务 | 报告 | README 行数 | 中文验收 | 结果 |", "|---|---|---|---:|---|---|"])
+    lines.extend(
+        [
+            "",
+            "## 项目验收矩阵",
+            "",
+            "| 项目 | 任务 | 报告 | README 行数 | 第一屏中文 | 中文验收 | 结果 |",
+            "|---|---|---|---:|---|---|---|",
+        ]
+    )
     for project in report["project_readability"]:
         passed = (
             project["human_entries_exist"]
             and project["structure_report_contract"]
             and project["chinese_acceptance"]
             and project["owner_facing_machine_words_absent"]
+            and project["readme_owner_first"]
             and (project["readme_lines"] <= README_MAX_LINES or project["owner_navigation"])
         )
         lines.append(
-            f"| `{project['project_id']}` | `{project['task_id']}` | `{project['report']}` | `{project['readme_lines']}` | `{pass_label(project['chinese_acceptance'])}` | `{pass_label(passed)}` |"
+            f"| `{project['project_id']}` | `{project['task_id']}` | `{project['report']}` | `{project['readme_lines']}` | `{pass_label(project['readme_owner_first'])}` | `{pass_label(project['chinese_acceptance'])}` | `{pass_label(passed)}` |"
         )
     lines.extend(["", "## 隐私与运行边界", ""])
     lines.append("- 私密、生成物和运行态候选项只保留 checksum-bound 事实；S5PCT03 不输出任何私密值。")

@@ -6420,6 +6420,81 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(path, changed)
         self.assertFalse(any(path.startswith(("EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s4_s5_chinese_acceptance_redo_enforces_owner_first_delivery(self) -> None:
+        readmes = {
+            "Alpha": ROOT / "Alpha" / "README.md",
+            "EVA_OS": ROOT / "EVA_OS" / "README.md",
+            "OpMe_System": ROOT / "OpMe_System" / "README.md",
+            "whkmSalary": ROOT / "whkmSalary" / "README.md",
+            "FIFA": ROOT / "FIFA" / "README.md",
+            "OpenAIDatabase": ROOT / "OpenAIDatabase" / "README.md",
+            "PFI_BIG_DATA_SIMULATOR": ROOT / "PFI" / "大数据模拟器" / "README.md",
+            "Serenity-Alipay": ROOT / "Serenity-Alipay" / "README.md",
+        }
+        reports = {
+            "Alpha": ROOT / "Alpha" / "docs" / "structure_migration_map.md",
+            "EVA_OS": ROOT / "EVA_OS" / "docs" / "EVA_structure_report.md",
+            "OpMe_System": ROOT / "OpMe_System" / "docs" / "OpMe_structure_report.md",
+            "whkmSalary": ROOT / "whkmSalary" / "docs" / "whkm_structure_report.md",
+            "FIFA": ROOT / "FIFA" / "docs" / "FIFA_structure_report.md",
+            "OpenAIDatabase": ROOT / "OpenAIDatabase" / "docs" / "OpenAIDatabase_structure_report.md",
+            "PFI_BIG_DATA_SIMULATOR": ROOT / "PFI" / "大数据模拟器" / "docs" / "PFI_structure_report.md",
+            "Serenity-Alipay": ROOT / "Serenity-Alipay" / "docs" / "Serenity_structure_report.md",
+        }
+
+        for project_id, readme_path in readmes.items():
+            with self.subTest(project=project_id, file=str(readme_path.relative_to(ROOT))):
+                text = readme_path.read_text(encoding="utf-8")
+                first_screen = "\n".join(text.splitlines()[:60])
+                for required in ("用户可读优先", "中文优先，默认全局中文", "最小验证"):
+                    self.assertIn(required, first_screen)
+                if project_id in {"PFI_BIG_DATA_SIMULATOR", "Serenity-Alipay"}:
+                    self.assertIn("中文 Owner 快速入口", text.splitlines()[0])
+                    self.assertNotIn("Local-first, auditable", "\n".join(text.splitlines()[:10]))
+
+        for project_id, report_path in reports.items():
+            with self.subTest(project=project_id, file=str(report_path.relative_to(ROOT))):
+                report = report_path.read_text(encoding="utf-8")
+                for required in ("用户可读优先", "中文验收标准", "验收状态", "停止条件与结果", "回滚", "下一步"):
+                    self.assertIn(required, report)
+
+        for gate_json, gate_md in (
+            (
+                ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate_report.json",
+                ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
+            ),
+            (
+                ROOT / "governance" / "stage_gates" / "s5pc" / "wave2_gate_report.json",
+                ROOT / "governance" / "stage_gates" / "s5pc" / "wave2_gate.md",
+            ),
+        ):
+            with self.subTest(gate=str(gate_json.relative_to(ROOT))):
+                gate = json.loads(gate_json.read_text(encoding="utf-8"))
+                markdown = gate_md.read_text(encoding="utf-8")
+                self.assertEqual(gate["status"], "PASS")
+                self.assertIn("用户可读优先", gate["chinese_acceptance"]["required_tokens"])
+                self.assertIn("第一屏中文", markdown)
+                owner_first_checks = [
+                    check for check in gate["checks"] if check["name"].startswith("readme_owner_first_global_chinese:")
+                ]
+                self.assertEqual(len(owner_first_checks), len(gate["project_readability"]))
+                self.assertTrue(all(check["passed"] for check in owner_first_checks), owner_first_checks)
+                self.assertTrue(all(project["readme_owner_first"] for project in gate["project_readability"]))
+
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S4S5-CHINESE-ACCEPTANCE-REDO-20260625.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["task_id"], "S4S5_CHINESE_ACCEPTANCE_REDO")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S4S5-CHINESE-ACCEPTANCE-REDO"])
+        self.assertEqual(manifest["language_rule"], "中文优先，默认全局中文")
+        self.assertTrue(manifest["owner_readable_priority_enforced"])
+        self.assertFalse(manifest["stop_conditions"]["readme_first_screen_missing_global_chinese"])
+        self.assertFalse(manifest["stop_conditions"]["structure_report_missing_user_readable_priority"])
+
     def test_other8_s6pat01_ux_priority_matrix_is_bounded_and_owner_readable(self) -> None:
         matrix_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.csv"
         report_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.md"

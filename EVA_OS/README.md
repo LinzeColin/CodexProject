@@ -4,6 +4,7 @@
 - 当前状态：EVA_OS 主入口仍是 `EVA_OS/README.md`、`docs/Index.md`、`docs/EVA_OS.md`、`docs/governance/` 和三个中文入口；历史 handoff 与 review packs 只读归档在 `governance/archive/other8_wave1_pending/EVA_OS/`。
 - 下一 Gate：`S6PA-GATE` 仍在进行中；EVA_OS 本轮只实施 S6PAT01 矩阵中的 P0/P1 Owner 路径改进。
 - Owner 操作路径（当前入口 -> 运行/测试 -> 证据）：先读本段确认当前状态 -> 打开 `docs/QuickStart.md` 或双击 `EVA_OS.app` -> 需要验证时进入 `EVA_OS/` 并运行 `python -m pytest tests/test_eva_identity.py -q` -> 证据优先看测试输出和 `EVA_OS/docs/EVA_structure_report.md`。
+- 最小验证路径：进入 `EVA_OS/`，运行 `python -m pytest tests/test_eva_identity.py -q`。
 - 当前环境 blocker：本机 bundled Python 缺少 `pytest`；完整本地验证通常需要先安装 `.[test]` 依赖，macOS 标准入口仍是 `scripts/runTests.sh`。
 - 成功反馈：identity smoke 通过后应看到 `2 passed`，且 `EVA_OS`、`EVA_OS.app`、`research_only`、`no_live_trading` 断言保持不变。
 - 失败去向：若出现 `No module named pytest`，先处理测试依赖；若出现 identity 断言失败，再复核 `EVA_OS/src/quantlab/system.py`、`EVA_OS/tests/test_eva_identity.py` 和结构报告。
