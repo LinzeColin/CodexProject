@@ -6179,6 +6179,132 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         )
         self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "Serenity-Alipay/", "EEI/", "arxiv-daily-push/")) for path in changed))
 
+    def test_other8_s5pct02_serenity_structure_boundary_and_smoke_evidence(self) -> None:
+        validator = load_validator_module()
+        serenity_root = ROOT / "Serenity-Alipay"
+        report_path = serenity_root / "docs" / "Serenity_structure_report.md"
+        contract_path = ROOT / "governance" / "stage_gates" / "s5pc" / "serenity_structure_contract.yaml"
+        smoke_path = ROOT / "governance" / "stage_gates" / "s5pc" / "serenity_smoke_tests.log"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S5PCT02-SERENITY-STRUCTURE-BOUNDARY-20260625.json"
+        )
+        for path in {report_path, contract_path, smoke_path, manifest_path}:
+            self.assertTrue(path.is_file(), path)
+
+        report = report_path.read_text(encoding="utf-8")
+        smoke = smoke_path.read_text(encoding="utf-8")
+        readme = (serenity_root / "README.md").read_text(encoding="utf-8")
+        contract = validator.load_yaml(contract_path)
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        for required in {
+            "S5PCT02",
+            "ACC-S5PCT02",
+            "Serenity-Alipay/app/",
+            "Serenity-Alipay/data/manual/",
+            "Serenity-Alipay/tests/",
+            "Serenity-Alipay/outputs/",
+            "115 ARCHIVE`, `151 OWNER_REVIEW`, and `3 MERGE",
+            "BOUNDARY_ONLY_NO_AUTOMATION_TRIGGER",
+            "PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED",
+        }:
+            self.assertIn(required, report)
+        for required in {
+            "S5PCT02 结构边界",
+            "`app/` 是唯一默认应用源码",
+            "`tests/` 是验证层",
+            "`data/manual/` 是可审计输入数据",
+            "`outputs/` 是生成层",
+            "不移动、不归档、不重建历史输出",
+            "不得触发 OpenD、真实邮件、launchd 安装",
+            "governance/stage_gates/s5pc/serenity_structure_contract.yaml",
+        }:
+            self.assertIn(required, readme)
+
+        self.assertEqual(contract["schema_version"], "codexproject.structure_contract.v1")
+        self.assertEqual(contract["project_id"], "Serenity-Alipay")
+        self.assertEqual(contract["task_id"], "S5PCT02")
+        self.assertEqual(contract["acceptance_id"], "ACC-S5PCT02")
+        self.assertEqual(contract["mode"], "BOUNDARY_ONLY_NO_AUTOMATION_TRIGGER")
+        self.assertEqual(contract["app_layer"]["path"], "Serenity-Alipay/app")
+        self.assertTrue(contract["app_layer"]["default_runtime_package"])
+        self.assertFalse(contract["app_layer"]["behavior_changed"])
+        self.assertEqual(contract["data_layer"]["manual_input_path"], "Serenity-Alipay/data/manual")
+        self.assertFalse(contract["data_layer"]["model_parameter_source_truth"])
+        self.assertFalse(contract["data_layer"]["history_deleted"])
+        self.assertEqual(contract["tests_layer"]["path"], "Serenity-Alipay/tests")
+        self.assertTrue(contract["tests_layer"]["verification_layer"])
+        self.assertEqual(contract["outputs_layer"]["path"], "Serenity-Alipay/outputs")
+        self.assertTrue(contract["outputs_layer"]["generated_output_layer"])
+        self.assertFalse(contract["outputs_layer"]["default_runtime_source"])
+        self.assertFalse(contract["handoff_ops_layer"]["default_runtime_entry"])
+        self.assertFalse(contract["handoff_ops_layer"]["triggers_external_automation"])
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["serenity_candidate_count"], 269)
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["archive_candidate_count"], 115)
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["owner_review_candidate_count"], 151)
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["merge_candidate_count"], 3)
+        self.assertEqual(contract["wave2_manifest_reconciliation"]["moved_in_s5pct02"], 0)
+        for key, value in contract["stop_conditions"].items():
+            self.assertFalse(value, key)
+
+        for required in {
+            "task_id: S5PCT02",
+            "acceptance_id: ACC-S5PCT02",
+            "result: PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED",
+            "mode: BOUNDARY_ONLY_NO_AUTOMATION_TRIGGER",
+            "result: NOT_RUN",
+            "No module named pytest",
+            "tests.test_s3pct03_lifecycle",
+            "Ran 4 tests OK",
+            "py_compile completed with exit_code=0",
+            "S5PCT02_SERENITY_CORE_IMPORT_SMOKE_PASS app=app tests=52 outputs=115 data=151 external_side_effects=false",
+            "serenity_candidate_count: 269",
+            "archive_candidate_count: 115",
+            "owner_review_candidate_count: 151",
+            "merge_candidate_count: 3",
+        }:
+            self.assertIn(required, smoke)
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["project_id"], "Serenity-Alipay")
+        self.assertEqual(manifest["task_id"], "S5PCT02")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S5PCT02"])
+        self.assertEqual(manifest["depends_on"], ["GOV-OTHER8-S5PCT01-PFI-STRUCTURE-BOUNDARY-20260625"])
+        self.assertEqual(manifest["stage_gate_status"]["S5PC-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S5PCT03")
+        self.assertEqual(manifest["structure_boundary"]["app"], "Serenity-Alipay/app")
+        self.assertEqual(manifest["structure_boundary"]["data_manual"], "Serenity-Alipay/data/manual")
+        self.assertEqual(manifest["structure_boundary"]["outputs"], "Serenity-Alipay/outputs")
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["serenity_candidate_count"], 269)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["archive_candidate_count"], 115)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["owner_review_candidate_count"], 151)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["merge_candidate_count"], 3)
+        self.assertEqual(manifest["archive_manifest_reconciliation"]["moved_in_s5pct02"], 0)
+        self.assertFalse(manifest["stop_conditions"]["output_backup_move_triggers_automation"])
+        self.assertFalse(manifest["stop_conditions"]["external_opend_mail_or_launchd_path_changed"])
+        self.assertFalse(manifest["stop_conditions"]["archive_written_or_files_moved"])
+        self.assertFalse(manifest["scope_guard"]["touched_forbidden_projects"])
+        self.assertRegex(
+            manifest["content_tree_hash"],
+            r"^sha256-changed-files-excluding-this-manifest:[0-9a-f]{64}$",
+        )
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "Serenity-Alipay/README.md",
+                "Serenity-Alipay/docs/Serenity_structure_report.md",
+                "governance/stage_gates/s5pc/serenity_structure_contract.yaml",
+                "governance/stage_gates/s5pc/serenity_smoke_tests.log",
+                "governance/run_manifests/GOV-OTHER8-S5PCT02-SERENITY-STRUCTURE-BOUNDARY-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertFalse(any(path.startswith(("FIFA/", "OpenAIDatabase/", "PFI/", "EEI/", "arxiv-daily-push/")) for path in changed))
+
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {

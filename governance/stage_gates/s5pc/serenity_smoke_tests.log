@@ -1,0 +1,34 @@
+task_id: S5PCT02
+acceptance_id: ACC-S5PCT02
+project_id: Serenity-Alipay
+result: PASS_WITH_PYTEST_ENV_BLOCKER_RECORDED
+mode: BOUNDARY_ONLY_NO_AUTOMATION_TRIGGER
+
+commands:
+  - command: C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m pytest Serenity-Alipay\tests -q
+    result: NOT_RUN
+    evidence: local bundled Python does not include pytest; "No module named pytest"
+  - command: C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m unittest tests.test_s3pct03_lifecycle -q
+    cwd: Serenity-Alipay
+    result: PASS
+    evidence: Ran 4 tests OK
+  - command: C:\Users\linze\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe -B -m py_compile Serenity-Alipay\app\cli.py Serenity-Alipay\app\config.py Serenity-Alipay\app\core\automation_tick.py Serenity-Alipay\app\core\application_server.py Serenity-Alipay\tests\test_s3pct03_lifecycle.py
+    result: PASS
+    evidence: py_compile completed with exit_code=0
+  - command: Serenity core import smoke
+    result: PASS
+    evidence: S5PCT02_SERENITY_CORE_IMPORT_SMOKE_PASS app=app tests=52 outputs=115 data=151 external_side_effects=false
+
+stop_conditions:
+  runtime_or_report_history_deleted: false
+  output_backup_move_triggers_automation: false
+  external_opend_mail_or_launchd_path_changed: false
+  app_data_tests_boundary_blurred: false
+  archive_written_or_files_moved: false
+
+wave2_manifest_reconciliation:
+  serenity_candidate_count: 269
+  archive_candidate_count: 115
+  owner_review_candidate_count: 151
+  merge_candidate_count: 3
+  moved_in_s5pct02: 0
