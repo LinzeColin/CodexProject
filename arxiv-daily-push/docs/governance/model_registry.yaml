@@ -3856,3 +3856,59 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PGT04-DELTA-RESONANCE-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT04_DELTA_RESONANCE.md"
+
+  -
+    model_id: "MOD-ADP-074"
+    name: "S2PGT05 Cross-board calibration"
+    kind: "deterministic private cross-board calibration and explainable queue evidence model"
+    purpose: "Define and validate private percentile calibration, source balance, waiting credit, deterministic ordering, and readable queue/defer reasons after S2PGT04 without mutating production queues or ranking behavior."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pgt05-cross-board-calibration-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-076"
+    parameter_ids:
+      - "PARAM-ADP-545"
+      - "PARAM-ADP-546"
+      - "PARAM-ADP-547"
+      - "PARAM-ADP-548"
+      - "PARAM-ADP-549"
+      - "PARAM-ADP-550"
+      - "PARAM-ADP-551"
+      - "PARAM-ADP-552"
+      - "PARAM-ADP-553"
+      - "PARAM-ADP-554"
+      - "PARAM-ADP-555"
+      - "PARAM-ADP-556"
+      - "PARAM-ADP-557"
+      - "PARAM-ADP-558"
+      - "PARAM-ADP-559"
+    inputs:
+      - "passing S2PGT04 delta resonance report"
+      - "queue candidate records"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "cross-board calibration report"
+      - "upstream delta resonance gate"
+      - "percentile calibration gate"
+      - "source balance gate"
+      - "waiting credit gate"
+      - "queue reason gate"
+      - "deterministic order gate"
+      - "no-side-effect gate"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PGT05-CROSS-BOARD-CALIBRATION-20260625.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PGT05_CROSS_BOARD_CALIBRATION.md"

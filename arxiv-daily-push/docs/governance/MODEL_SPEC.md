@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 73
-- formula_count: 75
-- parameter_count: 544
+- model_count: 74
+- formula_count: 76
+- parameter_count: 559
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -170,6 +170,33 @@ Fact levels follow `docs/governance/STANDARD.md`.
   scheduler, Release, V7.2 contract edits, and integrated production
   acceptance false.
 
+- `S2PGT02` / legacy `S2P6T01` adds `MOD-ADP-071`. It defines a
+  private cross-source identity and knowledge-graph relation spine across DOI,
+  PMID, arXiv, Chinese document number, Federal Register document number, and
+  CIK identifiers while keeping public schema migration, production queue
+  mutation, source-domain production inclusion, SMTP, scheduler, Release,
+  V7.2 contract edits, and integrated production acceptance false.
+
+- `S2PGT03` adds `MOD-ADP-072`. It defines private D1-D4 to B1-B6
+  source-to-reading-board routing evidence with reason codes, explanations,
+  evidence refs, source-domain routing rules, and disabled public schema,
+  queue, source production, SMTP, scheduler, Release, V7.2 contract, and
+  integrated production flags.
+
+- `S2PGT04` adds `MOD-ADP-073`. It defines private support/refute/frontier
+  delta and signal-resonance evidence after S2PGT03 while keeping visible
+  Email V1 frontstage changes, public schema migration, production queue
+  mutation, source-domain production inclusion, SMTP, scheduler, Release,
+  V7.2 contract edits, and integrated production acceptance false.
+
+- `S2PGT05` / legacy `S2P6T02` adds `MOD-ADP-074`. It defines private
+  cross-board percentile calibration, source balance, waiting credit,
+  deterministic ordering, readable selected/queued/deferred reasons, and stable
+  queue hashing while keeping production ranking changes, real queue mutation,
+  public schema migration, source-domain production inclusion, Email V1
+  frontstage changes, SMTP, scheduler, Release, V7.2 contract edits, and
+  integrated production acceptance false.
+
 ## A. Model Overview
 
 | Model ID | Name | Kind | Purpose | Status | Version | Implementation reference |
@@ -243,6 +270,10 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-068 | S2PFT04 special-zone discovery | deterministic special-zone metadata discovery model | Validate 10 China special-zone records, zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, and disabled full-D3/production side-effect flags | active | adp-s2pft04-special-zone-discovery-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-069 | S2PFT05 D3 full governance qualification | deterministic D3 governance qualification model | Validate C0-C4 component evidence, quota roles, quota/health balance, elimination explanations, fallback routes, 30-date replay, metadata-only gates, and disabled production side-effect flags | active | adp-s2pft05-d3-full-governance-qualification-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 | MOD-ADP-070 | S2PGT01 EvidencePacket V2 compatibility | deterministic evidence compatibility model | Validate D1-D4 source-domain report inputs, EvidencePacket V2 field shape, evidence-level labels, old arXiv compatibility, and disabled schema/production side-effect flags | active | adp-s2pgt01-evidence-packet-v2-compatibility-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-071 | S2PGT02 knowledge-graph relation spine | deterministic identity and relation model | Validate cross-source identifier normalization, duplicate canonical identity blocking, evidence-backed relation rows, idempotent graph hashing, and disabled schema/production side-effect flags | active | adp-s2pgt02-knowledge-graph-spine-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-072 | S2PGT03 source-board routing | deterministic routing evidence model | Validate D1-D4 source-domain coverage, B1-B6 board routing, reason codes, source-domain rules, explanations, evidence refs, and disabled schema/production side-effect flags | active | adp-s2pgt03-source-board-routing-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-073 | S2PGT04 delta resonance | deterministic delta and resonance model | Validate support/refute/frontier delta evidence, resonance groups, signal strength, explanations, evidence refs, and disabled schema/email-frontstage/production side-effect flags | active | adp-s2pgt04-delta-resonance-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
+| MOD-ADP-074 | S2PGT05 cross-board calibration | deterministic calibration and queue evidence model | Validate board-percentile calibration, D1-D4 source balance, waiting credit, selected/queued/deferred reasons, deterministic queue order, stable queue hashing, and disabled ranking/queue/schema/production side-effect flags | active | adp-s2pgt05-cross-board-calibration-v1 | `src/arxiv_daily_push/stage2_sources.py`, `src/arxiv_daily_push/cli.py` |
 
 ## B. Assumptions
 
@@ -355,6 +386,10 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-070 validates S2PFT04 special-zone discovery across upstream S2PFT03 pass evidence, 10 required zone ids, supported zone types, required authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, metadata-only no-download boundaries, disabled D3 full acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-071 validates S2PFT05 D3 full governance qualification across upstream S2PDT04 and S2PFT01-S2PFT04 pass evidence, C0-C4 components, quota roles, quota balance, health balance, elimination explanations, fallback routes, 30-date replay, metadata-only no-download boundaries, disabled formal production inclusion and integrated production acceptance flags, and no V7.2 contract/mail/schema pre-run.
 - FORM-ADP-072 validates S2PGT01 EvidencePacket V2 compatibility across D1-D4 source-domain reports, required packet fields, required evidence-level labels, explicit D1/old arXiv compatibility, and disabled public schema migration, queue mutation, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
+- FORM-ADP-073 validates S2PGT02 private knowledge-graph relation spine across DOI, PMID, arXiv, Chinese document number, Federal Register document number, and CIK identifiers, duplicate canonical identity blocking, relation evidence, idempotent graph hashing, and disabled public schema, queue, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
+- FORM-ADP-074 validates S2PGT03 private source-board routing across D1-D4 source domains, B1-B3 primary boards, B4-B6 cross-cutting boards, route reasons, explanations, evidence refs, source-domain mapping rules, and disabled public schema, queue, source production inclusion, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
+- FORM-ADP-075 validates S2PGT04 private support/refute/frontier delta resonance across upstream routing, required delta types, supported/refuted evidence states, resonance groups, signal strength, explanations, evidence refs, and disabled public schema, queue, Email V1 frontstage, source production inclusion, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
+- FORM-ADP-076 validates S2PGT05 private cross-board calibration across upstream delta resonance, B1-B6 percentile calibration, D1-D4 source balance, waiting-credit bounds, selected/queued/deferred readable reasons, deterministic order, stable queue hash, and disabled public schema, production queue, production ranking, Email V1 frontstage, source production inclusion, SMTP, scheduler, Release, V7.2 contract edit, and production acceptance flags.
 - FORM-ADP-034 validates the Phase 12 all-arXiv scan, ROI/learning-value ranking, candidate queue fallback, Release-hosted `.mp4` video artifact link, Chinese lesson email, candidate queue summary, and no legacy cs.AI-only production default.
 - FORM-ADP-035 validates GitHub-hosted Phase 12 cloud dry-run, all primary archive coverage, MP4 artifact rendering, and disabled side-effect gates.
 - FORM-ADP-036 validates controlled manual Release and Gmail SMTP test workflow gates, including the human-scannable Chinese email front-end, without enabling scheduled production.
@@ -437,6 +472,10 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active S2PFT04 special-zone discovery parameters: PARAM-ADP-488 through PARAM-ADP-497.
 - Active S2PFT05 D3 full governance qualification parameters: PARAM-ADP-498 through PARAM-ADP-507.
 - Active S2PGT01 EvidencePacket V2 compatibility parameters: PARAM-ADP-508 through PARAM-ADP-515.
+- Active S2PGT02 knowledge-graph relation spine parameters: PARAM-ADP-516 through PARAM-ADP-524.
+- Active S2PGT03 source-board routing parameters: PARAM-ADP-525 through PARAM-ADP-535.
+- Active S2PGT04 delta resonance parameters: PARAM-ADP-536 through PARAM-ADP-544.
+- Active S2PGT05 cross-board calibration parameters: PARAM-ADP-545 through PARAM-ADP-559.
 - Planned video evidence policy parameter: PARAM-ADP-019.
 
 ## E. Methodology

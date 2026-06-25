@@ -13,6 +13,10 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PGT05_CALIBRATION_MODEL_ID,
+    S2PGT05_REQUIRED_BOARD_IDS,
+    S2PGT05_REQUIRED_DECISIONS,
+    S2PGT05_REQUIRED_SOURCE_DOMAINS,
     S2PGT04_DELTA_RESONANCE_MODEL_ID,
     S2PGT04_REQUIRED_DELTA_TYPES,
     S2PGT04_REQUIRED_RESONANCE_GROUPS,
@@ -53,6 +57,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pct05_engineering_signal_report,
     build_s2pct06_authoritative_report_source_report,
     build_s2pct07_d2_source_domain_qualification_report,
+    build_s2pgt05_cross_board_calibration_report,
     build_s2pgt04_delta_resonance_report,
     build_s2pgt03_source_board_routing_report,
     build_s2pgt02_knowledge_graph_spine_report,
@@ -76,6 +81,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pct05_engineering_signal_shadow,
     run_s2pct06_authoritative_report_shadow,
     run_s2pct07_d2_source_domain_qualification,
+    run_s2pgt05_cross_board_calibration,
     run_s2pgt04_delta_resonance,
     run_s2pgt03_source_board_routing,
     run_s2pgt02_knowledge_graph_spine,
@@ -97,6 +103,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pct05_engineering_signal_report,
     validate_s2pct06_authoritative_report_source_report,
     validate_s2pct07_d2_source_domain_qualification_report,
+    validate_s2pgt05_cross_board_calibration_report,
     validate_s2pgt04_delta_resonance_report,
     validate_s2pgt03_source_board_routing_report,
     validate_s2pgt02_knowledge_graph_spine_report,
@@ -1331,6 +1338,37 @@ def delta_resonance_records() -> list[dict]:
             signal_strength,
             delta_explanation,
         ) in rows
+    ]
+
+
+def queue_candidate_records() -> list[dict]:
+    rows = [
+        ("candidate:b1:d1:new", "delta:d1:new-agent-risk", "B1", "d1_research_preprint", "arxiv:2606.00001", 91.0, 0),
+        ("candidate:b2:d2:changed", "delta:d2:changed-engineering-evidence", "B2", "d2_authoritative_publication", "nature:article-1", 84.0, 2),
+        ("candidate:b3:d3:support", "delta:d3:support-policy-capital", "B3", "d3_china_official", "cn.gov:policy-1", 79.0, 5),
+        ("candidate:b4:d4:refute", "delta:d4:refute-risk", "B4", "d4_us_official", "us.gov:signal-1", 95.0, 0),
+        ("candidate:b5:d1:personal", "delta:d1:frontier-personal-roi", "B5", "d1_research_preprint", "arxiv:2606.00001", 88.0, 10),
+        ("candidate:b6:d1:waiting", "delta:d1:new-agent-risk", "B6", "d1_research_preprint", "arxiv:2606.00001", 86.0, 20),
+    ]
+    return [
+        {
+            "candidate_id": candidate_id,
+            "delta_id": delta_id,
+            "board_id": board_id,
+            "source_domain": source_domain,
+            "source_id": source_id,
+            "raw_score": raw_score,
+            "waiting_days": waiting_days,
+            "candidate_explanation": f"{board_id} calibrated candidate linked to {delta_id}.",
+            "evidence_refs": [f"fixture:queue:{candidate_id}", f"delta:{delta_id}"],
+            "schema_migration_required": False,
+            "public_schema_changed": False,
+            "queue_mutation_allowed": False,
+            "ranking_algorithm_changed": False,
+            "production_affected": False,
+            "email_frontstage_changed": False,
+        }
+        for candidate_id, delta_id, board_id, source_domain, source_id, raw_score, waiting_days in rows
     ]
 
 
@@ -2918,6 +2956,130 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertTrue(Path(report["delta_resonance_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pgt04_delta_resonance_report.json").is_file())
 
+    def test_s2pgt05_cross_board_calibration_passes_deterministic_balance_and_reason_gates(self) -> None:
+        delta_report = build_s2pgt04_delta_resonance_report(
+            generated_at=GENERATED_AT,
+            routing_report=build_s2pgt03_source_board_routing_report(
+                generated_at=GENERATED_AT,
+                evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                    generated_at=GENERATED_AT,
+                    source_domain_reports=evidence_packet_domain_reports(),
+                    packet_records=evidence_packet_records(),
+                ),
+                route_records=source_board_route_records(),
+            ),
+            delta_records=delta_resonance_records(),
+        )
+        report = build_s2pgt05_cross_board_calibration_report(
+            generated_at=GENERATED_AT,
+            delta_resonance_report=delta_report,
+            queue_candidate_records=queue_candidate_records(),
+        )
+        repeated = build_s2pgt05_cross_board_calibration_report(
+            generated_at=GENERATED_AT,
+            delta_resonance_report=delta_report,
+            queue_candidate_records=queue_candidate_records(),
+        )
+
+        self.assertEqual(report["model_id"], S2PGT05_CALIBRATION_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PGT05-CALIBRATION")
+        self.assertEqual(report["task_id"], "S2PGT05")
+        self.assertEqual(report["legacy_task_id"], "S2P6T02")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(set(report["board_ids_observed"]), set(S2PGT05_REQUIRED_BOARD_IDS))
+        self.assertEqual(set(report["source_domains_observed"]), set(S2PGT05_REQUIRED_SOURCE_DOMAINS))
+        self.assertEqual(set(report["queue_decisions_observed"]), set(S2PGT05_REQUIRED_DECISIONS))
+        self.assertEqual(report["upstream_delta_resonance_gate"], "pass")
+        self.assertEqual(report["percentile_calibration_gate"], "pass")
+        self.assertEqual(report["source_balance_gate"], "pass")
+        self.assertEqual(report["waiting_credit_gate"], "pass")
+        self.assertEqual(report["queue_reason_gate"], "pass")
+        self.assertEqual(report["deterministic_order_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["calibrated_queue_hash"], repeated["calibrated_queue_hash"])
+        self.assertEqual(len([row for row in report["calibrated_queue_records"] if row["queue_decision"] == "selected"]), 4)
+        self.assertLessEqual(max(report["source_share_by_domain"].values()), 0.5)
+        self.assertTrue(report["s2pgt05_calibration_ready"])
+        self.assertFalse(report["queue_mutation_allowed"])
+        self.assertFalse(report["ranking_algorithm_changed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["email_frontstage_changed"])
+        self.assertFalse(validate_s2pgt05_cross_board_calibration_report(report))
+
+    def test_s2pgt05_cross_board_calibration_blocks_missing_board_bad_wait_and_side_effects(self) -> None:
+        delta_report = build_s2pgt04_delta_resonance_report(
+            generated_at=GENERATED_AT,
+            routing_report=build_s2pgt03_source_board_routing_report(
+                generated_at=GENERATED_AT,
+                evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                    generated_at=GENERATED_AT,
+                    source_domain_reports=evidence_packet_domain_reports(),
+                    packet_records=evidence_packet_records(),
+                ),
+                route_records=source_board_route_records(),
+            ),
+            delta_records=delta_resonance_records(),
+        )
+        candidates = [candidate for candidate in queue_candidate_records() if candidate["board_id"] != "B6"]
+        candidates[0] = dict(candidates[0], waiting_days=31, raw_score=120, queue_mutation_allowed=True, ranking_algorithm_changed=True)
+        candidates[1] = dict(candidates[1], delta_id="delta:missing", evidence_refs=[])
+        report = build_s2pgt05_cross_board_calibration_report(
+            generated_at=GENERATED_AT,
+            delta_resonance_report=delta_report,
+            queue_candidate_records=candidates,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["percentile_calibration_gate"], "blocked")
+        self.assertEqual(report["waiting_credit_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        self.assertFalse(report["s2pgt05_calibration_ready"])
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("missing board B6", joined)
+        self.assertIn("waiting_days", joined)
+        self.assertIn("raw_score", joined)
+        self.assertIn("delta_id must reference", joined)
+        self.assertIn("evidence_refs", joined)
+        self.assertIn("queue_mutation_allowed", joined)
+        self.assertIn("ranking_algorithm_changed", joined)
+        self.assertTrue(validate_s2pgt05_cross_board_calibration_report(report))
+
+    def test_s2pgt05_cross_board_calibration_persists_report_without_queue_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pgt05_cross_board_calibration(
+                state_dir=tmp,
+                date="2026-06-25",
+                generated_at=GENERATED_AT,
+                delta_resonance_report=build_s2pgt04_delta_resonance_report(
+                    generated_at=GENERATED_AT,
+                    routing_report=build_s2pgt03_source_board_routing_report(
+                        generated_at=GENERATED_AT,
+                        evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                            generated_at=GENERATED_AT,
+                            source_domain_reports=evidence_packet_domain_reports(),
+                            packet_records=evidence_packet_records(),
+                        ),
+                        route_records=source_board_route_records(),
+                    ),
+                    delta_records=delta_resonance_records(),
+                ),
+                queue_candidate_records=queue_candidate_records(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pgt05_cross_board_calibration_report(report))
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertFalse(report["ranking_algorithm_changed"])
+            self.assertFalse(report["public_schema_changed"])
+            self.assertFalse(report["production_affected"])
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["email_frontstage_changed"])
+            self.assertTrue(Path(report["calibration_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pgt05_calibration_report.json").is_file())
+
     def test_shadow_daily_persists_queue_ledger_and_email_preview_without_send(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = run_s2p1_preprint_shadow_daily(
@@ -4007,6 +4169,71 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertTrue(payload["s2pgt04_delta_resonance_ready"])
         self.assertFalse(payload["public_schema_changed"])
         self.assertFalse(payload["schema_migration_required"])
+        self.assertFalse(payload["production_affected"])
+        self.assertFalse(payload["real_smtp_sent"])
+        self.assertFalse(payload["email_frontstage_changed"])
+
+    def test_cli_stage2_cross_board_calibration_outputs_json(self) -> None:
+        buffer = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp:
+            delta_report_path = Path(tmp) / "delta-report.json"
+            queue_candidates_path = Path(tmp) / "queue-candidates.json"
+            delta_report_path.write_text(
+                json.dumps(
+                    build_s2pgt04_delta_resonance_report(
+                        generated_at=GENERATED_AT,
+                        routing_report=build_s2pgt03_source_board_routing_report(
+                            generated_at=GENERATED_AT,
+                            evidence_packet_report=build_s2pgt01_evidence_packet_v2_compatibility_report(
+                                generated_at=GENERATED_AT,
+                                source_domain_reports=evidence_packet_domain_reports(),
+                                packet_records=evidence_packet_records(),
+                            ),
+                            route_records=source_board_route_records(),
+                        ),
+                        delta_records=delta_resonance_records(),
+                    ),
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            queue_candidates_path.write_text(
+                json.dumps({"queue_candidate_records": queue_candidate_records()}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            with redirect_stdout(buffer):
+                result = main([
+                    "stage2-cross-board-calibration",
+                    "--state-dir",
+                    tmp,
+                    "--date",
+                    "2026-06-25",
+                    "--generated-at",
+                    GENERATED_AT,
+                    "--delta-resonance-report",
+                    str(delta_report_path),
+                    "--queue-candidates",
+                    str(queue_candidates_path),
+                    "--no-write",
+                    "--json",
+                ])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["model_id"], S2PGT05_CALIBRATION_MODEL_ID)
+        self.assertEqual(payload["task_id"], "S2PGT05")
+        self.assertEqual(payload["legacy_task_id"], "S2P6T02")
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["upstream_delta_resonance_gate"], "pass")
+        self.assertEqual(payload["percentile_calibration_gate"], "pass")
+        self.assertEqual(payload["source_balance_gate"], "pass")
+        self.assertEqual(payload["waiting_credit_gate"], "pass")
+        self.assertEqual(payload["queue_reason_gate"], "pass")
+        self.assertEqual(payload["deterministic_order_gate"], "pass")
+        self.assertTrue(payload["s2pgt05_calibration_ready"])
+        self.assertFalse(payload["public_schema_changed"])
+        self.assertFalse(payload["queue_mutation_allowed"])
+        self.assertFalse(payload["ranking_algorithm_changed"])
         self.assertFalse(payload["production_affected"])
         self.assertFalse(payload["real_smtp_sent"])
         self.assertFalse(payload["email_frontstage_changed"])

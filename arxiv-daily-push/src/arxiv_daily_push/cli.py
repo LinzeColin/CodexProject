@@ -107,6 +107,7 @@ from .stage1_runtime import (
     validate_stage1_runtime_report,
 )
 from .stage2_sources import (
+    run_s2pgt05_cross_board_calibration,
     run_s2pgt04_delta_resonance,
     run_s2pgt03_source_board_routing,
     run_s2pgt02_knowledge_graph_spine,
@@ -144,6 +145,7 @@ from .stage2_sources import (
     validate_s2p1_shadow_report,
     validate_s2p2_top_journal_shadow_report,
     validate_s2pft05_d3_full_governance_qualification_report,
+    validate_s2pgt05_cross_board_calibration_report,
     validate_s2pgt04_delta_resonance_report,
     validate_s2pgt03_source_board_routing_report,
     validate_s2pgt02_knowledge_graph_spine_report,
@@ -759,6 +761,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pgt04_delta.add_argument("--delta-records", required=True, help="Delta records JSON list or object with delta_records.")
     s2pgt04_delta.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pgt04_delta.add_argument("--json", action="store_true", help="Print JSON delta/resonance report.")
+
+    s2pgt05_calibration = subparsers.add_parser(
+        "stage2-cross-board-calibration",
+        help="Run S2PGT05 private cross-board calibration and explainable queue evidence without mutating production queues.",
+    )
+    s2pgt05_calibration.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pgt05_calibration.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pgt05_calibration.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pgt05_calibration.add_argument("--delta-resonance-report", required=True, help="Passing S2PGT04 delta/resonance report JSON.")
+    s2pgt05_calibration.add_argument("--queue-candidates", required=True, help="Queue candidate records JSON list or object with queue_candidate_records.")
+    s2pgt05_calibration.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pgt05_calibration.add_argument("--json", action="store_true", help="Print JSON calibration report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -2239,6 +2253,32 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- support_refute_gate: {report.get('support_refute_gate')}")
             print(f"- resonance_group_gate: {report.get('resonance_group_gate')}")
             print(f"- delta_reason_gate: {report.get('delta_reason_gate')}")
+            print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-cross-board-calibration":
+        report = run_s2pgt05_cross_board_calibration(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            delta_resonance_report=load_json_mapping(args.delta_resonance_report),
+            queue_candidate_records=load_json_records(args.queue_candidates, "queue_candidate_records"),
+            write=not args.no_write,
+        )
+        errors = validate_s2pgt05_cross_board_calibration_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- upstream_delta_resonance_gate: {report.get('upstream_delta_resonance_gate')}")
+            print(f"- percentile_calibration_gate: {report.get('percentile_calibration_gate')}")
+            print(f"- source_balance_gate: {report.get('source_balance_gate')}")
+            print(f"- waiting_credit_gate: {report.get('waiting_credit_gate')}")
+            print(f"- queue_reason_gate: {report.get('queue_reason_gate')}")
+            print(f"- deterministic_order_gate: {report.get('deterministic_order_gate')}")
             print(f"- no_side_effect_gate: {report.get('no_side_effect_gate')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")

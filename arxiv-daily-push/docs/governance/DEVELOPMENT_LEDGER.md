@@ -2309,3 +2309,23 @@ None for this new project baseline.
 - Rollback: Revert S2PGT04 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime or production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT04_DELTA_RESONANCE.md`; `governance/run_manifests/ADP-S2PGT04-DELTA-RESONANCE-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Commit, push, and open PR for S2PGT04.
+
+### `ITER-20260625-ADP-S2PG-S2PGT05-CROSS-BOARD-CALIBRATION`
+
+- Timestamp: `2026-06-25T21:10:00+10:00`
+- Fact level: EXTRACTED from S2PGT04 receipt, B1-B6 queue candidate fixtures, D1-D4 source-balance evidence, model/formula/parameter registry diff, and local S2PGT05 validation.
+- Base commit: `cf3ba82219d8c895527a8d4509132ceafd9de8d9`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PG
+- Task IDs: `S2PGT05`, legacy alias `S2P6T02`; next task `S2PH` / downstream review, action, ROI, or report tasks under V7.2 boundaries.
+- Goal: Complete private cross-board calibration and explainable queue evidence after S2PGT04, register S2PGT05 governance entries, and preserve V7.2 no-production/no-email-frontstage boundaries.
+- Files changed: S2PGT05 report builder/validator, CLI command, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, events, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-074` cross-board calibration model.
+- Formula changes: Added `FORM-ADP-076` with machine-verifiable AST fingerprints bound to the S2PGT05 implementation.
+- Parameter changes: Added `PARAM-ADP-545` through `PARAM-ADP-559` for S2PGT05 model id, acceptance id, task ids, required boards, source domains, decisions, candidate fields, selected/waitlist counts, source-share cap, waiting-credit bounds, required gates, and report filename.
+- Validation: py_compile PASS; focused Stage2 source tests 87 OK; full arxiv-daily-push unittest 316 OK; semantic extractor 76 formulas / 542 parameters checked; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; JSON/YAML/JSONL/CSV parse OK; forbidden path scan clean; no __pycache__/.pyc; git diff --check PASS.
+- Decisions: `ACC-S2PGT05-CALIBRATION` is accepted only as private backend cross-board calibration and explainable queue evidence. Production ranking algorithm changes, real queue mutation, public schema migration, source-domain production inclusion, visible Email V1 frontstage changes, Stage 2 production acceptance, integrated production acceptance, SMTP, Release upload, scheduler, V7.2 contract edits, and production operation all remain false/disabled.
+- Remaining risks: Downstream S2PH/S2PJ/S2PK tasks still need to consume this evidence through explicit review, action, ROI, report, and Email V1 readiness gates. Inherited V7.1 P0=8/P1=37 and S2PMT07 still block any production acceptance claim.
+- Rollback: Revert S2PGT05 calibration code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT05_CROSS_BOARD_CALIBRATION.md`; `governance/run_manifests/ADP-S2PGT05-CROSS-BOARD-CALIBRATION-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
+- Next step: Run final validation, commit, push, and open PR for S2PGT05.
