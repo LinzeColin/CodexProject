@@ -1,2 +1,11 @@
 __pycache__/
 *.py[cod]
+
+# Other8 S5PAT02 future local/private runtime outputs.
+**/var/
+**/.env
+**/.env.local
+**/.env.production
+**/private_exports/
+**/exports/private/
+**/data/private/

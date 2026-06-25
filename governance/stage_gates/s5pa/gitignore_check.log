@@ -1,0 +1,17 @@
+task_id: S5PAT02
+acceptance_id: ACC-S5PAT02
+mode: GITIGNORE_PRIVATE_OUTPUT_GUARD
+path: .gitignore
+missing_count: 0
+
+## Required Patterns
+- PRESENT | **/var/
+- PRESENT | **/.env
+- PRESENT | **/.env.local
+- PRESENT | **/.env.production
+- PRESENT | **/private_exports/
+- PRESENT | **/exports/private/
+- PRESENT | **/data/private/
+
+## Stop Conditions
+- missing_required_patterns: false
