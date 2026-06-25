@@ -1,3 +1,23 @@
+# OpenAIDatabase 中文 Owner 快速入口
+
+- S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
+- 当前任务：`S6PAT02` / `ACC-S6PAT02`；下一 Gate：`S6PA-GATE` 仍在进行中。
+- 本轮边界：只补 Owner 可读路径，不改运行代码，不移动文件，不读取或展开 raw/private 内容，不触发外部自动化。
+- 默认入口：先读 `OpenAIDatabase/AGENTS.md` 和 `scripts/route_agent_resources.py`；Memory Atlas 只读 redacted derived snapshot，不读 raw export、private import、cookies、sessions 或 plaintext secrets。
+
+| Owner 判断项 | 当前路径 | 安全状态 |
+|---|---|---|
+| app layer | `apps/memory-atlas/` | 只读 `data/derived/visualization/memory_atlas.json` |
+| skill layer | `skills/openai-memory-analysis/` | 分析工具，不是 private export 默认存放地 |
+| context layer | `context/`、`config/context_sources/`、`data/derived/agent_context/` | 只提供 routeable context pack 和脱敏 derived 输出 |
+| private exports | `data/raw/`、`data/raw_encrypted/`、`data/private_imports/`、`private_exports/`、`exports/private/`、`data/private/` | 外部优先、加密或 gitignored；不进入 tracked plaintext path |
+
+- 安全确认：不展示值，只展示路径/标记、数量、checksum 和策略；104 个 OpenAIDatabase privacy candidates 继续由 `governance/stage_gates/s5pa/privacy_manifest.md` 和 Wave2 manifest 绑定。
+- 最小 privacy/context smoke：进入 `OpenAIDatabase/` 后运行 `python -B -m unittest tests.test_s3pdt01_privacy -q`、`python -B -m unittest tests.test_agent_context_pack -q`、`python -B -m unittest tests.test_codex_memory_sync -q`；本轮实测结果分别为 `Ran 3 tests` / `OK`、`Ran 1 test` / `OK`、`Ran 1 test` / `OK`。
+- pytest 全量路径：`python -B -m pytest OpenAIDatabase/tests -q` 仍需要安装 pytest；若出现 `No module named pytest`，先恢复开发依赖，不要改隐私边界绕过测试。
+- 失败去向：隐私断言失败先查 `OpenAIDatabase/docs/OpenAIDatabase_structure_report.md`、`OpenAIDatabase/.gitignore` 和 `governance/stage_gates/s5pa/privacy_manifest.md`；context 断言失败再查 `data/derived/agent_context/` 与 `scripts/route_agent_resources.py`。
+- 回滚：revert S6PAT02 OpenAIDatabase README 提交即可；本轮不改运行代码、不移动文件、不读取 raw/private 内容、不触发外部自动化。
+
 # OpenAIDatabase
 
 Local-first personal memory database for ChatGPT/Codex exports.
