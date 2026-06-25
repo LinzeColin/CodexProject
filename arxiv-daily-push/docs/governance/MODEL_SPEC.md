@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 98
-- formula_count: 100
-- parameter_count: 816
+- model_count: 99
+- formula_count: 101
+- parameter_count: 829
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -893,3 +893,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-098` / `FORM-ADP-100` define local pressure, fault, time, and E2E hardening evidence for S2PMT05.
 - Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, backpressure/degradation, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
 - S2PMT05 local evidence does not execute a real 24h wall-clock production soak, install or enable a scheduler, send SMTP, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, close inherited P0/P1 before S2PMT07, or claim integrated production acceptance.
+
+## S2PMT06 Owner UX And Safe Controls
+
+- `MOD-ADP-099` / `FORM-ADP-101` define local Chinese owner UX, interaction feedback, navigation, safe controls, traceability, and accessibility evidence for S2PMT06.
+- Passing S2PMT06 local validation requires a complete first-screen owner status, fixed top/bottom Chinese navigation, breadcrumbs, related links, source-to-ROI traceability, not-run/loading/no-update/partial-success/degraded/failed/stale status feedback, recoverable error cards, preview-to-rollback safe config changes, append-only revision ledger, queue search/filter/sort/export/drilldown, safe manual retry/cancel/requeue/skip/regenerate previews, visible feedback loops, accessibility/mail-client compatibility, C-001 through C-015 coverage, and all production side-effect flags false.
+- S2PMT06 local evidence does not enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1 before S2PMT07, or claim integrated production acceptance.
