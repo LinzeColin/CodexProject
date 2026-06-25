@@ -1,0 +1,42 @@
+{
+  "manifest_id": "ADP-S2PIT03-SOURCE-MODEL-VIEW-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PIT03",
+  "acceptance_id": "ACC-S2PIT03-SOURCE-MODEL",
+  "phase": "S2PI",
+  "model_id": "MOD-ADP-087",
+  "formula_id": "FORM-ADP-089",
+  "parameter_ids": [
+    "PARAM-ADP-682",
+    "PARAM-ADP-683",
+    "PARAM-ADP-684",
+    "PARAM-ADP-685",
+    "PARAM-ADP-686",
+    "PARAM-ADP-687",
+    "PARAM-ADP-688",
+    "PARAM-ADP-689",
+    "PARAM-ADP-690",
+    "PARAM-ADP-691"
+  ],
+  "base_commit": "b5ecfdc7e3b7086544fcf0a6b2392413357d6b77",
+  "created_at": "2026-06-26T04:20:00+10:00",
+  "scope": "Local-only source-domain, reading-board, parameter, and queue view evidence.",
+  "non_scope": "No live source fetch, source adapter production inclusion, queue mutation, ranking change, SMTP, scheduler, Release, public schema, DB migration, Email V1 runtime/frontstage, CURRENT, V7.1, V7.2 contract, owner-experience final acceptance, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT03_SOURCE_MODEL_VIEW.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused Stage2 source tests: 142 OK",
+    "full arxiv-daily-push unittest: 371 OK",
+    "semantic extractor: 89 formulas / 674 parameters checked",
+    "V7.2 validator PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "lean check-render: drift 0 / reference issues 0",
+    "JSON/YAML/JSONL/CSV parse OK",
+    "git diff --check PASS"
+  ]
+}

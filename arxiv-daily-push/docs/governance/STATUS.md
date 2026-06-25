@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
-- Phase/Gate: `S2PH / S2PHT05_CONTENT_QUALITY_GATE_LOCAL_ONLY`
-- Models/Formulas/Parameters total: `86 / 88 / 681`
-- Active formulas/parameters: `88 / 664`
-- Machine checked formulas/parameters: `88 / 664`
+- Phase/Gate: `S2PI / S2PIT03_SOURCE_MODEL_VIEW_LOCAL_ONLY`
+- Models/Formulas/Parameters total: `87 / 89 / 691`
+- Active formulas/parameters: `89 / 674`
+- Machine checked formulas/parameters: `89 / 674`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PHT05_CONTENT_QUALITY_GATE_LOCAL_ONLY`
+- Release gate: `S2PIT03_SOURCE_MODEL_VIEW_LOCAL_ONLY`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57`
@@ -47,7 +47,7 @@
 - Stage 2 integrated accepted: `false`
 - Next governance task: `S2PKT01`
 - Parallel shadow source task: `S2PBT01`
-- Next executable task: `S2PKT01_MAIL_CONTRACT_LOCAL_ONLY_BLOCKED_PENDING_S2PIT04`
+- Next executable task: `S2PIT04_LEDGER_LOCAL_ONLY`
 - Pending/stale events: `117`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
