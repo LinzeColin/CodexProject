@@ -16,8 +16,8 @@ previous_read_only_contract:
 current_pointer_registry:
   global_current_task: S2PCT02
   global_current_task_meaning: Stage2 Science metadata-only no-send shadow evidence may continue when it does not touch V7.2 shared contract files.
-  v7_contract_remediation_next: S2PHT01V1.1-T01
-  email_v1_workstream_next: S2PHT01V1.1-T01
+  v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
+  email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: S2PCT02
 single_current_contract_rule: Only this file may identify the CURRENT product contract. Workstream next tasks must be named by context and must not replace the product-contract pointer.
 production_boundary:

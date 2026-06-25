@@ -2329,3 +2329,23 @@ None for this new project baseline.
 - Rollback: Revert S2PGT05 calibration code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PGT05_CROSS_BOARD_CALIBRATION.md`; `governance/run_manifests/ADP-S2PGT05-CROSS-BOARD-CALIBRATION-20260625.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run final validation, commit, push, and open PR for S2PGT05.
+
+### `ITER-20260625-ADP-S2PA-S2PAT07-EMAIL-V1-POINTER-REPAIR`
+
+- Timestamp: `2026-06-25T22:20:00+10:00`
+- Fact level: EXTRACTED from PR #152/#153 main-merge receipts, S2PHT01V1.1-T01-T05 delivery records, V7.2 root files, and local S2PAT07 validator repair.
+- Base commit: `62c79a57aa9f739a87d7d6c0d7901891a706a421`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PA
+- Task IDs: `S2PAT07`; acceptance `ACC-S2PAT07-EMAIL-V1-POINTER-REPAIR`; global current task remains `S2PCT02`.
+- Goal: Repair stale V7.2 Email V1 contextual next pointers after T01-T05 reached main, update validator rules so future agents cannot regress to T01-next drift, and preserve V7.2 no-production boundaries.
+- Files changed: CURRENT contextual next fields, V7.2 root lock, product contract pointer policy, roadmap, current pointer registry, migration matrix exact-path status, V7.2 handoff/readme wording, validator, hash bindings, delivery task, phase record, run manifest, changelog, event, and this ledger entry.
+- Model changes: None. This is a root-governance pointer and validator repair.
+- Formula changes: None.
+- Parameter changes: None.
+- Validation: py_compile PASS; V7.2 contract validator PASS; full arxiv-daily-push unittest 316 OK; semantic extractor 76 formulas / 542 parameters checked; governance dashboard generator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift 0 reference_issue_count 0; focused S2PAT07 governance unittest 1 OK; JSON/JSONL/YAML/CSV parse OK; git diff --check PASS; no __pycache__/.pyc remains after cleanup. Full root governance unittest is not a S2PAT07 target gate and still has unrelated cross-project/stale fixture failures.
+- Decisions: `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS` is the current Email V1 workstream state. `ADP-PRODUCT-CONTRACT-V7.2` remains the single CURRENT product contract. `S2PCT02` remains the global current Stage2 shadow source task. V7.1 remains read-only history.
+- Remaining risks: Inherited V7.1 P0=8/P1=37 and S2PMT07 still block real restore, real SMTP, scheduler installation, Release/final production claims, and INTEGRATED_PRODUCTION_ACCEPTED.
+- Rollback: Revert S2PAT07 V7.2 pointer edits, validator change, hashes, governance records, manifest, phase record, event, and this ledger entry; runtime code and V7.1 history are untouched.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PAT07_EMAIL_V1_POINTER_REPAIR.md`; `governance/run_manifests/ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-20260625.json`; `arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PAT07.

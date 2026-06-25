@@ -113,9 +113,9 @@ dual_plane_governance:
 current_pointer_policy:
   single_current_product_contract: docs/pursuing_goal/CURRENT.yaml
   global_current_task: S2PCT02
-  email_v1_workstream_next: S2PHT01V1.1-T01
+  email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: S2PCT02
-  v7_contract_remediation_next: S2PHT01V1.1-T01
+  v7_contract_remediation_next: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
 agent_revalidation_policy:
   required: true
   rule: All active or completed Stage2 agents must re-review their completed work against V7.2 before starting new tasks.

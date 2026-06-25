@@ -10,11 +10,11 @@ contextual_next_tasks:
     task_id: S2PCT02
     meaning: Science main-journal metadata-only no-send shadow source work may continue when it does not touch V7.2 shared files.
   email_v1_workstream_next:
-    task_id: S2PHT01V1.1-T01
-    meaning: Read-only call-chain and H/M exact repository path audit before implementation.
+    task_id: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
+    meaning: T01 through T05 are completed on main; future mail entrypoints must use the Email V1 contract/readiness gate and still cannot enable SMTP, scheduler, Release, public schema changes, or production acceptance.
   v7_contract_remediation_next:
-    task_id: S2PHT01V1.1-T01
-    meaning: Resolve exact repository paths, owner, read/write mode and rollback receipt targets.
+    task_id: NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS
+    meaning: V7.2 baseline publication plus Email V1 main-merge status are recorded; no V7.2 remediation task remains open before no-conflict Stage2 shadow work continues.
   shadow_source_next:
     task_id: S2PCT02
     meaning: No-send source shadow path, no formal D2 acceptance.

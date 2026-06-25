@@ -1140,6 +1140,23 @@ tasks:
     target_version: "0.23.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PAT07"
+    phase: "S2PA"
+    objective: "Repair V7.2 Email V1 contextual next pointers after S2PHT01V1.1-T01-T05 reached main, and make the V7.2 validator enforce the merged no-production state."
+    scope: "CURRENT contextual next fields, V7.2 root lock, product contract pointer policy, roadmap, current pointer registry, migration matrix exact-path status, V7.2 handoff/readme wording, validator checks, root-lock hashes, governance delivery records, phase record, manifest, and append-only event."
+    non_scope: "No mail runtime implementation, no SMTP transport, no scheduler trigger or production enablement, no Release upload, no source adapter, no ranking or queue algorithm, no public schema, no DB/migration, no V7.1 baseline edit, no production flag, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PHT01V1.1-T05"]
+    required_files: ["arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/current_pointer_registry_v7_2.yaml", "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml", "arxiv-daily-push/docs/phase_records/PHASE_S2PAT07_EMAIL_V1_POINTER_REPAIR.md", "governance/run_manifests/ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-20260625.json"]
+    acceptance_ids: ["ACC-S2PAT07-EMAIL-V1-POINTER-REPAIR"]
+    test_commands: ["python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "scripts/validate_project_governance.py --project arxiv-daily-push", "scripts/lean_governance.py check-render --project arxiv-daily-push", "scripts/validate_semantic_extractors.py arxiv-daily-push", "python3 -m unittest discover -s arxiv-daily-push/tests -q", "JSON/YAML/JSONL/CSV parse", "git diff --check"]
+    test_results: ["py_compile PASS", "V7.2 contract validator PASS", "full arxiv-daily-push unittest: 316 OK", "semantic extractor: 76 formulas / 542 parameters checked", "governance dashboard generator PASS", "ADP project governance errors 0 warnings 0", "changed-only governance semantic errors 0 warnings 0", "lean check-render drift_count 0 reference_issue_count 0", "focused S2PAT07 governance unittest: 1 OK", "JSON/JSONL/YAML/CSV parse OK", "git diff --check PASS", "no __pycache__/.pyc remains after cleanup", "full root governance unittest is not a S2PAT07 target gate and still has unrelated cross-project/stale fixture failures"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PAT07_EMAIL_V1_POINTER_REPAIR.md", "governance/run_manifests/ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-20260625.json", "arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py"]
+    risk: "S2PAT07 updates shared V7.2 contract context only to close stale T01-next drift; it must not be interpreted as new Email V1 runtime work, live M1-M4 operation, SMTP/scheduler/Release enablement, or integrated production acceptance."
+    rollback: "Revert S2PAT07 V7.2 pointer edits, validator change, hashes, governance records, manifest, phase record, and event; V7.1 history and runtime code are untouched."
+    target_version: "0.23.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2PBT01"
     phase: "S2PB"
     objective: "Promote bioRxiv and medRxiv as the first V7.2-inherited D1 research/preprint source adapters after Stage 1 arXiv acceptance and local production prep."

@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PGT05_CALIBRATION_READY_NO_PRODUCTION`
+- release_gate: `S2PAT07_EMAIL_V1_POINTER_REPAIRED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `76`
+- legacy_unbound_events: `77`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `115`
+- pending_or_stale_events: `116`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:49babb10dbcaf916819adfa4216610adcadb2ca39e7d18d1bdcf8d829073f5f0`
-- snapshot_event_time: `2026-06-25T21:10:00+10:00`
+- source_snapshot_hash: `sha256:b330a438347b109c5594613a4972573e6eb48a8dfee2b11e54376b5273ca6c66`
+- snapshot_event_time: `2026-06-25T22:20:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PG / S2PGT05_CALIBRATION_READY_NO_PRODUCTION`
+- phase/gate: `S2PA / S2PAT07_EMAIL_V1_POINTER_REPAIRED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

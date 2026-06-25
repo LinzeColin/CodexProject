@@ -66,12 +66,22 @@ file_migration_matrix:
   - plane: implementation
     source: V1.1 candidate implementation files
     target_type: exact code path audit
-    exact_path_status: deferred_to_S2PHT01V1.1-T01
-    exact_paths: []
+    exact_path_status: resolved_by_S2PHT01V1.1_T01_T05_main_merge
+    exact_paths:
+      - arxiv-daily-push/src/arxiv_daily_push/mail_templates.py
+      - arxiv-daily-push/src/arxiv_daily_push/global_scan.py
+      - arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py
+      - arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py
+      - arxiv-daily-push/src/arxiv_daily_push/local_runner.py
+      - arxiv-daily-push/tests/test_mail_templates.py
+      - arxiv-daily-push/tests/test_global_scan.py
+      - arxiv-daily-push/tests/test_stage1_b1_report.py
+      - arxiv-daily-push/tests/test_scheduled_execution.py
+      - arxiv-daily-push/tests/test_local_runner.py
 task_id_mapping:
   workstream_id: EMAIL_LEARNING_V1
   canonical_parent_task: S2PKT01
-  canonical_parent_status: mapped_for_contract; exact file ownership still requires T01
+  canonical_parent_status: mapped_for_contract; exact file ownership resolved by S2PHT01V1.1-T01 and Email V1 renderer merged through S2PHT01V1.1-T05
   aliases:
     - S2PHT01V1.1-T00
     - S2PHT01V1.1-T01

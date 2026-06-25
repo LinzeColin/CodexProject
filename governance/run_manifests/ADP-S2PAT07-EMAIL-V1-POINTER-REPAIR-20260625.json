@@ -1,0 +1,83 @@
+{
+  "manifest_id": "ADP-S2PAT07-EMAIL-V1-POINTER-REPAIR-20260625",
+  "project": "arxiv-daily-push",
+  "task_id": "S2PAT07",
+  "phase": "S2PA",
+  "acceptance_id": "ACC-S2PAT07-EMAIL-V1-POINTER-REPAIR",
+  "iteration_id": "ITER-20260625-ADP-S2PA-S2PAT07-EMAIL-V1-POINTER-REPAIR",
+  "base_commit": "62c79a57aa9f739a87d7d6c0d7901891a706a421",
+  "status": "local_validation_passed_pending_pr_ci",
+  "scope": [
+    "Repair V7.2 Email V1 contextual next pointers after S2PHT01V1.1-T01-T05 reached main.",
+    "Update V7.2 validator so stale T01-next Email V1 drift fails validation.",
+    "Keep CURRENT on ADP-PRODUCT-CONTRACT-V7.2 and S2PCT02 as the global current task."
+  ],
+  "non_scope": [
+    "No mail runtime implementation.",
+    "No SMTP transport, scheduler trigger, Release upload, production flag, source adapter, ranking, queue algorithm, public schema, DB or migration change.",
+    "No V7.1 baseline edit and no integrated production acceptance claim."
+  ],
+  "files_changed_expected": [
+    "arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/current_pointer_registry_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/01_当前状态与唯一下一任务.md",
+    "arxiv-daily-push/docs/pursuing_goal/v7_2/README_先读.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PAT07_EMAIL_V1_POINTER_REPAIR.md",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/CHANGELOG.md",
+    "scripts/validate_project_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "production_side_effects": {
+    "real_smtp_sent": false,
+    "scheduler_enabled": false,
+    "release_uploaded": false,
+    "public_schema_changed": false,
+    "db_migration_changed": false,
+    "source_adapter_changed": false,
+    "ranking_or_queue_algorithm_changed": false,
+    "v7_1_baseline_changed": false,
+    "integrated_production_accepted": false
+  },
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_semantic PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_project PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "JSON/YAML/JSONL/CSV parse checks",
+    "forbidden runtime side-effect path scan",
+    "git diff --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pat07_newtest PYTHONPATH=scripts:arxiv-daily-push/src python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_adp_s2pat07_email_v1_pointer_repair_is_current_contract_safe -q",
+    "find . -name __pycache__ -o -name *.pyc"
+  ],
+  "test_results": [
+    "py_compile PASS for validate_project_governance.py and validate_v7_2_contract.py",
+    "V7.2 contract validator PASS",
+    "full arxiv-daily-push unittest: 316 OK",
+    "semantic extractor checked 76 formulas / 542 parameters",
+    "governance dashboard generator PASS",
+    "ADP project governance errors 0 warnings 0",
+    "changed-only governance semantic errors 0 warnings 0",
+    "lean check-render drift_count 0 reference_issue_count 0",
+    "focused S2PAT07 governance unittest: 1 OK",
+    "JSON/JSONL/YAML/CSV parse OK",
+    "git diff --check PASS",
+    "no __pycache__/.pyc remains after cleanup",
+    "full root governance unittest is not a target gate and still has unrelated cross-project/stale fixture failures"
+  ],
+  "rollback": "Revert S2PAT07 V7.2 pointer edits, validator change, hashes, governance records, manifest, phase record, and event; runtime code and V7.1 history are untouched."
+}

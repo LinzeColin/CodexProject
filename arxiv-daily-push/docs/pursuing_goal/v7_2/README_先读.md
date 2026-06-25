@@ -28,4 +28,4 @@ V7.2 是 V7.1 的窄补丁合同，不覆盖、不删除、不改写 `docs/pursu
 
 ## 下一任务
 
-`S2PHT01V1.1-T01`：只读调用链与 H/M 精确落位审计。T01 之前不得让实现 Agent 猜测 product contract、feature registry、roadmap/task registry 或 receipt 的仓库路径。
+Email V1 T01-T05 已完成并合入 main，当前状态为 `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`。无共享合同文件冲突、无公共 Schema/生产副作用的 Stage2 Shadow 数据源开发可继续；当前全局任务仍是 `S2PCT02`。

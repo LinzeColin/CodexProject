@@ -6,13 +6,13 @@ as_of: "2026-06-24"
 current_contract:
   contract_version: ADP-PRODUCT-CONTRACT-V7.2
   contract_path: docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml
-  contract_sha256: f6fe50017a2b91fda85dee2b5b0b36ad8847bf4d823ecbbe00f9202d6f96cae8
+  contract_sha256: a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d
   current_pointer_path: docs/pursuing_goal/CURRENT.yaml
   roadmap_version: ADP-ROADMAP-V7.2
   roadmap_path: docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml
-  roadmap_sha256: fdca7b6c2deb3216794cfa764e220aa69beccbdd3b581950c78acb74087d1a56
+  roadmap_sha256: db73db7eb554a613c87de84f817759822a39108c8d6e950cad4432e7c4634f57
   migration_matrix_path: docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml
-  migration_matrix_sha256: 282c7367c2566e386f556ceb5edc06be06e7b3318324ac349a8ba207b5801af4
+  migration_matrix_sha256: 08696d0211878131b5ddaaef1a8a963b8870e9e844f7d5c70beb6412a5f4c7fc
   final_review_path: docs/pursuing_goal/v7_2/AUDIT/final_review_matrix.yaml
   final_review_sha256: 571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c
 previous_contract:
@@ -40,7 +40,7 @@ stage2_boundary:
   status: in_progress
   production_accepted: false
   global_current_task: S2PCT02
-  email_v1_workstream_next: S2PHT01V1.1-T01
+  email_v1_workstream_next: EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS
   shadow_source_next: S2PCT02
   final_task: S2PMT07
   stop_gate: INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION
