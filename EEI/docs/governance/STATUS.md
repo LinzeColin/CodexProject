@@ -5,16 +5,16 @@
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:b76736ada4de2be885527076930d1d67382c883ea020428eb4d93b0e130a3fb6`
-- snapshot_event_time: `2026-06-25T16:12:00Z`
+- snapshot_event_time: `2026-06-25T17:15:28Z`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:842b4f0999ac3fd0d2ce4ebf023f81fd9fc5f544 Project Governance run 28183575921 PASS; EEI validation run 28183575964 PASS`
+- final_commit_binding: `PRECOMMIT_PENDING:EVENT-20260625-018 local A209 heartbeat 173/288 refresh`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1307-A209-BACKGROUND-SOAK-152-OF-288-RELEASE-BLOCKED`
+- Phase/Gate: `C / TASK-T1307-A209-BACKGROUND-SOAK-170-OF-288-RELEASE-BLOCKED`
 - Models/Formulas/Parameters total: `12 / 12 / 88`
 - Active formulas/parameters: `11 / 88`
 - Machine checked formulas/parameters: `11 / 88`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-BACKGROUND-SOAK-152-OF-288-RELEASE-BLOCKED`
+- Release gate: `TASK-T1307-A209-BACKGROUND-SOAK-170-OF-288-RELEASE-BLOCKED`
 - Next executable task: `TASK-T1301`
 - Pending/stale events: `96`
 - Tree-bound events: `0`
