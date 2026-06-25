@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PI
-- Current gate: S2PIT02_RUNTIME_DASHBOARD_LOCAL_ONLY
-- Confirmed iteration count: 100
+- Current phase: S2PJ
+- Current gate: S2PJT01_LIFECYCLE_STATE_LOCAL_ONLY
+- Confirmed iteration count: 101
 - Reconstructed event count: 0
-- Current task: `S2PIT02` has completed local runtime dashboard evidence. It aggregates the S2PIT01 user-center report, Stage 1 runtime audit, watchdog, read-only storage inspect, and production-boundary state into a local-only dashboard report and Chinese owner status page without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PJT01` has completed local lifecycle state evidence. It validates REVIEW_DUE, ACTION, ASSET, CONVERSION, MASTERED, append-only history, state-count conservation, backend ledger mapping, and dry-run rollback migration proof without changing CURRENT, V7.1/V7.2 contract files, SMTP, scheduler, Release, real DB migration, public schema, queue mutation, source adapters, ranking, or Email V1 runtime/frontstage. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -32,10 +32,27 @@ The append-only machine record is `development_events.jsonl`.
 | S2PF | V7.2-inherited D3 China local and extended official-source coverage | completed_local_validation | S2PFT01-S2PFT05 now cover mainland provincial templates, Hong Kong/Macau profiles, key cities, special zones, and full D3 governance qualification without formal production inclusion | `governance/run_manifests/ADP-S2PFT05-D3-FULL-GOVERNANCE-QUALIFICATION-20260625.json`; `docs/phase_records/PHASE_S2PFT05_D3_FULL_GOVERNANCE_QUALIFICATION.md` |
 | S2PE | V7.2-inherited D4 US official technology and finance source domain | completed_local_validation | `S2PET01-S2PET04` now cover metadata-only US-TA, US-LG, US-FM, US-TP, and D4 qualification evidence without live fetch, D4 production inclusion, SMTP, scheduler, Release, public schema, or queue mutation | `docs/phase_records/PHASE_S2PET04_US_TP_D4_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PET04-US-TP-D4-QUALIFICATION-20260625.json` |
 | S2PG | Unified evidence backbone, knowledge graph, and source-to-reading routing | in_progress | `S2PGT01` private EvidencePacket V2 compatibility is complete; continue later S2PG graph/routing work without silently migrating public schema or production queues | `docs/phase_records/PHASE_S2PGT01_EVIDENCE_PACKET_V2_COMPATIBILITY.md`; `governance/run_manifests/ADP-S2PGT01-EVIDENCE-PACKET-V2-COMPATIBILITY-20260625.json` |
-| S2PI | Chinese user center, one-edit/four-check/three-base, and real-state visibility | in_progress | `S2PIT01` and `S2PIT02` local user-center/runtime-dashboard evidence are complete; continue later S2PJ review/action/ROI state work without public schema, DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md`; `governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json` |
+| S2PI | Chinese user center, one-edit/four-check/three-base, and real-state visibility | completed_local_validation | `S2PIT01` and `S2PIT02` local user-center/runtime-dashboard evidence are complete without public schema, DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md`; `governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json` |
+| S2PJ | Review, action, capability asset, ROI, weekly and monthly report state | in_progress | `S2PJT01` local lifecycle state model evidence is complete; continue S2PJT02 review schedule/due queue locally without public schema, real DB migration, SMTP, scheduler, Release, or production side effects | `docs/phase_records/PHASE_S2PJT01_LIFECYCLE_STATE.md`; `governance/run_manifests/ADP-S2PJT01-LIFECYCLE-STATE-20260625.json` |
 | S2P1 | Review8 V6 source promotion | in_progress | Promote bioRxiv and medRxiv through source-level gates without regressing accepted arXiv local production | `docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md`; `docs/phase_records/PHASE_S2P1T01_PREPRINT_SOURCE_PROMOTION.md`; `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json` |
 
 ## Iteration Records
+
+### `ITER-20260625-ADP-S2PJ-S2PJT01-LIFECYCLE-STATE`
+
+- Date: 2026-06-25
+- Fact level: EXTRACTED from S2PJT01 lifecycle state code, focused tests, S2PIT02 report contract, dry-run migration boundary, model/formula/parameter registry diff, and local S2PJT01 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: d73821593f93639b422d3c9539b412df81756e3e
+- Goal: Implement local-only review/action/asset/conversion/mastery lifecycle state model evidence.
+- Files changed: `stage2_sources.py`, `cli.py`, `test_stage2_sources.py`, phase record, run manifest, model/formula/parameter registries, delivery plan/tasks, traceability, owner status docs, and this ledger.
+- Model changes: Added `MOD-ADP-081` for S2PJT01 lifecycle state evidence.
+- Formula changes: Added `FORM-ADP-083` for S2PIT02 dependency, lifecycle state coverage, append-only history, count conservation, ledger mapping, dry-run migration rollback proof, and no-side-effect gates.
+- Parameter changes: Added `PARAM-ADP-626` through `PARAM-ADP-633`.
+- Decisions: S2PJT01 records the lifecycle state model and dry-run migration proof only. It does not execute a real DB migration, enable review scheduler, or calculate actual ROI.
+- Boundaries: No SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking change, source adapter change, Email V1 frontstage/runtime change, CURRENT pointer change, V7.1/V7.2 contract-file edit, owner-experience final acceptance, Stage2 production acceptance, or integrated production acceptance.
+- Validation: `py_compile` PASS; focused Stage2 source tests 118 OK; semantic extractor 83 formulas / 616 parameters checked; pending full validation.
 
 ### `ITER-20260625-ADP-S2PI-S2PIT02-RUNTIME-DASHBOARD`
 
