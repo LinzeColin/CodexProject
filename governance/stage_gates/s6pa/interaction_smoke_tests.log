@@ -1,0 +1,81 @@
+task_id: S6PA-GATE
+acceptance_id: ACC-S6PA-GATE
+result: PASS
+mode: OWNER_AGENT_CLI_EVIDENCE_ONLY_NO_PRODUCT_UI_REDESIGN
+language_rule: 中文优先，默认全局中文
+owner_readable_priority: true
+
+phase_inputs:
+  - governance/stage_gates/s6pa/ux_priority_matrix.csv
+  - governance/run_manifests/GOV-OTHER8-S6PAT01-UX-PRIORITY-MATRIX-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-EVA-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-WHKM-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-FIFA-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-OPENAIDATABASE-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json
+  - governance/run_manifests/GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json
+
+project_smoke_evidence:
+  - project_id: Alpha
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: NOT_RUN_ENV_BLOCKER_RECORDED
+    evidence: bundled Python reports No module named pytest; policy smoke also reports No module named yaml before dev dependencies are installed
+  - project_id: EVA_OS
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: NOT_RUN_ENV_BLOCKER_RECORDED
+    evidence: bundled Python reports No module named pytest before EVA_OS test dependencies are installed
+  - project_id: OpMe_System
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: PASS
+    evidence: set PYTHONPATH=backend&& .venv\Scripts\python.exe -m pytest backend\tests -q -> 8 passed, 1 warning in 6.66s
+  - project_id: whkmSalary
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: PASS
+    evidence: python -B -m unittest discover -s tests -q -> Ran 10 tests in 0.173s; OK
+  - project_id: FIFA
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: PASS
+    evidence: tab-research-pipeline unittest smoke -> Ran 6 tests in 0.192s; OK
+  - project_id: OpenAIDatabase
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: PASS
+    evidence: privacy/context/memory unittest smoke -> Ran 3 tests OK; Ran 1 test OK; Ran 1 test OK
+  - project_id: PFI_BIG_DATA_SIMULATOR
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: PASS
+    evidence: python -B -m unittest tests.test_s3pct02_lifecycle -q -> Ran 1 test in 1.277s; OK
+  - project_id: Serenity-Alipay
+    candidates: 2
+    single_project_pr: true
+    readme_only: true
+    result: PASS
+    evidence: python -B -m unittest tests.test_s3pct03_lifecycle -q -> Ran 4 tests in 0.053s; OK
+
+phase_stop_conditions:
+  large_ui_framework_added_for_appearance: false
+  navigation_changed_without_user_flow_evidence: false
+  more_than_one_project_implemented_in_one_task: false
+  runtime_code_changed: false
+  external_automation_triggered: false
+  product_ui_redesign_claimed: false
+
+gate_result:
+  S6PA-GATE: PASSED
+  next_allowed_task: S6PBT01
+  S6-GATE: IN_PROGRESS

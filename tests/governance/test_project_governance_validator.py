@@ -7778,6 +7778,166 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(manifest["rollback"]["requires_file_restore"])
         self.assertFalse(manifest["rollback"]["requires_archive_restore"])
 
+    def test_other8_s6pa_gate_closes_owner_flow_with_cli_evidence(self) -> None:
+        matrix_path = ROOT / "governance" / "stage_gates" / "s6pa" / "ux_priority_matrix.csv"
+        gate_path = ROOT / "governance" / "stage_gates" / "s6pa" / "s6pa_gate.md"
+        smoke_path = ROOT / "governance" / "stage_gates" / "s6pa" / "interaction_smoke_tests.log"
+        cli_path = ROOT / "governance" / "stage_gates" / "s6pa" / "cli_evidence.md"
+        manifest_path = (
+            ROOT
+            / "governance"
+            / "run_manifests"
+            / "GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json"
+        )
+        for path in (matrix_path, gate_path, smoke_path, cli_path, manifest_path):
+            self.assertTrue(path.is_file(), path)
+
+        gate_text = gate_path.read_text(encoding="utf-8")
+        smoke_text = smoke_path.read_text(encoding="utf-8")
+        cli_text = cli_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        with matrix_path.open(encoding="utf-8", newline="") as handle:
+            matrix_rows = list(csv.DictReader(handle))
+
+        first_gate_lines = "\n".join(gate_text.splitlines()[:24])
+        for required in {
+            "S6PA-GATE 中文 Owner 验收",
+            "PASSED",
+            "中文优先，默认全局中文",
+            "用户可读优先",
+            "Owner/Agent 操作路径",
+            "不声明产品 UI 已重构",
+            "每项目最多选择 3 个高价值 UX 改进",
+            "错误、空状态、进行中、成功反馈完整",
+            "关键操作可撤销或安全确认",
+            "不为美观引入大型 UI 框架",
+            "一次不超过一个项目",
+            "S6PBT01",
+            "S6-GATE",
+            "IN_PROGRESS",
+            "回滚",
+        }:
+            self.assertIn(required, gate_text)
+        self.assertIn("中文", first_gate_lines)
+        self.assertIn("用户可读优先", first_gate_lines)
+
+        for required in {
+            "task_id: S6PA-GATE",
+            "acceptance_id: ACC-S6PA-GATE",
+            "result: PASS",
+            "OWNER_AGENT_CLI_EVIDENCE_ONLY_NO_PRODUCT_UI_REDESIGN",
+            "large_ui_framework_added_for_appearance: false",
+            "navigation_changed_without_user_flow_evidence: false",
+            "more_than_one_project_implemented_in_one_task: false",
+            "product_ui_redesign_claimed: false",
+            "next_allowed_task: S6PBT01",
+            "No module named pytest",
+            "Ran 4 tests in 0.053s; OK",
+        }:
+            self.assertIn(required, smoke_text)
+
+        for required in {
+            "screenshots_or_cli_evidence",
+            "中文优先，默认全局中文",
+            "用户可读优先",
+            "不要求截图",
+            "No module named pytest",
+            "8 passed, 1 warning in 6.66s",
+            "Ran 10 tests in 0.173s; OK",
+            "Ran 6 tests in 0.192s; OK",
+            "Ran 1 test in 1.277s; OK",
+            "Ran 4 tests in 0.053s; OK",
+            "不能跳过三 Agent 独立复审",
+        }:
+            self.assertIn(required, cli_text)
+
+        expected_projects = {
+            "Alpha",
+            "EVA_OS",
+            "OpMe_System",
+            "whkmSalary",
+            "FIFA",
+            "OpenAIDatabase",
+            "PFI_BIG_DATA_SIMULATOR",
+            "Serenity-Alipay",
+        }
+        rows_by_project = {
+            project_id: [row for row in matrix_rows if row["project_id"] == project_id]
+            for project_id in expected_projects
+        }
+        self.assertEqual(sum(len(rows) for rows in rows_by_project.values()), 16)
+        for project_id, rows in rows_by_project.items():
+            with self.subTest(project_id=project_id):
+                self.assertEqual({row["priority"] for row in rows}, {"P0", "P1"})
+                self.assertLessEqual(len(rows), 3)
+                self.assertTrue(all(row["s6pat02_candidate"] == "true" for row in rows))
+
+        manifest_files = {
+            "Alpha": "GOV-OTHER8-S6PAT02-ALPHA-OWNER-FLOW-20260625.json",
+            "EVA_OS": "GOV-OTHER8-S6PAT02-EVA-OWNER-FLOW-20260625.json",
+            "OpMe_System": "GOV-OTHER8-S6PAT02-OPME-OWNER-FLOW-20260625.json",
+            "whkmSalary": "GOV-OTHER8-S6PAT02-WHKM-OWNER-FLOW-20260625.json",
+            "FIFA": "GOV-OTHER8-S6PAT02-FIFA-OWNER-FLOW-20260625.json",
+            "OpenAIDatabase": "GOV-OTHER8-S6PAT02-OPENAIDATABASE-OWNER-FLOW-20260625.json",
+            "PFI_BIG_DATA_SIMULATOR": "GOV-OTHER8-S6PAT02-PFI-OWNER-FLOW-20260625.json",
+            "Serenity-Alipay": "GOV-OTHER8-S6PAT02-SERENITY-OWNER-FLOW-20260625.json",
+        }
+        for project_id, file_name in manifest_files.items():
+            with self.subTest(project_id=project_id):
+                path = ROOT / "governance" / "run_manifests" / file_name
+                project_manifest = json.loads(path.read_text(encoding="utf-8"))
+                self.assertEqual(project_manifest["task_id"], "S6PAT02")
+                self.assertEqual(project_manifest["acceptance_ids"], ["ACC-S6PAT02"])
+                scope = project_manifest["s6pat02_scope"]
+                self.assertEqual(scope["project_id"], project_id)
+                self.assertLessEqual(scope["implemented_candidate_count"], 3)
+                self.assertTrue(scope["single_project_pr"])
+                self.assertTrue(scope["readme_only"])
+                for key, value in project_manifest["stop_conditions"].items():
+                    self.assertFalse(value, f"{project_id}:{key}")
+
+        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["run_id"], "GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625")
+        self.assertEqual(manifest["task_id"], "S6PA-GATE")
+        self.assertEqual(manifest["acceptance_ids"], ["ACC-S6PA-GATE"])
+        self.assertEqual(manifest["project_id"], "ROOT")
+        self.assertEqual(manifest["stage_gate_status"]["S6PA-GATE"], "PASSED")
+        self.assertEqual(manifest["stage_gate_status"]["S6PB-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["stage_gate_status"]["S6-GATE"], "IN_PROGRESS")
+        self.assertEqual(manifest["next_allowed_task"], "S6PBT01")
+        self.assertEqual(manifest["phase_scope"]["projects_reviewed"], sorted(expected_projects))
+        self.assertEqual(manifest["phase_scope"]["implemented_project_count"], 8)
+        self.assertEqual(manifest["phase_scope"]["implemented_candidate_count"], 16)
+        self.assertTrue(manifest["phase_scope"]["owner_agent_path_only"])
+        self.assertFalse(manifest["phase_scope"]["product_ui_redesign_claimed"])
+        for key, value in manifest["phase_stop_conditions"].items():
+            self.assertFalse(value, key)
+        for key, value in manifest["s6pa_gate_conditions"].items():
+            self.assertTrue(value, key)
+        changed = set(manifest["changed_files_actual"])
+        self.assertEqual(
+            changed,
+            {
+                "governance/stage_gates/s6pa/s6pa_gate.md",
+                "governance/stage_gates/s6pa/interaction_smoke_tests.log",
+                "governance/stage_gates/s6pa/cli_evidence.md",
+                "governance/run_manifests/GOV-OTHER8-S6PA-GATE-OWNER-FLOW-CLOSURE-20260625.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
+        self.assertEqual(set(manifest["changed_files_declared"]), changed)
+        self.assertEqual(set(manifest["required_governance_files"]), changed)
+        self.assertEqual(set(manifest["updated_governance_files"]), changed)
+        for required in {
+            "governance/stage_gates/s6pa/ux_priority_matrix.csv",
+            "governance/stage_gates/s6pa/interaction_smoke_tests.log",
+            "governance/stage_gates/s6pa/cli_evidence.md",
+            "governance/stage_gates/s6pa/s6pa_gate.md",
+        }:
+            self.assertIn(required, manifest["evidence_refs"])
+        self.assertFalse(manifest["rollback"]["requires_file_restore"])
+        self.assertFalse(manifest["rollback"]["requires_archive_restore"])
+
     def test_other8_s4_s5_owner_reports_are_chinese_first(self) -> None:
         owner_facing_reports = [
             ROOT / "governance" / "stage_gates" / "s4pc" / "wave1_gate.md",
