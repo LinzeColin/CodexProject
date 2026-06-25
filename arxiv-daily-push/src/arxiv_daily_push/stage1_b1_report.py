@@ -18,6 +18,7 @@ from .mail_templates import (
     EMAIL_LEARNING_V1_TEMPLATE_VERSION,
     render_email_learning_v1,
 )
+from .security_boundary import sanitize_public_url, validate_trust_boundary_receipt, validate_typed_frontstage
 
 
 STAGE1_B1_REPORT_MODEL_ID = "adp-stage1-b1-report-email-v1"
@@ -148,6 +149,8 @@ def build_b1_report_email_package(
             "secret_values_logged": False,
         },
         "claim_evidence_audit": evidence_audit,
+        "lesson_claim_ids": [str(claim_id) for claim_id in lesson.get("claim_ids", []) if claim_id],
+        "lesson_frontstage": lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {},
         "candidate_queue_summary": candidate_queue_summary,
         "report_markdown": report_markdown,
         "report_html": report_html,
@@ -260,8 +263,22 @@ def validate_b1_report_email_package(package: Mapping[str, Any]) -> list[str]:
     else:
         if audit.get("critical_claim_coverage_percent") != STAGE1_B1_REQUIRED_CRITICAL_CLAIM_COVERAGE:
             errors.append("critical claim evidence coverage must be 100.0")
+        if int(audit.get("critical_claim_count") or 0) <= 0:
+            errors.append("critical claim count must be greater than 0")
         if audit.get("unsupported_critical_claim_ids"):
             errors.append("unsupported critical claim IDs must be empty")
+    content = package.get("email_learning_content_v1")
+    if isinstance(content, Mapping):
+        source_meta = content.get("source_meta") if isinstance(content.get("source_meta"), Mapping) else {}
+        if source_meta and not sanitize_public_url(str(source_meta.get("source_url") or "")):
+            errors.append("email source URL must be safe")
+    frontstage = package.get("lesson_frontstage")
+    if isinstance(frontstage, Mapping):
+        allowed_claim_ids = [str(item) for item in package.get("lesson_claim_ids") or [] if item]
+        errors.extend(validate_typed_frontstage(frontstage, allowed_claim_ids=allowed_claim_ids))
+        receipt = frontstage.get("trust_boundary_receipt")
+        if isinstance(receipt, Mapping):
+            errors.extend(validate_trust_boundary_receipt(receipt))
     if not package.get("candidate_queue_summary"):
         errors.append("candidate_queue_summary is required")
     return errors
@@ -303,7 +320,7 @@ def _evidence_audit(ledger: Mapping[str, Any]) -> dict[str, Any]:
     claims = [claim for claim in ledger.get("claims") or [] if isinstance(claim, Mapping)]
     critical = [claim for claim in claims if claim.get("priority") in {"P0", "P1"}]
     supported_critical = [claim for claim in critical if claim.get("support_status") == "supported"]
-    coverage = 100.0 if not critical else round(len(supported_critical) * 100.0 / len(critical), 2)
+    coverage = 0.0 if not critical else round(len(supported_critical) * 100.0 / len(critical), 2)
     return {
         "ledger_id": str(ledger.get("ledger_id") or ""),
         "total_claim_count": len(claims),
@@ -332,7 +349,9 @@ def _render_report_markdown(
     frontstage = lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {}
     category = str(arxiv.get("primary_category") or "unknown")
     title = _clean_text(str(source_item.get("title") or "Untitled"))
-    url = str(source_item.get("canonical_url") or "")
+    url = sanitize_public_url(str(source_item.get("canonical_url") or ""))
+    if not url:
+        url = "UNSAFE_SOURCE_URL_REMOVED"
     lines = [
         f"# B1 研究前沿讲解报告：{title}",
         "",

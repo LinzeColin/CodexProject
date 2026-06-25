@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 116
-- acceptance_count: 110
+- task_count: 117
+- acceptance_count: 111
 
 ## Delivery Tasks
 
@@ -212,3 +212,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PKT03 | M2 engineering/product/industry frontier mail | completed_local_validation | `ACC-S2PKT03-M2` | Local-only M2/B2 mail evidence with engineering usability, reproducibility, product/industry value, limitations, 2h/7d actions, deterministic hash, and no production side effects. |
 | S2PKT04 | M3 policy/capital/geopolitical frontier mail | completed_local_validation | `ACC-S2PKT04-M3` | Local-only M3/B3 mail evidence with legal status, capital impact, geopolitical context, personal impact, 2h/30d actions, deterministic hash, and no production side effects. |
 | S2PKT05 | M4 cross-board 3+1 mail orchestration | completed_local_validation | `ACC-S2PKT05-M4` | Local-only M4/B1-B6 orchestration evidence with terminal M1/M2/M3 inputs, 07:30/11:30/17:00/21:30 windows, cycle watermark, duplicate 0, silent-drop 0, cross-board summary sections, review/action traceability, deterministic hash, and no production side effects. |
+| S2PMT01 | Security and evidence boundary | completed_local_validation | `ACC-S2PMT01-SECURITY` | Local-only security boundary evidence for UNTRUSTED_DATA source content, typed frontstage statements, safe URL rendering, zero-critical-claim blocking, supply-chain baseline receipt, and no production side effects. |

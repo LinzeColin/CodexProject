@@ -8,6 +8,15 @@ from typing import Any
 
 from .contracts import stable_content_hash, validate_lesson, validate_source_item
 from .evidence_gate import build_claim_ledger
+from .security_boundary import (
+    build_trust_boundary_receipt,
+    typed_action,
+    typed_fact,
+    typed_hypothesis,
+    typed_inference,
+    validate_trust_boundary_receipt,
+    validate_typed_frontstage,
+)
 
 
 DEFAULT_LANGUAGE = "zh-CN"
@@ -44,7 +53,7 @@ def generate_lesson(
         "language": language,
         "title": f"今日论文学习：{source_item['title']}",
         "sections": _build_sections(supported_claims),
-        "frontstage": _build_frontstage(source_item),
+        "frontstage": _build_frontstage(source_item, supported_claims),
         "claim_ids": lesson_claim_ids,
         "generated_at": generated_at,
     }
@@ -94,6 +103,16 @@ def validate_lesson_against_ledger(lesson: Mapping[str, Any], ledger: Mapping[st
                 errors.append(
                     f"Lesson.sections[{index}].body must include visible claim markers: " + ", ".join(missing_markers)
                 )
+    frontstage = lesson.get("frontstage")
+    if isinstance(frontstage, Mapping):
+        errors.extend(validate_typed_frontstage(frontstage, allowed_claim_ids=lesson_claim_ids))
+        receipt = frontstage.get("trust_boundary_receipt")
+        if isinstance(receipt, Mapping):
+            errors.extend(validate_trust_boundary_receipt(receipt))
+        else:
+            errors.append("frontstage.trust_boundary_receipt is required")
+    elif frontstage is not None:
+        errors.append("Lesson.frontstage must be an object")
     return errors
 
 
@@ -123,7 +142,7 @@ def _build_sections(supported_claims: Sequence[Mapping[str, Any]]) -> list[dict[
     ]
 
 
-def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
+def _build_frontstage(source_item: Mapping[str, Any], supported_claims: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     profile = _source_profile(source_item)
     title = _clean_text(str(source_item.get("title") or ""))
     summary = str(profile["summary"])
@@ -132,6 +151,10 @@ def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
     combined = f"{title} {summary} {category}".lower()
     score = _attention_score(category, combined)
     decision = "读" if score >= 4.2 else "扫读" if score >= 3.2 else "跳过"
+    first_claim = supported_claims[0]
+    claim_ids = [str(claim.get("claim_id")) for claim in supported_claims if claim.get("claim_id")]
+    evidence_ids = [str(_claim_locator_ref(claim)) for claim in supported_claims if _claim_locator_ref(claim)]
+    default_action = _default_action(category, combined)
     return {
         "decision": decision,
         "attention_score": score,
@@ -146,7 +169,32 @@ def _build_frontstage(source_item: Mapping[str, Any]) -> dict[str, Any]:
             "需要确认论文正文中的数学定义、实验设定和失败条件是否支持摘要主张。",
             "若没有数据、回测、仿真或可复现实验，应只进入观察队列，不进入结论库。",
         ],
-        "default_action": _default_action(category, combined),
+        "default_action": default_action,
+        "source_content_trust": "UNTRUSTED_DATA",
+        "typed_statements": [
+            typed_fact(
+                str(first_claim.get("statement") or ""),
+                claim_ids=[str(first_claim.get("claim_id") or "")],
+                evidence_ids=evidence_ids[:1] or ["ledger:evidence"],
+            ),
+            typed_inference(
+                _one_line_takeaway(title, combined),
+                premise_claim_ids=claim_ids[:3],
+                reasoning_version="lesson-frontstage-s2pmt01-v1",
+                confidence=0.68,
+            ),
+            typed_hypothesis(
+                "摘要级证据只能支持继续追问，不能直接升级为生产、投资或商业结论。",
+                premise_claim_ids=claim_ids[:3],
+                confidence=0.62,
+            ),
+            typed_action(
+                default_action,
+                premise_claim_ids=claim_ids[:3],
+                action_scope="local_learning_or_research_review_only",
+            ),
+        ],
+        "trust_boundary_receipt": build_trust_boundary_receipt(source_item),
         "video_card": {
             "duration": "45-60秒",
             "content": "用变量、反馈回路和失败条件解释今天是否值得继续读。",
@@ -262,6 +310,14 @@ def _claim_sentence(claim: Mapping[str, Any], label: str) -> str:
     claim_id = str(claim["claim_id"])
     statement = str(claim["statement"]).strip().rstrip("。.")
     return f"{label}来自 Claim Ledger [{claim_id}]：{statement}"
+
+
+def _claim_locator_ref(claim: Mapping[str, Any]) -> str:
+    locator = claim.get("locator") if isinstance(claim.get("locator"), Mapping) else {}
+    for key in ("stable_url", "page", "section", "table", "figure", "quote"):
+        if locator.get(key):
+            return f"{key}:{locator[key]}"
+    return ""
 
 
 def _takeaway_sentence(claims: Sequence[Mapping[str, Any]]) -> str:

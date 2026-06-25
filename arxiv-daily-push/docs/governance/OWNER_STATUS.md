@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-新增 `S2PKT05` 本地 M4 cross-board 3+1 mail orchestration evidence；它在 S2PKT01-M4 合同和 S2PKT02/S2PKT03/S2PKT04 终态基础上校验 M4/B1-B6、07:30/11:30/17:00/21:30 错峰窗口、cycle watermark、重复 0、静默消失 0、旧五封关闭、跨板块总览章节、行动/复习追溯、状态与哈希，并保持 SMTP/scheduler/Release/schema/queue/ranking/source adapter/Email V1 runtime 全部无生产副作用。
+新增 `S2PMT01` 本地 security and evidence boundary evidence；它为来源内容标记 `UNTRUSTED_DATA`，要求 frontstage typed statements，阻断不安全 URL 和 0 critical claim 的错误 100% 覆盖率，并登记本地 supply-chain baseline receipt；SMTP/scheduler/Release/schema/DB/queue/ranking/source adapter/workflow enforcement 全部保持无生产副作用。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT05 as local M4 mail orchestration evidence only, continue only with the next governed Stage2 task under no-production boundaries, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PMT01 as local security boundary evidence only, continue S2PMT02 atomic storage/recovery hardening under no-production boundaries, and leave inherited P0/P1 closure to independent review.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PL_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
+- next_task_id: `S2PMT02_ATOMIC_STORAGE_AND_RECOVERY_UNDER_V7_2`
 - responsible_role: `project_owner`
-- acceptance_ids: `ACC-S2PLT01-30D`
-- unblock_condition: S2PKT05 M4 mail orchestration evidence is complete locally; continue only with the next governed Stage2 task under V7.2 no-production boundaries and keep SMTP/scheduler/Release/public schema disabled.
+- acceptance_ids: `ACC-S2PMT02-ATOMIC-RECOVERY`
+- unblock_condition: S2PMT01 security boundary evidence is complete locally; continue atomic publish/backup/recovery hardening under V7.2 no-production boundaries and keep SMTP/scheduler/Release/public schema disabled.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (740/740 active parameters, 95/95 active formulas)
+- implementation_congruence: `VERIFIED` (750/750 active parameters, 96/96 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT05 as local M4 orchestration evidence, continue the next governed Stage2 task under no-production boundaries, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续下一 governed Stage2 task，保持 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 M4 evidence gate 直接启用生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PKT05 as local M4 orchestration evidence, continue the next governed Stage2 task under no-production boundaries, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate. | 继续下一 governed Stage2 task，保持 no-production boundaries。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突本地状态/ROI工作。 | 越过 security boundary gate 直接启用生产邮件/Schema/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `93`
-- total_formulas: `95`
-- active_formulas: `95`
-- total_parameters: `757`
-- active_parameters: `740`
+- model_count: `94`
+- total_formulas: `96`
+- active_formulas: `96`
+- total_parameters: `767`
+- active_parameters: `750`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PKT05_M4_MAIL_LOCAL_ONLY`
+- release_gate: `S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-25T23:10:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PK / S2PKT05_M4_MAIL_LOCAL_ONLY`
+- phase/gate: `S2PM / S2PMT01_SECURITY_BOUNDARY_LOCAL_ONLY`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PL_OR_NEXT_GOVERNED_STAGE2_TASK_UNDER_V7_2`
-- reason: S2PKT05 local M4 mail orchestration evidence is complete; continue only with the next governed Stage2 task under V7.2 no-production boundaries.
+- task_id: `S2PMT02_ATOMIC_STORAGE_AND_RECOVERY_UNDER_V7_2`
+- reason: S2PMT01 local security boundary evidence is complete; continue atomic storage/recovery hardening under V7.2 no-production boundaries.
