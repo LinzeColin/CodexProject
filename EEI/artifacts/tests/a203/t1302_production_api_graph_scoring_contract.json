@@ -2,7 +2,7 @@
   "artifact_id": "t1302-production-api-graph-scoring-contract",
   "task_id": "T1302",
   "acceptance_id": "A203",
-  "status": "IN_PROGRESS",
+    "status": "DONE",
   "generated_at": "2026-06-21T00:00:00+10:00",
   "scope": {
     "implemented_slice": [

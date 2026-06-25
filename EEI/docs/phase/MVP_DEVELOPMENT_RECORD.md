@@ -2,6 +2,27 @@
 
 Append-only development ledger for 商域图谱 / Enterprise Ecosystem Intelligence.
 
+## 2026-06-25 - T1302/A203 API implementation done, release still blocked
+
+Status: LOCAL FOCUSED VALIDATION PASS; CHANGED-ONLY GOVERNANCE AND CI PENDING
+
+Completed:
+
+- Marked T1302/A203 production API implementation contract `DONE` for graph, path, catalog, evidence and scoring API coverage.
+- Removed `A203_contract_status` from A203 production API preflight missing gates.
+- Refreshed A209 background heartbeat and dependent release preflights to `35/288` successful windows, `0` failed, `253` remaining and `12.15%` completion.
+
+Still blocked:
+
+- A203 does not publish production graph edges or scores.
+- MVP release readiness remains blocked by A202, A204/A205, A209, A210, A026 and A027.
+- A209 remains background `IN_PROGRESS` until 24h evidence reaches `288/288` and release-ready validation passes.
+
+Verification status:
+
+- Focused A203/A209/A205 unit, ruff, artifact, semantic, V5 readiness, task-pack and structured parse validation passed locally for this iteration.
+- Changed-only governance, final full validation, commit, push and CI are pending.
+
 ## 2026-06-19 - Phase 1 / G1 start
 
 Status: DONE

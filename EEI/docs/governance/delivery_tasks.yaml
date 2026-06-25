@@ -3474,8 +3474,8 @@ tasks:
     phase: "C"
     objective: "Implement production API, recursive graph query and scoring service for the Golden Vertical"
     scope: "T1302/A203 covers production-context API hydration, recursive graph/path responses, score explanations for entity/theme/facility/event/industry/source_document/score_result/candidate/published relationship objects, score_results recompute persistence, evidence detail/source snippets, catalog inventory hydration, frontend consumption of server-returned graph/scoring/evidence data, workspace layer hydration-guarded lens controls and a fail-closed production API release preflight that separates API surface readiness from release readiness."
-    non_scope: "Does not close A203 until production-approved relationship edges, downstream release gates, legal/source clearance and long-duration A209 evidence are current; does not replace A202 publication approval, A204/A205 transactional activation, A209 24h soak, A210 clearance or A026/A027 production gold evidence."
-    status: "in_progress"
+    non_scope: "A203 API implementation completion does not claim production graph publication, source/legal/owner clearance, release-manager activation, A209 24h soak, A210 clearance, A026/A027 production gold evidence or MVP release readiness."
+    status: "completed"
     dependencies:
       - "TASK-T1301"
     required_files:
@@ -3518,6 +3518,7 @@ tasks:
       - "A203 production API release preflight local PASS: unit tests 2/2, focused ruff PASS, preflight validate PASS; status intentionally A203_PRODUCTION_API_RELEASE_BLOCKED while A202/A204-A205/A209 gates are incomplete"
       - "A203 dependent preflight current A209 sync PASS: serially regenerated production API release preflight validates after A209 heartbeat advanced to 27/288 PASS, 0 failed, 261 remaining; status remains A203_PRODUCTION_API_RELEASE_BLOCKED and release_ready=false"
       - "workspace layer hydration regression local PASS: targeted home.spec layer test PASS, web typecheck PASS and full Playwright E2E PASS 32/32 with two workers; remote CI rerun is pending after governance companion sync"
+      - "A203 API implementation closure PASS: graph/scoring contract status is DONE while production API release preflight remains blocked by A202/A204-A205/A209/A210/A026/A027 external gates."
     evidence_refs:
       - "EEI/artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json"
       - "EEI/artifacts/tests/a203/t1302_production_api_release_preflight.json"
@@ -3526,10 +3527,10 @@ tasks:
       - "EEI/tests/e2e/home.spec.ts"
       - "GitHub Actions run 27950933933 job 82707372790"
       - "GitHub Actions run 27986420494 job 82828868875"
-    risk: "A203 can be falsely closed if CI-validated API/scoring contracts or api_surface_ready=true are treated as production-approved relationship publication, legal/source clearance, model activation closure, production graph publication or 24h stability evidence."
+    risk: "A203 API implementation can be falsely expanded into a release claim if CI-validated API/scoring contracts, status DONE or api_surface_ready=true are treated as production-approved relationship publication, legal/source clearance, model activation closure, production graph publication or 24h stability evidence."
     rollback: "Revert the T1302 task contract/status rows and any generated governance/release artifacts; rerun governance sync and EEI validation subset."
     target_version: "0.1.0"
-    completed_version: ""
+    completed_version: "0.1.0"
     fact_level: "EXTRACTED"
     unknown_task_ids: []
   - task_id: "TASK-T1303"

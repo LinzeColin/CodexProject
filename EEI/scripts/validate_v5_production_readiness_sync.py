@@ -36,6 +36,7 @@ EXPECTED_TASKS = {
 
 IMPLEMENTED_TASKS = {
     "T1300": "A201",
+    "T1302": "A203",
     "T1304": "A206",
     "T1305": "A207",
     "T1306": "A208",
@@ -44,13 +45,12 @@ IMPLEMENTED_TASKS = {
 
 PARTIAL_TASKS = {
     "T1301": "A202",
-    "T1302": "A203",
     "T1303": "A204",
     "T1307": "A209",
     "T1309": "A210",
 }
 
-PARTIAL_ACCEPTANCE_IDS = {"A202", "A203", "A204", "A205", "A209", "A210"}
+PARTIAL_ACCEPTANCE_IDS = {"A202", "A204", "A205", "A209", "A210"}
 
 IMPLEMENTED_EVIDENCE = {
     "T1300": {
@@ -104,6 +104,20 @@ IMPLEMENTED_EVIDENCE = {
         "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
         "artifacts/tests/a206/t1304_scheduler_retry_dead_letter_contract.json",
         "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json",
+    },
+    "T1302": {
+        "apps/api/app/domain.py",
+        "apps/api/app/domain_repository.py",
+        "apps/web/src/app/explore-api-client.ts",
+        "apps/web/src/app/page.tsx",
+        "scripts/job_scheduler.py",
+        "scripts/validate_production_api_release_preflight.py",
+        "specs/api_contract.yaml",
+        "tests/integration/test_database_migrations.py",
+        "tests/unit/test_production_api_release_preflight.py",
+        "tests/e2e/state-contract.spec.ts",
+        "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
+        "artifacts/tests/a203/t1302_production_api_release_preflight.json",
     },
     "T1308": {
         "apps/web/src/app/workspace-context.tsx",
@@ -161,20 +175,6 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
         "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
         "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
-    },
-    "T1302": {
-        "apps/api/app/domain.py",
-        "apps/api/app/domain_repository.py",
-        "apps/web/src/app/explore-api-client.ts",
-        "apps/web/src/app/page.tsx",
-        "scripts/job_scheduler.py",
-        "scripts/validate_production_api_release_preflight.py",
-        "specs/api_contract.yaml",
-        "tests/integration/test_database_migrations.py",
-        "tests/unit/test_production_api_release_preflight.py",
-        "tests/e2e/state-contract.spec.ts",
-        "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
-        "artifacts/tests/a203/t1302_production_api_release_preflight.json",
     },
     "T1303": {
         "infra/db/migrations/0006_model_activation_refresh_state/up.sql",

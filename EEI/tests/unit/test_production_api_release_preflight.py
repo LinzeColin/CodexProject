@@ -43,7 +43,7 @@ def test_a203_preflight_is_fail_closed_for_repository_state() -> None:
         is False
     )
     gate_ids = {gate["gate_id"] for gate in payload["missing_gates"]}
-    assert "A203_contract_status" in gate_ids
+    assert "A203_contract_status" not in gate_ids
     assert "A202_relationship_publication_clearance" in gate_ids
     assert "A204_A205_release_manager_activation" in gate_ids
     assert "A209_24h_operator_soak" in gate_ids
