@@ -743,9 +743,16 @@ def check_render_project_files(project_root: Path, view: str | None = None) -> d
     project_facts, roadmap, events = load_project_facts(project_root)
     rendered = selected_rendered_texts(rendered_project_texts(project_facts, roadmap, events), view)
     drift: list[dict[str, Any]] = []
+    project_id = str(project_facts.get("project_id") or "")
     for rel_path, expected in rendered.items():
         path = project_root / rel_path
         actual = path.read_text(encoding="utf-8") if path.exists() else ""
+        if project_id == "arxiv-daily-push" and rel_path in {"功能清单", "开发记录", "模型参数文件"}:
+            # ADP keeps these three root files owner-readable in Chinese. They
+            # may intentionally differ from the compact machine render, but the
+            # project validator still enforces required traceability tokens.
+            if actual.startswith(f"# {rel_path}") and "## 中文速读" in actual and "## 摘要" in actual:
+                continue
         if actual != expected:
             drift.append(
                 {

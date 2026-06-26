@@ -21,8 +21,11 @@
 - 当前分支阶段：`S2PC`
 - 当前任务：`S2PCT02`
 - 有效模型数量：`52`
+- active_model_count: `52`
 - 有效公式数量：`54`
+- active_formula_count: `54`
 - 有效参数数量：`364`
+- active_parameter_count: `364`
 - 当前阻断：无公开阻断；Stage 2 最终门仍未通过
 - 下一门禁：`S2PC-GATE-V7-2-REVALIDATION`
 - 下一候选任务：`S2PCT02 Science 主刊元数据影子证据`
