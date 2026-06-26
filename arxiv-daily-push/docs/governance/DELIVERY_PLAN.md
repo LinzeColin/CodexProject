@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 136
-- acceptance_count: 121
+- task_count: 137
+- acceptance_count: 122
 
 ## Delivery Tasks
 
@@ -227,5 +227,6 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PLT01-REPLAY-EVIDENCE-GATE | Full-system replay evidence gate | completed_local_validation | `ACC-S2PLT01-30D` | Validates provided 30 replay days, 120 M1-M4 Email V1 previews, D1-D4 terminal source states, coverage, zero leakage/P0P1 counters, and evidence refs without executing replay or claiming S2PLT01 acceptance. |
 | S2PLT01-REPLAY-PAYLOAD-CONTRACT | Full-system replay payload contract | completed_local_validation | `ACC-S2PLT01-30D` | Wraps explicit replay/mail/source-terminal records in a deterministic no-production payload contract with metadata, evidence mode, payload hash, evidence refs, and forbidden production side-effect flags before entry precheck consumption. |
 | S2PLT01-REPLAY-PAYLOAD-EXECUTION | Full-system replay payload execution package | completed_local_validation | `ACC-S2PLT01-30D` | Builds a validated no-production payload execution package with entry precheck binding, payload/precheck validation errors, blocking reasons, and deterministic execution hash; S2PLT01 remains blocked by inherited P0/P1 and final gates. |
+| S2PLT02 | Two-day live 3+1 mail readiness precheck | blocked | `ACC-S2PLT02-2D` | Fail-closed S2PLT02 readiness precheck for two consecutive real natural days and 8 real M1-M4 emails; S2PLT01 acceptance, real scheduler/SMTP proof, M4 watermark proof, and inherited P0/P1 zero state are missing, so no live run or production side effect is started. |
 | S2PLT04 | Integration candidate precheck | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Fail-closed integration candidate precheck summarizing S2PLT01 review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07; does not complete S2PLT04 or produce `S2_INTEGRATION_CANDIDATE_READY`. |
 | S2PMT07 | Final gate precheck | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Fail-closed final gate precheck; independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution are still missing, so integrated production acceptance remains false. |

@@ -5426,3 +5426,48 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md"
+
+  -
+    model_id: "MOD-ADP-104"
+    name: "S2PLT02 two-day live-run readiness precheck model"
+    purpose: "Record a fail-closed no-production S2PLT02 readiness precheck for the consecutive two natural days and eight real M1-M4 email requirement without starting real SMTP or scheduler operation."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-106"
+    parameter_ids:
+      - "PARAM-ADP-882"
+      - "PARAM-ADP-883"
+      - "PARAM-ADP-884"
+      - "PARAM-ADP-885"
+      - "PARAM-ADP-886"
+      - "PARAM-ADP-887"
+      - "PARAM-ADP-888"
+      - "PARAM-ADP-889"
+      - "PARAM-ADP-890"
+      - "PARAM-ADP-891"
+      - "PARAM-ADP-892"
+    inputs:
+      - "S2PLT01 acceptance state"
+      - "two consecutive real natural day evidence"
+      - "M1-M4 real email send evidence"
+      - "duplicate email and M4 watermark evidence"
+      - "real scheduler and real SMTP proof"
+      - "inherited V7.1 P0/P1 blocker counts"
+      - "no-production side-effect flags"
+    outputs:
+      - "blocked S2PLT02 two-day live-run readiness precheck report"
+      - "S2PLT02 dependency and live evidence state"
+      - "deterministic report hash"
+      - "forbidden production flag state"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"

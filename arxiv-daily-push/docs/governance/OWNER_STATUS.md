@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-本次新增 `S2PLT04` 本地 no-production integration candidate precheck：它汇总 S2PLT01 independent replay review evidence、缺失的 S2PLT02/S2PLT03 authoritative completion、已有 state/content local evidence、inherited V7.1 P0=8/P1=37、缺失 final acceptance bundle 和 blocked S2PMT07 precheck；当前仍为 blocked，不完成 S2PLT04，不产生 `S2_INTEGRATION_CANDIDATE_READY`。
+本次新增 `S2PLT02` 本地 no-production live 2-day readiness precheck：它记录 S2PLT01 acceptance 未证明、连续 2 个真实自然日未证明、8 封真实 M1-M4 邮件未证明、真实 scheduler/SMTP 证据未证明、M4 watermark 未证明、inherited V7.1 P0=8/P1=37 仍 open；当前仍为 blocked，不启动真实两日运行，不发送 SMTP，不启用 scheduler，不接受 `ACC-S2PLT02-2D`。
 
 ## 3. 为什么重要
 
@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PLT02_OR_S2PLT03_EVIDENCE_AFTER_S2PLT01_ACCEPTANCE`
+- next_task_id: `S2PLT03_EVIDENCE_AFTER_S2PLT02_ACCEPTANCE`
 - responsible_role: `content_owner + product_owner`
-- acceptance_ids: `ACC-S2PLT01-30D`
-- unblock_condition: S2PLT04 integration candidate precheck can be misread as S2PLT04 completion; S2PLT01 acceptance, S2PLT02/S2PLT03 completion, inherited P0/P1, final acceptance bundle, S2PMT07 independent final review, and final production stop gates still block S2PLT04 and integrated production acceptance.
+- acceptance_ids: `ACC-S2PLT02-2D`
+- unblock_condition: S2PLT02 live 2-day precheck can be misread as S2PLT02 acceptance or live operation; S2PLT01 acceptance, real two-day scheduler/SMTP evidence, 8 M1-M4 emails, M4 watermark proof, inherited P0/P1, S2PLT03, final acceptance bundle, S2PMT07 independent final review, and final production stop gates still block S2PLT04 and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (864/864 active parameters, 105/105 active formulas)
+- implementation_congruence: `VERIFIED` (875/875 active parameters, 106/106 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 integration candidate precheck as local no-production blocked evidence only, and require S2PMT07 independent final review before inherited P0/P1 closure. | 继续补齐 S2PLT04 blockers 的 no-production evidence。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may overstate local evidence as production acceptance, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT02 live 2-day readiness precheck as local no-production blocked evidence only, and require S2PMT07 independent final review before inherited P0/P1 closure. | 继续补齐 S2PLT02/S2PLT04 blockers 的 no-production evidence。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may overstate local evidence as production acceptance, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -68,17 +68,17 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `103`
-- total_formulas: `105`
+- model_count: `104`
+- total_formulas: `106`
 - active_formulas: `105`
-- total_parameters: `881`
-- active_parameters: `864`
+- total_parameters: `892`
+- active_parameters: `875`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT04_INTEGRATION_CANDIDATE_PRECHECK_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-26T21:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT04_INTEGRATION_CANDIDATE_PRECHECK_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PLT02_OR_S2PLT03_EVIDENCE_AFTER_S2PLT01_ACCEPTANCE`
-- reason: Keep S2PLT04 fail-closed until S2PLT01/S2PLT02/S2PLT03 completion, inherited P0/P1 zero state, final bundle, S2PMT07 independent final review, and final production stop gates are proven under V7.2 blocked boundaries.
+- task_id: `S2PLT03_EVIDENCE_AFTER_S2PLT02_ACCEPTANCE`
+- reason: Keep S2PLT02 and S2PLT04 fail-closed until S2PLT01 acceptance, real two-day scheduler/SMTP evidence, 8 real M1-M4 emails, M4 watermark proof, S2PLT03 completion, inherited P0/P1 zero state, final bundle, S2PMT07 independent final review, and final production stop gates are proven under V7.2 blocked boundaries.

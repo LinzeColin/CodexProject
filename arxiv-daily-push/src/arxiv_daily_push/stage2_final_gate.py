@@ -54,6 +54,53 @@ S2PMT07_BLOCKING_REASONS = (
     "final_acceptance_bundle_missing",
     "independent_review_signoff_missing",
 )
+S2PLT02_LIVE_2D_PRECHECK_MODEL_ID = "adp-s2plt02-live-2d-precheck-v1"
+S2PLT02_ACCEPTANCE_ID = "ACC-S2PLT02-2D"
+S2PLT02_TASK_ID = "S2PLT02"
+S2PLT02_SCHEMA_VERSION = 1
+S2PLT02_REQUIRED_DEPENDENCIES = ("S2PLT01",)
+S2PLT02_REQUIRED_NATURAL_DAYS = 2
+S2PLT02_REQUIRED_EMAIL_COUNT = 8
+S2PLT02_REQUIRED_MAIL_PRODUCTS = ("M1", "M2", "M3", "M4")
+S2PLT02_REQUIRED_EVIDENCE = (
+    "S2PLT01_ACCEPTED",
+    "TWO_CONSECUTIVE_REAL_NATURAL_DAYS",
+    "EIGHT_REAL_EMAILS_SENT",
+    "NO_DUPLICATE_EMAILS",
+    "M4_WATERMARK_CORRECT",
+    "REAL_SCHEDULER_PROVEN",
+    "REAL_SMTP_PROVEN",
+)
+S2PLT02_FORBIDDEN_FLAGS = (
+    "s2plt02_accepted",
+    "s2plt02_real_run_started",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "production_restore_executed",
+    "production_queue_mutated",
+    "public_schema_changed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
+S2PLT02_BLOCKING_REASONS = (
+    "s2plt01_not_accepted",
+    "two_consecutive_real_days_not_proven",
+    "eight_real_emails_not_proven",
+    "real_scheduler_not_proven",
+    "real_smtp_not_proven",
+    "m4_watermark_not_proven",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
 S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID = "adp-s2plt04-integration-candidate-precheck-v1"
 S2PLT04_ACCEPTANCE_ID = "ACC-S2PLT04-INTEGRATION-CANDIDATE"
 S2PLT04_TASK_ID = "S2PLT04"
@@ -107,6 +154,157 @@ S2PLT04_BLOCKING_REASONS = (
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
 )
+
+
+def build_s2plt02_dependency_state() -> dict[str, Any]:
+    """Build current S2PLT02 dependency state without accepting S2PLT01."""
+
+    return {
+        "status": "blocked",
+        "required_dependencies": list(S2PLT02_REQUIRED_DEPENDENCIES),
+        "completed_dependencies": {},
+        "unmet_dependencies": list(S2PLT02_REQUIRED_DEPENDENCIES),
+        "s2plt01_acceptance_status": "blocked_by_inherited_p0_p1_and_final_gates",
+    }
+
+
+def build_s2plt02_live_evidence_state() -> dict[str, Any]:
+    """Build current S2PLT02 live-run evidence state without touching production."""
+
+    available = {
+        "S2PLT01_ACCEPTED": False,
+        "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": False,
+        "EIGHT_REAL_EMAILS_SENT": False,
+        "NO_DUPLICATE_EMAILS": False,
+        "M4_WATERMARK_CORRECT": False,
+        "REAL_SCHEDULER_PROVEN": False,
+        "REAL_SMTP_PROVEN": False,
+    }
+    return {
+        "status": "blocked",
+        "required_evidence": list(S2PLT02_REQUIRED_EVIDENCE),
+        "available_evidence": available,
+        "missing_evidence": [item for item, present in available.items() if not present],
+        "required_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_natural_days": 0,
+        "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "observed_email_count": 0,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "observed_mail_products": [],
+        "duplicate_email_count": None,
+        "m4_watermark_correct": False,
+        "real_scheduler_proven": False,
+        "real_smtp_proven": False,
+    }
+
+
+def build_s2plt02_live_2d_precheck_report(*, generated_at: str) -> dict[str, Any]:
+    """Build a deterministic fail-closed S2PLT02 two-day live-run precheck."""
+
+    dependencies = build_s2plt02_dependency_state()
+    evidence = build_s2plt02_live_evidence_state()
+    audit_blockers = build_audit_blocker_state()
+    gates = {
+        "s2plt01_accepted": "S2PLT01" in dependencies["completed_dependencies"],
+        "two_consecutive_real_days": evidence["observed_natural_days"] >= S2PLT02_REQUIRED_NATURAL_DAYS,
+        "eight_real_emails_sent": evidence["observed_email_count"] >= S2PLT02_REQUIRED_EMAIL_COUNT,
+        "no_duplicate_emails": evidence["duplicate_email_count"] == 0,
+        "m4_watermark_correct": evidence["m4_watermark_correct"],
+        "real_scheduler_proven": evidence["real_scheduler_proven"],
+        "real_smtp_proven": evidence["real_smtp_proven"],
+        "p0_zero": audit_blockers["checks"]["P0_zero"],
+        "p1_zero": audit_blockers["checks"]["P1_zero"],
+        "no_production_side_effect": True,
+    }
+    blocking_reasons: list[str] = []
+    if not gates["s2plt01_accepted"]:
+        blocking_reasons.append("s2plt01_not_accepted")
+    if not gates["two_consecutive_real_days"]:
+        blocking_reasons.append("two_consecutive_real_days_not_proven")
+    if not gates["eight_real_emails_sent"]:
+        blocking_reasons.append("eight_real_emails_not_proven")
+    if not gates["real_scheduler_proven"]:
+        blocking_reasons.append("real_scheduler_not_proven")
+    if not gates["real_smtp_proven"]:
+        blocking_reasons.append("real_smtp_not_proven")
+    if not gates["m4_watermark_correct"]:
+        blocking_reasons.append("m4_watermark_not_proven")
+    if not gates["p0_zero"]:
+        blocking_reasons.append("inherited_v7_1_p0_findings_open")
+    if not gates["p1_zero"]:
+        blocking_reasons.append("inherited_v7_1_p1_findings_open")
+    report = {
+        "model_id": S2PLT02_LIVE_2D_PRECHECK_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if not blocking_reasons and all(gates.values()) else "blocked",
+        "scope": "no_production_live_2d_readiness_precheck_only",
+        "gates": gates,
+        "dependencies": dependencies,
+        "evidence": evidence,
+        "audit_blockers": audit_blockers,
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "report_hash": "",
+        **{flag: False for flag in S2PLT02_FORBIDDEN_FLAGS},
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate S2PLT02 two-day live-run precheck reports."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PLT02_LIVE_2D_PRECHECK_MODEL_ID:
+        errors.append("S2PLT02 report model_id is invalid")
+    if report.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 report schema_version must be 1")
+    if report.get("task_id") != S2PLT02_TASK_ID:
+        errors.append("S2PLT02 report task_id is invalid")
+    if report.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 report acceptance_id is invalid")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 report status must be pass or blocked")
+    if report.get("production_acceptance_claimed") is not False:
+        errors.append("S2PLT02 precheck must not claim production acceptance")
+    if report.get("inherited_p0_p1_closed") is not False:
+        errors.append("S2PLT02 precheck must not close inherited P0/P1")
+    for flag in S2PLT02_FORBIDDEN_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    dependencies = _mapping(report.get("dependencies"))
+    for task_id in S2PLT02_REQUIRED_DEPENDENCIES:
+        if task_id not in dependencies.get("required_dependencies", []):
+            errors.append(f"dependencies.required_dependencies must include {task_id}")
+    evidence = _mapping(report.get("evidence"))
+    for item in S2PLT02_REQUIRED_EVIDENCE:
+        if item not in evidence.get("required_evidence", []):
+            errors.append(f"evidence.required_evidence must include {item}")
+    if evidence.get("required_natural_days") != S2PLT02_REQUIRED_NATURAL_DAYS:
+        errors.append("evidence.required_natural_days must be 2")
+    if evidence.get("required_email_count") != S2PLT02_REQUIRED_EMAIL_COUNT:
+        errors.append("evidence.required_email_count must be 8")
+    if tuple(evidence.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("evidence.required_mail_products must be M1-M4")
+    if report.get("status") == "pass":
+        gates = _mapping(report.get("gates"))
+        if not all(gates.values()):
+            errors.append("passing S2PLT02 report requires every gate true")
+        if report.get("blocking_reasons"):
+            errors.append("passing S2PLT02 report must not have blocking reasons")
+    else:
+        for reason in S2PLT02_BLOCKING_REASONS:
+            if reason not in report.get("blocking_reasons", []):
+                errors.append(f"blocked S2PLT02 precheck must include {reason}")
+    expected_hash = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    if report.get("report_hash") != expected_hash:
+        errors.append("S2PLT02 report_hash does not match report content")
+    return errors
 
 
 def build_s2plt04_dependency_state() -> dict[str, Any]:
