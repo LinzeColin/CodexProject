@@ -1,4 +1,19 @@
-# Model And Queue
+# 模型与队列
+
+本页解释排序模型和队列参数。owner 要看的已发送、未发送、排队状态在 GitHub 浅层用户中心：
+
+- `arxiv-daily-push/用户中心/README.md`
+- `arxiv-daily-push/用户中心/邮件发送与队列状态.md`
+
+当前 2026-06-26 最新事实：
+
+| 类别 | 当前值 |
+|---|---|
+| 最新补发 | `sent` |
+| 最新模板 | `EMAIL_LEARNING_V1` |
+| 最新未发送/阻断 | 0 |
+| 当前排队候选 | 11 |
+| 队列更新时间 | `2026-06-26T06:27:41Z` |
 
 - generated_at: 2026-06-22T21:00:00+10:00
 - generated_from: `config/owner_controls.yaml`
@@ -6,7 +21,7 @@
 - validation_status: `pass`
 - rollback_config_version: `owner-controls-v1`
 
-## Weight Groups
+## 权重组
 
 | Group | Total | Target | Tolerance | Status |
 |---|---:|---:|---:|---|
@@ -19,7 +34,7 @@
 | `owner_scoring_queue_priority` | 100.0 | 100.0 | 0.0001 | `pass` |
 | `owner_us_attention_budget` | 100.0 | 100.0 | 0.0001 | `pass` |
 
-## Scoring Cards
+## 评分卡
 
 ### research
 

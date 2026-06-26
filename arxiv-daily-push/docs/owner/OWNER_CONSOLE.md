@@ -1,39 +1,24 @@
-# Owner Console
+# Owner 控制台
 
-- generated_at: 2026-06-22T21:00:00+10:00
-- generated_from: `config/owner_controls.yaml`
-- config_version: `owner-controls-v1`
-- task_id: `S1-06-SCORING-QUEUE-LEDGER-001`
-- model_id: `adp-owner-controls-v1`
-- validation_status: `pass`
-- production_enabled: `false`
-- production_acceptance_claimed: `false`
+主入口已迁移到 GitHub 浅层目录：
 
-## Current Conclusion
+- `arxiv-daily-push/用户中心/README.md`
+- `arxiv-daily-push/用户中心/邮件发送与队列状态.md`
 
-Owner controls are installed for Stage 1 Window A. Production remains disabled; this run does not prove scheduled production, 30-day trial evidence, or live two-day operation.
+本文件保留为兼容旧路径的指针，不再作为 owner 主阅读入口。
 
-## Today Mail Plan
+## 当前摘要
 
-- email_enabled: `true`
-- split_mode: `five_independent_messages`
-- send_order: `B1`, `B2`, `B3`, `B4`, `B5`
-- recipients: `linzezhang35@gmail.com`
+| 信息 | 当前值 |
+|---|---|
+| 今天最新补发 | `sent` |
+| 最新模板 | `EMAIL_LEARNING_V1` |
+| 今天最新未发送/阻断 | 0 |
+| 当前排队候选 | 11 |
 
-## Queue And Resource Pressure
+## 当前边界
 
-- max_active_items: `10000`
-- max_temp_cache_gb: `2`
-- window_a_max_online_arxiv_metadata: `10`
-- ranking_change_preview: `S1_06_DETERMINISTIC_QUEUE_READY_NO_PRODUCTION_REPLAY_DATA`
-
-## Required Human Decisions
-
-- No production enablement decision is accepted by this file alone.
-- S1-06 deterministic queue fixtures are available; production replay remains unclaimed until later runtime evidence exists.
-
-## Commands
-
-- `adp owner validate`
-- `adp owner preview-impact --days 30`
-- `adp owner render-docs --write`
+- GitHub `用户中心` 是 owner 人类可读入口。
+- 本机运行文件是底层证据来源，不是 owner 阅读入口。
+- Stage 1 本机日常邮件已可真实发送；Stage 2 integrated production 仍不能因为本文件自动宣称通过。
+- Owner 文档不能直接触发补发、改队列、改 SMTP 密钥、改 scheduler、改 public schema 或改数据库。
