@@ -1686,7 +1686,7 @@ formulas:
       - "ASM-ADP-021"
       - "ASM-ADP-022"
     status: "active"
-    expression: "A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by relevance, learning value, economic conversion rate, ROI, interdisciplinary value, and explainability, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, Stage 1 text artifacts are written as GitHub Actions artifacts, and real SMTP can count only when the email package contains Chinese lesson content, HTML/plain text bodies, and candidate queue summary."
+    expression: "A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by the public adp-roi-semantic-rubric-v2 six-factor model with weights relevance 15, learning value 20, economic conversion rate 25, ROI 20, interdisciplinary value 10, explainability 10, keyword-hit increments are capped at 0.07 per rubric hit where keyword evidence is used, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, Stage 1 text artifacts are written as GitHub Actions artifacts, and real SMTP can count only when the email package contains Chinese lesson content, HTML/plain text bodies, and candidate queue summary."
     variables:
       -
         name: "archive_plan"
@@ -1697,7 +1697,7 @@ formulas:
         name: "roi_signals"
         data_type: "map[str,float]"
         unit: "0..1 components"
-        input_domain: "relevance, learning_value, economic_conversion_rate, roi, interdisciplinary_value, explainability"
+        input_domain: "adp-roi-semantic-rubric-v2 relevance 15, learning_value 20, economic_conversion_rate 25, roi 20, interdisciplinary_value 10, explainability 10"
       -
         name: "candidate_queue"
         data_type: "object"

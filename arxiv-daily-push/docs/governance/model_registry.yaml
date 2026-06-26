@@ -1762,7 +1762,7 @@ models:
     model_id: "MOD-ADP-032"
     name: "All-arXiv Phase 12 scan queue delivery gate"
     kind: "deterministic source selection and delivery gate"
-    purpose: "Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified."
+    purpose: "Build all-arXiv daily input from bounded primary archive scans, score candidates with the public adp-roi-semantic-rubric-v2 six-factor model, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
