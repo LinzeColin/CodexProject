@@ -11495,6 +11495,59 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 validator.check_human_entry_quality(validation, project_path, True, validator.project_scope(project))
                 self.assertFalse(validation.errors, [issue.message for issue in validation.errors])
 
+    def test_chinese_readability_rejects_keyword_only_link_pages(self) -> None:
+        validator = load_validator_module()
+        text = "# 功能清单\n\n中文优先，默认全局中文，用户可读优先。\n\n详见 docs/governance/project.yaml\ncompatibility indexes only\n"
+        report = validator.chinese_readability_report(text)
+
+        self.assertLess(report["score"], validator.CHINESE_READABILITY_MIN_SCORE)
+        self.assertIn("详见 docs/governance", report["forbidden_hits"])
+        self.assertIn("compatibility index", report["forbidden_hits"])
+
+    def test_chinese_readability_gate_rejects_latin_dominant_entry(self) -> None:
+        validator = load_validator_module()
+        text = (
+            "# 功能清单\n\n"
+            "中文优先，默认全局中文。用户可读优先。\n\n"
+            "## 一句话结论\n\n"
+            "## 当前状态\n\n"
+            "## Owner 操作入口\n\n"
+            "## 证据\n\n"
+            "## 风险\n\n"
+            "## 下一步\n\n"
+            "## 回滚\n\n"
+            + ("状态" * 260)
+            + "\n\n"
+            + ("alpha" * 160)
+        )
+        report = validator.chinese_readability_report(text)
+        self.assertGreaterEqual(report["score"], validator.CHINESE_READABILITY_MIN_SCORE)
+        self.assertLess(report["cjk_count"], report["latin_count"])
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "entry.md"
+            path.write_text(text, encoding="utf-8")
+            validation = validator.Validation()
+            validator.check_chinese_readability(validation, path, True, "ProjectA")
+        self.assertTrue(
+            any("Chinese character count below Latin count" in issue.message for issue in validation.errors),
+            [issue.message for issue in validation.errors],
+        )
+
+    def test_all_projects_chinese_readability_entries_score_above_gate(self) -> None:
+        validator = load_validator_module()
+        config = validator.load_yaml(ROOT / "governance" / "projects.yaml")
+        projects = [project for project in validator.as_list(config.get("projects")) if isinstance(project, dict)]
+        self.assertEqual(len(projects), 10)
+        for project in projects:
+            project_path = ROOT / str(project.get("path") or "")
+            for filename in validator.CHINESE_READABILITY_FILES:
+                path = project_path / filename
+                with self.subTest(project=project.get("project_id"), file=filename):
+                    report = validator.chinese_readability_report(path.read_text(encoding="utf-8"))
+                    self.assertGreaterEqual(report["score"], validator.CHINESE_READABILITY_MIN_SCORE, report)
+                    self.assertGreaterEqual(report["cjk_count"], report["latin_count"], report)
+                    self.assertFalse(report["forbidden_hits"], report)
+
     def test_other8_s2pbt01_target_roadmaps_are_explicit_product_kind(self) -> None:
         validator = load_validator_module()
         target_roadmaps = [

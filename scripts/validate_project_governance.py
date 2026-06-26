@@ -163,6 +163,23 @@ HUMAN_ENTRY_FORBIDDEN_MARKERS = (
     "see docs/governance",
     "link page",
 )
+CHINESE_READABILITY_FILES = ("README.md", "功能清单", "开发记录", "模型参数文件")
+CHINESE_READABILITY_MIN_SCORE = 85
+CHINESE_READABILITY_HEAD_CHARS = 2200
+CHINESE_READABILITY_REQUIRED_SECTIONS = (
+    "一句话结论",
+    "当前状态",
+    "Owner 操作入口",
+    "证据",
+    "风险",
+    "下一步",
+    "回滚",
+)
+CHINESE_READABILITY_REQUIRED_MARKERS = (
+    "中文优先",
+    "默认全局中文",
+    "用户可读优先",
+)
 
 
 @dataclass
@@ -815,6 +832,76 @@ def check_file_nonempty(validation: Validation, path: Path, required: bool, scop
     return True
 
 
+def chinese_readability_report(text: str) -> dict[str, Any]:
+    head = text.strip()[:CHINESE_READABILITY_HEAD_CHARS]
+    cjk_count = len(re.findall(r"[\u4e00-\u9fff]", head))
+    latin_count = len(re.findall(r"[A-Za-z]", head))
+    section_hits = [section for section in CHINESE_READABILITY_REQUIRED_SECTIONS if section in head]
+    marker_hits = [marker for marker in CHINESE_READABILITY_REQUIRED_MARKERS if marker in head]
+    forbidden_hits = [
+        marker
+        for marker in HUMAN_ENTRY_FORBIDDEN_MARKERS
+        if marker.lower() in head.lower()
+    ]
+    score = 0
+    if cjk_count >= 160:
+        score += 25
+    elif cjk_count >= 80:
+        score += 10
+    if cjk_count >= latin_count:
+        score += 25
+    elif cjk_count * 2 >= latin_count:
+        score += 10
+    score += min(28, len(section_hits) * 4)
+    score += min(12, len(marker_hits) * 4)
+    if not forbidden_hits:
+        score += 10
+    return {
+        "score": score,
+        "cjk_count": cjk_count,
+        "latin_count": latin_count,
+        "section_hits": section_hits,
+        "marker_hits": marker_hits,
+        "forbidden_hits": forbidden_hits,
+    }
+
+
+def check_chinese_readability(validation: Validation, path: Path, required: bool, scope: str) -> None:
+    if not path.exists() or not path.is_file():
+        validation.add(required, scope, f"Missing Chinese-readable entry: {rel(path)}")
+        return
+    report = chinese_readability_report(path.read_text(encoding="utf-8"))
+    missing_sections = sorted(set(CHINESE_READABILITY_REQUIRED_SECTIONS) - set(report["section_hits"]))
+    missing_markers = sorted(set(CHINESE_READABILITY_REQUIRED_MARKERS) - set(report["marker_hits"]))
+    failure_reasons: list[str] = []
+    if report["score"] < CHINESE_READABILITY_MIN_SCORE:
+        failure_reasons.append(f"score {report['score']} below {CHINESE_READABILITY_MIN_SCORE}")
+    if report["cjk_count"] < report["latin_count"]:
+        failure_reasons.append(f"Chinese character count below Latin count: cjk={report['cjk_count']}; latin={report['latin_count']}")
+    if missing_sections:
+        failure_reasons.append(f"missing_sections={missing_sections}")
+    if missing_markers:
+        failure_reasons.append(f"missing_markers={missing_markers}")
+    if report["forbidden_hits"]:
+        failure_reasons.append(f"forbidden={report['forbidden_hits']}")
+    if failure_reasons:
+        validation.add(
+            required,
+            scope,
+            (
+                f"{rel(path)} Chinese readability gate failed; "
+                f"reasons={failure_reasons}; "
+                f"cjk={report['cjk_count']}; latin={report['latin_count']}; "
+                f"score={report['score']}"
+            ),
+        )
+
+
+def check_project_chinese_readability(validation: Validation, project_path: Path, required: bool, scope: str) -> None:
+    for filename in CHINESE_READABILITY_FILES:
+        check_chinese_readability(validation, project_path / filename, required, scope)
+
+
 def check_human_entry_quality(validation: Validation, project_path: Path, required: bool, scope: str) -> None:
     for filename, contract in HUMAN_ENTRY_QUALITY_CONTRACTS.items():
         path = project_path / filename
@@ -1399,6 +1486,7 @@ def validate_project(
         return
     for rel_path in project_files:
         check_file_nonempty(validation, project_path / rel_path, required, scope)
+    check_project_chinese_readability(validation, project_path, required, scope)
     check_human_entry_quality(validation, project_path, required, scope)
     parsed = parse_project_governance(project_path, validation, required, scope)
     check_product_roadmap_kind(validation, project, parsed, required, scope)

@@ -16,8 +16,10 @@ from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
 
-EVIDENCE = Path("artifacts/tests/a200/t1215_clean_room_release.json")
-PACKAGE = Path("artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip")
+EVIDENCE_ID = "artifacts/tests/a200/t1215_clean_room_release.json"
+PACKAGE_ID = "artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip"
+EVIDENCE = Path(EVIDENCE_ID)
+PACKAGE = Path(PACKAGE_ID)
 INTERNAL_MANIFEST = "PACKAGE_MANIFEST.json"
 INTERNAL_CHECKSUMS = "PACKAGE_CHECKSUMS.sha256"
 FIXED_ZIP_DATETIME = (2026, 6, 19, 0, 0, 0)
@@ -109,8 +111,8 @@ EXCLUDED_FROM_PACKAGE = {
     "manifest.txt",
     "artifacts/release_evidence_t1211.json",
     "artifacts/release_operation_log_t1211.jsonl",
-    str(EVIDENCE),
-    str(PACKAGE),
+    EVIDENCE_ID,
+    PACKAGE_ID,
 }
 
 
@@ -278,7 +280,7 @@ def validate_a200_status() -> None:
         for row in read_csv("data/acceptance_traceability.csv")
         if row["trace_id"] == "TR-FUN-SYS-02-A200"
     ][0]
-    for required in [str(EVIDENCE), str(PACKAGE), "scripts/manage_clean_room_release.py"]:
+    for required in [path_id(EVIDENCE), path_id(PACKAGE), "scripts/manage_clean_room_release.py"]:
         if required not in trace["evidence_path"]:
             raise AssertionError(f"A200 traceability missing evidence path: {required}")
 
@@ -347,7 +349,7 @@ def build_evidence(
         "acceptance_ids": ["A200"],
         "status": "LOCAL_PASS",
         "package": {
-            "path": str(PACKAGE),
+            "path": path_id(PACKAGE),
             "sha256": sha256_file(package_path),
             "bytes": package_path.stat().st_size,
             "entry_count": len(paths) + 2,
@@ -389,8 +391,8 @@ def generate(_: argparse.Namespace) -> None:
         json.dumps(
             {
                 "generated": True,
-                "package": str(PACKAGE),
-                "evidence": str(EVIDENCE),
+                "package": path_id(PACKAGE),
+                "evidence": path_id(EVIDENCE),
                 "package_paths": len(paths),
                 "package_sha256": evidence["package"]["sha256"],
             },
@@ -462,8 +464,8 @@ def validate(_: argparse.Namespace | None = None) -> None:
         json.dumps(
             {
                 "valid": True,
-                "package": str(PACKAGE),
-                "evidence": str(EVIDENCE),
+                "package": path_id(PACKAGE),
+                "evidence": path_id(EVIDENCE),
                 "package_paths": len(paths),
                 "category_counts": category_counts,
                 "package_sha256": evidence["package"]["sha256"],

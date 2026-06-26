@@ -489,6 +489,85 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
     return lines
 
 
+def render_chinese_owner_preamble(
+    title: str,
+    project_facts: dict[str, Any],
+    roadmap: dict[str, Any],
+    summary: dict[str, Any],
+    *,
+    entry_name: str,
+    focus: str,
+) -> list[str]:
+    project_id = text_or_na(project_facts.get("project_id"))
+    current_stage = text_or_na(roadmap.get("current_stage_id"))
+    current_phase = text_or_na(roadmap.get("current_phase_id"))
+    current_task = text_or_na(roadmap.get("current_task_id"))
+    next_gate = text_or_na(roadmap.get("next_gate_id"))
+    evidence_status = text_or_na(project_facts.get("fact_level"))
+    return [
+        title,
+        "",
+        "中文优先，默认全局中文。用户可读优先。",
+        "",
+        "## 一句话结论",
+        "",
+        f"这是 `{project_id}` 的{entry_name}中文 Owner 入口：先给出是否能继续推进、证据是否足够、哪里可能拖慢交付、下一步该做什么和如何回滚；字段表格只作为复核材料。",
+        focus,
+        "这份入口不是目录页，也不是把字段堆给机器的清单；它先服务人的判断。读者应先看到当前是否可用、证据是否足够、风险在哪里、下一步怎么走，以及如果判断错误如何退回。",
+        "阅读顺序固定为结论、当前状态、操作入口、证据、风险、下一步、回滚。只有这些中文结论已经清楚，才需要继续看下方的任务编号、门禁编号、测试命令和事实表。",
+        "",
+        "## 当前状态",
+        "",
+        f"- 当前阶段：`{current_stage}`；当前分段：`{current_phase}`；当前任务：`{current_task}`。",
+        f"- 下一门禁：`{next_gate}`；证据状态：`{evidence_status}`；阻塞情况：`{summary['blockers']}`。",
+        "- 状态解释必须先面向 Owner：能继续就说明依据，不能继续就说明缺口，不用让读者从英文键名和长表格里反推真实状态。",
+        "",
+        "## Owner 操作入口",
+        "",
+        "- 先读本页中文结论，再按需要查看下方结构化明细。",
+        "- 需要验收时，优先使用本页列出的证据、测试命令和门禁；证据不足时保持 pending，不把未验证结论写成完成。",
+        "- 需要继续开发时，只带走当前任务、下一门禁、风险和回滚路径，避免每次动作重新扫描全量治理材料。",
+        "",
+        "## 证据与验证",
+        "",
+        "- 证据以仓库文件、治理事实、测试命令和运行结果为准；自然语言只解释这些事实，不替代事实。",
+        "- 如果中文结论和下方机器字段不一致，应先停下复核事实来源，再更新入口，不允许用更顺口的中文覆盖真实证据。",
+        "",
+        "## 风险与边界",
+        "",
+        "- 最大风险是入口退化为英文键名、任务编号和路径列表，Owner 无法快速判断真实状态。",
+        "- 另一个风险是为了省 token 删除治理真相；本入口只搬走重复计算，不删除可追溯事实。",
+        "",
+        "## 下一步",
+        "",
+        f"- 下一步聚焦 `{summary['next_unique_task']}`，先补足验收证据，再推进门禁。",
+        "- 后续 agent 必须保留中文优先和用户可读优先；新增字段可以放在下方明细，但顶部中文判断不能被挤掉。",
+        "",
+        "## 回滚",
+        "",
+        "- 如果发现本入口误导 Owner，回滚本入口文本到上一版，并保留原始治理事实文件不动。",
+        "- 如果自动渲染产生低可读内容，先修渲染器和校验器，再重新生成项目入口，避免手工补丁被下一轮覆盖。",
+        "",
+        "## 中文验收",
+        "",
+        "- 合格入口不是出现几个中文关键词，而是让 Owner 在第一页就能判断能否继续、是否缺证据、是否有风险、下一步由谁做、做错以后怎样退回。",
+        "- 如果读者必须先读字段名、路径、编号、英文状态或长表格才能知道真实情况，就视为中文可读失败；应先改前导区，再补机器字段。",
+        "- 后续改动必须保持中文判断在前、治理事实在后、验证命令可复核；任何为了省 token 而删除事实来源的做法都不能通过验收。",
+        "- 本页允许保留项目编号和任务编号，但这些编号只能辅助定位，不能替代中文解释；编号越多，越要增加清楚的中文判断。",
+        "",
+        "## 摘要",
+        "",
+        f"- project_id: `{project_id}`",
+        f"- current_stage: `{current_stage}`",
+        f"- current_phase: `{current_phase}`",
+        f"- current_task: `{current_task}`",
+        f"- blockers: `{summary['blockers']}`",
+        f"- next_gate: `{next_gate}`",
+        f"- next_unique_task: `{summary['next_unique_task']}`",
+        f"- evidence_status: `{evidence_status}`",
+    ]
+
+
 def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) -> str:
     features = [item for item in governance.as_list(project_facts.get("features")) if isinstance(item, dict)]
     evidence = [item for item in governance.as_list(project_facts.get("evidence_refs")) if isinstance(item, dict)]
@@ -522,6 +601,14 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
         "| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |",
         "|---|---|---|---|---|",
     ]
+    lines[2:2] = render_chinese_owner_preamble(
+        "# 功能清单",
+        project_facts,
+        roadmap,
+        summary,
+        entry_name="功能清单",
+        focus="功能判断要先回答这个项目现在能提供什么能力、这些能力是否已有证据支撑，以及哪些能力仍然只是待验证计划。",
+    )[2:-10]
     for feature in features:
         lines.append(
             f"| {text_or_na(feature.get('feature_id'))} | {text_or_na(feature.get('name'))} | {text_or_na(feature.get('status'))} | {text_or_na(feature.get('description'))} | {text_or_na(feature.get('fact_level'))} |"
@@ -570,6 +657,14 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
         "## Roadmap",
         "",
     ]
+    lines[2:2] = render_chinese_owner_preamble(
+        "# 开发记录",
+        project_facts,
+        roadmap,
+        summary,
+        entry_name="开发记录",
+        focus="开发记录要先说明进度为什么可信、当前门禁在哪里、哪些证据已经落地、哪些阻塞仍会影响速度和质量。",
+    )[2:-10]
     lines.extend(render_roadmap_body(roadmap))
     lines.extend(v7_2_current_summary_lines(v72))
     lines.extend(v7_1_summary_lines(lock))
@@ -611,6 +706,14 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
         f"- roadmap_gate_count: `{summary['roadmap_gate_count']}`",
         f"- evidence_status: `{text_or_na(project_facts.get('fact_level'))}`",
     ]
+    lines[2:2] = render_chinese_owner_preamble(
+        "# 模型参数文件",
+        project_facts,
+        roadmap,
+        summary,
+        entry_name="模型参数文件",
+        focus="模型参数入口要先说明当前模型、公式和参数是否可用于决策，哪些值来自证据，哪些值仍需要复核或补充验证。",
+    )[2:-10]
     lines.extend(v7_2_current_summary_lines(v72))
     lines.extend(v7_1_summary_lines(lock))
     if lock:
