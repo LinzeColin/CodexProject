@@ -1,0 +1,60 @@
+{
+  "manifest_id": "ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT03",
+  "finding_id": "A-008",
+  "finding_title": "current_state 与 state_history 末态可不一致",
+  "phase": "S2PM",
+  "created_at": "2026-06-26T20:24:28+10:00",
+  "scope": "Fix RunRecord state/history/status/schema/row-version consistency validation for V7.1 inherited P1 finding A-008.",
+  "non_scope": "No SMTP, scheduler, Release, production restore, public schema, DB migration, source adapter, ranking, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "run_record_consistency_contract": {
+    "schema_version": 1,
+    "row_version_policy": "row_version must be a non-negative integer and equal len(state_history) - 1",
+    "history_tail_policy": "state_history last to_state must equal current_state",
+    "status_policy": {
+      "created": [
+        "created"
+      ],
+      "running_states": [
+        "running"
+      ],
+      "completed": [
+        "succeeded",
+        "degraded"
+      ],
+      "blocked": [
+        "blocked"
+      ],
+      "failed": [
+        "failed"
+      ]
+    }
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_STATE_CONSISTENCY_A008.md",
+    "arxiv-daily-push/src/arxiv_daily_push/state_machine.py",
+    "arxiv-daily-push/tests/test_state_machine.py"
+  ],
+  "validation": [
+    "py_compile PASS for state_machine.py and test_state_machine.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_state_machine.py arxiv-daily-push/tests/test_pipeline.py arxiv-daily-push/tests/test_handoff.py arxiv-daily-push/tests/test_stage2_lease_fencing.py -q: 24 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q: 7 OK",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q: 504 OK",
+    "scripts/validate_project_governance.py --project arxiv-daily-push: errors 0 / warnings 0",
+    "docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root docs/pursuing_goal/v7_2: PASS",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json: OK",
+    "git diff --check: PASS"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "This manifest does not enable production side effects or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}

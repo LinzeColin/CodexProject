@@ -33,6 +33,20 @@ RUN_STATES = (
 RUN_STATUSES = {"created", "running", "blocked", "failed", "degraded", "succeeded"}
 STAGE_STATUSES = {"not_started", "running", "passed", "blocked", "failed", "skipped"}
 TERMINAL_STATES = {"completed", "blocked", "failed"}
+RUN_RECORD_SCHEMA_VERSION = 1
+EXPECTED_STATUS_BY_STATE = {
+    "created": {"created"},
+    "health_checked": {"running"},
+    "source_collected": {"running"},
+    "evidence_bound": {"running"},
+    "lesson_ready": {"running"},
+    "storyboard_ready": {"running"},
+    "publication_ready": {"running"},
+    "notified": {"running"},
+    "completed": {"succeeded", "degraded"},
+    "blocked": {"blocked"},
+    "failed": {"failed"},
+}
 ALLOWED_TRANSITIONS = {
     "created": {"health_checked", "blocked", "failed"},
     "health_checked": {"source_collected", "blocked", "failed"},
@@ -61,6 +75,8 @@ def validate_transition(current_state: str, next_state: str) -> list[str]:
 def initial_run_record(run_id: str, date: str, timezone: str) -> dict[str, Any]:
     return {
         "run_id": run_id,
+        "schema_version": RUN_RECORD_SCHEMA_VERSION,
+        "row_version": 0,
         "date": date,
         "timezone": timezone,
         "phase": "2",
@@ -83,13 +99,19 @@ def validate_run_record(record: Mapping[str, Any]) -> list[str]:
     for field in ("run_id", "date", "timezone", "phase", "status", "current_state", "stages"):
         if record.get(field) in (None, ""):
             errors.append(f"RunRecord.{field} is required")
+    if record.get("schema_version") != RUN_RECORD_SCHEMA_VERSION:
+        errors.append(f"RunRecord.schema_version must be {RUN_RECORD_SCHEMA_VERSION}")
+    row_version = record.get("row_version")
+    if type(row_version) is not int or row_version < 0:
+        errors.append("RunRecord.row_version must be a non-negative integer")
     if record.get("status") not in RUN_STATUSES:
         errors.append(f"RunRecord.status must be one of {sorted(RUN_STATUSES)}")
     current_state = record.get("current_state")
     if current_state not in RUN_STATES:
         errors.append(f"RunRecord.current_state must be one of {list(RUN_STATES)}")
-    if current_state in TERMINAL_STATES and record.get("status") == "running":
-        errors.append("RunRecord.status cannot be running when current_state is terminal")
+    elif record.get("status") not in EXPECTED_STATUS_BY_STATE[current_state]:
+        expected = ", ".join(sorted(EXPECTED_STATUS_BY_STATE[current_state]))
+        errors.append(f"RunRecord.status must be {expected} when current_state is {current_state}")
     _validate_stages(record.get("stages"), errors)
     _validate_state_history(record.get("state_history", []), errors)
     history = record.get("state_history", [])
@@ -97,6 +119,8 @@ def validate_run_record(record: Mapping[str, Any]) -> list[str]:
         last = history[-1]
         if isinstance(last, Mapping) and str(last.get("to_state") or "") != current_state:
             errors.append("RunRecord.current_state must match state_history last to_state")
+        if type(row_version) is int and row_version != len(history) - 1:
+            errors.append("RunRecord.row_version must equal state_history transition count")
     for item in record.get("source_items", []) or []:
         errors.extend(validate_source_item(item))
     for claim in record.get("evidence_claims", []) or []:
@@ -117,6 +141,7 @@ def transition_run_record(record: Mapping[str, Any], next_state: str, *, reason:
         raise ValueError("; ".join(errors))
     updated = copy.deepcopy(dict(record))
     updated["current_state"] = next_state
+    updated["row_version"] = int(updated.get("row_version") or 0) + 1
     if next_state in {"blocked", "failed"}:
         updated["status"] = next_state
     elif next_state == "completed":
