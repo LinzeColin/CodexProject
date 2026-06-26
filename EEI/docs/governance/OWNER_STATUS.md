@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1307/A209 browser recovery hardening：短窗口恢复能力已验证，但 24h canonical evidence 仍失败在 `7/288`，isolated rerun 仍失败在 `130/288`，不得误读为 A209 或 MVP 可上线。
+Owner 视图现在记录 T1303/A204-A205 operator input status：`artifacts/operator_inputs/operator_input_status.json` 已验证为 `WAITING_FOR_OPERATOR_INPUTS`，6 个 A202/A210/A026/A027/A209 外部输入均缺失，template copy 会被拒绝，release-manager/MVP refresh 仍被阻断。
 
 ## 3. 为什么重要
 
@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (93/93 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (94/94 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `93`
-- active_parameters: `93`
+- total_parameters: `94`
+- active_parameters: `94`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-BROWSER-RECOVERY-HARDENING`
+- release_gate: `TASK-T1303-OPERATOR-INPUT-STATUS`
 
 ## 14. Evidence Freshness
 
@@ -98,10 +98,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
 - source_snapshot_hash: `sha256:dc2a4a1c2bacbef78381d8487eb70aa4f04eefe3766dc6e4f3e407f1d61bbe15`
-- snapshot_event_time: `2026-06-27T00:35:05+10:00`
+- snapshot_event_time: `2026-06-27T01:17:20+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-BROWSER-RECOVERY-HARDENING`
+- phase/gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS`
 
 ## 17. Next Unique Task
 

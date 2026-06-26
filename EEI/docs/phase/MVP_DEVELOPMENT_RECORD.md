@@ -1,5 +1,47 @@
 # MVP Development Record
 
+## 2026-06-27 - T1303/A204-A205 operator input status manifest
+
+Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `scripts/validate_operator_input_status.py`.
+- Added `artifacts/operator_inputs/operator_input_status.json`.
+- Added `tests/unit/test_operator_input_status.py`.
+- Added Makefile targets `generate-operator-input-status` and `validate-operator-input-status`.
+- Registered `PARAM-094` for `eei-external-release-operator-input-status-v1`.
+
+### Current Evidence
+
+- Status: `WAITING_FOR_OPERATOR_INPUTS`.
+- Required input count: `6`.
+- Missing input count: `6`.
+- Rejected template-copy count: `0`.
+- Present-but-validator-required count: `0`.
+- `release_gate_closed_by_input_status=false`.
+- `release_manager_preflight_refresh_allowed=false`.
+- `mvp_release_gate_refresh_allowed=false`.
+- A209 isolated background rerun `/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/` has reached `1/288` PASS windows with `0` failed at `2026-06-26T15:06:41Z`; this is progress evidence only.
+
+### Validation
+
+- `make generate-operator-input-status validate-operator-input-status`: PASS.
+- `python -m py_compile scripts/validate_operator_input_status.py tests/unit/test_operator_input_status.py`: PASS.
+- `ruff check scripts/validate_operator_input_status.py tests/unit/test_operator_input_status.py`: PASS.
+- `pytest -q -p no:cacheprovider tests/unit/test_operator_input_status.py`: PASS `4/4`.
+
+### Non-Claims
+
+- This does not create signed A202 evidence, A210 brand clearance, A026/A027 production gold labels, A209 finalization, release-manager activation or MVP readiness.
+- Present operator files still require their dedicated fail-closed validators.
+- Template copies remain rejected and cannot close any gate.
+
+### Rollback
+
+- Revert the status script, unit test, Makefile targets, status artifact and companion governance rows.
+- Preserve any real signed operator files under `artifacts/operator_inputs/`.
+
 ## 2026-06-27 - T1307/A209 browser recovery hardening
 
 Status: LOCAL TARGET VALIDATED; A209 STILL IN PROGRESS; 24H EVIDENCE STILL FAILED

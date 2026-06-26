@@ -5,7 +5,7 @@
   "artifact_id": "t1307-a209-clean-rerun-authorization-template",
   "authorization_status": "TEMPLATE_ONLY_NOT_AUTHORIZED",
   "clean_rerun_authorized": false,
-  "generated_at": "2026-06-26T13:47:16Z",
+  "generated_at": "2026-06-26T15:17:19Z",
   "non_claims": [
     "This template does not authorize a clean rerun.",
     "This template does not start, stop, resume, promote or finalize A209.",

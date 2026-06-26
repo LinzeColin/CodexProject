@@ -76,7 +76,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── signed-brand-clearance.template.json
 │   │   └── operator_input_kit_manifest.json
 │   ├── operator_inputs
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── operator_input_status.json
 │   ├── tests
 │   │   ├── a026
 │   │   │   ├── t904_a026_a027_operator_labeling_packet.json
@@ -442,6 +443,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_governance_consistency.py
 │   ├── validate_model_config.py
 │   ├── validate_mvp_release_gate.py
+│   ├── validate_operator_input_status.py
 │   ├── validate_operator_soak_evidence.py
 │   ├── validate_production_api_release_preflight.py
 │   ├── validate_prototype_parity.py
@@ -500,6 +502,7 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_model_config_apply.py
 │       ├── test_mvp_release_gate.py
 │       ├── test_official_source_live_capture.py
+│       ├── test_operator_input_status.py
 │       ├── test_operator_soak_evidence.py
 │       ├── test_operator_soak_finalization.py
 │       ├── test_production_api_release_preflight.py

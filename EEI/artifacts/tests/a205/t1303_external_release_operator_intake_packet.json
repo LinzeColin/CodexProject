@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-26T13:47:16Z",
+  "generated_at": "2026-06-26T15:17:19Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -354,7 +354,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "ddbf725aa94d9d91958e52410595bb9443b85c889960f0b0e648c8b9a7e98beb"
+      "sha256": "50968a01c2bcfb837c9e38a62c3e27185faeebae877431a5d9f97dde258b2ca6"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

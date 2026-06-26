@@ -90,6 +90,7 @@ artifacts/operator_input_kit/a209/promoted-operator-soak-finalization.template.j
 artifacts/operator_input_kit/a210/signed-brand-clearance.template.json
 artifacts/operator_input_kit/operator_input_kit_manifest.json
 artifacts/operator_inputs/README.md
+artifacts/operator_inputs/operator_input_status.json
 artifacts/pdf_contact_sheet.png
 artifacts/release_evidence_t1211.json
 artifacts/release_operation_log_t1211.jsonl
@@ -393,6 +394,7 @@ scripts/validate_governance.py
 scripts/validate_governance_consistency.py
 scripts/validate_model_config.py
 scripts/validate_mvp_release_gate.py
+scripts/validate_operator_input_status.py
 scripts/validate_operator_soak_evidence.py
 scripts/validate_production_api_release_preflight.py
 scripts/validate_prototype_parity.py
@@ -440,6 +442,7 @@ tests/unit/test_gold_quality_evaluation.py
 tests/unit/test_model_config_apply.py
 tests/unit/test_mvp_release_gate.py
 tests/unit/test_official_source_live_capture.py
+tests/unit/test_operator_input_status.py
 tests/unit/test_operator_soak_evidence.py
 tests/unit/test_operator_soak_finalization.py
 tests/unit/test_production_api_release_preflight.py
