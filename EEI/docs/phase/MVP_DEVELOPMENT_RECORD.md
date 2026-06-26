@@ -1,5 +1,36 @@
 # MVP Development Record
 
+## 2026-06-27 - T1303/A204-A205 external release evidence bundle drift repair
+
+Status: LOCAL VERIFY PASS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Repaired the CI-detected `source_files` drift in `artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json` after the A202 public-only source-license artifact refresh.
+- Regenerated the external release operator intake packet, operator input kit, operator input status, release-manager activation preflight, MVP release-gate preflight, clean-room release package and release checksum evidence.
+- Kept all external input and release readiness fields fail-closed.
+
+### Acceptance Mapping
+
+- T1303 -> A204/A205.
+- This is an artifact/source-hash freshness repair only; it does not close A204/A205.
+
+### Validation
+
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle`: PASS.
+- `make generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS.
+- `make verify`: PASS, including `148/148` unit tests, ruff, typecheck, secret scan, scale smoke, soak smoke and release artifact validators.
+
+### Non-Claims
+
+- This does not create signed A202 evidence, A210 brand clearance, A026/A027 production gold labels, A209 finalization, release-manager activation or MVP readiness.
+- A209 independent background checkpoint evidence is progress-only until `288/288` zero-failure validation and authorized finalization.
+
+### Rollback
+
+- Revert the regenerated T1303/A205 external-release artifacts, release-manager/MVP preflights, clean-room/release artifacts and companion governance event.
+- Preserve any real signed operator files under `artifacts/operator_inputs/`.
+
 ## 2026-06-27 - T1301/A202 public-only source-license release boundary
 
 Status: LOCAL TARGET VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED

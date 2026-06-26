@@ -95,6 +95,7 @@
 - `EVENT-20260626-005`: Added a fail-closed A209 isolated-rerun promotion bridge to `finalize_operator_soak_evidence.py`; it refuses incomplete source evidence, preserves prior canonical evidence in an incident archive, rewrites promoted runner paths only after release-ready validation, and keeps `release_gate_closed_by_promotion=false`.
 - `EVENT-20260626-013`: Upgraded the T1303/A204-A205 external release operator intake packet to schema v2 with explicit submission targets under `artifacts/operator_inputs/` for A202, A210, A026/A027 and A209 evidence; release-manager activation, MVP release readiness and all external gates remain blocked until real operator evidence validates.
 - `EVENT-20260626-024`: Added a T1301/A202 operator intake gap packet that enumerates 10 exact signed review items for source-license, passage-level relationship review, production owner sign-off, legal release clearance and final attestation; A202 and MVP release remain blocked until real operator evidence validates.
+- `EVENT-20260627-008`: Fixed the CI-detected T1303 external release evidence bundle `source_files` drift after the A202 public-only source-license boundary refresh by regenerating external bundle/operator intake/input-kit/status, release-manager, MVP gate, clean-room and release checksum artifacts; all external gates and MVP readiness remain blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

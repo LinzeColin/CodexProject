@@ -6,11 +6,11 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1301/A202 source-license 发布边界：签署的 release-decision/source-license evidence 只接受 `approved_for_public_release`，`approved_for_internal_review` 不足以支持公开关系发布或 A202 release gate closure；A202/A210/A026/A027/A209 外部输入仍缺失，release-manager/MVP refresh 仍被阻断。
+Owner 视图现在记录 T1303 external release evidence bundle 的 CI drift 修复：A202 public-only source-license artifact 刷新后，external bundle、operator intake packet、operator input kit/status、release-manager preflight、MVP release gate、clean-room ZIP 和 release checksum 已重新生成并验证；A202/A210/A026/A027/A209 外部输入仍缺失，release-manager/MVP refresh 仍被阻断。
 
 ## 3. 为什么重要
 
-降低未经证实企业关系被发布为事实的风险。
+降低 stale source-file hash 或过期 release manifest 被误当成当前发布证据的风险。
 
 ## 4. 需要人类决定什么
 

@@ -56,7 +56,7 @@
       "primary_path": "artifacts/operator_inputs/a210/signed-brand-clearance.json"
     }
   },
-  "generated_at": "2026-06-26T15:17:19Z",
+  "generated_at": "2026-06-26T16:14:27Z",
   "kit_items": [
     {
       "acceptance_id": "A202",
@@ -156,7 +156,7 @@
       ],
       "input_id": "A209_clean_rerun_authorization",
       "kit_template_path": "artifacts/operator_input_kit/a209/clean-rerun-authorization.template.json",
-      "kit_template_sha256": "d8204f2f31d5e9c8467fa21fbe881740e8bb72d8b30ac73bd215cffbf8392f9a",
+      "kit_template_sha256": "25c7ad9e51721e86bdb73d87a0c8022846b8dd45cc14258b6d4ca62298796f66",
       "release_gate_closure_allowed": false,
       "source_template": {
         "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
@@ -181,7 +181,7 @@
       ],
       "input_id": "A209_24h_operator_soak_finalization",
       "kit_template_path": "artifacts/operator_input_kit/a209/promoted-operator-soak-finalization.template.json",
-      "kit_template_sha256": "ff154c210c4cacd79b67e4e55582273e05c0d26b2c035a5881ec0e0ca11c605d",
+      "kit_template_sha256": "38b3b2fc37b2476c36a4e3198d01af0ad33ef6df4add40c254034e09b1256354",
       "release_gate_closure_allowed": false,
       "source_template": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
@@ -234,7 +234,7 @@
     },
     "external_release_operator_intake_packet": {
       "path": "artifacts/tests/a205/t1303_external_release_operator_intake_packet.json",
-      "sha256": "92f7505f098413aaf9492c1398e6d231df7a481627bed5da026c84b7bbc59e68"
+      "sha256": "468568dc847489e03ae84eb866d36231cc71e863f001ebf7a531143a75412f82"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",
