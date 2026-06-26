@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 18:45:19 Australia/Sydney`
-- refreshed_at: `2026-06-27 08:05:48 Australia/Sydney`
+- refreshed_at: `2026-06-27 08:34:18 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P0 evidence set for later independent
 review. It is not an independent reviewer signoff, does not close any P0/P1
@@ -36,7 +36,7 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | finding_id | fix task | current evidence surface | receipt state | independent reviewer decision still required |
 |---|---|---|---|---|
 | `A-001` | `S2PMT02-RESTORE-PATH-SAFETY-A001` | `PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md`, `ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json`, `用户中心/恢复路径安全扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify path traversal, absolute path, symlink escape, blocked invalid restore target preservation, and TOCTOU-adjacent atomic restore behavior against current code and tests. |
-| `A-002` | `S2PMT02` | `PHASE_S2PMT02_ATOMIC_RECOVERY.md`, `PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md`, `PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md` | evidence located; closure not claimed | Verify invalid backup restore preserves original database bytes and atomic replacement semantics. |
+| `A-002` | `S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002` | `PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md`, `ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json`, `用户中心/恢复原子替换扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify valid new-target restore, valid overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and no-production flags. |
 | `A-003` | `S2PMT03` | `PHASE_S2PMT03_LEASE_FENCING.md`, `ADP-S2PMT03-LEASE-FENCING-20260626.json` | evidence located; closure not claimed | Verify transactional outbox, idempotent `Message-ID`, and at-least-once semantics; exactly-once delivery is not claimed. |
 | `A-004` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify typed frontstage statement rules bind facts/inferences/actions to evidence and block unsupported foreground claims. |
 | `A-005` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify `UNTRUSTED_DATA` isolation, tool boundary, safe rendering, and prompt-injection refusal behavior. |
@@ -48,11 +48,11 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 
 ## Evidence Refresh 2026-06-27
 
-This refresh updates the P0 receipt to point `A-001` at dedicated restore path safety evidence instead of aggregate S2PMT02 restore records. It does not close any P0 finding and does not provide independent review signoff.
+This refresh updates the P0 receipt to point `A-002` at dedicated restore atomic replacement evidence instead of aggregate S2PMT02 restore records. It does not close any P0 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-001`, `B-007`, `B-008`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json`
+- refreshed_findings: `A-001`, `A-002`, `B-007`, `B-008`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 

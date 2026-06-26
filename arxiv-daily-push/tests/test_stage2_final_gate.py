@@ -144,7 +144,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -158,6 +158,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json", receipt_rows["A-001"])
         self.assertIn("用户中心/恢复路径安全扫描.md", receipt_rows["A-001"])
         self.assertNotIn("PHASE_S2PMT02_ATOMIC_RECOVERY.md", receipt_rows["A-001"])
+        self.assertIn("PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md", receipt_rows["A-002"])
+        self.assertIn("ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json", receipt_rows["A-002"])
+        self.assertIn("用户中心/恢复原子替换扫描.md", receipt_rows["A-002"])
+        self.assertNotIn("PHASE_S2PMT02_ATOMIC_RECOVERY.md", receipt_rows["A-002"])
+        self.assertNotIn("PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md", receipt_rows["A-002"])
         self.assertIn("PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md", receipt_rows["B-007"])
         self.assertIn("ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json", receipt_rows["B-007"])
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
@@ -166,10 +171,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-008"])
 
         findings = {finding["finding_id"]: finding for finding in manifest["p0_findings"]}
-        self.assertEqual(manifest["refreshed_findings"], ["A-001", "B-007", "B-008"])
+        self.assertEqual(manifest["refreshed_findings"], ["A-001", "A-002", "B-007", "B-008"])
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertTrue(refresh_manifest_path.exists())
@@ -188,6 +193,23 @@ class Stage2FinalGateTests(unittest.TestCase):
             findings["A-001"]["evidence_refs"],
         )
         self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md", findings["A-001"]["evidence_refs"])
+        self.assertIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
+            findings["A-002"]["evidence_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
+            findings["A-002"]["evidence_refs"],
+        )
+        self.assertIn(
+            "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
+            findings["A-002"]["evidence_refs"],
+        )
+        self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md", findings["A-002"]["evidence_refs"])
+        self.assertNotIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md",
+            findings["A-002"]["evidence_refs"],
+        )
         self.assertIn(
             "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
             findings["B-007"]["evidence_refs"],

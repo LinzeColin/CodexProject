@@ -5763,3 +5763,46 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md"
       - "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json"
       - "arxiv-daily-push/用户中心/恢复路径安全扫描.md"
+
+
+  -
+    model_id: "MOD-ADP-111"
+    name: "S2PMT02 restore atomic replacement A-002 model"
+    purpose: "Refresh inherited P0 A-002 evidence with dedicated current restore probes proving valid new-target restore, valid overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and no production restore side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-113"
+    parameter_ids:
+      - "PARAM-ADP-940"
+      - "PARAM-ADP-941"
+      - "PARAM-ADP-942"
+      - "PARAM-ADP-943"
+      - "PARAM-ADP-944"
+    inputs:
+      - "real Stage 1 backup and restore probes"
+      - "restore target SHA-256 observations"
+      - "previous target backup preservation hash"
+      - "production side-effect flags"
+    outputs:
+      - "required_probe_coverage"
+      - "valid_restore_passed"
+      - "valid_overwrite_created_previous_backup"
+      - "invalid_restore_preserved_target"
+      - "temp_files_cleaned"
+      - "restore_atomic_replacement_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md"
+      - "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json"
+      - "arxiv-daily-push/用户中心/恢复原子替换扫描.md"
