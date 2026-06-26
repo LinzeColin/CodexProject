@@ -5742,3 +5742,61 @@ formulas:
     evidence_hash: "sha256:c8a184db987cb1d1c47d9eaa950cf7ea3aa7bb53309195c8fdc41083f621bf65"
     last_verified_commit: "0c52a3257800c5bab89de93c6713c71249d20697"
     verified_at: "2026-06-26T17:00:00+10:00"
+
+  -
+    formula_id: "FORM-ADP-103"
+    model_id: "MOD-ADP-101"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PLT01 full-system replay entry precheck remains blocked unless S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05 dependencies are complete, inherited V7.1 P0/P1 findings are zero, 30 independent replay days and 120 mail previews are proven, all D1-D4 source domains and B1-B6 reading boards have terminal states, future leakage is zero, no production acceptance is claimed, and all production/CURRENT/V7 baseline side-effect flags remain false."
+    variables:
+      -
+        name: "dependency_state"
+        data_type: "object"
+        unit: "required dependency completion evidence"
+        input_domain: "S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, S2PKT05"
+      -
+        name: "audit_blocker_state"
+        data_type: "object"
+        unit: "inherited V7.1 P0/P1 blocker counts"
+        input_domain: "open P0 and P1 findings"
+      -
+        name: "replay_evidence_state"
+        data_type: "object"
+        unit: "full-system replay evidence"
+        input_domain: "30 independent days, 120 mail previews, D1-D4, B1-B6, terminal states, future leakage"
+    constraints: "S2PLT01 entry precheck is fail-closed only. It must not execute full replay, accept S2PLT01, complete S2PLT04, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, mutate production queue, change public schema or DB, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
+    missing_policy: "Missing S2PBT05, nonzero inherited P0/P1, missing 30-day replay evidence, missing 120 mail previews, missing source terminal states, nonzero or unknown future leakage, or any forbidden production flag blocks S2PLT01."
+    output_range: "S2PLT01 entry precheck report with pass or blocked status, required dependencies, inherited blocker counts, replay evidence state, blocking reasons, deterministic report hash, production_acceptance_claimed false, and all forbidden flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_replay_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT01-ENTRY-PRECHECK-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_ENTRY_PRECHECK_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_ACCEPTANCE_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_TASK_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_INHERITED_V7_1_OPEN_P0_FINDINGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_INHERITED_V7_1_OPEN_P1_FINDINGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REQUIRED_DEPENDENCIES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REQUIRED_REPLAY_DAYS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REQUIRED_MAIL_PREVIEWS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REQUIRED_SOURCE_DOMAINS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REQUIRED_READING_BOARDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_FORBIDDEN_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_dependency_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_audit_blocker_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_replay_evidence_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_entry_precheck_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_entry_precheck_report"
+    implementation_fingerprint: "sha256:52dc621443aaeb0ebd10a59a04dfdc500e852d543ee5615f731f8c6bb9cc5c1e"
+    evidence_hash: "sha256:584762f415c1d1a464c3c8eed3fd59a2382baf3b2ff4a6bc9886b5aa16ec2492"
+    last_verified_commit: "410dcf5ee97fbbe85404e325973983d9159acb75"
+    verified_at: "2026-06-26T10:00:00+10:00"
