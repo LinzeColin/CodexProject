@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-27T03:55:41+10:00",
+  "actor": "Codex",
+  "base_commit": "045ed40c411065d0c2b4d370f3693cac0f0e34cd",
+  "task_id": "S2PMT05-FUTURE-HEARTBEAT-A015",
+  "task_ids": [
+    "S2PMT05-FUTURE-HEARTBEAT-A015",
+    "S2PMT05",
+    "A-015",
+    "ACC-S2PMT05-STRESS-E2E"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "status": "completed_local_validation_no_production",
+  "result": "a015_future_heartbeat_local_evidence_no_closure_no_production",
+  "summary": "Records dedicated local A-015 evidence that future heartbeat/checkpoint timestamps over the 300-second clock-skew tolerance block for owner review instead of being clamped to age zero, while DST and NTP cases remain deterministic and scheduler side effects stay disabled.",
+  "inherited_findings_targeted": [
+    "A-015"
+  ],
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "inherited_p0_p1_closed": false,
+  "stage2_integrated_production_accepted": false,
+  "production_acceptance_claimed": false,
+  "report_status": "pass",
+  "source_report_manifest": "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json",
+  "report_hash": "55d54b1bc90fe6d04447da6d3abc4afb4be95269d5a78625ebf81c991042a120",
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-915",
+    "PARAM-ADP-916",
+    "PARAM-ADP-917",
+    "PARAM-ADP-918",
+    "PARAM-ADP-919"
+  ],
+  "a015_future_heartbeat_gate": {
+    "status": "pass",
+    "timezone": "Australia/Sydney",
+    "clock_skew_tolerance_seconds": 300,
+    "future_heartbeat_seconds": 301,
+    "future_heartbeat_action": "block_until_owner_review",
+    "findings_covered": {
+      "A-015": [
+        "dst_clock_policy"
+      ]
+    },
+    "checks": {
+      "future_heartbeat_blocks": true,
+      "dst_fold_records_offset": true,
+      "dst_gap_runs_after_gap": true,
+      "ntp_forward_over_tolerance_blocks": true,
+      "catchup_is_bounded": true,
+      "no_duplicate_m4_watermark": true,
+      "scheduler_side_effects_disabled": true
+    }
+  },
+  "files_changed": [
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md",
+    "governance/run_manifests/ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md",
+    "governance/run_manifests/ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json",
+    "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+    "python3 -m py_compile arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "Ruby YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "git diff --check",
+    "production-side-effect added-line scan over changed and untracked files"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT05 stress tests: 19 OK",
+    "focused S2PMT07 final-gate tests: 14 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 549 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "Ruby YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect added-line scan: OK",
+    "open_pr_count: 0"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "full_replay_executed": false,
+    "large_replay_executed": false,
+    "live_source_fetch_executed": false,
+    "mail_production_code_changed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "This local A-015 evidence can be misread as inherited P1 closure; it only records current evidence and receipt routing.",
+    "Future heartbeat blocking evidence must not be interpreted as real scheduler readiness, real catch-up execution, inherited P0/P1 closure, S2PMT07 pass, or production readiness."
+  ],
+  "rollback": "Revert the A-015 future-heartbeat test assertion, phase record, manifests, P1 receipt refresh, traceability/delivery/event records, generated status refresh, and this manifest; no runtime production state was changed.",
+  "next_task": "CONTINUE_P1_RECEIPT_REFRESH_OR_S2PMT07_INDEPENDENT_REVIEW_AFTER_REQUIRED_GATES"
+}

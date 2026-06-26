@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 19:51:01 Australia/Sydney`
-- refreshed_at: `2026-06-27 03:42:54 Australia/Sydney`
+- refreshed_at: `2026-06-27 04:00:50 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff, does not close any P0/P1 finding, and does not unblock integrated production acceptance.
 
@@ -61,7 +61,7 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `A-012` | `S2PMT01` | 邮件原文链接未限制 URL scheme | `PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md`, `ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json`, `test_security_boundary.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: javascript/data/file/带凭据 URL 均拒绝或降级为无链接文本 |
 | `A-013` | `S2PMT04-SCHEDULER-TEMPLATE-A013` | 调度模板路径未结构化转义，macOS plist 甚至不可解析 | `PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md`, `ADP-S2PMT04-SCHEDULER-TEMPLATE-A013-20260626.json`, `test_stage1_runtime.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 空格、中文、分号、& 路径均安全；plistlib/systemd-analyze/PowerShell parser 通过 |
 | `A-014` | `S2PMT02-SUPPORTING-FILE-COLLISION` | 备份辅助文件同名时静默覆盖 | `PHASE_S2PMT02_SUPPORTING_FILE_COLLISION.md`, `ADP-S2PMT02-SUPPORTING-FILE-COLLISION-20260626.json`, `test_stage1_runtime.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 不同目录同名文件均可完整恢复，manifest path 无重复 |
-| `A-015` | `S2PMT05` | 未来时间戳被钳制为 age=0，时钟漂移可长期伪装新鲜 | `PHASE_S2PMT05_STRESS_E2E.md`, `ADP-S2PMT05-STRESS-E2E-20260626.json`, `test_stage2_stress_e2e.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 未来 5 分钟以上 heartbeat 阻塞；DST 不影响 lease 计算 |
+| `A-015` | `S2PMT05-FUTURE-HEARTBEAT-A015` | 未来时间戳被钳制为 age=0，时钟漂移可长期伪装新鲜 | `PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md`, `ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 未来 5 分钟以上 heartbeat 阻塞；DST 不影响 lease 计算 |
 | `A-016` | `S2PMT03-LESSON-REVISION-A016` | lesson_id 只依赖 claim_id，不依赖内容/证据/模型版本 | `PHASE_S2PMT03_LESSON_REVISION_A016.md`, `ADP-S2PMT03-LESSON-REVISION-A016-20260626.json`, `test_lesson.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 任一证据或内容变更导致 revision 变化，stable key 不变 |
 | `A-017` | `S2PMT03` | SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID | `PHASE_S2PMT03_SMTP_IDENTITY_A017.md`, `ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json`, `test_smtp_delivery.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 同 revision 重试 Message-ID 不变；内容修订 revision 变化且需显式 supersede/resend |
 | `A-018` | `S2PAT05` | V7 要求展示 ROI，但旧邮件验证明确禁止 ROI | `PHASE_S2PAT05_ROI_DISCLOSURE_A018.md`, `ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json`, `TRACEABILITY_MATRIX.csv` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: V7.1 合法 ROI 可发布；无成本/概率/证据的收益声明被拒绝 |
@@ -94,9 +94,9 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 
 This refresh updates the P1 receipt to point completed P1 remediation rows at their dedicated phase records and manifests instead of older aggregate evidence surfaces. It does not close any P1 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-016`, `A-017`, `A-018`, `A-020`, `A-021`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json`
+- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-020`, `A-021`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 
