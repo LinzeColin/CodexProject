@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/PFI/shared/schema/system_manifest.schema.json",
+  "title": "PFI Child System Manifest",
+  "type": "object",
+  "required": ["system_id", "display_name", "status", "migration_phase", "public_repo_boundary", "entrypoints", "verification"],
+  "additionalProperties": false,
+  "properties": {
+    "system_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "display_name": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["registered", "migrating", "partial_product", "productized", "blocked"]},
+    "migration_phase": {"type": "string", "enum": ["manifest_only", "source_import", "sample_import", "integration", "macos_acceptance"]},
+    "legacy_local_roots": {"type": "array", "items": {"type": "string"}},
+    "public_repo_boundary": {
+      "type": "object",
+      "required": ["include", "exclude"],
+      "additionalProperties": false,
+      "properties": {
+        "include": {"type": "array", "items": {"type": "string"}},
+        "exclude": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "entrypoints": {"type": "array", "items": {"type": "string"}},
+    "verification": {"type": "array", "items": {"type": "string"}},
+    "next_actions": {"type": "array", "items": {"type": "string"}}
+  }
+}

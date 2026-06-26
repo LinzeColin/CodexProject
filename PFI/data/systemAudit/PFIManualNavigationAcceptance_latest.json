@@ -1,0 +1,89 @@
+{
+  "schema": "PFIManualNavigationAcceptanceV1",
+  "status": "Pass",
+  "title": "PFI",
+  "url": "http://127.0.0.1:8501",
+  "checks": [
+    {
+      "label": "首页",
+      "exists": true,
+      "clicked": true,
+      "expected": [
+        "今日总览",
+        "单标的回测",
+        "盘感训练"
+      ],
+      "missing": [],
+      "status": "Pass"
+    },
+    {
+      "label": "市场",
+      "exists": true,
+      "clicked": true,
+      "expected": [
+        "市场监控",
+        "热点分析"
+      ],
+      "missing": [],
+      "status": "Pass"
+    },
+    {
+      "label": "研究",
+      "exists": true,
+      "clicked": true,
+      "expected": [
+        "证据研究",
+        "研究与政策切片",
+        "报告清单",
+        "报告验证"
+      ],
+      "missing": [],
+      "status": "Pass"
+    },
+    {
+      "label": "持仓",
+      "exists": true,
+      "clicked": true,
+      "expected": [
+        "持仓复核",
+        "订单意图"
+      ],
+      "missing": [],
+      "status": "Pass"
+    },
+    {
+      "label": "策略实验室",
+      "exists": true,
+      "clicked": true,
+      "expected": [
+        "策略实验室",
+        "单标的回测",
+        "参数扫描",
+        "盘感训练"
+      ],
+      "missing": [],
+      "status": "Pass"
+    },
+    {
+      "label": "数据与系统",
+      "exists": true,
+      "clicked": true,
+      "expected": [
+        "数据治理",
+        "数据中心",
+        "隐私边界"
+      ],
+      "missing": [],
+      "status": "Pass"
+    }
+  ],
+  "retired_text_absent": true,
+  "visible_contract": {
+    "has_pfi": true,
+    "has_six_entries": true,
+    "has_market_feel_training": true,
+    "has_backtest": true,
+    "has_no_live_trading_boundary": true
+  },
+  "screenshot": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/PFI/data/systemAudit/PFIManualNavigationAcceptance_latest.png"
+}

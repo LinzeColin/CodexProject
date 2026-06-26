@@ -1,0 +1,4 @@
+date,type,title,summary,impact,related_symbols,industry,source_name,source_url
+2026-06-03,news,AI算力链订单延续增长,多家服务器与芯片链公司披露在手订单保持增长。,positive,"DEMO_AI;DEMO_SEMI",计算机,Sample News,https://example.com/news/ai-orders
+2026-06-03,announcement,消费龙头发布回购计划,公司公告拟回购部分股份用于员工激励。,positive,DEMO_CONSUMER,食品饮料,Sample Announcement,https://example.com/announcements/consumer-buyback
+2026-06-03,macro,制造业景气度边际改善,高频数据显示制造业订单与开工率较上周回升。,neutral,"DEMO_SEMI;DEMO_AI",宏观,Sample Macro,https://example.com/macro/manufacturing

@@ -1,0 +1,34 @@
+{
+  "schema": "PFIOSWebShellVisualBaselineV1",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 960,
+      "expected_regions": ["top-bar", "side-nav", "workspace", "evidence-drawer"]
+    },
+    {
+      "name": "tablet",
+      "width": 1024,
+      "height": 768,
+      "expected_regions": ["top-bar", "side-nav", "workspace"]
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "expected_regions": ["top-bar", "side-nav", "workspace"]
+    }
+  ],
+  "default_theme": "light",
+  "themes": ["light", "dark"],
+  "min_click_target_px": 44,
+  "layout": {
+    "desktop_grid_columns": ["212px", "minmax(0, 1fr)", "320px"],
+    "top_bar_min_height_px": 64,
+    "drawer_width_px": 320
+  },
+  "required_states": ["ready", "pressed", "loading", "stepped", "background", "error", "success"],
+  "forbidden_ui_text_fragments": ["retired_value_ledger_label"],
+  "screenshot_artifact_prefix": "pfi-web-shell"
+}

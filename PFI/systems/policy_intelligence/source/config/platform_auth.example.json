@@ -1,0 +1,72 @@
+{
+  "platforms": {
+    "bilibili": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/bilibili_cookie.txt",
+      "allowed_capabilities": ["video_detail", "public_subtitle"]
+    },
+    "douyin": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/douyin_cookie.txt",
+      "validation_url": "https://www.douyin.com/user/self",
+      "success_markers": ["关注", "获赞"],
+      "login_required_markers": ["登录", "验证码"],
+      "captcha_markers": ["安全验证", "captcha"],
+      "allowed_capabilities": ["search", "video_detail", "comments", "author_profile"]
+    },
+    "kuaishou": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/kuaishou_cookie.txt",
+      "validation_url": "https://www.kuaishou.com/",
+      "success_markers": ["快手", "关注"],
+      "login_required_markers": ["登录", "注册"],
+      "captcha_markers": ["安全验证", "验证码"],
+      "allowed_capabilities": ["search", "video_detail", "comments", "author_profile"]
+    },
+    "weibo": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/weibo_cookie.txt",
+      "validation_url": "https://weibo.com/",
+      "success_markers": ["微博", "首页"],
+      "login_required_markers": ["登录", "账号"],
+      "captcha_markers": ["安全验证", "验证码"],
+      "allowed_capabilities": ["search", "post_detail", "comments", "author_profile"]
+    },
+    "zhihu": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/zhihu_cookie.txt",
+      "validation_url": "https://www.zhihu.com/",
+      "success_markers": ["知乎", "首页"],
+      "login_required_markers": ["登录", "注册"],
+      "captcha_markers": ["captcha", "验证码"],
+      "allowed_capabilities": ["search", "article_detail", "answer_detail", "author_profile"]
+    },
+    "wechat": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/wechat_cookie.txt",
+      "validation_url": "https://weixin.sogou.com/",
+      "success_markers": ["微信", "公众号"],
+      "login_required_markers": ["登录", "账号"],
+      "captcha_markers": ["安全验证", "验证码"],
+      "allowed_capabilities": ["article_detail", "author_profile"]
+    },
+    "xiaohongshu": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/xiaohongshu_cookie.txt",
+      "validation_url": "https://www.xiaohongshu.com/",
+      "success_markers": ["小红书", "发现"],
+      "login_required_markers": ["登录", "注册"],
+      "captcha_markers": ["安全验证", "验证码"],
+      "allowed_capabilities": ["search", "note_detail", "comments", "author_profile"]
+    },
+    "toutiao": {
+      "auth_method": "cookie_file",
+      "cookie_file": "/secure/path/cookies/toutiao_cookie.txt",
+      "validation_url": "https://www.toutiao.com/",
+      "success_markers": ["今日头条", "头条"],
+      "login_required_markers": ["登录", "注册"],
+      "captcha_markers": ["安全验证", "验证码"],
+      "allowed_capabilities": ["search", "article_detail", "comments", "author_profile"]
+    }
+  }
+}

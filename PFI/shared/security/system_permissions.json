@@ -1,0 +1,114 @@
+{
+  "schema_version": "2026-06-15.v1",
+  "purpose": "Fail-closed cross-system permission matrix for PFI workspace orchestration.",
+  "default": {
+    "decision": "deny",
+    "reason": "no matching permission rule",
+    "execute_requires_approval_id": true
+  },
+  "systems": {
+    "PFI": {
+      "role": "mother_system",
+      "public_repo_safe": true
+    },
+    "finance_ledger": {
+      "role": "child_system",
+      "public_repo_safe": false,
+      "private_data": ["raw bills", "ledger sqlite", "transaction details"]
+    },
+    "industry_research": {
+      "role": "child_system",
+      "public_repo_safe": false,
+      "private_data": ["holdings", "Alipay confirmations", "broker-adjacent local state"]
+    },
+    "policy_intelligence": {
+      "role": "child_system",
+      "public_repo_safe": false,
+      "private_data": ["API keys", "platform auth", "cookies", "Chrome profile state"]
+    },
+    "IndependentValidation": {
+      "role": "worker_child_system",
+      "public_repo_safe": true
+    }
+  },
+  "rules": [
+    {
+      "id": "pfi_os_to_finance_ledger_read_write",
+      "source_system": "PFI",
+      "target_system": "finance_ledger",
+      "actions": ["read", "write", "sync", "health"],
+      "scopes": ["ledger.read", "ledger.write", "report.read", "report.write", "artifact.read", "artifact.write"],
+      "allow_execute": false,
+      "notes": "PFI may coordinate ledger-domain artifacts, but execution still requires a separate approved local run."
+    },
+    {
+      "id": "pfi_os_to_industry_research_read_write",
+      "source_system": "PFI",
+      "target_system": "industry_research",
+      "actions": ["read", "write", "sync", "health"],
+      "scopes": ["research.read", "research.write", "validation.read", "validation.write", "report.read", "report.write", "artifact.read", "artifact.write"],
+      "allow_execute": false
+    },
+    {
+      "id": "pfi_os_to_policy_intelligence_read_write",
+      "source_system": "PFI",
+      "target_system": "policy_intelligence",
+      "actions": ["read", "write", "sync", "health"],
+      "scopes": ["policy.read", "policy.write", "source_log.read", "source_log.write", "report.read", "report.write", "artifact.read", "artifact.write"],
+      "allow_execute": false
+    },
+    {
+      "id": "pfi_os_to_child_health_execute",
+      "source_system": "PFI",
+      "target_system": "IndependentValidation",
+      "actions": ["health", "status", "sync"],
+      "scopes": ["system.health", "system.status", "system.sync"],
+      "allow_execute": true,
+      "notes": "Still requires PFI_ORCHESTRATOR_EXECUTE_ALLOWED and an approval_id."
+    },
+    {
+      "id": "finance_ledger_to_pfi_os_publish_only",
+      "source_system": "finance_ledger",
+      "target_system": "PFI",
+      "actions": ["write", "sync"],
+      "scopes": ["report.write", "artifact.write", "manual_review_queue.write"],
+      "allow_execute": false
+    },
+    {
+      "id": "industry_research_to_pfi_os_publish_only",
+      "source_system": "industry_research",
+      "target_system": "PFI",
+      "actions": ["read", "write", "sync"],
+      "scopes": ["validation_task.write", "pfi_os_result.read", "report.write", "artifact.write"],
+      "allow_execute": false
+    },
+    {
+      "id": "policy_intelligence_to_pfi_os_publish_only",
+      "source_system": "policy_intelligence",
+      "target_system": "PFI",
+      "actions": ["write", "sync"],
+      "scopes": ["policy_event.write", "source_log.write", "report.write", "quality_gate.write"],
+      "allow_execute": false
+    }
+  ],
+  "explicit_denials": [
+    {
+      "source_system": "finance_ledger",
+      "target_system": "policy_intelligence",
+      "scopes": ["policy.write"],
+      "reason": "ledger subsystem must not write policy domain state"
+    },
+    {
+      "source_system": "industry_research",
+      "target_system": "finance_ledger",
+      "scopes": ["ledger.write"],
+      "reason": "industry research must not write ledger domain state"
+    },
+    {
+      "source_system": "*",
+      "target_system": "*",
+      "scopes": ["broker.order.submit", "payment.submit", "bet.submit"],
+      "reason": "real execution is outside PFI public automation boundary"
+    }
+  ]
+}

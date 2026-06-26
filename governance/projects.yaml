@@ -92,8 +92,8 @@ projects:
     ci_mode: "required"
     migration:
       version: "lean-v2"
-  - project_id: "PFI_BIG_DATA_SIMULATOR"
-    path: "PFI/大数据模拟器"
+  - project_id: "PFI"
+    path: "PFI"
     ci_mode: "required"
     migration:
       version: "lean-v2"

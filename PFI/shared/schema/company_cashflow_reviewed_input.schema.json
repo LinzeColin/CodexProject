@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/PFI/shared/schema/company_cashflow_reviewed_input.schema.json",
+  "title": "PFI Company CashFlow Reviewed Input",
+  "description": "Public contract for local reviewed Company CashFlow input. Real inputs should stay under data/private/cashflow and must not be committed.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["entry_date", "direction", "category", "amount", "review_status"],
+    "additionalProperties": true,
+    "properties": {
+      "entry_id": {"type": "string"},
+      "entry_date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+      "direction": {"type": "string", "enum": ["Inflow", "Outflow", "BalanceSnapshot", "Receivable", "Payable"]},
+      "category": {
+        "type": "string",
+        "enum": [
+          "SalesRevenue",
+          "ServiceRevenue",
+          "OwnerCapital",
+          "Tax",
+          "Salary",
+          "Vendor",
+          "Software",
+          "Marketing",
+          "Rent",
+          "Compliance",
+          "Debt",
+          "Other"
+        ]
+      },
+      "amount": {"type": "number", "exclusiveMinimum": 0},
+      "currency": {"type": "string", "minLength": 1, "maxLength": 8},
+      "account": {"type": "string"},
+      "counterparty": {"type": "string"},
+      "description": {"type": "string"},
+      "evidence_link": {"type": "string"},
+      "evidence_path": {"type": "string"},
+      "review_status": {"type": "string", "enum": ["PendingReview", "Reviewed", "Rejected"]},
+      "recurring": {"type": "boolean"},
+      "notes": {"type": "string"}
+    }
+  }
+}
