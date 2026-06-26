@@ -21,11 +21,11 @@
 - 当前分支阶段：`S2PC`
 - 当前任务：`S2PCT02`
 - 进度：`80.95%`
-- 功能数量：`10`
+- 功能数量：`11`
 - 当前阻断：无公开阻断；Stage 2 最终门仍未通过
 - 下一门禁：`S2PC-GATE-V7-2-REVALIDATION`
 - 下一候选任务：`S2PCT02 Science 主刊元数据影子证据`
-- 证据引用数量：`18`
+- 证据引用数量：`19`
 - 路线图测试命令数量：`10`
 - 路线图门禁数量：`5`
 - 证据状态：已抽取
@@ -44,6 +44,7 @@
 | FEAT-ADP-008 | Stage 2 顶刊影子来源证据 | 已完成 | Nature 顶刊元数据影子证据已完成；正式 D2 来源验收和 Stage 2 生产仍被历史问题和最终门阻断。 | 已抽取 |
 | FEAT-ADP-009 | 精简治理与中文入口 | 拟议 | 把已有治理事实压缩为少量规范来源和中文入口，不把治理计算搬进每次开发动作。 | 拟议 |
 | FEAT-ADP-010 | GitHub 中文用户中心与一看三查 | 已完成 | 在 `arxiv-daily-push/用户中心/` 提供一看三查、已发送/未发送/排队/已讲解、复习行动与收益、关键结论与用户决策、路线图与停止门、人类可读信息索引；本机运行文件只作为证据来源。 | 已抽取 |
+| FEAT-ADP-011 | 长期邮件发送状态模板 | 已完成 | `邮件发送与队列状态.md` 改为长期上线口径，包含今日已发送/总应发送、历史发送记录、邮件发送模板链接、截至今日候选队列、内容账本解释和持续更新规则。 | 已抽取 |
 
 ## V7.2 CURRENT 产品合同
 
@@ -103,3 +104,4 @@
 | EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
 | EVID-REVIEW9-S5PBT05-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json | PROPOSED |
 | EVID-ADP-USER-CENTER-READABLE-CN | manifest | governance/run_manifests/ADP-USER-CENTER-READABLE-CN-20260626.json | 已抽取 |
+| EVID-ADP-MAIL-STATUS-LONGTERM-TEMPLATE | manifest | governance/run_manifests/ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626.json | 已抽取 |
