@@ -20,14 +20,21 @@ Read the PFI-001 contracts before new development:
 | PFI-goal matrix | `docs/development/PFI_GOAL_GATE_MATRIX.md` |
 | Reproducible environment | `docs/development/PFI_REPRODUCIBLE_ENV.md` |
 | PFI-003 durable job store | `docs/development/PFI003_DURABLE_JOB_STORE.md` |
+| PFI V0.2 Stage 0 compatibility audit | `docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md` |
 | Legacy migration record | `docs/archive/legacy-migration.md` |
 
 PFI-002 has retired the old value-ledger product surface from active code,
 scripts, tests, navigation, command center output, and formal docs. New work
-must follow PFI-first constraints: one PFI OS
-entry, six primary workspaces, strategy backtesting as a core workflow, market
+must follow PFI-first constraints: one PFI OS entry, the PFI V0.2 target
+8-entry IA, the current 6-workspace Web Shell kept as a compatibility shell
+until Stage 1 UI migration, strategy backtesting as a core workflow, market
 feel training retained as a Strategy Lab training mode, no autonomous live
 trading, and no private runtime data in public Git.
+
+PFI V0.2 Stage 0 is closed by the compatibility contract in
+`docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`: existing entries remain
+accessible, `PFI/大数据模拟器` maps to `投资管理 > 策略实验室 / 大数据模拟器`,
+and the active runtime paths are not moved.
 
 `PFI_OS` 是主系统总入口，macOS 应用显示为 `PFI_OS`。PFIOS 是其中的量化研究与回测主入口，并继续承接研究总线、持仓、报告、独立验证和跨系统证据流。
 

@@ -1,6 +1,6 @@
 # PFI OS Handoff
 
-Last updated: 2026-06-20 Australia/Sydney
+Last updated: 2026-06-27 Australia/Sydney
 
 This repository is the current handoff surface for PFI OS. Treat files in
 this checkout as the source of truth, then verify with local commands before
@@ -8,9 +8,21 @@ changing code or running heavier acceptance gates.
 
 ## Current Objective
 
-Continue the controlled PFI OS rebuild after the Phase 0 transition contracts.
-The active product is a local-first, single-user, research and
-decision-support operating system for personal financial intelligence.
+Continue the controlled PFI OS rebuild under PFI V0.2. Stage 0 is the current
+compatibility audit and boundary lock. The active product is a local-first,
+single-user, research and decision-support operating system for personal
+financial intelligence.
+
+PFI V0.2 Stage 0 source of truth:
+
+- `docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`
+- `src/pfi_os/ui_contracts/pfi_v02_stage0.py`
+- `tests/contract/test_pfi_v02_stage0_compatibility.py`
+
+Stage 0 locks this rule: v0.2 target IA has eight first-level entries, while
+the current six Web Shell entries remain accessible as compatibility aliases
+until Stage 1 UI migration. `PFI/大数据模拟器` maps to
+`投资管理 > 策略实验室 / 大数据模拟器`. Active runtime paths are not moved.
 
 Current sequence:
 

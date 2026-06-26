@@ -1,10 +1,23 @@
 # PFI OS Information Architecture
 
-Version: PFI-001
+Version: PFI V0.2 Stage 0 compatibility baseline
 
 ## L1 Workspaces
 
-The PFI OS primary navigation is fixed to exactly six workspaces:
+PFI V0.2 target product navigation is fixed to exactly eight first-level
+entries:
+
+1. 首页总览
+2. 账户与资产
+3. 账本流水
+4. 投资管理
+5. 消费管理
+6. 数据源与同步
+7. 建议与复盘
+8. 报告与洞察
+
+The current Web Shell still exposes exactly six compatibility workspaces until
+the Stage 1 UI migration is implemented:
 
 1. 首页
 2. 市场
@@ -13,9 +26,29 @@ The PFI OS primary navigation is fixed to exactly six workspaces:
 5. 策略实验室
 6. 数据与系统
 
+PFI V0.2 Stage 0 keeps every current entry accessible and maps it into the
+eight-entry target model. The compatibility source of truth is
+`docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`.
+
 Do not add Assistant, notifications, task center, global search, evidence
 viewer, settings, ResearchBus, workers, model versions, report center, cost
-accounting, cashflow, or consumption as primary navigation items.
+accounting, cashflow, consumption, Alpha, system/development, or any rejected
+Alpha variant as primary navigation items.
+
+
+## V0.2 Compatibility Mapping
+
+| Current compatibility workspace | V0.2 target entry |
+| --- | --- |
+| 首页 | 首页总览 |
+| 市场 | 投资管理 > 市场观察 |
+| 研究 | 报告与洞察 |
+| 持仓 | 账户与资产 / 投资管理 |
+| 策略实验室 | 投资管理 > 策略实验室 |
+| 数据与系统 | 数据源与同步 |
+
+`PFI/大数据模拟器` and any `qbvs/` runtime found in another checkout must remain
+accessible and map to `投资管理 > 策略实验室 / 大数据模拟器`.
 
 
 ## L2 Structure

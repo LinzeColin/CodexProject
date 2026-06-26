@@ -38,13 +38,21 @@ def test_pfi_constitution_sets_product_boundaries():
     assert "manual_review_queue" in text
 
 
-def test_pfi_information_architecture_has_exact_six_primary_workspaces():
+def test_pfi_information_architecture_has_v02_target_and_six_compat_workspaces():
     text = _read("docs/product/PFI_OS_INFORMATION_ARCHITECTURE.md")
-    expected = ["首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"]
+    v02_target = ["首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"]
+    current_compatibility = ["首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"]
 
-    for index, workspace in enumerate(expected, start=1):
+    for index, workspace in enumerate(v02_target, start=1):
         assert f"{index}. {workspace}" in text
 
+    for index, workspace in enumerate(current_compatibility, start=1):
+        assert f"{index}. {workspace}" in text
+
+    assert "PFI V0.2 Stage 0" in text
+    assert "docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md" in text
+    assert "PFI/大数据模拟器" in text
+    assert "投资管理 > 策略实验室 / 大数据模拟器" in text
     assert "ResearchBus is an internal" in text
     assert "训练模式" in text
     assert "Market-feel training lives under 训练模式" in text

@@ -1,5 +1,28 @@
 # PFIOS Plans
 
+## PFI V0.2 Stage 0 Compatibility Lock
+
+PFI V0.2 Stage 0 is complete when
+`docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md` and
+`tests/contract/test_pfi_v02_stage0_compatibility.py` pass together. The Stage
+0 target is compatibility audit and boundary lock only: current entries remain
+accessible, v0.2 target IA becomes the future product priority, and active
+runtime paths are not moved.
+
+Stage 0 target IA:
+
+1. 首页总览
+2. 账户与资产
+3. 账本流水
+4. 投资管理
+5. 消费管理
+6. 数据源与同步
+7. 建议与复盘
+8. 报告与洞察
+
+Current Web Shell 6-workspace navigation remains a compatibility shell until
+Stage 1. `PFI/大数据模拟器` maps to `投资管理 > 策略实验室 / 大数据模拟器`.
+
 ## PFI-001 Active Transition Plan
 
 Current approved direction: controlled migration from legacy `PFI_OS` /
@@ -48,7 +71,8 @@ Execution order:
 Current PFI decisions:
 
 - PFI OS is the target product; PFI_OS is legacy input.
-- Primary navigation is fixed to six workspaces: 首页, 市场, 研究, 持仓, 策略实验室, 数据与系统.
+- PFI V0.2 target primary navigation is fixed to eight entries: 首页总览, 账户与资产, 账本流水, 投资管理, 消费管理, 数据源与同步, 建议与复盘, 报告与洞察.
+- Current Web Shell navigation remains six compatibility workspaces: 首页, 市场, 研究, 持仓, 策略实验室, 数据与系统.
 - Strategy backtesting is a core workflow, not a legacy side page.
 - Market-feel training is retained as `策略实验室 -> 训练模式`.
 - ResearchBus becomes an internal event/workflow compatibility layer, not a second user-facing product or fact source.
