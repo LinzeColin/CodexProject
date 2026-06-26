@@ -613,6 +613,23 @@ def get_entity_empire(
         raise translate_repository_error(exc) from exc
 
 
+@router.get("/entities/{entityId}/supply-chain")
+def get_entity_supply_chain(
+    entityId: UUID,
+    repository: RepositoryDependency,
+    as_of: Annotated[datetime | None, Query()] = None,
+    profile: Annotated[UUID | None, Query()] = None,
+) -> dict[str, Any]:
+    try:
+        return repository.get_entity_supply_chain(
+            entity_id=entityId,
+            as_of=as_of,
+            profile_id=profile,
+        )
+    except RepositoryError as exc:
+        raise translate_repository_error(exc) from exc
+
+
 @router.get("/industries")
 def list_industries(
     repository: RepositoryDependency,

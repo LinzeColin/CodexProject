@@ -11,6 +11,7 @@ project_id: "EEI"
 # 2026-06-27 audit: T1303/A204-A205 operator input validator contracts change no formula expressions, weights, thresholds or extraction logic.
 # 2026-06-27 audit: T1303/A204-A205 operator input receipt ledger persistence changes no formula expressions, weights, thresholds or extraction logic.
 # 2026-06-27 audit: T1303/A204-A205 operator receipt ledger frontend readback changes no formula expressions, weights, thresholds or extraction logic.
+# 2026-06-27 audit: T502/A064-A066 supply-chain stage view changes API/UI contract and unknown disclosure only; FORM-005 expression, weights, thresholds and extraction logic are unchanged.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"
@@ -292,9 +293,13 @@ formulas:
     test_refs:
       - "EEI/scripts/validate_governance.py:108-121"
       - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/tests/integration/test_database_migrations.py"
     evidence_refs:
       - "EEI/data/formula_registry.csv:8"
       - "EEI/data/formula_registry.csv"
+      - "EEI/artifacts/tests/a065/t502_supply_chain_edge_metadata_contract.json"
+      - "EEI/artifacts/tests/a066/t502_supply_chain_unknowns_contract.json"
     unknown_task_ids: []
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-SC-001"]

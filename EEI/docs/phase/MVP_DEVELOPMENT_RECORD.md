@@ -7349,3 +7349,46 @@ Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
 ### Rollback
 
 - Revert ledger helpers, API route changes, OpenAPI schema, focused tests, this record and companion governance sync; preserve any real signed operator files under `artifacts/operator_inputs/`.
+
+## 2026-06-27 - T502/A064-A066 supply-chain stage view
+
+Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `/v1/entities/{entityId}/supply-chain` backed by `DomainRepository.get_entity_supply_chain`.
+- The API returns `entity-supply-chain-v1` with ordered stages, upstream/downstream summary, edge metadata, evidence counts and explicit unknown fields.
+- The home workspace now has `supply-chain-stage-panel` with local fixture fallback and server hydration through `loadSupplyChain`.
+- FUN-EXP-02 implementation status moved from `NOT_STARTED` to `PARTIAL`; T502 and A064-A066 are marked `DONE`.
+
+### Acceptance Mapping
+
+- T502 -> A064/A065/A066.
+- T507/A068, A202, A209, A210, A026/A027, A204/A205 and MVP release readiness remain open.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-t502-pycache .venv/bin/python -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `RUFF_CACHE_DIR=/private/tmp/eei-t502-ruff .venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/home.spec.ts --grep "supply-chain ordered" --workers=1`: PASS, `1/1`.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-t502-pycache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py -p no:cacheprovider`: PASS collection with `2 skipped` because this host has no PostgreSQL/Docker.
+
+### Evidence
+
+- `artifacts/tests/a064/t502_supply_chain_stage_view_contract.json`
+- `artifacts/tests/a065/t502_supply_chain_edge_metadata_contract.json`
+- `artifacts/tests/a066/t502_supply_chain_unknowns_contract.json`
+- `tests/e2e/home.spec.ts`
+- `tests/integration/test_database_migrations.py`
+- `specs/api_contract.yaml`
+
+### Model And Parameter Boundary
+
+- Added `PARAM-098` for `supply_chain.entity_supply_chain.schema_version=entity-supply-chain-v1`.
+- No active scoring formula, weight, threshold, missing policy or model profile changed.
+
+### Rollback
+
+- Revert the T502 API route/repository methods, frontend supply-chain panel/client additions, OpenAPI schema, E2E/integration assertions, A064-A066 artifacts and companion governance rows.

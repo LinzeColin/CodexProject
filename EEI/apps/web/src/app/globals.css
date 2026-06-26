@@ -579,6 +579,74 @@ dd {
   font-weight: 680;
 }
 
+.supplyChainPanel {
+  border-color: #b7d6ca;
+  background: #f4fbf7;
+}
+
+.supplyChainStats,
+.supplyChainEdgeMetadata {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.supplyChainStats div,
+.supplyChainEdgeMetadata div {
+  min-width: 0;
+  border: 1px solid #c8ded4;
+  border-radius: 7px;
+  background: #ffffff;
+  padding: 7px 8px;
+}
+
+.supplyChainStats dt,
+.supplyChainEdgeMetadata dt {
+  color: #38624e;
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.supplyChainStats dd,
+.supplyChainEdgeMetadata dd {
+  margin: 3px 0 0;
+  color: #173f30;
+  font-size: 12px;
+  font-weight: 720;
+  overflow-wrap: anywhere;
+}
+
+.supplyChainPanel > .supplyStageList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.supplyChainPanel > .supplyStageList span {
+  min-width: 0;
+  border: 1px solid #c8ded4;
+  border-radius: 7px;
+  background: #ffffff;
+  padding: 6px 8px;
+  color: #173f30;
+  overflow-wrap: anywhere;
+}
+
+.supplyChainPanel > .supplyChainUnknowns {
+  display: grid;
+  gap: 4px;
+  border-left: 4px solid #2a7a5b;
+  background: #ffffff;
+  padding: 8px 10px;
+}
+
+.supplyChainPanel > .supplyChainUnknowns small {
+  color: #38624e;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .modelPreviewActions button {
   min-height: 32px;
   border: 1px solid #b9c9f5;

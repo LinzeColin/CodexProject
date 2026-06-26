@@ -47,9 +47,11 @@ import {
   loadCatalogInventory,
   loadEvidenceDetail,
   loadScoreExplanation,
+  loadSupplyChain,
   type CatalogInventoryRecord,
   type EvidenceDetailRecord,
-  type ScoreExplanationRecord
+  type ScoreExplanationRecord,
+  type SupplyChainRecord
 } from "./production-data-client";
 import { useAnalysisContext } from "./use-analysis-context";
 import {
@@ -996,6 +998,142 @@ function fixtureRenderEdge(edge: MapEdge, observedAt: string): GraphRenderEdge {
   };
 }
 
+function stageTokens(value: string) {
+  return value.match(/SC-\d{2}/g) ?? [];
+}
+
+function chainSideForFixtureEdge(edge: GraphRenderEdge, nodeByKey: Map<NodeKey, MapNode>) {
+  const fromNode = isNodeKey(edge.from) ? nodeByKey.get(edge.from) : undefined;
+  const toNode = isNodeKey(edge.to) ? nodeByKey.get(edge.to) : undefined;
+  if (fromNode?.zone === "upstream" || toNode?.zone === "upstream") return "upstream";
+  if (
+    fromNode?.zone === "downstream" ||
+    toNode?.zone === "downstream" ||
+    fromNode?.zone === "infrastructure" ||
+    toNode?.zone === "infrastructure"
+  ) {
+    return "downstream";
+  }
+  return "midstream";
+}
+
+function buildLocalSupplyChainRecord(
+  focusEntityId: string,
+  focusName: string,
+  edges: GraphRenderEdge[],
+  nodeByKey: Map<NodeKey, MapNode>,
+  asOf: string
+): SupplyChainRecord {
+  const supplyEdges = edges.filter((edge) => edge.lens === "supply_chain");
+  const mappedEdges: SupplyChainRecord["edges"] = supplyEdges.map((edge) => {
+    const [stageFrom = null, stageTo = null] = stageTokens(edge.stage);
+    const subjectNode = isNodeKey(edge.from) ? nodeByKey.get(edge.from) : undefined;
+    const objectNode = isNodeKey(edge.to) ? nodeByKey.get(edge.to) : undefined;
+    const tier = edge.from === "cloud" ? "unknown" : "direct";
+    const unknownFields = ["amount", "capacity", "geography"];
+    if (tier === "unknown") unknownFields.push("tier");
+    return {
+      id: edge.id,
+      subject: {
+        id: isFocusKey(edge.from) ? focusEntityIds[edge.from] : edge.from,
+        canonical_name: subjectNode?.label ?? edge.from,
+        entity_type: "fixture_entity"
+      },
+      object: {
+        id: isFocusKey(edge.to) ? focusEntityIds[edge.to] : edge.to,
+        canonical_name: objectNode?.label ?? edge.to,
+        entity_type: "fixture_entity"
+      },
+      relationship_type: edge.label.replaceAll(" ", "_"),
+      relationship_family: "supply_chain_operations",
+      status: "fixture",
+      stage_from: stageFrom,
+      stage_from_name: stageFrom ?? "Unknown stage",
+      stage_to: stageTo,
+      stage_to_name: stageTo ?? "Unknown stage",
+      chain_side: chainSideForFixtureEdge(edge, nodeByKey),
+      tier,
+      materiality: "fixture",
+      substitutability: "unknown",
+      geography: "unknown",
+      capacity: "unknown",
+      amount: "unknown",
+      time: { observed_at: `${asOf}T00:00:00Z`, valid_from: null, valid_to: null },
+      evidence_count: edge.evidenceCount,
+      unknown_fields: unknownFields,
+      synthetic: true,
+      fixture_notice: edge.fixtureNotice
+    };
+  });
+  const unknowns = mappedEdges.flatMap((edge) =>
+    edge.unknown_fields.map((field) => ({
+      relationship_id: edge.id,
+      field,
+      status: "unknown" as const,
+      message: `${field} is unknown for ${edge.subject.canonical_name} -> ${edge.object.canonical_name}; treat unknown as unknown, not zero.`
+    }))
+  );
+  const chainStages = stageRows.map((stage, index) => {
+    const touchingEdges = mappedEdges.filter(
+      (edge) => edge.stage_from === stage.id || edge.stage_to === stage.id
+    );
+    return {
+      stage_id: stage.id,
+      stage_order: (index + 1) * 10,
+      slug: stage.name.toLowerCase().replaceAll(" ", "-").replaceAll("/", "-"),
+      name_zh: stage.name,
+      name_en: stage.name,
+      default_direction: stage.side === "focus" ? "midstream" : stage.side,
+      relationship_count: touchingEdges.length,
+      upstream_edge_count: touchingEdges.filter((edge) => edge.chain_side === "upstream").length,
+      downstream_edge_count: touchingEdges.filter((edge) => edge.chain_side === "downstream")
+        .length,
+      unknown_count: touchingEdges.filter((edge) => edge.unknown_fields.length > 0).length
+    };
+  });
+  const upstreamCount = mappedEdges.filter((edge) => edge.chain_side === "upstream").length;
+  const downstreamCount = mappedEdges.filter((edge) => edge.chain_side === "downstream").length;
+  return {
+    schema_version: "entity-supply-chain-v1",
+    as_of: `${asOf}T00:00:00Z`,
+    focus: { id: focusEntityId, canonical_name: focusName, entity_type: "legal_entity" },
+    directional_summary: {
+      upstream_edge_count: upstreamCount,
+      downstream_edge_count: downstreamCount,
+      supports_upstream_downstream: upstreamCount > 0 && downstreamCount > 0
+    },
+    chain_stages: chainStages,
+    edges: mappedEdges,
+    unknowns,
+    coverage: {
+      ordered_stage_count: chainStages.length,
+      covered_stage_count: chainStages.filter((stage) => stage.relationship_count > 0).length,
+      edge_count: mappedEdges.length,
+      evidence_source_count: mappedEdges.reduce((total, edge) => total + edge.evidence_count, 0),
+      all_edges_have_evidence: mappedEdges.every((edge) => edge.evidence_count > 0),
+      edge_metadata_fields: [
+        "stage_from",
+        "stage_to",
+        "tier",
+        "materiality",
+        "substitutability",
+        "geography",
+        "time",
+        "evidence",
+        "unknowns"
+      ],
+      unknowns_explicit: unknowns.length > 0
+    },
+    content_rules: {
+      unknown_not_zero: true,
+      layout_position_is_not_control: true,
+      synthetic_fixture_not_live_fact: true
+    },
+    data_mode: "synthetic_fixture",
+    fixture_notice: "Synthetic fixture records are explicitly marked and are not live facts."
+  };
+}
+
 function serverGraphRenderNodes(
   graph: ExploreGraphRecord | null,
   focusEntityId: string
@@ -1102,6 +1240,17 @@ function serverNodeStage(entityType: string | undefined, family: string | undefi
 
 function relationshipLabel(value: string) {
   return value.replaceAll("_", " ");
+}
+
+function formatSupplyChainValue(value: unknown) {
+  if (value === null || value === undefined) return "unknown";
+  if (typeof value === "string" || typeof value === "number") return String(value);
+  if (Array.isArray(value)) return value.length > 0 ? `${value.length} item(s)` : "unknown";
+  if (typeof value === "object" && "value" in value) {
+    const item = value as { value?: unknown; unit?: unknown; currency?: unknown; kind?: unknown };
+    return [item.value, item.unit ?? item.currency ?? item.kind].filter(Boolean).join(" ") || "unknown";
+  }
+  return "available";
 }
 
 function drawerFocusableElements(container: HTMLElement | null) {
@@ -1503,6 +1652,17 @@ export default function Home() {
   const [productionEvidenceEndpoint, setProductionEvidenceEndpoint] = useState("");
   const [productionEvidenceDetail, setProductionEvidenceDetail] =
     useState<EvidenceDetailRecord | null>(null);
+  const [productionSupplyChainStatus, setProductionSupplyChainStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionSupplyChainSyncMode, setProductionSupplyChainSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionSupplyChainSyncReason, setProductionSupplyChainSyncReason] =
+    useState("not_synced");
+  const [productionSupplyChainEndpoint, setProductionSupplyChainEndpoint] = useState("");
+  const [productionSupplyChain, setProductionSupplyChain] = useState<SupplyChainRecord | null>(
+    null
+  );
   const [selectedProductionNodeKey, setSelectedProductionNodeKey] = useState("");
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
@@ -1607,6 +1767,22 @@ export default function Home() {
   const fixtureGraphEdges = useMemo(
     () => displayEdges.map((edge) => fixtureRenderEdge(edge, asOf)),
     [asOf, displayEdges]
+  );
+  const localSupplyChainRecord = useMemo(
+    () =>
+      buildLocalSupplyChainRecord(
+        focusEntityIds[focusKey],
+        scenario.heading,
+        fixtureGraphEdges,
+        nodeByKey,
+        asOf
+      ),
+    [asOf, fixtureGraphEdges, focusKey, nodeByKey, scenario.heading]
+  );
+  const supplyChainRecord = productionSupplyChain ?? localSupplyChainRecord;
+  const supplyChainPrimaryEdge = supplyChainRecord.edges[0] ?? null;
+  const supplyChainUnknownFields = Array.from(
+    new Set(supplyChainRecord.unknowns.map((item) => item.field))
   );
   const serverGraphNodes = useMemo(
     () => serverGraphRenderNodes(productionGraph, productionGraphRequest.focus.object_id),
@@ -1851,7 +2027,8 @@ export default function Home() {
     setProductionCatalogStatus("loading-production-data");
     setProductionScoreStatus(candidateId ? "loading-production-data" : "local-fixture");
     setProductionEvidenceStatus(candidateId ? "loading-production-data" : "local-fixture");
-    const [catalogResult, scoreResult, evidenceResult] = await Promise.all([
+    setProductionSupplyChainStatus("loading-production-data");
+    const [catalogResult, scoreResult, evidenceResult, supplyChainResult] = await Promise.all([
       loadCatalogInventory(),
       loadScoreExplanation({
         objectType: "relationship_fact_candidate",
@@ -1862,6 +2039,10 @@ export default function Home() {
         objectType: "relationship_fact_candidate",
         objectId: candidateId,
         limit: 20
+      }),
+      loadSupplyChain({
+        entityId: productionGraphRequest.focus.object_id,
+        profileId: serverModelContext?.active_scoring_profile_version_id
       })
     ]);
 
@@ -1924,6 +2105,26 @@ export default function Home() {
       setProductionEvidenceSyncReason(reason);
       setProductionEvidenceEndpoint(evidenceResult.endpoint);
       setProductionEvidenceStatus("server-hydrated");
+    }
+
+    if (supplyChainResult.mode === "local_fallback") {
+      setProductionSupplyChainSyncMode("local_fallback");
+      setProductionSupplyChainSyncReason(supplyChainResult.reason);
+      setProductionSupplyChainEndpoint("");
+      setProductionSupplyChain(null);
+      setProductionSupplyChainStatus("local-fixture");
+    } else if (supplyChainResult.status === "error") {
+      setProductionSupplyChainSyncMode("server");
+      setProductionSupplyChainSyncReason(supplyChainResult.reason);
+      setProductionSupplyChainEndpoint(supplyChainResult.endpoint);
+      setProductionSupplyChain(null);
+      setProductionSupplyChainStatus("server-error");
+    } else {
+      setProductionSupplyChain(supplyChainResult.record);
+      setProductionSupplyChainSyncMode("server");
+      setProductionSupplyChainSyncReason(reason);
+      setProductionSupplyChainEndpoint(supplyChainResult.endpoint);
+      setProductionSupplyChainStatus("server-hydrated");
     }
   }
 
@@ -2747,6 +2948,9 @@ export default function Home() {
           data-evidence-source-document-count={productionEvidenceDetail?.source_document_count ?? 0}
           data-evidence-sync-mode={productionEvidenceSyncMode}
           data-evidence-sync-reason={productionEvidenceSyncReason}
+          data-supply-chain-endpoint={productionSupplyChainEndpoint || "local"}
+          data-supply-chain-sync-mode={productionSupplyChainSyncMode}
+          data-supply-chain-sync-reason={productionSupplyChainSyncReason}
           data-score-adjusted-score={productionScoreExplanation?.adjusted_score ?? 0}
           data-score-endpoint={productionScoreEndpoint || "local"}
           data-score-evidence-count={productionScoreExplanation?.evidence.length ?? 0}
@@ -2774,7 +2978,8 @@ export default function Home() {
           <div>
             <strong>Production data</strong>
             <span data-testid="production-data-status">
-              {productionCatalogStatus} / {productionScoreStatus} / {productionEvidenceStatus}
+              {productionCatalogStatus} / {productionScoreStatus} / {productionEvidenceStatus} /{" "}
+              {productionSupplyChainStatus}
             </span>
           </div>
           <div>
@@ -2854,6 +3059,119 @@ export default function Home() {
             >
               Load production data
             </button>
+          </div>
+        </section>
+        <section
+          className="modelPreviewPanel supplyChainPanel"
+          data-api-contract="/v1/entities/{entityId}/supply-chain"
+          data-covered-stage-count={supplyChainRecord.coverage.covered_stage_count}
+          data-downstream-edge-count={
+            supplyChainRecord.directional_summary.downstream_edge_count
+          }
+          data-edge-metadata-fields={supplyChainRecord.coverage.edge_metadata_fields.join(",")}
+          data-ordered-stage-count={supplyChainRecord.coverage.ordered_stage_count}
+          data-sync-mode={productionSupplyChainSyncMode}
+          data-sync-reason={productionSupplyChainSyncReason}
+          data-testid="supply-chain-stage-panel"
+          data-unknown-count={supplyChainRecord.unknowns.length}
+          data-unknown-not-zero={String(
+            supplyChainRecord.content_rules.unknown_not_zero === true &&
+              supplyChainRecord.coverage.unknowns_explicit
+          )}
+          data-upstream-edge-count={supplyChainRecord.directional_summary.upstream_edge_count}
+        >
+          <div>
+            <strong>供应链</strong>
+            <span data-testid="supply-chain-sync-status">
+              {productionSupplyChainStatus} / {productionSupplyChainSyncMode} /{" "}
+              {productionSupplyChainSyncReason}
+            </span>
+          </div>
+          <dl className="supplyChainStats" data-testid="supply-chain-directional-contract">
+            <div>
+              <dt>Upstream</dt>
+              <dd data-testid="supply-chain-upstream-count">
+                {supplyChainRecord.directional_summary.upstream_edge_count}
+              </dd>
+            </div>
+            <div>
+              <dt>Downstream</dt>
+              <dd data-testid="supply-chain-downstream-count">
+                {supplyChainRecord.directional_summary.downstream_edge_count}
+              </dd>
+            </div>
+            <div>
+              <dt>Ordered stages</dt>
+              <dd data-testid="supply-chain-ordered-stage-count">
+                {supplyChainRecord.coverage.ordered_stage_count}
+              </dd>
+            </div>
+            <div>
+              <dt>Unknowns</dt>
+              <dd data-testid="supply-chain-unknown-count">{supplyChainRecord.unknowns.length}</dd>
+            </div>
+          </dl>
+          <div className="supplyStageList" data-testid="supply-chain-ordered-stages">
+            {supplyChainRecord.chain_stages.map((stage) => (
+              <span
+                data-relationship-count={stage.relationship_count}
+                data-stage-order={stage.stage_order}
+                data-testid={`supply-chain-stage-${stage.stage_id}`}
+                key={stage.stage_id}
+              >
+                {stage.stage_id} {stage.name_en}
+              </span>
+            ))}
+          </div>
+          {supplyChainPrimaryEdge ? (
+            <dl
+              className="supplyChainEdgeMetadata"
+              data-chain-side={supplyChainPrimaryEdge.chain_side}
+              data-evidence-count={supplyChainPrimaryEdge.evidence_count}
+              data-testid="supply-chain-edge-metadata"
+              data-unknown-fields={supplyChainPrimaryEdge.unknown_fields.join(",")}
+            >
+              <div>
+                <dt>Stage</dt>
+                <dd>
+                  {supplyChainPrimaryEdge.stage_from_name} -{" "}
+                  {supplyChainPrimaryEdge.stage_to_name}
+                </dd>
+              </div>
+              <div>
+                <dt>Tier</dt>
+                <dd>{supplyChainPrimaryEdge.tier}</dd>
+              </div>
+              <div>
+                <dt>Materiality</dt>
+                <dd>{supplyChainPrimaryEdge.materiality}</dd>
+              </div>
+              <div>
+                <dt>Substitutability</dt>
+                <dd>{formatSupplyChainValue(supplyChainPrimaryEdge.substitutability)}</dd>
+              </div>
+              <div>
+                <dt>Geography</dt>
+                <dd>{formatSupplyChainValue(supplyChainPrimaryEdge.geography)}</dd>
+              </div>
+              <div>
+                <dt>Time</dt>
+                <dd>{formatSupplyChainValue(supplyChainPrimaryEdge.time["observed_at"])}</dd>
+              </div>
+              <div>
+                <dt>Evidence</dt>
+                <dd>{supplyChainPrimaryEdge.evidence_count}</dd>
+              </div>
+              <div>
+                <dt>Unknowns</dt>
+                <dd>{supplyChainPrimaryEdge.unknown_fields.join(", ") || "none"}</dd>
+              </div>
+            </dl>
+          ) : null}
+          <div data-testid="supply-chain-unknowns" className="supplyChainUnknowns">
+            <strong>unknown not zero</strong>
+            <span>{supplyChainUnknownFields.join(", ") || "none"}</span>
+            <small>{supplyChainRecord.unknowns[0]?.message ?? "no missing fields"}</small>
           </div>
         </section>
         <div

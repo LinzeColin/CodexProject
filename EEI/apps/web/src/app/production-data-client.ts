@@ -18,6 +18,75 @@ export type CatalogSummaryRecord = {
   export_links: Record<string, string>;
 };
 
+export type SupplyChainStageRecord = {
+  stage_id: string;
+  stage_order: number;
+  slug: string;
+  name_zh: string;
+  name_en: string;
+  default_direction: string;
+  relationship_count: number;
+  upstream_edge_count: number;
+  downstream_edge_count: number;
+  unknown_count: number;
+};
+
+export type SupplyChainEdgeRecord = {
+  id: string;
+  subject: { id: string; canonical_name: string; entity_type: string };
+  object: { id: string; canonical_name: string; entity_type: string };
+  relationship_type: string;
+  relationship_family: string;
+  status: string;
+  stage_from: string | null;
+  stage_from_name: string;
+  stage_to: string | null;
+  stage_to_name: string;
+  chain_side: "upstream" | "downstream" | "midstream" | "unknown";
+  tier: string;
+  materiality: string;
+  substitutability: string | number;
+  geography: string | unknown[];
+  capacity: "unknown" | { value: number; unit: string | null };
+  amount: "unknown" | { value: number; currency: string | null; kind: string | null };
+  time: Record<string, unknown>;
+  evidence_count: number;
+  unknown_fields: string[];
+  synthetic: boolean;
+  fixture_notice: string | null;
+};
+
+export type SupplyChainRecord = {
+  schema_version: "entity-supply-chain-v1";
+  as_of: string;
+  focus: { id: string; canonical_name: string; entity_type: string };
+  directional_summary: {
+    upstream_edge_count: number;
+    downstream_edge_count: number;
+    supports_upstream_downstream: boolean;
+  };
+  chain_stages: SupplyChainStageRecord[];
+  edges: SupplyChainEdgeRecord[];
+  unknowns: {
+    relationship_id: string;
+    field: string;
+    status: "unknown";
+    message: string;
+  }[];
+  coverage: {
+    ordered_stage_count: number;
+    covered_stage_count: number;
+    edge_count: number;
+    evidence_source_count: number;
+    all_edges_have_evidence: boolean;
+    edge_metadata_fields: string[];
+    unknowns_explicit: boolean;
+  };
+  content_rules: Record<string, unknown>;
+  data_mode: string;
+  fixture_notice: string | null;
+};
+
 export type CatalogInventoryRecord = {
   as_of: string;
   catalog_version: string;
@@ -161,6 +230,26 @@ export type EvidenceDetailSyncResult =
       reason: "api_base_missing" | "object_id_missing";
     };
 
+export type SupplyChainSyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: SupplyChainRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing" | "entity_id_missing";
+    };
+
 export function readProductionDataApiBaseUrl() {
   const override = window.localStorage.getItem(PRODUCTION_DATA_API_BASE_STORAGE_KEY)?.trim();
   const sharedOverride = window.localStorage.getItem(SHARED_API_BASE_STORAGE_KEY)?.trim();
@@ -190,6 +279,38 @@ export async function loadCatalogInventory(): Promise<CatalogInventorySyncResult
     return { mode: "server", status: "hydrated", endpoint, record: payload };
   } catch (error) {
     return fetchCatalogErrorResult(endpoint, error);
+  }
+}
+
+export async function loadSupplyChain(input: {
+  entityId?: string | null;
+  profileId?: string | null;
+}): Promise<SupplyChainSyncResult> {
+  if (!input.entityId) {
+    return { mode: "local_fallback", status: "fixture", reason: "entity_id_missing" };
+  }
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const query = input.profileId ? `?profile=${encodeURIComponent(input.profileId)}` : "";
+  const endpoint = `${apiBaseUrl}/v1/entities/${encodeURIComponent(input.entityId)}/supply-chain${query}`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isSupplyChainRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchSupplyChainErrorResult(endpoint, error);
   }
 }
 
@@ -292,6 +413,71 @@ function isCatalogSummaryRecord(value: unknown): value is CatalogSummaryRecord {
   );
 }
 
+function isSupplyChainRecord(value: unknown): value is SupplyChainRecord {
+  if (!isRecord(value) || !isRecord(value.directional_summary) || !isRecord(value.coverage)) {
+    return false;
+  }
+  return (
+    value.schema_version === "entity-supply-chain-v1" &&
+    typeof value.as_of === "string" &&
+    isRecord(value.focus) &&
+    typeof value.focus.id === "string" &&
+    typeof value.focus.canonical_name === "string" &&
+    typeof value.directional_summary.upstream_edge_count === "number" &&
+    typeof value.directional_summary.downstream_edge_count === "number" &&
+    typeof value.directional_summary.supports_upstream_downstream === "boolean" &&
+    Array.isArray(value.chain_stages) &&
+    value.chain_stages.every(isSupplyChainStageRecord) &&
+    Array.isArray(value.edges) &&
+    value.edges.every(isSupplyChainEdgeRecord) &&
+    Array.isArray(value.unknowns) &&
+    typeof value.coverage.ordered_stage_count === "number" &&
+    typeof value.coverage.covered_stage_count === "number" &&
+    typeof value.coverage.edge_count === "number" &&
+    typeof value.coverage.evidence_source_count === "number" &&
+    typeof value.coverage.all_edges_have_evidence === "boolean" &&
+    Array.isArray(value.coverage.edge_metadata_fields) &&
+    typeof value.coverage.unknowns_explicit === "boolean" &&
+    typeof value.data_mode === "string"
+  );
+}
+
+function isSupplyChainStageRecord(value: unknown): value is SupplyChainStageRecord {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.stage_id === "string" &&
+    typeof value.stage_order === "number" &&
+    typeof value.slug === "string" &&
+    typeof value.name_zh === "string" &&
+    typeof value.name_en === "string" &&
+    typeof value.default_direction === "string" &&
+    typeof value.relationship_count === "number" &&
+    typeof value.upstream_edge_count === "number" &&
+    typeof value.downstream_edge_count === "number" &&
+    typeof value.unknown_count === "number"
+  );
+}
+
+function isSupplyChainEdgeRecord(value: unknown): value is SupplyChainEdgeRecord {
+  if (!isRecord(value) || !isRecord(value.subject) || !isRecord(value.object)) return false;
+  return (
+    typeof value.id === "string" &&
+    typeof value.subject.id === "string" &&
+    typeof value.subject.canonical_name === "string" &&
+    typeof value.object.id === "string" &&
+    typeof value.object.canonical_name === "string" &&
+    typeof value.relationship_type === "string" &&
+    typeof value.relationship_family === "string" &&
+    typeof value.status === "string" &&
+    ["upstream", "downstream", "midstream", "unknown"].includes(String(value.chain_side)) &&
+    typeof value.tier === "string" &&
+    typeof value.materiality === "string" &&
+    typeof value.evidence_count === "number" &&
+    Array.isArray(value.unknown_fields) &&
+    typeof value.synthetic === "boolean"
+  );
+}
+
 function isScoreExplanationRecord(value: unknown): value is ScoreExplanationRecord {
   if (!isRecord(value)) return false;
   return (
@@ -355,6 +541,16 @@ function isEvidenceDetailItem(value: unknown): value is EvidenceDetailItem {
 }
 
 function fetchCatalogErrorResult(endpoint: string, error: unknown): CatalogInventorySyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchSupplyChainErrorResult(endpoint: string, error: unknown): SupplyChainSyncResult {
   return {
     mode: "server",
     status: "error",

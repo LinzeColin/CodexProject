@@ -12,6 +12,7 @@ source_policy: "Canonical CodexProject governance source generated from EEI data
 # 2026-06-27 audit: T1303/A204-A205 operator input validator contracts update operational release-gate metadata only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-27 audit: T1303/A204-A205 operator input submission preflight, receipt and receipt ledger add dry-run/hash-bound API intake responses and ledger persistence only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-27 audit: T1303/A204-A205 operator receipt ledger frontend readback binds local artifact fallback and API hydration only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
+# 2026-06-27 audit: T502/A064-A066 supply-chain stage view adds entity-supply-chain-v1 API/UI contracts and PARAM-098 only; supply-chain scoring formula, weights and thresholds are unchanged.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."
@@ -296,7 +297,8 @@ models:
       - "ASM-004"
     formula_ids:
       - "FORM-005"
-    parameter_ids: []
+    parameter_ids:
+      - "PARAM-098"
     inputs:
       - "scoring_object=relationship_path"
       - "formula=F-SC-001"
@@ -311,6 +313,8 @@ models:
       - "EEI/scripts/validate_governance.py:108-121"
       - "EEI/scripts/validate_model_config.py:23-47"
       - "EEI/tests/e2e/state-contract.spec.ts:5"
+      - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/tests/integration/test_database_migrations.py"
     fallback_policy: "Use formula missing_policy; do not coerce unobserved values to zero; keep previous active snapshot if validation or activation fails."
     risk_controls:
       - "Immutable versioning"
@@ -326,6 +330,9 @@ models:
       - "EEI/data/model_registry.csv:6"
       - "EEI/data/model_registry.csv; EEI/data/formula_registry.csv; EEI/data/parameter_catalog.csv"
       - "EEI/data/development_status_ledger.csv:19-29"
+      - "EEI/artifacts/tests/a064/t502_supply_chain_stage_view_contract.json"
+      - "EEI/artifacts/tests/a065/t502_supply_chain_edge_metadata_contract.json"
+      - "EEI/artifacts/tests/a066/t502_supply_chain_unknowns_contract.json"
     unknown_task_ids:
       - "TASK-T1206"
   - model_id: "MOD-006"

@@ -6,11 +6,11 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1303/A204-A205 operator input submission preflight、receipt、receipt ledger 与前端 readback：`/v1/release/operator-input-submission-preflight` 可对已登记的 A202/A210/A026/A027/A209 输入返回 dry-run/manual-command-only validator dispatch plan；`/v1/release/operator-input-submission-receipt` 可在 operator 文件已放置且 hash 匹配时返回 hash-bound receipt 并写入受控 ledger；`/v1/release/operator-input-submission-receipts` 可读回 ledger。`/development-status` 现在显示 Operator Receipt Ledger 面板，默认读取 committed ledger artifact，在配置 `eei.apiBaseUrl.v1` 或 `NEXT_PUBLIC_EEI_API_BASE_URL` 后可 hydrate 真实 API readback 并用 refresh icon 手动刷新。ledger 支持重复相同 receipt 幂等和 `expected_previous_receipt_id` 冲突控制，但仍不写 operator 输入文件、不执行 validators、不关闭 release gate。`/v1/release/operator-input-status` 和 `/development-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
+Owner 视图现在记录 T502/A064-A066 supply-chain stage view：`/v1/entities/{entityId}/supply-chain` 返回 `entity-supply-chain-v1`，包含 ordered stages、upstream/downstream summary、edge metadata、evidence counts 和 explicit unknown-not-zero gaps；首页 `supply-chain-stage-panel` 支持本地 fixture fallback 和配置 API base 后的真实 hydration。`PARAM-098` 只记录该 API schema 版本，`FORM-005` 供应链关键性公式、权重、阈值和 missing policy 不变。T1303 operator input receipt ledger 与 `/development-status` readback 仍保留；`/v1/release/operator-input-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
 
 ## 3. 为什么重要
 
-降低 release gate 状态只存在于原始 artifact 中、操作方误读 A202/A210/A026/A027/A209 缺口、找不到提交后 validator、提交 hash 漂移后继续人工验证，或把 template/status manifest 当成清权证据的风险。
+降低供应链模块只有静态 fixture、没有 API 合同、edge metadata 不完整、unknown 被误读成零、以及操作方把 T502 完成误读为 live supplier publication 或 release readiness 的风险。
 
 ## 4. 需要人类决定什么
 
@@ -31,15 +31,15 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `TASK-T1303`
+- next_task_id: `TASK-T503`
 - responsible_role: `product_owner + data_owner + risk_owner`
-- acceptance_ids: `ACC-A204, ACC-A205`
+- acceptance_ids: `ACC-A069, ACC-A070, ACC-A071`
 - unblock_condition: Provide signed A202/A210/A026/A027/A209 operator inputs under approved `artifacts/operator_inputs/` targets, preserve failed A209 evidence, complete a fresh 24h operator soak to `288/288` successful windows with `0` failed, and pass release-manager/MVP release validation.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (97/97 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (98/98 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -54,46 +54,54 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 |---|---|---|---|---|---|
 | `DEC-EEI-REVIEW8-001` | A: complete 24h soak and gold-set validation before publishing stronger claims | 补齐人工裁决黄金集、24h soak、来源撤回和冲突演练。 | 保持 partial，仅允许内部研究和人工复核。 | 暂停关系发布相关交付声明。 | EEI remains FAILED/PARTIAL and publication readiness stays blocked. |
 
-## 10. Current Blockers
+## 10. T502 Supply-Chain View Status
+
+- task_id: `TASK-T502`
+- status: `DONE`
+- acceptance_ids: `A064, A065, A066`
+- evidence: `artifacts/tests/a064/t502_supply_chain_stage_view_contract.json`, `artifacts/tests/a065/t502_supply_chain_edge_metadata_contract.json`, `artifacts/tests/a066/t502_supply_chain_unknowns_contract.json`
+- non_claim: T502 does not close live supplier publication, A209, A202, A210, A026/A027, A204/A205 or MVP release readiness.
+
+## 11. Current Blockers
 
 1. 24h operator soak evidence
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
 
-## 11. Evidence Required To Unblock
+## 12. Evidence Required To Unblock
 
 - evidence_required: gold-set labels, precision/recall, source coverage, soak manifest
 - principal_risks: source license limits, stale relationships, false relation assertions
 - generated_from_refs: `EEI/docs/governance/ASSURANCE_STATUS.yaml, EEI/docs/governance/delivery_tasks.yaml`
 
-## 12. Model Formula Parameter Change
+## 13. Model Formula Parameter Change
 
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `97`
-- active_parameters: `97`
+- total_parameters: `98`
+- active_parameters: `98`
 - active_values_changed_by_this_view: `0`
 
-## 13. Tests And Acceptance
+## 14. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
+- release_gate: `TASK-T502-SUPPLY-CHAIN-STAGE-VIEW`
 
-## 14. Evidence Freshness
+## 15. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `105`
-- pending_or_stale_events: `126`
+- precommit_pending_events: `106`
+- pending_or_stale_events: `127`
 
-## 15. UNKNOWN
+## 16. UNKNOWN
 
 - unresolved_fact_ids: `8`
 
-## 16. 技术元数据
+## 17. 技术元数据
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
@@ -101,9 +109,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-27T01:17:20+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
+- phase/gate: `D / TASK-T502-SUPPLY-CHAIN-STAGE-VIEW`
 
-## 17. Next Unique Task
+## 18. Next Unique Task
 
-- task_id: `TASK-T1303`
-- reason: Keep missing A202/A210/A026/A027/A209 operator gates visible through API/frontend while A209 continues as a background evidence task
+- task_id: `TASK-T503`
+- reason: Add historical event binding while A209 continues as a background evidence task and external operator inputs remain blocked.

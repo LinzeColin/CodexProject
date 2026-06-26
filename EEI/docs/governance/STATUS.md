@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
-- Models/Formulas/Parameters total: `12 / 12 / 97`
-- Active formulas/parameters: `11 / 97`
-- Machine checked formulas/parameters: `11 / 97`
+- Phase/Gate: `D / TASK-T502-SUPPLY-CHAIN-STAGE-VIEW`
+- Models/Formulas/Parameters total: `12 / 12 / 98`
+- Active formulas/parameters: `11 / 98`
+- Machine checked formulas/parameters: `11 / 98`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
-- Next executable task: `TASK-T1303`
-- Latest non-closure product binding: `EVENT-20260627-022` binds the operator-input submission receipt ledger into `/development-status` with local artifact fallback, real API hydration and refresh control while release readiness remains blocked.
+- Release gate: `TASK-T502-SUPPLY-CHAIN-STAGE-VIEW`
+- Next executable task: `TASK-T503`
+- Latest non-closure product binding: `EVENT-20260627-023` completes T502/A064-A066 supply-chain stage view with `entity-supply-chain-v1`, ordered stages, upstream/downstream counts, edge metadata and explicit unknown-not-zero handling while release readiness remains blocked.
 - Pending/stale events: `126`
 - Tree-bound events: `0`
 - Commit-bound events: `21`

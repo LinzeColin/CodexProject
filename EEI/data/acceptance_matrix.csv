@@ -62,9 +62,9 @@ A060,P0,dossier,"Human summary covers business, group, dependencies, capital, po
 A061,P0,dossier,Company workspace exposes eight required layers,E2E,DONE
 A062,P0,structure,"Corporate structure separates legal group, segment, brand, product and facility",API/UI assertions,DONE
 A063,P0,structure,Commercial empire label does not imply legal control,Content review,DONE
-A064,P0,supply_chain,Supply chain supports upstream/downstream and ordered stage view,E2E,NOT STARTED
-A065,P0,supply_chain,"Supply-chain edge shows stage, tier, materiality, substitutability, geography, time and evidence",E2E/API,NOT STARTED
-A066,P0,supply_chain,"Unknown supplier, amount, tier or capacity remains explicitly unknown",Data/UI test,NOT STARTED
+A064,P0,supply_chain,Supply chain supports upstream/downstream and ordered stage view,E2E,DONE
+A065,P0,supply_chain,"Supply-chain edge shows stage, tier, materiality, substitutability, geography, time and evidence",E2E/API,DONE
+A066,P0,supply_chain,"Unknown supplier, amount, tier or capacity remains explicitly unknown",Data/UI test,DONE
 A067,P0,supply_chain,NVIDIA synthetic scenario spans design/manufacturing/equipment/materials/system/data-center/energy/customer stages,Fixture/E2E,DONE
 A068,P0,supply_chain,User can reroot from NVIDIA fixture to foundry/equipment/material nodes,Critical E2E,NOT STARTED
 A069,P0,capital,"Capital and M&A layers distinguish investment, debt, acquisition, commitment, capex, buyback and dividend semantics",Unit/UI,NOT STARTED

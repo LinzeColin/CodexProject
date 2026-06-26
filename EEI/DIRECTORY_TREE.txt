@@ -97,6 +97,12 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t501_structure_type_separation.json
 │   │   ├── a063
 │   │   │   └── t501_commercial_empire_not_control.json
+│   │   ├── a064
+│   │   │   └── t502_supply_chain_stage_view_contract.json
+│   │   ├── a065
+│   │   │   └── t502_supply_chain_edge_metadata_contract.json
+│   │   ├── a066
+│   │   │   └── t502_supply_chain_unknowns_contract.json
 │   │   ├── a072
 │   │   │   └── t504_strategic_signal_panel_contract.json
 │   │   ├── a119

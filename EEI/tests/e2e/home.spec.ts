@@ -187,6 +187,190 @@ test("shows strategic signal support contradiction alternatives decay and rule v
   );
 });
 
+test("shows supply-chain ordered stages upstream downstream metadata and unknowns", async ({
+  page
+}) => {
+  const apiBaseUrl = "http://127.0.0.1:45321";
+  const stageIds = Array.from({ length: 16 }, (_, index) => {
+    const stageNumber = String(index + 1).padStart(2, "0");
+    return `SC-${stageNumber}`;
+  });
+  await page.route(`${apiBaseUrl}/v1/catalogs`, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      json: {
+        as_of: "2026-06-19T00:00:00Z",
+        catalog_version: "taxonomy-v4.2",
+        catalog_count: 10,
+        source_of_truth_count: 10,
+        total_declared_rows: 363,
+        catalogs: []
+      }
+    });
+  });
+  await page.route(`${apiBaseUrl}/v1/entities/**/supply-chain**`, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      json: {
+        schema_version: "entity-supply-chain-v1",
+        as_of: "2026-06-19T00:00:00Z",
+        focus: {
+          id: "00000000-0000-4000-8000-000000000006",
+          canonical_name: "NVIDIA Corporation",
+          entity_type: "legal_entity"
+        },
+        directional_summary: {
+          upstream_edge_count: 2,
+          downstream_edge_count: 3,
+          supports_upstream_downstream: true
+        },
+        chain_stages: stageIds.map((stageId, index) => ({
+          stage_id: stageId,
+          stage_order: (index + 1) * 10,
+          slug: `stage-${stageId.toLowerCase()}`,
+          name_zh: stageId,
+          name_en: stageId === "SC-12" ? "Customer" : `Stage ${stageId}`,
+          default_direction: index < 7 ? "upstream" : "downstream",
+          relationship_count: stageId === "SC-02" || stageId === "SC-12" ? 1 : 0,
+          upstream_edge_count: stageId === "SC-02" ? 1 : 0,
+          downstream_edge_count: stageId === "SC-12" ? 1 : 0,
+          unknown_count: stageId === "SC-02" ? 1 : 0
+        })),
+        edges: [
+          {
+            id: "rel-supply-metadata-1",
+            subject: {
+              id: "00000000-0000-4000-8000-000000000023",
+              canonical_name: "Synthetic Specialty Materials Co.",
+              entity_type: "legal_entity"
+            },
+            object: {
+              id: "00000000-0000-4000-8000-000000000006",
+              canonical_name: "NVIDIA Corporation",
+              entity_type: "legal_entity"
+            },
+            relationship_type: "material_provider_to",
+            relationship_family: "supply_chain_operations",
+            status: "published",
+            stage_from: "SC-02",
+            stage_from_name: "SC-02 Materials",
+            stage_to: "SC-06",
+            stage_to_name: "SC-06 Manufacturing",
+            chain_side: "upstream",
+            tier: "unknown",
+            materiality: "high",
+            substitutability: 35,
+            geography: ["TW", "US"],
+            capacity: "unknown",
+            amount: "unknown",
+            time: {
+              observed_at: "2026-06-19T00:00:00Z",
+              valid_from: null,
+              valid_to: null
+            },
+            evidence_count: 2,
+            unknown_fields: ["tier", "amount", "capacity"],
+            synthetic: true,
+            fixture_notice: "Synthetic fixture for API hydration test."
+          }
+        ],
+        unknowns: [
+          {
+            relationship_id: "rel-supply-metadata-1",
+            field: "tier",
+            status: "unknown",
+            message: "tier is unknown; treat unknown as unknown, not zero."
+          },
+          {
+            relationship_id: "rel-supply-metadata-1",
+            field: "amount",
+            status: "unknown",
+            message: "amount is unknown; treat unknown as unknown, not zero."
+          },
+          {
+            relationship_id: "rel-supply-metadata-1",
+            field: "capacity",
+            status: "unknown",
+            message: "capacity is unknown; treat unknown as unknown, not zero."
+          }
+        ],
+        coverage: {
+          ordered_stage_count: 16,
+          covered_stage_count: 2,
+          edge_count: 1,
+          evidence_source_count: 2,
+          all_edges_have_evidence: true,
+          edge_metadata_fields: [
+            "stage_from",
+            "stage_to",
+            "tier",
+            "materiality",
+            "substitutability",
+            "geography",
+            "time",
+            "evidence",
+            "unknowns"
+          ],
+          unknowns_explicit: true
+        },
+        content_rules: {
+          unknown_not_zero: true,
+          layout_position_is_not_control: true,
+          synthetic_fixture_not_live_fact: true
+        },
+        data_mode: "synthetic_fixture",
+        fixture_notice: "Synthetic fixture for API hydration test."
+      }
+    });
+  });
+
+  await page.goto("/");
+
+  const panel = page.getByTestId("supply-chain-stage-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveAttribute("data-api-contract", "/v1/entities/{entityId}/supply-chain");
+  await expect(panel).toHaveAttribute("data-sync-mode", "local_fallback");
+  await expect(panel).toHaveAttribute("data-upstream-edge-count", /^[1-9]/);
+  await expect(panel).toHaveAttribute("data-downstream-edge-count", /^[1-9]/);
+  await expect(panel).toHaveAttribute("data-unknown-not-zero", "true");
+  await expect(panel).toHaveAttribute(
+    "data-edge-metadata-fields",
+    /stage_from,stage_to,tier,materiality,substitutability,geography,time,evidence,unknowns/
+  );
+  await expect(page.getByTestId("supply-chain-ordered-stages")).toContainText("SC-02");
+  await expect(page.getByTestId("supply-chain-ordered-stages")).toContainText("SC-12");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Tier");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Materiality");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Substitutability");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Geography");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Time");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Evidence");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toContainText("Unknowns");
+  await expect(page.getByTestId("supply-chain-unknowns")).toContainText("unknown not zero");
+
+  await page.evaluate((baseUrl) => {
+    window.localStorage.setItem("eei.productionDataApiBaseUrl.v1", baseUrl);
+  }, apiBaseUrl);
+  await page.getByTestId("hydrate-production-data").click();
+  await expect(panel).toHaveAttribute("data-sync-mode", "server");
+  await expect(panel).toHaveAttribute("data-upstream-edge-count", "2");
+  await expect(panel).toHaveAttribute("data-downstream-edge-count", "3");
+  await expect(panel).toHaveAttribute("data-ordered-stage-count", "16");
+  await expect(panel).toHaveAttribute("data-unknown-count", "3");
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toHaveAttribute(
+    "data-evidence-count",
+    "2"
+  );
+  await expect(page.getByTestId("supply-chain-edge-metadata")).toHaveAttribute(
+    "data-unknown-fields",
+    "tier,amount,capacity"
+  );
+  await expect(panel).toHaveAttribute(
+    "data-edge-metadata-fields",
+    /stage_from,stage_to,tier,materiality,substitutability,geography,time,evidence,unknowns/
+  );
+});
+
 test("exposes eight company layers and separates structure object types", async ({ page }) => {
   await page.goto("/");
 

@@ -1,0 +1,33 @@
+{
+  "schema_version": "eei-acceptance-evidence-v1",
+  "task_id": "T502",
+  "acceptance_ids": ["A066"],
+  "status": "PASS",
+  "generated_at": "2026-06-27T07:20:00+10:00",
+  "capability": "supply_chain_unknown_not_zero",
+  "contract": {
+    "api_path": "/v1/entities/{entityId}/supply-chain",
+    "frontend_unknowns_test_id": "supply-chain-unknowns",
+    "unknown_not_zero": true,
+    "unknown_fields_are_explicit": true,
+    "fields_preserved_as_unknown": ["tier", "amount", "capacity", "geography"]
+  },
+  "implementation_refs": [
+    "EEI/apps/api/app/domain_repository.py",
+    "EEI/apps/web/src/app/page.tsx",
+    "EEI/apps/web/src/app/production-data-client.ts"
+  ],
+  "validation_refs": [
+    "EEI/tests/integration/test_database_migrations.py",
+    "EEI/tests/e2e/home.spec.ts"
+  ],
+  "results": [
+    "API unknowns array carries relationship_id, field, status and message.",
+    "E2E asserts data-unknown-not-zero=true and visible unknown not zero text.",
+    "Local fixture fallback preserves missing amount, capacity and geography as unknown."
+  ],
+  "non_claims": [
+    "Does not infer missing values as zero.",
+    "Does not replace source/legal/operator review requirements."
+  ]
+}

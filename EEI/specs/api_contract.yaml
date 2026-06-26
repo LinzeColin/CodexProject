@@ -592,6 +592,10 @@ paths:
       responses:
         '200':
           description: Upstream/downstream chain with stages and materiality
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitySupplyChainResponse'
         '404':
           description: Not found
   /v1/entities/{entityId}/capital:
@@ -2899,6 +2903,268 @@ components:
           additionalProperties: true
         data_mode:
           type: string
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+    EntitySupplyChainResponse:
+      type: object
+      required:
+      - schema_version
+      - as_of
+      - focus
+      - directional_summary
+      - chain_stages
+      - edges
+      - unknowns
+      - coverage
+      - content_rules
+      - data_mode
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - entity-supply-chain-v1
+        as_of:
+          type: string
+          format: date-time
+        profile_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        focus:
+          $ref: '#/components/schemas/EntitySummary'
+        directional_summary:
+          type: object
+          required:
+          - upstream_edge_count
+          - downstream_edge_count
+          - supports_upstream_downstream
+          properties:
+            upstream_edge_count:
+              type: integer
+              minimum: 0
+            downstream_edge_count:
+              type: integer
+              minimum: 0
+            midstream_edge_count:
+              type: integer
+              minimum: 0
+            unknown_direction_edge_count:
+              type: integer
+              minimum: 0
+            supports_upstream_downstream:
+              type: boolean
+        chain_stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupplyChainStage'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupplyChainEdge'
+        unknowns:
+          type: array
+          items:
+            type: object
+            required:
+            - relationship_id
+            - field
+            - status
+            - message
+            properties:
+              relationship_id:
+                type: string
+              field:
+                type: string
+              status:
+                type: string
+                enum:
+                - unknown
+              message:
+                type: string
+        coverage:
+          type: object
+          required:
+          - ordered_stage_count
+          - covered_stage_count
+          - edge_count
+          - evidence_source_count
+          - all_edges_have_evidence
+          - edge_metadata_fields
+          - unknowns_explicit
+          properties:
+            ordered_stage_count:
+              type: integer
+              minimum: 0
+            covered_stage_count:
+              type: integer
+              minimum: 0
+            edge_count:
+              type: integer
+              minimum: 0
+            evidence_source_count:
+              type: integer
+              minimum: 0
+            all_edges_have_evidence:
+              type: boolean
+            edge_metadata_fields:
+              type: array
+              items:
+                type: string
+            unknowns_explicit:
+              type: boolean
+        content_rules:
+          type: object
+          required:
+          - unknown_not_zero
+          - layout_position_is_not_control
+          properties:
+            unknown_not_zero:
+              type: boolean
+            layout_position_is_not_control:
+              type: boolean
+            synthetic_fixture_not_live_fact:
+              type: boolean
+        data_mode:
+          type: string
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+    SupplyChainStage:
+      type: object
+      required:
+      - stage_id
+      - stage_order
+      - slug
+      - name_zh
+      - name_en
+      - default_direction
+      - relationship_count
+      - upstream_edge_count
+      - downstream_edge_count
+      - unknown_count
+      properties:
+        stage_id:
+          type: string
+        stage_order:
+          type: integer
+        slug:
+          type: string
+        name_zh:
+          type: string
+        name_en:
+          type: string
+        default_direction:
+          type: string
+        relationship_count:
+          type: integer
+          minimum: 0
+        upstream_edge_count:
+          type: integer
+          minimum: 0
+        downstream_edge_count:
+          type: integer
+          minimum: 0
+        unknown_count:
+          type: integer
+          minimum: 0
+    SupplyChainEdge:
+      type: object
+      required:
+      - id
+      - subject
+      - object
+      - relationship_type
+      - relationship_family
+      - stage_from
+      - stage_to
+      - chain_side
+      - tier
+      - materiality
+      - substitutability
+      - geography
+      - time
+      - evidence_count
+      - unknown_fields
+      properties:
+        id:
+          type: string
+        subject:
+          $ref: '#/components/schemas/EntitySummary'
+        object:
+          $ref: '#/components/schemas/EntitySummary'
+        relationship_type:
+          type: string
+        relationship_family:
+          type: string
+        status:
+          type: string
+        stage_from:
+          type:
+          - string
+          - 'null'
+        stage_from_name:
+          type: string
+        stage_to:
+          type:
+          - string
+          - 'null'
+        stage_to_name:
+          type: string
+        chain_side:
+          type: string
+          enum:
+          - upstream
+          - downstream
+          - midstream
+          - unknown
+        tier:
+          type: string
+        materiality:
+          type: string
+        substitutability:
+          oneOf:
+          - type: number
+          - type: string
+        geography:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: object
+                additionalProperties: true
+        capacity:
+          oneOf:
+          - type: string
+          - type: object
+            additionalProperties: true
+        amount:
+          oneOf:
+          - type: string
+          - type: object
+            additionalProperties: true
+        time:
+          type: object
+          additionalProperties: true
+        evidence_count:
+          type: integer
+          minimum: 0
+        evidence:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        unknown_fields:
+          type: array
+          items:
+            type: string
+        synthetic:
+          type: boolean
         fixture_notice:
           type:
           - string

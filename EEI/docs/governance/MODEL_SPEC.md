@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 97
+- parameter_count: 98
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -557,3 +557,13 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 - Result date: 2026-06-20.
 - Uncovered scenarios: live data calibration, empirical model quality, exact per-task historical stdout for all reconstructed tasks.
 - Release gate: `GOV-G2-EEI-BASELINE`.
+
+## H. T502 Supply-Chain API Contract Binding
+
+- Date: 2026-06-27.
+- Task: `TASK-T502` / `A064-A066`.
+- Parameter binding: `PARAM-098` records `supply_chain.entity_supply_chain.schema_version=entity-supply-chain-v1` from `specs/api_contract.yaml`.
+- Model impact: no change to `FORM-005` expression, weights, thresholds, missing policy or active model profile.
+- Behavior impact: `/v1/entities/{entityId}/supply-chain` and the home workspace supply-chain panel expose ordered stages, upstream/downstream counts, edge metadata and explicit unknown-not-zero rows.
+- Validation: focused `py_compile`, `ruff`, web `typecheck`, OpenAPI contract validation and targeted Playwright supply-chain hydration test passed; local PostgreSQL integration collected but skipped because this host lacks PostgreSQL/Docker.
+- Release boundary: this does not close A202, A209, A210, A026/A027, A204/A205 or MVP release readiness.

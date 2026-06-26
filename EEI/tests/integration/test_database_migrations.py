@@ -1331,6 +1331,59 @@ def exercise_domain_api_and_repository_contracts() -> None:
         "commercial_empire_label"
     ]
 
+    supply_chain_response = client.get(f"/v1/entities/{NVIDIA_ID}/supply-chain")
+    assert supply_chain_response.status_code == 200
+    nvidia_supply_chain = supply_chain_response.json()
+    assert nvidia_supply_chain["schema_version"] == "entity-supply-chain-v1"
+    assert nvidia_supply_chain["focus"]["id"] == NVIDIA_ID
+    assert nvidia_supply_chain["directional_summary"]["upstream_edge_count"] >= 1
+    assert nvidia_supply_chain["directional_summary"]["downstream_edge_count"] >= 1
+    assert nvidia_supply_chain["directional_summary"][
+        "supports_upstream_downstream"
+    ] is True
+    chain_stage_orders = [
+        stage["stage_order"] for stage in nvidia_supply_chain["chain_stages"]
+    ]
+    assert chain_stage_orders == sorted(chain_stage_orders)
+    assert len(nvidia_supply_chain["chain_stages"]) >= 16
+    assert nvidia_supply_chain["coverage"]["ordered_stage_count"] >= 16
+    assert nvidia_supply_chain["coverage"]["covered_stage_count"] >= 1
+    assert nvidia_supply_chain["coverage"]["unknowns_explicit"] is True
+    assert {
+        "stage_from",
+        "stage_to",
+        "tier",
+        "materiality",
+        "substitutability",
+        "geography",
+        "time",
+        "evidence",
+        "unknowns",
+    } <= set(nvidia_supply_chain["coverage"]["edge_metadata_fields"])
+    supply_chain_edge = nvidia_supply_chain["edges"][0]
+    assert supply_chain_edge["stage_from"]
+    assert supply_chain_edge["stage_to"]
+    assert supply_chain_edge["tier"] in {"direct", "Tier-1", "Tier-2", "Tier-3", "unknown"}
+    assert supply_chain_edge["materiality"] in {
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "unknown",
+    }
+    assert "substitutability" in supply_chain_edge
+    assert "geography" in supply_chain_edge
+    assert "time" in supply_chain_edge
+    assert supply_chain_edge["evidence_count"] >= 1
+    assert isinstance(supply_chain_edge["unknown_fields"], list)
+    unknown_fields = {gap["field"] for gap in nvidia_supply_chain["unknowns"]}
+    assert {"amount", "capacity"} <= unknown_fields
+    assert any(
+        "unknown, not zero" in gap["message"]
+        or "unknown as unknown, not zero" in gap["message"]
+        for gap in nvidia_supply_chain["unknowns"]
+    )
+
     structure = nvidia_empire["structure"]
     assert set(structure) >= {
         "legal_group",

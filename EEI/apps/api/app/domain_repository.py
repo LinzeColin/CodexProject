@@ -658,6 +658,109 @@ class DomainRepository:
                 }
             )
 
+    def get_entity_supply_chain(
+        self,
+        *,
+        entity_id: UUID,
+        as_of: datetime | None = None,
+        profile_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            focus = self.entity_summary(connection, entity_id)
+            stage_rows = self.supply_chain_stage_rows(connection)
+            relationship_rows = self.supply_chain_relationships_for_entity(
+                connection,
+                entity_id,
+                as_of=as_of,
+            )
+            relationship_ids = [UUID(str(row["id"])) for row in relationship_rows]
+            evidence_map = {
+                str(relationship_id): items
+                for relationship_id, items in self.relationship_evidence_map(
+                    connection,
+                    relationship_ids,
+                ).items()
+            }
+            stages_by_id = {stage["stage_id"]: stage for stage in stage_rows}
+            edges = self.supply_chain_edges(
+                focus_id=entity_id,
+                relationships=relationship_rows,
+                evidence_map=evidence_map,
+                stages_by_id=stages_by_id,
+            )
+            stages = self.supply_chain_stage_view(stage_rows=stage_rows, edges=edges)
+            data_gaps = self.supply_chain_data_gaps(edges)
+            upstream_edges = [edge for edge in edges if edge["chain_side"] == "upstream"]
+            downstream_edges = [edge for edge in edges if edge["chain_side"] == "downstream"]
+            return _jsonable(
+                {
+                    "schema_version": "entity-supply-chain-v1",
+                    "as_of": as_of or _now(),
+                    "profile_id": profile_id,
+                    "focus": focus,
+                    "directional_summary": {
+                        "upstream_edge_count": len(upstream_edges),
+                        "downstream_edge_count": len(downstream_edges),
+                        "midstream_edge_count": len(
+                            [edge for edge in edges if edge["chain_side"] == "midstream"]
+                        ),
+                        "unknown_direction_edge_count": len(
+                            [edge for edge in edges if edge["chain_side"] == "unknown"]
+                        ),
+                        "supports_upstream_downstream": bool(upstream_edges and downstream_edges),
+                    },
+                    "chain_stages": stages,
+                    "edges": edges,
+                    "unknowns": data_gaps,
+                    "coverage": {
+                        "ordered_stage_count": len(stages),
+                        "covered_stage_count": len(
+                            [stage for stage in stages if stage["relationship_count"] > 0]
+                        ),
+                        "edge_count": len(edges),
+                        "evidence_source_count": len(
+                            {
+                                evidence["source_document_id"]
+                                for items in evidence_map.values()
+                                for evidence in items
+                            }
+                        ),
+                        "all_edges_have_evidence": all(
+                            edge["evidence_count"] > 0 for edge in edges
+                        ),
+                        "edge_metadata_fields": [
+                            "stage_from",
+                            "stage_to",
+                            "tier",
+                            "materiality",
+                            "substitutability",
+                            "geography",
+                            "time",
+                            "evidence",
+                            "unknowns",
+                        ],
+                        "unknowns_explicit": bool(data_gaps),
+                    },
+                    "content_rules": {
+                        "unknown_not_zero": True,
+                        "layout_position_is_not_control": True,
+                        "synthetic_fixture_not_live_fact": bool(
+                            focus.get("synthetic") or any(edge["synthetic"] for edge in edges)
+                        ),
+                    },
+                    "data_mode": (
+                        "synthetic_fixture"
+                        if focus.get("synthetic") or any(edge["synthetic"] for edge in edges)
+                        else "database"
+                    ),
+                    "fixture_notice": (
+                        "Synthetic fixture records are explicitly marked and are not live facts."
+                        if focus.get("synthetic") or any(edge["synthetic"] for edge in edges)
+                        else None
+                    ),
+                }
+            )
+
     def list_industries(self, parent: UUID | None = None) -> list[dict[str, Any]]:
         with self.connect() as connection:
             return self.list_industries_for_connection(connection, parent=parent)
@@ -942,6 +1045,342 @@ class DomainRepository:
             (entity_ids, entity_ids),
         ).fetchall()
         return _jsonable(rows)
+
+    def supply_chain_stage_rows(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT stage_id, stage_order, slug, name_zh, name_en, default_direction, examples
+            FROM supply_chain_stages
+            ORDER BY stage_order
+            """
+        ).fetchall()
+        return _jsonable(rows)
+
+    def supply_chain_relationships_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+        *,
+        as_of: datetime | None,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            WITH RECURSIVE walk(node_id, depth, path_nodes) AS (
+              SELECT %(entity_id)s::uuid, 0, ARRAY[%(entity_id)s::uuid]::uuid[]
+              UNION ALL
+              SELECT
+                CASE
+                  WHEN r.subject_entity_id = walk.node_id THEN r.object_entity_id
+                  ELSE r.subject_entity_id
+                END AS node_id,
+                walk.depth + 1 AS depth,
+                walk.path_nodes ||
+                  CASE
+                    WHEN r.subject_entity_id = walk.node_id THEN r.object_entity_id
+                    ELSE r.subject_entity_id
+                  END AS path_nodes
+              FROM walk
+              JOIN relationships r
+                ON walk.node_id IN (r.subject_entity_id, r.object_entity_id)
+              JOIN supply_chain_relationship_attributes sca
+                ON sca.relationship_id = r.id
+              WHERE walk.depth < 2
+                AND r.status NOT IN ('superseded', 'revoked')
+                AND (
+                  %(as_of)s::timestamptz IS NULL
+                  OR (
+                    (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                    AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                  )
+                )
+                AND NOT (
+                  CASE
+                    WHEN r.subject_entity_id = walk.node_id THEN r.object_entity_id
+                    ELSE r.subject_entity_id
+                  END = ANY(walk.path_nodes)
+                )
+            ),
+            edge_hits AS (
+              SELECT
+                r.id, r.subject_entity_id, r.object_entity_id, r.relationship_type,
+                r.relationship_family, r.status, r.confidence, r.valid_from, r.valid_to,
+                r.observed_at, r.amount, r.currency, r.amount_kind, r.qualifiers,
+                sca.stage_from, sca.stage_to, sca.supplier_role, sca.buyer_role,
+                sca.tier, sca.materiality, sca.concentration_value,
+                sca.concentration_kind, sca.substitutability_score, sca.lead_time_days,
+                sca.capacity_value, sca.capacity_unit, sca.geographic_exposure,
+                sca.coverage, sca.last_verified_at,
+                subject.canonical_name AS subject_name,
+                subject.entity_type AS subject_type,
+                object.canonical_name AS object_name,
+                object.entity_type AS object_type,
+                COALESCE(frn.synthetic, false) AS synthetic,
+                frn.fixture_notice,
+                count(re.source_document_id)::int AS evidence_count,
+                min(walk.depth + 1)::int AS path_depth
+              FROM walk
+              JOIN relationships r
+                ON walk.node_id IN (r.subject_entity_id, r.object_entity_id)
+              JOIN supply_chain_relationship_attributes sca
+                ON sca.relationship_id = r.id
+              JOIN entities subject ON subject.id = r.subject_entity_id
+              JOIN entities object ON object.id = r.object_entity_id
+              LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+              LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+              WHERE walk.depth < 2
+                AND r.status NOT IN ('superseded', 'revoked')
+                AND (
+                  %(as_of)s::timestamptz IS NULL
+                  OR (
+                    (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                    AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                  )
+                )
+              GROUP BY
+                r.id, sca.relationship_id, subject.id, object.id, frn.synthetic,
+                frn.fixture_notice
+            )
+            SELECT *
+            FROM edge_hits
+            ORDER BY path_depth, stage_from, stage_to, confidence DESC NULLS LAST, id
+            LIMIT 120
+            """,
+            {"entity_id": entity_id, "as_of": as_of},
+        ).fetchall()
+        return _jsonable(rows)
+
+    @staticmethod
+    def supply_chain_stage_view(
+        *,
+        stage_rows: list[dict[str, Any]],
+        edges: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        view = []
+        for stage in stage_rows:
+            stage_id = stage["stage_id"]
+            touching_edges = [
+                edge
+                for edge in edges
+                if edge["stage_from"] == stage_id or edge["stage_to"] == stage_id
+            ]
+            view.append(
+                {
+                    **stage,
+                    "relationship_count": len(touching_edges),
+                    "upstream_edge_count": len(
+                        [edge for edge in touching_edges if edge["chain_side"] == "upstream"]
+                    ),
+                    "downstream_edge_count": len(
+                        [edge for edge in touching_edges if edge["chain_side"] == "downstream"]
+                    ),
+                    "unknown_count": len(
+                        [edge for edge in touching_edges if edge["unknown_fields"]]
+                    ),
+                }
+            )
+        return view
+
+    @staticmethod
+    def supply_chain_edges(
+        *,
+        focus_id: UUID,
+        relationships: list[dict[str, Any]],
+        evidence_map: dict[str, list[dict[str, Any]]],
+        stages_by_id: dict[str, dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        side_by_node: dict[str, str] = {str(focus_id): "midstream"}
+        for relationship in sorted(relationships, key=lambda item: item["path_depth"]):
+            subject_id = str(relationship["subject_entity_id"])
+            object_id = str(relationship["object_entity_id"])
+            if relationship["path_depth"] == 1:
+                direct_side = DomainRepository.supply_chain_direct_neighbor_side(
+                    focus_id=str(focus_id),
+                    relationship=relationship,
+                    stages_by_id=stages_by_id,
+                )
+                if subject_id == str(focus_id):
+                    side_by_node.setdefault(object_id, direct_side)
+                elif object_id == str(focus_id):
+                    side_by_node.setdefault(subject_id, direct_side)
+                continue
+            subject_side = side_by_node.get(subject_id)
+            object_side = side_by_node.get(object_id)
+            if subject_side and not object_side:
+                side_by_node[object_id] = subject_side
+            elif object_side and not subject_side:
+                side_by_node[subject_id] = object_side
+
+        edges = []
+        for relationship in relationships:
+            subject_id = str(relationship["subject_entity_id"])
+            object_id = str(relationship["object_entity_id"])
+            chain_side = DomainRepository.supply_chain_edge_side(
+                focus_id=str(focus_id),
+                relationship=relationship,
+                side_by_node=side_by_node,
+                stages_by_id=stages_by_id,
+            )
+            stage_from = relationship.get("stage_from")
+            stage_to = relationship.get("stage_to")
+            qualifiers = relationship.get("qualifiers") or {}
+            geographic_exposure = relationship.get("geographic_exposure") or []
+            capacity_value = relationship.get("capacity_value")
+            capacity_unit = relationship.get("capacity_unit")
+            unknown_fields = []
+            if not relationship.get("tier"):
+                unknown_fields.append("tier")
+            if relationship.get("amount") is None:
+                unknown_fields.append("amount")
+            if capacity_value is None:
+                unknown_fields.append("capacity")
+            if not geographic_exposure:
+                unknown_fields.append("geography")
+            evidence = evidence_map.get(str(relationship["id"]), [])
+            edges.append(
+                {
+                    "id": relationship["id"],
+                    "subject": {
+                        "id": relationship["subject_entity_id"],
+                        "canonical_name": relationship["subject_name"],
+                        "entity_type": relationship["subject_type"],
+                    },
+                    "object": {
+                        "id": relationship["object_entity_id"],
+                        "canonical_name": relationship["object_name"],
+                        "entity_type": relationship["object_type"],
+                    },
+                    "relationship_type": relationship["relationship_type"],
+                    "relationship_family": relationship["relationship_family"],
+                    "status": relationship["status"],
+                    "confidence": relationship["confidence"],
+                    "stage_from": stage_from,
+                    "stage_from_name": DomainRepository.stage_name(stages_by_id, stage_from),
+                    "stage_to": stage_to,
+                    "stage_to_name": DomainRepository.stage_name(stages_by_id, stage_to),
+                    "chain_side": chain_side,
+                    "tier": relationship.get("tier") or "unknown",
+                    "materiality": relationship.get("materiality") or "unknown",
+                    "substitutability": (
+                        relationship.get("substitutability_score")
+                        if relationship.get("substitutability_score") is not None
+                        else qualifiers.get("substitutability", "unknown")
+                    ),
+                    "geography": geographic_exposure if geographic_exposure else "unknown",
+                    "capacity": (
+                        {"value": capacity_value, "unit": capacity_unit}
+                        if capacity_value is not None
+                        else "unknown"
+                    ),
+                    "amount": (
+                        {
+                            "value": relationship["amount"],
+                            "currency": relationship["currency"],
+                            "kind": relationship["amount_kind"],
+                        }
+                        if relationship.get("amount") is not None
+                        else "unknown"
+                    ),
+                    "time": {
+                        "valid_from": relationship["valid_from"],
+                        "valid_to": relationship["valid_to"],
+                        "observed_at": relationship["observed_at"],
+                        "last_verified_at": relationship["last_verified_at"],
+                    },
+                    "path_depth": relationship["path_depth"],
+                    "evidence_count": len(evidence),
+                    "evidence": evidence,
+                    "unknown_fields": unknown_fields,
+                    "synthetic": relationship["synthetic"],
+                    "fixture_notice": relationship["fixture_notice"],
+                }
+            )
+        return _jsonable(edges)
+
+    @staticmethod
+    def supply_chain_data_gaps(edges: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        gaps = []
+        for edge in edges:
+            for field in edge["unknown_fields"]:
+                gaps.append(
+                    {
+                        "relationship_id": edge["id"],
+                        "field": field,
+                        "status": "unknown",
+                        "message": (
+                            f"{field} is unknown for "
+                            f"{edge['subject']['canonical_name']} -> "
+                            f"{edge['object']['canonical_name']}; treat unknown as unknown, "
+                            "not zero."
+                        ),
+                    }
+                )
+        return gaps
+
+    @staticmethod
+    def stage_name(stages_by_id: dict[str, dict[str, Any]], stage_id: str | None) -> str:
+        if not stage_id:
+            return "Unknown stage"
+        stage = stages_by_id.get(stage_id)
+        if not stage:
+            return stage_id
+        return f"{stage_id} {stage['name_en']}"
+
+    @staticmethod
+    def stage_order(stages_by_id: dict[str, dict[str, Any]], stage_id: str | None) -> int | None:
+        if not stage_id or stage_id not in stages_by_id:
+            return None
+        return int(stages_by_id[stage_id]["stage_order"])
+
+    @staticmethod
+    def supply_chain_direct_neighbor_side(
+        *,
+        focus_id: str,
+        relationship: dict[str, Any],
+        stages_by_id: dict[str, dict[str, Any]],
+    ) -> str:
+        subject_id = str(relationship["subject_entity_id"])
+        object_id = str(relationship["object_entity_id"])
+        if subject_id == focus_id:
+            neighbor_stage = relationship.get("stage_to")
+            focus_stage = relationship.get("stage_from")
+        elif object_id == focus_id:
+            neighbor_stage = relationship.get("stage_from")
+            focus_stage = relationship.get("stage_to")
+        else:
+            return "unknown"
+        neighbor_order = DomainRepository.stage_order(stages_by_id, neighbor_stage)
+        focus_order = DomainRepository.stage_order(stages_by_id, focus_stage)
+        if neighbor_order is None or focus_order is None:
+            return "unknown"
+        if neighbor_order < focus_order:
+            return "upstream"
+        if neighbor_order > focus_order:
+            return "downstream"
+        return "midstream"
+
+    @staticmethod
+    def supply_chain_edge_side(
+        *,
+        focus_id: str,
+        relationship: dict[str, Any],
+        side_by_node: dict[str, str],
+        stages_by_id: dict[str, dict[str, Any]],
+    ) -> str:
+        direct_side = DomainRepository.supply_chain_direct_neighbor_side(
+            focus_id=focus_id,
+            relationship=relationship,
+            stages_by_id=stages_by_id,
+        )
+        if direct_side != "unknown":
+            return direct_side
+        subject_side = side_by_node.get(str(relationship["subject_entity_id"]))
+        object_side = side_by_node.get(str(relationship["object_entity_id"]))
+        if subject_side == object_side and subject_side:
+            return subject_side
+        return subject_side or object_side or "unknown"
 
     def industry_bottlenecks(
         self,
