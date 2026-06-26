@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-020"
+as_of_event_id: "EVENT-20260626-021"
 source_snapshot_hash: "sha256:c32fb1c4ff733015edc9ab464a4c7ae85741c63fda9819178da79ccef8319b8b"
 source_base_commit: "047b4094d56fb7b3162b24265501e985690296f0"
 source_tree_hash: "8737d055c5c24cf2e160003744e375aba6f6145b"
-snapshot_event_time: "2026-06-26T18:49:21+10:00"
+snapshot_event_time: "2026-06-26T19:26:03+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -69,7 +69,7 @@ dimensions:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1308-A211-APP-ICON-BRAND-REFRESH"
+  release_gate: "TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"

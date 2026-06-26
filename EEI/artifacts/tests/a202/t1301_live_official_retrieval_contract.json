@@ -9,7 +9,7 @@
   "status": "NETWORK_EVIDENCE_MISSING",
   "record_mode": "live",
   "parser_version": "nvidia-official-fulltext-live-v1",
-  "generated_at": "2026-06-21T04:34:16+00:00",
+  "generated_at": "2026-06-26T09:18:17+00:00",
   "capture_policy": {
     "live_retrieval": false,
     "relationship_publication": false,
@@ -19,7 +19,7 @@
   },
   "implemented_scope": [
     "scripts/fetch_official_source_full_text.py can capture live official-source URLs only when --capture-live and --allow-live-network are both supplied.",
-    "Live capture extracts normalized text from HTML or PDF responses, computes content hashes, validates expected-token coverage and records retry/source-health metadata.",
+    "Live capture extracts normalized text from HTML or PDF responses, computes content hashes, validates expected-token coverage and records retry/source-health metadata with terminal/dead-letter outcome fields for failed operator runs.",
     "Expected-token coverage keeps a 100% threshold while applying the official-source token alias contract for canonical company names and composite stage terms.",
     "Default CI generation does not access the network and does not commit official full text; it records NETWORK_EVIDENCE_MISSING until an operator live run is attached.",
     "Live capture does not publish relationship facts and does not imply release/legal clearance.",

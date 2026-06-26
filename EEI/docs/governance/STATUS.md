@@ -5,7 +5,7 @@
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
 - source_snapshot_hash: `sha256:c32fb1c4ff733015edc9ab464a4c7ae85741c63fda9819178da79ccef8319b8b`
-- snapshot_event_time: `2026-06-26T18:49:21+10:00`
+- snapshot_event_time: `2026-06-26T19:26:03+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
+- Phase/Gate: `C / TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
 - Models/Formulas/Parameters total: `12 / 12 / 90`
 - Active formulas/parameters: `11 / 90`
 - Machine checked formulas/parameters: `11 / 90`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
+- Release gate: `TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
 - Next executable task: `TASK-T1301`
 - Pending/stale events: `117`
 - Tree-bound events: `0`

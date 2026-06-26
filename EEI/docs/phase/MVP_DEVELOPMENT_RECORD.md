@@ -6708,3 +6708,38 @@ Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLO
 ### Rollback
 
 - Revert `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, this record, changelog and governance event updates; rerun the A202 contract validators.
+
+## 2026-06-26 - T1301/A202 live official-source validate-only and retry outcome hardening
+
+Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `scripts/load_live_official_captures.py --validate-only` so selected live official-source capture evidence can be validated without PostgreSQL writes before operator review.
+- Added `source_health.retry_outcome` to live capture source-health metadata with `attempt_count`, `max_attempts`, `dead_letter_after_attempts`, `terminal` and `dead_lettered`.
+- Refreshed selected NVIDIA official-source evidence for `NVDA-ANCHOR-002..004`; all three anchors remain healthy with `token_coverage.ratio=1.0`, `http_status=200`, `release_clearance=false`, `relationship_publication=false` and no committed full text.
+- Regenerated the A202 operator-review packet and dependent A202/A203/A205 release preflights so source hashes are fresh while all release gates remain fail-closed.
+
+### Acceptance Mapping
+
+- T1301 -> A202.
+- T1304/A206 is referenced for retry/dead-letter evidence semantics only; this run does not reopen A206 scheduler functionality.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-live-validate-pycache .venv/bin/python -m py_compile scripts/fetch_official_source_full_text.py scripts/load_live_official_captures.py scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/fetch_official_source_full_text.py scripts/load_live_official_captures.py scripts/validate_a202_operator_review_packet.py tests/unit/test_official_source_live_capture.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-live-validate-pycache .venv/bin/python -m pytest -q -p no:cacheprovider tests/unit/test_official_source_live_capture.py`: PASS, `15/15`.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-live-validate-pycache .venv/bin/python scripts/load_live_official_captures.py --validate-only --artifact artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json`: PASS, `anchors_total=3`, `attempt_count=3`, `database_writes=false`.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-live-validate-pycache .venv/bin/python scripts/validate_a202_operator_review_packet.py validate`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a202-dependent-pycache UV_CACHE_DIR=/private/tmp/eei-uv-cache make generate-release-decision-bundle-artifact generate-a202-signed-intake-preflight validate-release-decision-bundle validate-a202-signed-intake-preflight generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-production-api-release-preflight validate-production-api-release-preflight generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight`: PASS.
+
+### Non-Claims
+
+- This does not create source-license review, passage-level relationship approval, production owner sign-off, legal clearance, relationship publication, A202 closure or MVP release readiness.
+- No database schema, API schema, scoring formula, graph traversal formula, extraction model, model weight, business threshold, frontend route or publication policy changed.
+- A209 still requires a clean `288/288` zero-failure 24h operator soak and finalization; A210, A026/A027 and A204/A205 release-manager activation remain separate gates.
+
+### Rollback
+
+- Revert `scripts/fetch_official_source_full_text.py`, `scripts/load_live_official_captures.py`, `tests/unit/test_official_source_live_capture.py`, the live fixture, refreshed A202/A203/A205 artifacts and this governance sync; regenerate dependent release artifacts from the previous selected-capture state.

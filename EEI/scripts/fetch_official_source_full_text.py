@@ -182,6 +182,15 @@ def live_capture_source_health(
         status = "unhealthy_text_too_short"
     elif coverage_ratio < MIN_TOKEN_COVERAGE_RATIO:
         status = "unhealthy_token_coverage"
+    attempt_count = len(attempts)
+    retry_outcome = {
+        "attempt_count": attempt_count,
+        "max_attempts": RETRY_POLICY["max_attempts"],
+        "dead_letter_after_attempts": RETRY_POLICY["dead_letter_after_attempts"],
+        "terminal": status != "healthy",
+        "dead_lettered": status != "healthy"
+        and attempt_count >= int(RETRY_POLICY["dead_letter_after_attempts"]),
+    }
     return {
         "status": status,
         "expected_token_count": len(expected),
@@ -196,6 +205,7 @@ def live_capture_source_health(
         "http_status": http_status,
         "content_type": content_type,
         "attempts": attempts,
+        "retry_outcome": retry_outcome,
         "token_alias_policy": token_alias_contract(),
     }
 
@@ -413,7 +423,8 @@ def build_live_contract_artifact() -> dict[str, object]:
             (
                 "Live capture extracts normalized text from HTML or PDF responses, "
                 "computes content hashes, validates expected-token coverage and "
-                "records retry/source-health metadata."
+                "records retry/source-health metadata with terminal/dead-letter "
+                "outcome fields for failed operator runs."
             ),
             (
                 "Expected-token coverage keeps a 100% threshold while applying the "

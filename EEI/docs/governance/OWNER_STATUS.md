@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
+- release_gate: `TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-26T18:49:21+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
+- phase/gate: `C / TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
 
 ## 17. Next Unique Task
 

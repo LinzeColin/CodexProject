@@ -11,10 +11,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
+- Current gate: `TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1308/A211 app icon and BrandMark refresh`
+- Current task: `TASK-T1301/A202 live official-source capture validate-only and retry outcome hardening`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `111/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T08:25:55Z`, `177` remaining and `38.54%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
@@ -22,8 +22,39 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - E2E sequencing repair: the A203/A211 production graph hydration regression now closes the A211 evidence drawer before graph lens switching, preserving modal behavior while preventing the drawer from intercepting subsequent lens clicks.
 - Strategic-signal panel: T504/A072 now exposes support, contradiction, alternative hypothesis, half-life/time-decay policy and `F-SS-001@balanced-v2` rule version in the Watchlist-first workspace. FUN-EXP-07 is `PARTIAL` because real strategic-signal ingestion, production API and human content review remain open under T803/T805/T1301/T1302.
 - App shell branding: T1308/A211 now includes the static EEI PNG app icon, metadata/apple icon/web manifest binding, reusable BrandMark component and target Playwright coverage; no model/API/database/release-gate status changed.
+- Live official-source validation: T1301/A202 now validates selected live NVIDIA official capture evidence through `--validate-only` without PostgreSQL writes and requires `source_health.retry_outcome` terminal/dead-letter metadata on every anchor; this remains review input only and does not close source/license/passage/owner/legal clearance or relationship publication.
 
 
+
+## EVENT-20260626-021 - T1301/A202 live capture validate-only and retry outcome hardening
+
+- Timestamp: 2026-06-26T19:26:03+10:00
+- Fact level: EXTRACTED
+- Base commit: `6d6562dce88df33c56cbe39a3092ad426b0db112`
+- Scope: add no-DB `--validate-only` validation for selected live official-source capture artifacts, require explicit `source_health.retry_outcome` terminal/dead-letter metadata, refresh selected NVIDIA official-source capture evidence for `NVDA-ANCHOR-002..004`, and regenerate downstream A202/A203/A205 fail-closed preflights.
+- Files changed: `scripts/fetch_official_source_full_text.py`, `scripts/load_live_official_captures.py`, `tests/unit/test_official_source_live_capture.py`, `tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json`, A202 live capture/review artifacts and dependent A202/A203/A205 release preflights plus governance records.
+- Acceptance IDs: `A202`, `A206`.
+- Validation: focused `py_compile` PASS; focused `ruff` PASS; `tests/unit/test_official_source_live_capture.py` PASS `15/15`; `scripts/load_live_official_captures.py --validate-only` PASS for 3 anchors with `database_writes=false`; `scripts/validate_a202_operator_review_packet.py validate` PASS; dependent release-decision, signed-intake, external release bundle, release-manager, production API and MVP gate preflights generate/validate PASS.
+- Non-claims: no database schema, API schema, scoring formula, graph traversal formula, extraction model, model weight, business threshold, frontend route or relationship publication policy changed. A202, A209, A210, A026/A027, A204/A205 and MVP release readiness remain blocked.
+- Rollback: revert the live-capture scripts/tests/fixtures/artifacts and this governance sync, regenerate the A202/A203/A205 preflights from the previous selected capture artifact, then rerun the A202 validation subset and `make verify`.
+
+## ITER-20260626-021 - A202 live official-source validate-only hardening
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `6d6562dce88df33c56cbe39a3092ad426b0db112`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`
+- Acceptance IDs: `A202`, `A206`
+- Goal: make live official-source capture review evidence independently validateable before PostgreSQL writes and bind retry/dead-letter terminal outcome metadata into the evidence chain.
+- Files changed: live capture/retrieval scripts, unit tests, live fixture, selected capture artifact, operator review packet, A202 release-decision/signed-intake artifacts, A203/A205 release preflights and companion governance records.
+- Model changes: none.
+- Parameter changes: no active model parameter value changed; `PARAM-086` profile advances to `live-official-capture@2` to document validate-only and retry/dead-letter non-clearance semantics.
+- Commands run: focused py_compile, focused ruff, official-source live capture unit tests, validate-only selected capture, A202 operator review packet validate, A202/A203/A205 preflight generate/validate.
+- Test results: selected capture validate-only PASS with `anchors_total=3`, `attempt_count=3`, `retry_outcomes.dead_lettered=false`, `release_clearance=false`, `relationship_publication=false` and `database_writes=false`; downstream release preflights remain blocked as designed.
+- Rollback: revert this iteration's script/test/artifact/governance files and rerun the documented A202/A203/A205 validators.
 
 ## EVENT-20260626-020 - T1308/A211 app icon and BrandMark refresh
 

@@ -67,7 +67,14 @@
             "retryable": false,
             "truncated_by_max_bytes": false
           }
-        ]
+        ],
+        "retry_outcome": {
+          "attempt_count": 1,
+          "max_attempts": 3,
+          "dead_letter_after_attempts": 3,
+          "terminal": false,
+          "dead_lettered": false
+        }
       },
       "relationship_publication": false,
       "release_clearance": false
@@ -109,7 +116,14 @@
             "retryable": false,
             "truncated_by_max_bytes": false
           }
-        ]
+        ],
+        "retry_outcome": {
+          "attempt_count": 1,
+          "max_attempts": 3,
+          "dead_letter_after_attempts": 3,
+          "terminal": false,
+          "dead_lettered": false
+        }
       },
       "relationship_publication": false,
       "release_clearance": false

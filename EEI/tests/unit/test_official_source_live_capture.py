@@ -117,6 +117,13 @@ def test_nvda_anchor_001_is_context_only_without_packaging_test_requirement() ->
     }
     assert source_health["status"] == "healthy"
     assert source_health["missing_tokens"] == []
+    assert source_health["retry_outcome"] == {
+        "attempt_count": 1,
+        "max_attempts": 3,
+        "dead_letter_after_attempts": 3,
+        "terminal": False,
+        "dead_lettered": False,
+    }
 
 
 def test_select_anchor_rows_preserves_registry_order_and_rejects_unknown() -> None:
@@ -178,6 +185,39 @@ def test_capture_live_official_sources_records_hash_not_full_text() -> None:
     assert anchor["source_health"]["status"] == "healthy"
     assert anchor["source_health"]["token_coverage"]["ratio"] == 1.0
     assert anchor["source_health"]["attempts"][0]["transport"] == "httpx"
+    assert anchor["source_health"]["retry_outcome"]["dead_lettered"] is False
+
+
+def test_live_capture_source_health_marks_dead_letter_outcome() -> None:
+    row = sample_anchor_row()
+    attempts = [
+        {
+            "attempt": attempt,
+            "transport": "httpx",
+            "status": "error",
+            "error": "ConnectError",
+            "retryable": True,
+        }
+        for attempt in range(1, 4)
+    ]
+
+    source_health = official_source.live_capture_source_health(
+        row,
+        source_text="",
+        http_status=0,
+        content_type="text/html",
+        content_length_bytes=0,
+        attempts=attempts,
+    )
+
+    assert source_health["status"] == "unhealthy_text_too_short"
+    assert source_health["retry_outcome"] == {
+        "attempt_count": 3,
+        "max_attempts": 3,
+        "dead_letter_after_attempts": 3,
+        "terminal": True,
+        "dead_lettered": True,
+    }
 
 
 def test_capture_live_cli_requires_explicit_network_permission(monkeypatch, capsys) -> None:
@@ -254,6 +294,23 @@ def test_live_capture_fixture_requires_explicit_fixture_flag() -> None:
     )
 
     assert len(result["anchors"]) == 2
+
+
+def test_live_capture_validate_only_uses_same_fail_closed_contract() -> None:
+    result = live_loader.validate_live_capture_file(
+        artifact_path=live_loader.ROOT
+        / "tests/fixtures/live_official_captures/nvidia_live_official_capture_fixture.json",
+        allow_fixture_capture=True,
+    )
+
+    assert result["validated"] is True
+    assert result["status"] == "LIVE_CAPTURE_VALIDATED_FOR_OPERATOR_REVIEW"
+    assert result["acceptance_ids"] == ["A202", "A206"]
+    assert result["anchors_total"] == 2
+    assert result["fixture_artifact"] is True
+    assert result["database_writes"] is False
+    assert result["release_clearance"] is False
+    assert result["relationship_publication"] is False
 
 
 def test_a202_operator_review_packet_stays_fail_closed() -> None:

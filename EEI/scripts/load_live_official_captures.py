@@ -164,6 +164,18 @@ def validate_live_anchor(row: dict[str, str], anchor: dict[str, object]) -> dict
     attempts = source_health.get("attempts")
     if not isinstance(attempts, list) or not attempts:
         raise ValueError(f"{anchor_id} source_health.attempts must be non-empty")
+    retry_outcome = source_health.get("retry_outcome")
+    if not isinstance(retry_outcome, dict):
+        raise ValueError(f"{anchor_id} source_health.retry_outcome must be an object")
+    expected_retry_outcome = {
+        "attempt_count": len(attempts),
+        "max_attempts": RETRY_POLICY["max_attempts"],
+        "dead_letter_after_attempts": RETRY_POLICY["dead_letter_after_attempts"],
+        "terminal": False,
+        "dead_lettered": False,
+    }
+    if retry_outcome != expected_retry_outcome:
+        raise ValueError(f"{anchor_id} source_health.retry_outcome mismatch")
     return source_health
 
 
@@ -682,6 +694,44 @@ def load_live_official_captures(
     return counts
 
 
+def validate_live_capture_file(
+    *,
+    artifact_path: Path = DEFAULT_ARTIFACT_PATH,
+    allow_fixture_capture: bool = False,
+) -> dict[str, Any]:
+    payload = load_artifact(artifact_path)
+    validation_result = validate_live_capture_artifact(
+        payload,
+        allow_fixture_capture=allow_fixture_capture,
+    )
+    anchors = validation_result["anchors"]
+    fixture_artifact = bool(payload.get("fixture_artifact") is True)
+    attempt_count = sum(
+        len(anchor["source_health"]["attempts"])
+        for anchor in anchors
+    )
+    retry_outcomes = [
+        anchor["source_health"].get("retry_outcome", {})
+        for anchor in anchors
+    ]
+    return {
+        "validated": True,
+        "task_id": "T1301",
+        "acceptance_ids": ["A202", "A206"],
+        "artifact_path": relative_artifact_locator(artifact_path),
+        "artifact_sha256": source_hash_from_artifact(artifact_path, payload),
+        "anchors_total": len(anchors),
+        "anchors": [anchor["anchor_id"] for anchor in anchors],
+        "attempt_count": attempt_count,
+        "retry_outcomes": retry_outcomes,
+        "fixture_artifact": fixture_artifact,
+        "release_clearance": False,
+        "relationship_publication": False,
+        "database_writes": False,
+        "status": "LIVE_CAPTURE_VALIDATED_FOR_OPERATOR_REVIEW",
+    }
+
+
 def build_contract_artifact() -> dict[str, object]:
     return {
         "schema_version": 1,
@@ -705,6 +755,11 @@ def build_contract_artifact() -> dict[str, object]:
                 "The loader rejects committed official full text and stores only "
                 "source_text_sha256, short source_text_excerpt, anchor_scope, "
                 "retry/source_health metadata and context evidence."
+            ),
+            (
+                "The same validator is available through --validate-only so an "
+                "operator live-capture artifact can be checked before PostgreSQL "
+                "writes."
             ),
             (
                 "PostgreSQL writes are idempotent through source_documents, "
@@ -736,6 +791,11 @@ def build_contract_artifact() -> dict[str, object]:
             "selected_evidence_postgres_ingestion": (
                 "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python "
                 "scripts/load_live_official_captures.py --artifact "
+                "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json"
+            ),
+            "validate_selected_evidence_without_database_write": (
+                "UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/uv run python "
+                "scripts/load_live_official_captures.py --validate-only --artifact "
                 "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json"
             ),
         },
@@ -806,6 +866,11 @@ def main() -> int:
         help="Write the no-network A202 PostgreSQL ingestion contract artifact.",
     )
     parser.add_argument(
+        "--validate-only",
+        action="store_true",
+        help="Validate the live capture artifact without database writes.",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=CONTRACT_ARTIFACT_PATH,
@@ -819,6 +884,15 @@ def main() -> int:
         write_json(args.output, payload)
         if not args.quiet:
             print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.validate_only:
+        result = validate_live_capture_file(
+            artifact_path=args.artifact,
+            allow_fixture_capture=args.allow_fixture_capture,
+        )
+        if not args.quiet:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
 
     counts = load_live_official_captures(
