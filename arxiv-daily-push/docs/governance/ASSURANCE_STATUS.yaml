@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260624-ADP-095"
-source_snapshot_hash: "sha256:e3a63ce3ac58155eb17dd1faabc0148f4d91b6dafdc296d8a37020ae6ce866a5"
+as_of_event_id: "EVENT-20260624-ADP-098"
+source_snapshot_hash: "sha256:4d340b6f3eb0c153e761b27a7feb0a401c1ce33dd8cbdb7db288a77cbac301b7"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T14:58:00+10:00"
+snapshot_event_time: "2026-06-24T17:30:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 369
-    total_active_parameters: 369
-    checked_active_formulas: 56
-    total_active_formulas: 56
+    checked_active_parameters: 389
+    total_active_parameters: 389
+    checked_active_formulas: 60
+    total_active_formulas: 60
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 369
-    total_active_parameters: 369
+    checked_active_parameters: 389
+    total_active_parameters: 389
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,7 +60,7 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 57
+    legacy_unbound_events: 60
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
@@ -79,48 +79,48 @@ delivery_readiness:
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "S2PBT01"
-  current_v7_task_id: "S2PCT02"
+  current_v7_task_id: "S2PCT05"
 next_executable_task:
-  task_id: "S2PCT03"
+  task_id: "S2PCT06"
   status: "planned"
-  reason: "Add The Lancet main-journal metadata-only no-send shadow evidence after Science shadow is stable, including Online First/PubMed relationship checks and medical article type gates before any formal D2 production inclusion."
+  reason: "Add authoritative research institution and industry technical report framework after engineering public-signal evidence is stable, before any formal D2 production inclusion."
   acceptance_ids:
-    - "ACC-S2PCT03-LANCET"
+    - "ACC-S2PCT06-REPORTS"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "Run `planned: Lancet source adapter focused tests` and attach the listed evidence refs."
+  unblock_condition: "Run `planned: report type, organization identity, interest relation, and evidence-level tests` and attach the listed evidence refs."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
       reason: "Legacy Phase 11 blocked trial task is superseded by V5/V6 Stage 1 accepted evidence; production variable enablement is tracked as a separate fail-closed operational action."
 owner_decision:
   required: true
-  decision_id: "DEC-ADP-S2PCT03-LANCET-001"
+  decision_id: "DEC-ADP-S2PCT06-REPORTS-001"
   review_id: "REVIEW8"
   project_id: "arxiv-daily-push"
-  decision_question: "是否继续 S2PCT03 / legacy S2P2T03 The Lancet 主刊 metadata-only no-send shadow evidence，同时保持 D2 source-domain acceptance 与 production inclusion false。"
-  question: "是否继续 S2PCT03 / legacy S2P2T03 The Lancet 主刊 metadata-only no-send shadow evidence，同时保持 D2 source-domain acceptance 与 production inclusion false。"
+  decision_question: "是否继续 S2PCT06 权威研究机构与产业技术报告框架，同时保持 D2 source-domain acceptance 与 production inclusion false。"
+  question: "是否继续 S2PCT06 权威研究机构与产业技术报告框架，同时保持 D2 source-domain acceptance 与 production inclusion false。"
   human_owner_role: "content_owner + product_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: continue S2PCT03 Lancet metadata-only shadow after completed Nature and Science shadow evidence"
-  option_a: "继续 The Lancet metadata-only adapter、医学文章类型门、PubMed/Online First 关系门和 no-send shadow daily，不影响现有 arXiv 本地生产路径。"
-  option_b: "暂停在 S2PCT02，只保留 Nature/Science shadow evidence；风险更低但 D2 顶刊覆盖不完整。"
+  current_recommendation: "A: continue S2PCT06 authoritative report framework after completed engineering public-signal shadow evidence"
+  option_a: "继续报告类型 taxonomy、发布主体身份、利益关系和证据级别测试，不影响现有 arXiv 本地生产路径。"
+  option_b: "暂停在 S2PCT05，只保留工程公开信号 shadow evidence；风险更低但 D2 报告来源缺口仍在。"
   option_c: "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
   options:
-    - "继续 The Lancet metadata-only adapter、医学文章类型门、PubMed/Online First 关系门和 no-send shadow daily，不影响现有 arXiv 本地生产路径。"
-    - "暂停在 S2PCT02，只保留 Nature/Science shadow evidence；风险更低但 D2 顶刊覆盖不完整。"
+    - "继续报告类型 taxonomy、发布主体身份、利益关系和证据级别测试，不影响现有 arXiv 本地生产路径。"
+    - "暂停在 S2PCT05，只保留工程公开信号 shadow evidence；风险更低但 D2 报告来源缺口仍在。"
     - "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。"
-  estimated_effort: "P1/P2; source adapter, fixtures, article-type gates, shadow queue/ledger/email preview, semantic governance, changed-only project validation"
+  estimated_effort: "P1/P2; report type taxonomy, publisher identity checks, interest relation metadata, evidence-level tests, semantic governance, changed-only project validation"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
-  expected_benefit: "在保持 arXiv 稳定运行的前提下，逐步把 D2 top-journal shadow 从 Nature/Science 扩展到医学顶刊 The Lancet。"
-  principal_risks: "医学文章类型误判、PubMed/Online First 关系错误、重复 DOI、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "Lancet source adapter tests, fixture parse, no-send shadow report, semantic extractor, project governance validator, arXiv no-regression evidence"
+  expected_benefit: "在保持 arXiv 稳定运行的前提下，把 D2 shadow 从顶刊和工程信号扩展到研究机构、实验室和企业技术报告的可审计证据层。"
+  principal_risks: "营销材料冒充研究、发布主体身份错误、利益关系不透明、证据级别误判、shadow 数据影响正式 arXiv 邮件"
+  evidence_required: "report source fixtures, publisher identity checks, interest relation tests, semantic extractor, project governance validator, arXiv no-regression evidence"
   decision_deadline_or_priority: "P1"
-  consequence_of_no_decision: "S2PCT02 Science remains completed as no-send shadow evidence, but D2 top-journal coverage stops before Lancet."
-  unblock_task_id: "S2PCT03"
+  consequence_of_no_decision: "S2PCT05 engineering public-signal remains completed as no-send shadow evidence, but D2 report source coverage is deferred."
+  unblock_task_id: "S2PCT06"
   acceptance_ids:
-    - "ACC-S2PCT03-LANCET"
+    - "ACC-S2PCT06-REPORTS"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T14:58:00+10:00"
+  last_reviewed_at: "2026-06-24T17:30:00+10:00"

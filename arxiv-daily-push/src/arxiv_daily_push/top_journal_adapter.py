@@ -22,23 +22,52 @@ NATURE_RSS_URL = "https://www.nature.com/nature.rss"
 NATURE_RESEARCH_ARTICLES_URL = "https://www.nature.com/nature/research-articles"
 SCIENCE_RSS_URL = "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
 SCIENCE_TABLE_OF_CONTENTS_URL = "https://www.science.org/loi/science?af=R"
+LANCET_CURRENT_RSS_URL = "https://www.thelancet.com/rssfeed/lancet_current.xml"
+LANCET_ONLINE_FIRST_RSS_URL = "https://www.thelancet.com/rssfeed/lancet_online.xml"
+LANCET_ONLINE_FIRST_PAGE_URL = "https://www.thelancet.com/journals/lancet/issues"
+LANCET_PUBMED_DOI_QUERY_URL_TEMPLATE = "https://pubmed.ncbi.nlm.nih.gov/?term={doi}%5Bdoi%5D"
 TOP_JOURNAL_MAX_CANARY_RECORDS = 10
-SUPPORTED_TOP_JOURNALS = ("nature", "science")
+SUPPORTED_TOP_JOURNALS = ("nature", "science", "lancet")
 SCIENCE_ACCEPTED_ARTICLE_TYPES = ("research_article", "report", "review", "perspective")
+LANCET_ACCEPTED_ARTICLE_TYPES = (
+    "article",
+    "review",
+    "seminar",
+    "series",
+    "commission",
+    "clinical_rounds",
+    "viewpoint",
+    "perspective",
+)
 _SCIENCE_ARTICLE_TYPE_MAP = {
     "research article": "research_article",
     "report": "report",
     "review": "review",
     "perspective": "perspective",
 }
+_LANCET_ARTICLE_TYPE_MAP = {
+    "article": "article",
+    "articles": "article",
+    "review": "review",
+    "seminar": "seminar",
+    "series": "series",
+    "commission": "commission",
+    "commissions": "commission",
+    "clinical rounds": "clinical_rounds",
+    "viewpoint": "viewpoint",
+    "perspective": "perspective",
+    "perspectives": "perspective",
+}
 _JOURNAL_DISPLAY_NAMES = {
     "nature": "Nature",
     "science": "Science",
+    "lancet": "The Lancet",
 }
 
 RSS_NS = "{http://purl.org/rss/1.0/}"
 DC_NS = "{http://purl.org/dc/elements/1.1/}"
 PRISM_NS = "{http://prismstandard.org/namespaces/basic/2.0/}"
+PRISM_12_NS = "{http://prismstandard.org/namespaces/1.2/basic/}"
 
 
 class TopJournalAdapterError(ValueError):
@@ -66,6 +95,8 @@ def build_top_journal_rss_url(query: TopJournalQuery) -> str:
         return NATURE_RSS_URL
     if journal == "science":
         return SCIENCE_RSS_URL
+    if journal == "lancet":
+        return LANCET_ONLINE_FIRST_RSS_URL
     raise TopJournalAdapterError("unsupported top journal")
 
 
@@ -244,6 +275,20 @@ def validate_top_journal_source_batch(batch: Mapping[str, Any]) -> list[str]:
                 errors.append(f"source_items[{index}].metadata.top_journal.journal_id must be {journal}")
             if journal == "science" and top_journal.get("article_type") not in SCIENCE_ACCEPTED_ARTICLE_TYPES:
                 errors.append(f"source_items[{index}] Science article_type must be one of {list(SCIENCE_ACCEPTED_ARTICLE_TYPES)}")
+            if journal == "lancet":
+                if top_journal.get("article_type") not in LANCET_ACCEPTED_ARTICLE_TYPES:
+                    errors.append(f"source_items[{index}] Lancet article_type must be one of {list(LANCET_ACCEPTED_ARTICLE_TYPES)}")
+                if top_journal.get("index_alignment_gate") != "pass":
+                    errors.append(f"source_items[{index}] Lancet index_alignment_gate must pass")
+                medical_indexing = top_journal.get("medical_indexing")
+                if not isinstance(medical_indexing, Mapping):
+                    errors.append(f"source_items[{index}] Lancet medical_indexing must be an object")
+                else:
+                    if medical_indexing.get("pubmed_relation_gate") not in {"doi_query_ready", "pmid_present"}:
+                        errors.append(f"source_items[{index}] Lancet pubmed_relation_gate must be doi_query_ready or pmid_present")
+                    query_url = str(medical_indexing.get("pubmed_doi_query_url") or "")
+                    if "pubmed.ncbi.nlm.nih.gov" not in query_url or "%5Bdoi%5D" not in query_url:
+                        errors.append(f"source_items[{index}] Lancet PubMed DOI query URL is required")
         canonical_id = _canonical_document_id(item)
         if canonical_id in seen_canonical_ids:
             errors.append(f"duplicate canonical_document_id in top-journal batch: {canonical_id}")
@@ -267,16 +312,18 @@ def _rss_item_to_source_item(
     article_id = _top_journal_article_id(node, journal=journal, link=link)
     if not article_id:
         return None
-    article_type_raw = _clean_text(_child_text(node, f"{DC_NS}type"))
-    article_type = _top_journal_article_type(journal=journal, raw_type=article_type_raw)
-    if not article_type:
-        return None
     title = _clean_text(_child_text(node, f"{RSS_NS}title"))
     if not title:
         raise TopJournalAdapterError(f"{journal} RSS item {article_id} missing title")
+    article_type_raw = _top_journal_article_type_raw(node, journal=journal, title=title)
+    article_type = _top_journal_article_type(journal=journal, raw_type=article_type_raw)
+    if not article_type:
+        return None
     description = _clean_text(_child_text(node, f"{RSS_NS}description"))
     summary = description or title
-    publication_date = _clean_text(_child_text(node, f"{PRISM_NS}publicationDate") or _child_text(node, f"{DC_NS}date"))
+    publication_date = _clean_text(
+        _child_text_any(node, (f"{PRISM_NS}publicationDate", f"{PRISM_12_NS}publicationDate", f"{DC_NS}date"))
+    )
     authors = [_clean_text(author.text or "") for author in node.findall(f"{DC_NS}creator") if _clean_text(author.text or "")]
     stable_id = article_id.lower()
     source_id = f"{journal}:{stable_id}"
@@ -303,6 +350,8 @@ def _rss_item_to_source_item(
             "source_family": "top_journal",
         },
     }
+    if journal == "lancet":
+        metadata["top_journal"].update(_lancet_index_metadata(article_id, link))
     return {
         "source_id": source_id,
         "source_type": "rss",
@@ -358,7 +407,7 @@ def _blocked_batch(
 
 
 def _source_policy(*, max_records: int, journal: str = "nature") -> dict[str, Any]:
-    return {
+    policy = {
         "network_fetch_enabled": True,
         "pdf_download_enabled": False,
         "full_text_download_enabled": False,
@@ -369,11 +418,30 @@ def _source_policy(*, max_records: int, journal: str = "nature") -> dict[str, An
         "official_rss_url": _official_top_journal_rss_url(journal),
         "official_research_page": _official_top_journal_page(journal),
     }
+    if journal == "lancet":
+        policy.update(
+            {
+                "official_current_issue_rss_url": LANCET_CURRENT_RSS_URL,
+                "pubmed_lookup_enabled": False,
+                "pubmed_relation_mode": "doi_query_reference_only",
+                "tdm_policy_url": "https://www.elsevier.com/tdm/tdmrep-policy.json",
+                "tdm_reservation_observed": True,
+            }
+        )
+    return policy
 
 
 def _child_text(node: ET.Element, path: str) -> str:
     child = node.find(path)
     return "" if child is None or child.text is None else child.text
+
+
+def _child_text_any(node: ET.Element, paths: Iterable[str]) -> str:
+    for path in paths:
+        text = _child_text(node, path)
+        if text:
+            return text
+    return ""
 
 
 def _nature_article_id(url: str) -> str:
@@ -386,6 +454,8 @@ def _top_journal_article_id(node: ET.Element, *, journal: str, link: str) -> str
         return _nature_article_id(link)
     if journal == "science":
         return _science_article_doi(node, link=link)
+    if journal == "lancet":
+        return _lancet_article_doi(node, link=link)
     return ""
 
 
@@ -398,11 +468,32 @@ def _science_article_doi(node: ET.Element, *, link: str) -> str:
     return match.group(1).lower() if match else ""
 
 
+def _lancet_article_doi(node: ET.Element, *, link: str) -> str:
+    identifier = _clean_text(_child_text(node, f"{DC_NS}identifier") or _child_text_any(node, (f"{PRISM_12_NS}doi", f"{PRISM_NS}doi")))
+    match = re.search(r"(10\.1016/S0140-6736\([0-9]{2}\)[A-Za-z0-9-]+)", identifier, flags=re.IGNORECASE)
+    if match:
+        return match.group(1).lower()
+    match = re.search(r"/article/(PIIS0140-6736\([0-9]{2}\)[A-Za-z0-9-]+)/", link, flags=re.IGNORECASE)
+    return f"10.1016/{match.group(1)[3:]}".lower() if match else ""
+
+
+def _top_journal_article_type_raw(node: ET.Element, *, journal: str, title: str) -> str:
+    if journal == "lancet":
+        section = _clean_text(_child_text_any(node, (f"{PRISM_12_NS}section", f"{PRISM_NS}section")))
+        if section:
+            return section
+        match = re.match(r"\[([^\]]+)\]", title)
+        return _clean_text(match.group(1)) if match else ""
+    return _clean_text(_child_text(node, f"{DC_NS}type"))
+
+
 def _top_journal_article_type(*, journal: str, raw_type: str) -> str:
     if journal == "nature":
         return "research_article_feed_item"
     if journal == "science":
         return _SCIENCE_ARTICLE_TYPE_MAP.get(_clean_text(raw_type).lower(), "")
+    if journal == "lancet":
+        return _LANCET_ARTICLE_TYPE_MAP.get(_clean_text(raw_type).lower(), "")
     return ""
 
 
@@ -411,6 +502,8 @@ def _official_top_journal_rss_url(journal: str) -> str:
         return NATURE_RSS_URL
     if journal == "science":
         return SCIENCE_RSS_URL
+    if journal == "lancet":
+        return LANCET_ONLINE_FIRST_RSS_URL
     return ""
 
 
@@ -419,7 +512,27 @@ def _official_top_journal_page(journal: str) -> str:
         return NATURE_RESEARCH_ARTICLES_URL
     if journal == "science":
         return SCIENCE_TABLE_OF_CONTENTS_URL
+    if journal == "lancet":
+        return LANCET_ONLINE_FIRST_PAGE_URL
     return ""
+
+
+def _lancet_index_metadata(doi: str, link: str) -> dict[str, Any]:
+    pubmed_url = LANCET_PUBMED_DOI_QUERY_URL_TEMPLATE.format(doi=doi)
+    pmid = ""
+    return {
+        "index_alignment_gate": "pass",
+        "license_gate": "metadata_only_pass",
+        "online_first_rss_url": LANCET_ONLINE_FIRST_RSS_URL,
+        "current_issue_rss_url": LANCET_CURRENT_RSS_URL,
+        "landing_page_relation": "lancet_article_landing_page" if "/journals/lancet/article/" in link else "unknown",
+        "medical_indexing": {
+            "pubmed_relation_gate": "pmid_present" if pmid else "doi_query_ready",
+            "pubmed_lookup_performed": False,
+            "pmid": pmid,
+            "pubmed_doi_query_url": pubmed_url,
+        },
+    }
 
 
 def _canonical_document_id(item: Mapping[str, Any]) -> str:
