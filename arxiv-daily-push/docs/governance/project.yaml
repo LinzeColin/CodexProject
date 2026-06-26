@@ -459,6 +459,7 @@ features:
       - "EVID-ADP-OWNER-STATUS"
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-ADP-S2PMT04-B005"
+      - "EVID-ADP-S2PMT05-B006"
       - "EVID-ADP-S2PMT05-B013"
       - "EVID-ADP-S2PMT05-B014"
       - "EVID-ADP-S2P1T01-PREPRINT"
@@ -10191,6 +10192,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PMT04-B005"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT05-B006"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-ADP-S2PMT05-B013"

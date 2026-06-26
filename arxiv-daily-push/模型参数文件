@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `20`
+- evidence_ref_count: `21`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -96,6 +96,18 @@
 | 降载动作 | 低磁盘时阻断新下载、阻断可重建缓存写入、保留 durable evidence、保持 cleanup dry-run |
 | 禁止动作 | 不应用删除、不删除 durable evidence、不改队列、不安装/启用 scheduler、不发送 SMTP、不上传 Release |
 | 证据入口 | [PHASE_S2PMT04_CACHE_LOW_DISK_B005.md](docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md)；[ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json](../governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json) |
+
+## S2PMT05 本地容量基线门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-098` / `adp-s2pmt05-stress-fault-time-e2e-v1` |
+| 公式 | `FORM-ADP-100` |
+| 参数 | `PARAM-ADP-910` / `S2PMT05_CAPACITY_BASELINE_MULTIPLIERS`; `PARAM-ADP-911` / `S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS`; `PARAM-ADP-912` / `S2PMT05_CAPACITY_BASELINE_MAX_ERROR_RATE` |
+| 新增门 | `capacity_baseline_model`; `load_stress_spike_soak_rows_present`; `required_multipliers_present`; `queue_age_bounded_and_recoverable`; `error_rate_within_budget` |
+| B-006 判定 | 容量基线必须有 load/stress/spike/soak 四类行，覆盖 1x/2x/5x，记录 throughput、latency、queue age、memory、disk、error rate，队列 1800 秒内有界可恢复，错误率不超过 0.001，并保留本地 24h 加速 soak 证据 |
+| 禁止动作 | 不运行真实生产压测、不发送 SMTP、不安装/启用 scheduler、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
+| 证据入口 | [PHASE_S2PMT05_CAPACITY_BASELINE_B006.md](docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md)；[ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json](../governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json) |
 
 ## S2PMT05 本地结果有效性门
 
