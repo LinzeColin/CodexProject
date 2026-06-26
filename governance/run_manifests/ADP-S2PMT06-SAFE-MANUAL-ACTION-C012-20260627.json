@@ -1,0 +1,196 @@
+{
+  "manifest_id": "ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PM",
+  "task_id": "S2PMT06",
+  "subtask_id": "S2PMT06-SAFE-MANUAL-ACTION-C012",
+  "acceptance_id": "ACC-S2PMT06-UX",
+  "finding_id": "C-012",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-27T06:34:47+10:00",
+  "change_type": "stage2_c012_safe_manual_action_dedicated_evidence_refresh",
+  "status": "dedicated_evidence_refreshed_no_closure_claim",
+  "result": "local_validation_passed_closure_not_claimed",
+  "summary": "Refreshes C-012 from aggregate S2PMT06 owner UX evidence into a dedicated safe manual action gate for retry, cancel, requeue, skip, and regenerate with preview, confirmation, receipt, idempotency, illegal-state blocking, and no production mutation.",
+  "report_status": "pass",
+  "report_hash": "17d817d6c680904ea8ea688ad9eecffefe57afa80205c9a01ce0a6584114fcf0",
+  "gates": {
+    "all_required_actions_present": true,
+    "preview_confirmation_receipt_present": true,
+    "idempotency_keys_unique": true,
+    "duplicate_click_protected": true,
+    "illegal_state_actions_disabled": true,
+    "unsupported_action_blocked": true,
+    "no_production_mutation": true
+  },
+  "safe_actions": {
+    "retry": {
+      "idempotency_key": "S2PMT06-retry-mail-key-001",
+      "allowed_current_states": [
+        "failed",
+        "degraded"
+      ],
+      "preview_required": true,
+      "impact_visible": true,
+      "confirmation_required": true,
+      "receipt_required": true,
+      "rollback_available": false,
+      "production_mutation_applied": false
+    },
+    "cancel": {
+      "idempotency_key": "S2PMT06-cancel-mail-key-001",
+      "allowed_current_states": [
+        "loading",
+        "degraded"
+      ],
+      "preview_required": true,
+      "impact_visible": true,
+      "confirmation_required": true,
+      "receipt_required": true,
+      "rollback_available": false,
+      "production_mutation_applied": false
+    },
+    "requeue": {
+      "idempotency_key": "S2PMT06-requeue-mail-key-001",
+      "allowed_current_states": [
+        "failed",
+        "stale"
+      ],
+      "preview_required": true,
+      "impact_visible": true,
+      "confirmation_required": true,
+      "receipt_required": true,
+      "rollback_available": true,
+      "production_mutation_applied": false
+    },
+    "skip": {
+      "idempotency_key": "S2PMT06-skip-mail-key-001",
+      "allowed_current_states": [
+        "failed",
+        "stale",
+        "no_update"
+      ],
+      "preview_required": true,
+      "impact_visible": true,
+      "confirmation_required": true,
+      "receipt_required": true,
+      "rollback_available": true,
+      "production_mutation_applied": false
+    },
+    "regenerate": {
+      "idempotency_key": "S2PMT06-regenerate-mail-key-001",
+      "allowed_current_states": [
+        "degraded",
+        "stale"
+      ],
+      "preview_required": true,
+      "impact_visible": true,
+      "confirmation_required": true,
+      "receipt_required": true,
+      "rollback_available": true,
+      "production_mutation_applied": false
+    }
+  },
+  "unsupported_action_probe": {
+    "status": "blocked",
+    "action": "delete",
+    "blocking_reasons": [
+      "unsupported safe action"
+    ]
+  },
+  "duplicate_click_policy": {
+    "policy_id": "adp-s2pmt06-c012-idempotent-owner-action-v1",
+    "rule": "same_action_and_idempotency_key_returns_existing_preview_receipt_without_new_send_or_queue_mutation",
+    "duplicate_click_creates_new_send": false,
+    "duplicate_click_creates_new_queue_mutation": false,
+    "receipt_reused": true
+  },
+  "illegal_state_matrix": [
+    {
+      "action": "retry",
+      "illegal_state": "sent",
+      "disabled": true,
+      "owner_explanation": "Already sent items require a separate supersede/resend gate, not a direct manual action."
+    },
+    {
+      "action": "cancel",
+      "illegal_state": "sent",
+      "disabled": true,
+      "owner_explanation": "Already sent items require a separate supersede/resend gate, not a direct manual action."
+    },
+    {
+      "action": "requeue",
+      "illegal_state": "sent",
+      "disabled": true,
+      "owner_explanation": "Already sent items require a separate supersede/resend gate, not a direct manual action."
+    },
+    {
+      "action": "skip",
+      "illegal_state": "sent",
+      "disabled": true,
+      "owner_explanation": "Already sent items require a separate supersede/resend gate, not a direct manual action."
+    },
+    {
+      "action": "regenerate",
+      "illegal_state": "sent",
+      "disabled": true,
+      "owner_explanation": "Already sent items require a separate supersede/resend gate, not a direct manual action."
+    }
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
+    "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py",
+    "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_pycompile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_owner_ux.py arxiv-daily-push/tests/test_stage2_owner_ux.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_owner_ux PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_owner_ux.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_target_tests PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_owner_ux.py arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_full_unittest PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_project_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_gov_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c012_lean PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "python3 -m json.tool over changed C-012 and S2PMT07 manifests",
+    "git diff --check"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT06 owner UX tests: 17 OK",
+    "focused C-012 plus final-gate tests: 31 OK",
+    "source/board user-center root gate tests: 14 OK",
+    "full arxiv-daily-push unittest: 559 OK",
+    "V7.2 validator: PASS",
+    "project governance validator: errors 0 warnings 0",
+    "changed-only governance semantic sync: errors 0 warnings 0",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON manifest parse: OK",
+    "git diff --check: PASS"
+  ],
+  "closure_claimed": false,
+  "p1_closure_claimed": false,
+  "independent_review_signoff_present": false,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "production_acceptance_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "scheduler_install_enabled": false,
+  "scheduler_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "public_schema_changed": false,
+  "queue_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "rollback": "Remove this C-012 phase record, manifest, focused helper/test additions, and P1 receipt references; no production runtime state was changed.",
+  "next_task": "S2PMT07_REMAINING_P1_EVIDENCE_REFRESH_OR_INDEPENDENT_REVIEW"
+}

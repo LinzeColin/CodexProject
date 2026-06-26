@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本轮只刷新 `S2PMT06` / C-006/C-007 的当前证据和 P1 receipt 路由：新证据指向专用安全配置门和 append-only 审计门，不再依赖 S2PMT06 汇总 owner UX 证据。
-- 已完成 C-006/C-007 report/validator、focused 正负例测试、phase records、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
-- 未完成项仍是 C-006/C-007 的独立复审充分性判断；本条不关闭 P1，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
+- 本轮只刷新 `S2PMT06` / C-012 的当前证据和 P1 receipt 路由：新证据指向专用安全手动动作门，不再依赖 S2PMT06 汇总 owner UX 证据。
+- 已完成 C-012 report/validator、focused 正负例测试、phase record、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
+- 未完成项仍是 C-012 的独立复审充分性判断；本条不关闭 P1，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
 
 ## 摘要
 
@@ -252,3 +252,5 @@ Task detail fields:
 | 2026-06-27T06:19:53+10:00 | stage2_safe_config_c006 | Recorded dedicated local C-006 evidence that owner-control config changes require preview, diff, impact analysis, validation, confirmation, rollback, and no production mutation. | S2PMT06-SAFE-CONFIG-C006 | EXTRACTED |
 | 2026-06-27T06:19:53+10:00 | stage2_append_only_audit_c007 | Recorded dedicated local C-007 evidence that owner-control changes require append-only revision entries and result artifacts bound to the latest config revision. | S2PMT06-APPEND-ONLY-AUDIT-C007 | EXTRACTED |
 | 2026-06-27T06:19:53+10:00 | stage2_p1_review_receipt_refresh_c006_c007 | Refreshed S2PMT07 P1 review receipt routing for C-006 and C-007 so safe-config and append-only audit evidence point to dedicated S2PMT06 evidence instead of aggregate owner UX evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007 | EXTRACTED |
+| 2026-06-27T06:34:47+10:00 | stage2_safe_manual_action_c012 | Recorded dedicated local C-012 evidence that owner manual retry, cancel, requeue, skip, and regenerate actions require preview, impact, confirmation, receipt, unique idempotency keys, illegal-state disabling, and no production mutation. | S2PMT06-SAFE-MANUAL-ACTION-C012 | EXTRACTED |
+| 2026-06-27T06:34:47+10:00 | stage2_p1_review_receipt_refresh_c012 | Refreshed S2PMT07 P1 review receipt routing for C-012 so safe manual action evidence points to dedicated S2PMT06 evidence instead of aggregate owner UX evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012 | EXTRACTED |

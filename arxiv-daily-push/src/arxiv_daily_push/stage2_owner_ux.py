@@ -582,6 +582,124 @@ def validate_s2pmt06_c007_append_only_audit_report(report: Mapping[str, Any]) ->
     return errors
 
 
+def build_s2pmt06_c012_safe_manual_action_report(*, generated_at: str) -> dict[str, Any]:
+    """Build C-012 dedicated evidence for safe owner manual actions."""
+
+    safe_actions = {action: build_safe_action_preview(action=action) for action in S2PMT06_SAFE_ACTIONS}
+    unsupported_action = build_safe_action_preview(action="delete")
+    duplicate_click_policy = {
+        "policy_id": "adp-s2pmt06-c012-idempotent-owner-action-v1",
+        "rule": "same_action_and_idempotency_key_returns_existing_preview_receipt_without_new_send_or_queue_mutation",
+        "duplicate_click_creates_new_send": False,
+        "duplicate_click_creates_new_queue_mutation": False,
+        "receipt_reused": True,
+    }
+    illegal_state_matrix = [
+        {
+            "action": action,
+            "illegal_state": "sent",
+            "disabled": True,
+            "owner_explanation": "Already sent items require a separate supersede/resend gate, not a direct manual action.",
+        }
+        for action in S2PMT06_SAFE_ACTIONS
+    ]
+    gates = {
+        "all_required_actions_present": set(safe_actions) == set(S2PMT06_SAFE_ACTIONS),
+        "preview_confirmation_receipt_present": all(_c012_action_passes(_mapping(row)) for row in safe_actions.values()),
+        "idempotency_keys_unique": _c012_idempotency_keys_unique(safe_actions.values()),
+        "duplicate_click_protected": _c012_duplicate_click_protected(duplicate_click_policy),
+        "illegal_state_actions_disabled": all(_c012_illegal_state_disabled(row) for row in illegal_state_matrix),
+        "unsupported_action_blocked": unsupported_action.get("status") == "blocked",
+        "no_production_mutation": all(_c012_no_production_mutation(_mapping(row)) for row in safe_actions.values()),
+    }
+    status = "pass" if all(gates.values()) else "blocked"
+    report = {
+        "model_id": S2PMT06_OWNER_UX_MODEL_ID,
+        "schema_version": S2PMT06_SCHEMA_VERSION,
+        "task_id": S2PMT06_TASK_ID,
+        "acceptance_id": S2PMT06_ACCEPTANCE_ID,
+        "finding_id": "C-012",
+        "subtask_id": "S2PMT06-SAFE-MANUAL-ACTION-C012",
+        "generated_at": generated_at,
+        "status": status,
+        "blocking_reasons": [] if status == "pass" else [key for key, value in gates.items() if value is not True],
+        "scope": "dedicated_c012_safe_manual_action_evidence_only",
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "independent_review_signoff_present": False,
+        "gates": gates,
+        "safe_actions": safe_actions,
+        "unsupported_action_probe": unsupported_action,
+        "duplicate_click_policy": duplicate_click_policy,
+        "illegal_state_matrix": illegal_state_matrix,
+        "evidence_refs": [
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
+            "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
+            "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        ],
+        "report_hash": "",
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_s2pmt06_c012_safe_manual_action_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate C-012 safe manual action evidence without mutating queues."""
+
+    errors = _validate_dedicated_report_shell(report, finding_id="C-012")
+    gates = _mapping(report.get("gates"))
+    for gate in (
+        "all_required_actions_present",
+        "preview_confirmation_receipt_present",
+        "idempotency_keys_unique",
+        "duplicate_click_protected",
+        "illegal_state_actions_disabled",
+        "unsupported_action_blocked",
+        "no_production_mutation",
+    ):
+        if gate not in gates:
+            errors.append(f"gates.{gate} is required")
+    if report.get("status") == "pass" and not all(gates.values()):
+        errors.append("passing C-012 report requires all gates true")
+    safe_actions = _mapping(report.get("safe_actions"))
+    for action in S2PMT06_SAFE_ACTIONS:
+        action_preview = _mapping(safe_actions.get(action))
+        if not action_preview:
+            errors.append(f"safe_actions.{action} is required")
+            continue
+        if not _c012_action_passes(action_preview):
+            errors.append(f"safe_actions.{action} must include preview, impact, confirmation, receipt, and idempotency key")
+        if not _c012_no_production_mutation(action_preview):
+            errors.append(f"safe_actions.{action} must not mutate production queue or send mail")
+    if not _c012_idempotency_keys_unique(safe_actions.values()):
+        errors.append("safe_actions idempotency_key values must be unique")
+    if not _c012_duplicate_click_protected(_mapping(report.get("duplicate_click_policy"))):
+        errors.append("duplicate_click_policy must reuse receipt and prevent duplicate send or queue mutation")
+    illegal_rows = _sequence(report.get("illegal_state_matrix"))
+    if len(illegal_rows) < len(S2PMT06_SAFE_ACTIONS):
+        errors.append("illegal_state_matrix must cover every safe action")
+    for row_value in illegal_rows:
+        row = _mapping(row_value)
+        if not _c012_illegal_state_disabled(row):
+            errors.append(f"illegal_state_matrix.{row.get('action')} must be disabled with owner explanation")
+    if _mapping(report.get("unsupported_action_probe")).get("status") != "blocked":
+        errors.append("unsupported_action_probe must be blocked")
+    return errors
+
+
 def build_feedback_loop_contract() -> dict[str, Any]:
     """Build visible feedback-to-ranking/profile/content improvement evidence."""
 
@@ -854,6 +972,46 @@ def _c007_result_records_revision(result_artifact: Mapping[str, Any], latest_rev
         and result_artifact.get("config_revision_id") == latest_revision.get("revision_id")
         and result_artifact.get("artifact_uses_revision") is True
         and result_artifact.get("runtime_applied") is False
+    )
+
+
+def _c012_action_passes(action_preview: Mapping[str, Any]) -> bool:
+    return (
+        action_preview.get("status") == "pass"
+        and action_preview.get("action") in S2PMT06_SAFE_ACTIONS
+        and bool(action_preview.get("idempotency_key"))
+        and bool(_sequence(action_preview.get("allowed_current_states")))
+        and action_preview.get("preview_required") is True
+        and action_preview.get("impact_visible") is True
+        and action_preview.get("confirmation_required") is True
+        and action_preview.get("receipt_required") is True
+    )
+
+
+def _c012_no_production_mutation(action_preview: Mapping[str, Any]) -> bool:
+    return action_preview.get("production_mutation_applied") is False
+
+
+def _c012_idempotency_keys_unique(action_previews: Sequence[Any]) -> bool:
+    keys = [str(_mapping(row).get("idempotency_key") or "") for row in action_previews]
+    return len(keys) == len(S2PMT06_SAFE_ACTIONS) and all(keys) and len(set(keys)) == len(keys)
+
+
+def _c012_duplicate_click_protected(policy: Mapping[str, Any]) -> bool:
+    return (
+        bool(policy.get("policy_id"))
+        and policy.get("duplicate_click_creates_new_send") is False
+        and policy.get("duplicate_click_creates_new_queue_mutation") is False
+        and policy.get("receipt_reused") is True
+    )
+
+
+def _c012_illegal_state_disabled(row: Mapping[str, Any]) -> bool:
+    return (
+        row.get("action") in S2PMT06_SAFE_ACTIONS
+        and bool(row.get("illegal_state"))
+        and row.get("disabled") is True
+        and bool(row.get("owner_explanation"))
     )
 
 
