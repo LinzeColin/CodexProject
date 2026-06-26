@@ -296,6 +296,8 @@ def run_local_daily(
         notification_report = deliver_notification(
             notification,
             generated_at=generated_at,
+            cycle_id=date,
+            product_id=str(delivery_package["mail_product_id"]),
             allow_send=allow_smtp_send and _stage1_text_ready(delivery_package),
             env=environment,
             smtp_factory=smtp_factory,

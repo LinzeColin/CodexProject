@@ -24,10 +24,27 @@ def execution(status: str, ready: bool) -> dict:
         "notification_report": {
             "validator_id": "adp-smtp-delivery-v1",
             "status": "sent",
+            "delivery_id": "smtp-delivery:test",
+            "mail_key": "mail-key:test",
+            "content_revision_id": "content-revision:test",
+            "message_id": "<adp-test@arxiv-daily-push.local>",
             "recipient": "linzezhang35@gmail.com",
             "delivery_ref": "email://x",
             "smtp_config": {"secret_values_logged": False, "timeout_seconds": 30},
-            "message": {"body_sha256": "abc123", "body_logged": False},
+            "message": {
+                "mail_key": "mail-key:test",
+                "mail_key_components": {
+                    "cycle_id": "2026-07-01",
+                    "product_id": "M1",
+                    "recipient": "linzezhang35@gmail.com",
+                },
+                "content_revision_id": "content-revision:test",
+                "body_sha256": "abc123",
+                "html_body_sha256": "",
+                "body_logged": False,
+                "message_id": "<adp-test@arxiv-daily-push.local>",
+                "resend_policy": "same_mail_key_and_content_revision_retry_keeps_message_id; content_revision_change_requires_explicit_supersede_or_resend",
+            },
         },
         "daily_run_report": {
             "date": "2026-07-01",
