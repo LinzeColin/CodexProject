@@ -9,12 +9,32 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PB
-- Current gate: S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION
-- Confirmed iteration count: 116
+- Current phase: S2PM
+- Current gate: S2PMT02_RESTORE_SAFETY_REMEDIATION_NO_PRODUCTION
+- Confirmed iteration count: 117
 - Reconstructed event count: 0
-- Current task: `S2PBT05` D1 source-domain qualification receipt is complete from completed `S2PBT01` / legacy `S2P1T01` bioRxiv and medRxiv real no-send replay/shadow evidence. `S2PLT01` no longer has the `s2pbt05_missing` blocker, but inherited V7.1 P0=8 and P1=37 remain open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT02-RESTORE-SAFETY` records implementation remediation evidence for inherited A-001/A-002 by constraining restore manifest database paths to the backup root and validating a temporary SQLite restore file before atomic target replacement. `S2PBT05` D1 source-domain qualification receipt is complete and `S2PLT01` no longer has the `s2pbt05_missing` blocker, but inherited V7.1 P0=8 and P1=37 remain open until independent S2PMT07 review closes them. Full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real production restore, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260626-ADP-S2PMT02-RESTORE-SAFETY-REMEDIATION`
+
+- Timestamp: `2026-06-26T18:45:00+10:00`
+- Fact level: EXTRACTED from Stage 1 runtime restore code, focused restore safety tests, FORM-ADP-043 semantic fingerprint refresh, phase record, and run manifest.
+- Base commit: `ddd4b02dd129760c314de1c86eefa5f5b4186992`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT02-RESTORE-SAFETY`; parent `S2PMT02`; acceptance `ACC-S2PMT02-ATOMIC-RECOVERY`; inherited findings targeted `A-001`, `A-002`.
+- Goal: Remediate restore path traversal and overwrite-before-validation risks while preserving V7.2 no-production boundaries.
+- Files changed: Stage 1 runtime restore helper, focused runtime recovery tests, FORM-ADP-043 semantic fingerprint, phase record, run manifest, changelog, version matrix, event log, and this ledger entry.
+- Model changes: No new model ID; existing `MOD-ADP-041` Stage 1 runtime recovery model remains in force.
+- Formula changes: Refreshed `FORM-ADP-043` implementation fingerprint and text to cover backup-root path resolution, temporary restore validation, and atomic replace.
+- Parameter changes: No parameter value changes.
+- Validation: py_compile PASS; focused `test_stage1_runtime.py` 10 OK; full arxiv-daily-push unittest 457 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only semantic governance 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS; targeted FORM-ADP-043 fingerprint refreshed; full semantic extractor was interrupted after timeout during full-table AST parsing.
+- Decisions: This is implementation remediation evidence for A-001/A-002 only. Production restore, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: Inherited V7.1 P0=8/P1=37 remain open until S2PMT07 independent review reruns and closes findings. A-010/A-011/A-014 and other inherited findings are not addressed in this run.
+- Rollback: Revert restore safety code, focused tests, FORM-ADP-043 refresh, phase record, manifest, changelog/version/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md`; `governance/run_manifests/ADP-S2PMT02-RESTORE-SAFETY-REMEDIATION-20260626.json`; `arxiv-daily-push/tests/test_stage1_runtime.py`.
+- Next step: Run final validation, commit, push, and open PR for restore safety remediation.
 
 ## Phase Matrix
 
