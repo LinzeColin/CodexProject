@@ -11,6 +11,8 @@ LEDGER = ROOT / "docs" / "owner" / "CONTENT_LEDGER.csv"
 CONTROLS = ROOT / "config" / "owner_controls.yaml"
 SOURCE_CATALOG = ROOT / "docs" / "owner" / "SOURCE_CATALOG.md"
 USER_CENTER = ROOT / "用户中心"
+PROJECT_AGENTS = ROOT / "AGENTS.md"
+PROJECT_README = ROOT / "README.md"
 CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
 DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
@@ -171,6 +173,29 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[数据源与板块健康](./数据源与板块健康.md)", one_look)
         self.assertIn("[数据源与板块健康](./数据源与板块健康.md)", key_decisions)
         self.assertIn("[数据源与板块健康](用户中心/数据源与板块健康.md)", model_params)
+
+    def test_future_source_changes_are_bound_to_user_center_sync_gate(self):
+        agents = PROJECT_AGENTS.read_text(encoding="utf-8")
+        readme = PROJECT_README.read_text(encoding="utf-8")
+
+        self.assertIn("新增、删除、重命名、启用或停用任何板块或数据源", agents)
+        required_paths = (
+            "用户中心/数据源与板块健康.md",
+            "用户中心/README.md",
+            "用户中心/一看三查.md",
+            "用户中心/关键结论与用户决策.md",
+            "docs/owner/SOURCE_CATALOG.md",
+            "模型参数文件",
+            "功能清单",
+            "开发记录",
+            "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+            "arxiv-daily-push/tests/test_owner_controls.py",
+        )
+        for required_path in required_paths:
+            with self.subTest(required_path=required_path):
+                self.assertIn(required_path, agents)
+        self.assertIn("不得关闭任务、合并主线或宣称来源变更完成", agents)
+        self.assertIn("[数据源与板块健康](./用户中心/数据源与板块健康.md)", readme)
 
     def test_model_params_disclose_current_roi_score_formula(self):
         text = MODEL_PARAMS_PAGE.read_text(encoding="utf-8")

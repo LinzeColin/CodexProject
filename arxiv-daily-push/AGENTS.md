@@ -108,6 +108,14 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   index. Do not create or maintain a second user-center index page; merge any
   useful index content into README without losing
   entry links or evidence links.
+- 后续新增、删除、重命名、启用或停用任何板块或数据源时，必须同步更新
+  `用户中心/数据源与板块健康.md`、`用户中心/README.md`、
+  `用户中心/一看三查.md`、`用户中心/关键结论与用户决策.md`、
+  `docs/owner/SOURCE_CATALOG.md`、`模型参数文件`、`功能清单` 和
+  `开发记录`。同一提交必须运行并通过
+  `arxiv-daily-push/tests/test_user_center_candidate_pool.py` 和
+  `arxiv-daily-push/tests/test_owner_controls.py`；没有同步用户中心或测试未过
+  时，不得关闭任务、合并主线或宣称来源变更完成。
 - Evidence positions in owner-facing Markdown must be clickable Markdown links,
   preferably relative links that work in GitHub. Do not leave evidence as raw
   backticked paths when the user needs to jump to it.
