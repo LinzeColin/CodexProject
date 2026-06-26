@@ -1,0 +1,70 @@
+{
+  "manifest_id": "ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT01",
+  "finding_id": "A-020",
+  "finding_title": "依赖、CI Action、SBOM 与权限最小化未形成供应链基线",
+  "phase": "S2PM",
+  "created_at": "2026-06-26T21:28:09+10:00",
+  "scope": "Harden the local S2PMT01 supply-chain baseline into a deterministic machine gate for workflow permissions, GitHub Action references, and high/critical dependency vulnerability exception approval without executing workflows or enabling production.",
+  "non_scope": "No real SMTP enablement, scheduler installation, Release upload, workflow behavior change, complete SBOM generation, full Action commit-SHA migration, online vulnerability database query, public schema, DB migration, source adapter, ranking, queue, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "real_smtp_enabled": false,
+  "scheduler_enabled": false,
+  "release_upload_enabled": false,
+  "workflow_behavior_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "supply_chain_gate": {
+    "model_id": "adp-s2pmt01-supply-chain-machine-gate-v1",
+    "workflow_audit_current_status": "pass",
+    "workflow_count": 9,
+    "action_reference_count": 44,
+    "permission_reference_count": 13,
+    "issue_count": 0,
+    "blocking_vulnerability_severities": ["critical", "high"],
+    "rules": [
+      "permissions: write-all is forbidden.",
+      "workflow permissions with write access are forbidden for the ADP local supply-chain baseline.",
+      "external GitHub Action references must be commit-SHA pinned or listed in approved_mutable_action_refs with rationale.",
+      "high and critical vulnerability findings require approved_by, expires_at, and rationale before the gate can pass.",
+      "the gate is static and local; it does not run workflows, read secrets, query online vulnerability databases, or enable production."
+    ],
+    "approved_mutable_action_refs": [
+      "actions/checkout@v4",
+      "actions/checkout@v5",
+      "actions/setup-python@v5",
+      "actions/setup-python@v6",
+      "actions/upload-artifact@v4",
+      "actions/upload-artifact@v7"
+    ]
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SUPPLY_CHAIN_A020.md",
+    "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py",
+    "arxiv-daily-push/tests/test_security_boundary.py"
+  ],
+    "validation": [
+        "py_compile PASS for security_boundary.py and test_security_boundary.py",
+        "python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py -q: 7 OK",
+        "python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q: 14 OK",
+        "python3 -m unittest discover -s arxiv-daily-push/tests -q: 522 OK",
+        "V7.2 validator: PASS",
+        "ADP project governance: errors 0 warnings 0",
+        "changed-only governance semantic: errors 0 warnings 0",
+        "governance sync validator: errors 0 warnings 0",
+        "lean check-render: drift_count 0 reference_issue_count 0",
+        "YAML/JSON/JSONL/CSV/manifest parse: OK",
+        "git diff --check: PASS",
+        "current workflow audit: status=pass workflow_count=9 action_refs=44 permission_refs=13 issues=0"
+    ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "Complete SBOM generation, online vulnerability database audit, Action commit-SHA migration, and CI enforcement remain separate future gates.",
+    "This manifest does not enable real SMTP or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}

@@ -40,9 +40,21 @@ S2PMT01_REQUIRED_SUPPLY_CHAIN_CONTROLS = (
     "dependency_inventory",
     "workflow_permission_review",
     "action_reference_inventory",
+    "workflow_audit",
+    "action_reference_policy",
+    "dependency_vulnerability_gate",
     "secret_exposure_boundary",
     "artifact_provenance_required",
 )
+S2PMT01_APPROVED_MUTABLE_ACTION_REFS = {
+    "actions/checkout@v4": "GitHub-owned action pinned to major version for existing ADP CI compatibility; production enablement still requires independent review.",
+    "actions/checkout@v5": "GitHub-owned action pinned to major version for project governance CI compatibility; production enablement still requires independent review.",
+    "actions/setup-python@v5": "GitHub-owned action pinned to major version for existing ADP CI compatibility; production enablement still requires independent review.",
+    "actions/setup-python@v6": "GitHub-owned action pinned to major version for project governance CI compatibility; production enablement still requires independent review.",
+    "actions/upload-artifact@v4": "GitHub-owned action pinned to major version for existing evidence artifact compatibility; production enablement still requires independent review.",
+    "actions/upload-artifact@v7": "GitHub-owned action pinned to major version for project governance evidence artifacts; production enablement still requires independent review.",
+}
+S2PMT01_BLOCKING_VULNERABILITY_SEVERITIES = ("critical", "high")
 
 
 def sanitize_public_url(value: str, *, allow_http: bool = True) -> str:
@@ -222,7 +234,23 @@ def validate_trust_boundary_receipt(receipt: Mapping[str, Any]) -> list[str]:
     return errors
 
 
-def build_supply_chain_baseline(*, workflow_files: Sequence[str], dependency_files: Sequence[str]) -> dict[str, Any]:
+def build_supply_chain_baseline(
+    *,
+    workflow_files: Sequence[str],
+    dependency_files: Sequence[str],
+    workflow_contents: Mapping[str, str] | None = None,
+    vulnerability_findings: Sequence[Mapping[str, Any]] | None = None,
+    approved_vulnerability_exceptions: Sequence[Mapping[str, Any]] | None = None,
+    approved_mutable_action_refs: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    action_policy = dict(S2PMT01_APPROVED_MUTABLE_ACTION_REFS)
+    if approved_mutable_action_refs:
+        action_policy.update({str(ref): str(reason) for ref, reason in approved_mutable_action_refs.items()})
+    workflow_audit = audit_workflow_supply_chain(workflow_contents or {}, approved_mutable_action_refs=action_policy)
+    vulnerability_gate = build_dependency_vulnerability_gate(
+        vulnerability_findings or [],
+        approved_exceptions=approved_vulnerability_exceptions or [],
+    )
     return {
         "model_id": S2PMT01_SECURITY_MODEL_ID,
         "task_id": S2PMT01_TASK_ID,
@@ -231,6 +259,13 @@ def build_supply_chain_baseline(*, workflow_files: Sequence[str], dependency_fil
             "dependency_inventory": sorted(str(path) for path in dependency_files),
             "workflow_permission_review": sorted(str(path) for path in workflow_files),
             "action_reference_inventory": sorted(str(path) for path in workflow_files),
+            "workflow_audit": workflow_audit,
+            "action_reference_policy": {
+                "full_commit_sha_allowed": True,
+                "mutable_action_refs_require_approval": True,
+                "approved_mutable_action_refs": action_policy,
+            },
+            "dependency_vulnerability_gate": vulnerability_gate,
             "secret_exposure_boundary": "secrets are never printed, committed, or copied into generated evidence",
             "artifact_provenance_required": True,
         },
@@ -244,9 +279,116 @@ def validate_supply_chain_baseline(baseline: Mapping[str, Any]) -> list[str]:
     for key in S2PMT01_REQUIRED_SUPPLY_CHAIN_CONTROLS:
         if not controls.get(key):
             errors.append(f"supply_chain.controls.{key} is required")
+    workflow_audit = controls.get("workflow_audit") if isinstance(controls.get("workflow_audit"), Mapping) else {}
+    for issue in workflow_audit.get("issues") or []:
+        errors.append(f"supply_chain.workflow_audit: {issue}")
+    if workflow_audit.get("status") not in {None, "pass"}:
+        errors.append("supply_chain.workflow_audit.status must be pass")
+    vulnerability_gate = (
+        controls.get("dependency_vulnerability_gate")
+        if isinstance(controls.get("dependency_vulnerability_gate"), Mapping)
+        else {}
+    )
+    for issue in vulnerability_gate.get("issues") or []:
+        errors.append(f"supply_chain.dependency_vulnerability_gate: {issue}")
+    if vulnerability_gate.get("status") not in {None, "pass"}:
+        errors.append("supply_chain.dependency_vulnerability_gate.status must be pass")
     if baseline.get("production_side_effects") is not False:
         errors.append("supply chain baseline must not create production side effects")
     return errors
+
+
+def audit_workflow_supply_chain(
+    workflow_contents: Mapping[str, str],
+    *,
+    approved_mutable_action_refs: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    """Audit workflow permissions and action refs without executing workflows."""
+
+    approvals = approved_mutable_action_refs or S2PMT01_APPROVED_MUTABLE_ACTION_REFS
+    issues: list[str] = []
+    action_refs: list[dict[str, Any]] = []
+    permission_refs: list[dict[str, Any]] = []
+    for path, text in sorted((str(path), str(text)) for path, text in workflow_contents.items()):
+        for line_number, raw_line in enumerate(text.splitlines(), start=1):
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if re.match(r"^permissions:\s*write-all\s*$", line):
+                issues.append(f"{path}:{line_number} permissions: write-all is forbidden")
+            permission_match = re.match(r"^([A-Za-z0-9_-]+):\s*(read|write|none)\s*(?:#.*)?$", line)
+            if permission_match:
+                scope, access = permission_match.groups()
+                if scope in {"contents", "actions", "checks", "deployments", "id-token", "issues", "packages", "pull-requests"}:
+                    permission_refs.append({"path": path, "line": line_number, "scope": scope, "access": access})
+                    if access == "write":
+                        issues.append(f"{path}:{line_number} permission {scope}: write is forbidden for ADP supply-chain baseline")
+            uses_match = re.match(r"^(?:-\s*)?uses:\s*([^\s#]+)", line)
+            if not uses_match:
+                continue
+            ref = uses_match.group(1).strip().strip("'\"")
+            status = "local" if ref.startswith("./") else "external"
+            reason = ""
+            if status == "external":
+                if "@" not in ref:
+                    issues.append(f"{path}:{line_number} action reference {ref} is missing an explicit ref")
+                    status = "invalid"
+                else:
+                    _action, version = ref.rsplit("@", 1)
+                    if re.fullmatch(r"[0-9a-fA-F]{40}", version):
+                        status = "sha_pinned"
+                    elif ref in approvals and approvals[ref]:
+                        status = "approved_mutable_ref"
+                        reason = str(approvals[ref])
+                    else:
+                        status = "unapproved_mutable_ref"
+                        issues.append(f"{path}:{line_number} action reference {ref} is not SHA-pinned or approved")
+            action_refs.append({"path": path, "line": line_number, "ref": ref, "status": status, "approval_reason": reason})
+    return {
+        "status": "pass" if not issues else "blocked",
+        "workflow_count": len(workflow_contents),
+        "action_refs": action_refs,
+        "permission_refs": permission_refs,
+        "issues": issues,
+    }
+
+
+def build_dependency_vulnerability_gate(
+    vulnerability_findings: Sequence[Mapping[str, Any]],
+    *,
+    approved_exceptions: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    approved = {str(item.get("finding_id") or item.get("id")): item for item in approved_exceptions if item.get("finding_id") or item.get("id")}
+    issues: list[str] = []
+    normalized_findings: list[dict[str, Any]] = []
+    normalized_exceptions: list[dict[str, Any]] = []
+    for exception in approved.values():
+        exception_id = str(exception.get("finding_id") or exception.get("id") or "")
+        missing = [key for key in ("approved_by", "expires_at", "rationale") if not str(exception.get(key) or "").strip()]
+        if missing:
+            issues.append(f"vulnerability exception {exception_id} missing {', '.join(missing)}")
+        normalized_exceptions.append(
+            {
+                "finding_id": exception_id,
+                "approved_by": str(exception.get("approved_by") or ""),
+                "expires_at": str(exception.get("expires_at") or ""),
+                "rationale": str(exception.get("rationale") or ""),
+            }
+        )
+    for finding in vulnerability_findings:
+        finding_id = str(finding.get("finding_id") or finding.get("id") or "")
+        severity = str(finding.get("severity") or "").lower()
+        package = str(finding.get("package") or finding.get("dependency") or "")
+        normalized_findings.append({"finding_id": finding_id, "severity": severity, "package": package})
+        if severity in S2PMT01_BLOCKING_VULNERABILITY_SEVERITIES and finding_id not in approved:
+            issues.append(f"{severity} vulnerability {finding_id or '<missing-id>'} for {package or '<unknown-package>'} has no approved exception")
+    return {
+        "status": "pass" if not issues else "blocked",
+        "blocking_severities": list(S2PMT01_BLOCKING_VULNERABILITY_SEVERITIES),
+        "findings": normalized_findings,
+        "approved_exceptions": normalized_exceptions,
+        "issues": issues,
+    }
 
 
 def _validate_claim_refs(errors: list[str], value: Any, allowed: set[str], path: str) -> None:
