@@ -65,6 +65,12 @@ rules in `docs/governance/STANDARD.md`.
   belong to scheduled, manual, release, or root-governance gates.
 - Done means the focused tests pass and changed-scope Project Governance passes
   when governed files change.
+- Development runs must not leave open PRs as their delivery state. Before a
+  run closes, every PR the agent created, reopened, or took over must be merged
+  or closed. Stale, conflicting, superseded, or draft PRs that cannot be safely
+  merged must be closed with the reason recorded; if the content is still
+  needed, re-cut it from current `main` as a clean branch instead of keeping the
+  old PR open.
 - Locking a new root contract is not permission to enable production side
   effects. SMTP, schedules, Release uploads, paid APIs, and source inclusion in
   formal delivery still require their own task gate and evidence.

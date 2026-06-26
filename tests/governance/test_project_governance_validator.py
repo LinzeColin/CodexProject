@@ -4795,6 +4795,12 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
         self.assertFalse(validation.errors)
 
+    def test_root_agents_requires_no_open_pr_delivery_state(self) -> None:
+        text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("must not leave open PRs as their delivery state", text)
+        self.assertIn("Stale, conflicting, superseded, or draft PRs", text)
+        self.assertIn("re-cut it from current `main` as a clean branch", text)
+
     def test_review8_manifest_only_root_change_does_not_require_test_marker(self) -> None:
         sync = load_sync_module()
         changed = ["governance/run_manifests/GOV-REVIEW8-TEST.json"]

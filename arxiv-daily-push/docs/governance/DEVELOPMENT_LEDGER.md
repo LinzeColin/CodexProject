@@ -3231,3 +3231,19 @@ None for this new project baseline.
 - Rollback: Revert this binding receipt event, manifest, `VERSION_MATRIX.current_iteration`, generated status refresh, and this ledger entry; no runtime production state was changed.
 - Evidence: `governance/run_manifests/ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING-20260626.json`; `https://github.com/LinzeColin/CodexProject/pull/243`; `arxiv-daily-push/用户中心/README.md`; `arxiv-daily-push/用户中心/人类可读信息索引.md`.
 - Next step: Keep owner-facing status updates on the shallow GitHub user center and continue S2PMT07/S2PLT blocked-gate evidence work without production enablement.
+
+### `ITER-20260626-ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE`
+
+- Timestamp: `2026-06-26T23:10:00+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from user high-priority risk sync, local runner implementation, focused regression tests, shallow GitHub user-center page review, and owner deep-doc pointer cleanup.
+- Status: blocked gate recorded, no production side effects.
+- Task IDs: `LOCAL-RUNNER-USER-CENTER-SYNC-GATE`, `S2PIT01`, `S2PJT02`, `S2PJT03`, `S2PK`.
+- Goal: Make shallow GitHub user-center learning snapshot sync a hard local daily runner gate before daily pass or real SMTP send attempts.
+- Decisions: `local_runner` now writes/syncs `用户中心/复习行动与收益.md` from S2PJT02/S2PJT03 reports and requires `user_center_sync_ready=true` in `validate_local_runner_report`; missing reports, failed write, failed report status, missing ready flags, or remaining `待今日运行快照写入` fields block daily pass and convert SMTP intent into a blocked notification report with no real send attempt.
+- Boundaries: This run does not replay email, enable SMTP, install or enable scheduler, upload Release assets, change source adapters or ranking, change public schema or DB, mutate production queues, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, accept S2PLT02/S2PLT04/S2PMT07, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Root governance: The root `AGENTS.md` now requires development runs to merge or close every created/inherited PR before closeout; stale, conflicting, superseded, or draft PRs must be closed with reason and re-cut from current `main` if still needed.
+- Remaining risks: The total scheduled-send denominator (`今日已发送 / 总应发送`) still needs a separate config/schedule-derived source of truth; inherited P0=8/P1=37 and final production gates remain blocked.
+- Rollback: Revert local runner sync gate code, focused tests, owner pointer page cleanup, MOD-ADP-106/FORM-ADP-108/PARAM-ADP-897..903 registrations, phase record, manifests, and this ledger entry; no production runtime state was enabled.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md`; `governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json`; `governance/run_manifests/GOV-ROOT-NO-OPEN-PR-RULE-20260626.json`; `arxiv-daily-push/tests/test_local_runner.py`.
+- Next step: Derive the daily planned-send denominator from the authoritative schedule/config and expose it in the shallow GitHub user center without enabling production SMTP/scheduler.

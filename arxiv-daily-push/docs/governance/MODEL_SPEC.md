@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 105
-- formula_count: 107
-- parameter_count: 896
+- model_count: 106
+- formula_count: 108
+- parameter_count: 903
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -18,6 +18,16 @@ Fact levels follow `docs/governance/STANDARD.md`.
   change active model algorithms, formulas, parameter values, scoring behavior,
   ranking behavior, Claim Ledger gates, SMTP behavior, Release behavior,
   scheduler behavior, or media behavior.
+
+- `LOCAL-RUNNER-USER-CENTER-SYNC-GATE` adds `MOD-ADP-106`. It requires
+  `local_runner` daily pass and real SMTP attempts to depend on successful
+  shallow GitHub user-center learning snapshot sync from S2PJT02/S2PJT03
+  reports. Missing reports, failed write, or remaining
+  `待今日运行快照写入` fields block the daily report and block SMTP send
+  attempts. It does not enable SMTP, install scheduler, upload Release,
+  change public schema or DB, mutate production queues, change source adapters
+  or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1,
+  enable DAILY_OPERATION, or claim integrated production acceptance.
 
 - `S1P5T04` imported the V6 task-numbering roadmap and recorded two
   controlled GitHub/cloud-runner Gmail SMTP send artifacts from run

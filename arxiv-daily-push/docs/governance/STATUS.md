@@ -14,9 +14,9 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `105 / 107 / 896`
-- Active formulas/parameters: `107 / 879`
+- Phase/Gate: `S2PL / LOCAL_RUNNER_USER_CENTER_SYNC_REQUIRED_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `106 / 108 / 903`
+- Active formulas/parameters: `108 / 886`
 - Machine checked formulas/parameters: `107 / 879`
 
 ## Assurance
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION`
+- Release gate: `LOCAL_RUNNER_USER_CENTER_SYNC_REQUIRED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -43,6 +43,7 @@
 - V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
 - Open audit blockers: `P0=8 / P1=37`
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed`
+- Daily runner owner gate: `user_center_sync_ready=true required; missing S2PJT02/S2PJT03 reports or remaining 待今日运行快照写入 blocks pass and SMTP attempt`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
 - Next governance task: `S2PMT07`

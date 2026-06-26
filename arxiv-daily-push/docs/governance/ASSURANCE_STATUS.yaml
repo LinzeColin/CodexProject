@@ -17,9 +17,9 @@ dimensions:
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
     checked_active_parameters: 879
-    total_active_parameters: 879
+    total_active_parameters: 886
     checked_active_formulas: 107
-    total_active_formulas: 107
+    total_active_formulas: 108
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -28,7 +28,7 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     checked_active_parameters: 879
-    total_active_parameters: 879
+    total_active_parameters: 886
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION"
+  release_gate: "LOCAL_RUNNER_USER_CENTER_SYNC_REQUIRED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

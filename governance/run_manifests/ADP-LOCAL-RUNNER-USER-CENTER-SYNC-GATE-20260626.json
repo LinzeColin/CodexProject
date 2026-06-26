@@ -1,0 +1,54 @@
+{
+  "manifest_id": "ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "LOCAL-RUNNER-USER-CENTER-SYNC-GATE",
+  "acceptance_id": "ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "created_at": "2026-06-26T18:45:19+10:00",
+  "change_type": "local_runner_human_readiness_gate",
+  "status": "local_gate_enforced",
+  "summary": "Local daily runner pass now requires shallow GitHub user-center learning snapshot synchronization from real S2PJT02/S2PJT03 reports; missing or pending sync blocks daily readiness and prevents real SMTP send.",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md",
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+    "arxiv-daily-push/tests/test_local_runner.py"
+  ],
+  "gate_fields": {
+    "user_center_sync_ready_required_for_daily_pass": true,
+    "missing_sync_blocks_report": true,
+    "pending_snapshot_fields_block_report": true,
+    "real_smtp_blocked_before_send_when_sync_missing": true,
+    "dry_run_preview_still_allowed": true
+  },
+  "owner_surface": {
+    "primary_entry": "arxiv-daily-push/用户中心/README.md",
+    "learning_snapshot_page": "arxiv-daily-push/用户中心/复习行动与收益.md",
+    "local_adp_files_are_evidence_only": true
+  },
+  "forbidden_side_effects": {
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "daily_operation_enabled": false,
+    "integrated_production_accepted": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false
+  },
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_user_center_gate_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/local_runner.py arxiv-daily-push/tests/test_local_runner.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_user_center_gate_test2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/root_no_open_pr_test3 python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_root_agents_requires_no_open_pr_delivery_state -q"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused local runner tests: 7 OK",
+    "root no-open-PR rule test: 1 OK"
+  ],
+  "rollback": "Revert local_runner user-center sync gate, focused tests, phase record, manifest, and three-base-file references."
+}

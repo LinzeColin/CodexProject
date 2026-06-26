@@ -1,0 +1,21 @@
+{
+  "manifest_id": "GOV-ROOT-NO-OPEN-PR-RULE-20260626",
+  "project_id": "root-governance",
+  "task_id": "ROOT-GOVERNANCE-NO-OPEN-PR",
+  "created_at": "2026-06-26T18:45:19+10:00",
+  "change_type": "root_agent_contract_update",
+  "status": "rule_recorded",
+  "summary": "Records the user requirement that development agents must not leave open PRs as delivery state; stale, conflict, superseded, or draft PRs must be merged or closed, and any still-needed content must be re-cut from current main as a clean branch.",
+  "evidence_refs": [
+    "AGENTS.md"
+  ],
+  "open_pr_delivery_allowed": false,
+  "required_agent_closeout": [
+    "merge_owned_or_taken_over_prs_when_safe",
+    "close_stale_conflict_superseded_or_draft_prs_with_reason",
+    "do_not_use_open_pr_as_delivery_state",
+    "recut_needed_content_from_current_main_as_clean_branch"
+  ],
+  "production_side_effects": false,
+  "rollback": "Revert the root AGENTS.md no-open-PR rule and this manifest only."
+}
