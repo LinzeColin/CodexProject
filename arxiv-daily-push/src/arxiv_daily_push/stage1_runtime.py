@@ -711,17 +711,18 @@ def _scheduler_templates(platform: str, project_root: Path, state_dir: Path, *, 
     if platform == "linux":
         if uninstall:
             return [{"filename": "linux-uninstall.sh", "content": "systemctl --user disable --now adp-stage1.tick.timer\n", "task": "uninstall"}]
-        service = f"[Service]\nType=oneshot\nWorkingDirectory={project_root}\nExecStart=/usr/bin/env PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push tick --state-dir {state_dir} --generated-at \"$ADP_GENERATED_AT\" --json\n"
+        env_path = "%h/.config/arxiv-daily-push/adp-stage1.env"
+        service = _linux_systemd_tick_service(project_root=project_root, state_dir=state_dir, environment_file=env_path)
+        env = _linux_systemd_environment(project_root=project_root, generated_at=generated_at)
         timer = "[Timer]\nOnBootSec=5min\nOnUnitActiveSec=30min\nPersistent=true\n"
-        return [{"filename": "adp-stage1-tick.service", "content": service, "task": "tick"}, {"filename": "adp-stage1-tick.timer", "content": timer, "task": "tick"}]
+        return [
+            {"filename": "adp-stage1.env", "content": env, "task": "tick"},
+            {"filename": "adp-stage1-tick.service", "content": service, "task": "tick"},
+            {"filename": "adp-stage1-tick.timer", "content": timer, "task": "tick"},
+        ]
     if uninstall:
         return [{"filename": "windows-uninstall.ps1", "content": "Unregister-ScheduledTask -TaskName 'ADP Stage1 Tick' -Confirm:$false\n", "task": "uninstall"}]
-    ps = (
-        "$Action = New-ScheduledTaskAction -Execute 'python3' "
-        f"-Argument '-m arxiv_daily_push tick --state-dir {state_dir} --generated-at $env:ADP_GENERATED_AT --json'\n"
-        "$Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 30)\n"
-        "# Dry-run template only; do not register on the current low-resource machine.\n"
-    )
+    ps = _windows_scheduler_tick_script(state_dir=state_dir)
     return [{"filename": "windows-install.ps1", "content": ps, "task": "tick"}]
 
 
@@ -747,6 +748,102 @@ def _macos_launchd_tick_plist(*, label: str, project_root: Path, state_dir: Path
         ],
     }
     return plistlib.dumps(payload, fmt=plistlib.FMT_XML, sort_keys=False).decode("utf-8")
+
+
+def _linux_systemd_tick_service(*, project_root: Path, state_dir: Path, environment_file: str) -> str:
+    args = [
+        "/usr/bin/env",
+        "python3",
+        "-m",
+        "arxiv_daily_push",
+        "tick",
+        "--state-dir",
+        str(state_dir),
+        "--generated-at",
+        "${ADP_GENERATED_AT}",
+        "--json",
+    ]
+    return "\n".join(
+        [
+            "[Unit]",
+            "Description=ADP Stage 1 tick dry-run template",
+            "",
+            "[Service]",
+            "Type=oneshot",
+            f"WorkingDirectory={_systemd_unit_value(str(project_root))}",
+            f"EnvironmentFile={_systemd_unit_value(environment_file)}",
+            "ExecStart=" + " ".join(_systemd_exec_arg(arg) for arg in args),
+            "",
+        ]
+    )
+
+
+def _linux_systemd_environment(*, project_root: Path, generated_at: str) -> str:
+    return "\n".join(
+        [
+            "# Dry-run template only; copy to ~/.config/arxiv-daily-push/adp-stage1.env before any real scheduler install.",
+            f"PYTHONPATH={_systemd_env_value(str(project_root / 'arxiv-daily-push' / 'src'))}",
+            f"ADP_GENERATED_AT={_systemd_env_value(generated_at)}",
+            "",
+        ]
+    )
+
+
+def _windows_scheduler_tick_script(*, state_dir: Path) -> str:
+    args = [
+        "-m",
+        "arxiv_daily_push",
+        "tick",
+        "--state-dir",
+        str(state_dir),
+        "--generated-at",
+        "$env:ADP_GENERATED_AT",
+        "--json",
+    ]
+    arg_lines = "\n".join(
+        f"  {_powershell_single_quote(arg)}{',' if index < len(args) - 1 else ''}"
+        for index, arg in enumerate(args)
+    )
+    return "\n".join(
+        [
+            "function Join-CommandArgument([string[]]$Arguments) {",
+            "  ($Arguments | ForEach-Object {",
+            "    $escaped = $_ -replace '\"', '\\\"'",
+            "    if ($escaped -match '[\\s;&\"]') { '\"' + $escaped + '\"' } else { $escaped }",
+            "  }) -join ' '",
+            "}",
+            "$ArgumentList = @(",
+            arg_lines,
+            ")",
+            "$Action = New-ScheduledTaskAction -Execute 'python3' -Argument (Join-CommandArgument $ArgumentList)",
+            "$Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 30)",
+            "# Dry-run template only; do not register on the current low-resource machine.",
+            "",
+        ]
+    )
+
+
+def _systemd_unit_value(value: str) -> str:
+    if not value or any(char.isspace() or char in {'"', '\\'} for char in value):
+        return _systemd_exec_arg(value)
+    return value
+
+
+def _systemd_exec_arg(value: str) -> str:
+    if value and not any(char.isspace() or char in {'"', '\\', ';', '&'} for char in value):
+        return value
+    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _systemd_env_value(value: str) -> str:
+    cleaned = value.replace("\n", "")
+    if cleaned and not any(char.isspace() or char in {'"', '\\', ';', '&', '#'} for char in cleaned):
+        return cleaned
+    return '"' + cleaned.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _powershell_single_quote(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
 
 
 def _manifest_file(role: str, path: Path, *, source_path: Path) -> dict[str, Any]:

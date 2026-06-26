@@ -50,4 +50,6 @@ This is local A-013 remediation evidence for the Stage 1 scheduler dry-run templ
 
 ## Next
 
-Run final validation, commit, push, and open PR. After merge, independent `S2PMT07` still needs to review inherited A-013 closure together with the remaining P0/P1 blockers.
+Continue direct-main remediation without opening PRs. Independent `S2PMT07`
+still needs to review inherited A-013 closure together with the remaining P0/P1
+blockers.
