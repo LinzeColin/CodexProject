@@ -1,0 +1,55 @@
+{
+  "run_id": "ADP-USER-CENTER-READABLE-CN-20260626",
+  "project": "arxiv-daily-push",
+  "timestamp": "2026-06-26T17:17:15+10:00",
+  "task_type": "owner_readability_repair",
+  "language_policy": {
+    "default_language": "Chinese",
+    "allowed_non_chinese_tokens": [
+      "product names",
+      "task IDs",
+      "contract IDs",
+      "file paths",
+      "command names",
+      "protocol/status literals required for evidence"
+    ]
+  },
+  "changed_scope": {
+    "owner_center": "Rewritten for Chinese-first, conclusion-first, action-first reading.",
+    "file_names": "Renamed avoidable English owner-center page names to Chinese names.",
+    "project_readme": "Translated remaining owner-facing English prose into Chinese.",
+    "three_baseline_files": "Added Chinese quick-read sections and updated user-center record wording."
+  },
+  "no_production_side_effects": {
+    "email_code_changed": false,
+    "public_schema_changed": false,
+    "scheduler_changed": false,
+    "queue_changed": false,
+    "smtp_settings_changed": false,
+    "current_contract_switched": false
+  },
+  "owner_readable_entries": [
+    "arxiv-daily-push/用户中心/README.md",
+    "arxiv-daily-push/用户中心/一看三查.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+    "arxiv-daily-push/用户中心/复习行动与收益.md",
+    "arxiv-daily-push/用户中心/关键结论与用户决策.md",
+    "arxiv-daily-push/用户中心/路线图与停止门.md",
+    "arxiv-daily-push/用户中心/人类可读信息索引.md",
+    "arxiv-daily-push/README.md",
+    "arxiv-daily-push/功能清单",
+    "arxiv-daily-push/开发记录",
+    "arxiv-daily-push/模型参数文件"
+  ],
+  "known_limitations": [
+    "The historical body of the three baseline files still preserves task IDs, command names, model IDs, parameter IDs, and legacy extracted event literals for audit traceability.",
+    "Daily review/action/asset/ROI counts are still not automatically refreshed into the GitHub user center."
+  ],
+  "validation_plan": [
+    "git diff --check",
+    "JSON parse for this manifest",
+    "Markdown relative-link validation for user center and project README",
+    "Old English owner-center filename reference scan",
+    "User-center file listing check"
+  ]
+}
