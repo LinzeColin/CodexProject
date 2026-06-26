@@ -34,6 +34,28 @@ Stage 1 source files:
 | Model and parameter file | `模型参数文件` |
 | Legacy compatibility runtime | `大数据模拟器/qbvs` |
 
+## Stage 2
+
+Stage 2 builds the data-source and low-operation sync MVP contract. It adds:
+
+- full registry for 支付宝日常、支付宝基金、Moomoo AU、中国券商、ABC Bullion、CBA、微信、其他平台
+- CBA CSV parser and watch folder detection
+- Alipay daily CSV/ZIP parser and low-confidence review queue
+- non-CSV contracts for 支付宝基金、中国券商、ABC Bullion
+- Moomoo AU read-only OpenD/API contract that reuses existing QBVS references
+- WeChat ZIP/CSV/XLS/XLSX import contract
+- reconciliation contracts for fund and bullion triangles
+
+Stage 2 source files:
+
+| Purpose | Path |
+| --- | --- |
+| Data source registry | `src/pfi_v02/stage2_registry.py` |
+| CBA and Alipay import pipeline | `src/pfi_v02/stage2_import.py` |
+| Non-CSV and reconciliation contracts | `src/pfi_v02/stage2_contracts.py` |
+| Stage 2 record | `docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md` |
+| Stage 2 tests | `tests/test_stage2_*.py` |
+
 ## Boundaries
 
 - No automatic real-money trading.
@@ -46,5 +68,6 @@ Stage 1 source files:
 
 ```bash
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q
 cd 大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 ```

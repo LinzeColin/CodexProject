@@ -28,6 +28,9 @@ Registered PFI path: `PFI/`.
 PFI V0.2 Stage 1 contract:
 `PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md`.
 
+PFI V0.2 Stage 2 contract:
+`PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md`.
+
 ## Clone
 
 ```bash

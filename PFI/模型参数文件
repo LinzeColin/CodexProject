@@ -13,6 +13,10 @@
 | stage1_core_model_contract | `src/pfi_v02/core_models.py` |
 | stage1_classification_rules | `src/pfi_v02/classification_rules.py` |
 | stage1_record | `docs/pfi_v02/STAGE1_CORE_SKELETON.md` |
+| stage2_registry_contract | `src/pfi_v02/stage2_registry.py` |
+| stage2_import_contract | `src/pfi_v02/stage2_import.py` |
+| stage2_non_csv_contracts | `src/pfi_v02/stage2_contracts.py` |
+| stage2_record | `docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md` |
 | execution_mode | local-first, research-only, review-first |
 | live_trading | disabled |
 | trading_password | forbidden |
@@ -61,3 +65,13 @@ LedgerEvent = 钱发生了什么
 - Alipay fund subscription/redemption are fund investment events.
 - ABC Bullion gold/silver buy/sell are bullion asset events.
 - Credit-card repayment has a dedupe key and is not counted as new consumption.
+
+## Stage 2 Data Source Parameters
+
+- Required source ids: alipay_daily, alipay_fund, moomoo_au, cn_broker, abc_bullion, cba_bank, wechat_pay, other_connector.
+- Non-CSV primary sources: alipay_fund, cn_broker, abc_bullion.
+- CBA parser version: cba_csv_v1.
+- Alipay parser versions: alipay_bill_csv_v1, alipay_bill_zip_v1.
+- Low-confidence review choices: A accept suggested classification, B mark as transfer, C mark as consumption, D keep pending.
+- Moomoo read-only reuse refs: `PFI/大数据模拟器/qbvs/datasources.py`, `PFI/大数据模拟器/qbvs/moomoo_batch.py`.
+- New connectors use plugin profile and field mapping; they must not rewrite the core ledger.

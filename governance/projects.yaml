@@ -15,11 +15,20 @@ projects:
       - path: PFI/大数据模拟器
         maps_to: 投资管理 > 策略实验室 / 大数据模拟器
         active_runtime: PFI/大数据模拟器/qbvs
-        move_policy: do_not_move_during_stage1
+        move_policy: do_not_move_during_stage2
     stage1_contract:
       - PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md
       - PFI/src/pfi_v02/stage1_ia.py
       - PFI/tests/test_stage1_ia_contract.py
+    stage2_contract:
+      - PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md
+      - PFI/src/pfi_v02/stage2_registry.py
+      - PFI/src/pfi_v02/stage2_import.py
+      - PFI/src/pfi_v02/stage2_contracts.py
+      - PFI/tests/test_stage2_data_source_registry.py
+      - PFI/tests/test_stage2_cba_csv_import.py
+      - PFI/tests/test_stage2_alipay_import.py
+      - PFI/tests/test_stage2_non_csv_contracts.py
     changed_scope_check:
       base_ref: origin/main
       paths:
@@ -32,9 +41,12 @@ projects:
         - git diff --check
     validation:
       - cd PFI && PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
+      - cd PFI && PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q
       - cd PFI/大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 boundaries:
-  pfi_stage1_no_runtime_move: true
+  pfi_stage2_no_runtime_move: true
+  pfi_non_csv_sources_first_class: true
+  pfi_low_confidence_records_require_review: true
   pfi_no_trading_password: true
   pfi_no_automatic_real_money_orders: true
   pfi_excluded_external_payment_project_dependency: false
