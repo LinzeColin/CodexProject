@@ -107,7 +107,9 @@ from .stage1_runtime import (
     validate_stage1_runtime_report,
 )
 from .stage2_replay_gate import (
+    build_s2plt01_independent_replay_review_report,
     build_s2plt01_replay_payload_execution_report,
+    validate_s2plt01_independent_replay_review_report,
     validate_s2plt01_replay_payload_execution_report,
 )
 from .stage2_sources import (
@@ -1123,6 +1125,24 @@ def build_parser() -> argparse.ArgumentParser:
     )
     s2plt01_replay_execution.add_argument("--evidence-ref", action="append", default=[], help="Durable evidence ref. May be repeated.")
     s2plt01_replay_execution.add_argument("--json", action="store_true", help="Print JSON replay payload execution report.")
+
+    s2plt01_independent_review = subparsers.add_parser(
+        "stage2-independent-replay-review",
+        help="Build S2PLT01 no-production independent replay review evidence from a replay execution report.",
+    )
+    s2plt01_independent_review.add_argument("--execution-report", required=True, help="S2PLT01 replay payload execution report JSON.")
+    s2plt01_independent_review.add_argument("--review-id", required=True, help="Stable independent review package ID.")
+    s2plt01_independent_review.add_argument("--generated-at", required=True, help="Review timestamp.")
+    s2plt01_independent_review.add_argument("--reviewer-id", required=True, help="Reviewer identity label.")
+    s2plt01_independent_review.add_argument("--reviewer-role", required=True, help="Reviewer role label.")
+    s2plt01_independent_review.add_argument(
+        "--reviewer-involved-in-implementation",
+        action="store_true",
+        help="Set only when the reviewer was involved in S2PLT01 implementation; this blocks the review package.",
+    )
+    s2plt01_independent_review.add_argument("--ci-evidence-ref", action="append", default=[], help="CI/workflow evidence ref. May be repeated.")
+    s2plt01_independent_review.add_argument("--evidence-ref", action="append", default=[], help="Durable review evidence ref. May be repeated.")
+    s2plt01_independent_review.add_argument("--json", action="store_true", help="Print JSON independent replay review report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -3259,6 +3279,31 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if report["payload_execution_package_passed"] and not errors else 2
+    if args.command == "stage2-independent-replay-review":
+        execution_report = load_json_mapping(args.execution_report)
+        report = build_s2plt01_independent_replay_review_report(
+            review_id=args.review_id,
+            generated_at=args.generated_at,
+            reviewer_id=args.reviewer_id,
+            reviewer_role=args.reviewer_role,
+            reviewer_involved_in_s2plt01_implementation=args.reviewer_involved_in_implementation,
+            replay_execution_report=execution_report,
+            ci_evidence_refs=list(args.ci_evidence_ref or []),
+            evidence_refs=list(args.evidence_ref or []),
+        )
+        errors = validate_s2plt01_independent_replay_review_report(report)
+        output = {**report, "report_validation_errors": errors} if errors else report
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- review_package_passed: {report.get('review_package_passed')}")
+            print(f"- review_hash: {report.get('review_hash')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["review_package_passed"] and not errors else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)

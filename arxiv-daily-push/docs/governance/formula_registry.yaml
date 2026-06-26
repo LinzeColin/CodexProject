@@ -5759,7 +5759,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT01 full-system replay entry precheck remains blocked unless S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05 dependencies are complete, inherited V7.1 P0/P1 findings are zero, a deterministic no-production replay payload envelope has required metadata, evidence mode, evidence refs, payload hash, all forbidden production/CURRENT/V7 side-effect flags false, and a provided replay evidence payload proves 30 independent replay days, 120 M1-M4 EMAIL_LEARNING_V1 no-send mail previews, all D1-D4 source domains, B1-B6 reading boards, D1-D4 terminal source states, zero future leakage, zero replay P0/P1 counters, non-empty evidence refs, no production acceptance is claimed, and all production/CURRENT/V7 baseline side-effect flags remain false."
+    expression: "S2PLT01 full-system replay entry precheck remains blocked unless S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05 dependencies are complete, inherited V7.1 P0/P1 findings are zero, a deterministic no-production replay payload envelope has required metadata, evidence mode, evidence refs, payload hash, all forbidden production/CURRENT/V7 side-effect flags false, a provided replay evidence payload proves 30 independent replay days, 120 M1-M4 EMAIL_LEARNING_V1 no-send mail previews, all D1-D4 source domains, B1-B6 reading boards, D1-D4 terminal source states, zero future leakage, zero replay P0/P1 counters, non-empty evidence refs, no production acceptance is claimed, all production/CURRENT/V7 baseline side-effect flags remain false, and an independent no-production replay review receipt confirms reviewer independence, CI evidence refs, evidence refs, valid execution report binding, retained inherited P0/P1 blockers, and no acceptance claim."
     variables:
       -
         name: "dependency_state"
@@ -5786,9 +5786,14 @@ formulas:
         data_type: "object"
         unit: "execution package"
         input_domain: "execution id, validated replay payload, entry precheck report, validation errors, blocking reasons, evidence refs, and execution hash"
-    constraints: "S2PLT01 entry precheck and replay payload execution package are fail-closed only. They must not execute production replay, accept S2PLT01, complete S2PLT04, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, mutate production queue, change public schema or DB, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
-    missing_policy: "Missing any required dependency, nonzero inherited P0/P1, missing or failed replay evidence status, missing 30-day replay evidence, missing 120 M1-M4 EMAIL_LEARNING_V1 mail previews, missing source terminal states, nonzero or unknown future leakage, nonzero replay P0/P1 counters, missing evidence refs, or any forbidden production flag blocks S2PLT01."
-    output_range: "S2PLT01 entry precheck report and no-production replay payload execution report with pass or blocked status, required dependencies, inherited blocker counts, replay evidence state, validated payload, payload/precheck validation errors, blocking reasons, deterministic report/execution hashes, production_acceptance_claimed false, and all forbidden flags false."
+      -
+        name: "independent_replay_review"
+        data_type: "object"
+        unit: "independent review receipt"
+        input_domain: "review id, reviewer id, reviewer role, reviewer independence, CI evidence refs, evidence refs, replay execution validation, retained inherited P0/P1 blockers, review hash, and all no-production flags"
+    constraints: "S2PLT01 entry precheck, replay payload execution package, and independent replay review receipt are fail-closed only. They must not execute production replay, accept S2PLT01, complete S2PLT04, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, mutate production queue, change public schema or DB, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
+    missing_policy: "Missing any required dependency, nonzero inherited P0/P1, missing or failed replay evidence status, missing 30-day replay evidence, missing 120 M1-M4 EMAIL_LEARNING_V1 mail previews, missing source terminal states, nonzero or unknown future leakage, nonzero replay P0/P1 counters, missing evidence refs, missing independent reviewer identity/role/independence, missing CI evidence refs, missing review evidence refs, invalid execution report binding, or any forbidden production flag blocks S2PLT01."
+    output_range: "S2PLT01 entry precheck report, no-production replay payload execution report, and independent replay review receipt with pass or blocked status, required dependencies, inherited blocker counts, replay evidence state, validated payload, payload/precheck validation errors, review gates, blocking reasons, deterministic report/execution/review hashes, production_acceptance_claimed false, and all forbidden flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py"
     test_refs:
@@ -5798,13 +5803,16 @@ formulas:
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json"
+      - "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_CONTRACT.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_EXECUTION.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_INDEPENDENT_REPLAY_REVIEW.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_ENTRY_PRECHECK_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_INDEPENDENT_REVIEW_MODEL_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REPLAY_PAYLOAD_CONTRACT_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_ACCEPTANCE_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_TASK_ID"
@@ -5827,6 +5835,8 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_replay_payload"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_replay_payload_execution_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_replay_payload_execution_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_independent_replay_review_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_independent_replay_review_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_entry_precheck_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_entry_precheck_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_validate_s2plt01_replay_payload_inputs"

@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PMT03-LESSON-REVISION-A016-001"
+as_of_event_id: "EVENT-20260626-ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-001"
 source_snapshot_hash: "sha256:4ca48457b1a8b9168b36cfdfe3967d0342a90f0e279ba2bcfab522573b5c7cb7"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 855
-    total_active_parameters: 855
+    checked_active_parameters: 856
+    total_active_parameters: 856
     checked_active_formulas: 104
     total_active_formulas: 104
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 855
-    total_active_parameters: 855
+    checked_active_parameters: 856
+    total_active_parameters: 856
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT03_LESSON_REVISION_A016_NO_PRODUCTION"
+  release_gate: "S2PLT01_INDEPENDENT_REPLAY_REVIEW_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -84,12 +84,12 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT01"
   status: "blocked"
-  reason: "Keep S2PLT01 fail-closed until inherited P0/P1, actual full replay payload execution, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries."
+  reason: "Keep S2PLT01 fail-closed until inherited P0/P1, S2PLT04, S2PMT07 independent final review, and final production stop gates are proven under V7.2 blocked boundaries."
   acceptance_ids:
     - "ACC-S2PLT01-30D"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "S2PLT01 entry precheck can be misread as full replay execution or acceptance; after S2PBT05, inherited P0/P1, missing full replay, missing mail preview proof, and missing terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance."
+  unblock_condition: "S2PLT01 independent replay review receipt can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 independent final review, and final production stop gates still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -103,26 +103,26 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PFT05 as local full D3 governance qualification evidence pending PR/CI, continue next S2PGT01 EvidencePacket V2 compatibility work, and require future mail entrypoints to use the merged EMAIL_LEARNING_V1 contract/readiness gate."
-  option_a: "继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。"
-  option_b: "暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。"
-  option_c: "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT01 independent replay review receipt as local no-production evidence only, keep S2PLT01 blocked until inherited P0/P1 and final production stop gates close, and require S2PMT07 independent final review before any inherited P0/P1 closure or production acceptance claim."
+  option_a: "继续 S2PLT01 no-production replay/evidence work under V7.2 boundaries。"
+  option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
+  option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   options:
-    - "继续 S2PGT01 EvidencePacket V2 compatibility work under V7.2 boundaries。"
-    - "暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。"
-    - "越过 T01 或 source gate 直接改生产邮件/Schema/SMTP；禁止。"
+    - "继续 S2PLT01 no-production replay/evidence work under V7.2 boundaries。"
+    - "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
+    - "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。"
-  principal_risks: "源身份混淆、重复 canonical paper、Nature 元数据被误读为全文/正式出版抽取、许可/全文越权、shadow 数据影响正式 arXiv 邮件"
-  evidence_required: "V7.2 contract/CURRENT hash checks, S2PFT05 receipt, EvidencePacket V2 compatibility tests, old arXiv compatibility proof, governance validator, lean render proof, and no-production-side-effect evidence"
+  principal_risks: "将 S2PLT01 independent replay review receipt 误读为 S2PLT01 acceptance 或 production replay、绕过 S2PMT07 独立复审或生产 stop gate"
+  evidence_required: "S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."
-  unblock_task_id: "S2PGT01"
+  unblock_task_id: "S2PLT01"
   acceptance_ids:
-    - "ACC-S2PGT01-EVIDENCE-V2"
+    - "ACC-S2PLT01-30D"
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-24T09:20:00+10:00"
-  parallel_shadow_task_id: "S2PBT01"
+  last_reviewed_at: "2026-06-27T00:30:00+10:00"
+  parallel_shadow_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
