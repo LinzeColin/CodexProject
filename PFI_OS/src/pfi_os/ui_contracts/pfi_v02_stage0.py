@@ -69,9 +69,13 @@ LOCAL_ACTIVE_RUNTIME_PATHS: tuple[str, ...] = (
     "$PFI_OS_DATA_HOME/private/operational/pfi.sqlite",
 )
 
+ROOT_GOVERNANCE_PATHS: tuple[str, ...] = (
+    "AGENTS.md",
+    "README.md",
+    "governance/projects.yaml",
+)
+
 LOCAL_PUBLIC_ASSUMPTION_GAPS: tuple[str, ...] = (
-    "No repository-root AGENTS.md in current checkout; PFI_OS/AGENTS.md is the local governing contract.",
-    "No governance/projects.yaml in current checkout.",
     "No local PFI/大数据模拟器 directory under CodexProject.",
     "No local qbvs/ directory under PFI_OS.",
 )
@@ -81,6 +85,7 @@ FORBIDDEN_PRODUCT_PRIMARY_LABELS: tuple[str, ...] = (
     "System",
     "Development",
     "系统与开发",
+    "R-prefixed Alpha variant",
 )
 
 
@@ -99,6 +104,7 @@ def build_stage0_contract() -> dict[str, object]:
         "target_primary_entries": [asdict(entry) for entry in V02_TARGET_PRIMARY_ENTRIES],
         "compatibility_entries": [asdict(entry) for entry in all_compatibility_entries()],
         "local_active_runtime_paths": LOCAL_ACTIVE_RUNTIME_PATHS,
+        "root_governance_paths": ROOT_GOVERNANCE_PATHS,
         "local_public_assumption_gaps": LOCAL_PUBLIC_ASSUMPTION_GAPS,
         "forbidden_product_primary_labels": FORBIDDEN_PRODUCT_PRIMARY_LABELS,
         "non_trading_boundary": "Research, backtesting, simulation, review, reporting, context export only; no trading password and no automatic real-money order submission.",

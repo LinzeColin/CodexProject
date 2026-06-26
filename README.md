@@ -10,12 +10,22 @@ It is no longer a submodule-only index.
 | Path | Repository |
 | --- | --- |
 | `Alpha` | https://github.com/LinzeColin/Alpha |
-| `EVA_OS` | https://github.com/LinzeColin/EVA_OS |
+| `PFI_OS` | `LinzeColin/CodexProject/PFI_OS` |
 | `OpenAIDatabase` | https://github.com/LinzeColin/OpenAIDatabase |
 | `FIFA` | https://github.com/LinzeColin/FIFA |
-| `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
 | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
 | `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
+
+## Governance
+
+Root agent contract: `AGENTS.md`.
+
+Project registry: `governance/projects.yaml`.
+
+Registered PFI path: `PFI_OS/`.
+
+PFI V0.2 Stage 0 contract:
+`PFI_OS/docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`.
 
 ## Clone
 

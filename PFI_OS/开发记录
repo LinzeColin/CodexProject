@@ -31,13 +31,14 @@ PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。P
 
 2026-06-27 PFI V0.2 Stage 0 兼容审计与边界锁定：
 
+- Completion audit 补齐仓库根治理：新增 root `AGENTS.md` 和 `governance/projects.yaml`，更新 root `README.md`，把 `PFI_OS/` 登记为当前 PFI 路径并写入 changed-scope check。
 - 新增 `docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`，记录本地真实 PFI root、现有入口、owner entry、active runtime、公开假设差异、测试命令、stop condition、rollback plan 和单一验收目标。
 - 新增 `src/pfi_os/ui_contracts/pfi_v02_stage0.py`，把 v0.2 8 个目标一级入口、当前 6 个兼容入口、Streamlit owner-facing views、`PFI/大数据模拟器` 和 `qbvs/` 公开假设映射做成机器可验证契约。
 - 新增 `tests/contract/test_pfi_v02_stage0_compatibility.py`，锁定每个旧入口必须可映射、v0.2 8 入口不得混入排除项、active runtime 路径不得移动、策略实验室/大数据模拟器/盘感训练必须保留。
 - 更新产品 IA：当前 Web Shell 6 入口是兼容壳，PFI V0.2 目标态是 8 入口；Stage 0 不提前改 UI，不破坏现有可点击入口。
 - 边界：不移动 `src/pfi_os/`、`web/`、`scripts/`、`tests/`，不接收交易密码，不自动提交真实交易，不把 external independent repo 做成 PFI 一级入口。
 - 合同入口：`docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`。
-- 验证结果：Stage 0 + 产品合同 `16 passed`；Web Shell / Gate2 / MVP release 兼容基线 `25 passed`、2 个 deprecation warnings；`scripts/devReadyCheck.sh --summary-json` 返回 `status=Pass`、`pass=40`、`fail=0`、`info=1`；`git diff --check` 通过。
+- 验证结果：Stage 0 + 产品合同 `17 passed`；Web Shell / Gate2 / MVP release 兼容基线 `25 passed`、2 个 deprecation warnings；`scripts/devReadyCheck.sh --summary-json` 返回 `status=Pass`、`pass=40`、`fail=0`、`info=1`；`PFI_OS/scripts/secretScan.sh` 和 `git diff --check` 通过。
 
 2026-06-20 返工记录：
 

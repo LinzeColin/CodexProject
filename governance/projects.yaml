@@ -1,0 +1,36 @@
+schema: CodexProjectGovernanceV1
+last_updated: 2026-06-27
+projects:
+  - id: pfi_os
+    name: PFI OS
+    path: PFI_OS
+    owner_entry_files:
+      - PFI_OS/AGENTS.md
+      - PFI_OS/README.md
+      - PFI_OS/HANDOFF.md
+      - PFI_OS/功能清单
+      - PFI_OS/开发记录
+      - PFI_OS/模型参数文件
+    stage0_contract:
+      - PFI_OS/docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md
+      - PFI_OS/src/pfi_os/ui_contracts/pfi_v02_stage0.py
+      - PFI_OS/tests/contract/test_pfi_v02_stage0_compatibility.py
+    changed_scope_check:
+      base_ref: origin/main
+      paths:
+        - PFI_OS
+        - AGENTS.md
+        - README.md
+        - governance/projects.yaml
+      commands:
+        - git diff --name-only origin/main...HEAD -- PFI_OS AGENTS.md README.md governance/projects.yaml
+        - git diff --check
+    validation:
+      - cd PFI_OS && PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' .venv/bin/python -m pytest tests/contract/test_pfi_v02_stage0_compatibility.py tests/test_pfi_product_contracts.py -q
+      - cd PFI_OS && scripts/devReadyCheck.sh --summary-json
+      - cd PFI_OS && scripts/secretScan.sh
+boundaries:
+  pfi_stage0_no_runtime_move: true
+  pfi_no_trading_password: true
+  pfi_no_automatic_real_money_orders: true
+  pfi_excluded_external_payment_project_dependency: false

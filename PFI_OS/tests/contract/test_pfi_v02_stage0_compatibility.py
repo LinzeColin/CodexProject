@@ -7,6 +7,7 @@ from pfi_os.ui_contracts.pfi_v02_stage0 import (
     LOCAL_ACTIVE_RUNTIME_PATHS,
     LOCAL_PUBLIC_ASSUMPTION_GAPS,
     PUBLIC_ASSUMPTION_COMPATIBILITY,
+    ROOT_GOVERNANCE_PATHS,
     V02_TARGET_PRIMARY_ENTRIES,
     build_stage0_contract,
     target_primary_labels,
@@ -19,6 +20,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def _read(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
+
+
+def _read_repo(relative_path: str) -> str:
+    return (ROOT.parent / relative_path).read_text(encoding="utf-8")
 
 
 def _active_pfi_view_options() -> dict[str, str]:
@@ -83,6 +88,24 @@ def test_public_big_data_and_qbvs_assumptions_are_recorded_without_requiring_loc
     assert "No local qbvs/ directory under PFI_OS." in LOCAL_PUBLIC_ASSUMPTION_GAPS
     assert not (ROOT.parent / "PFI" / "大数据模拟器").exists()
     assert not (ROOT / "qbvs").exists()
+
+
+def test_root_governance_registers_pfi_path_and_changed_scope_check():
+    for relative_path in ROOT_GOVERNANCE_PATHS:
+        assert (ROOT.parent / relative_path).exists(), relative_path
+
+    root_agents = _read_repo("AGENTS.md")
+    root_readme = _read_repo("README.md")
+    registry = _read_repo("governance/projects.yaml")
+
+    for text in (root_agents, root_readme, registry):
+        assert "PFI_OS" in text
+        assert "docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md" in text
+
+    assert "git diff --name-only origin/main...HEAD -- PFI_OS" in root_agents
+    assert "changed_scope_check" in registry
+    assert "EVA_OS" not in root_readme
+    assert "Serenity" + "-Alipay" not in root_readme
 
 
 def test_local_active_runtime_paths_exist_or_are_private_data_boundary():
