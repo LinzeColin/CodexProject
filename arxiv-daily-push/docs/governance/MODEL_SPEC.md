@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 108
-- formula_count: 110
-- parameter_count: 929
+- model_count: 109
+- formula_count: 111
+- parameter_count: 934
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -46,6 +46,19 @@ Fact levels follow `docs/governance/STANDARD.md`.
   clickable Markdown links without local absolute paths. It does not enable
   SMTP, install scheduler, upload Release, change public schema or DB, mutate
   queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2
+  contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
+  integrated production acceptance.
+
+
+- `S2PAT05-LEGACY-MAIL-SCAN-C011` adds `MOD-ADP-109` and
+  `FORM-ADP-111`. It scans current runtime, tests, shallow user-center and
+  current governance surfaces for old B1-B5/five-mail/English visible-mail
+  identifiers, requires every hit to be classified as current Email V1/M1-M4
+  contract, filter, test, history, compatibility or governance evidence, and
+  blocks active legacy runtime, active owner-surface legacy, unclassified hits,
+  non-M1-M4 mail products, or `legacy_five_mail_active=true`. It does not
+  enable SMTP, install scheduler, upload Release, change public schema or DB,
+  mutate queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2
   contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
   integrated production acceptance.
 

@@ -6329,3 +6329,55 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T07:15:07+10:00"
+
+
+  -
+    formula_id: "FORM-ADP-111"
+    model_id: "MOD-ADP-109"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PAT05 C-011 legacy mail identifier evidence passes only when current repository scan scopes cover src runtime, tests, shallow user center and current governance; every old B1-B5, five-mail, old visible-frontstage English marker hit is classified as current Email V1 contract, current M1-M4 contract, current board-id contract, forbidden visible-marker filter, negative test fixture, historical/compat record or governance evidence; forbidden classifications are zero; S2PKT01 proves EMAIL_LEARNING_V1 M1-M4 only; S2PKT05 proves legacy_five_mail_active=false; and all SMTP, scheduler, Release, DB, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT and V7.2 contract side-effect flags remain false."
+    variables:
+      -
+        name: "legacy_marker_hits"
+        data_type: "list[object]"
+        unit: "scan hits"
+        input_domain: "current repository scan scopes"
+      -
+        name: "classification_counts"
+        data_type: "object"
+        unit: "counts"
+        input_domain: "allowed and forbidden C-011 classifications"
+      -
+        name: "observed_mail_products"
+        data_type: "list[str]"
+        unit: "mail product ids"
+        input_domain: "M1, M2, M3, M4"
+      -
+        name: "legacy_five_mail_active"
+        data_type: "boolean"
+        unit: "gate flag"
+        input_domain: "false"
+    constraints: "This gate must not enable SMTP, install scheduler, upload Release, mutate queues, change ranking or source adapters, mutate public schema or DB, change Email frontstage, edit CURRENT, edit V7.1/V7.2 contract files, close inherited P0/P1, claim S2PLT04/S2PMT07 acceptance, or claim integrated production acceptance."
+    missing_policy: "Missing scan scope, missing hit classification, forbidden classification, active legacy runtime marker, active owner-surface legacy marker, unclassified hit, non-M1-M4 mail product, legacy_five_mail_active=true, or any production side-effect flag blocks the report."
+    output_range: "S2PAT05 C-011 legacy mail identifier scan report with status pass or blocked, gate states, marker summaries, classification counts, deterministic legacy_mail_scan_hash, validation errors, and all production/schema/email/source side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md"
+      - "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_LEGACY_MAIL_SCAN_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_LEGACY_MAIL_REQUIRED_SCOPES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_LEGACY_MAIL_ALLOWED_CLASSIFICATIONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_LEGACY_MAIL_FORBIDDEN_CLASSIFICATIONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::build_s2pat05_legacy_mail_identifier_scan_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::validate_s2pat05_legacy_mail_identifier_scan_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T07:40:20+10:00"

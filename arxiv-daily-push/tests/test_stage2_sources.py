@@ -14,6 +14,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PAT05_LEGACY_MAIL_SCAN_MODEL_ID,
     S2PAT05_TRACEABILITY_CHAIN_MODEL_ID,
     S2PGT05_CALIBRATION_MODEL_ID,
     S2PGT05_REQUIRED_BOARD_IDS,
@@ -111,6 +112,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pit03_source_model_view_report,
     build_s2pit04_content_ledger_report,
     build_s2pit05_four_check_freshness_report,
+    build_s2pat05_legacy_mail_identifier_scan_report,
     build_s2pkt01_mail_contract_report,
     build_s2pkt02_m1_mail_report,
     build_s2pkt03_m2_mail_report,
@@ -156,6 +158,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pit03_source_model_view,
     run_s2pit04_content_ledger,
     run_s2pit05_four_check_freshness,
+    run_s2pat05_legacy_mail_identifier_scan,
     run_s2pkt01_mail_contract,
     run_s2pkt02_m1_mail,
     run_s2pkt03_m2_mail,
@@ -199,6 +202,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pit03_source_model_view_report,
     validate_s2pit04_content_ledger_report,
     validate_s2pit05_four_check_freshness_report,
+    validate_s2pat05_legacy_mail_identifier_scan_report,
     validate_s2pkt01_mail_contract_report,
     validate_s2pkt02_m1_mail_report,
     validate_s2pkt03_m2_mail_report,
@@ -332,6 +336,85 @@ def s2pat05_owner_click_chain_refs(**overrides: object) -> list[dict]:
         if row["ref_id"] in overrides:
             row.update(overrides[row["ref_id"]])  # type: ignore[index]
     return refs
+
+
+S2PAT05_LEGACY_MAIL_SCAN_PATTERNS = {
+    "b1_b5_range": ("B1-B5", "B1–B5"),
+    "five_mail_contract": ("五邮件", "五封邮件", "five mails", "five email", "five-email"),
+    "phase12_v2_mail": ("Phase12 V2", "old V2"),
+    "frontier_delta": ("Frontier Delta",),
+    "action_ladder": ("Action ladder",),
+    "decision_card": ("decision card", "决策卡"),
+    "reading_time": ("reading time", "阅读时间"),
+    "legacy_five_mail_active": ("legacy_five_mail_active",),
+    "email_learning_v1": ("EMAIL_LEARNING_V1",),
+    "m1_m4_contract": ("M1_M4_MAIL_PRODUCTS",),
+}
+
+
+def _s2pat05_scan_classification(path: Path, marker_id: str, line_no: int) -> tuple[str, str]:
+    rel = path.relative_to(PROJECT_ROOT)
+    rel_text = rel.as_posix()
+    if rel_text.startswith("docs/pursuing_goal/v7_1/") or "/archive/" in rel_text:
+        return "historical_or_compat_record", "V7.1/archive historical evidence may preserve legacy names."
+    if rel_text.startswith("docs/") or rel_text.startswith("用户中心/") or rel_text in {"功能清单", "开发记录", "模型参数文件"}:
+        return "governance_evidence_record", "Current governance and owner pages may describe the legacy scan result."
+    if rel_text.startswith("tests/"):
+        return "negative_test_fixture", "Tests may keep legacy markers only as negative regression fixtures."
+    if marker_id == "frontier_delta" and rel_text in {"src/arxiv_daily_push/cli.py", "src/arxiv_daily_push/stage2_sources.py"}:
+        return "governance_evidence_record", "S2PGT04 frontier-delta source evidence is not the visible mail frontstage."
+    if marker_id in {"email_learning_v1", "m1_m4_contract"}:
+        return (
+            "current_email_v1_contract" if marker_id == "email_learning_v1" else "current_m1_m4_contract",
+            "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+        )
+    if marker_id in {"frontier_delta", "action_ladder", "decision_card", "reading_time"} and rel_text == "src/arxiv_daily_push/mail_templates.py" and line_no <= 80:
+        return "forbidden_visible_marker_filter", "Marker is isolated in Email V1 forbidden/replacement filter constants."
+    if marker_id == "legacy_five_mail_active" and rel_text == "src/arxiv_daily_push/stage2_sources.py":
+        return "current_m1_m4_contract", "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation."
+    return "active_legacy_runtime", "Legacy marker appears in current runtime scope and must be reviewed."
+
+
+def s2pat05_legacy_mail_scan_inputs() -> tuple[list[str], list[dict], dict]:
+    scan_roots = {
+        "src_runtime": PROJECT_ROOT / "src",
+        "tests": PROJECT_ROOT / "tests",
+        "shallow_user_center": PROJECT_ROOT / "用户中心",
+        "governance_current": PROJECT_ROOT / "docs" / "governance",
+    }
+    hits: list[dict] = []
+    marker_summary = {
+        marker_id: {"hit_count": 0, "active_legacy_runtime_count": 0}
+        for marker_id in S2PAT05_LEGACY_MAIL_SCAN_PATTERNS
+    }
+    for scope, root in scan_roots.items():
+        for path in sorted(p for p in root.rglob("*") if p.is_file()):
+            if path.suffix not in {"", ".py", ".md", ".yaml", ".yml", ".json", ".jsonl", ".csv"}:
+                continue
+            try:
+                lines = path.read_text(encoding="utf-8").splitlines()
+            except UnicodeDecodeError:
+                continue
+            for line_no, line in enumerate(lines, start=1):
+                lowered = line.lower()
+                for marker_id, patterns in S2PAT05_LEGACY_MAIL_SCAN_PATTERNS.items():
+                    if any(pattern.lower() in lowered for pattern in patterns):
+                        classification, reason = _s2pat05_scan_classification(path, marker_id, line_no)
+                        marker_summary[marker_id]["hit_count"] += 1
+                        if classification == "active_legacy_runtime":
+                            marker_summary[marker_id]["active_legacy_runtime_count"] += 1
+                        hits.append(
+                            {
+                                "marker_id": marker_id,
+                                "marker_text": next(pattern for pattern in patterns if pattern.lower() in lowered),
+                                "scope": scope,
+                                "path": path.relative_to(PROJECT_ROOT).as_posix(),
+                                "line": line_no,
+                                "classification": classification,
+                                "allowed_reason": reason,
+                            }
+                        )
+    return list(scan_roots), hits, marker_summary
 
 
 def s2pit01_owner_controls() -> dict:
@@ -6209,6 +6292,114 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["queue_mutation_allowed"])
             self.assertTrue(Path(report["traceability_chain_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pat05_traceability_chain_report.json").is_file())
+
+    def test_s2pat05_legacy_mail_identifier_scan_passes_current_repo_scan_and_m1_m4_contract(self) -> None:
+        scopes, hits, summary = s2pat05_legacy_mail_scan_inputs()
+        report = build_s2pat05_legacy_mail_identifier_scan_report(
+            generated_at=GENERATED_AT,
+            scanned_scopes=scopes,
+            legacy_marker_hits=hits,
+            marker_summary=summary,
+            mail_contract_report=s2pkt01_mail_contract_report(),
+            m4_mail_report=s2pkt05_m4_mail_report(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PAT05_LEGACY_MAIL_SCAN_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PAT05-LEGACY-MAIL-SCAN")
+        self.assertEqual(report["task_id"], "S2PAT05")
+        self.assertEqual(report["finding_id"], "C-011")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["scan_scope_gate"], "pass")
+        self.assertEqual(report["legacy_identifier_classification_gate"], "pass")
+        self.assertEqual(report["visible_frontstage_marker_gate"], "pass")
+        self.assertEqual(report["mail_contract_gate"], "pass")
+        self.assertEqual(report["m4_legacy_mail_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertEqual(report["observed_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertFalse(report["legacy_five_mail_active"])
+        self.assertEqual(report["classification_counts"]["active_legacy_runtime"], 0)
+        self.assertEqual(report["classification_counts"]["active_owner_surface_legacy"], 0)
+        self.assertEqual(report["classification_counts"]["unclassified"], 0)
+        self.assertGreater(report["marker_summary"]["email_learning_v1"]["hit_count"], 0)
+        self.assertEqual(report["marker_summary"]["b1_b5_range"]["active_legacy_runtime_count"], 0)
+        self.assertEqual(report["marker_summary"]["five_mail_contract"]["active_legacy_runtime_count"], 0)
+        self.assertTrue(report["legacy_mail_scan_hash"].startswith("sha256:"))
+        self.assertTrue(report["s2pat05_legacy_mail_scan_ready"])
+        self.assertFalse(report["p1_closure_claimed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["email_frontstage_changed"])
+        self.assertFalse(validate_s2pat05_legacy_mail_identifier_scan_report(report))
+
+    def test_s2pat05_legacy_mail_identifier_scan_blocks_active_legacy_hit_or_bad_mail_contract(self) -> None:
+        scopes, hits, summary = s2pat05_legacy_mail_scan_inputs()
+        hits = list(hits) + [
+            {
+                "marker_id": "five_mail_contract",
+                "marker_text": "five email",
+                "scope": "src_runtime",
+                "path": "src/arxiv_daily_push/mail_templates.py",
+                "line": 999,
+                "classification": "active_legacy_runtime",
+                "allowed_reason": "fixture active legacy marker",
+            }
+        ]
+        summary = dict(summary)
+        summary["five_mail_contract"] = dict(summary["five_mail_contract"])
+        summary["five_mail_contract"]["hit_count"] += 1
+        summary["five_mail_contract"]["active_legacy_runtime_count"] += 1
+        bad_contract = dict(s2pkt01_mail_contract_report())
+        bad_contract["mail_contracts"] = bad_contract["mail_contracts"][:3]
+        bad_contract["mail_product_count"] = 3
+        bad_m4 = dict(s2pkt05_m4_mail_report())
+        bad_m4["m4_orchestration_record"] = dict(bad_m4["m4_orchestration_record"], legacy_five_mail_active=True)
+        report = build_s2pat05_legacy_mail_identifier_scan_report(
+            generated_at=GENERATED_AT,
+            scanned_scopes=scopes,
+            legacy_marker_hits=hits,
+            marker_summary=summary,
+            mail_contract_report=bad_contract,
+            m4_mail_report=bad_m4,
+            production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["legacy_identifier_classification_gate"], "blocked")
+        self.assertEqual(report["mail_contract_gate"], "blocked")
+        self.assertEqual(report["m4_legacy_mail_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("five_mail_contract", joined)
+        self.assertIn("active legacy mail naming", joined)
+        self.assertIn("S2PKT01 current mail contract must be EMAIL_LEARNING_V1 with M1-M4 only", joined)
+        self.assertIn("legacy_five_mail_active=false", joined)
+        self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pat05_legacy_mail_identifier_scan_report(report))
+
+    def test_s2pat05_legacy_mail_identifier_scan_persists_report_without_production_side_effects(self) -> None:
+        scopes, hits, summary = s2pat05_legacy_mail_scan_inputs()
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pat05_legacy_mail_identifier_scan(
+                state_dir=tmp,
+                date="2026-06-27",
+                generated_at=GENERATED_AT,
+                scanned_scopes=scopes,
+                legacy_marker_hits=hits,
+                marker_summary=summary,
+                mail_contract_report=s2pkt01_mail_contract_report(),
+                m4_mail_report=s2pkt05_m4_mail_report(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pat05_legacy_mail_identifier_scan_report(report))
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertTrue(Path(report["legacy_mail_identifier_scan_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pat05_legacy_mail_identifier_scan_report.json").is_file())
 
     def test_s2pkt01_mail_contract_passes_shared_contract_board_hash_and_no_send_gates(self) -> None:
         report = build_s2pkt01_mail_contract_report(

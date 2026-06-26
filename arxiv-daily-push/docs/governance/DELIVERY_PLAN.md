@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 173
-- acceptance_count: 124
+- task_count: 175
+- acceptance_count: 125
 
 ## Delivery Tasks
 
@@ -260,3 +260,6 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001 | P1 C-001 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes C-001 so the unique Chinese user-center first-screen row points to dedicated shallow GitHub user-center evidence instead of older deep owner-doc evidence; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
 | S2PIT02-OWNER-STATUS-C002 | P1 C-002 owner status count evidence | completed_local_validation | `ACC-S2PIT02-RUNTIME-DASHBOARD` | Records dedicated C-002 evidence that S2PIT02 now requires shallow GitHub `用户中心/邮件发送与队列状态.md`, checks `2 / 4` mail count and `299 = 30 + 269` candidate-pool conservation, exposes sent/blocked/queued states, and keeps review/action/asset/ROI daily counts as pending snapshot fields without fabricating numbers. |
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002 | P1 C-002 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes C-002 so the runtime dashboard count row points to dedicated shallow GitHub mail/queue count evidence instead of older aggregate deep owner-doc evidence; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
+
+| S2PAT05-LEGACY-MAIL-SCAN-C011 | S2PA | completed_local_validation | `ACC-S2PAT05-LEGACY-MAIL-SCAN` | Local C-011 evidence: legacy B1-B5/five-mail/English visible-mail markers are classified across current scan scopes, active legacy runtime/owner/unclassified counts are zero, current mail contract remains EMAIL_LEARNING_V1 M1-M4, and M4 keeps `legacy_five_mail_active=false`; no production side effects. |
+| S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011 | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes C-011 so the old mail naming row points to dedicated S2PAT05 scan evidence instead of aggregate Email V1/owner UX records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |

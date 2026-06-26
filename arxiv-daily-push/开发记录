@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本轮只刷新 `S2PAT05` / C-010 的当前证据和 P1 receipt 路由：新证据指向专用功能任务测试证据追踪链 gate 和浅层 GitHub 用户中心页面。
-- 已完成 C-010 report/validator、focused 正负例测试、245 行可点击追踪链页面、phase record、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
-- 未完成项仍是 C-010 的独立复审充分性判断；本条不关闭 P1，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
+- 本轮只刷新 `S2PAT05` / C-011 的当前证据和 P1 receipt 路由：新证据指向专用旧邮件标识兼容扫描 gate 和浅层 GitHub 用户中心页面。
+- 已完成 C-011 report/validator、focused 正负例测试、旧标识扫描摘要页面、phase record、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
+- 未完成项仍是 C-011 的独立复审充分性判断；本条不关闭 P1，不改邮件 runtime，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
 
 ## 摘要
 
@@ -254,3 +254,10 @@ Task detail fields:
 | 2026-06-27T06:19:53+10:00 | stage2_p1_review_receipt_refresh_c006_c007 | Refreshed S2PMT07 P1 review receipt routing for C-006 and C-007 so safe-config and append-only audit evidence point to dedicated S2PMT06 evidence instead of aggregate owner UX evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007 | EXTRACTED |
 | 2026-06-27T06:34:47+10:00 | stage2_safe_manual_action_c012 | Recorded dedicated local C-012 evidence that owner manual retry, cancel, requeue, skip, and regenerate actions require preview, impact, confirmation, receipt, unique idempotency keys, illegal-state disabling, and no production mutation. | S2PMT06-SAFE-MANUAL-ACTION-C012 | EXTRACTED |
 | 2026-06-27T06:34:47+10:00 | stage2_p1_review_receipt_refresh_c012 | Refreshed S2PMT07 P1 review receipt routing for C-012 so safe manual action evidence points to dedicated S2PMT06 evidence instead of aggregate owner UX evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012 | EXTRACTED |
+
+## 2026-06-27 07:40:20 Australia/Sydney S2PAT05 C-011 旧邮件标识扫描证据刷新
+
+- 新增 `S2PAT05-LEGACY-MAIL-SCAN-C011`，扫描当前 runtime、tests、浅层用户中心和当前治理范围。
+- 当前扫描命中 271 条，活跃旧 runtime / 活跃旧 owner surface / 未分类命中均为 0。
+- 当前邮件合同仍为 `EMAIL_LEARNING_V1`，产品为 `M1,M2,M3,M4`，`legacy_five_mail_active=false`。
+- 未关闭 C-011/P1；未启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更、source adapter、ranking 或 Stage2 production。

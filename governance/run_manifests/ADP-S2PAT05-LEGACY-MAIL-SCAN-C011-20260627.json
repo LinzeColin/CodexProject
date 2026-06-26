@@ -1,0 +1,2610 @@
+{
+  "acceptance_id": "ACC-S2PAT05-LEGACY-MAIL-SCAN",
+  "change_type": "stage2_c011_legacy_mail_identifier_scan_dedicated_evidence_refresh",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md",
+    "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json",
+    "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
+  ],
+  "finding_id": "C-011",
+  "gates": {
+    "legacy_identifier_classification_gate": "pass",
+    "m4_legacy_mail_gate": "pass",
+    "mail_contract_gate": "pass",
+    "no_side_effect_gate": "pass",
+    "scan_scope_gate": "pass",
+    "visible_frontstage_marker_gate": "pass"
+  },
+  "generated_at": "2026-06-27T07:40:20+10:00",
+  "independent_review_signoff_present": false,
+  "inherited_p0_p1_closed": false,
+  "legacy_marker_hits": [
+    {
+      "allowed_reason": "S2PGT04 frontier-delta source evidence is not the visible mail frontstage.",
+      "classification": "governance_evidence_record",
+      "line": 854,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "src/arxiv_daily_push/cli.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 16,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 17,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 18,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 19,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 723,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 724,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 726,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 1053,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/global_scan.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 25,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 25,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 699,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 700,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 701,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 704,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 705,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 706,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 708,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 893,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 894,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/local_runner.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 16,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 17,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 18,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 19,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 20,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 22,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Marker is isolated in Email V1 forbidden/replacement filter constants.",
+      "classification": "forbidden_visible_marker_filter",
+      "line": 30,
+      "marker_id": "reading_time",
+      "marker_text": "阅读时间",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Marker is isolated in Email V1 forbidden/replacement filter constants.",
+      "classification": "forbidden_visible_marker_filter",
+      "line": 38,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Marker is isolated in Email V1 forbidden/replacement filter constants.",
+      "classification": "forbidden_visible_marker_filter",
+      "line": 45,
+      "marker_id": "action_ladder",
+      "marker_text": "Action ladder",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Marker is isolated in Email V1 forbidden/replacement filter constants.",
+      "classification": "forbidden_visible_marker_filter",
+      "line": 62,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Marker is isolated in Email V1 forbidden/replacement filter constants.",
+      "classification": "forbidden_visible_marker_filter",
+      "line": 72,
+      "marker_id": "reading_time",
+      "marker_text": "阅读时间",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 76,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 104,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 105,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 112,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 136,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 138,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 166,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 167,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 189,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 190,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 200,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 204,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 205,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 207,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 255,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 256,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 338,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 383,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 436,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 499,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 500,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 501,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/mail_templates.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 13,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 13,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 500,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 501,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 502,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 518,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_m1_m4_contract",
+      "line": 519,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "src/arxiv_daily_push/scheduled_execution.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 20,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 21,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 22,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 95,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 137,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 138,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 146,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 230,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 231,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 232,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 259,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage1_b1_report.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 767,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_replay_gate.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 935,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PGT04 frontier-delta source evidence is not the visible mail frontstage.",
+      "classification": "governance_evidence_record",
+      "line": 7275,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 9603,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 9612,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 9616,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 9622,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 9675,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 9769,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 9772,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 9773,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 9914,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 10227,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 10588,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 10949,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 11244,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Current runtime mail code must bind to EMAIL_LEARNING_V1 and M1-M4.",
+      "classification": "current_email_v1_contract",
+      "line": 11353,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 11409,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "S2PKT05 keeps this flag as an explicit false gate against legacy five-mail activation.",
+      "classification": "current_m1_m4_contract",
+      "line": 11410,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "src/arxiv_daily_push/stage2_sources.py",
+      "scope": "src_runtime"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 27,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_global_scan.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 373,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_global_scan.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 384,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_global_scan.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 385,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_global_scan.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 436,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_global_scan.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 25,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_local_runner.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 231,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_local_runner.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 7,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 8,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 9,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 11,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 12,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 56,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 64,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 66,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 90,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 91,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 98,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 135,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_mail_templates.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 13,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_scheduled_execution.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 80,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_scheduled_execution.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 23,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage1_b1_report.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 60,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage1_b1_report.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 66,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage1_b1_report.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 78,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage1_b1_report.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 59,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_replay_gate.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 342,
+      "marker_id": "b1_b5_range",
+      "marker_text": "B1-B5",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 343,
+      "marker_id": "five_mail_contract",
+      "marker_text": "五邮件",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 344,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "Phase12 V2",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 345,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 346,
+      "marker_id": "action_ladder",
+      "marker_text": "Action ladder",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 347,
+      "marker_id": "decision_card",
+      "marker_text": "decision card",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 348,
+      "marker_id": "reading_time",
+      "marker_text": "reading time",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 349,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 350,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 351,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 366,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 368,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 369,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 373,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 1072,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 1119,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 1174,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 1230,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 1288,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 1330,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6320,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6324,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6341,
+      "marker_id": "five_mail_contract",
+      "marker_text": "five email",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6357,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6376,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6377,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6428,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6496,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 6999,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 7065,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 7703,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 7724,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 7749,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Tests may keep legacy markers only as negative regression fixtures.",
+      "classification": "negative_test_fixture",
+      "line": 7774,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "tests/test_stage2_sources.py",
+      "scope": "tests"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 99,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 100,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 101,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 102,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 115,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 127,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 128,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 212,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DELIVERY_PLAN.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 502,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1081,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1087,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1088,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1089,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1103,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1106,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1107,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1109,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1110,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1111,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1111,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1125,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1134,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3276,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3284,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3289,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3295,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3335,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3348,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3525,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3526,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3531,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3545,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3560,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3575,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/DEVELOPMENT_LEDGER.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 381,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 501,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 944,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 950,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 956,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 962,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 968,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1023,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/MODEL_SPEC.md",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 250,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/VERSION_MATRIX.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1128,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1496,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1506,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1513,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1521,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1530,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1537,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1537,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1538,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1615,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1625,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1830,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1847,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1925,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2760,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2778,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/delivery_tasks.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 66,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 98,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 101,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 102,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 104,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 104,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 105,
+      "marker_id": "phase12_v2_mail",
+      "marker_text": "old V2",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 105,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 106,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 107,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 116,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 133,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 152,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 161,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 162,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 163,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 164,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/development_events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 8,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 29,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 49,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/events.jsonl",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1803,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1995,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 1998,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2016,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2028,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2029,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2048,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2050,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2204,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2253,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 4087,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 4138,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5019,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5025,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5037,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5079,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5133,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5187,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5241,
+      "marker_id": "legacy_five_mail_active",
+      "marker_text": "legacy_five_mail_active",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5241,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5867,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5883,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5900,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/formula_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2102,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/model_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2125,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/model_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3818,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/model_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 3840,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/model_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 4677,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/model_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 5338,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/model_registry.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 187,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 277,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 278,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 279,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 279,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 280,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 540,
+      "marker_id": "frontier_delta",
+      "marker_text": "Frontier Delta",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 705,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 919,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 920,
+      "marker_id": "m1_m4_contract",
+      "marker_text": "M1_M4_MAIL_PRODUCTS",
+      "path": "docs/governance/parameter_registry.csv",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 4,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/project.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 42,
+      "marker_id": "email_learning_v1",
+      "marker_text": "EMAIL_LEARNING_V1",
+      "path": "docs/governance/project.yaml",
+      "scope": "governance_current"
+    },
+    {
+      "allowed_reason": "Current governance and owner pages may describe the legacy scan result.",
+      "classification": "governance_evidence_record",
+      "line": 2680,
+      "marker_id": "reading_time",
+      "marker_text": "reading time",
+      "path": "docs/governance/project.yaml",
+      "scope": "governance_current"
+    }
+  ],
+  "manifest_id": "ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627",
+  "p1_closure_claimed": false,
+  "phase": "S2PA",
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "email_frontstage_changed": false,
+    "inherited_p0_p1_closed": false,
+    "integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "stage2_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "report_status": "pass",
+  "result": "local_validation_passed_closure_not_claimed",
+  "risks": [
+    "This refresh can be misread as C-011 P1 closure; it only updates evidence routing and local scan coverage.",
+    "Inherited P0/P1, S2PLT04, final bundle, independent final command execution, independent signoff, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert S2PAT05 C-011 scan code/tests, user-center scan page, C-011 phase record and manifests, P1 receipt refresh, registry/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "scan_summary": {
+    "classification_counts": {
+      "active_legacy_runtime": 0,
+      "active_owner_surface_legacy": 0,
+      "current_board_id_contract": 0,
+      "current_email_v1_contract": 56,
+      "current_m1_m4_contract": 27,
+      "forbidden_visible_marker_filter": 5,
+      "governance_evidence_record": 123,
+      "historical_or_compat_record": 0,
+      "negative_test_fixture": 60,
+      "unclassified": 0
+    },
+    "legacy_five_mail_active": false,
+    "legacy_mail_scan_hash": "sha256:89100eae79a0439115040a6f141ea764e782992332f200e088603b45a98e7ccd",
+    "legacy_marker_hit_count": 271,
+    "marker_summary": {
+      "action_ladder": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 2
+      },
+      "b1_b5_range": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 1
+      },
+      "decision_card": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 1
+      },
+      "email_learning_v1": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 187
+      },
+      "five_mail_contract": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 2
+      },
+      "frontier_delta": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 20
+      },
+      "legacy_five_mail_active": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 18
+      },
+      "m1_m4_contract": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 24
+      },
+      "phase12_v2_mail": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 12
+      },
+      "reading_time": {
+        "active_legacy_runtime_count": 0,
+        "hit_count": 4
+      }
+    },
+    "observed_mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "scanned_scopes": [
+      "src_runtime",
+      "tests",
+      "shallow_user_center",
+      "governance_current"
+    ]
+  },
+  "schema_version": 1,
+  "semantic_extractor_status": "timeout_after_60s_non_blocking_not_completed_not_claimed_passed",
+  "stage2_integrated_production_accepted": false,
+  "status": "dedicated_evidence_refreshed_no_closure_claim",
+  "subtask_id": "S2PAT05-LEGACY-MAIL-SCAN-C011",
+  "summary": "Refreshes C-011 from aggregate Email V1/owner UX evidence into a dedicated scan gate proving legacy B1-B5/five-mail/old English visible-mail identifiers are either absent from active runtime or isolated to filters, tests, history, compatibility, or governance evidence.",
+  "task_id": "S2PAT05",
+  "test_results": [
+    "py_compile PASS",
+    "user-center timestamp check: validated 12 pages",
+    "targeted C-011 tests: 203 OK",
+    "source/board user-center gate tests: 16 OK",
+    "full arxiv-daily-push unittest: 572 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "structured parse: JSON 344 OK; JSONL 2 OK; parameter_registry.csv 934 rows width 36; TRACEABILITY_MATRIX.csv 249 rows width 12",
+    "git diff --check PASS",
+    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c011_compile_final PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c011_target2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c011_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c011_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c011_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "python3 structured JSON/JSONL/CSV parse check",
+    "git diff --check",
+    "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 60s wrapper timeout"
+  ]
+}
