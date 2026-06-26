@@ -2354,3 +2354,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02"
+    phase: "S2PL"
+    objective: "Record a fail-closed no-production readiness precheck for the S2PLT02 consecutive two natural days and eight real M1-M4 email requirement."
+    scope: "S2PLT02 two-day live-run readiness helper, focused tests, model/formula/parameter registration, traceability row, blocked phase record, run manifest, and no-production side-effect evidence."
+    non_scope: "No S2PLT02 acceptance, no live two-day run start, no real SMTP send, no scheduler install or enablement, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure, no integrated production acceptance, and no daily-operation enablement."
+    status: "blocked"
+    dependencies: ["S2PLT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py arxiv-daily-push/tests/test_stage2_final_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["py_compile PASS", "focused S2PLT02/S2PLT04/S2PMT07 final-gate tests: 11 OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md", "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "S2PLT02 readiness precheck can be misread as live-run start or ACC-S2PLT02-2D acceptance; S2PLT01 acceptance, real scheduler/SMTP proof, M4 watermark proof, inherited P0/P1 zero state, S2PLT04, final bundle, and S2PMT07 still block production acceptance."
+    rollback: "Revert S2PLT02 precheck code, focused tests, MOD-ADP-104/FORM-ADP-106/PARAM-ADP-882..892 registrations, phase record, manifest, traceability/delivery/event records, and rendered governance sync; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

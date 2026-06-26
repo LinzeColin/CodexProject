@@ -3129,3 +3129,24 @@ None for this new project baseline.
 - Rollback: Revert Lesson revision code/schema/test changes, FORM-ADP-008 refresh, PARAM-ADP-870 through PARAM-ADP-872, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LESSON_REVISION_A016.md`; `governance/run_manifests/ADP-S2PMT03-LESSON-REVISION-A016-20260626.json`; `arxiv-daily-push/tests/test_lesson.py`.
 - Next step: Run final validation, commit, push, and open PR for S2PMT03 A-016 local remediation.
+
+### `ITER-20260626-ADP-S2PLT02-LIVE-2D-PRECHECK`
+
+- Timestamp: `2026-06-26T19:00:00+10:00`
+- Fact level: EXTRACTED from S2PLT02 roadmap contract, S2PLT01/S2PLT04/S2PMT07 blocked state, model/formula/parameter registry diff, and focused local validation.
+- Base commit: `5c3f20315cc3959b5db18a61e6051db1e5a6ed5a`
+- Product version: `0.23.1`
+- Status: blocked precheck recorded, PR/CI pending.
+- Phase: S2PL
+- Task IDs: `S2PLT02`; acceptance `ACC-S2PLT02-2D`.
+- Goal: Record a fail-closed no-production readiness precheck for the S2PLT02 consecutive two natural days and eight real M1-M4 email requirement.
+- Files changed: S2PLT02 precheck helper, focused tests, phase record, run manifest, model/formula/parameter registries, traceability, delivery tasks, status/owner/version records, events, three owner-readable files, changelog, and this ledger entry.
+- Model changes: Added `MOD-ADP-104` S2PLT02 live 2-day readiness precheck model.
+- Formula changes: Added `FORM-ADP-106` with machine-verifiable references bound to the S2PLT02 implementation.
+- Parameter changes: Added `PARAM-ADP-882` through `PARAM-ADP-892` for S2PLT02 identifiers, dependencies, 2-day/8-email/M1-M4 requirements, evidence, forbidden flags, and blocking reasons.
+- Validation: py_compile PASS; focused S2PLT02/S2PLT04/S2PMT07 final-gate tests 11 OK; full arxiv-daily-push unittest 487 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV/manifest parse OK; git diff --check PASS; production-side-effect forbidden scan found no forbidden production files changed and added production flags remain false or blocked/no-production statements.
+- Decisions: `ACC-S2PLT02-2D` is not accepted. This run does not start a live two-day run, send SMTP, enable scheduler, upload Release assets, change public schema/DB/production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: S2PLT02 readiness precheck can be misread as live operation or acceptance; S2PLT01 acceptance, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, inherited P0/P1 zero state, S2PLT03, S2PLT04, final bundle, and S2PMT07 remain blocked.
+- Rollback: Revert S2PLT02 precheck code, tests, governance registrations, phase record, manifest, traceability/delivery/event records, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md`; `governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Commit, push, and open PR for S2PLT02 live 2-day readiness precheck.
