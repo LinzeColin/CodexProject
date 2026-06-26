@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/PFI/shared/schema/consumption_guard_reviewed_input.schema.json",
+  "title": "PFI Consumption Guard Reviewed Input",
+  "description": "Public contract for local reviewed Consumption Guard input. Real inputs should stay under data/private/consumption and must not be committed.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["event_date", "event_type", "category", "amount", "review_status"],
+    "additionalProperties": true,
+    "properties": {
+      "event_id": {"type": "string"},
+      "event_date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+      "event_type": {
+        "type": "string",
+        "enum": ["Essential", "Discretionary", "Impulse", "Subscription", "InvestmentRelated", "Social", "Debt", "Health", "Other"]
+      },
+      "category": {
+        "type": "string",
+        "enum": ["Food", "Transport", "Housing", "Utilities", "Subscription", "Shopping", "Entertainment", "Education", "Health", "InvestmentRelated", "Debt", "Other"]
+      },
+      "amount": {"type": "number", "exclusiveMinimum": 0},
+      "currency": {"type": "string", "minLength": 1, "maxLength": 8},
+      "merchant": {"type": "string"},
+      "payment_method": {"type": "string"},
+      "planned": {"type": "boolean"},
+      "recurring": {"type": "boolean"},
+      "necessity_score": {"type": "number", "minimum": 0, "maximum": 100},
+      "impulse_score": {"type": "number", "minimum": 0, "maximum": 100},
+      "regret_score": {"type": "number", "minimum": 0, "maximum": 100},
+      "evidence_link": {"type": "string"},
+      "evidence_path": {"type": "string"},
+      "review_status": {"type": "string", "enum": ["PendingReview", "Reviewed", "Rejected"]},
+      "notes": {"type": "string"}
+    }
+  }
+}

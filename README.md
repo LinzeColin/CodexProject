@@ -29,7 +29,7 @@ Active Codex-related project hub for LinzeColin.
 | `FIFA` | `FIFA` | https://github.com/LinzeColin/FIFA |
 | `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
-| `PFI_BIG_DATA_SIMULATOR` | `PFI/大数据模拟器` | https://github.com/LinzeColin/CodexProject/tree/main/PFI/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%8B%9F%E5%99%A8 |
+| `PFI` | `PFI` | https://github.com/LinzeColin/CodexProject/tree/main/PFI |
 | `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
 | `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
 | `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |

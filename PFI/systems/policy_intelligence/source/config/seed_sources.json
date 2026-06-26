@@ -1,0 +1,262 @@
+{
+  "sources": [
+    {
+      "name": "中国政府网",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "China",
+      "administrative_level": "national",
+      "source_type": "government_portal",
+      "parent_authority": "国务院",
+      "sponsor_unit": "国务院办公厅",
+      "supervisor_unit": "国务院办公厅",
+      "official_url": "https://www.gov.cn/",
+      "publishes_original_documents": true,
+      "crawl_enabled": true,
+      "crawl_priority": 1,
+      "status": "active",
+      "review_status": "unreviewed",
+      "evidence": [
+        {
+          "type": "official_directory",
+          "value": "中央人民政府门户网站",
+          "url": "https://www.gov.cn/"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "国务院办公厅",
+          "url": "https://www.gov.cn/"
+        },
+        {
+          "type": "supervisor_unit",
+          "value": "国务院办公厅",
+          "url": "https://www.gov.cn/"
+        }
+      ],
+      "aliases": [
+        {
+          "type": "english_name",
+          "value": "The State Council of the People's Republic of China",
+          "url": "https://english.www.gov.cn/"
+        },
+        {
+          "type": "column_url",
+          "value": "国务院政策文件库",
+          "url": "https://www.gov.cn/zhengce/zhengcewenjianku/"
+        }
+      ]
+    },
+    {
+      "name": "政府网站基本信息下载",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "China",
+      "administrative_level": "national",
+      "source_type": "official_directory",
+      "parent_authority": "国务院办公厅",
+      "sponsor_unit": "中国政府网",
+      "supervisor_unit": "国务院办公厅",
+      "official_url": "https://zfwzzc.www.gov.cn/check_web/databaseInfo/download",
+      "publishes_original_documents": true,
+      "crawl_enabled": false,
+      "crawl_priority": 2,
+      "status": "active",
+      "review_status": "unreviewed",
+      "evidence": [
+        {
+          "type": "official_directory",
+          "value": "政府网站基本信息下载",
+          "url": "https://zfwzzc.www.gov.cn/check_web/databaseInfo/download"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "中国政府网",
+          "url": "https://www.gov.cn/"
+        },
+        {
+          "type": "supervisor_unit",
+          "value": "国务院办公厅",
+          "url": "https://www.gov.cn/"
+        }
+      ],
+      "aliases": [
+        {
+          "type": "column_url",
+          "value": "国务院有关部门正常状态网站清单",
+          "url": "https://zfwzzc.www.gov.cn/check_web/databaseInfo/download"
+        },
+        {
+          "type": "column_url",
+          "value": "地方正常状态网站清单",
+          "url": "https://zfwzzc.www.gov.cn/check_web/databaseInfo/download"
+        }
+      ]
+    },
+    {
+      "name": "国务院组织机构",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "China",
+      "administrative_level": "national",
+      "source_type": "information_disclosure",
+      "parent_authority": "国务院",
+      "sponsor_unit": "中国政府网",
+      "supervisor_unit": "国务院办公厅",
+      "official_url": "https://www.gov.cn/gwyzzjg/",
+      "publishes_original_documents": true,
+      "crawl_enabled": false,
+      "crawl_priority": 3,
+      "status": "active",
+      "review_status": "unreviewed",
+      "evidence": [
+        {
+          "type": "organization_page",
+          "value": "国务院组织机构",
+          "url": "https://www.gov.cn/gwyzzjg/"
+        },
+        {
+          "type": "official_directory",
+          "value": "中国政府网国务院组织机构",
+          "url": "https://www.gov.cn/gwyzzjg/"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "中国政府网",
+          "url": "https://www.gov.cn/"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "name": "地方政府网站目录",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "China",
+      "administrative_level": "national",
+      "source_type": "official_directory",
+      "parent_authority": "国务院办公厅",
+      "sponsor_unit": "中国政府网",
+      "supervisor_unit": "国务院办公厅",
+      "official_url": "https://www.gov.cn/home/2023-03/29/content_5748954.htm",
+      "publishes_original_documents": true,
+      "crawl_enabled": false,
+      "crawl_priority": 4,
+      "status": "active",
+      "review_status": "unreviewed",
+      "evidence": [
+        {
+          "type": "official_directory",
+          "value": "中国政府网地方政府网站目录",
+          "url": "https://www.gov.cn/home/2023-03/29/content_5748954.htm"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "中国政府网",
+          "url": "https://www.gov.cn/"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "name": "国务院政府信息公开平台",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "China",
+      "administrative_level": "national",
+      "source_type": "information_disclosure",
+      "parent_authority": "国务院",
+      "sponsor_unit": "中国政府网",
+      "supervisor_unit": "国务院办公厅",
+      "official_url": "https://www.gov.cn/zhengce/xxgk/index.htm",
+      "publishes_original_documents": true,
+      "crawl_enabled": true,
+      "crawl_priority": 5,
+      "status": "active",
+      "review_status": "unreviewed",
+      "evidence": [
+        {
+          "type": "official_directory",
+          "value": "国务院部门政府信息公开平台",
+          "url": "https://www.gov.cn/zhengce/xxgk/index.htm"
+        },
+        {
+          "type": "organization_page",
+          "value": "国务院部门政府信息公开平台",
+          "url": "https://www.gov.cn/zhengce/xxgk/index.htm"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "中国政府网",
+          "url": "https://www.gov.cn/"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "name": "广东省人民政府门户网站",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "广东省",
+      "administrative_level": "provincial",
+      "source_type": "provincial_portal",
+      "parent_authority": "广东省人民政府",
+      "sponsor_unit": "广东省人民政府办公厅",
+      "supervisor_unit": "广东省人民政府办公厅",
+      "official_url": "https://www.gd.gov.cn/",
+      "publishes_original_documents": true,
+      "crawl_enabled": true,
+      "crawl_priority": 20,
+      "status": "active",
+      "review_status": "unreviewed",
+      "evidence": [
+        {
+          "type": "official_directory",
+          "value": "中国政府网地方政府网站目录",
+          "url": "https://www.gov.cn/home/2023-03/29/content_5748954.htm"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "广东省人民政府办公厅",
+          "url": "https://www.gd.gov.cn/"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "name": "中国社会科学院",
+      "country_code": "CN",
+      "country_name": "China",
+      "region": "China",
+      "administrative_level": "national",
+      "source_type": "think_tank",
+      "parent_authority": "国务院直属事业单位",
+      "sponsor_unit": "中国社会科学院",
+      "supervisor_unit": "国务院",
+      "official_url": "https://www.cssn.cn/",
+      "publishes_original_documents": true,
+      "crawl_enabled": true,
+      "crawl_priority": 40,
+      "status": "active",
+      "review_status": "unreviewed",
+      "notes": "研究/智库来源，需要在报告中区别于政府政策原文。",
+      "evidence": [
+        {
+          "type": "official_directory",
+          "value": "政府网站基本信息下载列示社科院",
+          "url": "https://zfwzzc.www.gov.cn/check_web/databaseInfo/download"
+        },
+        {
+          "type": "sponsor_unit",
+          "value": "中国社会科学院",
+          "url": "https://www.cssn.cn/"
+        }
+      ],
+      "aliases": [
+        {
+          "type": "english_name",
+          "value": "Chinese Academy of Social Sciences"
+        }
+      ]
+    }
+  ]
+}

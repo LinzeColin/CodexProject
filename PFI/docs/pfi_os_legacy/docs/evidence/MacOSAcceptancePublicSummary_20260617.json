@@ -1,0 +1,120 @@
+{
+  "schema": "PFIOSMacOSPublicAcceptanceSummaryV1",
+  "system": "PFI_OS",
+  "subsystem": "macOS Public Acceptance Summary",
+  "generated_at": "2026-06-17T08:30:19Z",
+  "status": "Pass",
+  "summary": {
+    "sources_total": 2,
+    "sources_pass": 2,
+    "sources_blocked": 0,
+    "runtime_status": "Pass",
+    "ui_status": "Pass"
+  },
+  "evidence_sources": [
+    {
+      "source": "MacOSRuntimeAcceptance_latest.json",
+      "raw_schema": "PFIOSMacOSRuntimeAcceptanceV1",
+      "raw_generated_at": "2026-06-16T18:59:28",
+      "status": "Pass",
+      "summary": {
+        "pass": 10,
+        "fail": 0,
+        "info": 0,
+        "total": 10
+      },
+      "launch_method": "app",
+      "started_by_acceptance": true,
+      "failed_checks": []
+    },
+    {
+      "source": "UIVisualAcceptance_latest.json",
+      "raw_schema": "PFIOSUIVisualAcceptanceV1",
+      "raw_generated_at": "2026-06-17T08:12:44.488Z",
+      "status": "Pass",
+      "summary": {
+        "pass": 16,
+        "fail": 0,
+        "info": 0,
+        "total": 16
+      },
+      "started_by_acceptance": true,
+      "screenshot_bytes": 278744,
+      "viewport": "1440x1000",
+      "failed_checks": []
+    }
+  ],
+  "coverage": [
+    {
+      "gate": "App open runtime acceptance",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Local health after app start",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Cache delete refusal while running",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Stop command and post-stop health",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Post-stop cache dry-run",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Rendered PFI_OS workspace",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "macOS lifecycle panel visible",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Runtime evidence visible in UI",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Lifecycle action buttons visible",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "No visible runtime errors",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    },
+    {
+      "gate": "Screenshot captured",
+      "status": "Pass",
+      "evidence": "sanitized pass/fail only; raw local evidence stays gitignored"
+    }
+  ],
+  "privacy_redaction": {
+    "local_paths_included": false,
+    "browser_executable_included": false,
+    "screenshot_path_included": false,
+    "pid_or_process_output_included": false,
+    "raw_logs_included": false,
+    "private_data_included": false
+  },
+  "heavy_smoke_policy": "This public summary is generated from existing local evidence only. It does not run scripts/finalAcceptanceCheck.sh, scripts/ciSmoke.sh, full pytest, market refresh, broker connections, orders, payments, or holdings writes.",
+  "safety_boundary": "GitHub-safe sanitized summary. Raw local evidence, screenshots, browser paths, PIDs, absolute project paths, private data, and runtime logs stay local and gitignored.",
+  "next_action": "Use this summary for GitHub handoff. Refresh raw local runtime/UI evidence first if macOS behavior changes, then regenerate this public summary.",
+  "outputs": {
+    "json": "docs/evidence/MacOSAcceptancePublicSummary_20260617.json",
+    "latest_json": "docs/evidence/MacOSAcceptancePublicSummary_latest.json",
+    "latest_markdown": "docs/evidence/MacOSAcceptancePublicSummary_latest.md"
+  }
+}

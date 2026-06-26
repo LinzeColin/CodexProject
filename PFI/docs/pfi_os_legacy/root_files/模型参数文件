@@ -1,0 +1,45 @@
+# PFI_OS 模型参数文件
+
+更新时间：2026-06-27
+
+## 默认模型与执行模式
+
+- PFI target product：`PFI OS`。
+- PFI active issue：`PFI V0.2 Stage 0`，兼容审计与边界锁定。
+- Stage 0 contract：`docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`。
+- 默认模式：local-first research, validation, backtesting, reporting。
+- 默认实盘：disabled。
+- 默认结论等级：ContinueResearch、WatchOnly、NeedsMoreEvidence、DoNotUse。
+- 默认验证策略：证据不足时输出 Blocked / NeedsMoreEvidence，不伪造通过。
+
+## 关键参数域
+
+| 参数域 | 当前原则 |
+| --- | --- |
+| PFI V0.2 目标一级入口 | 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与同步、建议与复盘、报告与洞察 |
+| 当前兼容入口 | 首页、市场、研究、持仓、策略实验室、数据与系统 |
+| 兼容映射 | `PFI/大数据模拟器` -> `投资管理 > 策略实验室 / 大数据模拟器`；当前模拟实验与盘感训练保留在策略实验室兼容入口 |
+| PFI 数据根 | `$PFI_OS_DATA_HOME`，仓库只保存代码、schema、配置模板和脱敏 fixture |
+| LLM provider | 默认 `DisabledProvider`；本地 LLM 不是核心流程前置条件 |
+| 市场范围 | A 股、港股、美股 |
+| 时间粒度 | 1min 到 yearly，统一 bar model |
+| backtest 记录 | 数据范围、provider、调整模式、策略版本、参数、成本模型、运行时间 |
+| market-feel training | 保留为策略实验室训练模式；必须隐藏未来答案区间并记录复盘结果 |
+| Decision Quality Score | 用于判断研究结论完整性和可用性 |
+| ResearchBus | SQLite: `data/researchBus/ResearchBus.sqlite`; schema: `docs/ResearchBusSchema.json` |
+| heavy gate | 默认不跑；需明确 release intent 和允许变量 |
+
+## 模型与数据要求
+
+- 回测输出必须包含收益、风险、回撤、交易次数、换手、成本和曲线类指标。
+- PFI V0.2 Stage 0 只锁定 IA 与兼容边界，不更改回测引擎、Web Shell 路由或 active runtime。
+- PFI 策略回测必须可复现：同一数据、成本、参数、策略版本和代码版本应得到一致结果。
+- PFI 参数扫描必须展示稳定性、样本外验证或 walk-forward 状态，避免单点过拟合。
+- 行研或政策系统引用 PFIOS 结果时必须同时引用数据质量、多源交叉校验、成本假设和风险闸门状态。
+- 如果引入 LLM，默认用于摘要、报告解释、证据缺口拆解和任务排序，不用于自动交易执行。
+
+## 不允许保存或提交
+
+- 交易账户密码、broker token、session、cookie。
+- 真实下单自动化凭证。
+- 未脱敏的敏感账户、持仓或私有数据。

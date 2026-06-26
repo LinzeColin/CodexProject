@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>PFI</title>
+    <link rel="stylesheet" href="./styles/tokens.css" />
+  </head>
+  <body
+    data-shell-schema="PFIOSWebShellContractV1"
+    data-feature-flag="PFI_UI_V2"
+    data-fallback-flag-value="1"
+    data-cached-home-target-seconds="2"
+  >
+    <a class="skip-link" href="#main-workspace">跳到内容</a>
+    <div class="app-shell" data-state="ready">
+      <header class="top-bar" aria-label="PFI 顶部栏">
+        <div class="brand" aria-label="PFI">
+          <span class="brand-mark" aria-hidden="true">PFI</span>
+          <span class="brand-name">PFI</span>
+        </div>
+        <label class="global-search">
+          <span class="sr-only">全局搜索</span>
+          <input id="global-search" type="search" placeholder="搜索标的、基金、政策或证据" autocomplete="off" />
+        </label>
+        <form class="global-context" aria-label="全局上下文">
+          <label>
+            <span>市场</span>
+            <select data-context-field="market" aria-label="市场">
+              <option>美股</option>
+              <option>A股</option>
+              <option>港股</option>
+            </select>
+          </label>
+          <label>
+            <span>标的</span>
+            <input data-context-field="entity" value="SPY" aria-label="标的" />
+          </label>
+          <label>
+            <span>组合</span>
+            <select data-context-field="portfolio" aria-label="组合">
+              <option>主组合</option>
+              <option>观察池</option>
+              <option>沙盒</option>
+            </select>
+          </label>
+          <label>
+            <span>日期</span>
+            <input data-context-field="as_of" type="date" value="2026-06-19" aria-label="截至日期" />
+          </label>
+          <input type="hidden" data-context-field="currency" value="USD" />
+          <input type="hidden" data-context-field="research_task" value="daily_brief" />
+          <input type="hidden" data-context-field="evidence_set" value="cached_home" />
+          <input type="hidden" data-context-field="simulation_scenario" value="base" />
+        </form>
+        <div class="top-actions" aria-label="工作台操作">
+          <button class="icon-button" type="button" data-command-open aria-label="打开命令面板">命令</button>
+          <button class="icon-button" type="button" data-task-toggle aria-label="打开任务中心">
+            <span aria-hidden="true">任务</span>
+          </button>
+          <button class="icon-button" type="button" data-evidence-toggle aria-label="打开证据抽屉">
+            <span aria-hidden="true">证据</span>
+          </button>
+          <button class="icon-button" type="button" data-settings-open aria-label="打开系统设置">
+            <span aria-hidden="true">设置</span>
+          </button>
+        </div>
+      </header>
+
+      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="6">
+        <button class="nav-item is-active" type="button" data-workspace="home">首页</button>
+        <button class="nav-item" type="button" data-workspace="market">市场</button>
+        <button class="nav-item" type="button" data-workspace="research">研究</button>
+        <button class="nav-item" type="button" data-workspace="portfolio">持仓</button>
+        <button class="nav-item" type="button" data-workspace="strategy">策略实验室</button>
+        <button class="nav-item" type="button" data-workspace="data">数据与系统</button>
+      </nav>
+
+      <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
+        <section class="workspace-header" aria-labelledby="workspace-title">
+          <div>
+            <p class="workspace-kicker" id="workspace-kicker">今日总览</p>
+            <h1 id="workspace-title">首页</h1>
+            <p id="workspace-conclusion">今日可用缓存已加载；先处理数据新鲜度和证据阻塞，再进入研究或策略实验室。</p>
+          </div>
+          <div class="sync-status" aria-live="polite">
+            <span class="status-dot status-ready" aria-hidden="true"></span>
+            <span>缓存可用</span>
+            <strong id="freshness-label" data-context-field="freshness">更新 08:45</strong>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="工作区摘要">
+          <article class="metric-tile" data-home-card="open_tasks" data-card-source="operational_store:task_records">
+            <span>待处理</span>
+            <strong data-card-value>0</strong>
+            <small data-card-detail>来源：任务表 · 更新缺失 · 状态待补</small>
+          </article>
+          <article class="metric-tile" data-home-card="market_events" data-card-source="operational_store:source_records">
+            <span>市场事件</span>
+            <strong data-card-value>0</strong>
+            <small data-card-detail>来源：来源登记 · 更新缺失 · 状态待补</small>
+          </article>
+          <article class="metric-tile" data-home-card="portfolio_risk" data-card-source="operational_store:holding_snapshots">
+            <span>持仓风险</span>
+            <strong data-card-value>待补</strong>
+            <small data-card-detail>来源：持仓快照 · 更新缺失 · 状态待补数据</small>
+          </article>
+          <article class="metric-tile" data-home-card="strategy_runs" data-card-source="operational_store:evidence_records">
+            <span>策略运行</span>
+            <strong data-card-value>0</strong>
+            <small data-card-detail>来源：证据记录 · 更新缺失 · 状态待补</small>
+          </article>
+        </section>
+
+        <section class="workflow-runtime" aria-labelledby="workflow-runtime-title">
+          <div class="section-heading">
+            <div>
+              <p class="panel-kicker">功能板块</p>
+              <h2 id="workflow-runtime-title">核心功能入口</h2>
+            </div>
+            <span class="runtime-target" data-runtime-target>快速路径：待复核 · 目标 60 秒</span>
+          </div>
+          <div class="workflow-grid" data-workflow-cards aria-live="polite">
+            <article class="workflow-card" data-workflow-card="strategy">
+              <div class="workflow-card-head">
+                <strong>策略实验室</strong>
+                <span class="status-pill status-review">复核</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>证据</dt><dd>回测结果</dd></div>
+                <div><dt>新鲜度</dt><dd>待补</dd></div>
+                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+              </dl>
+              <div class="workflow-actions">
+                <button class="workflow-open" type="button" data-feature-view="single">打开回测</button>
+                <button type="button" data-workflow-evidence="strategy">查看证据</button>
+              </div>
+            </article>
+            <article class="workflow-card" data-workflow-card="market">
+              <div class="workflow-card-head">
+                <strong>市场</strong>
+                <span class="status-pill status-review">复核</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>证据</dt><dd>市场观察</dd></div>
+                <div><dt>新鲜度</dt><dd>待补</dd></div>
+                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+              </dl>
+              <div class="workflow-actions">
+                <button class="workflow-open" type="button" data-feature-view="hotspots">打开热点</button>
+                <button type="button" data-workflow-evidence="market">查看证据</button>
+              </div>
+            </article>
+            <article class="workflow-card" data-workflow-card="research">
+              <div class="workflow-card-head">
+                <strong>研究与政策</strong>
+                <span class="status-pill status-review">复核</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>证据</dt><dd>研究证据</dd></div>
+                <div><dt>新鲜度</dt><dd>待补</dd></div>
+                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+              </dl>
+              <div class="workflow-actions">
+                <button class="workflow-open" type="button" data-feature-view="reports">打开报告</button>
+                <button type="button" data-workflow-evidence="research">查看证据</button>
+              </div>
+            </article>
+            <article class="workflow-card" data-workflow-card="portfolio">
+              <div class="workflow-card-head">
+                <strong>持仓</strong>
+                <span class="status-pill status-review">复核</span>
+              </div>
+              <dl class="workflow-meta">
+                <div><dt>证据</dt><dd>持仓复核</dd></div>
+                <div><dt>新鲜度</dt><dd>待补</dd></div>
+                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+              </dl>
+              <div class="workflow-actions">
+                <button class="workflow-open" type="button" data-feature-view="holdings">打开持仓</button>
+                <button type="button" data-workflow-evidence="portfolio">查看证据</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="function-detail" data-function-detail hidden aria-labelledby="function-detail-title">
+          <div class="function-detail-head">
+            <div>
+              <p class="panel-kicker">功能面板</p>
+              <h2 id="function-detail-title" data-function-title>PFI 功能入口</h2>
+              <p data-function-purpose>选择一个功能板块后，这里会显示中文操作面板、证据边界和下一步。</p>
+            </div>
+            <span class="status-pill status-ready" data-function-status>可用</span>
+          </div>
+          <dl class="function-meta" data-function-meta>
+            <div>
+              <dt>核心操作</dt>
+              <dd data-function-primary-action>打开功能</dd>
+            </div>
+            <div>
+              <dt>工作区</dt>
+              <dd data-function-workspace>首页</dd>
+            </div>
+            <div>
+              <dt>边界</dt>
+              <dd data-function-boundary>只做研究、回测、训练、复核和报告，不做实盘自动下单。</dd>
+            </div>
+          </dl>
+          <div class="function-checks" data-function-checks></div>
+          <section class="function-runner" data-function-runner hidden aria-labelledby="function-runner-title">
+            <div class="function-runner-head">
+              <div>
+                <p class="panel-kicker">操作区</p>
+                <h3 id="function-runner-title" data-function-run-title>功能已准备</h3>
+                <p data-function-run-summary>点击主操作后，这里会显示可执行步骤、当前状态和验收边界。</p>
+              </div>
+              <span class="status-pill status-ready" data-function-run-state>已进入</span>
+            </div>
+            <ol class="function-run-steps" data-function-run-steps></ol>
+            <div class="function-run-output" data-function-run-output></div>
+          </section>
+          <div class="function-actions">
+            <button class="primary-action" type="button" data-function-action>进入操作面板</button>
+            <a class="secondary-link" href="?pfi_legacy=1&amp;view=single" target="_blank" rel="noreferrer" data-function-legacy-link hidden>兼容详情页</a>
+            <button type="button" class="secondary-action" data-function-close>返回工作区</button>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel main-panel" aria-labelledby="main-panel-title">
+            <div class="panel-toolbar">
+              <div>
+                <p class="panel-kicker">决策队列</p>
+                <h2 id="main-panel-title">今日待处理</h2>
+              </div>
+              <button type="button" class="secondary-action" data-run-refresh>刷新缓存切片</button>
+            </div>
+            <div class="chart-strip" aria-label="新鲜度趋势图">
+              <canvas id="market-sparkline" width="760" height="116"></canvas>
+            </div>
+            <div class="table-toolbar" aria-label="表格控制">
+              <input type="search" placeholder="筛选" aria-label="筛选表格" data-table-filter />
+              <button type="button" data-table-sort>排序</button>
+              <button type="button" data-table-export>导出</button>
+            </div>
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th scope="col">优先级</th>
+                  <th scope="col">对象</th>
+                  <th scope="col">证据</th>
+                  <th scope="col">动作</th>
+                  <th scope="col">状态</th>
+                </tr>
+              </thead>
+              <tbody id="decision-rows" data-home-decision-rows>
+                <tr>
+                  <td>P0</td>
+                  <td>数据新鲜度</td>
+                  <td>来源时间不一致</td>
+                  <td>复核缓存兜底</td>
+                  <td><span class="status-pill status-review">复核</span></td>
+                </tr>
+                <tr>
+                  <td>P1</td>
+                  <td>SPY</td>
+                  <td>市场事件摘要</td>
+                  <td>打开证据抽屉</td>
+                  <td><span class="status-pill status-ready">可用</span></td>
+                </tr>
+                <tr>
+                  <td>P1</td>
+                  <td>策略运行</td>
+                  <td>回测元数据完整</td>
+                  <td>验证稳定性</td>
+                  <td><span class="status-pill status-watch">观察</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <aside class="panel task-center" aria-labelledby="task-title" data-task-center>
+            <div class="panel-toolbar">
+              <div>
+                <p class="panel-kicker">任务中心</p>
+                <h2 id="task-title">当前任务</h2>
+              </div>
+              <button type="button" class="icon-button" data-task-toggle aria-label="关闭任务中心">×</button>
+            </div>
+            <ol class="task-list" aria-live="polite">
+              <li data-task-state="ready">
+                <strong>数据新鲜度复核</strong>
+                <span>可用 · 缓存兜底已准备</span>
+              </li>
+              <li data-task-state="running">
+                <strong>策略验证</strong>
+                <span id="task-phase">第 1/3 步 · 等待</span>
+              </li>
+              <li data-task-state="queued">
+                <strong>证据导出</strong>
+                <span id="background-job-label">排队中 · 后台任务待生成</span>
+              </li>
+            </ol>
+          </aside>
+        </section>
+
+        <section class="feedback-panel" aria-live="assertive" data-feedback-region>
+          <div class="skeleton-row" hidden data-skeleton>
+            <span></span><span></span><span></span>
+          </div>
+          <div class="inline-error" hidden data-error-banner>
+            <strong>暂时无法刷新该切片。</strong>
+            <span>正在使用 08:45 的缓存快照；来源时钟恢复后可重试。</span>
+            <button type="button" data-retry>重试</button>
+            <button type="button" data-cache-fallback>使用缓存</button>
+          </div>
+          <div class="toast" hidden data-toast role="status"></div>
+        </section>
+      </main>
+
+      <aside class="evidence-drawer" aria-label="证据抽屉" data-evidence-drawer>
+        <div class="drawer-header">
+          <div>
+            <p class="panel-kicker">证据</p>
+            <h2 data-evidence-title>PFI · 运行证据</h2>
+          </div>
+          <button type="button" class="icon-button" data-evidence-toggle aria-label="关闭证据抽屉">×</button>
+        </div>
+        <dl class="evidence-list">
+          <dt>证据</dt>
+          <dd data-evidence-field="Evidence">暂无运行证据记录。</dd>
+          <dt>来源</dt>
+          <dd data-evidence-field="Source">运行库暂无记录。</dd>
+          <dt>模型</dt>
+          <dd data-evidence-field="Model">外部模型未启用</dd>
+          <dt>参数</dt>
+          <dd data-evidence-field="Parameters">市场=美股 · 标的=SPY · 组合=主组合 · 币种=USD</dd>
+          <dt>数据血缘</dt>
+          <dd data-evidence-field="Data lineage">运行库摘要 → 缓存卡片 → 决策队列。</dd>
+          <dt>原始记录</dt>
+          <dd><button type="button" data-raw-document data-evidence-field="Raw document">暂无来源记录</button></dd>
+        </dl>
+      </aside>
+    </div>
+
+    <dialog class="command-palette" data-command-palette aria-label="命令面板">
+      <form method="dialog">
+        <label>
+          <span class="sr-only">命令</span>
+          <input data-command-input placeholder="跳转到工作区或证据" />
+        </label>
+        <div class="command-results" role="listbox">
+          <button type="button" role="option" data-command-workspace="home">首页</button>
+          <button type="button" role="option" data-command-workspace="market">市场</button>
+          <button type="button" role="option" data-command-workspace="research">研究</button>
+          <button type="button" role="option" data-command-workspace="portfolio">持仓</button>
+          <button type="button" role="option" data-command-workspace="strategy">策略实验室</button>
+          <button type="button" role="option" data-command-workspace="data">数据与系统</button>
+        </div>
+      </form>
+    </dialog>
+    <noscript>PFI 需要启用浏览器脚本来保存本地导航状态。</noscript>
+    <script type="application/json" id="pfi-home-summary">
+      {
+        "schema": "PFIOSHomeSummaryV1",
+        "metric_cards": [],
+        "decision_rows": [],
+        "evidence_drawer": {},
+        "workflow_runtime": {
+          "schema": "PFIOSPhaseCWorkflowRuntimeReadModelV1",
+          "fast_path": {
+            "status": "Review",
+            "target_seconds": 60,
+            "estimated_seconds": 0
+          },
+          "workflow_cards": [],
+          "task_center_rows": [],
+          "supervisor_runtime": {
+            "schema": "PFIOSPFI003SupervisorRuntimeReadModelV1",
+            "status": "Review",
+            "total_job_count": 0,
+            "active_job_count": 0,
+            "running_job_count": 0,
+            "retrying_job_count": 0,
+            "dead_letter_count": 0,
+            "web_shell_visible": true
+          }
+        }
+      }
+    </script>
+    <script src="./app/shell.js"></script>
+  </body>
+</html>

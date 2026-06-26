@@ -1,0 +1,7 @@
+date,event_time,type,title,summary,impact,related_symbols,industry,source_name,source_url
+2026-06-03,09:35,watchlist_theme,科技成长链条走强,自选池中芯片、人工智能、科创成长方向涨幅靠前，短线风险偏好偏向成长资产。,positive,"159995;159819;000688",AI/半导体,Moomoo OpenD + Watchlist,opend://127.0.0.1
+2026-06-03,10:15,watchlist_theme,防御与红利资产回落,黄金、红利低波、银行相关标的在自选池中表现偏弱，短线防御风格不占优。,negative,"518800;563020;399986",防御/红利,Moomoo OpenD + Watchlist,opend://127.0.0.1
+2026-06-03,11:30,watchlist_theme,汇率类标的仅纳入观察,自选池含美元/人民币、美元/澳元、澳元/人民币，当前报告不对外汇做交易建议，只作为风险背景。,neutral,"USDCNY;USDAUD;AUDCNY",汇率,Moomoo Local Watchlist DB,local://moomoo-watchlist-db
+2026-06-03,08:20,technical_news,QQQ趋势结构偏强,外部技术分析显示 QQQ 处于上行趋势结构，但需结合成交额和盘中回撤确认。,positive,QQQ,美股科技,Clearank QQQ Analysis,https://clearank.com/etf/qqq-invesco-nasdaq-100/
+2026-06-03,08:35,fundamental_news,Nasdaq一季度业绩增长,Nasdaq 公布 2026 年一季度业绩，收入和每股收益同比改善，支持基本面韧性判断。,positive,NDAQ,交易所/金融科技,Nasdaq Investor Relations,https://www.globenewswire.com/news-release/2026/04/23/3279750/0/en/Nasdaq-Reports-First-Quarter-2026-Results-Strong-Execution-Drives-Double-Digit-Net-Revenue-Growth-Across-All-Divisions.html
+2026-06-03,08:50,index_rule_news,Nasdaq-100快速纳入规则变化,Nasdaq-100 新规可能加快新上市大市值公司纳入节奏，影响 QQQ 成分和资金流。,neutral,QQQ,美股科技,Kiplinger,https://www.kiplinger.com/investing/what-the-nasdaqs-new-fast-entry-rule-means-for-investors

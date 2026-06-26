@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "source-authority-registry"
+version = "0.1.0"
+description = "Independent source registry and authority scoring database for policy intelligence crawlers."
+requires-python = ">=3.11"
+dependencies = ["reportlab>=4.0"]
+
+[project.scripts]
+source-registry = "source_registry.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

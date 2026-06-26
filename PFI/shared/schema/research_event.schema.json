@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LinzeColin/CodexProject/PFI/shared/schema/research_event.schema.json",
+  "title": "PFI Research Event",
+  "type": "object",
+  "required": ["event_id", "run_id", "source_system", "event_type", "evidence_layer", "data_quality", "created_at"],
+  "additionalProperties": true,
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "source_system": {"type": "string", "minLength": 1},
+    "target_system": {"type": "string"},
+    "event_type": {"type": "string", "minLength": 1},
+    "evidence_layer": {"type": "string", "enum": ["FACT", "INFERENCE", "OPINION", "OBSERVATION"]},
+    "data_quality": {"type": "string", "enum": ["Fresh", "Delayed", "Stale", "Missing", "Conflicting"]},
+    "conclusion_grade": {"type": "string", "enum": ["Actionable", "Watch", "Observe", "Reject"]},
+    "created_at": {"type": "string"},
+    "payload": {"type": "object"}
+  }
+}

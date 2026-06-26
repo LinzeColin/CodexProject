@@ -1,0 +1,82 @@
+# PFI 开发记录
+
+更新时间：2026-06-27
+
+## Stage 1：核心骨架
+
+目标：建立 PFI V0.2 的核心骨架，让账户、资产、数据源、账本、投资、消费、建议、报告共用同一套事实层。
+
+## Path 修正
+
+- 当前 GitHub / 本机开发根：`CodexProject/PFI`。
+- 旧公开路径：`PFI/modules/qbvs_lab`。
+- 处理方式：旧路径保留为兼容入口，不作为新 Stage 1 根；新合同和 owner 文件写入 `PFI/` 根。
+- active QBVS runtime：`PFI/modules/qbvs_lab/qbvs`，本阶段不移动。
+
+## Phase 1A 记录
+
+- 新增 `src/pfi_v02/stage1_ia.py`。
+- 新增 `tests/test_stage1_ia_contract.py`。
+- 新增 `docs/pfi_v02/STAGE1_CORE_SKELETON.md`。
+- 新增 `AGENTS.md`、`README.md`、`HANDOFF.md`、`功能清单`、`模型参数文件`。
+- 验证命令：
+
+```bash
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
+cd 大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+```
+
+- 验证结果：IA contract `Ran 7 tests / OK`；旧 QBVS lifecycle smoke `Ran 1 test / OK`；排除项 grep 无输出；`git diff --check` 通过。
+
+## Stage 1 完成记录
+
+- Phase 1B：已新增 `src/pfi_v02/core_models.py` 和 `tests/test_stage1_core_models.py`，覆盖 DataSource / CredentialRef、Account / AssetInstrument、ImportBatch / RawRecord、NormalizedTransaction / LedgerEvent、Snapshot models；验证结果 `Ran 9 tests / OK`，IA+模型合计 `Ran 16 tests / OK`。
+- Phase 1C：已新增 `src/pfi_v02/classification_rules.py` 和 `tests/test_stage1_classification_rules.py`，覆盖转账、基金、贵金属、信用卡还款分类规则 fixture。
+- Stage 1 closeout 验证：IA + core models + classification rules 合计 `Ran 23 tests / OK`；旧 QBVS lifecycle smoke `Ran 1 test / OK`；排除项 grep 无输出；`git diff --check` 通过。
+
+## Stage 2：数据源与低操作自动同步 MVP
+
+目标：减少手动输入，建立多通道采集能力。数据源不能都按 CSV 设计，必须支持页面读取、statement、OpenD/API、watch folder、邮箱附件、手动快照和低可信候选。
+
+## Phase 2A 记录
+
+- 新增 `src/pfi_v02/stage2_registry.py`。
+- 注册 `alipay_daily`、`alipay_fund`、`moomoo_au`、`cn_broker`、`abc_bullion`、`cba_bank`、`wechat_pay`、`other_connector`。
+- 每个数据源声明 acquisition modes、credential requirements、freshness target、parser contracts、ledger boundaries。
+- 新平台扩展通过 `build_connector_profile()`，不改核心账本。
+
+## Phase 2B 记录
+
+- 新增 CBA CSV parser：日期、描述、金额方向、账户、batch hash、raw hash、parser version。
+- 新增 watch folder 识别和重复内容去重。
+- 新增 CBA transfer matching：投资入金、信用卡还款、ABC Bullion 银行付款不计普通消费。
+
+## Phase 2C 记录
+
+- 新增支付宝日常账单 CSV/ZIP parser。
+- 基金申购/赎回识别为 `FUND` 投资事件。
+- 低置信度和未知项目进入多选复核队列。
+
+## Phase 2D-2H 记录
+
+- 支付宝基金：non-CSV transaction/holding/NAV 三角校验合同。
+- Moomoo AU：OpenD/API read-only probe 和 account/funds/positions/orders/fills 合同；复用 `PFI/modules/qbvs_lab/qbvs` 现有引用。
+- 中国大陆券商：QMT/PTrade/terminal/HTML/PDF/Excel/manual snapshot profile。
+- ABC Bullion：页面、statement、PDF、HTML、browser-assisted read、holding snapshot 合同和贵金属事件模型。
+- 微信：email ZIP、CSV、XLS、XLSX、watch folder 和支付/转账/红包/退款规则合同。
+
+## Stage 2 验证记录
+
+```bash
+PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q
+```
+
+当前结果：`Ran 22 tests / OK`。
+
+## Stage 2 closeout 记录
+
+- Stage 1+2 合同测试：`Ran 45 tests / OK`。
+- 旧 QBVS lifecycle smoke：`Ran 1 test / OK`。
+- 本轮改动文件排除项 grep：无输出。
+- `git diff --check`：无输出。
+- 本地缓存扫描：`PFI` 下未发现 `.pyc`、`__pycache__`、`.pytest_cache`、`.mypy_cache`、`.DS_Store`。

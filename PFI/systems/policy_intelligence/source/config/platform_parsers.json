@@ -1,0 +1,188 @@
+{
+  "last_refreshed": "2026-06-05",
+  "source_note": "Platform parser capability registry. It records parser delivery state and acceptance checks only; it does not store cookies, API keys, accounts, passwords, or collected private content.",
+  "capability_targets": [
+    {
+      "capability": "public_search",
+      "label": "公开搜索入口",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "article_body",
+      "label": "文章正文抽取",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "video_metadata",
+      "label": "视频元数据",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "subtitle_extraction",
+      "label": "字幕摘录",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "comment_extraction",
+      "label": "评论摘录",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "danmaku_extraction",
+      "label": "弹幕摘录",
+      "required_for_full_web": false
+    },
+    {
+      "capability": "author_profile",
+      "label": "作者页/账号画像",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "interaction_metrics",
+      "label": "互动数据",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "failure_audit",
+      "label": "失败原因可审计",
+      "required_for_full_web": true
+    },
+    {
+      "capability": "no_secret_logging",
+      "label": "不记录账号、cookie、API key",
+      "required_for_full_web": true
+    }
+  ],
+  "parsers": [
+    {
+      "parser_id": "bilibili_public_video_parser",
+      "platform": "bilibili",
+      "name": "B站公开视频解析器",
+      "status": "partial",
+      "priority": 100,
+      "auth_required": false,
+      "implemented_capabilities": ["public_search", "video_metadata", "subtitle_extraction", "comment_extraction", "danmaku_extraction", "author_profile", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "用于获取政策解读视频标题、UP主、播放量、发布时间、简介、公开字幕/评论/弹幕线索，补足外部平台研究视角。",
+      "current_implementation": "bilibili_api collector 已接公开视频搜索，并尝试详情、作者、字幕、评论和弹幕公开接口；字幕/评论/弹幕走 platform_text_parser 标准化摘录；受限内容进入缺口。",
+      "next_action": "补 B站本地登录态后运行 online validation，验证字幕、评论、弹幕和作者页稳定性；继续扩大 SRT/VTT/JSON 字幕 fixture。",
+      "acceptance_check": "同一政策查询至少返回 1 条可计入或可审计失败的视频记录，字幕/评论/弹幕摘录可标准化，且 raw metadata 不包含 cookie。"
+    },
+    {
+      "parser_id": "search_api_article_parser",
+      "platform": "serpapi_bing_google",
+      "name": "搜索 API 公开文章解析器",
+      "status": "ready",
+      "priority": 95,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "article_body", "author_profile", "failure_audit", "no_secret_logging"],
+      "business_value": "通过 Bing/Google/SerpAPI 获取券商、律所、智库、媒体和研究机构公开解读，是每份报告 5 份外部参考的核心来源。",
+      "current_implementation": "search_api_* collector 已接搜索结果，并可抓取公开结果页正文；缺 key 时只记录缺口。",
+      "next_action": "补至少 1 个搜索 API key，并用 search-validate 在线验证。",
+      "acceptance_check": "配置 key 后能抓到公开结果页，正文摘录状态为 article_excerpt_extracted。"
+    },
+    {
+      "parser_id": "public_site_article_parser",
+      "platform": "public_media_sites",
+      "name": "公开媒体/官方站内文章解析器",
+      "status": "partial",
+      "priority": 90,
+      "auth_required": false,
+      "implemented_capabilities": ["public_search", "article_body", "failure_audit", "no_secret_logging"],
+      "business_value": "覆盖中国政府网、人民网、央视网、第一财经等公开站内搜索和文章正文，提升高权威解读覆盖。",
+      "current_implementation": "public_site_search 和 public_search_html 已抽取部分公开文章；前端脚本页、验证码和付费墙记录缺口。",
+      "next_action": "补站点级正文规则、反过期链接处理和结果质量过滤。",
+      "acceptance_check": "同域搜索结果能解析为文章 URL，并抽取不少于 80 字正文摘录。"
+    },
+    {
+      "parser_id": "toutiao_public_search_parser",
+      "platform": "toutiao",
+      "name": "今日头条公开搜索解析器",
+      "status": "partial",
+      "priority": 78,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "article_body", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "补充媒体与创作者分析、传播热度和公众关注点；不替代官方原文。",
+      "current_implementation": "今日头条同时保留 public_search_html 公开入口，并接入 authorized_public_search：授权文件可用时会尝试读取搜索页、解析公开结果链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者、发布时间和互动指标。",
+      "next_action": "补头条本地授权文件后验证文章页正文、作者页、互动字段和评论摘录稳定性。",
+      "acceptance_check": "公开搜索结果可解析到文章页；授权可用时返回正文、作者、发布时间、互动指标或可审计受限状态；登录/验证码页面不计入有效参考。"
+    },
+    {
+      "parser_id": "douyin_authorized_video_parser",
+      "platform": "douyin",
+      "name": "抖音授权视频解析器",
+      "status": "planned",
+      "priority": 72,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "video_metadata", "comment_extraction", "author_profile", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "用于补充短视频传播热度、行业自媒体观点和公众反馈。",
+      "current_implementation": "已接入 authorized_public_search：授权文件可用时会尝试读取搜索页、解析公开结果链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者、发布时间和互动指标；尚未抓取抖音视频详情专用字段。",
+      "next_action": "接入抖音详情页解析、评论摘录、作者页、互动指标和验证码检测。",
+      "acceptance_check": "授权可用时，公开视频详情返回标题、作者、发布时间、互动指标和可审计评论状态。"
+    },
+    {
+      "parser_id": "kuaishou_authorized_video_parser",
+      "platform": "kuaishou",
+      "name": "快手授权视频解析器",
+      "status": "planned",
+      "priority": 68,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "video_metadata", "comment_extraction", "author_profile", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "用于补充下沉市场传播、视频解读和公众反馈。",
+      "current_implementation": "已接入 authorized_public_search：授权文件可用时会尝试读取搜索页、解析公开结果链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者、发布时间和互动指标；尚未抓取快手视频详情专用字段。",
+      "next_action": "接入快手详情页解析、评论摘录、作者页字段和互动指标。",
+      "acceptance_check": "授权可用时，公开视频详情返回标题、作者、互动指标和访问受限判断。"
+    },
+    {
+      "parser_id": "weibo_authorized_post_parser",
+      "platform": "weibo",
+      "name": "微博授权博文解析器",
+      "status": "planned",
+      "priority": 66,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "article_body", "comment_extraction", "author_profile", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "用于识别政策传播热度、争议点、媒体/机构观点和市场反馈。",
+      "current_implementation": "已接入 authorized_public_search：授权文件可用时会尝试读取微博搜索页、解析公开结果链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者、发布时间和互动指标；尚未稳定抽取微博专用转评赞和评论。",
+      "next_action": "接入授权页面解析、博文正文、转评赞、评论摘录和登录/验证码检测。",
+      "acceptance_check": "授权可用时，公开博文返回正文、作者、发布时间、互动指标和可审计评论状态。"
+    },
+    {
+      "parser_id": "zhihu_authorized_content_parser",
+      "platform": "zhihu",
+      "name": "知乎授权内容解析器",
+      "status": "planned",
+      "priority": 64,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "article_body", "comment_extraction", "author_profile", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "用于补充专家、从业者、长文问答和专栏分析，提高报告专业深度。",
+      "current_implementation": "已接入 authorized_public_search：授权文件可用时会尝试读取知乎搜索页、解析公开结果链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者、发布时间和互动指标；尚未稳定抽取知乎专用赞同/评论字段。",
+      "next_action": "接入公开问答/专栏正文、作者信息、赞同/评论指标和登录状态检测。",
+      "acceptance_check": "授权可用时，公开内容返回标题、正文摘录、作者、互动指标和访问受限判断。"
+    },
+    {
+      "parser_id": "wechat_public_article_parser",
+      "platform": "wechat",
+      "name": "微信公众号文章解析器",
+      "status": "planned",
+      "priority": 62,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "article_body", "author_profile", "failure_audit", "no_secret_logging"],
+      "business_value": "用于补充券商、律所、咨询机构、行业协会和官方媒体公众号解读。",
+      "current_implementation": "已接入 authorized_public_search：授权文件可用时会尝试读取微信/搜狗搜索页、解析公开文章链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者和发布时间；公众号主体识别仍待专项增强。",
+      "next_action": "接入授权搜索、文章正文抽取、公众号主体识别和验证码检测。",
+      "acceptance_check": "授权可用时，公开文章返回标题、公众号、发布时间、正文摘录和受限状态。"
+    },
+    {
+      "parser_id": "xiaohongshu_authorized_note_parser",
+      "platform": "xiaohongshu",
+      "name": "小红书授权笔记解析器",
+      "status": "planned",
+      "priority": 56,
+      "auth_required": true,
+      "implemented_capabilities": ["public_search", "article_body", "comment_extraction", "author_profile", "interaction_metrics", "failure_audit", "no_secret_logging"],
+      "business_value": "用于观察消费、文旅、民生类政策的公众反馈和传播侧信号。",
+      "current_implementation": "已接入 authorized_public_search：授权文件可用时会尝试读取小红书搜索页、解析公开结果链接、抽取可访问正文，并通过 platform_page_parser 抽取页面标题、作者、发布时间和互动指标；尚未稳定抽取小红书专用笔记互动和评论。",
+      "next_action": "接入授权页面解析、笔记正文、评论摘录、互动指标和登录/验证码检测。",
+      "acceptance_check": "授权可用时，公开笔记返回标题、正文、作者、互动指标和访问受限判断。"
+    }
+  ]
+}

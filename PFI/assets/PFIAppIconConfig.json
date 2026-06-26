@@ -1,0 +1,10 @@
+{
+  "name": "PFIAppIcon",
+  "product": "PFI",
+  "generated_at": "2026-06-13",
+  "style": "macOS rounded-square app icon with finance OS signal grid, geometric E mark, orbit nodes, and teal-gold accents",
+  "source_preview": "assets/PFIAppIconPreview.png",
+  "iconset": "assets/PFIAppIcon.iconset",
+  "icns": "assets/PFIAppIcon.icns",
+  "bundle_resource": "macos/PFI.app/Contents/Resources/PFIAppIcon.icns"
+}

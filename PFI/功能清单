@@ -1,0 +1,67 @@
+# PFI 功能清单
+
+更新时间：2026-06-27
+
+## 当前定位
+
+PFI V0.2 是个人金融中枢。当前开发根为 `CodexProject/PFI`。
+
+旧入口 `PFI/modules/qbvs_lab` 保留为兼容入口，归入：
+
+```text
+投资管理 > 策略实验室 / 大数据模拟器
+```
+
+## Stage 1 已建立功能
+
+- 8 个一级入口 contract：`src/pfi_v02/stage1_ia.py`。
+- 核心对象模型 contract：`src/pfi_v02/core_models.py`。
+- 关键分类规则 contract：`src/pfi_v02/classification_rules.py`。
+- Stage 1 记录：`docs/pfi_v02/STAGE1_CORE_SKELETON.md`。
+- 大数据模拟器兼容边界：`PFI/modules/qbvs_lab/qbvs` 不移动、不重命名、不宽重构。
+
+## Stage 2 已建立功能
+
+- 数据源注册表：`src/pfi_v02/stage2_registry.py`。
+- CBA CSV P0 parser、watch folder 识别、重复文件去重、转账匹配：`src/pfi_v02/stage2_import.py`。
+- 支付宝日常账单 CSV/ZIP parser、基金事件识别、低置信度复核队列：`src/pfi_v02/stage2_import.py`。
+- 支付宝基金 non-CSV 三角校验合同：`src/pfi_v02/stage2_contracts.py`。
+- Moomoo AU OpenD/API 只读合同，复用现有 QBVS 引用：`src/pfi_v02/stage2_contracts.py`。
+- 中国大陆券商 plugin/profile 合同，支持 QMT/PTrade/terminal/HTML/PDF/Excel/manual snapshot。
+- ABC Bullion non-CSV 合同，支持页面、statement、PDF、HTML、browser-assisted read、holding snapshot。
+- 微信 ZIP/CSV/XLS/XLSX 导入合同和支付/转账/红包/退款规则。
+- Stage 2 记录：`docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md`。
+
+## V0.2 一级入口
+
+1. 首页总览
+2. 账户与资产
+3. 账本流水
+4. 投资管理
+5. 消费管理
+6. 数据源与同步
+7. 建议与复盘
+8. 报告与洞察
+
+## 必须保留
+
+- 策略回测核心化。
+- 盘感训练和大数据模拟器归入策略实验室。
+- 数据源、账户、资产、账本事件必须分离。
+- DataSource、CredentialRef、Account、AssetInstrument、ImportBatch、RawRecord、NormalizedTransaction、LedgerEvent 和 Snapshot 模型必须可追溯、可测试。
+- 转账不计普通消费。
+- 支付宝基金申购/赎回计为投资基金事件，不计生活消费。
+- ABC Bullion 黄金/白银买卖计为贵金属投资资产事件。
+- 信用卡还款必须去重，不重复计消费。
+- 新数据源必须通过 profile/plugin 扩展，不改核心账本。
+- 低可信 OCR/截图/录屏只能进入候选或复核，不直接入账。
+- 建议必须有证据、动作、状态和复盘。
+- 报告必须保留证据链。
+
+## 禁止
+
+- 自动实盘下单。
+- 交易密码。
+- 支付或券商提交动作。
+- 把 Alpha 做成 PFI 产品页或一级入口。
+- 把系统/开发做成 PFI 产品一级入口。

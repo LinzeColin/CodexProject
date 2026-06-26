@@ -1,0 +1,36 @@
+{
+  "system_id": "industry_research",
+  "display_name": "Industry Research / Trading Strategy Advice",
+  "status": "source_migrated",
+  "migration_phase": "source_tests_docs_migrated",
+  "legacy_local_roots": [
+    "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-codex/outputs/AI-Research-System"
+  ],
+  "current_workspace_root": "systems/industry_research",
+  "source_root": "systems/industry_research/source",
+  "migration_timestamp": "2026-06-15",
+  "public_repo_boundary": {
+    "include": ["source/src", "source/tests", "source/docs", "source/config", "source/scripts", "source/00_prompts", "source/01_templates", "source/data/sample", "source/README.md", "source/HANDOFF.md", "source/AGENTS.md", "source/doctor.py"],
+    "exclude": ["source/data/private", "source/data/report_artifacts", "source/02_reports", "Alipay files", "real holdings", "moomoo local database", "cookies", "API keys", "real account data", "generated PDFs", "source logs", "local runtime logs"]
+  },
+  "data_policy": {
+    "real_account_storage": "local_private_only",
+    "github_samples": "synthetic_zero_value_or_sanitized_only",
+    "runtime_report_artifacts": "excluded_from_git"
+  },
+  "entrypoints": [
+    "systems/industry_research/source/scripts/run_report_automation.sh",
+    "systems/industry_research/source/scripts/watch_research_bus.sh",
+    "PYTHONPATH=systems/industry_research/source python3 -m src.cli --help"
+  ],
+  "verification": [
+    "python3 -m compileall -q systems/industry_research/source/src systems/industry_research/source/doctor.py",
+    "PYTHONPATH=systems/industry_research/source python3 -m pytest systems/industry_research/source/tests/test_advice_engine.py systems/industry_research/source/tests/test_backtesting.py systems/industry_research/source/tests/test_reconciliation.py systems/industry_research/source/tests/test_workflow_layer.py -q",
+    "PYTHONPATH=systems/industry_research/source python3 -m src.cli --help"
+  ],
+  "next_actions": [
+    "Create an PFI_OS adapter that publishes summarized research readiness and validation tasks to ResearchBus.",
+    "Resolve model gate, quote snapshot, Alipay update, policy bridge, and missing report health failures before live report productization.",
+    "Run macOS UI shell acceptance after policy_intelligence is migrated."
+  ]
+}

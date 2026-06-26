@@ -1,0 +1,11 @@
+max_single_asset_weight: 0.10
+max_single_industry_weight: 0.30
+max_single_strategy_weight: 0.40
+max_daily_loss: 0.02
+max_account_drawdown: 0.12
+max_leverage: 1.00
+max_order_amount: 1000000
+max_execution_deviation: 0.003
+blacklist_symbols:
+  - ST_DEMO
+restricted_event_window_days: 2

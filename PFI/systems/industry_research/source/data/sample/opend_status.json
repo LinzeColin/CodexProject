@@ -1,0 +1,6 @@
+{
+  "status": "sample_failed",
+  "message": "Sanitized sample status for fail-closed tests. Real OpenD runtime status stays local/private.",
+  "snapshot_path": "data/sample/watchlist_snapshot.csv",
+  "updated_at": "2026-06-05T18:58:57+1000"
+}

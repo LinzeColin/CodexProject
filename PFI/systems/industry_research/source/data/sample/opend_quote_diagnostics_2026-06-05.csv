@@ -1,0 +1,17 @@
+date,symbol,quote_code,name,exchange,asset_class,opend_status,opend_error_category,opend_error,fallback_status,fallback_source_name,fallback_source_time,diagnosis
+2026-06-05,512620,SH.512620,农业ETF天弘,SSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 06:59:55 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,300024,SZ.300024,机器人,SZSE,Stock,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:03 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,516570,SH.516570,化工行业ETF易方达,SSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 06:59:37 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,159819,SZ.159819,人工智能ETF易方达,SZSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:01 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,000001,SH.000001,上证指数,SSE,Index,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:29 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,VOO,US.VOO,标普500ETF-Vanguard,US,ETF,ok,ok,,not_needed,,,OpenD 返回可用行情。
+2026-06-05,QQQ,US.QQQ,纳指100ETF-Invesco QQQ Trust,US,ETF,ok,ok,,not_needed,,,OpenD 返回可用行情。
+2026-06-05,NOBL,US.NOBL,ProShares标普500股利贵族ETF,US,ETF,ok,ok,,not_needed,,,OpenD 返回可用行情。
+2026-06-05,563020,SH.563020,红利低波ETF易方达,SSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 06:59:59 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,399986,SZ.399986,中证银行,SZSE,Index,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:10 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,000688,SH.000688,科创50,SSE,Index,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:50 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,159995,SZ.159995,芯片ETF华夏,SZSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:03 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,518800,SH.518800,黄金ETF国泰,SSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:00 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,159742,SZ.159742,恒生科技ETF博时,SZSE,ETF,skipped,cn_opend_disabled,OpenD A股快照默认跳过以避免当前权限不足导致超时,used,Yahoo Finance (US),2026-06-05 07:00:02 UTC,OpenD A股快照默认跳过以避免当前权限不足导致超时；已使用Yahoo Finance (US)补充。
+2026-06-05,USDCNY,,美元/人民币,FX,FX,unsupported,unsupported_market_or_asset,No OpenD quote code mapping for this row.,unavailable,,,当前市场或资产类型未配置 OpenD 快照映射；只用于自选池背景或另接专用数据源。
+2026-06-05,AUDCNY,,澳元/人民币,FX,FX,unsupported,unsupported_market_or_asset,No OpenD quote code mapping for this row.,unavailable,,,当前市场或资产类型未配置 OpenD 快照映射；只用于自选池背景或另接专用数据源。

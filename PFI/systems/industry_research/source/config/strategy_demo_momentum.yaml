@@ -1,0 +1,25 @@
+strategy_name: demo_momentum
+hypothesis: 强势资产在短周期内具有趋势延续，但需要成交量确认与回撤约束。
+market: A股/ETF/指数样例
+universe:
+  - DEMO_SEMI
+  - DEMO_AI
+  - DEMO_CONSUMER
+signal:
+  lookback_days: 5
+  min_return: 0.02
+  min_volume_ratio: 1.05
+buy_rule: 动量收益超过阈值且成交量放大。
+sell_rule: 动量转负、触发止损或风控减仓。
+position_rule: 等权配置，通过单标的上限裁剪。
+transaction_cost:
+  commission: 0.0003
+  tax: 0.001
+  slippage: 0.0005
+backtest_period:
+  start: 2026-05-20
+  end: 2026-06-03
+failure_conditions:
+  - 连续 3 次调仓信号失效
+  - 最大回撤超过策略阈值
+  - 因子 IC 持续转负

@@ -1,0 +1,129 @@
+{
+  "version": "quality-gates-v1",
+  "last_updated": "2026-06-04",
+  "scope": "single_policy_file_full_web_research_report",
+  "hard_gates": [
+    {
+      "id": "external_references_minimum",
+      "label": "外部参考解读不少于 5 份",
+      "metric": "external_reference_count",
+      "operator": ">=",
+      "threshold": 5,
+      "severity": "block_report_completion",
+      "rationale": "每份报告必须参考不少于 5 份外部公开研究、解读或分析资料。"
+    },
+    {
+      "id": "external_platforms_minimum",
+      "label": "外部平台不少于 2 个",
+      "metric": "external_platform_count",
+      "operator": ">=",
+      "threshold": 2,
+      "severity": "block_report_completion",
+      "rationale": "外部参考不能全部来自单一平台，至少覆盖 2 个外部平台。"
+    },
+    {
+      "id": "single_document_scope",
+      "label": "每份报告只研究 1 份政策文件",
+      "metric": "report_document_count",
+      "operator": "==",
+      "threshold": 1,
+      "severity": "block_report_completion",
+      "rationale": "避免多文件混写削弱深度、专业性和可追溯性。"
+    },
+    {
+      "id": "pdf_primary_output",
+      "label": "正式主产物必须是 PDF",
+      "metric": "primary_report_suffix",
+      "operator": "==",
+      "threshold": ".pdf",
+      "severity": "block_report_completion",
+      "rationale": "所有正式产出优先为 PDF；HTML/Markdown/JSON/SQLite 只作为辅助产物。"
+    },
+    {
+      "id": "deep_analysis_chapters",
+      "label": "主体分析固定 10 个深度章节",
+      "metric": "deep_chapter_count",
+      "operator": ">=",
+      "threshold": 10,
+      "severity": "block_report_completion",
+      "rationale": "主体分析需要达到详细、专业、全面、深度的结构要求。"
+    },
+    {
+      "id": "pdf_body_pages",
+      "label": "PDF 主体分析目标不少于 10 页",
+      "metric": "pdf_page_count",
+      "operator": ">=",
+      "threshold": 10,
+      "severity": "needs_review_when_missing",
+      "rationale": "报告主体应以深度分析为主；页数是排版后的辅助验收指标。"
+    },
+    {
+      "id": "business_value_density",
+      "label": "商务高价值信息密度不少于 95%",
+      "metric": "business_value_density_score",
+      "operator": ">=",
+      "threshold": 95,
+      "severity": "block_report_completion",
+      "rationale": "正式报告和 dashboard 应保持商务专业、简明扼要；明显占位、重复、泛化和低价值内容不得超过 5%。"
+    }
+  ],
+  "compliance_guardrails": [
+    {
+      "id": "no_captcha_bypass",
+      "label": "不绕过验证码",
+      "rule": "遇到验证码、安全验证、人机验证页面时记录缺口，不尝试规避。"
+    },
+    {
+      "id": "no_paywall_bypass",
+      "label": "不绕过付费墙",
+      "rule": "会员、订阅、付费墙、内网或受限访问内容不计入有效参考。"
+    },
+    {
+      "id": "no_access_control_bypass",
+      "label": "不绕过访问控制",
+      "rule": "只使用公开页面、开放 API 或用户明确授权的本地 cookie/session。"
+    },
+    {
+      "id": "no_prohibited_interface",
+      "label": "不使用平台明确禁止的接口",
+      "rule": "平台明确禁止自动化或接口访问时，记录为候选线索或缺口。"
+    },
+    {
+      "id": "no_secret_output",
+      "label": "不输出 secret",
+      "rule": "报告、dashboard、日志和 JSON 不展示账号密码、API key、cookie、session 内容或完整本地敏感路径。"
+    }
+  ],
+  "operational_targets": [
+    {
+      "id": "search_api_pool",
+      "label": "搜索 API 池",
+      "target": "SerpAPI、Bing Web Search、Google CSE 至少可用 1 个，目标 3 个全配置。"
+    },
+    {
+      "id": "chinese_search_entries",
+      "label": "中文搜索入口",
+      "target": "百度、搜狗、360 作为候选入口，搜索落地页不直接计入有效参考。"
+    },
+    {
+      "id": "platform_auth_pool",
+      "label": "平台授权池",
+      "target": "B站、抖音、快手、微博、知乎、微信公众号、小红书、头条支持本地授权状态检查。"
+    },
+    {
+      "id": "attachment_parsing",
+      "label": "附件解析",
+      "target": "PDF/DOCX/XLSX/OCR 尽可能抽取正文；失败需记录解析状态。"
+    },
+    {
+      "id": "video_context",
+      "label": "视频上下文",
+      "target": "视频详情、作者页、字幕、评论、弹幕作为公开或授权上下文进入外部参考池。"
+    },
+    {
+      "id": "queue_ordering",
+      "label": "队列排序",
+      "target": "等待列表按行业板块、时间、中央到地方排序；高优先级行业有新推送时先回补。"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+# PFI_OS 开发记录
+
+更新时间：2026-06-27
+
+## 项目定位
+
+PFI_OS 是本地优先的个人研究中台入口，macOS 显示为 `PFI_OS`。PFIOS 是其中的量化研究、分析、回测、实验记录和报告验证主入口，并负责跨系统证据流。
+
+## 当前已形成的开发状态
+
+- 已形成总控驾驶舱、PFIOS、研究总线、持仓、报告、独立验证和跨系统证据流。
+- 常用入口包括 `docs/QuickStart.md`、`AGENT_CONTINUITY.md`、`HANDOFF.md`、`15_OPEN_QUESTIONS.md`、`UPLOAD_MANIFEST.md`。
+- 研究数据总线连接 PFIOS、行研系统、消费行为系统、独立验证系统、FIFA/TAB 研究系统和政府政策解读系统。
+- 已有 `Decision Quality Score`、报告验证队列、验证优先级计划、数据可信审计、实体注册摘要等能力。
+
+## 最新 personalization 对本项目的要求
+
+- 复杂系统任务必须先给状态表、边界、验收标准和最小下一步。
+- 任何研究结论必须尽可能准确、可验证、可追溯，不足时降级为观察或待验证线索。
+- 涉及当前行情、政策、API、价格、模型版本时必须用权威来源或当前本地数据验证。
+- 默认中文输出，保留 API、模型、代码名英文。
+
+## 安全与执行边界
+
+- 禁止接入实盘交易。
+- 禁止真实下单。
+- 禁止保存交易账户密码。
+- PFIOS 只承担验证层职责：输出回测对象、样本区间、成本假设、参数稳定性、样本外验证、walk-forward、风险闸门、失效环境和停用条件。
+
+## 重要验证记录
+
+2026-06-27 PFI V0.2 Stage 0 兼容审计与边界锁定：
+
+- Completion audit 补齐仓库根治理：新增 root `AGENTS.md` 和 `governance/projects.yaml`，更新 root `README.md`，把 `PFI_OS/` 登记为当前 PFI 路径并写入 changed-scope check。
+- 新增 `docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`，记录本地真实 PFI root、现有入口、owner entry、active runtime、公开假设差异、测试命令、stop condition、rollback plan 和单一验收目标。
+- 新增 `src/pfi_os/ui_contracts/pfi_v02_stage0.py`，把 v0.2 8 个目标一级入口、当前 6 个兼容入口、Streamlit owner-facing views、`PFI/大数据模拟器` 和 `qbvs/` 公开假设映射做成机器可验证契约。
+- 新增 `tests/contract/test_pfi_v02_stage0_compatibility.py`，锁定每个旧入口必须可映射、v0.2 8 入口不得混入排除项、active runtime 路径不得移动、策略实验室/大数据模拟器/盘感训练必须保留。
+- 更新产品 IA：当前 Web Shell 6 入口是兼容壳，PFI V0.2 目标态是 8 入口；Stage 0 不提前改 UI，不破坏现有可点击入口。
+- 边界：不移动 `src/pfi_os/`、`web/`、`scripts/`、`tests/`，不接收交易密码，不自动提交真实交易，不把 external independent repo 做成 PFI 一级入口。
+- 合同入口：`docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`。
+- 验证结果：Stage 0 + 产品合同 `17 passed`；Web Shell / Gate2 / MVP release 兼容基线 `25 passed`、2 个 deprecation warnings；`scripts/devReadyCheck.sh --summary-json` 返回 `status=Pass`、`pass=40`、`fail=0`、`info=1`；`PFI_OS/scripts/secretScan.sh` 和 `git diff --check` 通过。
+
+2026-06-20 返工记录：
+
+- 修复 `scripts/startPFIOS.sh`：后台启动改为 Python detached launcher，避免脚本返回后 Streamlit 服务被父 shell 回收。
+- 重做 PFI Web Shell 功能入口：核心功能卡从旧页面直接跳转改为同屏中文功能面板，覆盖单标的回测、参数扫描、盘感训练、模拟实验、热点分析、报告中心、持仓复核、政策雷达、数据中心和策略库。
+- 加严 `scripts/uiVisualAcceptance.sh`：从 `href` 静态检查升级为真实点击 6 个一级入口和 8 个功能入口，并检查中文标题、主操作、安全边界和无英文 schema 暴露。
+- 验证结果：UI visual acceptance `Pass 98/98`，目标 pytest `56 passed`，产品/入口相关 pytest `72 passed`，JS/zsh 语法检查和 `git diff --check` 通过。
+
+2026-06-20 用户导向退回重做记录：
+
+- 将所有可见功能卡从“可能只切换工作区”升级为“必须打开同屏中文功能面板”，覆盖 6 个一级入口下 46 个可见功能卡。
+- 新增/补齐公司研究、基金研究、指数与 ETF、主题催化、自选监控、来源登记、任务监控、隐私边界、备份恢复、组合暴露、集中度风险、纪律检查和订单意图等功能面板。
+- 清理功能面板中的原始英文技术字段展示，默认用户文案改为中文解释；代码、schema、证券代码仍可保留英文。
+- 加严 `scripts/pfiGate2ShellAcceptance.sh`：逐个点击全部可见功能卡，检查按钮属性、同屏面板、同屏操作区、安全边界、无新页面和无 legacy query。
+- 验证结果：用户导向合同测试 `38 passed`；Gate2 浏览器验收 `Pass 844/846`、`fail=0`、`all_feature_control_panels_opened=46`；UI visual acceptance `Pass 146/146`。
+- Gate7 收口规则：当前分支头必须有 GitHub `PFI_OS Smoke` 成功、rollback tag `pfi-os-rollback-20260620-redo-final`，并通过 `scripts/pfi012MVPReleaseGate.sh --require-external-release-evidence`；任何后续提交都必须重新跑 CI/tag/strict。
+
+2026-06-20 PFI-004 Golden/PIT 记录：
+
+- 增加 `src/pfi_os/application/pfi004_truth_golden.py`，形成 `PFI004TruthContractV1` 和 `PFI004GoldenPITAcceptanceV1`。
+- `OperationalStore` 增加 active truth 逆时间写入拒绝：同一 `source_id` 的更早 `as_of` 会触发 `PIT_INVALID_WRITE`。
+- `point_in_time_sources(as_of)` 使用解析后的时间比较，返回不晚于指定时间的最新 source version。
+- Golden fixture 使用合成公开行情：100、102、101、105，期望 `total_return_pct=5.00`、`max_drawdown_pct=-0.98`。
+- 验证结果：PFI-004 + Phase A 目标测试 `15 passed`，覆盖 Golden 指标、PIT replay、dual-read reconciliation、invalid-write rejection 和无实盘执行边界。
+
+2026-06-20 PFI-001 PR/CI 注入失败证明记录：
+
+- 新增仓库根 workflow `.github/workflows/pfi-os-smoke.yml`，因为 PFI_OS 是 `LinzeColin/CodexProject` 的子目录，子目录内 `.github/workflows` 不会触发 GitHub Actions。
+- 新增 `scripts/pfiCiInjectedFailureProof.sh`：在临时 Git 仓库注入假 secret，断言 `scripts/secretScan.sh` 必须失败并输出 `injected_secret.txt:openai_key`。
+- PR #2 首次 run `27856329389` 失败，暴露 Ubuntu runner 缺少 `zsh`；已在 root workflow 增加 shell runtime 安装。
+- PR #2 后续 run `27856494975` 在 commit `9ed86b6dc43e769242db18d6b7bd60c1a7a538a8` 上成功，`Run PFI target gate` 和 `Prove injected failure is blocked` 均为 success。
+- Gate1 当前证据范围已闭合；最终 release / Gate7 仍需整体重跑。
+
+默认 verifier：
+
+```bash
+scripts/devReadyCheck.sh --summary-json
+```
+
+常用状态检查：
+
+```bash
+scripts/statusPFIOS.sh
+scripts/stopPFIOS.sh
+scripts/auditResearchBusInterop.sh --json
+```
+
+例行 agent 工作中不要默认跑 heavy gates，例如 `scripts/finalAcceptanceCheck.sh`、`scripts/ciSmoke.sh`、full pytest 或 git hooks。
+
+## 下一步开发优先级
+
+2. PFI-003：目录、namespace、脚本、env var、app identity 和 artifact prefix 迁移到 PFI。
+3. PFI-004：新 PFI Web Shell、6 个工作区、全局上下文、任务中心和证据抽屉。
+4. 强化 ResearchBus schema 变更流程和跨系统字段兼容。

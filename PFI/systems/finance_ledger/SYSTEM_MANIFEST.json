@@ -1,0 +1,37 @@
+{
+  "system_id": "finance_ledger",
+  "display_name": "Finance Ledger / Consumption Analysis",
+  "status": "source_migrated",
+  "migration_phase": "source_tests_docs_migrated",
+  "legacy_local_roots": [
+    "/Users/linzezhang/Documents/Codex/2026-06-03/files-mentioned-by-the-user-20250604"
+  ],
+  "current_workspace_root": "systems/finance_ledger",
+  "source_root": "systems/finance_ledger/source",
+  "migration_timestamp": "2026-06-15",
+  "public_repo_boundary": {
+    "include": ["source/src/econ_bleed_analyzer", "source/src/native", "source/scripts", "source/tests", "source/docs", "source/configs", "source/assets/app_icon", "source/README.md", "source/HANDOFF.md", "source/AGENTS.md", "samples"],
+    "exclude": ["source/data", "source/outputs", "source/work", "source/build", "data/finance_ledger", "data/private", "outputs/*/data", "outputs/*/audit", "*.sqlite", "*.db", "raw bills", "transaction-detail HTML", "cookies", "tokens"]
+  },
+  "data_policy": {
+    "real_bill_storage": "local_private_only",
+    "github_samples": "synthetic_or_anonymized_only",
+    "runtime_databases": "excluded_from_git"
+  },
+  "entrypoints": [
+    "systems/finance_ledger/source/scripts/launch_finance_ledger_app.sh",
+    "systems/finance_ledger/source/scripts/weekly_update.py",
+    "systems/finance_ledger/source/scripts/serve_ledger.py",
+    "/Applications/本地记账分析系统.app"
+  ],
+  "verification": [
+    "python3 -m compileall -q systems/finance_ledger/source/src systems/finance_ledger/source/scripts",
+    "PYTHONPATH=systems/finance_ledger/source/src python3 -m pytest systems/finance_ledger/source/tests/test_bill_import.py systems/finance_ledger/source/tests/test_classifier.py systems/finance_ledger/source/tests/test_reconciliation.py -q",
+    "PYTHONPATH=systems/finance_ledger/source/src python3 systems/finance_ledger/source/scripts/validate_outputs.py --help"
+  ],
+  "next_actions": [
+    "Create an PFI_OS adapter that publishes summarized ledger signals to ResearchBus.",
+    "Close goal_completion_audit drift from 8/9 before productizing live reports.",
+    "Run macOS app launcher acceptance after unified UI Shell is implemented."
+  ]
+}

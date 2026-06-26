@@ -1,0 +1,37 @@
+{
+  "system_id": "policy_intelligence",
+  "display_name": "Policy Intelligence / Government Document Interpretation",
+  "status": "source_migrated",
+  "migration_phase": "source_tests_docs_migrated",
+  "legacy_local_roots": [
+    "/Users/linzezhang/Documents/Codex/2026-06-03/sop-skill-pursuing-goal-diff-step/outputs/source-authority-registry"
+  ],
+  "current_workspace_root": "systems/policy_intelligence",
+  "source_root": "systems/policy_intelligence/source",
+  "migration_timestamp": "2026-06-16",
+  "public_repo_boundary": {
+    "include": ["source/src", "source/tests", "source/scripts", "source/config", "source/rules", "source/docs", "source/data/sample", "source/README.md", "source/HANDOFF.md", "source/pyproject.toml"],
+    "exclude": ["source/data/*.sqlite", "source/data/automation", "source/data/monitor", "source/data/run_logs", "source/data/snapshots", "source/reports", "source/work", "~/.policy-intelligence", "Chrome profile", "cookies", "platform auth", "API keys", "raw HTML dumps", "local logs"]
+  },
+  "data_policy": {
+    "runtime_databases": "local_private_only",
+    "github_samples": "synthetic_or_structurally_anonymized_only",
+    "platform_authorization": "excluded_from_git"
+  },
+  "entrypoints": [
+    "systems/policy_intelligence/source/scripts/run_policy_report.sh",
+    "PYTHONPATH=systems/policy_intelligence/source/src python3 -m source_registry --help",
+    "/Applications/中国政策研究系统.app"
+  ],
+  "verification": [
+    "python3 -m compileall -q systems/policy_intelligence/source/src",
+    "bash -n systems/policy_intelligence/source/scripts/run_policy_report.sh",
+    "PYTHONPATH=systems/policy_intelligence/source/src python3 -m pytest systems/policy_intelligence/source/tests/test_registry.py systems/policy_intelligence/source/tests/test_quality_gates.py systems/policy_intelligence/source/tests/test_readiness.py systems/policy_intelligence/source/tests/test_automation_readiness.py -q",
+    "PYTHONPATH=systems/policy_intelligence/source/src python3 -m source_registry --help"
+  ],
+  "next_actions": [
+    "Create an PFI_OS adapter that publishes policy readiness and quality-gate summaries to ResearchBus.",
+    "Restore daily twice automation freshness in the private runtime environment.",
+    "Raise latest report quality gate from external refs 1/5 and platforms 1/2 to production threshold."
+  ]
+}
