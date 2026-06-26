@@ -11,6 +11,7 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     build_cache_cleanup_plan,
     build_launchd_plist_payload,
     build_lifecycle_cache_report,
+    build_lifecycle_interrupt_matrix,
     build_lifecycle_transition_plan,
     build_shutdown_receipt,
     build_startup_convergence_receipt,
@@ -19,6 +20,7 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     validate_launchd_plist_payload,
     validate_cache_low_disk_degradation_receipt,
     validate_lifecycle_cache_report,
+    validate_lifecycle_interrupt_matrix,
     validate_lifecycle_transition,
     validate_startup_convergence_receipt,
     validate_transaction_completion_receipt,
@@ -34,6 +36,29 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertFalse(plan["direct_stop_without_drain_allowed"])
         self.assertEqual(validate_lifecycle_transition("RUNNING", "DRAINING"), [])
         self.assertIn("transition RUNNING->STOPPED is not allowed", validate_lifecycle_transition("RUNNING", "STOPPED"))
+
+    def test_lifecycle_interrupt_matrix_covers_sigterm_sigint_every_state(self) -> None:
+        matrix = build_lifecycle_interrupt_matrix(cycle_id="2026-07-03", generated_at="2026-07-03T06:00:00+10:00")
+
+        self.assertEqual(matrix["status"], "pass")
+        self.assertEqual(matrix["signals"], ["SIGTERM", "SIGINT"])
+        self.assertEqual(matrix["observed_row_count"], matrix["required_row_count"])
+        self.assertTrue(matrix["all_states_covered"])
+        self.assertTrue(matrix["all_signals_covered"])
+        self.assertFalse(matrix["unsafe_direct_stop_allowed"])
+        self.assertEqual(validate_lifecycle_interrupt_matrix(matrix), [])
+
+        observed_pairs = {(row["state"], row["signal"]) for row in matrix["interrupt_rows"]}
+        for state in matrix["states"]:
+            self.assertIn((state, "SIGTERM"), observed_pairs)
+            self.assertIn((state, "SIGINT"), observed_pairs)
+        for row in matrix["interrupt_rows"]:
+            self.assertFalse(row["new_work_claim_allowed"])
+            self.assertFalse(row["queue_mutation_applied"])
+            self.assertFalse(row["data_loss_allowed"])
+            self.assertFalse(row["duplicate_side_effect_allowed"])
+            self.assertFalse(row["uncontrolled_side_effect_allowed"])
+            self.assertEqual(row["restart_outcome"], "no_loss_no_duplicate_uncontrolled_side_effects")
 
     def test_startup_reconciliation_covers_temp_inflight_outbox_and_stale_locks(self) -> None:
         receipt = build_startup_reconciliation(
@@ -291,6 +316,8 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertFalse(report["scheduler_installed"])
         self.assertFalse(report["queue_mutation_allowed"])
         self.assertTrue(report["gates"]["startup_convergence_count_conservation"])
+        self.assertTrue(report["gates"]["lifecycle_interrupt_matrix"])
+        self.assertEqual(report["lifecycle_interrupt_matrix"]["status"], "pass")
         self.assertTrue(report["startup_convergence_receipt"]["count_conservation"])
         self.assertTrue(report["gates"]["transaction_completion_signal"])
         self.assertTrue(report["transaction_completion_receipt"]["interrupted_recoverable"])

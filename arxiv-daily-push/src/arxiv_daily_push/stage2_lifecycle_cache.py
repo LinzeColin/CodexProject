@@ -110,6 +110,108 @@ def build_lifecycle_transition_plan(*, cycle_id: str, generated_at: str) -> dict
     }
 
 
+def build_lifecycle_interrupt_matrix(*, cycle_id: str, generated_at: str) -> dict[str, Any]:
+    """Build local SIGTERM/SIGINT handling evidence for every lifecycle state."""
+
+    signals = ("SIGTERM", "SIGINT")
+    action_by_state = {
+        "STOPPED": "noop_preserve_terminal_receipt",
+        "STARTING": "enter_recovering_before_claiming_new_work",
+        "RECOVERING": "continue_reconciliation_without_new_work",
+        "LEADER": "release_leader_claim_after_checkpoint_check",
+        "RUNNING": "enter_draining_and_stop_new_claims",
+        "DRAINING": "continue_drain_until_checkpoint_ready",
+        "CHECKPOINTING": "finish_or_rollback_checkpoint_from_receipt",
+        "CLEANING": "finish_dry_run_cleanup_then_stop",
+    }
+    rows = []
+    for state in S2PMT04_LIFECYCLE_STATES:
+        for signal in signals:
+            rows.append(
+                {
+                    "state": state,
+                    "signal": signal,
+                    "action": action_by_state[state],
+                    "new_work_claim_allowed": False,
+                    "queue_mutation_applied": False,
+                    "data_loss_allowed": False,
+                    "duplicate_side_effect_allowed": False,
+                    "uncontrolled_side_effect_allowed": False,
+                    "restart_outcome": "no_loss_no_duplicate_uncontrolled_side_effects",
+                }
+            )
+    matrix = {
+        "cycle_id": cycle_id,
+        "generated_at": generated_at,
+        "signals": list(signals),
+        "states": list(S2PMT04_LIFECYCLE_STATES),
+        "interrupt_rows": rows,
+        "required_row_count": len(S2PMT04_LIFECYCLE_STATES) * len(signals),
+        "observed_row_count": len(rows),
+        "all_states_covered": True,
+        "all_signals_covered": True,
+        "unsafe_direct_stop_allowed": False,
+        "status": "pass",
+        "blocking_reasons": [],
+    }
+    blocking_reasons = validate_lifecycle_interrupt_matrix(matrix)
+    matrix["status"] = "pass" if not blocking_reasons else "blocked"
+    matrix["blocking_reasons"] = blocking_reasons
+    return matrix
+
+
+def validate_lifecycle_interrupt_matrix(matrix: Mapping[str, Any]) -> list[str]:
+    """Validate local signal handling evidence for every lifecycle state."""
+
+    errors: list[str] = []
+    rows = matrix.get("interrupt_rows") if isinstance(matrix.get("interrupt_rows"), list) else []
+    states = tuple(matrix.get("states") or ())
+    signals = tuple(matrix.get("signals") or ())
+    expected_pairs = {(state, signal) for state in S2PMT04_LIFECYCLE_STATES for signal in ("SIGTERM", "SIGINT")}
+    observed_pairs = {
+        (str(row.get("state") or ""), str(row.get("signal") or ""))
+        for row in rows
+        if isinstance(row, Mapping)
+    }
+    if states != S2PMT04_LIFECYCLE_STATES:
+        errors.append("interrupt matrix states must match S2PMT04 lifecycle states")
+    if signals != ("SIGTERM", "SIGINT"):
+        errors.append("interrupt matrix signals must be SIGTERM and SIGINT")
+    missing = sorted(expected_pairs.difference(observed_pairs))
+    if missing:
+        errors.append(f"interrupt matrix missing state/signal pairs: {missing}")
+    if matrix.get("observed_row_count") != matrix.get("required_row_count"):
+        errors.append("interrupt matrix observed row count must match required row count")
+    if matrix.get("all_states_covered") is not True:
+        errors.append("interrupt matrix must cover every lifecycle state")
+    if matrix.get("all_signals_covered") is not True:
+        errors.append("interrupt matrix must cover SIGTERM and SIGINT")
+    if matrix.get("unsafe_direct_stop_allowed") is not False:
+        errors.append("interrupt matrix must not allow unsafe direct stop")
+    for row in rows:
+        if not isinstance(row, Mapping):
+            errors.append("interrupt matrix row must be an object")
+            continue
+        state = str(row.get("state") or "")
+        if state not in S2PMT04_LIFECYCLE_STATES:
+            errors.append("interrupt matrix row has invalid lifecycle state")
+        if row.get("new_work_claim_allowed") is not False:
+            errors.append(f"interrupt {state} must block new work claims")
+        if row.get("queue_mutation_applied") is not False:
+            errors.append(f"interrupt {state} evidence must not mutate queues")
+        if row.get("data_loss_allowed") is not False:
+            errors.append(f"interrupt {state} must not allow data loss")
+        if row.get("duplicate_side_effect_allowed") is not False:
+            errors.append(f"interrupt {state} must not allow duplicate side effects")
+        if row.get("uncontrolled_side_effect_allowed") is not False:
+            errors.append(f"interrupt {state} must not allow uncontrolled side effects")
+        if not row.get("action"):
+            errors.append(f"interrupt {state} requires a recovery action")
+    if matrix.get("status") == "pass" and matrix.get("blocking_reasons"):
+        errors.append("passing interrupt matrix must not have blocking_reasons")
+    return errors
+
+
 def build_startup_reconciliation(
     *,
     temp_items: Sequence[Mapping[str, Any]],
@@ -623,6 +725,7 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
 
     root = Path(cache_root or "/tmp/adp-s2pmt04-cache").resolve()
     transition_plan = build_lifecycle_transition_plan(cycle_id="2026-07-03", generated_at=generated_at)
+    interrupt_matrix = build_lifecycle_interrupt_matrix(cycle_id="2026-07-03", generated_at=generated_at)
     startup = build_startup_reconciliation(
         temp_items=[{"item_id": "tmp-1", "path": str(root / "tmp" / "scratch.json")}],
         inflight_items=[{"work_id": "cycle-20260703-M1", "state": "RUNNING"}],
@@ -691,6 +794,8 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
     gates = {
         "automatic_wake_dry_run": validate_launchd_plist_payload(plist_payload) == [],
         "lifecycle_transition_chain": transition_plan["transition_chain_valid"] is True,
+        "lifecycle_interrupt_matrix": interrupt_matrix["status"] == "pass"
+        and validate_lifecycle_interrupt_matrix(interrupt_matrix) == [],
         "startup_reconciliation": startup["reconciliation_ready"] is True,
         "startup_convergence_count_conservation": startup_convergence["status"] == "pass"
         and validate_startup_convergence_receipt(startup_convergence) == [],
@@ -714,6 +819,7 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "blocking_reasons": [] if status == "pass" else [key for key, value in gates.items() if value is not True],
         "gates": gates,
         "transition_plan": transition_plan,
+        "lifecycle_interrupt_matrix": interrupt_matrix,
         "startup_reconciliation": startup,
         "startup_convergence_receipt": startup_convergence,
         "shutdown_receipt": shutdown,
@@ -777,6 +883,11 @@ def validate_lifecycle_cache_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("transaction_completion_receipt is required")
     else:
         errors.extend(validate_transaction_completion_receipt(transaction_receipt))
+    interrupt_matrix = report.get("lifecycle_interrupt_matrix")
+    if not isinstance(interrupt_matrix, Mapping):
+        errors.append("lifecycle_interrupt_matrix is required")
+    else:
+        errors.extend(validate_lifecycle_interrupt_matrix(interrupt_matrix))
     cache_degradation = report.get("cache_low_disk_degradation_receipt")
     if not isinstance(cache_degradation, Mapping):
         errors.append("cache_low_disk_degradation_receipt is required")

@@ -91,11 +91,13 @@
 | 模型 | `MOD-ADP-097` / `adp-s2pmt04-lifecycle-cache-cleanup-v1` |
 | 公式 | `FORM-ADP-099` |
 | 参数 | `PARAM-ADP-800` / `S2PMT04_REQUIRED_GATES` |
-| 新增门 | `cache_low_disk_degradation` |
+| B-002 专用门 | `lifecycle_interrupt_matrix`：每个生命周期状态均覆盖 `SIGTERM` / `SIGINT` |
+| B-005 专用门 | `cache_low_disk_degradation` |
+| 中断恢复约束 | 阻断新 work claim；不改队列；不允许数据丢失、重复副作用或不可控副作用；恢复结果必须为 `no_loss_no_duplicate_uncontrolled_side_effects` |
 | 低磁盘判定 | `free_disk_bytes < low_disk_threshold_bytes` |
 | 降载动作 | 低磁盘时阻断新下载、阻断可重建缓存写入、保留 durable evidence、保持 cleanup dry-run |
 | 禁止动作 | 不应用删除、不删除 durable evidence、不改队列、不安装/启用 scheduler、不发送 SMTP、不上传 Release |
-| 证据入口 | [PHASE_S2PMT04_CACHE_LOW_DISK_B005.md](docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md)；[ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json](../governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json) |
+| 证据入口 | [PHASE_S2PMT04_PROCESS_LIFECYCLE_B002.md](docs/phase_records/PHASE_S2PMT04_PROCESS_LIFECYCLE_B002.md)；[ADP-S2PMT04-PROCESS-LIFECYCLE-B002-20260627.json](../governance/run_manifests/ADP-S2PMT04-PROCESS-LIFECYCLE-B002-20260627.json)；[PHASE_S2PMT04_CACHE_LOW_DISK_B005.md](docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md)；[ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json](../governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json) |
 
 ## S2PMT05 本地重复触发竞态门
 

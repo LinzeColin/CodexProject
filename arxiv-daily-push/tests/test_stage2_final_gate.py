@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -215,6 +215,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             "A-019": ("PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md", "ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json"),
             "A-020": ("PHASE_S2PMT01_SUPPLY_CHAIN_A020.md", "ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json"),
             "A-021": ("PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md", "ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json"),
+            "B-002": ("PHASE_S2PMT04_PROCESS_LIFECYCLE_B002.md", "ADP-S2PMT04-PROCESS-LIFECYCLE-B002-20260627.json"),
             "B-003": ("PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md", "ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json"),
             "B-004": ("PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md", "ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626.json"),
             "B-005": ("PHASE_S2PMT04_CACHE_LOW_DISK_B005.md", "ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json"),
@@ -256,6 +257,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             "A-019": ("PHASE_S2PMT01_SECURITY_BOUNDARY.md", "ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"),
             "A-020": ("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json",),
             "A-021": ("PHASE_S2PAT02_PRODUCT_CONTRACT.md",),
+            "B-002": ("PHASE_S2PMT04_LIFECYCLE_CACHE.md", "ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"),
             "B-003": ("ADP-S2PMT03-LEASE-FENCING-20260626.json",),
             "B-004": ("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json",),
             "B-005": ("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json",),
@@ -273,7 +275,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
