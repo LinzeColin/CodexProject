@@ -17,6 +17,7 @@ DIRECTORY_TREE = Path("DIRECTORY_TREE.txt")
 CHECKSUMS = Path("CHECKSUMS.sha256")
 RELEASE_EVIDENCE = Path("artifacts/release_evidence_t1211.json")
 OPERATION_LOG = Path("artifacts/release_operation_log_t1211.jsonl")
+BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
 REQUIRED_RELEASE_PATHS = {
     str(MANIFEST),
@@ -35,29 +36,40 @@ CHECKSUM_EXCLUDES = {str(CHECKSUMS)}
 
 
 def run_git(*args: str) -> str:
+    return run_git_bytes(*args).decode("utf-8")
+
+
+def run_git_bytes(*args: str) -> bytes:
     completed = subprocess.run(
-        ["git", "-c", "core.quotepath=false", *args],
+        ["git", *args],
         cwd=ROOT,
         check=True,
-        text=True,
         stdout=subprocess.PIPE,
     )
     return completed.stdout
 
 
+def path_id(path: str | Path) -> str:
+    return Path(path).as_posix()
+
+
+def canonical_file_bytes(path: Path) -> bytes:
+    payload = path.read_bytes()
+    if path.suffix.lower() in BINARY_SUFFIXES or b"\0" in payload:
+        return payload
+    return payload.replace(b"\r\n", b"\n")
+
+
 def tracked_paths() -> list[str]:
-    paths = run_git("ls-files").splitlines()
+    payload = run_git_bytes("-c", "core.quotePath=false", "ls-files", "-z")
+    paths = [path for path in payload.decode("utf-8").split("\0") if path]
     combined = set(paths) | REQUIRED_RELEASE_PATHS
     combined -= TRACKED_PATH_EXCLUDES
     return sorted(path for path in combined if path and not path.endswith("/"))
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return hashlib.sha256(canonical_file_bytes(path)).hexdigest()
 
 
 def write_text(path: Path, content: str) -> None:
