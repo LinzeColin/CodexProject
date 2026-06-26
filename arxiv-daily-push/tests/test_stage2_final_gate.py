@@ -177,6 +177,81 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-007"]["evidence_refs"])
         self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-008"]["evidence_refs"])
 
+    def test_p1_review_receipt_uses_refreshed_current_evidence(self) -> None:
+        receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
+        manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
+        refresh_manifest_path = (
+            REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json"
+        )
+        receipt = receipt_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        receipt_rows = {
+            line.split("|", 3)[1].strip(" `"): line
+            for line in receipt.splitlines()
+            if line.startswith("| `")
+        }
+
+        expected_current_refs = {
+            "A-012": ("PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md", "ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json"),
+            "A-017": ("PHASE_S2PMT03_SMTP_IDENTITY_A017.md", "ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json"),
+            "A-018": ("PHASE_S2PAT05_ROI_DISCLOSURE_A018.md", "ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json"),
+            "A-020": ("PHASE_S2PMT01_SUPPLY_CHAIN_A020.md", "ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json"),
+            "A-021": ("PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md", "ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json"),
+            "B-003": ("PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md", "ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json"),
+            "B-004": ("PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md", "ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626.json"),
+            "B-005": ("PHASE_S2PMT04_CACHE_LOW_DISK_B005.md", "ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json"),
+            "B-006": ("PHASE_S2PMT05_CAPACITY_BASELINE_B006.md", "ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json"),
+            "B-009": ("PHASE_S2PMT05_FAULT_INJECTION_B009.md", "ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json"),
+            "B-010": ("PHASE_S2PMT05_TIME_POLICY_B010.md", "ADP-S2PMT05-TIME-POLICY-B010-20260627.json"),
+            "B-011": ("PHASE_S2PMT03_M4_WATERMARK_B011.md", "ADP-S2PMT03-M4-WATERMARK-B011-20260626.json"),
+            "B-012": ("PHASE_S2PMT05_E2E_B012.md", "ADP-S2PMT05-E2E-B012-20260627.json"),
+            "B-013": ("PHASE_S2PMT05_RESULT_VALIDITY_B013.md", "ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"),
+            "B-014": ("PHASE_S2PMT05_BACKPRESSURE_B014.md", "ADP-S2PMT05-BACKPRESSURE-B014-20260627.json"),
+            "B-015": ("PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md", "ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json"),
+        }
+        stale_refs = {
+            "A-012": ("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json",),
+            "A-017": ("ADP-S2PMT03-LEASE-FENCING-20260626.json",),
+            "A-018": ("PHASE_S2PKT01_MAIL_CONTRACT.md",),
+            "A-020": ("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json",),
+            "A-021": ("PHASE_S2PAT02_PRODUCT_CONTRACT.md",),
+            "B-003": ("ADP-S2PMT03-LEASE-FENCING-20260626.json",),
+            "B-004": ("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json",),
+            "B-005": ("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json",),
+            "B-006": ("ADP-S2PMT05-STRESS-E2E-20260626.json",),
+            "B-009": ("ADP-S2PMT05-STRESS-E2E-20260626.json",),
+            "B-010": ("ADP-S2PMT05-STRESS-E2E-20260626.json",),
+            "B-011": ("ADP-S2PMT03-LEASE-FENCING-20260626.json",),
+            "B-012": ("ADP-S2PMT05-STRESS-E2E-20260626.json",),
+            "B-013": ("ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626.json", "S2PHT05"),
+            "B-014": ("ADP-S2PMT05-STRESS-E2E-20260626.json",),
+            "B-015": ("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json",),
+        }
+
+        findings = {finding["finding_id"]: finding for finding in manifest["p1_findings"]}
+        self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
+        self.assertEqual(
+            manifest["refresh_manifest"],
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
+        )
+        self.assertTrue(refresh_manifest_path.exists())
+        self.assertFalse(manifest["p1_closure_claimed"])
+        self.assertFalse(manifest["independent_review_signoff_present"])
+        self.assertFalse(manifest["stage2_integrated_production_accepted"])
+        self.assertEqual(manifest["inherited_v7_1_open_p0_findings_after"], 8)
+        self.assertEqual(manifest["inherited_v7_1_open_p1_findings_after"], 37)
+
+        for finding_id, refs in expected_current_refs.items():
+            row = receipt_rows[finding_id]
+            finding_refs = "\n".join(findings[finding_id]["evidence_refs"])
+            for ref in refs:
+                self.assertIn(ref, row)
+                self.assertIn(ref, finding_refs)
+            for stale_ref in stale_refs[finding_id]:
+                self.assertNotIn(stale_ref, row)
+                self.assertNotIn(stale_ref, finding_refs)
+            self.assertIn("refreshed_current_evidence_located", findings[finding_id]["preliminary_review_state"])
+
     def test_dependency_state_requires_s2plt04_and_records_missing_completion(self) -> None:
         state = build_dependency_state()
 
