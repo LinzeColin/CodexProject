@@ -11,17 +11,48 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
+- Current gate: `TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T504/A072 strategic-signal frontend contract panel`
+- Current task: `TASK-T1308/A211 evidence drawer E2E sequencing repair`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `55/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T03:38:38Z`, and `19.10%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 - Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
+- E2E sequencing repair: the A203/A211 production graph hydration regression now closes the A211 evidence drawer before graph lens switching, preserving modal behavior while preventing the drawer from intercepting subsequent lens clicks.
 - Strategic-signal panel: T504/A072 now exposes support, contradiction, alternative hypothesis, half-life/time-decay policy and `F-SS-001@balanced-v2` rule version in the Watchlist-first workspace. FUN-EXP-07 is `PARTIAL` because real strategic-signal ingestion, production API and human content review remain open under T803/T805/T1301/T1302.
 
 
+
+## EVENT-20260626-016 - T1308/A211 evidence drawer E2E sequencing repair
+
+- Timestamp: 2026-06-26T16:31:15+10:00
+- Fact level: EXTRACTED
+- Base commit: `047b4094d56fb7b3162b24265501e985690296f0`
+- Scope: bind the two-line `state-contract.spec.ts` A203/A211 browser E2E sequencing repair to governance and release artifact refresh.
+- Behavior: the production graph hydration E2E now closes `evidence-detail-drawer` and asserts it is hidden before clicking the supply-chain lens, matching the A211 modal drawer contract from EVENT-20260626-014.
+- Acceptance mapping: `TASK-T1308` -> `A211`, with dependent A203 graph hydration coverage preserved by the same test.
+- Validation: target A203/A211 Playwright E2E PASS `1/1`; full local `make verify` PASS after the E2E fix and artifact refresh; remote Project Governance previously failed because this sequencing repair lacked companion governance files.
+- Non-claims: this does not change product behavior, scoring formulas, API schema, database schema, publication policy, A202/A209/A210/A026/A027/A204/A205 release readiness or MVP release readiness.
+- Rollback: revert the two-line `state-contract.spec.ts` sequencing change, this governance sync and regenerated release artifacts; keep A209 runtime files untouched.
+
+## ITER-20260626-016 - Evidence drawer E2E sequencing validation
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `047b4094d56fb7b3162b24265501e985690296f0`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1308`, `TASK-T1302`
+- Acceptance IDs: `A211`, `A203`
+- Goal: repair the remote browser E2E sequence after A211 made the evidence drawer a correct modal layer.
+- Files changed: `tests/e2e/state-contract.spec.ts`, traceability/version/governance records, development/changelog records and regenerated release artifacts.
+- Model changes: none; no formula, weight, threshold, graph traversal or score publication rule changed.
+- Parameter changes: no active value changed.
+- Commands run: target A203/A211 Playwright E2E; clean-room/release artifact generation and validation; full `make verify`; changed-only Project Governance reproduction before push.
+- Test results: target A203/A211 E2E PASS `1/1`; full `make verify` PASS with unit tests `133/133`; release artifacts validate with `remote_status=PENDING`.
+- Rollback: revert this iteration's test/governance/artifact files; no database migration, API route, model config or A209 runtime rollback is required.
 
 ## EVENT-20260626-015 - T504/A072 strategic signal panel contract
 

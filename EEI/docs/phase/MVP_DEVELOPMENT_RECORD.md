@@ -1,5 +1,32 @@
 # MVP Development Record
 
+## 2026-06-26 - T1308/A211 evidence drawer E2E sequencing repair
+
+Status: LOCAL TARGET VALIDATED; RELEASE GATES STILL BLOCKED; A209 CONTINUES AS BACKGROUND GATE
+
+### Scope
+
+- Updated `tests/e2e/state-contract.spec.ts` so the A203/A211 production graph hydration test closes the A211 evidence detail drawer before clicking graph lens controls.
+- Synchronized the repair into T1308/A211 governance because the test sequence depends on the drawer being a real modal layer after EVENT-20260626-014.
+- No product TypeScript, CSS, API, database schema, model formula, model parameter, graph traversal rule, scoring rule or release policy changed.
+
+### Current Evidence
+
+- The relevant diff is limited to two test lines: click `close-evidence-drawer` and assert `evidence-detail-drawer` is hidden before the supply-chain lens click.
+- Local target regression passed: `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/state-contract.spec.ts --grep "A203 and A211 hydrate production graph context" --workers=1`.
+- Local full `make verify` passed after the E2E fix and release artifact refresh.
+
+### Non-Claims
+
+- This does not close A202, A209, A210, A026/A027, A204/A205, MVP release readiness or legal/market clearance.
+- This does not weaken the A211 modal focus/inert behavior; it makes the E2E test respect that behavior.
+
+### Rollback
+
+- Revert the two-line `state-contract.spec.ts` sequencing change and this companion governance sync.
+- Regenerate clean-room/release artifacts from the previous committed state.
+- Do not stop, restart, delete or promote A209 runtime files.
+
 ## 2026-06-26 - T1303/A204-A205 external operator submission target contract
 
 Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED; A209 CONTINUES IN BACKGROUND

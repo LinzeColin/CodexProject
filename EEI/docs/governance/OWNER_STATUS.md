@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
+- release_gate: `TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `91`
-- pending_or_stale_events: `112`
+- precommit_pending_events: `92`
+- pending_or_stale_events: `113`
 
 ## 15. UNKNOWN
 
@@ -95,13 +95,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
-- source_tree_hash: `9657d04d30d592c81ed3a9d6ffbd0deda0478c3c`
-- source_snapshot_hash: `sha256:2f6ade2a9d4ce89ccd82395ebf3880d1c96a12510cf6a25d1a7b9eff2b39113a`
-- snapshot_event_time: `2026-06-26T15:26:23+10:00`
+- source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
+- source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
+- source_snapshot_hash: `sha256:fc1d80898581b3738ef2c3be19127b7421809c9bc3450b5a0e69f442ed67b8ba`
+- snapshot_event_time: `2026-06-26T16:31:15+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
+- phase/gate: `D / TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
 
 ## 17. Next Unique Task
 

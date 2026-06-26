@@ -3834,7 +3834,7 @@ tasks:
     legacy_task_id: "T1308"
     phase: "G5"
     objective: "Componentize production frontend routes and wire real controls to API, state and persistence"
-    scope: "This iteration implements the remaining A211 evidence detail drawer focus-trap hardening for the existing Evidence Center action: role=dialog, aria-modal, sibling inert/aria-hidden, Tab and Shift+Tab trapping, Escape/close handling and trigger focus restoration."
+    scope: "This iteration implements the remaining A211 evidence detail drawer focus-trap hardening for the existing Evidence Center action: role=dialog, aria-modal, sibling inert/aria-hidden, Tab and Shift+Tab trapping, Escape/close handling and trigger focus restoration, plus the follow-up A203/A211 E2E sequencing repair that closes the drawer before graph lens switching."
     non_scope: "Does not change scoring formulas, graph traversal, extraction models, model weights, business thresholds, API schema, database schema, publication policy, A202/A209/A210/A026/A027 evidence status, release-manager activation or MVP release readiness."
     status: "completed"
     dependencies:
@@ -3843,23 +3843,28 @@ tasks:
       - "EEI/apps/web/src/app/page.tsx"
       - "EEI/apps/web/src/app/globals.css"
       - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/tests/e2e/state-contract.spec.ts"
       - "EEI/data/review_issue_register.csv"
       - "EEI/docs/governance/TRACEABILITY_MATRIX.csv"
     acceptance_ids:
       - "ACC-A211"
+      - "ACC-A203"
     test_commands:
       - "pnpm --filter @eei/web typecheck"
       - "PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --grep \"evidence detail drawer\" --workers=1"
       - "PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --workers=1"
+      - "PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/state-contract.spec.ts --grep \"A203 and A211 hydrate production graph context\" --workers=1"
     test_results:
       - "local frontend typecheck PASS"
       - "local target evidence drawer E2E PASS 1/1"
       - "local full home.spec.ts PASS 18/18"
+      - "local target A203/A211 production graph hydration E2E PASS 1/1 after drawer close sequencing repair"
       - "local full make verify PASS after regenerated governance/release artifacts"
     evidence_refs:
       - "EEI/apps/web/src/app/page.tsx"
       - "EEI/apps/web/src/app/globals.css"
       - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/tests/e2e/state-contract.spec.ts"
       - "EEI/data/review_issue_register.csv"
       - "EEI/docs/governance/development_events.jsonl"
       - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
