@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-005"
+as_of_event_id: "EVENT-20260626-006"
 source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
 source_base_commit: "86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
 snapshot_event_time: "2026-06-26T00:05:00Z"
 generator_version: "4.0.0"
-final_commit_binding: "PENDING:702394c0263235f0462d375506231a3231d488a6; A209 isolated-rerun promotion bridge awaiting commit, push and CI"
+final_commit_binding: "CI_ATTESTED:f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298; Project Governance run 28210071092/job 83569239854 PASS; EEI validation run 28210071130/job 83569239684 PASS; A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes."
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -62,7 +62,7 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 18
+    commit_bound_events: 19
     legacy_unbound_events: 19
     precommit_pending_events: 79
     evidence_refs:

@@ -13,11 +13,41 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Current phase: `D`
 - Current gate: `TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
 - Confirmed iteration count: 39
-- Reconstructed development event count: 5
+- Reconstructed development event count: 6
 - Current task: `TASK-T1307/A209 isolated 24h rerun background evidence and promotion bridge task`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest live check during this iteration observed `18/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T00:31:18Z`, and `6.25%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+
+
+## EVENT-20260626-006 - A209 promotion bridge remote CI binding
+
+- Timestamp: 2026-06-26T11:02:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298`
+- Scope: bind the A209 isolated-rerun promotion bridge and regenerated release artifacts to remote CI evidence without changing product runtime behavior.
+- Remote CI: Project Governance run `28210071092` / job `83569239854` PASS; EEI validation run `28210071130` / job `83569239684` PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- Non-claims: this does not close A209, does not execute `promote-rerun`, and does not turn partial isolated rerun evidence into release-ready 24h evidence.
+- A209 live state observed during this sync: `23/288` PASS windows, `0` failed; background run continues outside the committed repository artifacts.
+- Next step: continue isolated A209 monitoring while collecting A202/A210/A026/A027 operator inputs; after `288/288` zero-failure completion, run `promote-rerun` and release-ready validation.
+
+## ITER-20260626-006 - CI binding and release artifact freshness sync
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298`
+- Result commit: `f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298`
+- Task IDs: `TASK-T1307`
+- Acceptance IDs: `A209`, plus release evidence `A175/A177`
+- Goal: remove stale `remote_status=PENDING` release evidence for the already pushed promotion-bridge commit while preserving A209 fail-closed semantics.
+- Files changed: CI binding status files, append-only governance event, clean-room ZIP/evidence, release evidence and checksums.
+- Model changes: none.
+- Parameter changes: none.
+- Commands run: GitHub Actions read-only verification for runs `28210071092` and `28210071130`; clean-room/release artifact generation and validation; governance consistency; V5 production readiness sync.
+- Test results: Project Governance PASS; EEI validation PASS; clean-room package SHA256 `bbeb69ea7ee6ec26e9656684982200b8f87a11040fa190addfe0f89007dae4d9`; release artifacts validate with `remote_status=PASS`; A209 remains open.
+- Rollback: revert this CI-binding sync and regenerate release artifacts; do not touch canonical failed A209 evidence or live isolated rerun files without operator authorization.
 
 ## EVENT-20260626-005 - T1307/A209 isolated-rerun promotion bridge
 

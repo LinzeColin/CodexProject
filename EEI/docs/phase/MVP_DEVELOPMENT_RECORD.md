@@ -6245,3 +6245,12 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; PROMOTION NOT EXECUTED
 
 - Revert `scripts/finalize_operator_soak_evidence.py`, `tests/unit/test_operator_soak_evidence.py` and this governance sync.
 - Preserve the canonical failed `7/288` evidence and the isolated rerun runtime files unless explicit operator recovery is authorized.
+
+## 2026-06-26 - A209 promotion bridge CI binding sync
+
+Status: REMOTE CI ATTESTED FOR COMMIT `f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298`; A209 still IN PROGRESS.
+
+- Project Governance run `28210071092` / job `83569239854`: PASS.
+- EEI validation run `28210071130` / job `83569239684`: PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
+- Release artifacts regenerated with `remote_status=PASS`; clean-room package SHA256 `bbeb69ea7ee6ec26e9656684982200b8f87a11040fa190addfe0f89007dae4d9`.
+- A209 isolated rerun observed at `23/288` PASS, `0` failed during this sync; no release gate closed.

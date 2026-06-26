@@ -7,7 +7,7 @@
 - source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
 - snapshot_event_time: `2026-06-26T10:05:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PENDING:702394c0263235f0462d375506231a3231d488a6; A209 isolated-rerun promotion bridge awaiting commit, push and CI`
+- final_commit_binding: `CI_ATTESTED:f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298; Project Governance run 28210071092/job 83569239854 PASS; EEI validation run 28210071130/job 83569239684 PASS; A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
 
 ## Current State
 
