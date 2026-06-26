@@ -5070,7 +5070,7 @@
       "id": "codex",
       "ingestion_status": "active_real_local_redacted_summary",
       "label": "Codex",
-      "latest_date": "2026-06-19",
+      "latest_date": "2026-06-26",
       "node_count": 340,
       "platform": "codex_local_derived_behavior",
       "record_types": [
@@ -52669,7 +52669,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_memory_codex_signal_github_as_memory_source",
       "importance": "高",
       "kind": "memory",
@@ -52716,7 +52716,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_memory_codex_signal_real_data_required",
       "importance": "高",
       "kind": "memory",
@@ -52753,7 +52753,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_memory_codex_signal_agent_personalization",
       "importance": "高",
       "kind": "memory",
@@ -52790,7 +52790,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_memory_codex_signal_prefer_chinese",
       "importance": "高",
       "kind": "memory",
@@ -52827,7 +52827,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_memory_codex_signal_human_readable_reports",
       "importance": "高",
       "kind": "memory",
@@ -52864,7 +52864,7 @@
       "category": "codex_agent_metadata",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git",
       "importance": "高",
       "kind": "memory",
@@ -52911,7 +52911,7 @@
       "category": "codex_agent_metadata",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-06-19",
+      "date": "2026-06-26",
       "id": "memory:codex_recommendation_meta_codex_signal_authorization_gate",
       "importance": "高",
       "kind": "memory",
@@ -52951,7 +52951,7 @@
     "codex_session_count": 333,
     "conversation_count": 201,
     "edge_count": 3500,
-    "generated_at": "2026-06-19T12:04:28.738Z",
+    "generated_at": "2026-06-26T11:15:03.977Z",
     "memory_node_count": 618,
     "node_count": 657,
     "theme_node_count": 9
@@ -58444,69 +58444,6 @@
       "node_id": "memory:codex_session_019ed87a-4eeb-7872-8691-4e89a6e83eb5"
     },
     {
-      "category": "codex_personalization",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 任意 / 所有",
-      "memory_id": "codex_recommendation_memory_codex_signal_agent_personalization",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_agent_personalization"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · durable / source",
-      "memory_id": "codex_recommendation_memory_codex_signal_github_as_memory_source",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_github_as_memory_source"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 报告面向人类 / 和成长",
-      "memory_id": "codex_recommendation_memory_codex_signal_human_readable_reports",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_human_readable_reports"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 默认中文输出 / 用户长期偏好中文输出",
-      "memory_id": "codex_recommendation_memory_codex_signal_prefer_chinese",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_prefer_chinese"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 真实数据优先 / 用户明确要求使用真实",
-      "memory_id": "codex_recommendation_memory_codex_signal_real_data_required",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_real_data_required"
-    },
-    {
-      "category": "codex_agent_metadata",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "一般 · Codex · Meta / Data",
-      "memory_id": "codex_recommendation_meta_codex_signal_authorization_gate",
-      "memory_tier": "一般",
-      "node_id": "memory:codex_recommendation_meta_codex_signal_authorization_gate"
-    },
-    {
-      "category": "codex_agent_metadata",
-      "date": "2026-06-19",
-      "importance": "高",
-      "label": "一般 · Codex · Meta / Data",
-      "memory_id": "codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git",
-      "memory_tier": "一般",
-      "node_id": "memory:codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git"
-    },
-    {
       "category": "codex_development_record",
       "date": "2026-06-19",
       "importance": "高",
@@ -58649,13 +58586,76 @@
       "memory_id": "codex_session_019edf8a-5baa-77f1-8caf-bfe65a42a816",
       "memory_tier": "一般",
       "node_id": "memory:codex_session_019edf8a-5baa-77f1-8caf-bfe65a42a816"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 任意 / 所有",
+      "memory_id": "codex_recommendation_memory_codex_signal_agent_personalization",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_agent_personalization"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · durable / source",
+      "memory_id": "codex_recommendation_memory_codex_signal_github_as_memory_source",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_github_as_memory_source"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 报告面向人类 / 和成长",
+      "memory_id": "codex_recommendation_memory_codex_signal_human_readable_reports",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_human_readable_reports"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 默认中文输出 / 用户长期偏好中文输出",
+      "memory_id": "codex_recommendation_memory_codex_signal_prefer_chinese",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_prefer_chinese"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 真实数据优先 / 用户明确要求使用真实",
+      "memory_id": "codex_recommendation_memory_codex_signal_real_data_required",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_real_data_required"
+    },
+    {
+      "category": "codex_agent_metadata",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "一般 · Codex · Meta / Data",
+      "memory_id": "codex_recommendation_meta_codex_signal_authorization_gate",
+      "memory_tier": "一般",
+      "node_id": "memory:codex_recommendation_meta_codex_signal_authorization_gate"
+    },
+    {
+      "category": "codex_agent_metadata",
+      "date": "2026-06-26",
+      "importance": "高",
+      "label": "一般 · Codex · Meta / Data",
+      "memory_id": "codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git",
+      "memory_tier": "一般",
+      "node_id": "memory:codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git"
     }
   ],
   "visual_layers": {
     "navigation": "left_sidebar",
     "primary": "galaxy",
     "secondary": [
-      "notion_map",
+      "data_guide",
       "roi_dashboard",
       "obsidian_graph",
       "timeline",

@@ -1844,6 +1844,7 @@ h3 {
   outline: none;
 }
 
+.data-guide-canvas,
 .relation-canvas,
 .timeline-canvas {
   width: 100%;
@@ -1862,6 +1863,7 @@ h3 {
   min-height: 360px;
 }
 
+.data-guide-map,
 .notion-map,
 .obsidian-map,
 .timeline-map {
@@ -1874,9 +1876,20 @@ h3 {
   overflow: hidden;
 }
 
+.data-guide-map,
 .notion-map,
 .obsidian-map {
   grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.data-guide-canvas {
+  background:
+    linear-gradient(90deg, rgba(244, 241, 232, 0.032) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(244, 241, 232, 0.022) 1px, transparent 1px),
+    radial-gradient(circle at 18% 16%, rgba(143, 211, 255, 0.08), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(126, 232, 212, 0.065), transparent 30%),
+    #090a0d;
+  background-size: 40px 40px, 40px 40px, auto, auto, auto;
 }
 
 .timeline-control-bar {
@@ -2622,6 +2635,97 @@ h3 {
 
 .timeline-event.future {
   opacity: 0.34;
+}
+
+.data-guide-flow {
+  fill: none;
+  stroke: rgba(244, 241, 232, 0.2);
+  stroke-dasharray: 8 12;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.data-guide-frame-title {
+  fill: #f4f1e8;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.data-guide-frame-subtitle {
+  fill: #a9a397;
+  font-size: 10px;
+}
+
+.data-guide-frame-count {
+  fill: #d9d4ca;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.data-guide-links path {
+  fill: none;
+  marker-end: url("#dataGuideArrow");
+  opacity: 0.34;
+  stroke-linecap: round;
+}
+
+.data-guide-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.data-guide-node-card {
+  opacity: 0.14;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.data-guide-node-border {
+  opacity: 0.62;
+  stroke-width: 1;
+  transition:
+    opacity 140ms ease,
+    stroke-width 140ms ease;
+}
+
+.data-guide-node:hover .data-guide-node-card,
+.data-guide-node:focus-visible .data-guide-node-card,
+.data-guide-node.selected .data-guide-node-card {
+  opacity: 0.28;
+}
+
+.data-guide-node:hover .data-guide-node-border,
+.data-guide-node:focus-visible .data-guide-node-border,
+.data-guide-node.selected .data-guide-node-border {
+  opacity: 0.96;
+  stroke: #ffffff;
+  stroke-width: 2.2;
+}
+
+.data-guide-node text {
+  pointer-events: none;
+  paint-order: stroke;
+  stroke: rgba(9, 10, 13, 0.92);
+  stroke-linejoin: round;
+  stroke-width: 3px;
+}
+
+.data-guide-node-type {
+  fill: #a9e9f2;
+  font-size: 8.5px;
+  font-weight: 700;
+}
+
+.data-guide-node-title {
+  fill: #f4f1e8;
+  font-size: 10.5px;
+  font-weight: 760;
+}
+
+.data-guide-node-meta {
+  fill: #a9a397;
+  font-size: 8.5px;
 }
 
 .timeline-event.hovered circle,
