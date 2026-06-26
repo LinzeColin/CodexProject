@@ -2210,6 +2210,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PLT01-REPLAY-EVIDENCE-GATE"
+    phase: "S2PL"
+    objective: "Add a machine-verifiable no-production gate for provided S2PLT01 replay, mail preview, and source-terminal evidence records without executing replay or claiming acceptance."
+    scope: "S2PLT01 replay evidence helper, focused tests, FORM-ADP-103 refresh, traceability row, phase record, run manifest, and no-production side-effect evidence."
+    non_scope: "No real 30-day replay execution, no S2PLT01 acceptance, no S2PLT04 completion claim, no real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    status: "completed"
+    dependencies: ["S2PLT01", "S2PBT05", "S2PCT07", "S2PDT04", "S2PET04", "S2PFT05", "S2PKT05", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md"]
+    acceptance_ids: ["ACC-S2PLT01-30D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_gate_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py arxiv-daily-push/tests/test_stage2_replay_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_gate_tests2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_gate_alltests PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q"]
+    test_results: ["py_compile PASS", "focused S2PLT01 replay gate tests: 9 OK", "full arxiv-daily-push unittest: 466 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "YAML/JSONL/CSV/manifest parse: OK", "git diff --check: PASS", "production-side-effect forbidden scan: no true/enabling hits", "full semantic extractor: NOT COMPLETED after local interrupt at >150 seconds during full-table AST parsing; changed-only semantic governance is the S2PLT01 replay evidence gate used for this run"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md", "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json", "arxiv-daily-push/tests/test_stage2_replay_gate.py"]
+    risk: "S2PLT01 replay evidence gate can be misread as replay execution or S2PLT01 acceptance; actual replay payload, inherited P0/P1 zero state, S2PLT04, S2PMT07, and integrated production acceptance remain blocked."
+    rollback: "Revert S2PLT01 replay evidence gate helper, focused tests, FORM-ADP-103 refresh, phase record, manifest, traceability/delivery/event records, and rendered governance sync; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+
 
   - task_id: "S2PMT07"
     phase: "S2PM"

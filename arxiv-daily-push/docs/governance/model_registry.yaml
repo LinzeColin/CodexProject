@@ -5278,7 +5278,7 @@ models:
   -
     model_id: "MOD-ADP-101"
     name: "S2PLT01 full-system replay entry precheck model"
-    purpose: "Fail closed for S2PLT01 full-system 30 independent historical-day replay until required source-domain and mail dependencies, inherited V7.1 P0/P1 zero state, 30/30 replay evidence, 120 mail previews, source terminal states, and no-production side-effect checks are all proven."
+    purpose: "Fail closed for S2PLT01 full-system 30 independent historical-day replay until required source-domain and mail dependencies, inherited V7.1 P0/P1 zero state, provided 30/30 replay evidence, 120 M1-M4 EMAIL_LEARNING_V1 no-send mail previews, source terminal states, and no-production side-effect checks are all proven."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5302,9 +5302,9 @@ models:
     inputs:
       - "S2PLT01 required dependency set"
       - "completed governance evidence for S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05"
-      - "remaining S2PLT01 blockers after S2PBT05: inherited P0/P1, full replay, mail preview proof, and terminal source states"
+      - "remaining S2PLT01 blockers after S2PBT05: inherited P0/P1, actual full replay payload, mail preview proof, terminal source states, and independent review"
       - "V7.1 inherited audit blocker counts"
-      - "full-system replay output requirements"
+      - "full-system replay evidence records and output requirements"
     outputs:
       - "blocked S2PLT01 entry precheck report"
       - "dependency and replay evidence state"
@@ -5319,7 +5319,9 @@ models:
       - "arxiv-daily-push/tests/test_stage2_replay_gate.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT01-ENTRY-PRECHECK-20260626.json"
+      - "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md"
 
   -
     model_id: "MOD-ADP-102"

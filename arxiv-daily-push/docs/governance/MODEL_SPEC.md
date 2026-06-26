@@ -909,7 +909,7 @@ Uncovered planned scenarios:
 ## S2PLT01 Full Replay Entry Precheck
 
 - `MOD-ADP-101` / `FORM-ADP-103` define the fail-closed entry precheck for S2PLT01 full-system 30 independent historical-day replay.
-- Passing S2PLT01 is not claimed by this run. After S2PBT05, the current precheck remains blocked because inherited V7.1 P0=8 and P1=37 are open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven.
+- The S2PLT01 replay evidence gate can now consume provided evidence records for 30 replay days, 120 M1-M4 `EMAIL_LEARNING_V1` no-send mail previews, and D1-D4 terminal source states. Passing S2PLT01 is not claimed by this run because the actual replay payload was not executed here and inherited V7.1 P0=8 and P1=37 remain open.
 - S2PLT01 precheck does not execute replay, accept S2PLT01, complete S2PLT04, enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## S2PBT05 D1 Qualification Receipt

@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT02_ARTIFACT_ATOMIC_PUBLISH_REMEDIATION_NO_PRODUCTION`
+- release_gate: `S2PLT01_REPLAY_EVIDENCE_GATE_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `110`
+- legacy_unbound_events: `111`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `149`
+- pending_or_stale_events: `150`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:66c5b97aa4145684b6bfd1bbe4c653ae0a9a3a347e90370125a5beba051f4aa5`
+- source_snapshot_hash: `sha256:4ca48457b1a8b9168b36cfdfe3967d0342a90f0e279ba2bcfab522573b5c7cb7`
 - snapshot_event_time: `2026-06-26T21:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PM / S2PMT02_ARTIFACT_ATOMIC_PUBLISH_REMEDIATION_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT01_REPLAY_EVIDENCE_GATE_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

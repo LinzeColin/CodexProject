@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
+from datetime import date
 from typing import Any
 
 
@@ -32,6 +33,7 @@ S2PLT01_COMPLETED_DEPENDENCIES = (
 )
 S2PLT01_REQUIRED_REPLAY_DAYS = 30
 S2PLT01_REQUIRED_MAIL_PREVIEWS = 120
+S2PLT01_REQUIRED_MAIL_PRODUCTS = ("M1", "M2", "M3", "M4")
 S2PLT01_REQUIRED_SOURCE_DOMAINS = ("D1", "D2", "D3", "D4")
 S2PLT01_REQUIRED_READING_BOARDS = ("B1", "B2", "B3", "B4", "B5", "B6")
 S2PLT01_REQUIRED_OUTPUTS = (
@@ -118,16 +120,117 @@ def build_s2plt01_replay_evidence_state() -> dict[str, Any]:
     }
 
 
-def build_s2plt01_entry_precheck_report(*, generated_at: str) -> dict[str, Any]:
+def build_s2plt01_replay_evidence_from_records(
+    *,
+    replay_records: list[Mapping[str, Any]],
+    mail_preview_records: list[Mapping[str, Any]],
+    source_terminal_states: list[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Validate provided full-system replay evidence without creating production side effects."""
+
+    replay_dates = sorted(
+        {
+            str(record.get("as_of_date") or "")
+            for record in replay_records
+            if _replay_record_passes(record)
+        }
+    )
+    replay_domains = sorted(
+        {
+            str(domain)
+            for record in replay_records
+            if _replay_record_passes(record)
+            for domain in record.get("source_domains", [])
+        }
+    )
+    replay_boards = sorted(
+        {
+            str(board)
+            for record in replay_records
+            if _replay_record_passes(record)
+            for board in record.get("reading_boards", [])
+        }
+    )
+    mail_preview_keys = {
+        (str(record.get("as_of_date") or ""), str(record.get("mail_product_id") or ""))
+        for record in mail_preview_records
+        if _mail_preview_record_passes(record)
+    }
+    terminal_domains = {
+        str(record.get("source_domain") or "")
+        for record in source_terminal_states
+        if _terminal_source_record_passes(record)
+    }
+    future_leakage_count = sum(int(record.get("future_leakage_count") or 0) for record in replay_records if isinstance(record, Mapping))
+    p0_p1_blocker_count = sum(int(record.get("p0_p1_blocker_count") or 0) for record in replay_records if isinstance(record, Mapping))
+    missing_mail_keys = [
+        f"{date}:{product_id}"
+        for date in replay_dates
+        for product_id in S2PLT01_REQUIRED_MAIL_PRODUCTS
+        if (date, product_id) not in mail_preview_keys
+    ]
+    missing_domains = [domain for domain in S2PLT01_REQUIRED_SOURCE_DOMAINS if domain not in terminal_domains]
+    blocking_reasons: list[str] = []
+    if len(replay_dates) < S2PLT01_REQUIRED_REPLAY_DAYS:
+        blocking_reasons.append("full_30_day_replay_not_executed")
+    if not set(S2PLT01_REQUIRED_SOURCE_DOMAINS).issubset(replay_domains):
+        blocking_reasons.append("source_domain_coverage_not_proven")
+    if not set(S2PLT01_REQUIRED_READING_BOARDS).issubset(replay_boards):
+        blocking_reasons.append("reading_board_coverage_not_proven")
+    if len(mail_preview_keys) < S2PLT01_REQUIRED_MAIL_PREVIEWS or missing_mail_keys:
+        blocking_reasons.append("mail_preview_count_not_proven")
+    if missing_domains:
+        blocking_reasons.append("source_terminal_states_not_proven")
+    if future_leakage_count != 0:
+        blocking_reasons.append("future_leakage_not_zero")
+    if p0_p1_blocker_count != 0:
+        blocking_reasons.append("replay_p0_p1_blockers_not_zero")
+    available_outputs = {
+        "daily_replay_reports": len(replay_dates) >= S2PLT01_REQUIRED_REPLAY_DAYS,
+        "mail_previews": len(mail_preview_keys) >= S2PLT01_REQUIRED_MAIL_PREVIEWS and not missing_mail_keys,
+        "source_terminal_states": not missing_domains,
+        "ledger": all(_has_evidence_refs(record) for record in replay_records),
+        "future_leakage_check": future_leakage_count == 0,
+        "p0_p1_zero_evidence": p0_p1_blocker_count == 0,
+    }
+    return {
+        "status": "pass" if not blocking_reasons and all(available_outputs.values()) else "blocked",
+        "required_replay_days": S2PLT01_REQUIRED_REPLAY_DAYS,
+        "observed_replay_days": len(replay_dates),
+        "replay_dates_observed": replay_dates,
+        "required_mail_previews": S2PLT01_REQUIRED_MAIL_PREVIEWS,
+        "observed_mail_previews": len(mail_preview_keys),
+        "required_mail_products": list(S2PLT01_REQUIRED_MAIL_PRODUCTS),
+        "missing_mail_preview_keys": missing_mail_keys,
+        "required_source_domains": list(S2PLT01_REQUIRED_SOURCE_DOMAINS),
+        "source_domains_observed": replay_domains,
+        "required_reading_boards": list(S2PLT01_REQUIRED_READING_BOARDS),
+        "reading_boards_observed": replay_boards,
+        "required_outputs": list(S2PLT01_REQUIRED_OUTPUTS),
+        "available_outputs": available_outputs,
+        "future_leakage_count": future_leakage_count,
+        "p0_p1_blocker_count": p0_p1_blocker_count,
+        "source_terminal_states_proven": not missing_domains,
+        "missing_source_domains": missing_domains,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def build_s2plt01_entry_precheck_report(
+    *,
+    generated_at: str,
+    replay_evidence: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT01 entry precheck report."""
 
     dependencies = build_s2plt01_dependency_state()
     audit = build_s2plt01_audit_blocker_state()
-    replay = build_s2plt01_replay_evidence_state()
+    replay = dict(replay_evidence) if isinstance(replay_evidence, Mapping) else build_s2plt01_replay_evidence_state()
     gates = {
         "dependencies_complete": dependencies["status"] == "pass",
         "p0_zero": audit["checks"]["P0_zero"],
         "p1_zero": audit["checks"]["P1_zero"],
+        "replay_evidence_passed": replay["status"] == "pass",
         "thirty_independent_days_proven": replay["observed_replay_days"] >= S2PLT01_REQUIRED_REPLAY_DAYS,
         "mail_previews_proven": replay["observed_mail_previews"] >= S2PLT01_REQUIRED_MAIL_PREVIEWS,
         "source_terminal_states_proven": replay["source_terminal_states_proven"],
@@ -147,6 +250,13 @@ def build_s2plt01_entry_precheck_report(*, generated_at: str) -> dict[str, Any]:
         blocking_reasons.append("mail_preview_count_not_proven")
     if not gates["source_terminal_states_proven"]:
         blocking_reasons.append("source_terminal_states_not_proven")
+    if (
+        not gates["replay_evidence_passed"]
+        and "full_30_day_replay_not_executed" not in blocking_reasons
+        and "mail_preview_count_not_proven" not in blocking_reasons
+        and "source_terminal_states_not_proven" not in blocking_reasons
+    ):
+        blocking_reasons.append("full_30_day_replay_not_executed")
 
     report = {
         "model_id": S2PLT01_ENTRY_PRECHECK_MODEL_ID,
@@ -204,14 +314,71 @@ def validate_s2plt01_entry_precheck_report(report: Mapping[str, Any]) -> list[st
         if report.get("blocking_reasons"):
             errors.append("passing S2PLT01 precheck must not have blocking reasons")
     else:
-        for reason in S2PLT01_BLOCKING_REASONS:
-            if reason not in report.get("blocking_reasons", []):
-                errors.append(f"blocked S2PLT01 precheck must include {reason}")
+        gates = _mapping(report.get("gates"))
+        blocking_reasons = report.get("blocking_reasons", [])
+        if not blocking_reasons:
+            errors.append("blocked S2PLT01 precheck must include at least one blocking reason")
+        gate_reason_pairs = (
+            ("p0_zero", "inherited_v7_1_p0_findings_open"),
+            ("p1_zero", "inherited_v7_1_p1_findings_open"),
+            ("thirty_independent_days_proven", "full_30_day_replay_not_executed"),
+            ("mail_previews_proven", "mail_preview_count_not_proven"),
+            ("source_terminal_states_proven", "source_terminal_states_not_proven"),
+        )
+        for gate_name, reason in gate_reason_pairs:
+            if gates.get(gate_name) is False and reason not in blocking_reasons:
+                errors.append(f"blocked S2PLT01 precheck with {gate_name}=false must include {reason}")
     return errors
 
 
 def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
+
+
+def _replay_record_passes(record: Mapping[str, Any]) -> bool:
+    return (
+        isinstance(record, Mapping)
+        and record.get("status") == "pass"
+        and _is_date(str(record.get("as_of_date") or ""))
+        and int(record.get("future_leakage_count") or 0) == 0
+        and int(record.get("p0_p1_blocker_count") or 0) == 0
+        and _has_evidence_refs(record)
+    )
+
+
+def _mail_preview_record_passes(record: Mapping[str, Any]) -> bool:
+    return (
+        isinstance(record, Mapping)
+        and record.get("status") == "pass"
+        and _is_date(str(record.get("as_of_date") or ""))
+        and record.get("mail_product_id") in S2PLT01_REQUIRED_MAIL_PRODUCTS
+        and record.get("email_template_contract") == "EMAIL_LEARNING_V1"
+        and record.get("real_smtp_sent") is False
+        and _has_evidence_refs(record)
+    )
+
+
+def _terminal_source_record_passes(record: Mapping[str, Any]) -> bool:
+    return (
+        isinstance(record, Mapping)
+        and record.get("source_domain") in S2PLT01_REQUIRED_SOURCE_DOMAINS
+        and record.get("status") == "terminal_ready"
+        and str(record.get("terminal_state") or "")
+        and record.get("production_inclusion") is False
+        and _has_evidence_refs(record)
+    )
+
+
+def _has_evidence_refs(record: Mapping[str, Any]) -> bool:
+    refs = record.get("evidence_refs")
+    return isinstance(refs, list) and bool(refs) and all(str(ref).strip() for ref in refs)
+
+
+def _is_date(value: str) -> bool:
+    try:
+        return date.fromisoformat(value).isoformat() == value
+    except ValueError:
+        return False
 
 
 def _stable_hash(value: Mapping[str, Any]) -> str:
