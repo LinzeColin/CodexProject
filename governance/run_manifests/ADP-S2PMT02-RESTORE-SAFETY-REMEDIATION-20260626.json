@@ -1,0 +1,42 @@
+{
+  "manifest_id": "ADP-S2PMT02-RESTORE-SAFETY-REMEDIATION-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT02-RESTORE-SAFETY",
+  "parent_task_id": "S2PMT02",
+  "acceptance_id": "ACC-S2PMT02-ATOMIC-RECOVERY",
+  "phase": "S2PM",
+  "targeted_inherited_findings": [
+    "A-001",
+    "A-002"
+  ],
+  "model_id": "MOD-ADP-041",
+  "formula_id": "FORM-ADP-043",
+  "parameter_ids": [],
+  "base_commit": "ddd4b02dd129760c314de1c86eefa5f5b4186992",
+  "created_at": "2026-06-26T18:45:00+10:00",
+  "scope": "Harden Stage 1 runtime restore path for S2PMT02 inherited A-001/A-002 by rejecting manifest database paths outside the backup root and validating a temporary restore file before atomic target replacement.",
+  "non_scope": "No production restore, SMTP, scheduler, Release, DB migration, public schema, queue mutation, ranking, source adapter change, live source fetch, workflow change, V7.1/V7.2 contract edit, inherited P0/P1 closure claim, or integrated production acceptance.",
+  "production_side_effects": false,
+  "production_restore_executed": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "inherited_p0_p1_closed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+    "arxiv-daily-push/tests/test_stage1_runtime.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused test_stage1_runtime.py: 10 OK",
+    "full arxiv-daily-push unittest: 457 OK",
+    "V7.2 validator PASS",
+    "ADP project governance 0 errors / 0 warnings",
+    "lean check-render drift_count 0 reference_issue_count 0",
+    "changed-only semantic governance 0 errors / 0 warnings",
+    "semantic governance targeted FORM-ADP-043 fingerprint refreshed; full semantic extractor interrupted after timeout during full-table AST parsing",
+    "JSONL/YAML/CSV/manifest parse OK",
+    "git diff --check PASS"
+  ]
+}

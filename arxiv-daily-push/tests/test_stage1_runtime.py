@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import hashlib
 import json
 import tempfile
 import unittest
@@ -122,6 +123,104 @@ class Stage1RuntimeTests(unittest.TestCase):
 
             self.assertEqual(restore["status"], "blocked")
             self.assertIn("confirm_restore is required", restore["blocking_reasons"])
+
+    def test_restore_rejects_manifest_paths_outside_backup_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            backup_root = root / "backup"
+            backup_root.mkdir()
+            outside_db = root / "outside.sqlite3"
+            migrate_database(outside_db)
+            outside_sha = hashlib.sha256(outside_db.read_bytes()).hexdigest()
+
+            for manifest_path_value in ("../outside.sqlite3", str(outside_db)):
+                manifest = {
+                    "model_id": "adp-stage1-local-runtime-recovery-v1",
+                    "files": [{"role": "database", "path": manifest_path_value, "sha256": outside_sha}],
+                }
+                manifest_path = backup_root / "backup_manifest.json"
+                manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+                target = root / f"restored-{len(manifest_path_value)}.sqlite3"
+
+                restore = restore_runtime_backup(
+                    manifest_path=manifest_path,
+                    target_db_path=target,
+                    generated_at="2026-07-01T05:05:00+10:00",
+                    confirm_restore=True,
+                )
+
+                self.assertEqual(restore["status"], "blocked")
+                self.assertIn("backup database path traversal is not allowed", restore["blocking_reasons"])
+                self.assertFalse(target.exists())
+
+    def test_restore_rejects_symlink_escape_from_backup_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            backup_root = root / "backup"
+            backup_root.mkdir()
+            outside_db = root / "outside.sqlite3"
+            migrate_database(outside_db)
+            backup_link = backup_root / "adp.sqlite3"
+            backup_link.symlink_to(outside_db)
+            manifest = {
+                "model_id": "adp-stage1-local-runtime-recovery-v1",
+                "files": [
+                    {
+                        "role": "database",
+                        "path": "adp.sqlite3",
+                        "sha256": hashlib.sha256(outside_db.read_bytes()).hexdigest(),
+                    }
+                ],
+            }
+            manifest_path = backup_root / "backup_manifest.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            target = root / "restored.sqlite3"
+
+            restore = restore_runtime_backup(
+                manifest_path=manifest_path,
+                target_db_path=target,
+                generated_at="2026-07-01T05:05:00+10:00",
+                confirm_restore=True,
+            )
+
+            self.assertEqual(restore["status"], "blocked")
+            self.assertIn("backup database path escapes backup root", restore["blocking_reasons"])
+            self.assertFalse(target.exists())
+
+    def test_restore_validation_failure_preserves_existing_target_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "adp.sqlite3"
+            migrate_database(target)
+            original_bytes = target.read_bytes()
+            backup_root = root / "backup"
+            backup_root.mkdir()
+            invalid_backup = backup_root / "adp.sqlite3"
+            invalid_backup.write_text("not a sqlite database", encoding="utf-8")
+            manifest = {
+                "model_id": "adp-stage1-local-runtime-recovery-v1",
+                "files": [
+                    {
+                        "role": "database",
+                        "path": "adp.sqlite3",
+                        "sha256": hashlib.sha256(invalid_backup.read_bytes()).hexdigest(),
+                    }
+                ],
+            }
+            manifest_path = backup_root / "backup_manifest.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            restore = restore_runtime_backup(
+                manifest_path=manifest_path,
+                target_db_path=target,
+                generated_at="2026-07-01T05:05:00+10:00",
+                confirm_restore=True,
+                allow_overwrite=True,
+            )
+
+            self.assertEqual(restore["status"], "blocked")
+            self.assertEqual(target.read_bytes(), original_bytes)
+            self.assertEqual(inspect_database(target)["status"], "pass")
 
     def test_scheduler_install_and_uninstall_are_template_only(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

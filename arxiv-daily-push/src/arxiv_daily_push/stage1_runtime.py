@@ -8,7 +8,7 @@ import os
 import shutil
 import sqlite3
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Mapping
 
 from .config import DEFAULT_TIMEZONE, PROJECT_NAME
@@ -330,10 +330,15 @@ def restore_runtime_backup(
             blocking_reasons.append("backup manifest does not contain a database entry")
     if target.exists() and not allow_overwrite:
         blocking_reasons.append("target database already exists")
-    backup_db = manifest_file.parent / str(database_entry.get("path") if database_entry else "")
-    if database_entry and not backup_db.exists():
+    backup_db: Path | None = None
+    if database_entry:
+        try:
+            backup_db = _safe_manifest_backup_path(database_entry.get("path"), backup_root=manifest_file.parent)
+        except Stage1RuntimeError as exc:
+            blocking_reasons.append(str(exc))
+    if database_entry and backup_db and not backup_db.exists():
         blocking_reasons.append("backup database file does not exist")
-    if database_entry and backup_db.exists() and _sha256_file(backup_db) != database_entry.get("sha256"):
+    if database_entry and backup_db and backup_db.exists() and _sha256_file(backup_db) != database_entry.get("sha256"):
         blocking_reasons.append("backup database sha256 does not match manifest")
     if blocking_reasons:
         return _base_report(
@@ -346,12 +351,44 @@ def restore_runtime_backup(
         )
 
     target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(backup_db, target)
-    storage_report = inspect_database(target)
-    storage_errors = validate_storage_report(storage_report)
-    blocking_reasons.extend(storage_errors)
-    if storage_report.get("status") != "pass":
-        blocking_reasons.extend(storage_report.get("blocking_reasons") or ["restored database inspection did not pass"])
+    temp_target = target.with_name(f".{target.name}.{_id('restore-tmp', generated_at)}.tmp")
+    previous_backup: Path | None = None
+    storage_report: dict[str, Any] | None = None
+    try:
+        temp_target.unlink(missing_ok=True)
+        shutil.copy2(backup_db, temp_target)
+        _fsync_file(temp_target)
+        if _sha256_file(temp_target) != database_entry.get("sha256"):
+            blocking_reasons.append("copied restore database sha256 does not match manifest")
+        else:
+            try:
+                storage_report = inspect_database(temp_target)
+            except sqlite3.DatabaseError as exc:
+                storage_report = {
+                    "status": "blocked",
+                    "blocking_reasons": [f"restored database inspection failed: {exc}"],
+                }
+                blocking_reasons.extend(storage_report["blocking_reasons"])
+            else:
+                storage_errors = validate_storage_report(storage_report)
+                blocking_reasons.extend(storage_errors)
+                if storage_report.get("status") != "pass":
+                    blocking_reasons.extend(storage_report.get("blocking_reasons") or ["restored database inspection did not pass"])
+        if not blocking_reasons:
+            if target.exists():
+                previous_backup = target.with_name(f".{target.name}.{_id('pre-restore', generated_at)}.bak")
+                shutil.copy2(target, previous_backup)
+                _fsync_file(previous_backup)
+            os.replace(temp_target, target)
+            _fsync_directory(target.parent)
+    except OSError as exc:
+        blocking_reasons.append(f"restore atomic switch failed: {exc}")
+    finally:
+        if blocking_reasons:
+            temp_target.unlink(missing_ok=True)
+
+    if storage_report is None and target.exists() and not blocking_reasons:
+        storage_report = inspect_database(target)
     return _base_report(
         action="restore",
         generated_at=generated_at,
@@ -361,7 +398,8 @@ def restore_runtime_backup(
         extra={
             "manifest_path": str(manifest_file),
             "target_db_path": str(target),
-            "target_sha256": _sha256_file(target),
+            "target_sha256": _sha256_file(target) if target.exists() else None,
+            "previous_target_backup_path": str(previous_backup) if previous_backup else None,
             "restored_database_ready": not blocking_reasons,
             "storage_report": storage_report,
         },
@@ -553,6 +591,40 @@ def _sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _safe_manifest_backup_path(raw_path: Any, *, backup_root: Path) -> Path:
+    if not isinstance(raw_path, str) or not raw_path.strip():
+        raise Stage1RuntimeError("backup database path is empty or not a string")
+    posix_path = PurePosixPath(raw_path)
+    if posix_path.is_absolute() or any(part in {"", ".", ".."} for part in posix_path.parts):
+        raise Stage1RuntimeError("backup database path traversal is not allowed")
+    root = backup_root.resolve(strict=True)
+    candidate = backup_root.joinpath(*posix_path.parts)
+    if not candidate.exists():
+        return candidate
+    resolved = candidate.resolve(strict=True)
+    if not resolved.is_relative_to(root):
+        raise Stage1RuntimeError("backup database path escapes backup root")
+    return resolved
+
+
+def _fsync_file(path: Path) -> None:
+    with path.open("rb") as handle:
+        os.fsync(handle.fileno())
+
+
+def _fsync_directory(path: Path) -> None:
+    try:
+        fd = os.open(path, os.O_RDONLY)
+    except OSError:
+        return
+    try:
+        os.fsync(fd)
+    except OSError:
+        pass
+    finally:
+        os.close(fd)
 
 
 def _id(prefix: str, generated_at: str) -> str:
