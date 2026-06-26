@@ -186,7 +186,7 @@ interactive memory visualization. It is not an Obsidian/Notion/Chrome plugin.
 The app is one merged platform with multiple selectable data-source slices.
 The homepage data-source selector must expose exactly three choices:
 `总数据源` (all data sources together), `ChatGPT`, and `Codex`. Galaxy,
-Notion Map, ROI, Obsidian Graph, Timeline, Contribution Grid, Word Cloud,
+数据导图, ROI, Obsidian Graph, Timeline, Contribution Grid, Word Cloud,
 Search, Summary & Iteration, and recommendations all share the same visual
 shell; only the selected analysis source changes.
 
@@ -237,7 +237,7 @@ Current visualization modes:
 
 - Visual density rule: every navigation page must keep 视觉化程度 80%+ as the
   default reading surface. Lists and text can exist as drill-down, but Galaxy,
-  Notion Map, ROI Dashboard, Obsidian Graph, Timeline, Contribution Grid, Word
+  数据导图, ROI Dashboard, Obsidian Graph, Timeline, Contribution Grid, Word
   Cloud, Search, and Summary & Iteration must all expose evidence-bearing visual
   marks, charts, graphs, grids, timelines, or signal cards synchronized with the
   current filters.
@@ -247,7 +247,7 @@ Current visualization modes:
   controls. Filter chips clear individual filters without mutating the memory
   database; theme focus only changes the current browser view.
 - Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。
-- Notion Map: project/document nodes linked through atlas edges. 顶部保留简短状态条，说明当前图谱按主题簇、节点详情和项目/决策关系读取。
+- 数据导图: 用框架导图格式展示来源、画像、项目决策和行动机会四层。顶部保留简短状态条，说明当前图谱按数据源/主题、个人画像/偏好、项目/决策/工作流、行动/机会读取；导图卡片可点击并同步右侧 Inspector。
 - ROI Dashboard: memories sorted by `metrics.roi.leverage_score`. It must show
   synchronized mini-bar visual summaries for level assets, topic categories, and
   recommended actions so the page is not just numeric cards plus a list.
@@ -334,10 +334,14 @@ Real Codex local data sync:
   through `secret_ref` metadata and controlled local resolvers, not GitHub
   plaintext.
 - `scripts/install_codex_weekly_sync.py --load` installs a macOS LaunchAgent
-  that runs every Monday 09:00 local time, rebuilds the Atlas snapshot, commits
-  the redacted Codex-derived data, and pushes to GitHub.
+  that runs every Monday and Friday 03:00 local time, rebuilds the Atlas
+  snapshot, publishes the latest runtime `memory_atlas.json`, and writes a
+  fresh runtime build manifest. When installed from a Git worktree it also
+  commits the redacted Codex-derived data and pushes to GitHub; when installed
+  from the Application Support runtime source it skips Git backup so local
+  refresh does not fail on a missing `.git` directory.
 
-Notion Map 的图内节点不渲染文字标签；详情通过 title、aria 和 Inspector 查看。
+数据导图使用框架卡片显示节点名称、类型和摘要状态；详情通过点击卡片、title、aria 和 Inspector 查看。
 Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签：默认保持克制，
 缩放、悬停、选中或高连接节点才显示标签，同时通过 hover 邻接高亮和 Inspector 保留
 具体信息入口。记忆节点标签统一显示为 `层级 · 主题 · 关键词`，关键词不能重复层级或

@@ -42,7 +42,7 @@ const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
   { key: "galaxy", label: "银河星云", icon: Orbit },
-  { key: "notion", label: "Notion 关系地图", icon: Blocks },
+  { key: "notion", label: "数据导图", icon: Blocks },
   { key: "roi", label: "ROI 仪表盘", icon: LayoutDashboard },
   { key: "obsidian", label: "Obsidian 图谱", icon: Network },
   { key: "timeline", label: "时间轴", icon: CalendarDays },
@@ -701,7 +701,7 @@ function ViewRouter({
     );
   }
   if (activeView === "notion") {
-    return <NotionMap nodes={slice.graphNodes} edges={slice.graphEdges} selectedNode={selectedNode} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+    return <DataGuideMap nodes={slice.graphNodes} edges={slice.graphEdges} selectedNode={selectedNode} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
   }
   if (activeView === "roi") {
     return <RoiDashboard atlas={atlas} nodes={slice.memoryNodes} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
@@ -764,7 +764,7 @@ function GalaxyView({
   );
 }
 
-function NotionMap({
+function DataGuideMap({
   nodes,
   edges,
   selectedNode,
@@ -777,55 +777,59 @@ function NotionMap({
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
 }) {
-  const display = useMemo(() => buildMapLayout(nodes, edges, 170), [nodes, edges]);
+  const display = useMemo(() => buildDataGuideLayout(nodes, edges, 64), [nodes, edges]);
   return (
-    <div className="visual-workspace notion-map">
+    <div className="visual-workspace data-guide-map">
       <div className="surface-heading compact">
         <div>
-          <p className="eyebrow">数据库关系地图</p>
-          <h2>把 Notion 式数据库关系转成主题、项目、决策、记忆的可探索地图</h2>
+          <p className="eyebrow">数据导图 / 框架关系 / 行动入口</p>
+          <h2>把当前数据切片整理成来源、画像、项目决策和下一步行动的框架导图</h2>
         </div>
-        <span>{display.nodes.length} 个节点 / {display.edges.length} 条连接</span>
+        <span>{display.visibleNodeCount} 个可见节点 / {display.edgeCount} 条框架连接</span>
       </div>
       <GraphUsageStrip
         items={[
-          { label: "主题簇", value: "外圈分组" },
-          { label: "点击节点", value: "右侧详情" },
-          { label: "适合查看", value: "项目和决策关系" },
+          { label: "读法", value: "从左到右" },
+          { label: "框架", value: "来源 → 画像 → 项目 → 行动" },
+          { label: "点击卡片", value: "同步右侧详情" },
         ]}
       />
       <DeltaStrip stats={deltaStats} compact />
-      <svg className="relation-canvas" viewBox="0 0 1000 620" role="img" aria-label="Notion 关系地图">
+      <svg className="data-guide-canvas" viewBox="0 0 1000 620" role="img" aria-label="数据导图框架">
         <defs>
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="1.25" result="blur" />
+          <filter id="dataGuideGlow">
+            <feGaussianBlur stdDeviation="2.2" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <marker id="dataGuideArrow" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
+            <path d="M0,0 L8,4 L0,8 Z" fill="rgba(244, 241, 232, 0.42)" />
+          </marker>
         </defs>
-        <g opacity="0.13">
+        <path className="data-guide-flow" d="M78 76 C260 46 420 46 594 76 S824 108 930 78" />
+        {display.frames.map((frame) => (
+          <g className="data-guide-frame" key={frame.id}>
+            <rect x={frame.x} y={frame.y} width={frame.w} height={frame.h} rx="14" fill={frame.color} opacity="0.035" />
+            <rect x={frame.x} y={frame.y} width={frame.w} height={frame.h} rx="14" fill="none" stroke={frame.color} opacity="0.34" />
+            <text x={frame.x + 18} y={frame.y + 30} className="data-guide-frame-title">{frame.title}</text>
+            <text x={frame.x + 18} y={frame.y + 52} className="data-guide-frame-subtitle">{frame.subtitle}</text>
+            <text x={frame.x + frame.w - 18} y={frame.y + 30} textAnchor="end" className="data-guide-frame-count">{frame.count}</text>
+          </g>
+        ))}
+        <g className="data-guide-links">
           {display.edges.map((edge) => (
-            <line
+            <path
               key={edge.id}
-              x1={edge.source.x}
-              y1={edge.source.y}
-              x2={edge.target.x}
-              y2={edge.target.y}
+              d={edge.path}
               stroke={edge.color}
-              strokeWidth={Math.max(0.45, edge.weight * 1.65)}
+              strokeWidth={edge.strokeWidth}
             />
           ))}
         </g>
-        {display.groups.map((group) => (
-          <g key={group.id}>
-            <circle cx={group.x} cy={group.y} r={group.r} fill={group.color} opacity="0.026" />
-            <circle cx={group.x} cy={group.y} r={group.r} fill="none" stroke={group.color} strokeDasharray="8 12" opacity="0.16" />
-          </g>
-        ))}
         {display.nodes.map((item) => (
-          <GraphSvgNode
+          <DataGuideSvgNode
             key={item.node.id}
             item={item}
             selected={item.node.id === selectedNode?.id}
@@ -834,10 +838,10 @@ function NotionMap({
         ))}
       </svg>
       <div className="map-legend">
-        <LegendItem color="#8fd3ff" label="主题/数据库中心" />
-        <LegendItem color="#f48fb1" label="决策信标" />
-        <LegendItem color="#7ee8d4" label="核心画像/高权重" />
-        <LegendItem color="#94a3b8" label="临时/外层信息" />
+        <LegendItem color="#8fd3ff" label="数据源与主题" />
+        <LegendItem color="#7ee8d4" label="个人画像与偏好" />
+        <LegendItem color="#f48fb1" label="项目、决策、规则" />
+        <LegendItem color="#94a3b8" label="行动、机会、待整理" />
       </div>
     </div>
   );
@@ -2552,6 +2556,37 @@ function GraphUsageStrip({ items }: { items: Array<{ label: string; value: strin
   );
 }
 
+function DataGuideSvgNode({
+  item,
+  selected,
+  onSelectNode,
+}: {
+  item: DataGuideNode;
+  selected: boolean;
+  onSelectNode: (node: AtlasNode) => void;
+}) {
+  return (
+    <g
+      className={selected ? "data-guide-node selected" : "data-guide-node"}
+      aria-label={`${item.frameTitle} · ${item.typeLabel} · ${item.node.label}`}
+      role="button"
+      tabIndex={0}
+      onClick={() => onSelectNode(item.node)}
+      onKeyDown={(event) => {
+        if (isActivationKey(event)) onSelectNode(item.node);
+      }}
+    >
+      <title>{`${item.frameTitle} · ${item.typeLabel} · ${item.node.label}`}</title>
+      <rect className="data-guide-node-card" x={item.x} y={item.y} width={item.w} height={item.h} rx="8" fill={item.color} />
+      <rect className="data-guide-node-border" x={item.x} y={item.y} width={item.w} height={item.h} rx="8" fill="none" stroke={item.color} />
+      <text x={item.x + 9} y={item.y + 15} className="data-guide-node-type">{item.typeLabel}</text>
+      <text x={item.x + 9} y={item.y + 32} className="data-guide-node-title">{item.title}</text>
+      <text x={item.x + 9} y={item.y + 48} className="data-guide-node-meta">{item.meta}</text>
+      <circle cx={item.x + item.w - 12} cy={item.y + 13} r={Math.max(3, item.signalRadius)} fill={item.color} filter="url(#dataGuideGlow)" />
+    </g>
+  );
+}
+
 interface LayoutNode {
   node: AtlasNode;
   x: number;
@@ -2577,6 +2612,45 @@ interface LayoutGroup {
   y: number;
   r: number;
   color: string;
+}
+
+type DataGuideFrameId = "source" | "profile" | "project" | "action";
+
+interface DataGuideFrame {
+  id: DataGuideFrameId;
+  title: string;
+  subtitle: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  color: string;
+  count: number;
+}
+
+interface DataGuideNode {
+  node: AtlasNode;
+  frameId: DataGuideFrameId;
+  frameTitle: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  color: string;
+  title: string;
+  typeLabel: string;
+  meta: string;
+  signalRadius: number;
+  score: number;
+}
+
+interface DataGuideEdge {
+  id: string;
+  source: DataGuideNode;
+  target: DataGuideNode;
+  path: string;
+  color: string;
+  strokeWidth: number;
 }
 
 function buildFilteredSlice(atlas: MemoryAtlas, filteredMemoryNodes: AtlasNode[], filters: AtlasFilters): FilteredAtlasSlice {
@@ -3401,6 +3475,150 @@ function buildSearchVisualRows(nodes: AtlasNode[]): {
       { label: "待行动", count: nodes.filter((node) => /todo|action|执行|继续|需要|下一步/i.test(`${node.label} ${node.statement ?? ""}`)).length },
     ],
   };
+}
+
+function buildDataGuideLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: number): {
+  frames: DataGuideFrame[];
+  nodes: DataGuideNode[];
+  edges: DataGuideEdge[];
+  visibleNodeCount: number;
+  edgeCount: number;
+} {
+  const degree = degreeMap(edges);
+  const frameTemplates: Array<Omit<DataGuideFrame, "count">> = [
+    { id: "source", title: "数据源与主题", subtitle: "来源 / 主题簇 / 分类索引", x: 36, y: 92, w: 214, h: 448, color: "#8fd3ff" },
+    { id: "profile", title: "画像与偏好", subtitle: "核心画像 / taste / 规则", x: 276, y: 92, w: 214, h: 448, color: "#7ee8d4" },
+    { id: "project", title: "项目与决策", subtitle: "项目背景 / 决策 / 工作流", x: 516, y: 92, w: 214, h: 448, color: "#f48fb1" },
+    { id: "action", title: "行动与机会", subtitle: "待整理 / ROI / 下一步", x: 756, y: 92, w: 214, h: 448, color: "#94a3b8" },
+  ];
+  const framesById = new Map(frameTemplates.map((frame) => [frame.id, frame]));
+  const frameBuckets = new Map<DataGuideFrameId, AtlasNode[]>();
+  for (const frame of frameTemplates) frameBuckets.set(frame.id, []);
+
+  const candidates = nodes
+    .filter((node) => ["theme", "tier", "category", "project", "decision", "memory"].includes(node.kind))
+    .sort((a, b) => dataGuideScore(b, degree) - dataGuideScore(a, degree) || (b.date ?? "").localeCompare(a.date ?? "") || a.label.localeCompare(b.label, "zh-CN"));
+  for (const node of candidates) {
+    frameBuckets.get(dataGuideFrameForNode(node))?.push(node);
+  }
+
+  const maxPerFrame = Math.max(8, Math.floor(limit / frameTemplates.length));
+  const layoutNodes: DataGuideNode[] = [];
+  for (const template of frameTemplates) {
+    const bucket = frameBuckets.get(template.id) ?? [];
+    const display = bucket.slice(0, maxPerFrame);
+    const columns = 2;
+    const gapX = 10;
+    const gapY = 8;
+    const cardW = (template.w - 34 - gapX) / columns;
+    const cardH = 54;
+    const startY = template.y + 78;
+    display.forEach((node, index) => {
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      const score = dataGuideScore(node, degree);
+      layoutNodes.push({
+        node,
+        frameId: template.id,
+        frameTitle: template.title,
+        x: template.x + 14 + column * (cardW + gapX),
+        y: startY + row * (cardH + gapY),
+        w: cardW,
+        h: cardH,
+        color: dataGuideNodeColor(node, template.color),
+        title: shortNodeLabel(node, 10),
+        typeLabel: dataGuideTypeLabel(node),
+        meta: dataGuideMetaLabel(node, degree.get(node.id) ?? 0),
+        signalRadius: Math.min(8, 3 + Math.sqrt(Math.max(0, score)) * 0.48),
+        score,
+      });
+    });
+  }
+
+  const byId = new Map(layoutNodes.map((node) => [node.node.id, node]));
+  const layoutEdges = edges
+    .map((edge): DataGuideEdge | null => {
+      const source = byId.get(edge.source);
+      const target = byId.get(edge.target);
+      if (!source || !target || source.frameId === target.frameId) return null;
+      const left = source.x <= target.x ? source : target;
+      const right = left === source ? target : source;
+      return {
+        id: edge.id,
+        source,
+        target,
+        path: dataGuideEdgePath(left, right),
+        color: right.color,
+        strokeWidth: Math.max(0.9, Math.min(3.2, 0.8 + edge.weight * 1.4)),
+      };
+    })
+    .filter((edge): edge is DataGuideEdge => Boolean(edge))
+    .sort((a, b) => b.strokeWidth - a.strokeWidth)
+    .slice(0, 130);
+
+  const frames = frameTemplates.map((frame) => ({ ...frame, count: frameBuckets.get(frame.id)?.length ?? 0 }));
+  return {
+    frames,
+    nodes: layoutNodes,
+    edges: layoutEdges,
+    visibleNodeCount: layoutNodes.length,
+    edgeCount: layoutEdges.length,
+  };
+}
+
+function dataGuideFrameForNode(node: AtlasNode): DataGuideFrameId {
+  if (node.kind !== "memory") return "source";
+  const tier = normalizeMemoryTier(node.memory_tier);
+  if (tier === "核心画像" || node.category === "preference" || node.category === "answering_rule" || node.category === "security_boundary") {
+    return "profile";
+  }
+  if (node.category === "decision" || node.category === "project_context" || node.category === "workflow") {
+    return "project";
+  }
+  return "action";
+}
+
+function dataGuideScore(node: AtlasNode, degree: Map<string, number>): number {
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const importance = node.importance === "高" ? 18 : node.importance === "中" ? 9 : 2;
+  const tierScore = tier === "核心画像" ? 22 : tier === "一般" ? 11 : 4;
+  const categoryScore = ["decision", "answering_rule", "project_context", "workflow", "preference"].includes(node.category ?? "") ? 18 : 0;
+  const kindScore = node.kind === "theme" ? 24 : node.kind === "project" || node.kind === "decision" ? 18 : 0;
+  const roi = (node.metrics?.roi?.leverage_score ?? 0) * 12;
+  return (degree.get(node.id) ?? 0) * 2.2 + importance + tierScore + categoryScore + kindScore + roi;
+}
+
+function dataGuideNodeColor(node: AtlasNode, frameColor: string): string {
+  if (node.kind !== "memory") return "#8fd3ff";
+  if (node.category === "decision") return "#f48fb1";
+  if (node.category === "security_boundary") return "#c7a7ff";
+  if (normalizeMemoryTier(node.memory_tier) === "核心画像") return "#7ee8d4";
+  return frameColor;
+}
+
+function dataGuideTypeLabel(node: AtlasNode): string {
+  if (node.kind !== "memory") return translateKind(node.kind);
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const category = humanCategoryLabel(node.category);
+  return truncate(tier === "未分层" ? category : `${tier} · ${category}`, 13);
+}
+
+function dataGuideMetaLabel(node: AtlasNode, degree: number): string {
+  const parts = [
+    node.date ? node.date.slice(0, 10) : "",
+    degree ? `${degree} 连` : "",
+    node.importance ? `重要性${node.importance}` : "",
+  ].filter(Boolean);
+  return truncate(parts.join(" / ") || "结构节点", 16);
+}
+
+function dataGuideEdgePath(left: DataGuideNode, right: DataGuideNode): string {
+  const x1 = left.x + left.w;
+  const y1 = left.y + left.h / 2;
+  const x2 = right.x;
+  const y2 = right.y + right.h / 2;
+  const dx = Math.max(54, (x2 - x1) * 0.45);
+  return `M${x1} ${y1} C${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
 }
 
 function buildMapLayout(nodes: AtlasNode[], edges: AtlasEdge[], limit: number): { nodes: LayoutNode[]; edges: LayoutEdge[]; groups: LayoutGroup[] } {

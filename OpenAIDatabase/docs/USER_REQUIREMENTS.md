@@ -75,7 +75,7 @@ sources on the homepage:
 2. ChatGPT
 3. Codex
 
-Selecting a source changes the analyzed dataset only. Galaxy, Notion Map, ROI
+Selecting a source changes the analyzed dataset only. Galaxy, 数据导图, ROI
 Dashboard, Obsidian Graph, Timeline, Contribution Grid, Search/Review, and
 Recommendation views must remain synchronized and share the same navigation.
 
