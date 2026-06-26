@@ -114,6 +114,43 @@ class Stage1B1ReportTests(unittest.TestCase):
 
         self.assertIn("email source URL must be safe", errors)
 
+    def test_b1_report_rejects_unsafe_input_urls_before_rendering(self) -> None:
+        unsafe_urls = [
+            "javascript:alert(1)",
+            "data:text/html,boom",
+            "file:///etc/passwd",
+            "https://user:pass@arxiv.org/abs/2401.00001",
+        ]
+        for unsafe_url in unsafe_urls:
+            with self.subTest(unsafe_url=unsafe_url):
+                payload = daily_input_report()
+                payload["daily_input"]["source_item"]["canonical_url"] = unsafe_url
+
+                package = build_b1_report_email_package(
+                    payload,
+                    generated_at="2026-07-01T05:15:00+10:00",
+                )
+
+                self.assertEqual(package["status"], "blocked")
+                self.assertIn("canonical_url must be a safe public URL", " ".join(package["blocking_reasons"]))
+                self.assertNotIn("report_markdown", package)
+                self.assertNotIn("email_html", package)
+                self.assertNotIn(unsafe_url, json.dumps(package, ensure_ascii=False))
+
+    def test_b1_report_rejects_unsafe_content_ref_urls_before_rendering(self) -> None:
+        payload = daily_input_report()
+        payload["daily_input"]["source_item"]["content_refs"][0]["uri"] = "https://user:pass@arxiv.org/pdf/2401.00001"
+
+        package = build_b1_report_email_package(
+            payload,
+            generated_at="2026-07-01T05:15:00+10:00",
+        )
+
+        self.assertEqual(package["status"], "blocked")
+        self.assertIn("content_refs[0] URL must be safe", " ".join(package["blocking_reasons"]))
+        self.assertNotIn("email_plain", package)
+        self.assertNotIn("https://user:pass@arxiv.org", json.dumps(package, ensure_ascii=False))
+
     def test_cli_build_b1_report_email_writes_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
