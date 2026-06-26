@@ -1,11 +1,11 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-EMAIL-V1-LOCAL-RUNNER-BINDING-001"
-source_snapshot_hash: "sha256:3bbadbcd959c7035ceb97b9b3b8abbb017e232fa65dec62ee1f0ea19e59a3bf9"
+as_of_event_id: "EVENT-20260626-ADP-OWNER-CENTER-ENTRY-RULE-001"
+source_snapshot_hash: "sha256:f0525836e64f22bb62ec0aa8f210cecf38d9a908833d0902a2bddf064f86af40"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-27T00:30:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:369b04d4bf6b4d5aa2a5be44513a83bf04fed3e2 PR-239 Project Governance 28221547506 success; Stage 1 bootstrap 28221543007 success; real 30-day backfill 28221543022 success; live all-ArXiv dry-run 28221543004 success"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 875
-    total_active_parameters: 875
-    checked_active_formulas: 106
-    total_active_formulas: 106
+    checked_active_parameters: 879
+    total_active_parameters: 879
+    checked_active_formulas: 107
+    total_active_formulas: 107
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 875
-    total_active_parameters: 875
+    checked_active_parameters: 879
+    total_active_parameters: 879
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,7 +60,7 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 3
-    legacy_unbound_events: 119
+    legacy_unbound_events: 120
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"

@@ -3202,3 +3202,18 @@ None for this new project baseline.
 - Rollback: Revert this binding receipt event, manifest, `VERSION_MATRIX.current_iteration`, generated status refresh, and this ledger entry; no runtime production state was changed.
 - Evidence: `governance/run_manifests/ADP-EMAIL-V1-LOCAL-RUNNER-BINDING-20260626.json`; `https://github.com/LinzeColin/CodexProject/pull/239`.
 - Next step: Observe the next scheduled real SMTP delivery for Email V1 without sending a duplicate 2026-06-26 email.
+
+### `ITER-20260626-ADP-OWNER-CENTER-ENTRY-RULE`
+
+- Timestamp: `2026-06-26T16:55:00+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from user scope correction, PR #240 draft path review, and ADP project rules.
+- Status: governance rule recorded, PR/CI pending.
+- Task IDs: `OWNER-CENTER-ENTRY-RULE`, `S2PIT01`, `S2PMT06`, `EMAIL_LEARNING_V1`.
+- Goal: Record that ADP owner-facing status, mail, queue, review, action, and ROI summaries must use GitHub-rendered Markdown as the primary human-readable surface, with a shallow `arxiv-daily-push/用户中心/` entry rather than requiring the owner to navigate local `.adp` JSON files or deep `docs/owner/...` paths.
+- Decisions: Local `.adp` runtime files, SMTP reports, run JSON, and candidate queues remain valid evidence sources only. Owner-facing GitHub pages must directly summarize sent, blocked/not sent, and queued states. Deep `docs/owner/...` pages may remain generated/internal references or pointers, but cannot be the only owner route.
+- Boundaries: This run does not edit PR #240 owner pages, replay email, send SMTP, enable scheduler, upload Release assets, change public schema/DB/production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: PR #240 still needs revision before ready because its current draft patch keeps the owner-facing console under deep `docs/owner/...` paths and uses local absolute paths as user navigation.
+- Rollback: Revert this AGENTS rule, phase record, manifest, `VERSION_MATRIX.current_iteration`, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/AGENTS.md`; `arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md`; `governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json`.
+- Next step: Revise or review PR #240 so the actual owner pages use `arxiv-daily-push/用户中心/` as the shallow GitHub owner entry and summarize runtime evidence directly.
