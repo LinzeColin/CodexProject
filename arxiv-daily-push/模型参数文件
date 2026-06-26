@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次 A-001 恢复路径安全门新增本地证据模型 `MOD-ADP-110` / `adp-s2pmt02-restore-path-safety-a001-v1`，不新增生产排序算法、收益评分公式或邮件 runtime 行为。
-- A-001 的关键可验证字段是四个真实 restore probe、预期阻断原因、目标文件是否创建、原目标库 SHA-256 是否保留、以及生产恢复/SMTP/scheduler/Release/Schema/队列副作用是否全为 false。
-- A-001 只刷新 P0 receipt 路由，不关闭 P0，不执行生产恢复，不启用生产。
+- 本次 A-002 恢复原子替换门新增本地证据模型 `MOD-ADP-111` / `adp-s2pmt02-restore-atomic-replacement-a002-v1`，不新增生产排序算法、收益评分公式或邮件 runtime 行为。
+- A-002 的关键可验证字段是三个真实 backup/restore probe、目标库 SHA-256 是否匹配备份、覆盖恢复前旧目标备份是否保留、无效覆盖时原目标库 SHA-256 是否保留、临时文件是否清理、以及生产恢复/SMTP/scheduler/Release/Schema/队列副作用是否全为 false。
+- A-002 只刷新 P0 receipt 路由，不关闭 P0，不执行生产恢复，不启用生产。
 
 ## 摘要
 
@@ -13,13 +13,13 @@
 - current_stage: `S2`
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
-- active_model_count: `55`
-- active_formula_count: `57`
-- active_parameter_count: `379`
+- active_model_count: `56`
+- active_formula_count: `58`
+- active_parameter_count: `384`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `26`
+- evidence_ref_count: `27`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -82,6 +82,22 @@
 | 必须为 false 的副作用 | `production_side_effects_enabled`、`production_restore_executed`、`real_smtp_sent`、`real_scheduler_installed`、`real_release_uploaded`、`public_schema_changed`、`queue_mutation_allowed`、`db_migration_executed` |
 | 新增参数 | `PARAM-ADP-935` required probes；`PARAM-ADP-936` expected reasons；`PARAM-ADP-937` required gates；`PARAM-ADP-938` production false flags；`PARAM-ADP-939` finding id `A-001` |
 | 禁止误读 | 本模型只刷新 P0 证据路由，不关闭 A-001 或 P0，不声明独立复审通过，不执行生产恢复，不启用 SMTP、scheduler、Release、DB/schema、队列、ranking、source adapter 或 Stage2 production |
+
+## S2PMT02 A-002 恢复原子替换门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-111` / `adp-s2pmt02-restore-atomic-replacement-a002-v1` |
+| 公式 | `FORM-ADP-113` |
+| 参数版本 | `adp-s2pmt02-restore-atomic-replacement-a002-parameters-v1` |
+| 适用范围 | P0 A-002 复审证据刷新；验证恢复写入只有在备份完整、SQLite 检查通过、覆盖前旧目标已备份时才替换目标库 |
+| 数据来源 | [stage2_atomic_recovery.py](src/arxiv_daily_push/stage2_atomic_recovery.py)、[stage1_runtime.py](src/arxiv_daily_push/stage1_runtime.py)、[恢复原子替换扫描](用户中心/恢复原子替换扫描.md) |
+| 通过公式 | `restore_atomic_replacement_ready = required_probe_coverage && valid_restore_passed && valid_overwrite_created_previous_backup && invalid_restore_preserved_target && temp_files_cleaned && no_production_side_effect` |
+| 必填探针 | `valid_restore_new_target`、`valid_overwrite_with_previous_backup`、`invalid_overwrite_preserves_target` |
+| 关键核对 | 新目标恢复后目标 SHA-256 必须等于备份；覆盖恢复必须先产生旧目标备份且旧目标备份 SHA-256 与覆盖前一致；无效覆盖恢复必须 blocked 且原目标 SHA-256 不变；临时恢复文件残留必须为 0 |
+| 必须为 false 的副作用 | `production_side_effects_enabled`、`production_restore_executed`、`real_smtp_sent`、`real_scheduler_installed`、`real_release_uploaded`、`public_schema_changed`、`queue_mutation_allowed`、`db_migration_executed` |
+| 新增参数 | `PARAM-ADP-940` required probes；`PARAM-ADP-941` required gates；`PARAM-ADP-942` production false flags；`PARAM-ADP-943` finding id `A-002`；`PARAM-ADP-944` task id |
+| 禁止误读 | 本模型只刷新 P0 证据路由，不关闭 A-002 或 P0，不声明独立复审通过，不执行生产恢复，不启用 SMTP、scheduler、Release、DB/schema、队列、ranking、source adapter 或 Stage2 production |
 
 ## S2PAT05 C-010 功能任务测试证据追踪链门
 

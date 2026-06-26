@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次新增 `S2PMT02-RESTORE-PATH-SAFETY-A001` 专项证据：把 P0 A-001 从 aggregate atomic recovery evidence 升级为真实 Stage 1 restore path probe。
-- A-001 当前证据覆盖相对路径穿越、绝对路径逃逸、符号链接逃逸和阻断时保留原目标库字节，并在 [恢复路径安全扫描](用户中心/恢复路径安全扫描.md) 中公开。
-- 本条只刷新 P0 复审证据路由，不关闭 A-001 或 P0，不执行生产恢复，不启用 SMTP、scheduler、Release、队列变更、公共 Schema 或 Stage2 生产验收。
+- 本次新增 `S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002` 专项证据：把 P0 A-002 从 aggregate atomic recovery evidence 升级为真实 Stage 1 backup/restore probe。
+- A-002 当前证据覆盖新目标有效恢复、覆盖恢复保留旧目标备份、无效覆盖恢复保留原目标和临时文件清理，并在 [恢复原子替换扫描](用户中心/恢复原子替换扫描.md) 中公开。
+- 本条只刷新 P0 复审证据路由，不关闭 A-002 或 P0，不执行生产恢复，不启用 SMTP、scheduler、Release、队列变更、公共 Schema 或 Stage2 生产验收。
 
 ## 摘要
 
@@ -14,11 +14,11 @@
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
 - progress: `80.95%`
-- capability_count: `17`
+- capability_count: `18`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `27`
+- evidence_ref_count: `28`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -44,6 +44,7 @@
 | FEAT-ADP-015 | S2PAT05 C-010 功能任务测试证据追踪链 | completed | C-010 证据现在使用专用 report/validator/test 和 GitHub 浅层用户中心页面，要求 `TRACEABILITY_MATRIX.csv` 全量链路具备需求、任务、验收、代码、测试、运行证据和状态，并提供可点击追踪入口。 | EXTRACTED |
 | FEAT-ADP-016 | S2PAT05 C-011 旧邮件标识兼容扫描 | completed | C-011 证据现在使用专用 scan report/validator/test 和 GitHub 浅层用户中心页面，要求旧 B1-B5/五邮件/旧英文可见邮件标识只出现在允许分类中，活跃旧 runtime/owner/unclassified 命中为 0。 | EXTRACTED |
 | FEAT-ADP-017 | S2PMT02 A-001 恢复路径安全扫描 | completed | A-001 证据现在使用真实 Stage 1 restore path probes、专用 report/validator/test 和 GitHub 浅层用户中心页面，要求相对路径穿越、绝对路径逃逸、符号链接逃逸全部阻断，非法恢复覆盖时原目标库字节保持不变，生产恢复和副作用标志保持 false。 | EXTRACTED |
+| FEAT-ADP-018 | S2PMT02 A-002 恢复原子替换扫描 | completed | A-002 证据现在使用真实 Stage 1 backup/restore probes、专用 report/validator/test 和 GitHub 浅层用户中心页面，要求有效新目标恢复、有效覆盖恢复保留旧目标备份、无效覆盖恢复保留原目标、临时文件清理和生产副作用 false。 | EXTRACTED |
 
 ## V7.2 CURRENT 产品合同
 
@@ -91,6 +92,7 @@
 | EVID-ADP-TRACEABILITY-MATRIX | file | arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
 | EVID-ADP-C010-TRACEABILITY-PAGE | file | arxiv-daily-push/用户中心/功能任务测试证据追踪链.md | EXTRACTED |
 | EVID-ADP-A001-RESTORE-PATH-SAFETY | file | arxiv-daily-push/用户中心/恢复路径安全扫描.md | EXTRACTED |
+| EVID-ADP-A002-RESTORE-ATOMIC-REPLACEMENT | file | arxiv-daily-push/用户中心/恢复原子替换扫描.md | EXTRACTED |
 | EVID-ADP-ASSURANCE-STATUS | file | arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
 | EVID-ADP-DELIVERY-TASKS | file | arxiv-daily-push/docs/governance/delivery_tasks.yaml | EXTRACTED |
 | EVID-ADP-DEVELOPMENT-EVENTS | file | arxiv-daily-push/docs/governance/development_events.jsonl | EXTRACTED |

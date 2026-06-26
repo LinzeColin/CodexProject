@@ -1,0 +1,131 @@
+{
+  "acceptance_id": "ACC-S2PMT02-ATOMIC-RECOVERY",
+  "blocking_reasons": [],
+  "code_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+  ],
+  "current_pointer_changed": false,
+  "db_migration_executed": false,
+  "finding_id": "A-002",
+  "gates": {
+    "invalid_restore_preserved_target": true,
+    "no_production_side_effect": true,
+    "required_probe_coverage": true,
+    "temp_files_cleaned": true,
+    "valid_overwrite_created_previous_backup": true,
+    "valid_restore_passed": true
+  },
+  "generated_at": "2026-06-27T08:34:18+10:00",
+  "manifest_id": "ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627",
+  "model_id": "adp-s2pmt02-restore-atomic-replacement-a002-v1",
+  "notes": [
+    "Uses real Stage 1 create_runtime_backup and restore_runtime_backup probes.",
+    "Persisted probes intentionally omit local temporary filesystem paths.",
+    "This evidence refresh does not close A-002 and does not enable production restore."
+  ],
+  "owner_page": "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT02",
+  "phase_record": "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
+  "probe_count": 3,
+  "probes": [
+    {
+      "blocking_reasons": [],
+      "db_migration_executed": false,
+      "observed_status": "pass",
+      "previous_target_backup_created": false,
+      "previous_target_backup_sha256_preserved": false,
+      "probe_id": "valid_restore_new_target",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "restored_database_ready": true,
+      "storage_report_status": "pass",
+      "target_exists_after": true,
+      "target_sha256": "e8c3d56f582d3bcabc6863690945d042c7b1093577d655f19a83a6d623cd7561",
+      "target_sha256_changed_from_before": false,
+      "target_sha256_matches_backup": true,
+      "target_sha256_preserved": false,
+      "temp_files_remaining": 0
+    },
+    {
+      "blocking_reasons": [],
+      "db_migration_executed": false,
+      "observed_status": "pass",
+      "previous_target_backup_created": true,
+      "previous_target_backup_sha256_preserved": true,
+      "probe_id": "valid_overwrite_with_previous_backup",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "restored_database_ready": true,
+      "storage_report_status": "pass",
+      "target_exists_after": true,
+      "target_sha256": "e8c3d56f582d3bcabc6863690945d042c7b1093577d655f19a83a6d623cd7561",
+      "target_sha256_changed_from_before": true,
+      "target_sha256_matches_backup": true,
+      "target_sha256_preserved": false,
+      "temp_files_remaining": 0
+    },
+    {
+      "blocking_reasons": [
+        "restored database inspection failed: file is not a database"
+      ],
+      "db_migration_executed": false,
+      "observed_status": "blocked",
+      "previous_target_backup_created": false,
+      "previous_target_backup_sha256_preserved": false,
+      "probe_id": "invalid_overwrite_preserves_target",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "restored_database_ready": false,
+      "storage_report_status": "pass",
+      "target_exists_after": true,
+      "target_sha256": "11301edd07bf21edf34831f55c4a2091c9455f7a2d11282b25ea54c20597468d",
+      "target_sha256_changed_from_before": false,
+      "target_sha256_matches_backup": false,
+      "target_sha256_preserved": true,
+      "temp_files_remaining": 0
+    }
+  ],
+  "production_restore_executed": false,
+  "production_side_effects_enabled": false,
+  "public_schema_changed": false,
+  "queue_mutation_allowed": false,
+  "real_release_uploaded": false,
+  "real_scheduler_installed": false,
+  "real_smtp_sent": false,
+  "receipt_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md"
+  ],
+  "required_probes": [
+    "valid_restore_new_target",
+    "valid_overwrite_with_previous_backup",
+    "invalid_overwrite_preserves_target"
+  ],
+  "restore_atomic_replacement_hash": "sha256:3a15616ea06f4fcb318d3dd4fb7fb5f0320926b787415bab421042672c9b8163",
+  "schema_version": 1,
+  "stage2_integrated_production_accepted": false,
+  "status": "pass",
+  "task_id": "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002",
+  "test_refs": [
+    "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+  ],
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

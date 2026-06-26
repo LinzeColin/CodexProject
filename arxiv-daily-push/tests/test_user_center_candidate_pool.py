@@ -20,6 +20,7 @@ DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
 RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
+RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件"
@@ -161,6 +162,27 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[恢复路径安全扫描](./恢复路径安全扫描.md)", readme)
+
+    def test_restore_atomic_replacement_page_exposes_a002_current_evidence(self):
+        page = RESTORE_ATOMIC_REPLACEMENT_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 恢复原子替换扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("P0 `A-002`", page)
+        self.assertIn("新目标有效恢复 | 已验证", page)
+        self.assertIn("覆盖恢复保留旧目标备份 | 已验证", page)
+        self.assertIn("无效覆盖恢复保留原目标 | 已验证", page)
+        self.assertIn("临时恢复文件残留 | 0", page)
+        self.assertIn(
+            "[A-002 运行清单](../../governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json)",
+            page,
+        )
+        self.assertIn("[A-002 阶段记录](../docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md)", page)
+        self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[恢复原子替换扫描](./恢复原子替换扫描.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (
