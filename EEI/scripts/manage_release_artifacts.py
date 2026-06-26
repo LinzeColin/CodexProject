@@ -36,7 +36,7 @@ CHECKSUM_EXCLUDES = {str(CHECKSUMS)}
 
 def run_git(*args: str) -> str:
     completed = subprocess.run(
-        ["git", *args],
+        ["git", "-c", "core.quotepath=false", *args],
         cwd=ROOT,
         check=True,
         text=True,

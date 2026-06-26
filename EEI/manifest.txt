@@ -267,9 +267,12 @@ docs/governance/TRACEABILITY_MATRIX.csv
 docs/governance/VERSION_MATRIX.yaml
 docs/governance/delivery_tasks.yaml
 docs/governance/development_events.jsonl
+docs/governance/events.jsonl
 docs/governance/formula_registry.yaml
 docs/governance/model_registry.yaml
 docs/governance/parameter_registry.csv
+docs/governance/project.yaml
+docs/governance/roadmap.yaml
 docs/phase/MVP_DEVELOPMENT_RECORD.md
 docs/phase/V5_TASK_PACK_SYNCHRONIZATION.md
 infra/db/migrations/0001_core_domain/down.sql
@@ -421,6 +424,7 @@ tests/integration/test_database_migrations.py
 tests/unit/test_a202_signed_intake_preflight.py
 tests/unit/test_api_health.py
 tests/unit/test_brand_clearance.py
+tests/unit/test_clean_room_release_paths.py
 tests/unit/test_external_release_evidence_bundle.py
 tests/unit/test_gold_quality_evaluation.py
 tests/unit/test_model_config_apply.py
@@ -444,3 +448,6 @@ wireframes/recursive_focus_explorer.svg
 wireframes/visual_first_workspace.png
 wireframes/visual_first_workspace.svg
 wireframes/visual_first_workspace_screenshot.png
+功能清单
+开发记录
+模型参数文件
