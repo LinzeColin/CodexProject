@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-本次新增 `S2PLT01-REPLAY-PAYLOAD-EXECUTION` 本地 no-production 执行包：它读取显式 30 天 replay、120 个 M1-M4 `EMAIL_LEARNING_V1` no-send 邮件 preview、D1-D4 terminal source-state 记录，输出 validated payload、entry precheck、blocking reasons 和 `execution_hash`；总状态仍因 inherited V7.1 P0/P1 保持 blocked。
+本次新增 `S2PLT01-INDEPENDENT-REPLAY-REVIEW` 本地 no-production 独立复审 receipt：它读取 S2PLT01 replay payload execution package，验证 reviewer identity/role/independence、CI/evidence refs、execution report binding、retained inherited P0/P1 blockers 和 `review_hash`；review package 可通过，但总状态仍因 inherited V7.1 P0/P1 保持 blocked。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT01 replay payload execution package as local no-production evidence only, continue S2PLT01 only under blocked/no-production boundaries, and require S2PMT07 independent review before any inherited P0/P1 closure or production acceptance claim.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT01 independent replay review receipt as local no-production evidence only, keep S2PLT01 blocked until inherited P0/P1 and final production stop gates close, and require S2PMT07 independent review before any inherited P0/P1 closure or production acceptance claim.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -34,7 +34,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PLT01`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT01-30D`
-- unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 independent review, and final production stop gates still block S2PLT01 acceptance and integrated production acceptance.
+- unblock_condition: S2PLT01 independent replay review receipt can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 independent final review, and final production stop gates still block S2PLT01 acceptance and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
@@ -52,18 +52,18 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT01 replay payload execution package as local no-production evidence only, continue S2PLT01 under blocked/no-production boundaries, and require S2PMT07 independent review before inherited P0/P1 closure. | 继续 S2PLT01 no-production replay/evidence work under V7.2 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may overstate local evidence as production acceptance, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT01 independent replay review receipt as local no-production evidence only, keep S2PLT01 blocked under inherited P0/P1 boundaries, and require S2PMT07 independent final review before inherited P0/P1 closure. | 继续 S2PLT01 no-production replay/evidence work under V7.2 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may overstate local evidence as production acceptance, increasing contract drift. |
 
 ## 10. Current Blockers
 
-1. S2PMT07 independent review, inherited P0/P1 closure proof, S2PLT04 completion, S2PLT01 independent replay review, governance validator, lean render proof, and no-production-side-effect evidence
+1. S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
 2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
-- evidence_required: S2PMT07 independent review, inherited P0/P1 closure proof, S2PLT04 completion, S2PLT01 independent replay review, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 S2PLT01 replay payload execution package 误读为 S2PLT01 acceptance 或 production replay、绕过 S2PMT07 独立复审或生产 stop gate
+- evidence_required: S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
+- principal_risks: 将 S2PLT01 independent replay review receipt 误读为 S2PLT01 acceptance 或 production replay、绕过 S2PMT07 独立复审或生产 stop gate
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `102`
 - total_formulas: `104`
 - active_formulas: `104`
-- total_parameters: `872`
-- active_parameters: `855`
+- total_parameters: `873`
+- active_parameters: `856`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT01_REPLAY_PAYLOAD_EXECUTION_NO_PRODUCTION`
+- release_gate: `S2PLT01_INDEPENDENT_REPLAY_REVIEW_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-26T21:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT01_REPLAY_PAYLOAD_EXECUTION_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT01_INDEPENDENT_REPLAY_REVIEW_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT01`
-- reason: Keep S2PLT01 fail-closed until inherited P0/P1, S2PLT04, S2PMT07, and independent replay review are proven under V7.2 blocked boundaries.
+- reason: Keep S2PLT01 fail-closed until inherited P0/P1, S2PLT04, S2PMT07 independent final review, and final production stop gates are proven under V7.2 blocked boundaries.
