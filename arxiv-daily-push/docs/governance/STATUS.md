@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:cc80113ed025ca006700ac2791376d31f47b17a3b8c53f9daffeabf5967d03de`
-- snapshot_event_time: `2026-06-27T01:03:21+10:00`
+- source_snapshot_hash: `sha256:2547d241e796f6302d70ae643cb384b94fd0599c11136cc8cfbb8b297975f71e`
+- snapshot_event_time: `2026-06-27T01:24:53+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT05_B009_FAULT_INJECTION_LOCAL_VALIDATION_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `106 / 108 / 914`
-- Active formulas/parameters: `108 / 897`
-- Machine checked formulas/parameters: `108 / 897`
+- Phase/Gate: `S2PM / S2PMT05_B010_TIME_POLICY_LOCAL_VALIDATION_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `106 / 108 / 919`
+- Active formulas/parameters: `108 / 902`
+- Machine checked formulas/parameters: `108 / 902`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT05_B009_FAULT_INJECTION_LOCAL_VALIDATION_NO_PRODUCTION`
+- Release gate: `S2PMT05_B010_TIME_POLICY_LOCAL_VALIDATION_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
-- Pending/stale events: `173`
+- Pending/stale events: `174`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `134`
+- Legacy unbound events: `135`
 - Unresolved fact IDs: `0`

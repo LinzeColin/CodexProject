@@ -2190,6 +2190,24 @@ tasks:
     completed_version: "0.23.1"
     unknown_task_ids: []
 
+  - task_id: "S2PMT05-TIME-POLICY-B010"
+    phase: "S2PM"
+    objective: "Remediate inherited B-010 locally by adding a structured DST, misfire, sleep catch-up, and NTP clock-jump gate to S2PMT05."
+    scope: "Time-policy fixture, required Australia/Sydney schedule cases, structured schedule policy, local business-date cycle IDs plus UTC watermarks, DST fold/gap handling, 3600-second misfire grace, one-cycle catch-up bound, 8h sleep recovery, NTP backward/forward clock-jump handling, no duplicate M4 watermark, focused tests, governance registry refresh, phase record, and run manifest."
+    non_scope: "No scheduler install, no launchd bootstrap, no real catch-up trigger, no real SMTP send, no Release, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT05", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py", "arxiv-daily-push/tests/test_stage2_stress_e2e.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md", "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json"]
+    acceptance_ids: ["ACC-S2PMT05-STRESS-E2E"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b010_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py scripts/lean_governance.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b010_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT05 tests: 16 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 543 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 / reference_issue_count 0", "YAML/JSON/JSONL/CSV parse: OK", "git diff --check: PASS", "production-side-effect forbidden scan: OK", "full semantic extractor: NOT COMPLETED after local interrupt at >90 seconds during full-table AST parsing; changed-only semantic governance passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md", "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json", "arxiv-daily-push/tests/test_stage2_stress_e2e.py"]
+    risk: "B-010 local evidence can be misread as real scheduler readiness, real catch-up execution, inherited P0/P1 closure, S2PMT07 pass, or production readiness; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT05 time-policy code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
   - task_id: "S2PMT05-CAPACITY-BASELINE-B006"
     phase: "S2PM"
     objective: "Remediate inherited B-006 locally by adding a formal load, stress, spike, soak, and capacity baseline gate to S2PMT05."

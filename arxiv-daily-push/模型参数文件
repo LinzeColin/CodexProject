@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `22`
+- evidence_ref_count: `23`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -120,6 +120,18 @@
 | B-009 判定 | 故障注入必须覆盖 ENOSPC、只读目录、SQLITE_BUSY、损坏 JSON 缓存、损坏 PDF 产物、损坏备份 manifest、备份路径冲突；每类故障必须 fail-closed，保留 durable evidence，不提交半成品，并给出明确恢复状态与动作 |
 | 禁止动作 | 不信任损坏产物、不提交 partial artifact、不执行生产 restore、不发布冲突备份、不发送 SMTP、不安装/启用 scheduler、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
 | 证据入口 | [PHASE_S2PMT05_FAULT_INJECTION_B009.md](docs/phase_records/PHASE_S2PMT05_FAULT_INJECTION_B009.md)；[ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json](../governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json) |
+
+## S2PMT05 本地时间策略与补跑门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-098` / `adp-s2pmt05-stress-fault-time-e2e-v1` |
+| 公式 | `FORM-ADP-100` |
+| 参数 | `PARAM-ADP-915` / `S2PMT05_SCHEDULE_LOCAL_TIME`; `PARAM-ADP-916` / `S2PMT05_MISFIRE_GRACE_SECONDS`; `PARAM-ADP-917` / `S2PMT05_SLEEP_MISFIRE_HOURS`; `PARAM-ADP-918` / `S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE`; `PARAM-ADP-919` / `S2PMT05_REQUIRED_TIME_POLICY_CASES` |
+| 新增门 | `required_time_policy_cases_present`; `structured_schedule_policy_present`; `dst_gap_runs_after_gap`; `misfire_within_grace_runs_once`; `sleep_8h_catchup_bounded`; `ntp_backward_within_tolerance_allows`; `ntp_forward_over_tolerance_blocks`; `no_duplicate_m4_watermark` |
+| B-010 判定 | 时间策略必须把 Australia/Sydney 05:00 本地日程、3600 秒 misfire grace、最多 1 次补跑、DST backward fold、DST forward gap、未来 heartbeat、NTP 向后/向前跳、休眠 8 小时补跑和 M4 去重水位组成可验证矩阵 |
+| 禁止动作 | 不安装/启用 scheduler、不发送 SMTP、不触发真实补跑、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
+| 证据入口 | [PHASE_S2PMT05_TIME_POLICY_B010.md](docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md)；[ADP-S2PMT05-TIME-POLICY-B010-20260627.json](../governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json) |
 
 ## S2PMT05 本地结果有效性门
 

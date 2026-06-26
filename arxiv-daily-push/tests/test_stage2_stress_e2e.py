@@ -7,19 +7,26 @@ from arxiv_daily_push.stage2_stress_e2e import (
     S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS,
     S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS,
     S2PMT05_CAPACITY_BASELINE_MULTIPLIERS,
+    S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE,
     S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
+    S2PMT05_MISFIRE_GRACE_SECONDS,
     S2PMT05_REPLAY_DAYS_REQUIRED,
     S2PMT05_REQUIRED_FAULTS,
     S2PMT05_REQUIRED_FAULT_RECOVERY_STATES,
     S2PMT05_REQUIRED_FINDINGS,
     S2PMT05_REQUIRED_MAIL_PRODUCTS,
     S2PMT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
+    S2PMT05_REQUIRED_TIME_POLICY_CASES,
+    S2PMT05_SCHEDULE_LOCAL_TIME,
     S2PMT05_SOAK_HOURS_REQUIRED,
+    S2PMT05_SLEEP_MISFIRE_HOURS,
     build_35_day_e2e_fixture,
     build_capacity_baseline_model,
     build_fault_injection_matrix,
     build_result_validity_fixture,
     build_s2pmt05_report,
+    build_time_policy_cases,
+    build_time_schedule_policy,
     build_workload_profile,
     evaluate_backpressure_policy,
     evaluate_capacity_baseline_model,
@@ -27,6 +34,7 @@ from arxiv_daily_push.stage2_stress_e2e import (
     evaluate_fault_injection_matrix,
     evaluate_load_stress_spike_soak,
     evaluate_result_validity,
+    evaluate_time_policy_cases,
     simulate_dual_scheduler_race,
     simulate_smtp_crash_window,
     validate_s2pmt05_report,
@@ -137,14 +145,54 @@ class Stage2StressE2ETests(unittest.TestCase):
 
     def test_dst_and_clock_skew_policy_blocks_future_heartbeat_and_handles_folds(self) -> None:
         policy = evaluate_dst_clock_policy()
+        cases = {row["case_id"]: row for row in policy["cases"]}
 
         self.assertEqual(policy["status"], "pass")
         self.assertEqual(policy["timezone"], "Australia/Sydney")
         self.assertEqual(policy["clock_skew_tolerance_seconds"], S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS)
         self.assertEqual(policy["future_heartbeat_seconds"], S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS + 1)
         self.assertEqual(policy["future_heartbeat_action"], "block_until_owner_review")
+        self.assertEqual(policy["schedule_policy"]["local_time"], S2PMT05_SCHEDULE_LOCAL_TIME)
+        self.assertEqual(policy["schedule_policy"]["misfire_grace_seconds"], S2PMT05_MISFIRE_GRACE_SECONDS)
+        self.assertEqual(policy["schedule_policy"]["sleep_misfire_hours"], S2PMT05_SLEEP_MISFIRE_HOURS)
+        self.assertEqual(policy["schedule_policy"]["catch_up_max_runs_per_cycle"], S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE)
+        self.assertEqual(set(policy["required_time_policy_cases"]), set(S2PMT05_REQUIRED_TIME_POLICY_CASES))
+        self.assertEqual(set(cases), set(S2PMT05_REQUIRED_TIME_POLICY_CASES))
+        self.assertEqual(cases["MISFIRE_WITHIN_GRACE"]["misfire_lag_seconds"], 1800)
+        self.assertEqual(cases["MISFIRE_WITHIN_GRACE"]["catchup_run_count"], S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE)
+        self.assertEqual(cases["SLEEP_MISSED_8H"]["missed_run_hours"], S2PMT05_SLEEP_MISFIRE_HOURS)
+        self.assertEqual(cases["SLEEP_MISSED_8H"]["duplicate_m4_count"], 0)
+        self.assertEqual(cases["NTP_BACKWARD_WITHIN_TOLERANCE"]["action"], "ALLOW_MONOTONIC_LEASE_KEEP_UTC_AUDIT")
+        self.assertEqual(cases["NTP_FORWARD_GT_TOLERANCE"]["action"], "CLOCK_TIMEZONE_FAIL")
         self.assertTrue(policy["checks"]["dst_fold_records_offset"])
+        self.assertTrue(policy["checks"]["dst_gap_runs_after_gap"])
+        self.assertTrue(policy["checks"]["misfire_within_grace_runs_once"])
+        self.assertTrue(policy["checks"]["sleep_8h_catchup_bounded"])
+        self.assertTrue(policy["checks"]["ntp_backward_within_tolerance_allows"])
+        self.assertTrue(policy["checks"]["ntp_forward_over_tolerance_blocks"])
         self.assertTrue(policy["checks"]["catchup_is_bounded"])
+        self.assertTrue(policy["checks"]["no_duplicate_m4_watermark"])
+        self.assertTrue(policy["checks"]["scheduler_side_effects_disabled"])
+
+    def test_time_policy_blocks_missing_sleep_ntp_and_unbounded_catchup(self) -> None:
+        schedule_policy = build_time_schedule_policy()
+        cases = [
+            dict(row)
+            for row in build_time_policy_cases()
+            if row["case_id"] not in {"SLEEP_MISSED_8H", "NTP_FORWARD_GT_TOLERANCE"}
+        ]
+        for row in cases:
+            if row["case_id"] == "MISFIRE_WITHIN_GRACE":
+                row["catchup_run_count"] = S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE + 1
+
+        evaluation = evaluate_time_policy_cases(cases=cases, schedule_policy=schedule_policy)
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertFalse(evaluation["checks"]["required_time_policy_cases_present"])
+        self.assertFalse(evaluation["checks"]["ntp_forward_over_tolerance_blocks"])
+        self.assertFalse(evaluation["checks"]["misfire_within_grace_runs_once"])
+        self.assertFalse(evaluation["checks"]["sleep_8h_catchup_bounded"])
+        self.assertFalse(evaluation["checks"]["catchup_is_bounded"])
 
     def test_35_day_e2e_fixture_covers_daily_weekly_monthly_review_action_roi(self) -> None:
         fixture = build_35_day_e2e_fixture()
@@ -246,6 +294,11 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertEqual(report["findings_covered"]["B-009"], ["fault_injection"])
         self.assertTrue(report["fault_injection"]["checks"]["corrupt_pdf_rebuilds_from_source"])
         self.assertTrue(report["fault_injection"]["checks"]["backup_faults_block_restore_or_publish"])
+        self.assertTrue(report["gates"]["dst_clock_policy"])
+        self.assertEqual(report["findings_covered"]["B-010"], ["dst_clock_policy"])
+        self.assertTrue(report["dst_clock_policy"]["checks"]["misfire_within_grace_runs_once"])
+        self.assertTrue(report["dst_clock_policy"]["checks"]["sleep_8h_catchup_bounded"])
+        self.assertTrue(report["dst_clock_policy"]["checks"]["ntp_forward_over_tolerance_blocks"])
         self.assertTrue(report["gates"]["result_validity_semantic_evidence"])
         self.assertEqual(report["findings_covered"]["B-013"], ["result_validity_semantic_evidence"])
         self.assertTrue(report["backpressure_degradation"]["checks"]["covers_2x_and_5x_peak_profiles"])
