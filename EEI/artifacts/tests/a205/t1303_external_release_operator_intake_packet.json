@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-26T03:40:31Z",
+  "generated_at": "2026-06-26T04:04:07Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -101,6 +101,53 @@
     "A027_relationship_extraction_production_gold_set",
     "A209_24h_operator_soak_finalization"
   ],
+  "operator_submission_targets": {
+    "A026_entity_resolution_production_gold_set": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a026_a027/",
+        "operator_inputs/a026_a027/",
+        "work/operator_inputs/a026_a027/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a026_a027/production-gold-labels.json"
+    },
+    "A027_relationship_extraction_production_gold_set": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a026_a027/",
+        "operator_inputs/a026_a027/",
+        "work/operator_inputs/a026_a027/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a026_a027/production-gold-labels.json"
+    },
+    "A202_source_license_passage_owner_legal_release": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a202/",
+        "operator_inputs/a202/",
+        "work/operator_inputs/a202/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+    },
+    "A209_24h_operator_soak_finalization": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a209/",
+        "operator_inputs/a209/",
+        "work/operator_inputs/a209/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json"
+    },
+    "A210_brand_legal_market_clearance_or_risk_waiver": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a210/",
+        "operator_inputs/a210/",
+        "work/operator_inputs/a210/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a210/signed-brand-clearance.json"
+    }
+  },
   "packet_status": "WAITING_FOR_OPERATOR_INPUTS",
   "post_submission_commands": [
     "make generate-external-release-evidence-bundle validate-external-release-evidence-bundle",
@@ -114,6 +161,12 @@
   "required_operator_inputs": [
     {
       "acceptance_id": "A202",
+      "allowed_submission_paths": [
+        "artifacts/operator_inputs/a202/",
+        "operator_inputs/a202/",
+        "work/operator_inputs/a202/",
+        "external operator file outside repository"
+      ],
       "blocking_reason": "signed A202 source/license/passage/owner/legal release is not supplied; operator review packet is present for review",
       "completion_criteria": [
         "source-license reviews cover every required Golden Vertical source anchor",
@@ -128,6 +181,7 @@
         "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
         "sha256": "af367cbd1adf8eb75f8f52c19a997cac3fce7d06690ffc8ff999a96ddddd0236"
       },
+      "submission_target": "artifacts/operator_inputs/a202/signed-release-decision-intake.json",
       "supporting_sources": [
         {
           "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
@@ -139,6 +193,12 @@
     },
     {
       "acceptance_id": "A210",
+      "allowed_submission_paths": [
+        "artifacts/operator_inputs/a210/",
+        "operator_inputs/a210/",
+        "work/operator_inputs/a210/",
+        "external operator file outside repository"
+      ],
       "blocking_reason": "brand public release clearance or risk waiver is not complete",
       "completion_criteria": [
         "every required brand surface and jurisdiction is reviewed",
@@ -152,12 +212,19 @@
         "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
         "sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8"
       },
+      "submission_target": "artifacts/operator_inputs/a210/signed-brand-clearance.json",
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
       "validation_command": "make generate-brand-clearance-artifact validate-brand-clearance"
     },
     {
       "acceptance_id": "A026",
+      "allowed_submission_paths": [
+        "artifacts/operator_inputs/a026_a027/",
+        "operator_inputs/a026_a027/",
+        "work/operator_inputs/a026_a027/",
+        "external operator file outside repository"
+      ],
       "blocking_reason": "entity-resolution production gold threshold is not met",
       "completion_criteria": [
         "at least 50 operator-supplied non-fixture entity-resolution cases",
@@ -171,6 +238,7 @@
         "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
         "sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94"
       },
+      "submission_target": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
       "supporting_sources": [
         {
           "path": "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json",
@@ -182,6 +250,12 @@
     },
     {
       "acceptance_id": "A027",
+      "allowed_submission_paths": [
+        "artifacts/operator_inputs/a026_a027/",
+        "operator_inputs/a026_a027/",
+        "work/operator_inputs/a026_a027/",
+        "external operator file outside repository"
+      ],
       "blocking_reason": "relationship-extraction production gold threshold is not met",
       "completion_criteria": [
         "at least 100 operator-supplied non-fixture relationship cases",
@@ -195,6 +269,7 @@
         "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
         "sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94"
       },
+      "submission_target": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
       "supporting_sources": [
         {
           "path": "artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json",
@@ -206,6 +281,12 @@
     },
     {
       "acceptance_id": "A209",
+      "allowed_submission_paths": [
+        "artifacts/operator_inputs/a209/",
+        "operator_inputs/a209/",
+        "work/operator_inputs/a209/",
+        "external operator file outside repository"
+      ],
       "blocking_reason": "A209 finalization does not allow downstream refresh at 55/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
@@ -220,12 +301,13 @@
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
         "sha256": "75bfce6b467affbd708e3abb640590d799f56a28f088cdc9b8c4e6b76f8de0f8"
       },
+      "submission_target": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
       "validation_command": "make generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight"
     }
   ],
-  "schema_version": "eei-external-release-operator-intake-packet-v1",
+  "schema_version": "eei-external-release-operator-intake-packet-v2",
   "source_files": {
     "a026_a027_gold_label_intake_template": {
       "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
@@ -253,7 +335,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "55c61f6b04e39b179d051e045fe84e7e3f0c2da4c007d97e0f5e6b0b08db110c"
+      "sha256": "bf37ef1fa5747bc813a09a2003f97b63fd8fd8862f7ba4a6af766b2fb8b28628"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

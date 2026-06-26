@@ -18,7 +18,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 SCHEMA_VERSION = "eei-external-release-evidence-bundle-preflight-v1"
-PACKET_SCHEMA_VERSION = "eei-external-release-operator-intake-packet-v1"
+PACKET_SCHEMA_VERSION = "eei-external-release-operator-intake-packet-v2"
 DEFAULT_RELEASE_DECISION_CONTRACT = (
     ROOT / "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
 )
@@ -63,6 +63,53 @@ REQUIRED_EXTERNAL_INPUTS = [
     "A027_relationship_extraction_production_gold_set",
     "A209_24h_operator_soak_finalization",
 ]
+OPERATOR_INPUT_TARGETS = {
+    "A202_source_license_passage_owner_legal_release": {
+        "primary_path": "artifacts/operator_inputs/a202/signed-release-decision-intake.json",
+        "allowed_paths": [
+            "artifacts/operator_inputs/a202/",
+            "operator_inputs/a202/",
+            "work/operator_inputs/a202/",
+            "external operator file outside repository",
+        ],
+    },
+    "A210_brand_legal_market_clearance_or_risk_waiver": {
+        "primary_path": "artifacts/operator_inputs/a210/signed-brand-clearance.json",
+        "allowed_paths": [
+            "artifacts/operator_inputs/a210/",
+            "operator_inputs/a210/",
+            "work/operator_inputs/a210/",
+            "external operator file outside repository",
+        ],
+    },
+    "A026_entity_resolution_production_gold_set": {
+        "primary_path": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
+        "allowed_paths": [
+            "artifacts/operator_inputs/a026_a027/",
+            "operator_inputs/a026_a027/",
+            "work/operator_inputs/a026_a027/",
+            "external operator file outside repository",
+        ],
+    },
+    "A027_relationship_extraction_production_gold_set": {
+        "primary_path": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
+        "allowed_paths": [
+            "artifacts/operator_inputs/a026_a027/",
+            "operator_inputs/a026_a027/",
+            "work/operator_inputs/a026_a027/",
+            "external operator file outside repository",
+        ],
+    },
+    "A209_24h_operator_soak_finalization": {
+        "primary_path": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
+        "allowed_paths": [
+            "artifacts/operator_inputs/a209/",
+            "operator_inputs/a209/",
+            "work/operator_inputs/a209/",
+            "external operator file outside repository",
+        ],
+    },
+}
 
 
 def utc_now() -> str:
@@ -417,12 +464,15 @@ def intake_item(
         (row for row in missing_inputs if row.get("input_id") == input_id),
         None,
     )
+    target = OPERATOR_INPUT_TARGETS[input_id]
     return {
         "input_id": input_id,
         "acceptance_id": acceptance_id,
         "label": label,
         "current_status": "MISSING_OR_BLOCKED" if missing_match else "READY_FOR_PREFLIGHT",
         "blocking_reason": missing_match.get("reason") if missing_match else "",
+        "submission_target": target["primary_path"],
+        "allowed_submission_paths": target["allowed_paths"],
         "required_source": required_source,
         "supporting_sources": supporting_sources or [],
         "validation_command": validation_command,
@@ -589,6 +639,7 @@ def build_operator_intake_packet(
             "A027_relationship_extraction_production_gold_set",
             "A209_24h_operator_soak_finalization",
         ],
+        "operator_submission_targets": OPERATOR_INPUT_TARGETS,
         "post_submission_commands": [
             "make generate-external-release-evidence-bundle "
             "validate-external-release-evidence-bundle",
@@ -704,6 +755,7 @@ def validate_operator_intake_packet(
         "ready_input_ids",
         "missing_input_ids",
         "operator_submission_order",
+        "operator_submission_targets",
         "post_submission_commands",
         "validation_policy",
         "non_claims",

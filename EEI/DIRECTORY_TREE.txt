@@ -60,6 +60,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── __init__.py
 │   └── __init__.py
 ├── artifacts
+│   ├── operator_inputs
+│   │   └── README.md
 │   ├── tests
 │   │   ├── a026
 │   │   │   ├── t904_a026_a027_operator_labeling_packet.json

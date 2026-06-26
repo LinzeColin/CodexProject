@@ -11,13 +11,44 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1307-A209-HEARTBEAT-FRESHNESS`
+- Current gate: `TASK-T1303-A204-A205-OPERATOR-SUBMISSION-TARGETS`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1307/A209 isolated rerun heartbeat freshness sync`
+- Current task: `TASK-T1303/A204-A205 external operator submission target contract`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `55/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T03:38:38Z`, and `19.10%` completion.
-- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+
+
+## EVENT-20260626-013 - T1303/A204-A205 operator submission target contract
+
+- Timestamp: 2026-06-26T14:04:37+10:00
+- Fact level: EXTRACTED
+- Base commit: `b7e9e9ae2cae6500264129eed22819f82e5316ad`
+- Scope: upgrade the external release operator intake packet from a template/hash checklist to a schema v2 submission-target contract with explicit approved paths for A202, A210, A026/A027 and A209 operator evidence.
+- Submission targets: `artifacts/operator_inputs/a202/signed-release-decision-intake.json`, `artifacts/operator_inputs/a210/signed-brand-clearance.json`, `artifacts/operator_inputs/a026_a027/production-gold-labels.json`, and `artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json`.
+- Downstream refresh: external release operator intake packet, external release-evidence bundle, release-manager activation preflight, production API release preflight and MVP release-gate preflight regenerated; all release gates remain blocked.
+- Release artifacts: clean-room package regenerated and validated; authoritative package SHA is recorded in `artifacts/tests/a200/t1215_clean_room_release.json`; release manifest validates with `remote_status=PENDING`.
+- Non-claims: this does not supply signed A202 source/license/passage/owner/legal clearance, A210 legal/market clearance or risk waiver, A026/A027 production labels, A209 finalization, release-manager activation or MVP v0.1 readiness.
+- Next step: collect real operator evidence at the listed paths and keep the isolated A209 rerun running until `288/288` zero-failure finalization is possible.
+
+## ITER-20260626-013 - External operator submission target contract
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `b7e9e9ae2cae6500264129eed22819f82e5316ad`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1303`, `TASK-T1301`, `TASK-T1307`, `TASK-T1309`, `TASK-T904`
+- Acceptance IDs: `A204`, `A205`, `A202`, `A209`, `A210`, `A026`, `A027`
+- Goal: make the remaining external MVP release inputs operationally submit-ready without treating templates, fixtures, partial soak progress or unsigned files as release evidence.
+- Files changed: external release bundle validator, external bundle unit tests, A205/A203 preflight artifacts, operator input directory README, release/checksum artifacts, clean-room package, changelog, handoff, MVP development record, delivery task record, version matrix, append-only event and traceability metadata.
+- Model changes: none.
+- Parameter changes: `external-release-operator-intake-packet` profile version advances to `2`; no scoring formula, graph traversal formula, model weight, threshold or publication policy changed.
+- Commands run: focused `py_compile`; focused `ruff`; `tests/unit/test_external_release_evidence_bundle.py`; external bundle packet generation/validation; release-manager, production API and MVP release preflight generation/validation; clean-room and release artifact generation/validation.
+- Test results: external release bundle unit tests PASS `7/7`; focused ruff PASS; packet validates as `WAITING_FOR_OPERATOR_INPUTS`, `release_gate_closed_by_operator_packet=false`, and all downstream preflights remain blocked.
+- Rollback: revert the packet schema v2 field additions, operator input README, generated preflight artifacts and companion governance records; regenerate release artifacts from the previous committed state and keep live A209 checkpoint/PID/log files untouched unless operator recovery is explicitly authorized.
 
 
 ## EVENT-20260626-012 - T1307/A209 heartbeat freshness sync to 55/288

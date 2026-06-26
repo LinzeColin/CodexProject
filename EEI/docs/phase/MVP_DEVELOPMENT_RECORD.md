@@ -1,5 +1,45 @@
 # MVP Development Record
 
+## 2026-06-26 - T1303/A204-A205 external operator submission target contract
+
+Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED; A209 CONTINUES IN BACKGROUND
+
+### Scope
+
+- Upgraded `scripts/validate_external_release_evidence_bundle.py` operator intake packet schema from `eei-external-release-operator-intake-packet-v1` to `eei-external-release-operator-intake-packet-v2`.
+- Added explicit `submission_target`, `allowed_submission_paths`, and `operator_submission_targets` fields for the five remaining external release inputs.
+- Added `artifacts/operator_inputs/README.md` as the controlled repository entrypoint for signed operator-supplied release evidence.
+- Regenerated external release operator intake, release-manager activation, production API release and MVP release-gate preflight artifacts.
+
+### Current Evidence
+
+- A202 target: `artifacts/operator_inputs/a202/signed-release-decision-intake.json`.
+- A210 target: `artifacts/operator_inputs/a210/signed-brand-clearance.json`.
+- A026/A027 target: `artifacts/operator_inputs/a026_a027/production-gold-labels.json`.
+- A209 target: `artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json`.
+- Packet remains `WAITING_FOR_OPERATOR_INPUTS`; `release_gate_closed_by_operator_packet=false`.
+
+### Validation
+
+- `py_compile` for the external release bundle validator and unit test: PASS.
+- Focused `ruff`: PASS.
+- `tests/unit/test_external_release_evidence_bundle.py`: PASS, `7/7`.
+- External release bundle packet, release-manager activation, production API release and MVP release-gate preflight validators: PASS.
+- Clean-room release generation/validation: PASS; authoritative package SHA is recorded in `artifacts/tests/a200/t1215_clean_room_release.json`.
+- Release artifact generation/validation: PASS with `remote_status=PENDING`.
+
+### Non-Claims
+
+- This does not supply signed A202 source/license/passage/owner/legal clearance.
+- This does not supply A210 legal/market clearance or risk waiver.
+- This does not supply A026/A027 production labels.
+- This does not finalize A209 or activate release-manager/MVP release gates.
+
+### Rollback
+
+- Revert schema v2 fields, `artifacts/operator_inputs/README.md`, regenerated preflight artifacts and companion governance records.
+- Preserve live A209 checkpoint/PID/log files unless operator recovery is explicitly authorized.
+
 ## 2026-06-26 - T1307/A209 isolated rerun heartbeat freshness sync to 55/288
 
 Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED

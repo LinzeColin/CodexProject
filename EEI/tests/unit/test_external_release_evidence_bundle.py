@@ -254,8 +254,34 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
         item["template_or_partial_evidence_counts_as_clearance"] is False
         for item in payload["required_operator_inputs"]
     )
+    assert payload["operator_submission_targets"][
+        "A202_source_license_passage_owner_legal_release"
+    ]["primary_path"] == "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+    assert payload["operator_submission_targets"][
+        "A210_brand_legal_market_clearance_or_risk_waiver"
+    ]["primary_path"] == "artifacts/operator_inputs/a210/signed-brand-clearance.json"
+    assert (
+        payload["operator_submission_targets"]["A026_entity_resolution_production_gold_set"][
+            "primary_path"
+        ]
+        == "artifacts/operator_inputs/a026_a027/production-gold-labels.json"
+    )
+    assert (
+        payload["operator_submission_targets"][
+            "A027_relationship_extraction_production_gold_set"
+        ]["primary_path"]
+        == "artifacts/operator_inputs/a026_a027/production-gold-labels.json"
+    )
+    assert payload["operator_submission_targets"]["A209_24h_operator_soak_finalization"][
+        "primary_path"
+    ] == "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json"
     a202_item = payload["required_operator_inputs"][0]
     assert a202_item["input_id"] == "A202_source_license_passage_owner_legal_release"
+    assert (
+        a202_item["submission_target"]
+        == "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+    )
+    assert "external operator file outside repository" in a202_item["allowed_submission_paths"]
     assert a202_item["supporting_sources"] == [
         payload["source_files"]["a202_operator_review_packet"]
     ]
