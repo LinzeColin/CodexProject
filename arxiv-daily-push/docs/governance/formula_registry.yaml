@@ -5477,7 +5477,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PMT04 local lifecycle and cache cleanup evidence passes only when the automatic wake path is a disabled dry-run launchd payload, lifecycle transitions follow STOPPED->STARTING->RECOVERING->LEADER->RUNNING->DRAINING->CHECKPOINTING->CLEANING->STOPPED, startup reconciliation covers temp, inflight, outbox, and stale locks before new claims, shutdown receipts include inflight, outbox, checkpoint, cleanup, backup, and lease release, cache cleanup is whitelist checked, symlink-blocked, dry-run, and never deletes durable evidence, launchd plist XML is structurally parseable, and all SMTP, scheduler install, Release, schema, queue, DB, restore, and production side-effect flags remain false."
+    expression: "S2PMT04 local lifecycle and cache cleanup evidence passes only when the automatic wake path is a disabled dry-run launchd payload, lifecycle transitions follow STOPPED->STARTING->RECOVERING->LEADER->RUNNING->DRAINING->CHECKPOINTING->CLEANING->STOPPED, startup reconciliation covers temp, inflight, outbox, and stale locks before new claims, shutdown receipts include inflight, outbox, checkpoint, cleanup, backup, and lease release, transaction completion receipts expose committed/pending-rollback state plus recovery actions for each shutdown step, cache cleanup is whitelist checked, symlink-blocked, dry-run, and never deletes durable evidence, launchd plist XML is structurally parseable, and all SMTP, scheduler install, Release, schema, queue, DB, restore, and production side-effect flags remain false."
     variables:
       -
         name: "lifecycle_transition"
@@ -5495,6 +5495,11 @@ formulas:
         unit: "drain receipt"
         input_domain: "required shutdown receipt steps and grace timing"
       -
+        name: "transaction_completion_receipt"
+        data_type: "object"
+        unit: "shutdown transaction receipt"
+        input_domain: "committed and pending-rollback step receipts with durable or rollback refs"
+      -
         name: "cache_cleanup_plan"
         data_type: "object"
         unit: "dry-run cleanup ledger"
@@ -5505,8 +5510,8 @@ formulas:
         unit: "disabled launchd XML"
         input_domain: "label and program arguments only, no secrets"
     constraints: "S2PMT04 is local hardening evidence only. It must not install a scheduler, send SMTP, upload Release assets, execute production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, touch V7.1/V7.2 contract files, or claim integrated production acceptance."
-    missing_policy: "Invalid lifecycle edges, missing startup reconciliation categories, missing shutdown receipt steps, grace-period breach without safe requeue evidence, cache path outside whitelist, symlink cleanup candidate, durable evidence delete candidate, unparseable or enabled launchd plist, embedded environment variables, or any production side-effect flag blocks the report."
-    output_range: "S2PMT04 local report with pass or blocked status, lifecycle transition plan, startup reconciliation receipt, shutdown receipt, cache cleanup dry-run ledger, disabled parseable launchd plist hash, deterministic report hash, and all production side-effect flags false."
+    missing_policy: "Invalid lifecycle edges, missing startup reconciliation categories, missing shutdown receipt steps, missing transaction completion signal, grace-period breach without safe requeue evidence, cache path outside whitelist, symlink cleanup candidate, durable evidence delete candidate, unparseable or enabled launchd plist, embedded environment variables, or any production side-effect flag blocks the report."
+    output_range: "S2PMT04 local report with pass or blocked status, lifecycle transition plan, startup reconciliation receipt, shutdown receipt, transaction completion/recovery receipt, cache cleanup dry-run ledger, disabled parseable launchd plist hash, deterministic report hash, and all production side-effect flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py"
       - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py"
@@ -5536,16 +5541,18 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_startup_reconciliation"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_shutdown_receipt"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::validate_shutdown_receipt_steps"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_transaction_completion_receipt"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::validate_transaction_completion_receipt"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_cache_cleanup_plan"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_launchd_plist_payload"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::validate_launchd_plist_payload"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_lifecycle_cache_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::validate_lifecycle_cache_report"
       - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py::_launchd_plist"
-    implementation_fingerprint: "sha256:be299b4e830aceee984aeb3fd4323d8b6a508f60283ec84e61281cf0b696cbe6"
-    evidence_hash: "sha256:b3e80682d9e9a0ad13547fd664f4ce1468009c8f2bd6e75540a5cfb08c6f58e9"
-    last_verified_commit: "91ab1f7fa59ef6b981472694579f6fa56376bf0d"
-    verified_at: "2026-06-26T14:20:00+10:00"
+    implementation_fingerprint: "sha256:ba7a11f50c6dcde197ee45e78fd59a33d75a971b95fb556e76cb6401f678dd18"
+    evidence_hash: "sha256:37659739136b6842bb216b97dd09fe4f4fcd0e2f6d92e81df0ef5c94bfcb1f75"
+    last_verified_commit: "812753b5f44a8530836cdb5370c1886d7ea56500"
+    verified_at: "2026-06-26T22:29:23+10:00"
   -
     formula_id: "FORM-ADP-100"
     model_id: "MOD-ADP-098"

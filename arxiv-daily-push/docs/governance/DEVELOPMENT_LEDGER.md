@@ -3311,3 +3311,19 @@ None for this new project baseline.
 - Rollback: Revert S2PMT03 M4 watermark code/tests, phase record, manifest, traceability/delivery/event records, FORM-ADP-098 refresh, generated status refresh, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_M4_WATERMARK_B011.md`; `governance/run_manifests/ADP-S2PMT03-M4-WATERMARK-B011-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py`; `arxiv-daily-push/tests/test_stage2_lease_fencing.py`.
 - Next step: Continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.
+
+### `ITER-20260626-ADP-S2PMT04-TRANSACTION-COMPLETION-B015`
+
+- Timestamp: `2026-06-26T22:29:23+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from S2PMT04 lifecycle/cache implementation, focused transaction completion regression tests, V7.2 no-production boundaries, and B-015 inherited finding review.
+- Status: completed local validation; no production side effects.
+- Task IDs: `S2PMT04-TRANSACTION-COMPLETION-B015`, `S2PMT04`, `B-015`; acceptance `ACC-S2PMT04-LIFECYCLE` remains local evidence only.
+- Goal: Remediate inherited P1 finding `B-015` locally by proving shutdown save/cleanup steps have observable committed or pending-rollback transaction receipts, interrupted-step recovery actions, and new-work blocking during recovery.
+- Decisions: `build_transaction_completion_receipt` and `validate_transaction_completion_receipt` are pure local evidence helpers. They do not run a real shutdown, delete files, install a scheduler, or mutate production queues. The S2PMT04 report now requires `transaction_completion_signal`.
+- Validation: py_compile PASS; focused S2PMT04 lifecycle/cache tests 8 OK; source/board user-center root gate regression 14 OK; full arxiv-daily-push unittest 531 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSON/JSONL/CSV/YAML parse OK; git diff --check PASS.
+- Boundaries: This run does not enable SMTP, install or enable scheduler, upload Release assets, change public schema or DB, mutate production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: This is local evidence only. Inherited P0=8/P1=37, S2PLT04, final bundle, and S2PMT07 independent review remain blocked.
+- Rollback: Revert S2PMT04 transaction completion code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md`; `governance/run_manifests/ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py`; `arxiv-daily-push/tests/test_stage2_lifecycle_cache.py`.
+- Next step: Continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.

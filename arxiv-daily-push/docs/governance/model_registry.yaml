@@ -5087,7 +5087,7 @@ models:
   -
     model_id: "MOD-ADP-097"
     name: "S2PMT04 local lifecycle and cache-cleanup model"
-    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, durable shutdown receipt, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, durable shutdown receipt, observable transaction completion/recovery receipts, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5112,12 +5112,14 @@ models:
       - "local lifecycle cycle id"
       - "startup reconciliation fixtures"
       - "shutdown receipt inputs"
+      - "shutdown transaction completion fixtures"
       - "cache entry inventory"
       - "launchd program arguments"
     outputs:
       - "lifecycle transition plan"
       - "startup reconciliation receipt"
       - "shutdown receipt"
+      - "transaction completion and recovery receipt"
       - "cache cleanup dry-run plan"
       - "parseable disabled launchd plist payload"
       - "no production side-effect gate"

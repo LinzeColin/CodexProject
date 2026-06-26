@@ -1,0 +1,62 @@
+{
+  "manifest_id": "ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT04-TRANSACTION-COMPLETION-B015",
+  "parent_task_id": "S2PMT04",
+  "inherited_finding_id": "B-015",
+  "acceptance_id": "ACC-S2PMT04-LIFECYCLE",
+  "phase": "S2PM",
+  "model_id": "MOD-ADP-097",
+  "formula_id": "FORM-ADP-099",
+  "parameter_ids_changed": [
+    "PARAM-ADP-800"
+  ],
+  "base_commit": "812753b5f44a8530836cdb5370c1886d7ea56500",
+  "created_at": "2026-06-26T22:29:23+10:00",
+  "scope": "Local S2PMT04 B-015 remediation evidence for shutdown save/cleanup transaction boundaries, observable completion signals, interrupted-step recovery actions, and no-production side-effect preservation.",
+  "non_scope": "No scheduler install or enablement, real SMTP send, Release, production restore, DB migration, public schema change, production queue mutation, ranking, source adapter change, live source fetch, V7.1/V7.2 contract edit, P0/P1 closure claim, DAILY_OPERATION, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "real_smtp_sent": false,
+  "scheduler_installed": false,
+  "scheduler_enabled": false,
+  "release_upload_allowed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "ranking_algorithm_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py",
+    "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
+  ],
+  "local_gates": [
+    "Each shutdown step has a committed durable ref or pending rollback ref",
+    "Interrupted shutdown after a step leaves later steps recoverable",
+    "Recovery actions block new work claims",
+    "Post-kill commits and invisible pending rollback steps block the receipt",
+    "S2PMT04 report requires transaction_completion_signal"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused S2PMT04 lifecycle/cache tests: 8 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 531 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/JSONL/CSV/YAML parse: OK",
+    "git diff --check: PASS"
+  ],
+  "result": "local_validation_passed_pending_main_push",
+  "next_task": "CONTINUE_INHERITED_P0_P1_REMEDIATION_OR_S2PMT07_INDEPENDENT_REVIEW_AFTER_REQUIRED_GATES"
+}
