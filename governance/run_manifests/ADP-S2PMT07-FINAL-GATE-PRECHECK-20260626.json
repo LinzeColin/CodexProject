@@ -11,7 +11,8 @@
     "inherited_v7_1_p1_findings_open",
     "s2plt04_not_completed",
     "final_acceptance_bundle_missing",
-    "independent_review_signoff_missing"
+    "independent_review_signoff_missing",
+    "independent_final_command_execution_missing"
   ],
   "change_type": "stage2_final_gate_precheck",
   "completed_dependencies": [
@@ -44,6 +45,7 @@
     "FORM-ADP-102"
   ],
   "full_pytest_executed_by_independent_reviewer": false,
+  "independent_final_command_execution_present": false,
   "independent_review_signoff_present": false,
   "inherited_p0_p1_closed": false,
   "inherited_v7_1_open_p0_findings": 8,
@@ -91,7 +93,8 @@
   "real_smtp_sent": false,
   "release_changed": false,
   "release_packaging_enabled": false,
-  "report_hash": "ba95c6fa0ec65e172de577a56d98c1fbceaf8ac28478556418ada6e55b25da9f",
+  "refreshed_at": "2026-06-27T02:59:04+10:00",
+  "report_hash": "20908c705964fec5ee6b06104a18cb1c9eb6d15c1922823580b7062140ff4474",
   "report_status": "blocked",
   "required_test_commands": [
     "python tools/validate_task_pack.py --root .",
@@ -102,7 +105,7 @@
   "reviewer_independence_proven": false,
   "risks": [
     "S2PMT07 precheck must not be interpreted as independent final review signoff.",
-    "Inherited V7.1 P0=8 and P1=37, missing S2PLT04, missing final bundle, and missing independent signoff still block integrated production acceptance."
+    "Inherited V7.1 P0=8 and P1=37, missing S2PLT04, missing final bundle, missing independent signoff, and missing independent final command execution still block integrated production acceptance."
   ],
   "rollback": "Revert S2PMT07 precheck code, tests, governance registrations, phase record, manifest, events, and rendered governance sync; no runtime production state was changed.",
   "scheduler_changed": false,
@@ -111,7 +114,7 @@
   "source_adapter_changed": false,
   "stage2_integrated_production_accepted": false,
   "stage2_production_accepted": false,
-  "summary": "Recorded S2PMT07 fail-closed final gate precheck with blocking reasons for missing independent reviewer proof, inherited P0/P1 blockers, missing S2PLT04, missing final bundle, and missing independent signoff.",
+  "summary": "Recorded S2PMT07 fail-closed final gate precheck with blocking reasons for missing independent reviewer proof, inherited P0/P1 blockers, missing S2PLT04, missing final bundle, missing independent signoff, and missing independent final command execution.",
   "task_id": "S2PMT07",
   "task_ids": [
     "S2PMT07",
@@ -143,7 +146,7 @@
     "git diff -U0 origin/main...HEAD production-side-effect forbidden scan",
     "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt07_semantic PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push (interrupted after no output during full-table AST parsing)"
   ],
-  "timestamp": "2026-06-26T17:00:00+10:00",
+  "timestamp": "2026-06-27T02:59:04+10:00",
   "v7_1_baseline_changed": false,
   "v7_1_current_switched": false,
   "v7_2_contract_files_changed": false,

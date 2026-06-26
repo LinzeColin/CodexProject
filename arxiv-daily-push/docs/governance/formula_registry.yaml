@@ -5842,10 +5842,10 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_test_gate_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2pmt07_precheck_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2pmt07_precheck_report"
-    implementation_fingerprint: "sha256:6527bf050eada147dacd0c1db88adcca981eb5a9e9bac13666f034c99d40d6c3"
-    evidence_hash: "sha256:c8a184db987cb1d1c47d9eaa950cf7ea3aa7bb53309195c8fdc41083f621bf65"
-    last_verified_commit: "0c52a3257800c5bab89de93c6713c71249d20697"
-    verified_at: "2026-06-26T17:00:00+10:00"
+    implementation_fingerprint: "sha256:f5dfb2d0c473afe1e100e96fdd1242b3e66d7d0acefb242e2e76fa99a2f7fca2"
+    evidence_hash: "sha256:07808dcfa4e296ead6cd7b503e578fb8f598d7c03885820c5997a3c325e9546a"
+    last_verified_commit: "c663f3a01bb364655eb938157e3b3cfa15211d4a"
+    verified_at: "2026-06-27T02:59:04+10:00"
 
   -
     formula_id: "FORM-ADP-103"

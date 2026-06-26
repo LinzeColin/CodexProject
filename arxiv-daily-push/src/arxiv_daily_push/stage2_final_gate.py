@@ -53,6 +53,7 @@ S2PMT07_BLOCKING_REASONS = (
     "s2plt04_not_completed",
     "final_acceptance_bundle_missing",
     "independent_review_signoff_missing",
+    "independent_final_command_execution_missing",
 )
 S2PLT02_LIVE_2D_PRECHECK_MODEL_ID = "adp-s2plt02-live-2d-precheck-v1"
 S2PLT02_ACCEPTANCE_ID = "ACC-S2PLT02-2D"
@@ -570,6 +571,8 @@ def build_s2pmt07_precheck_report(*, generated_at: str) -> dict[str, Any]:
         blocking_reasons.append("final_acceptance_bundle_missing")
     if not gates["independent_review_signoff_present"]:
         blocking_reasons.append("independent_review_signoff_missing")
+    if not gates["required_final_commands_executed"]:
+        blocking_reasons.append("independent_final_command_execution_missing")
     status = "pass" if not blocking_reasons and all(gates.values()) else "blocked"
     report = {
         "model_id": S2PMT07_FINAL_GATE_MODEL_ID,

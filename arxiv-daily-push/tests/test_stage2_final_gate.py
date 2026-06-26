@@ -220,11 +220,33 @@ class Stage2FinalGateTests(unittest.TestCase):
             self.assertIn(reason, report["blocking_reasons"])
         self.assertIn("final_acceptance_bundle_missing", report["blocking_reasons"])
         self.assertIn("independent_review_signoff_missing", report["blocking_reasons"])
+        self.assertIn("independent_final_command_execution_missing", report["blocking_reasons"])
+        self.assertFalse(report["test_gates"]["executed_as_final_reviewer"])
         self.assertEqual(validate_s2pmt07_precheck_report(report), [])
 
         tampered = dict(report)
         tampered["integrated_production_accepted"] = True
         self.assertIn("integrated_production_accepted must be false", validate_s2pmt07_precheck_report(tampered))
+
+    def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
+        blocker = "independent_final_command_execution_missing"
+        report = build_s2pmt07_precheck_report(generated_at="2026-06-27T02:59:04+10:00")
+        phase_record = (
+            REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
+        ).read_text(encoding="utf-8")
+        manifest = json.loads(
+            (REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json").read_text(
+                encoding="utf-8"
+            )
+        )
+
+        self.assertIn(blocker, S2PMT07_BLOCKING_REASONS)
+        self.assertIn(blocker, report["blocking_reasons"])
+        self.assertFalse(report["gates"]["required_final_commands_executed"])
+        self.assertFalse(report["test_gates"]["executed_as_final_reviewer"])
+        self.assertIn(blocker, phase_record)
+        self.assertIn(blocker, manifest["blocking_reasons"])
+        self.assertFalse(manifest["independent_final_command_execution_present"])
 
 
 if __name__ == "__main__":

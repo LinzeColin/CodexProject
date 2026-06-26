@@ -10,11 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_P0_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 134
+- Current gate: S2PMT07_FINAL_COMMAND_BLOCKER_SYNC_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 135
 - Reconstructed event count: 0
-- Current task: `S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008` refreshes the P0 independent-review receipt so B-007 and B-008 point to their dedicated 20260627 phase records and run manifests instead of the older S2PMT05 stress-E2E summary. This does not provide independent signoff, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, run final commands, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT07-FINAL-COMMAND-BLOCKER-SYNC` aligns the S2PMT07 fail-closed machine blockers with the V7.2/formula contract by explicitly carrying `independent_final_command_execution_missing` in the report, phase record, manifest, semantic parameter refresh, and regression tests. This does not provide independent signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260627-ADP-S2PMT07-FINAL-COMMAND-BLOCKER-SYNC`
+
+- Timestamp: `2026-06-27T02:59:04+10:00`
+- Fact level: EXTRACTED from S2PMT07 fail-closed report code, focused final-gate regression test, S2PMT07 phase record, refreshed precheck manifest, current-run manifest, and semantic parameter/formula refresh.
+- Base commit: `c663f3a01bb364655eb938157e3b3cfa15211d4a`
+- Product version: `0.23.1`
+- Status: blocker sync completed pending main push; no closure claim.
+- Task IDs: `S2PMT07-FINAL-COMMAND-BLOCKER-SYNC`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Make the S2PMT07 fail-closed machine blockers match the V7.2/formula contract by explicitly recording `independent_final_command_execution_missing`.
+- Files changed: S2PMT07 final gate helper, final-gate regression tests, PARAM-ADP-842/FORM-ADP-102 semantic refresh, phase record, refreshed precheck manifest, current-run manifest, changelog/status/traceability/delivery/event records, and this ledger entry.
+- Model changes: Reused `MOD-ADP-100`; no model algorithm change.
+- Formula changes: Refreshed `FORM-ADP-102` fingerprint/evidence hash to include the final-command blocker.
+- Parameter changes: Refreshed `PARAM-ADP-842` to include `independent_final_command_execution_missing` in active blocking reasons.
+- Validation: py_compile PASS; focused S2PMT07 final-gate tests: 13 OK; source/board user-center root gate regression: 14 OK; full arxiv-daily-push unittest: 548 OK; V7.2 validator: PASS; ADP project governance: 0 errors / 0 warnings; changed-only governance semantic: 0 errors / 0 warnings; governance sync validator: 0 errors / 0 warnings; lean check-render: drift_count 0 / reference_issue_count 0; YAML/JSON/JSONL/CSV parse: OK; git diff --check: PASS; production-side-effect forbidden scan: OK.
+- Decisions: This is fail-closed blocker synchronization only. It does not provide independent signoff, execute the required final commands, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: The explicit blocker can be misread as final command execution having occurred; it records the opposite. S2PLT04, final bundle, independent signoff, final command execution, and inherited P0/P1 zero state remain blocked.
+- Rollback: Revert the S2PMT07 blocker sync code/test changes, PARAM-ADP-842/FORM-ADP-102 refresh, phase record, manifests, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md`; `governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json`; `governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-BLOCKER-SYNC-20260627.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 
 ### `ITER-20260627-ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008`
 
