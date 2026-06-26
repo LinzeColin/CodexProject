@@ -17,6 +17,7 @@ from .config import DEFAULT_TIMEZONE
 from .doctor import disk_status
 from .global_scan import (
     ALL_ARXIV_MAX_RESULTS_PER_CATEGORY,
+    ROI_COMPONENT_WEIGHTS,
     build_all_arxiv_daily_input,
     build_daily_delivery_package,
     validate_all_arxiv_daily_input_report,
@@ -56,6 +57,7 @@ REVIEW_REPORT_FILENAME = "stage2_s2pjt02_review_schedule_report.json"
 ACTION_ROI_REPORT_FILENAME = "stage2_s2pjt03_action_asset_roi_ledger_report.json"
 USER_CENTER_PENDING_VALUE = "待今日运行快照写入"
 USER_CENTER_PENDING_PLANNED_SEND_TOTAL = "待确认"
+USER_CENTER_SCORE_DETAIL_GATE_ID = "adp-user-center-six-factor-score-detail-gate-v1"
 USER_CENTER_SNAPSHOT_FIELDS = (
     "今日到期复习",
     "未来 7 天复习",
@@ -276,6 +278,7 @@ def run_local_daily(
         state=state,
         write=write,
         planned_mail_delivery=planned_mail_delivery,
+        daily_input_report=daily_input_report,
     )
     user_center_sync_ready = user_center_sync.get("status") == "pass"
     if allow_smtp_send and not user_center_sync_ready:
@@ -515,6 +518,7 @@ def _sync_user_center_learning_snapshot(
     state: Path,
     write: bool,
     planned_mail_delivery: Mapping[str, Any],
+    daily_input_report: Mapping[str, Any],
 ) -> dict[str, Any]:
     page = root / USER_CENTER_LEARNING_PAGE
     review_path = state / REVIEW_REPORT_FILENAME
@@ -531,6 +535,12 @@ def _sync_user_center_learning_snapshot(
         "snapshot_values": {},
         "planned_mail_delivery": dict(planned_mail_delivery),
     }
+    score_detail_gate = _candidate_score_detail_gate(daily_input_report)
+    report["candidate_score_detail_gate"] = score_detail_gate
+    report["candidate_score_detail_ready"] = score_detail_gate["status"] == "pass"
+    if score_detail_gate["status"] != "pass":
+        report["blocking_reasons"] = list(score_detail_gate["blocking_reasons"])
+        return report
     if not write:
         report["blocking_reasons"] = ["user center sync requires write mode"]
         return report
@@ -572,6 +582,115 @@ def _sync_user_center_learning_snapshot(
     report["blocking_reasons"] = []
     report["snapshot_values"] = values
     return report
+
+
+def _candidate_score_detail_gate(daily_input_report: Mapping[str, Any]) -> dict[str, Any]:
+    candidates = _candidate_score_detail_candidates(daily_input_report)
+    blocking_reasons: list[str] = []
+    details: list[dict[str, Any]] = []
+    for index, candidate in enumerate(candidates):
+        source_id = str(candidate.get("source_id") or f"candidate[{index}]")
+        signals = candidate.get("roi_signals")
+        weights = candidate.get("roi_component_weights")
+        score_value = candidate.get("roi_total_score")
+        if not isinstance(signals, Mapping):
+            blocking_reasons.append(f"{source_id} missing roi_signals six-factor detail")
+            continue
+        if not isinstance(weights, Mapping):
+            blocking_reasons.append(f"{source_id} missing roi_component_weights")
+            continue
+        try:
+            score = _bounded_number(score_value, minimum=0.0, maximum=100.0)
+        except ValueError:
+            blocking_reasons.append(f"{source_id} roi_total_score must be a number between 0 and 100")
+            continue
+        component_scores: dict[str, float] = {}
+        normalized_signals: dict[str, float] = {}
+        for component, expected_weight in ROI_COMPONENT_WEIGHTS.items():
+            try:
+                signal = _bounded_number(signals.get(component), minimum=0.0, maximum=1.0)
+            except ValueError:
+                blocking_reasons.append(f"{source_id} roi_signals.{component} must be a number between 0 and 1")
+                continue
+            try:
+                actual_weight = _bounded_number(weights.get(component), minimum=0.0, maximum=100.0)
+            except ValueError:
+                blocking_reasons.append(f"{source_id} roi_component_weights.{component} must be a number")
+                continue
+            if abs(actual_weight - float(expected_weight)) > 0.0001:
+                blocking_reasons.append(f"{source_id} roi_component_weights.{component} must equal {expected_weight:g}")
+                continue
+            normalized_signals[component] = signal
+            component_scores[component] = round(signal * float(expected_weight), 4)
+        if set(component_scores) != set(ROI_COMPONENT_WEIGHTS):
+            continue
+        recomputed = round(sum(component_scores.values()), 4)
+        if abs(recomputed - score) > 0.0001:
+            blocking_reasons.append(f"{source_id} roi_total_score does not match six-factor score detail")
+            continue
+        details.append(
+            {
+                "source_id": source_id,
+                "title": str(candidate.get("title") or ""),
+                "roi_total_score": score,
+                "roi_signals": normalized_signals,
+                "roi_component_weights": dict(ROI_COMPONENT_WEIGHTS),
+                "roi_component_scores": component_scores,
+            }
+        )
+    if not candidates:
+        blocking_reasons.append("daily input report has no generated candidates with six-factor score details")
+    return {
+        "gate_id": USER_CENTER_SCORE_DETAIL_GATE_ID,
+        "status": "blocked" if blocking_reasons else "pass",
+        "required_components": list(ROI_COMPONENT_WEIGHTS),
+        "candidate_count": len(candidates),
+        "checked_candidate_count": len(details),
+        "candidate_score_details": details,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def _candidate_score_detail_candidates(daily_input_report: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    candidates: list[Mapping[str, Any]] = []
+    seen: set[str] = set()
+
+    def add(candidate: Any) -> None:
+        if not isinstance(candidate, Mapping):
+            return
+        source_id = str(candidate.get("source_id") or "")
+        key = source_id or json.dumps(candidate, sort_keys=True, default=str)
+        if key in seen:
+            return
+        seen.add(key)
+        candidates.append(candidate)
+
+    selection = daily_input_report.get("selection")
+    if isinstance(selection, Mapping):
+        add(selection.get("selected"))
+        for candidate in selection.get("audits") or []:
+            add(candidate)
+    scan = daily_input_report.get("scan")
+    if isinstance(scan, Mapping):
+        for candidate in scan.get("candidates") or []:
+            add(candidate)
+    queue = daily_input_report.get("candidate_queue")
+    if isinstance(queue, Mapping):
+        for candidate in queue.get("items") or []:
+            add(candidate)
+    return candidates
+
+
+def _bounded_number(value: Any, *, minimum: float, maximum: float) -> float:
+    if isinstance(value, bool):
+        raise ValueError("boolean is not a score")
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError("not numeric") from error
+    if number < minimum or number > maximum:
+        raise ValueError("out of range")
+    return number
 
 
 def _planned_mail_delivery_summary(delivery_package: Mapping[str, Any]) -> dict[str, Any]:
