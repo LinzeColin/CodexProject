@@ -65,6 +65,10 @@ class Stage1B1ReportTests(unittest.TestCase):
         self.assertIn("候选队列摘要", package["email_plain"])
         self.assertIn(EMAIL_LEARNING_V1_TEMPLATE_MARKER, package["email_html"])
         self.assertIn("claim:arxiv:2401.00001", package["report_markdown"])
+        self.assertIn("Expected ROI", package["report_markdown"])
+        self.assertIn("Actual ROI", package["report_markdown"])
+        self.assertEqual(package["roi_disclosure"]["expected_roi"]["status"], "hypothesis")
+        self.assertEqual(package["roi_disclosure"]["actual_roi"]["status"], "not_calculable")
         self.assertNotIn("Claim Ledger", package["email_plain"])
         self.assertNotIn("ROI", package["email_plain"])
         self.assertNotIn("project:", package["email_plain"])
@@ -75,6 +79,36 @@ class Stage1B1ReportTests(unittest.TestCase):
         self.assertTrue(package["quality_gates"]["no_video_required"])
         self.assertFalse(package["side_effect_policy"]["real_smtp_sent"])
         self.assertFalse(validate_b1_report_email_package(package))
+
+    def test_b1_report_allows_typed_expected_and_actual_roi_without_guarantee(self) -> None:
+        package = build_b1_report_email_package(
+            daily_input_report(),
+            generated_at="2026-07-01T05:15:00+10:00",
+        )
+        package["email_plain"] += "\nExpected ROI: 仅作为学习假设；Actual ROI: not_calculable，等待行动证据。"
+        package["email_html"] += "<p>Expected ROI: hypothesis; Actual ROI: not_calculable.</p>"
+
+        self.assertFalse(validate_b1_report_email_package(package))
+
+    def test_b1_report_blocks_roi_without_assumptions_evidence_or_cost_probability_basis(self) -> None:
+        package = build_b1_report_email_package(
+            daily_input_report(),
+            generated_at="2026-07-01T05:15:00+10:00",
+        )
+        package["email_plain"] += "\nExpected ROI: 这个方向会保证收益。"
+        package["roi_disclosure"]["expected_roi"]["assumptions"] = []
+        package["roi_disclosure"]["expected_roi"]["evidence_refs"] = []
+        package["roi_disclosure"]["expected_roi"]["cost_basis"] = ""
+        package["roi_disclosure"]["expected_roi"]["probability_basis"] = ""
+
+        errors = validate_b1_report_email_package(package)
+
+        joined = " ".join(errors)
+        self.assertIn("guaranteed return", joined)
+        self.assertIn("expected_roi.assumptions", joined)
+        self.assertIn("expected_roi.evidence_refs", joined)
+        self.assertIn("expected_roi.cost_basis", joined)
+        self.assertIn("expected_roi.probability_basis", joined)
 
     def test_build_b1_report_email_blocks_unsupported_p0_claim(self) -> None:
         payload = daily_input_report()

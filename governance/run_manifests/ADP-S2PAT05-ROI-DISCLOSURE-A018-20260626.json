@@ -1,0 +1,54 @@
+{
+  "manifest_id": "ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PAT05",
+  "finding_id": "A-018",
+  "finding_title": "V7 要求展示 ROI，但旧邮件验证明确禁止 ROI",
+  "phase": "S2PA",
+  "created_at": "2026-06-26T21:05:24+10:00",
+  "scope": "Harden Stage 1 B1 report/email package validation for V7.1 inherited A-018 by allowing typed Expected ROI and Actual ROI disclosure while blocking unverified or guaranteed benefit claims.",
+  "non_scope": "No real SMTP enablement, scheduler installation, Release upload, production restore, Email V1 routing change, public schema, DB migration, source adapter, ranking, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "real_smtp_enabled": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "roi_disclosure_contract": {
+    "model_id": "adp-b1-roi-disclosure-v1",
+    "expected_roi": "hypothesis only; requires assumptions, evidence_refs, cost_basis, and probability_basis",
+    "actual_roi": "not_calculable unless verifiable cost, verifiable benefit, and evidence_refs are present",
+    "forbidden_claims": [
+      "guaranteed ROI",
+      "guaranteed return",
+      "guaranteed profit",
+      "保证收益",
+      "稳赚",
+      "必赚"
+    ],
+    "email_runtime_boundary": "Email V1 still does not expose internal roi_total_score ranking terms"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_ROI_DISCLOSURE_A018.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+    "arxiv-daily-push/tests/test_stage1_b1_report.py"
+  ],
+  "validation": [
+    "py_compile PASS for stage1_b1_report.py and test_stage1_b1_report.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py -q: 12 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_mail_templates.py arxiv-daily-push/tests/test_scheduled_execution.py -q: 7 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_mail_templates.py arxiv-daily-push/tests/test_scheduled_execution.py -q: 19 OK",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q: 513 OK",
+    "python3 scripts/validate_project_governance.py --project arxiv-daily-push: errors 0 warnings 0",
+    "python3 scripts/validate_governance_sync.py: errors 0 warnings 0",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2: PASS",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json: PASS",
+    "git diff --check: PASS"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "This manifest does not enable real SMTP or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}
