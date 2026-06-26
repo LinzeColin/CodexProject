@@ -1,13 +1,13 @@
 {
   "run_id": "ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626",
   "project": "arxiv-daily-push",
-  "timestamp": "2026-06-26T17:42:00+10:00",
+  "timestamp": "2026-06-26T17:37:00+10:00",
   "task_type": "owner_readable_mail_status_template_update",
   "objective": "Convert the GitHub user-center mail status page from a one-day resend snapshot into a long-term production-style status template.",
   "changed_scope": {
     "mail_status_page": [
       "今日已发送 / 总应发送",
-      "邮件发送模板 with source and V7.2 overlay links",
+      "人类可读邮件发送模板格式 with source and V7.2 overlay audit links",
       "historical send records",
       "截至今日候选队列",
       "GitHub 内容账本解释",
@@ -29,10 +29,17 @@
     "primary_destination": "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
     "count_format": "sent / expected",
     "example_format": "3 / 5",
-    "current_snapshot": "2 / 4",
+    "current_snapshot": "2 / 待确认",
+    "expected_count_rule": "The denominator must come from the formal daily send plan or schedule configuration. It must not be guessed or hand-written without evidence.",
     "template_source": "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
     "template_overlay": "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml"
   },
+  "corrections": [
+    "Corrected the update timestamp to 17:37 Australia/Sydney.",
+    "Removed unsupported expected-send denominator 4.",
+    "Removed the explanation column from the current-answer table.",
+    "Moved source-code links below a human-readable template-format section."
+  ],
   "no_production_side_effects": {
     "mail_runtime_code_changed": false,
     "public_schema_changed": false,
@@ -45,7 +52,7 @@
     "git diff --check",
     "JSON parse for this manifest",
     "Markdown relative-link validation for user center and project README",
-    "Scan removed short-term wording such as 今天最新补发 and 今天最新未发送/阻断",
+    "Scan removed short-term resend wording",
     "Scan for old English owner-center filenames"
   ]
 }
