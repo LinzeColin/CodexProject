@@ -5,8 +5,8 @@ evidence_level: EXTRACTED unless marked otherwise
 governance_spec_version: 1.0.0
 model_count: 11
 formula_count: 11
-parameter_count: 92
-task_count: 11
+parameter_count: 94
+task_count: 12
 
 ## A. Model Overview
 
@@ -164,4 +164,4 @@ Release gate for this governance baseline:
 Uncovered or unresolved:
 
 - `TASK-OAI-B-001`: calibration evidence for heuristic weights and thresholds.
-- `TASK-OAI-D-001`: full acceptance suite including local app, Cloudflare, and browser visual checks.
+- `TASK-OAI-D-002`: authorized Cloudflare Pages live upload and Access verification after credentials/env are available.

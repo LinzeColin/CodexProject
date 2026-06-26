@@ -115,19 +115,36 @@ tasks:
     completed_version: "0.2.0"
   - task_id: "TASK-OAI-D-001"
     phase: "D"
-    objective: "Run full Memory Atlas acceptance gates beyond focused governance tests."
-    scope: ["build", "release audit", "visual acceptance", "local launcher", "Cloudflare preflight"]
-    non_scope: ["installing dependencies in baseline run"]
-    status: "planned"
+    objective: "Run Memory Atlas main-branch release acceptance after data-guide rename, Codex auto-update scheduling, and deployment snapshot refresh."
+    scope: ["main branch merge", "redacted visualization snapshot", "frontend build", "release audit", "visual acceptance", "Memory Atlas acceptance", "Cloudflare Pages + Access preflight", "OpenAIDatabase unit tests"]
+    non_scope: ["live Cloudflare Pages upload without credentials", "Cloudflare Access policy mutation", "raw exports", "plaintext secrets", "production readiness promotion"]
+    status: "completed"
     dependencies: ["TASK-OAI-A-004"]
-    required_files: []
+    required_files: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/scripts/install_codex_weekly_sync.py", "OpenAIDatabase/scripts/run_codex_memory_auto_update.py", "OpenAIDatabase/data/derived/visualization/memory_atlas.json", "OpenAIDatabase/tests/test_memory_atlas_visual_acceptance.py"]
     acceptance_ids: ["ACC-OAI-D-001"]
-    test_commands: []
-    test_results: []
-    evidence_refs: []
-    risk: "Governance pass is not full visual release readiness."
-    rollback: "Keep governance required and full release gate planned."
-    target_version: "0.1.0"
+    test_commands: ["python3 scripts/build_memory_atlas_data.py --database-dir . --output data/derived/visualization/memory_atlas.json", "npm ci --prefix apps/memory-atlas", "npm run lint --prefix apps/memory-atlas", "npm run build --prefix apps/memory-atlas", "python3 scripts/audit_memory_atlas_release.py --publish-dir apps/memory-atlas/dist", "python3 scripts/audit_memory_atlas_visual_acceptance.py --repo-root .", "python3 scripts/audit_memory_atlas_acceptance.py --repo-root . --publish-dir apps/memory-atlas/dist", "python3 scripts/preflight_cloudflare_pages_access.py --repo-root . --publish-dir apps/memory-atlas/dist", "python3 -m unittest discover -s tests -p \"test_*.py\" -q", "python3 scripts/deploy_memory_atlas_cloudflare.py --repo-root ."]
+    test_results: ["PASS: snapshot active_memory=278 conversation_count=201 nodes=657 edges=3500 generated_at=2026-06-26T11:49:34.986Z", "PASS: npm ci added 81 packages with 0 vulnerabilities", "PASS: TypeScript lint/typecheck exit 0", "PASS: Vite build exit 0 with chunk-size warning only", "PASS: release audit checked 6 publish files", "PASS: 24 visual acceptance checks including data_guide_framework_ready", "PASS: Memory Atlas acceptance checked 23 gates including Cloudflare preflight readiness", "PASS: Cloudflare preflight checked wrangler config, templates, docs, and publish safety; live env not required in local preflight", "PASS: OpenAIDatabase unittest discover ran 43 tests OK after updating the data-guide visual test assertion", "DRY_RUN: deploy script command contract valid; live execute blocked by absent Wrangler login and missing Cloudflare live env vars"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/audit_memory_atlas_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py", "OpenAIDatabase/tests/test_memory_atlas_visual_acceptance.py", "OpenAIDatabase/data/derived/visualization/memory_atlas.json"]
+    risk: "Cloudflare live upload and Access verification remain unproven until credentials and allowed-user verification are available."
+    rollback: "Revert the main merge and snapshot refresh commits, then redeploy the previous successful Cloudflare Pages version if one exists."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    completed_commit: "PENDING"
+  - task_id: "TASK-OAI-D-002"
+    phase: "D"
+    objective: "Execute authorized Cloudflare Pages direct upload and verify Cloudflare Access protection for Memory Atlas."
+    scope: ["Wrangler authentication", "Cloudflare Pages direct upload", "Access challenge verification", "allowed-user app load", "/memory_atlas.json live fetch", "sanitized live evidence"]
+    non_scope: ["committing Cloudflare tokens", "publishing raw exports", "bypassing Access", "adding finance/trading agent write permissions"]
+    status: "blocked"
+    dependencies: ["TASK-OAI-D-001"]
+    required_files: ["OpenAIDatabase/docs/MEMORY_ATLAS_CLOUDFLARE_RUNBOOK.md", "OpenAIDatabase/config/cloudflare/live_deploy_evidence.template.json"]
+    acceptance_ids: ["ACC-OAI-D-002"]
+    test_commands: ["MEMORY_ATLAS_CLOUDFLARE_AUTHORIZED=I_AUTHORIZE_THIS_DEPLOY python3 scripts/deploy_memory_atlas_cloudflare.py --execute", "npx wrangler pages deployment list --project-name openai-memory-atlas", "python3 scripts/audit_memory_atlas_goal_completion.py --publish-dir apps/memory-atlas/dist --live-evidence <sanitized_live_evidence.json> --require-complete"]
+    test_results: ["BLOCKED: local wrangler whoami reports not authenticated; required live env vars CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN, MEMORY_ATLAS_ACCESS_HOSTNAME, and MEMORY_ATLAS_ALLOWED_EMAIL are absent"]
+    evidence_refs: ["OpenAIDatabase/docs/MEMORY_ATLAS_CLOUDFLARE_RUNBOOK.md", "OpenAIDatabase/config/cloudflare/pages_direct_upload.template.json", "OpenAIDatabase/config/cloudflare/access_self_hosted_application.template.json"]
+    risk: "Without live Access verification, deployment cannot be treated as protected or production-ready."
+    rollback: "Do not execute live upload until auth/env exists; if a live deploy later fails, roll back to the previous Pages deployment version and keep main commit as source evidence."
+    target_version: "0.2.0"
     completed_version: ""
   - task_id: "TASK-OAI-E-001"
     phase: "E"

@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 11
+task_count: 12
 
 ## Phase A - Discovery and Baseline
 
@@ -158,18 +158,36 @@ task_count: 11
 
 - task_id: TASK-OAI-D-001
 - phase: D
-- objective: Run full app, local launcher, Cloudflare, and visual acceptance gates after governance baseline.
-- scope: Memory Atlas build, release audit, visual acceptance, app runtime, Cloudflare preflight.
-- non_scope: installing dependencies in this baseline run.
-- status: planned
+- objective: Run Memory Atlas main-branch release acceptance after data-guide rename, Codex auto-update scheduling, and deployment snapshot refresh.
+- scope: main branch merge, redacted visualization snapshot, frontend build, release audit, visual acceptance, Memory Atlas acceptance, Cloudflare Pages + Access preflight, OpenAIDatabase unit tests.
+- non_scope: live Cloudflare Pages upload without credentials, Cloudflare Access policy mutation, raw exports, plaintext secrets, production readiness promotion.
+- status: completed
 - dependencies: TASK-OAI-A-004
-- required files:
+- required files: `apps/memory-atlas/src/App.tsx`, `scripts/install_codex_weekly_sync.py`, `scripts/run_codex_memory_auto_update.py`, `data/derived/visualization/memory_atlas.json`, `tests/test_memory_atlas_visual_acceptance.py`
 - acceptance_ids: ACC-OAI-D-001
-- test commands:
-- evidence:
-- risk: focused tests are not full release readiness.
-- rollback: keep required governance gate but do not claim full release.
-- target version: 0.1.0
+- test commands: snapshot build, `npm ci`, `npm run lint`, `npm run build`, release audit, visual acceptance, Memory Atlas acceptance, Cloudflare preflight, unittest discover, deploy dry-run, wrangler auth check.
+- evidence: local gates passed; deploy dry-run command contract valid; live deploy blocked by missing Wrangler authentication and Cloudflare live env vars.
+- risk: live Cloudflare upload and Access verification remain unproven.
+- rollback: revert main merge/snapshot/test/governance commits and roll back Pages deployment if a live deploy later exists.
+- target version: 0.2.0
+- completed version: 0.2.0
+
+### TASK-OAI-D-002
+
+- task_id: TASK-OAI-D-002
+- phase: D
+- objective: Execute authorized Cloudflare Pages direct upload and verify Cloudflare Access protection for Memory Atlas.
+- scope: Wrangler authentication, Cloudflare Pages direct upload, Access challenge verification, allowed-user app load, `/memory_atlas.json` live fetch, sanitized live evidence.
+- non_scope: committing Cloudflare tokens, publishing raw exports, bypassing Access, adding finance/trading agent write permissions.
+- status: blocked
+- dependencies: TASK-OAI-D-001
+- required files: `docs/MEMORY_ATLAS_CLOUDFLARE_RUNBOOK.md`, `config/cloudflare/live_deploy_evidence.template.json`
+- acceptance_ids: ACC-OAI-D-002
+- test commands: authorized deploy helper, `npx wrangler pages deployment list --project-name openai-memory-atlas`, strict goal-completion audit with sanitized live evidence.
+- evidence: blocked because local wrangler is not authenticated and `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `MEMORY_ATLAS_ACCESS_HOSTNAME`, and `MEMORY_ATLAS_ALLOWED_EMAIL` are absent.
+- risk: without live Access verification, deployment cannot be treated as protected or production-ready.
+- rollback: do not execute live upload until auth/env exists; if a live deploy later fails, roll back to the previous Pages deployment version.
+- target version: 0.2.0
 - completed version:
 
 ## Phase E - Delivery and Operation

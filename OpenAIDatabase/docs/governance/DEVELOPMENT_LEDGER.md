@@ -4,17 +4,18 @@
 
 - product version: 0.2.0
 - product version status: provisional
-- current phase: B - semantic extractor coverage
-- current gate: GOV-SEMANTIC-OAIDB-in-progress
-- confirmed iterations: 6
-- reconstructed development events: 15
-- current task: GOV-SEMANTIC-OAIDB-001; latest remediation task S3PDT01 completed
-- blockers: remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
+- current phase: D - Memory Atlas local release acceptance
+- current gate: MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED
+- confirmed iterations: 7
+- reconstructed development events: 16
+- current task: TASK-OAI-D-002 blocked by Cloudflare authentication/env; latest completed task TASK-OAI-D-001 local release acceptance
+- blockers: live Wrangler authentication, Cloudflare account/token/hostname/allowed-email env, remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records six confirmed iterations: the baseline run, three TASK-OAI-C-002
+records seven confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
-extractor rollout run, and the S3PDT01 synthetic privacy-boundary run.
+extractor rollout run, the S3PDT01 synthetic privacy-boundary run, and the
+TASK-OAI-D-001 Memory Atlas local release/preflight run.
 
 ## Phase Matrix
 
@@ -23,7 +24,7 @@ extractor rollout run, and the S3PDT01 synthetic privacy-boundary run.
 | A | Discovery and baseline | completed | `MODEL_SPEC.md`, registries, scoped git log |
 | B | Model and data specification | in_progress | `GOV-SEMANTIC-OAIDB-001` partial machine semantic coverage; `TASK-OAI-B-001` calibration evidence gap |
 | C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, evaluation harness, and non-empty four-category run-log evidence |
-| D | Verification and hardening | planned | Focused tests run in this baseline; full app/deploy acceptance remains planned |
+| D | Verification and hardening | in_progress | TASK-OAI-D-001 local release/visual/acceptance/Cloudflare preflight passed; TASK-OAI-D-002 live Cloudflare deploy remains auth-blocked |
 | E | Delivery and operation | completed for governance baseline | OpenAIDatabase project validator passed and `governance/projects.yaml` ci_mode is required |
 
 ## Iteration Record
@@ -171,6 +172,30 @@ extractor rollout run, and the S3PDT01 synthetic privacy-boundary run.
 - remaining risks: owner privacy signoff, adversarial leakage-rate report, gold labels, retrieval metrics, and production write approval remain unresolved.
 - rollback: revert privacy guard, focused privacy test, `.gitignore` additions, S3PD evidence, governance docs, rendered human entry files, root governance test, and run manifest.
 - next step: continue to S3PDT02 for FIFA fail-closed validation.
+
+### ITER-20260626-OAIDB-D001
+
+- date: 2026-06-26
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- base commit: 2736d8db37398aac4e12ff12dccd5f2f8bc88d05
+- result commit: PENDING
+- task IDs: TASK-OAI-D-001, TASK-OAI-D-002
+- objective: merge the Memory Atlas data-guide branch into main, refresh the redacted deployment snapshot, and rerun local Cloudflare Pages deployment acceptance gates.
+- assumptions: Cloudflare direct upload remains an explicitly authorized external write; local build/preflight can pass without live credentials, but live deployment and Access verification cannot be claimed without Wrangler/API-token auth.
+- files read: root and OpenAIDatabase `AGENTS.md`, Memory Atlas package/build config, Cloudflare runbook/templates, deployment scripts, GitHub workflow definitions, and current governance files.
+- files changed: Memory Atlas UI/data-guide source, redacted visualization snapshot, Codex auto-update scripts/tests, Cloudflare/visual acceptance scripts, OpenAIDatabase governance files, and the data-guide visual acceptance unit test.
+- model changes: no new model; `data_guide` visual layer and Monday/Friday 03:00 Codex sync cadence were registered as PARAM-093 and PARAM-094.
+- parameter changes: added PARAM-093 and PARAM-094; no calibration or scoring weights were promoted.
+- commands: `python3 scripts/build_memory_atlas_data.py --database-dir . --output data/derived/visualization/memory_atlas.json`; `npm ci --prefix apps/memory-atlas`; `npm run lint --prefix apps/memory-atlas`; `npm run build --prefix apps/memory-atlas`; `python3 scripts/audit_memory_atlas_release.py --publish-dir apps/memory-atlas/dist`; `python3 scripts/audit_memory_atlas_visual_acceptance.py --repo-root .`; `python3 scripts/audit_memory_atlas_acceptance.py --repo-root . --publish-dir apps/memory-atlas/dist`; `python3 scripts/preflight_cloudflare_pages_access.py --repo-root . --publish-dir apps/memory-atlas/dist`; `python3 -m unittest discover -s tests -p "test_*.py" -q`; `python3 scripts/deploy_memory_atlas_cloudflare.py --repo-root .`; `npx wrangler whoami`.
+- test results: snapshot PASS with 278 active memories, 201 conversations, 657 nodes, 3500 edges, generated_at 2026-06-26T11:49:34.986Z; npm ci PASS with 0 vulnerabilities; lint PASS; build PASS with chunk-size warning only; release audit PASS with 6 publish files; visual acceptance PASS with 24 checks; Memory Atlas acceptance PASS; Cloudflare preflight PASS; OpenAIDatabase unittest discover PASS with 43 tests; deploy helper DRY_RUN PASS; wrangler whoami blocked because not authenticated.
+- successes: main was updated to include data-guide UI contract, auto-sync cadence, and latest redacted snapshot; local Pages publish directory passed release safety and Access preflight.
+- failures: live Cloudflare Pages upload, Access challenge verification, allowed-user app load, and `/memory_atlas.json` live fetch did not run because Wrangler is unauthenticated and live Cloudflare env vars are absent.
+- decisions: keep product version at 0.2.0 and delivery_readiness FAILED; do not claim production deployment or privacy readiness.
+- remaining risks: live Access policy correctness, production hostname, Cloudflare account permissions, and safe agent access remain unverified.
+- rollback: revert the main merge/snapshot/test/governance commits and, if a live deploy later exists, roll back to the previous successful Cloudflare Pages deployment version.
+- next step: provide Cloudflare auth/env, then run TASK-OAI-D-002 and write sanitized live evidence.
 
 ## Reconstructed Development Events
 

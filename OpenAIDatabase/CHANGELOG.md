@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - Memory Atlas Data Guide and Cloudflare Preflight
+
+- Renamed the Memory Atlas Notion relationship map to `数据导图` and changed it to a four-column framework map for source/theme, profile/preference, project/decision, and action/opportunity analysis.
+- Refreshed the redacted Memory Atlas visualization snapshot for the main-branch deployment build.
+- Added Codex memory auto-update runtime support for Monday/Friday 03:00 scheduled refresh and backup flow.
+- Re-ran local release, visual, acceptance, Cloudflare Pages + Access preflight, and unit-test gates after merging to main.
+- Recorded that live Cloudflare Pages deployment remains blocked by missing local Wrangler authentication and missing `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `MEMORY_ATLAS_ACCESS_HOSTNAME`, and `MEMORY_ATLAS_ALLOWED_EMAIL` environment variables.
+
+No raw exports, plaintext secrets, cookies, browser profiles, direct frontend active-memory mutation, model-calibration claim, or production delivery-readiness promotion was added.
+
 ## Unreleased - Other8 S3PDT01 Privacy Boundary
 
 - Added `scripts/privacy_guard.py` to import raw private sources only from external or ignored private locations and persist redacted derived outputs with an audit log.
