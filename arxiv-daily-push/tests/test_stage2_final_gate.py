@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -227,6 +227,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "B-013": ("PHASE_S2PMT05_RESULT_VALIDITY_B013.md", "ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"),
             "B-014": ("PHASE_S2PMT05_BACKPRESSURE_B014.md", "ADP-S2PMT05-BACKPRESSURE-B014-20260627.json"),
             "B-015": ("PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md", "ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json"),
+            "C-001": (
+                "PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md",
+                "ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json",
+            ),
         }
         stale_refs = {
             "A-006": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
@@ -269,13 +273,18 @@ class Stage2FinalGateTests(unittest.TestCase):
             "B-013": ("ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626.json", "S2PHT05"),
             "B-014": ("ADP-S2PMT05-STRESS-E2E-20260626.json",),
             "B-015": ("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json",),
+            "C-001": (
+                "PHASE_S2PIT01_USER_CENTER.md",
+                "ADP-S2PIT01-USER-CENTER-20260625.json",
+                "docs/owner/00_用户中心/00_开始这里.md",
+            ),
         }
 
         findings = {finding["finding_id"]: finding for finding in manifest["p1_findings"]}
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",

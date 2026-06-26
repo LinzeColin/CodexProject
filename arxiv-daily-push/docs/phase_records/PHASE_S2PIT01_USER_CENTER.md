@@ -3,13 +3,13 @@
 - task_id: `S2PIT01`
 - acceptance_id: `ACC-S2PIT01-USER-CENTER`
 - phase: `S2PI`
-- status: `completed_local_validation_pending_pr_ci`
+- status: `completed_local_validation_current_shallow_user_center`
 - generated_at: `2026-06-25T23:59:40+10:00`
 - current_contract: `ADP-PRODUCT-CONTRACT-V7.2`
 
 ## Scope
 
-S2PIT01 adds deterministic evidence for the Chinese `00_用户中心` first screen and the one-edit control entry. The owner-facing entry separates four common control domains: profile, mail/review, source/boards, and budget/schedule.
+S2PIT01 adds deterministic evidence for the shallow GitHub Chinese `用户中心/README.md` first screen and the one-edit control entry. The owner-facing entry separates four common control domains: profile, mail/review, source/boards, and budget/schedule. Historical `docs/owner/00_用户中心/*` pages may remain as compatibility pointers, but they are not the primary owner-reading entry.
 
 ## Acceptance Evidence
 
@@ -17,7 +17,8 @@ S2PIT01 adds deterministic evidence for the Chinese `00_用户中心` first scre
 - The report requires `owner_controls` validation to pass.
 - The report requires a read-only SQLite storage inspect report to pass.
 - The report requires exactly one editable fact source: `config/owner_controls.yaml`.
-- Common controls must be reachable within two clicks.
+- Current required user-center paths are `用户中心/README.md` and `用户中心/一看三查.md`.
+- Common controls must be reachable within two clicks from the shallow GitHub user center.
 - Every control domain compiles back to `config/owner_controls.yaml`.
 
 ## Non-Scope

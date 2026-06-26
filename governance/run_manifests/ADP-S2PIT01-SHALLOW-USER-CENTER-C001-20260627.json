@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PIT01-SHALLOW-USER-CENTER-C001",
+  "parent_task_id": "S2PIT01",
+  "acceptance_id": "ACC-S2PIT01-USER-CENTER",
+  "inherited_finding": "C-001",
+  "phase": "S2PI",
+  "generated_at": "2026-06-27T04:55:54+10:00",
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "status": "completed_local_validation_no_closure_no_production",
+  "result": "c001_shallow_user_center_local_evidence_no_closure_no_production",
+  "summary": "Dedicated local C-001 evidence proves S2PIT01 uses the shallow GitHub user center README and one-look-three-check page as required owner-facing paths, blocks old deep-only user-center paths, preserves one editable fact source, keeps two-click reachability, and leaves all production side effects disabled.",
+  "required_user_center_paths": [
+    "用户中心/README.md",
+    "用户中心/一看三查.md"
+  ],
+  "observed_user_center_paths": [
+    "用户中心/README.md",
+    "用户中心/一看三查.md"
+  ],
+  "legacy_deep_owner_paths_primary": false,
+  "missing_required_paths_blocks_report": true,
+  "max_click_depth": 2,
+  "control_domains_observed": [
+    "budget_schedule",
+    "mail_review",
+    "profile",
+    "source_boards"
+  ],
+  "report_hash": "sha256:d79901a4725fd2d4eb1dbfeaafcede98e5661d8691faddf452f16fbb5ee50fc9",
+  "user_center_readme_hash": "sha256:9200146a3616339636f13db7d21ee56ace03790acb187e9c617c5339cc5747ca",
+  "one_look_three_check_hash": "sha256:54ff3b8df9f91f283ad2b2211108ef5f7c24fb16e8256b6b2c6e847059d3d342",
+  "model_ids_changed": [
+    "MOD-ADP-079"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-081"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-613"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/用户中心/README.md",
+    "arxiv-daily-push/用户中心/一看三查.md"
+  ],
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "email_frontstage_changed": false,
+    "integrated_production_accepted": false,
+    "inherited_p0_p1_closed": false,
+    "owner_experience_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "source_or_board_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "stage2_integrated_production_accepted": false,
+  "rollback": "Revert the S2PIT01 shallow user-center path constant/test changes, C-001 phase record, manifest, P1 receipt refresh, semantic registry updates, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PIT01/Stage2 source tests: 166 OK",
+    "focused S2PMT07 final-gate tests: 14 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 550 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect added-line scan: OK",
+    "open_pr_count: 0"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py scripts/lean_governance.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "git diff --check",
+    "production-side-effect added-line scan over changed and untracked files",
+    "GitHub REST API open PR count"
+  ]
+}

@@ -902,8 +902,8 @@ Uncovered planned scenarios:
 ## S2PIT01 Chinese User Center Evidence
 
 - `MOD-ADP-079` / `FORM-ADP-081` define local owner-experience evidence for `S2PIT01`.
-- The only editable fact source is `config/owner_controls.yaml`; `docs/owner/00_用户中心/*` and generated owner views are read-only navigation or render artifacts.
-- Passing S2PIT01 requires owner_controls validation, read-only storage inspect status, four control domains, two-click reachability, compatible config compilation, and all production/schema/email side-effect flags false.
+- The only editable fact source is `config/owner_controls.yaml`; shallow GitHub `用户中心/README.md` and `用户中心/一看三查.md` are the required owner-facing entry paths; `docs/owner/00_用户中心/*` and generated owner views are compatibility pointers or read-only render artifacts.
+- Passing S2PIT01 requires owner_controls validation, read-only storage inspect status, four control domains, shallow GitHub user-center paths, two-click reachability, compatible config compilation, and all production/schema/email side-effect flags false. Missing required shallow user-center paths blocks the report.
 - S2PIT01 does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, or Email V1 runtime change.
 
 ## S2PHT05 Content Quality Gate Evidence
