@@ -1,11 +1,11 @@
 project_id: "whkmSalary"
-as_of_event_id: "EVT-REVIEW6-FINAL-whkmSalary-001"
-source_snapshot_hash: "sha256:b190230ef658988d8c88a0d5f6e1d3d4c388c3d60ee185a96f7dbf2bbcf64359"
+as_of_event_id: "EVENT-WHKM-20260625-S4PCT02"
+source_snapshot_hash: "sha256:e50caa7ad2aec3d44f5b788fd0d357ace57d7fff8fd4aee20f85cc583c08b094"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T00:24:25Z"
+snapshot_event_time: "2026-06-25T00:00:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -63,7 +63,7 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 0
+    tree_bound_events: 4
     commit_bound_events: 1
     legacy_unbound_events: 4
     precommit_pending_events: 0
@@ -71,7 +71,7 @@ dimensions:
       - "whkmSalary/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "GOV-SEMANTIC-WHKM-in-progress"
+  release_gate: "S4PC-GATE-in-progress"
   blocker_ids:
     - "FACT-whkmSalary-EMPIRICAL-EVIDENCE"
     - "FACT-whkmSalary-IMPLEMENTATION-FORMULA-REVIEW"

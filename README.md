@@ -26,7 +26,6 @@ Active Codex-related project hub for LinzeColin.
 |---|---|---|
 | `Alpha` | `Alpha` | https://github.com/LinzeColin/Alpha |
 | `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
-| `EVA_OS` | `EVA_OS` | https://github.com/LinzeColin/EVA_OS |
 | `FIFA` | `FIFA` | https://github.com/LinzeColin/FIFA |
 | `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |

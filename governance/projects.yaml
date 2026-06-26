@@ -77,11 +77,6 @@ projects:
     ci_mode: "required"
     migration:
       version: "lean-v2"
-  - project_id: "EVA_OS"
-    path: "EVA_OS"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "FIFA"
     path: "FIFA"
     ci_mode: "required"

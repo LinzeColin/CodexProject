@@ -7,7 +7,6 @@ Alpha 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVE
 ## 2. 本次运行改变了什么
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
-S3PBT01 证明 ApprovalQueue 与 PaperBroker 的本地 JSON 持久化现在通过锁和原子替换避免并发覆盖；S3PBT02 证明停止状态不再虚报、PID 文件清理更保守；S3PBT03 证明磁盘错误、强制终止、陈旧 PID 复用和 stop 后不写入的本地故障注入路径。三者都不启用真实 broker 或实盘交易。
 
 ## 3. 为什么重要
 
@@ -83,12 +82,12 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
-- tree_bound_events: `0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- tree_bound_events: `3`
 - commit_bound_events: `1`
 - legacy_unbound_events: `5`
 - precommit_pending_events: `0`
-- pending_or_stale_events: `5`
+- pending_or_stale_events: `8`
 
 ## 15. UNKNOWN
 
@@ -98,8 +97,8 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:ccc4c719f6239884bb0a1cfcdb22864b65a8d1dd7b2ee27f2d30763eb8b953f5`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:29f122fad6497014bb26f65ef7488255d0735cb560e92fa1359a98a0db415737`
+- snapshot_event_time: `2026-06-24T00:00:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `S3PB / S3PB-GATE-complete-technical`
@@ -107,4 +106,4 @@ Alpha remains FAILED for operational/delivery readiness and cannot support produ
 ## 17. Next Unique Task
 
 - task_id: `TASK-ALPHA-B-001`
-- reason: S3PB technical hardening is complete-technical, but production market validation, broker paper integration, live execution policy, multi-year validation, and cost/slippage calibration remain blocked before any release-readiness claim.
+- reason: Resolve production validation and execution-policy UNKNOWN items before release readiness.

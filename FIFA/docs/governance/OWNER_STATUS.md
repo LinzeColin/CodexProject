@@ -6,7 +6,7 @@ FIFA 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 或 S3PDT02 失败关闭证据误读为模型有效、可下注或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -43,7 +43,7 @@ FIFA remains UNVERIFIED and cannot support value/recommendation claims.
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
-- operational_validation: `FAILED` (S3PDT02 proves fake-success deliverables are suppressed on synthetic parse/validation failure, but TAB truth and production readiness remain unverified)
+- operational_validation: `FAILED`
 - delivery_evidence: `UNVERIFIED`
 - evidence_freshness: `PARTIAL`
 - delivery_readiness: `UNVERIFIED`
@@ -59,7 +59,6 @@ FIFA remains UNVERIFIED and cannot support value/recommendation claims.
 1. 17 active parameters need semantic review
 2. TAB production evidence not claimed
 3. research_owner + risk_owner must provide project-specific evidence before readiness can improve.
-4. S3PDT02 uses synthetic fail-closed fixtures only and does not replace authorized TAB data, private snapshot, manual signature, or owner readiness evidence.
 
 ## 11. Evidence Required To Unblock
 
@@ -79,18 +78,16 @@ FIFA remains UNVERIFIED and cannot support value/recommendation claims.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress`
-- latest_remediation_task: `S3PDT02`
-- latest_remediation_result: default parse/validation/export failure closure passed focused local evidence; no delivery readiness promotion
+- release_gate: `S3PD-GATE-IN-PROGRESS; S5PB-GATE-IN-PROGRESS`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `5`
 - legacy_unbound_events: `3`
-- precommit_pending_events: `0`
-- pending_or_stale_events: `4`
+- precommit_pending_events: `1`
+- pending_or_stale_events: `5`
 
 ## 15. UNKNOWN
 
@@ -100,11 +97,11 @@ FIFA remains UNVERIFIED and cannot support value/recommendation claims.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:530356704dc42bfb7daf833344320167bde1a78e4623046130ddc691d6d6f76a`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:0d38f9c46f563aea165f54162ab9b4b7dd72d00051446ba2924efea10771f778`
+- snapshot_event_time: `2026-06-24T22:05:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `S3PD / S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress`
+- phase/gate: `S3PD / S3PD-GATE-IN-PROGRESS; S5PB-GATE-IN-PROGRESS`
 
 ## 17. Next Unique Task
 

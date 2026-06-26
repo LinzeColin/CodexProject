@@ -4,10 +4,10 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:c8aa1214df10812313d0534bf02cf6f760edc80ad431d353ef2174def99d2efc`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:7add22a5c7c8324482fc956ba199008ae5ce6d02e9e7d3d9f5b8e4f3578a7d6e`
+- snapshot_event_time: `2026-06-24T20:15:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -37,8 +37,7 @@
 - Readiness: `UNVERIFIED`
 - Release gate: `GOV-SEMANTIC-OPME-in-progress`
 - Next executable task: `TASK-OPME-B-001`
-- Latest remediation task: `S3PCT01` lifecycle contract completed; next remediation task is `S3PCT02`.
-- Pending/stale events: `6`
+- Pending/stale events: `7`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
 - Legacy unbound events: `6`

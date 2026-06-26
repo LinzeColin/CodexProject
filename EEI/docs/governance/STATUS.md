@@ -2,12 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `058c792f8376312842784533016d8716f9177dae`
+- source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
+- source_snapshot_hash: `sha256:c1ac83658310a4704bb9924c2ce78f5e63627d4593bcbc3ee40d5d9ca2bb0b3e`
 - snapshot_event_time: `2026-06-26T09:18:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PENDING:064caf7f32e4ff612fb95d4b15f24944fd9da0c6; Project Governance #690 failed changed-only companion validation and is being repaired`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -36,8 +36,8 @@
 
 - Readiness: `FAILED`
 - Release gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
-- Next executable task: `TASK-T1307`
-- Pending/stale events: `100`
+- Next executable task: `TASK-T1301`
+- Pending/stale events: `103`
 - Tree-bound events: `0`
 - Commit-bound events: `18`
 - Legacy unbound events: `19`

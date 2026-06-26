@@ -4,17 +4,17 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:b190230ef658988d8c88a0d5f6e1d3d4c388c3d60ee185a96f7dbf2bbcf64359`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:e50caa7ad2aec3d44f5b788fd0d357ace57d7fff8fd4aee20f85cc583c08b094`
+- snapshot_event_time: `2026-06-25T00:00:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `whkmSalary`
 - Path: `whkmSalary`
 - Product version: `0.0.0`
-- Phase/Gate: `S4PC / S4PC-GATE-in-progress`; delivery remains `S3PA-GATE-owner-blocked`
+- Phase/Gate: `S4PC / S4PC-GATE-in-progress`
 - Models/Formulas/Parameters total: `2 / 10 / 80`
 - Active formulas/parameters: `10 / 80`
 - Machine checked formulas/parameters: `9 / 78`
@@ -35,37 +35,10 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S3PA-GATE-owner-blocked`
-- Next executable task: `S3PA phase gate summary or owner policy decision evidence`
-- Pending/stale events: `4`
-- Tree-bound events: `0`
+- Release gate: `S4PC-GATE-in-progress`
+- Next executable task: `TASK-WHKM-B-001`
+- Pending/stale events: `8`
+- Tree-bound events: `4`
 - Commit-bound events: `1`
 - Legacy unbound events: `4`
 - Unresolved fact IDs: `7`
-
-## S3PAT01 Boundary Update
-
-- `score_settlement`, `score_invoice`, and `score_payback` now reject workday inputs below 1 with `ValueError` before weighted total calculation.
-- Streamlit settlement, invoice, and payback day inputs now use `min_value=1`; defaults remain `10`, `10`, and `30`.
-- Readiness remains `FAILED`; zero-day business meaning, policy source, tax basis, rounding, and payroll reconciliation remain blocked under `TASK-WHKM-B-001`.
-
-## S3PAT02 Weight Validation Update
-
-- `resolve_weights` now validates metric keys, finite non-negative values, and total weight 1.0 before weighted salary calculation.
-- Streamlit no longer carries a duplicate `province_weights` table; province choices and weights come from `salary_logic.projects`.
-- No weight active values were recalibrated or owner-approved in this task; weight policy source, rounding, tax basis, and payroll reconciliation remain blocked under `TASK-WHKM-B-001`.
-
-## S3PAT03 Rounding Update
-
-- Monetary outputs `perf_money`, `total_salary`, and `after_tax_salary` now use Decimal `ROUND_HALF_UP` rounding to cents through `round_money`.
-- The existing 湖北 regression fixture remains unchanged: `total_score=13.875`, `perf_money=4995.0`, `total_salary=22995.0`, `after_tax_salary=22305.15`.
-- Deployment dependencies are pinned in `requirements.txt`; local Streamlit runtime smoke is not claimed because `streamlit` and `pandas` are not installed locally.
-- Readiness remains `FAILED`; owner policy, legal/tax basis, and historical reconciliation remain blocked under `TASK-WHKM-B-001`.
-
-## S4PCT02 Structure Update
-
-- Runtime implementation now lives under `src/whkm_salary/`; root `salary_logic.py` and `streamlit_app.py` are compatibility wrappers only.
-- `tests/` remains the test boundary and now covers package/root compatibility; `config/structure_contract.yaml` records structure ownership only and does not carry salary policy parameters.
-- Chinese owner entries remain `功能清单`, `开发记录`, and `模型参数文件`, rendered from Lean v2 governance files.
-- `Procfile` startup remains `streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0`.
-- Delivery readiness remains `FAILED`; this structure migration does not approve payroll policy, tax basis, rounding law, or real payroll use.

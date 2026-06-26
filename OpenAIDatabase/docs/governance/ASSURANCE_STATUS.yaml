@@ -1,11 +1,11 @@
 project_id: "OpenAIDatabase"
-as_of_event_id: "EVT-REVIEW6-FINAL-OpenAIDatabase-001"
-source_snapshot_hash: "sha256:7ded278950b6c173d70973ec00eb0c80286b8ff28900e1ed583c31a93b4491f3"
+as_of_event_id: "ITER-20260626-OAIDB-D001"
+source_snapshot_hash: "sha256:bbec5b8736622a8f1e07d68e21e6d78e4c05d1ac941d8664304a25c5fa98c84e"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T00:24:25Z"
+snapshot_event_time: "2026-06-26T21:56:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -66,12 +66,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 6
-    precommit_pending_events: 0
+    precommit_pending_events: 2
     evidence_refs:
       - "OpenAIDatabase/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED"
+  release_gate: "S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED"
   blocker_ids:
     - "FACT-OpenAIDatabase-EMPIRICAL-EVIDENCE"
     - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
@@ -79,16 +79,16 @@ delivery_readiness:
     - "FACT-OpenAIDatabase-OPERATIONAL-EVIDENCE"
     - "GOV-SEMANTIC-OAIDB-001"
     - "TASK-OAI-B-001"
-    - "TASK-OAI-D-002"
+    - "TASK-OAI-D-001"
 next_executable_task:
-  task_id: "TASK-OAI-D-002"
+  task_id: "TASK-OAI-B-001"
   status: "blocked"
-  reason: "Execute authorized Cloudflare Pages upload and Access verification after Wrangler/API-token credentials and live env vars are available."
+  reason: "Resolve UNKNOWN calibration evidence for heuristic weights and thresholds."
   acceptance_ids:
-    - "ACC-OAI-D-002"
+    - "ACC-OAI-B-001"
   owner: "privacy_owner + product_owner"
   human_owner_role: "privacy_owner + product_owner"
-  unblock_condition: "Configure Wrangler login or Cloudflare account/token/hostname/allowed-email env vars without committing secrets."
+  unblock_condition: "Heuristic constants may be mistaken for calibrated values."
   stale_candidates: []
 owner_decision:
   required: true
