@@ -26,6 +26,9 @@ def deliver_notification(
     notification: EmailNotification,
     *,
     generated_at: str,
+    cycle_id: str | None = None,
+    product_id: str = "notification",
+    content_revision_id: str | None = None,
     allow_send: bool = False,
     env: Mapping[str, str] | None = None,
     smtp_factory: SmtpFactory | None = None,
@@ -35,7 +38,13 @@ def deliver_notification(
     """Return a delivery evidence report and only send when explicitly allowed."""
 
     environment = env if env is not None else os.environ
-    delivery_id = _delivery_id(notification, generated_at)
+    identity = _delivery_identity(
+        notification,
+        generated_at=generated_at,
+        cycle_id=cycle_id,
+        product_id=product_id,
+        content_revision_id=content_revision_id,
+    )
     env_gate = _env_gate(environment)
     try:
         requested_timeout = int(timeout_seconds)
@@ -44,11 +53,16 @@ def deliver_notification(
     timeout_valid = 1 <= requested_timeout <= SMTP_MAX_TIMEOUT_SECONDS
     timeout = requested_timeout if timeout_valid else SMTP_TIMEOUT_SECONDS
     base = {
-        "delivery_id": delivery_id,
+        "delivery_id": identity["delivery_id"],
+        "mail_key": identity["mail_key"],
+        "content_revision_id": identity["content_revision_id"],
+        "message_id": identity["message_id"],
         "validator_id": SMTP_DELIVERY_MODEL_ID,
         "project_id": "arxiv-daily-push",
         "project_name": PROJECT_NAME,
         "generated_at": generated_at,
+        "cycle_id": identity["cycle_id"],
+        "product_id": identity["product_id"],
         "recipient": notification.recipient,
         "expected_recipient": DEFAULT_RECIPIENT,
         "subject": notification.subject,
@@ -67,13 +81,15 @@ def deliver_notification(
             "secret_values_logged": False,
         },
         "message": {
-            "body_sha256": hashlib.sha256(notification.body.encode("utf-8")).hexdigest(),
-            "html_body_sha256": hashlib.sha256(notification.html_body.encode("utf-8")).hexdigest()
-            if notification.html_body
-            else "",
+            "mail_key": identity["mail_key"],
+            "mail_key_components": identity["mail_key_components"],
+            "content_revision_id": identity["content_revision_id"],
+            "body_sha256": identity["body_sha256"],
+            "html_body_sha256": identity["html_body_sha256"],
             "html_alternative_present": bool(notification.html_body),
             "body_logged": False,
-            "message_id": delivery_id,
+            "message_id": identity["message_id"],
+            "resend_policy": "same_mail_key_and_content_revision_retry_keeps_message_id; content_revision_change_requires_explicit_supersede_or_resend",
         },
         "blocking_reasons": [],
     }
@@ -91,7 +107,7 @@ def deliver_notification(
     port = int(str(environment["ADP_SMTP_PORT"]))
     username = str(environment["ADP_SMTP_USERNAME"])
     password = str(environment["ADP_SMTP_PASSWORD"])
-    message = _email_message(notification, sender=username, delivery_id=delivery_id)
+    message = _email_message(notification, sender=username, identity=identity)
     factory = smtp_factory or smtplib.SMTP
     try:
         with factory(host, port, timeout=timeout) as smtp:
@@ -108,7 +124,7 @@ def deliver_notification(
     sent = dict(base)
     sent["status"] = "sent"
     sent["dry_run"] = False
-    sent["delivery_ref"] = f"smtp://message/{delivery_id}"
+    sent["delivery_ref"] = f"smtp://message/{identity['delivery_id']}"
     return sent
 
 
@@ -128,6 +144,14 @@ def validate_smtp_delivery_report(report: Mapping[str, Any]) -> list[str]:
     message = report.get("message")
     if not isinstance(message, Mapping) or not message.get("body_sha256") or message.get("body_logged") is not False:
         errors.append("smtp delivery report must include body_sha256 and must not log body")
+    elif (
+        not message.get("mail_key")
+        or not message.get("content_revision_id")
+        or not str(message.get("message_id") or "").startswith("<")
+        or "@" not in str(message.get("message_id") or "")
+        or "supersede_or_resend" not in str(message.get("resend_policy") or "")
+    ):
+        errors.append("smtp delivery message identity must include mail_key, content_revision_id, standard Message-ID, and resend policy")
     if report.get("status") == "sent" and not report.get("delivery_ref"):
         errors.append("sent smtp delivery requires delivery_ref")
     if report.get("status") == "blocked" and not report.get("blocking_reasons"):
@@ -137,13 +161,15 @@ def validate_smtp_delivery_report(report: Mapping[str, Any]) -> list[str]:
     return errors
 
 
-def _email_message(notification: EmailNotification, *, sender: str, delivery_id: str) -> EmailMessage:
+def _email_message(notification: EmailNotification, *, sender: str, identity: Mapping[str, Any]) -> EmailMessage:
     message = EmailMessage()
     message["From"] = sender
     message["To"] = notification.recipient
     message["Subject"] = notification.subject
-    message["X-ADP-Delivery-ID"] = delivery_id
-    message["Message-ID"] = f"<{_message_id_local_part(delivery_id)}@{SMTP_MESSAGE_ID_DOMAIN}>"
+    message["X-ADP-Delivery-ID"] = identity["delivery_id"]
+    message["X-ADP-Mail-Key"] = identity["mail_key"]
+    message["X-ADP-Content-Revision-ID"] = identity["content_revision_id"]
+    message["Message-ID"] = identity["message_id"]
     message.set_content(notification.body)
     if notification.html_body:
         message.add_alternative(notification.html_body, subtype="html")
@@ -179,12 +205,51 @@ def _blocked(base: Mapping[str, Any], reasons: list[str]) -> dict[str, Any]:
     return blocked
 
 
-def _delivery_id(notification: EmailNotification, generated_at: str) -> str:
+def _delivery_identity(
+    notification: EmailNotification,
+    *,
+    generated_at: str,
+    cycle_id: str | None,
+    product_id: str,
+    content_revision_id: str | None,
+) -> dict[str, Any]:
     body_hash = hashlib.sha256(notification.body.encode("utf-8")).hexdigest()
     html_hash = hashlib.sha256(notification.html_body.encode("utf-8")).hexdigest() if notification.html_body else ""
-    payload = "|".join([generated_at, notification.recipient, notification.subject, body_hash, html_hash])
-    digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
-    return f"smtp-delivery:{digest}"
+    normalized_cycle_id = str(cycle_id or generated_at)
+    normalized_product_id = str(product_id or "notification")
+    mail_key = _mail_key(normalized_cycle_id, normalized_product_id, notification.recipient)
+    revision_id = content_revision_id or _content_revision_id(notification, body_hash=body_hash, html_hash=html_hash)
+    delivery_seed = "|".join([mail_key, revision_id])
+    delivery_id = f"smtp-delivery:{hashlib.sha256(delivery_seed.encode('utf-8')).hexdigest()[:16]}"
+    message_local = _message_id_local_part(
+        "adp-"
+        + hashlib.sha256("|".join(["message", mail_key, revision_id]).encode("utf-8")).hexdigest()[:24]
+    )
+    return {
+        "cycle_id": normalized_cycle_id,
+        "product_id": normalized_product_id,
+        "mail_key": mail_key,
+        "mail_key_components": {
+            "cycle_id": normalized_cycle_id,
+            "product_id": normalized_product_id,
+            "recipient": notification.recipient,
+        },
+        "content_revision_id": revision_id,
+        "delivery_id": delivery_id,
+        "message_id": f"<{message_local}@{SMTP_MESSAGE_ID_DOMAIN}>",
+        "body_sha256": body_hash,
+        "html_body_sha256": html_hash,
+    }
+
+
+def _mail_key(cycle_id: str, product_id: str, recipient: str) -> str:
+    payload = "|".join([cycle_id, product_id, recipient])
+    return f"mail-key:{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:16]}"
+
+
+def _content_revision_id(notification: EmailNotification, *, body_hash: str, html_hash: str) -> str:
+    payload = "|".join([notification.subject, body_hash, html_hash])
+    return f"content-revision:{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:16]}"
 
 
 def _message_id_local_part(delivery_id: str) -> str:

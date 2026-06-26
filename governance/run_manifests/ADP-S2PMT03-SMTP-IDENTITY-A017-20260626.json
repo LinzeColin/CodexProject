@@ -1,0 +1,52 @@
+{
+  "manifest_id": "ADP-S2PMT03-SMTP-IDENTITY-A017-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT03",
+  "finding_id": "A-017",
+  "finding_title": "SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID",
+  "phase": "S2PM",
+  "created_at": "2026-06-26T20:53:17+10:00",
+  "scope": "Harden SMTP delivery identity evidence for V7.1 inherited A-017 by explicitly separating mail_key, content_revision_id, delivery_id, and standard Message-ID while preserving fail-closed SMTP authorization.",
+  "non_scope": "No real SMTP enablement, scheduler installation, Release upload, production restore, public schema, DB migration, source adapter, ranking, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "real_smtp_enabled": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "smtp_identity_contract": {
+    "mail_key": "sha256(cycle_id, product_id, recipient) with explicit components recorded",
+    "content_revision_id": "sha256(subject, plain body sha256, html body sha256)",
+    "delivery_id": "sha256(mail_key, content_revision_id)",
+    "message_id": "standard RFC-style Message-ID under arxiv-daily-push.local derived from mail_key and content_revision_id",
+    "daily_runner_binding": "local and scheduled daily routes pass date cycle_id and M1 product_id",
+    "resend_policy": "same mail_key and content_revision retry keeps Message-ID; content revision change requires explicit supersede or resend"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_SMTP_IDENTITY_A017.md",
+    "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py",
+    "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+    "arxiv-daily-push/tests/test_smtp_delivery.py"
+  ],
+  "validation": [
+    "py_compile PASS for smtp_delivery.py, scheduled_execution.py, local_runner.py, and test_smtp_delivery.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_smtp_delivery.py arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_scheduled_execution.py -q: 14 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_local_runner.py -q: 8 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_smtp_delivery.py arxiv-daily-push/tests/test_notifications.py arxiv-daily-push/tests/test_scheduled_execution.py arxiv-daily-push/tests/test_local_runner.py -q: 22 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_stage2_owner_ux.py -q: 16 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_trial_recovery.py -q: 1 OK",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q: 511 OK",
+    "python3 scripts/validate_project_governance.py --project arxiv-daily-push: errors 0 warnings 0",
+    "python3 scripts/validate_governance_sync.py: errors 0 warnings 0",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2: PASS",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json: PASS",
+    "git diff --check: PASS"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "This manifest does not enable real SMTP or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}

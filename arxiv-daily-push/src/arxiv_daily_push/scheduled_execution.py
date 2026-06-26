@@ -283,6 +283,8 @@ def _run_daily(
     notification_report = deliver_notification(
         delivery_package["notification"],
         generated_at=generated_at,
+        cycle_id=str(payload["date"]),
+        product_id=str(delivery_package["mail_product_id"]),
         allow_send=_env_true(env, SMTP_SEND_ENV_KEY) and _stage1_text_delivery_ready(delivery_package),
         env=env,
         smtp_factory=smtp_factory,
@@ -469,6 +471,8 @@ def _notification(
     return deliver_notification(
         email,
         generated_at=generated_at,
+        cycle_id=generated_at[:10],
+        product_id=f"scheduled-{mode}",
         allow_send=_env_true(env, SMTP_SEND_ENV_KEY),
         env=env,
         smtp_factory=smtp_factory,
