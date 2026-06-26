@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本轮只刷新 `S2PIT05` / C-003 的当前证据和 P1 receipt 路由：新证据指向专用四查 freshness、事实源、漂移状态和漂移告警门，不再依赖 S2PMT06 汇总 owner UX 证据。
-- 已完成 C-003 report/validator、focused 正负例测试、phase record、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
-- 未完成项仍是 C-003 的独立复审充分性判断；本条不关闭 P1，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
+- 本轮只刷新 `S2PAT05` / C-010 的当前证据和 P1 receipt 路由：新证据指向专用功能任务测试证据追踪链 gate 和浅层 GitHub 用户中心页面。
+- 已完成 C-010 report/validator、focused 正负例测试、245 行可点击追踪链页面、phase record、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
+- 未完成项仍是 C-010 的独立复审充分性判断；本条不关闭 P1，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
 
 ## 摘要
 

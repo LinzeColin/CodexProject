@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import io
 import json
 import tempfile
@@ -13,6 +14,7 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.preprint_adapter import ingest_latest_preprints
 from arxiv_daily_push.top_journal_adapter import ingest_latest_top_journal
 from arxiv_daily_push.stage2_sources import (
+    S2PAT05_TRACEABILITY_CHAIN_MODEL_ID,
     S2PGT05_CALIBRATION_MODEL_ID,
     S2PGT05_REQUIRED_BOARD_IDS,
     S2PGT05_REQUIRED_DECISIONS,
@@ -121,6 +123,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pjt05_monthly_report,
     build_s2pht05_content_quality_gate_report,
     build_s2pct04_top_journal_profile_report,
+    build_s2pat05_traceability_chain_report,
     build_s2pct03_lancet_daily_input,
     build_s2pct02_science_daily_input,
     build_s2p2_top_journal_daily_input,
@@ -165,6 +168,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pjt05_monthly_report,
     run_s2pht05_content_quality_gate,
     run_s2pct04_top_journal_profile_shadow,
+    run_s2pat05_traceability_chain,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
@@ -207,6 +211,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pjt05_monthly_report,
     validate_s2pht05_content_quality_gate_report,
     validate_s2pct04_top_journal_profile_report,
+    validate_s2pat05_traceability_chain_report,
     validate_s2p1_preprint_replay_shadow_report,
     validate_s2p1_shadow_report,
     validate_s2pct03_lancet_shadow_report,
@@ -226,6 +231,8 @@ TOP_JOURNAL_PRIOR_PROFILE_STATE = FIXTURES / "top_journal_prior_profile_state.js
 TOP_JOURNAL_ENGINEERING_SIGNALS = FIXTURES / "top_journal_engineering_signals.json"
 AUTHORITATIVE_TECHNICAL_REPORTS = FIXTURES / "authoritative_technical_reports.json"
 GENERATED_AT = "2026-06-24T09:30:00+10:00"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TRACEABILITY_MATRIX = PROJECT_ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 
 
 def batches() -> dict:
@@ -279,6 +286,52 @@ def all_top_journal_batches() -> dict:
     combined.update(science_batches())
     combined.update(lancet_batches())
     return combined
+
+
+def s2pat05_traceability_rows(limit: int | None = None) -> list[dict]:
+    rows = list(csv.DictReader(TRACEABILITY_MATRIX.read_text(encoding="utf-8").splitlines()))
+    if limit is not None:
+        return rows[:limit]
+    return rows
+
+
+def s2pat05_owner_click_chain_refs(**overrides: object) -> list[dict]:
+    refs = [
+        {
+            "ref_id": "user_center_traceability_page",
+            "label": "功能任务测试证据追踪链",
+            "markdown_link": "[功能任务测试证据追踪链](用户中心/功能任务测试证据追踪链.md)",
+        },
+        {
+            "ref_id": "project_feature_list",
+            "label": "功能清单",
+            "markdown_link": "[功能清单](功能清单)",
+        },
+        {
+            "ref_id": "traceability_matrix",
+            "label": "TRACEABILITY_MATRIX.csv",
+            "markdown_link": "[TRACEABILITY_MATRIX.csv](docs/governance/TRACEABILITY_MATRIX.csv)",
+        },
+        {
+            "ref_id": "phase_record",
+            "label": "C-010 阶段记录",
+            "markdown_link": "[C-010 阶段记录](docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md)",
+        },
+        {
+            "ref_id": "run_manifest",
+            "label": "C-010 运行清单",
+            "markdown_link": "[C-010 运行清单](../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)",
+        },
+        {
+            "ref_id": "focused_test",
+            "label": "focused traceability tests",
+            "markdown_link": "[test_stage2_sources.py](tests/test_stage2_sources.py)",
+        },
+    ]
+    for row in refs:
+        if row["ref_id"] in overrides:
+            row.update(overrides[row["ref_id"]])  # type: ignore[index]
+    return refs
 
 
 def s2pit01_owner_controls() -> dict:
@@ -6058,6 +6111,104 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["queue_mutation_allowed"])
             self.assertTrue(Path(report["four_check_freshness_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pit05_four_check_freshness_report.json").is_file())
+
+    def test_s2pat05_traceability_chain_passes_full_matrix_clickable_ui_and_no_production_gates(self) -> None:
+        report = build_s2pat05_traceability_chain_report(
+            generated_at=GENERATED_AT,
+            traceability_rows=s2pat05_traceability_rows(),
+            owner_click_chain_refs=s2pat05_owner_click_chain_refs(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PAT05_TRACEABILITY_CHAIN_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PAT05-TRACEABILITY-CHAIN")
+        self.assertEqual(report["task_id"], "S2PAT05")
+        self.assertEqual(report["finding_id"], "C-010")
+        self.assertEqual(report["status"], "pass")
+        self.assertGreaterEqual(report["traceability_row_count"], 245)
+        self.assertEqual(report["traceability_covered_row_count"], report["traceability_row_count"])
+        self.assertEqual(report["traceability_coverage_percent"], 100.0)
+        self.assertEqual(report["matrix_row_coverage_gate"], "pass")
+        self.assertEqual(report["required_field_gate"], "pass")
+        self.assertEqual(report["clickable_ui_link_gate"], "pass")
+        self.assertEqual(report["orphan_chain_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertTrue(report["s2pat05_traceability_chain_ready"])
+        self.assertTrue(report["traceability_chain_hash"].startswith("sha256:"))
+        self.assertIn("user_center_traceability_page", {row["ref_id"] for row in report["owner_click_chain_refs"]})
+        for row in report["owner_click_chain_refs"]:
+            self.assertRegex(row["markdown_link"], r"^\[[^\]]+\]\([^)]+\)$")
+            self.assertNotIn("/Users/", row["markdown_link"])
+            self.assertNotIn("file://", row["markdown_link"])
+        self.assertFalse(report["p1_closure_claimed"])
+        self.assertFalse(report["independent_review_signoff_present"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_schema_changed"])
+        self.assertFalse(report["source_adapter_changed"])
+        self.assertFalse(validate_s2pat05_traceability_chain_report(report))
+
+    def test_s2pat05_traceability_chain_blocks_missing_required_field_or_raw_path_link(self) -> None:
+        rows = s2pat05_traceability_rows(limit=3)
+        rows[0] = dict(rows[0], test_ref="")
+        refs = s2pat05_owner_click_chain_refs(traceability_matrix={"markdown_link": "docs/governance/TRACEABILITY_MATRIX.csv"})
+        report = build_s2pat05_traceability_chain_report(
+            generated_at=GENERATED_AT,
+            traceability_rows=rows,
+            owner_click_chain_refs=refs,
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["required_field_gate"], "blocked")
+        self.assertEqual(report["clickable_ui_link_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("missing test_ref", joined)
+        self.assertIn("must be a Markdown link", joined)
+        validation_errors = " ".join(validate_s2pat05_traceability_chain_report(report))
+        self.assertIn("missing test_ref", validation_errors)
+        self.assertIn("must be a Markdown link", validation_errors)
+
+    def test_s2pat05_traceability_chain_blocks_orphan_status_and_production_gate(self) -> None:
+        rows = s2pat05_traceability_rows(limit=3)
+        rows[1] = dict(rows[1], status="orphan")
+        report = build_s2pat05_traceability_chain_report(
+            generated_at=GENERATED_AT,
+            traceability_rows=rows,
+            owner_click_chain_refs=s2pat05_owner_click_chain_refs(),
+            production_gate_state=s2pit02_production_gate_state(source_adapter_changed=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["orphan_chain_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("has orphan status", joined)
+        self.assertIn("production_gate_state.source_adapter_changed", joined)
+        self.assertTrue(validate_s2pat05_traceability_chain_report(report))
+
+    def test_s2pat05_traceability_chain_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pat05_traceability_chain(
+                state_dir=tmp,
+                date="2026-06-27",
+                generated_at=GENERATED_AT,
+                traceability_rows=s2pat05_traceability_rows(limit=5),
+                owner_click_chain_refs=s2pat05_owner_click_chain_refs(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pat05_traceability_chain_report(report))
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertTrue(Path(report["traceability_chain_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pat05_traceability_chain_report.json").is_file())
 
     def test_s2pkt01_mail_contract_passes_shared_contract_board_hash_and_no_send_gates(self) -> None:
         report = build_s2pkt01_mail_contract_report(

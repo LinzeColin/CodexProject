@@ -874,6 +874,36 @@ S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PIT05_REPORT_FILENAME = "stage2_s2pit05_four_check_freshness_report.json"
+S2PAT05_TRACEABILITY_CHAIN_MODEL_ID = "adp-s2pat05-clickable-traceability-chain-v1"
+S2PAT05_TRACEABILITY_ACCEPTANCE_ID = "ACC-S2PAT05-TRACEABILITY-CHAIN"
+S2PAT05_TASK_ID = "S2PAT05"
+S2PAT05_TRACEABILITY_FINDING_ID = "C-010"
+S2PAT05_TRACEABILITY_REQUIRED_ROW_FIELDS = (
+    "requirement_id",
+    "task_id",
+    "acceptance_id",
+    "code_ref",
+    "test_ref",
+    "evidence_ref",
+    "status",
+)
+S2PAT05_TRACEABILITY_REQUIRED_UI_REFS = (
+    "user_center_traceability_page",
+    "project_feature_list",
+    "traceability_matrix",
+    "phase_record",
+    "run_manifest",
+    "focused_test",
+)
+S2PAT05_TRACEABILITY_REQUIRED_GATES = (
+    "matrix_row_coverage_gate",
+    "required_field_gate",
+    "clickable_ui_link_gate",
+    "orphan_chain_gate",
+    "no_side_effect_gate",
+)
+S2PAT05_TRACEABILITY_REQUIRED_PRODUCTION_FALSE_FLAGS = S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS
+S2PAT05_TRACEABILITY_REPORT_FILENAME = "stage2_s2pat05_traceability_chain_report.json"
 S2PKT01_MAIL_CONTRACT_MODEL_ID = "adp-s2pkt01-mail-contract-v1"
 S2PKT01_ACCEPTANCE_ID = "ACC-S2PKT01-MAIL-CONTRACT"
 S2PKT01_TASK_ID = "S2PKT01"
@@ -9181,6 +9211,290 @@ def validate_s2pit05_four_check_freshness_report(report: Mapping[str, Any]) -> l
         errors.append("blocked S2PIT05 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pit05_four_check_freshness_ready") is not True:
         errors.append("passing S2PIT05 report requires s2pit05_four_check_freshness_ready=true")
+    return errors
+
+
+def _s2pat05_default_owner_click_chain_refs() -> list[dict[str, str]]:
+    return [
+        {
+            "ref_id": "user_center_traceability_page",
+            "label": "功能任务测试证据追踪链",
+            "markdown_link": "[功能任务测试证据追踪链](用户中心/功能任务测试证据追踪链.md)",
+        },
+        {
+            "ref_id": "project_feature_list",
+            "label": "功能清单",
+            "markdown_link": "[功能清单](功能清单)",
+        },
+        {
+            "ref_id": "traceability_matrix",
+            "label": "TRACEABILITY_MATRIX.csv",
+            "markdown_link": "[TRACEABILITY_MATRIX.csv](docs/governance/TRACEABILITY_MATRIX.csv)",
+        },
+        {
+            "ref_id": "phase_record",
+            "label": "C-010 phase record",
+            "markdown_link": "[C-010 阶段记录](docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md)",
+        },
+        {
+            "ref_id": "run_manifest",
+            "label": "C-010 run manifest",
+            "markdown_link": "[C-010 运行清单](../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)",
+        },
+        {
+            "ref_id": "focused_test",
+            "label": "focused traceability tests",
+            "markdown_link": "[test_stage2_sources.py](tests/test_stage2_sources.py)",
+        },
+    ]
+
+
+def _s2pat05_traceability_hash(
+    traceability_rows: Sequence[Mapping[str, Any]],
+    owner_click_chain_refs: Sequence[Mapping[str, Any]],
+) -> str:
+    encoded = json.dumps(
+        {
+            "owner_click_chain_refs": list(owner_click_chain_refs),
+            "traceability_rows": list(traceability_rows),
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _s2pat05_markdown_link_target(markdown_link: str) -> str:
+    match = re.fullmatch(r"\[[^\]]+\]\(([^)]+)\)", markdown_link.strip())
+    return match.group(1).strip() if match else ""
+
+
+def build_s2pat05_traceability_chain_report(
+    *,
+    generated_at: str,
+    traceability_rows: Sequence[Mapping[str, Any]],
+    owner_click_chain_refs: Sequence[Mapping[str, Any]] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build C-010 clickable feature-task-test-evidence traceability evidence."""
+
+    rows = [dict(row) for row in traceability_rows]
+    owner_refs = [dict(row) for row in (owner_click_chain_refs or _s2pat05_default_owner_click_chain_refs())]
+    production_gate = dict(production_gate_state or {})
+
+    row_errors: list[str] = []
+    orphan_errors: list[str] = []
+    link_errors: list[str] = []
+    side_effect_errors: list[str] = []
+
+    if not rows:
+        row_errors.append("S2PAT05 traceability_rows must be non-empty")
+
+    seen_keys: set[tuple[str, str, str]] = set()
+    for index, row in enumerate(rows):
+        row_label = str(row.get("requirement_id") or index)
+        key = (
+            str(row.get("requirement_id") or ""),
+            str(row.get("task_id") or ""),
+            str(row.get("acceptance_id") or ""),
+        )
+        if key in seen_keys:
+            orphan_errors.append(f"traceability_rows[{row_label}] duplicates requirement/task/acceptance chain")
+        seen_keys.add(key)
+        for field in S2PAT05_TRACEABILITY_REQUIRED_ROW_FIELDS:
+            value = str(row.get(field) or "").strip()
+            if not value or value == "UNKNOWN":
+                row_errors.append(f"traceability_rows[{row_label}] missing {field}")
+        if str(row.get("status") or "").strip() in {"orphan", "unknown", "blocked_without_task"}:
+            orphan_errors.append(f"traceability_rows[{row_label}] has orphan status")
+
+    ref_ids = {str(row.get("ref_id") or "") for row in owner_refs}
+    missing_ui_refs = [ref_id for ref_id in S2PAT05_TRACEABILITY_REQUIRED_UI_REFS if ref_id not in ref_ids]
+    if missing_ui_refs:
+        link_errors.append("S2PAT05 missing owner clickable refs: " + ", ".join(missing_ui_refs))
+    for index, row in enumerate(owner_refs):
+        ref_id = str(row.get("ref_id") or index)
+        markdown_link = str(row.get("markdown_link") or "")
+        target = _s2pat05_markdown_link_target(markdown_link)
+        if not target:
+            link_errors.append(f"owner_click_chain_refs[{ref_id}] must be a Markdown link")
+        if target.startswith(("/Users/", "file://")):
+            link_errors.append(f"owner_click_chain_refs[{ref_id}] must not use local absolute paths")
+        if not row.get("label"):
+            link_errors.append(f"owner_click_chain_refs[{ref_id}] missing label")
+
+    production_errors: list[str] = []
+    for key in (*S2PAT05_TRACEABILITY_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed", "smtp_transport_allowed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+    for row in rows:
+        for key in ("real_smtp_sent", "scheduler_enabled", "release_upload_allowed", "production_affected"):
+            if row.get(key, False) is not False:
+                side_effect_errors.append(f"traceability_rows[{row.get('requirement_id', 'unknown')}].{key} must be false")
+
+    covered_row_count = max(0, len(rows) - len({error.split("]", 1)[0] for error in row_errors if error.startswith("traceability_rows[")}))
+    coverage_ratio = 1.0 if not rows else covered_row_count / len(rows)
+    gates = {
+        "matrix_row_coverage_gate": "pass" if rows and coverage_ratio == 1.0 else "blocked",
+        "required_field_gate": "pass" if not row_errors else "blocked",
+        "clickable_ui_link_gate": "pass" if not link_errors else "blocked",
+        "orphan_chain_gate": "pass" if not orphan_errors else "blocked",
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons = [*row_errors, *orphan_errors, *link_errors, *side_effect_errors, *production_errors]
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+
+    return {
+        "model_id": S2PAT05_TRACEABILITY_CHAIN_MODEL_ID,
+        "acceptance_id": S2PAT05_TRACEABILITY_ACCEPTANCE_ID,
+        "task_id": S2PAT05_TASK_ID,
+        "finding_id": S2PAT05_TRACEABILITY_FINDING_ID,
+        "phase": "S2PA",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_row_fields": list(S2PAT05_TRACEABILITY_REQUIRED_ROW_FIELDS),
+        "required_owner_clickable_refs": list(S2PAT05_TRACEABILITY_REQUIRED_UI_REFS),
+        "traceability_rows": rows,
+        "traceability_row_count": len(rows),
+        "traceability_covered_row_count": covered_row_count,
+        "traceability_coverage_percent": round(coverage_ratio * 100, 2),
+        "owner_click_chain_refs": owner_refs,
+        "traceability_chain_hash": _s2pat05_traceability_hash(rows, owner_refs),
+        "s2pat05_traceability_chain_ready": status == "pass",
+        "p1_closure_claimed": False,
+        "independent_review_signoff_present": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pat05_traceability_chain(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    traceability_rows: Sequence[Mapping[str, Any]],
+    owner_click_chain_refs: Sequence[Mapping[str, Any]] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist C-010 clickable traceability-chain evidence without runtime side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pat05-traceability-chain"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pat05_traceability_chain_report(
+        generated_at=generated_at,
+        traceability_rows=traceability_rows,
+        owner_click_chain_refs=owner_click_chain_refs,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "traceability_chain_report_path": str(run_dir / "adp-s2pat05-traceability-chain-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pat05-traceability-chain-report.json", report)
+        _write_json(state / S2PAT05_TRACEABILITY_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pat05_traceability_chain_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PAT05_TRACEABILITY_CHAIN_MODEL_ID:
+        errors.append("S2PAT05 model_id must be adp-s2pat05-clickable-traceability-chain-v1")
+    if report.get("task_id") != S2PAT05_TASK_ID:
+        errors.append("S2PAT05 task_id must be S2PAT05")
+    if report.get("acceptance_id") != S2PAT05_TRACEABILITY_ACCEPTANCE_ID:
+        errors.append("S2PAT05 acceptance_id must be ACC-S2PAT05-TRACEABILITY-CHAIN")
+    if report.get("finding_id") != S2PAT05_TRACEABILITY_FINDING_ID:
+        errors.append("S2PAT05 finding_id must be C-010")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PAT05 status must be pass or blocked")
+    for key in (
+        "p1_closure_claimed",
+        "independent_review_signoff_present",
+        *S2PAT05_TRACEABILITY_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PAT05 traceability-chain evidence")
+
+    rows = report.get("traceability_rows")
+    if not isinstance(rows, list) or not rows:
+        errors.append("S2PAT05 traceability_rows must be a non-empty list")
+        rows = []
+    if int(report.get("traceability_row_count") or 0) != len(rows):
+        errors.append("S2PAT05 traceability_row_count must match traceability_rows")
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping):
+            errors.append(f"S2PAT05 traceability_rows[{index}] must be a mapping")
+            continue
+        row_label = str(row.get("requirement_id") or index)
+        for field in S2PAT05_TRACEABILITY_REQUIRED_ROW_FIELDS:
+            value = str(row.get(field) or "").strip()
+            if not value or value == "UNKNOWN":
+                errors.append(f"S2PAT05 traceability_rows[{row_label}] missing {field}")
+        if str(row.get("status") or "").strip() in {"orphan", "unknown", "blocked_without_task"}:
+            errors.append(f"S2PAT05 traceability_rows[{row_label}] has orphan status")
+
+    owner_refs = report.get("owner_click_chain_refs")
+    if not isinstance(owner_refs, list) or not owner_refs:
+        errors.append("S2PAT05 owner_click_chain_refs must be a non-empty list")
+        owner_refs = []
+    ref_ids = {str(row.get("ref_id") or "") for row in owner_refs if isinstance(row, Mapping)}
+    missing_ui_refs = [ref_id for ref_id in S2PAT05_TRACEABILITY_REQUIRED_UI_REFS if ref_id not in ref_ids]
+    if missing_ui_refs:
+        errors.append("S2PAT05 missing owner clickable refs: " + ", ".join(missing_ui_refs))
+    for index, row in enumerate(owner_refs):
+        if not isinstance(row, Mapping):
+            errors.append(f"S2PAT05 owner_click_chain_refs[{index}] must be a mapping")
+            continue
+        ref_id = str(row.get("ref_id") or index)
+        markdown_link = str(row.get("markdown_link") or "")
+        target = _s2pat05_markdown_link_target(markdown_link)
+        if not target:
+            errors.append(f"S2PAT05 owner_click_chain_refs[{ref_id}] must be a Markdown link")
+        if target.startswith(("/Users/", "file://")):
+            errors.append(f"S2PAT05 owner_click_chain_refs[{ref_id}] must not use local absolute paths")
+
+    if report.get("traceability_chain_hash") != _s2pat05_traceability_hash(rows, owner_refs):
+        errors.append("S2PAT05 traceability_chain_hash must match traceability_rows and owner_click_chain_refs")
+    if float(report.get("traceability_coverage_percent") or 0) != 100.0:
+        errors.append("S2PAT05 traceability_coverage_percent must be 100.0")
+    for gate in S2PAT05_TRACEABILITY_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PAT05 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PAT05 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pat05_traceability_chain_ready") is not True:
+        errors.append("passing S2PAT05 report requires s2pat05_traceability_chain_ready=true")
     return errors
 
 
