@@ -3,11 +3,16 @@ import re
 import unittest
 from pathlib import Path
 
+from arxiv_daily_push.owner_controls import load_owner_controls
+
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "docs" / "owner" / "CONTENT_LEDGER.csv"
+CONTROLS = ROOT / "config" / "owner_controls.yaml"
+SOURCE_CATALOG = ROOT / "docs" / "owner" / "SOURCE_CATALOG.md"
 USER_CENTER = ROOT / "用户中心"
 CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
+DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件"
 SUMMARY_PAGES = (
@@ -131,6 +136,41 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
                     self.assertNotIn(phrase, text)
                 self.assertIn("[截至今日候选池](./截至今日候选池.md)", text)
                 self.assertIn("候选队列前20精选", text)
+
+    def test_user_center_exposes_board_data_source_catalog(self):
+        controls = load_owner_controls(CONTROLS)
+        page = DATA_SOURCE_PAGE.read_text(encoding="utf-8")
+        source_catalog = SOURCE_CATALOG.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        one_look = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
+        key_decisions = (USER_CENTER / "关键结论与用户决策.md").read_text(encoding="utf-8")
+        model_params = MODEL_PARAMS_PAGE.read_text(encoding="utf-8")
+
+        self.assertTrue(DATA_SOURCE_PAGE.is_file())
+        self.assertIn("[config/owner_controls.yaml](../config/owner_controls.yaml)", page)
+        self.assertIn("[SOURCE_CATALOG.md](../docs/owner/SOURCE_CATALOG.md)", page)
+        self.assertIn("5 个板块", page)
+        self.assertIn("6 个数据源", page)
+        self.assertIn("生产启用来源 | 1 个：`SRC-ARXIV`", page)
+        self.assertIn("跨板块总览不直接采集独立来源", page)
+        self.assertIn("不能把影子测试或规划来源写成已生产启用", page)
+        for board in controls["boards"]:
+            self.assertIn(str(board["board_id"]), page)
+            self.assertIn(str(board["name"]), page)
+            self.assertIn(str(board["board_id"]), source_catalog)
+        for source in controls["sources"]:
+            self.assertIn(str(source["source_id"]), page)
+            self.assertIn(str(source["name"]), page)
+            self.assertIn(str(source["access_method"]), page)
+            self.assertIn(str(source["source_id"]), source_catalog)
+        self.assertIn("SRC-BIORXIV", source_catalog)
+        self.assertIn("SRC-MEDRXIV", source_catalog)
+        self.assertNotIn("| Board ID |", source_catalog)
+        self.assertNotIn("| Source ID |", source_catalog)
+        self.assertIn("[数据源与板块健康](./数据源与板块健康.md)", readme)
+        self.assertIn("[数据源与板块健康](./数据源与板块健康.md)", one_look)
+        self.assertIn("[数据源与板块健康](./数据源与板块健康.md)", key_decisions)
+        self.assertIn("[数据源与板块健康](用户中心/数据源与板块健康.md)", model_params)
 
     def test_model_params_disclose_current_roi_score_formula(self):
         text = MODEL_PARAMS_PAGE.read_text(encoding="utf-8")

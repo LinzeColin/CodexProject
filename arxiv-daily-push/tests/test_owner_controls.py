@@ -71,6 +71,13 @@ class OwnerControlsTests(unittest.TestCase):
             self.assertEqual(list(rows[0].keys()), list(CONTENT_LEDGER_COLUMNS))
             self.assertEqual(rows[0]["item_id"], "NO_PRODUCTION_CONTENT_ROWS_S1_06")
             self.assertNotIn("video_file_state", rows[0])
+            source_catalog = (Path(tmp) / "docs/owner/SOURCE_CATALOG.md").read_text(encoding="utf-8")
+            self.assertIn("# 来源目录", source_catalog)
+            self.assertIn("| 来源 ID | 板块 | 启用 | 名称 | 采集方式 | 层级 | 频率 | 权重 | 健康状态 |", source_catalog)
+            self.assertNotIn("# Source Catalog", source_catalog)
+            self.assertNotIn("| Source ID |", source_catalog)
+            for source in controls["sources"]:
+                self.assertIn(str(source["source_id"]), source_catalog)
 
     def test_owner_cli_commands(self):
         commands = [

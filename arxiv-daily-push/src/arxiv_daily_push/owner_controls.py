@@ -255,28 +255,28 @@ def _render_owner_console(
 
 def _render_source_catalog(controls: Mapping[str, Any], generated_at: str) -> str:
     lines = [
-        "# Source Catalog",
+        "# 来源目录",
         "",
-        f"- generated_at: {generated_at}",
-        "- generated_from: `config/owner_controls.yaml`",
-        f"- config_version: `{controls.get('config_version')}`",
+        f"- 生成时间: {generated_at}",
+        "- 来源配置: `config/owner_controls.yaml`",
+        f"- 配置版本: `{controls.get('config_version')}`",
         "",
-        "## Boards",
+        "## 板块",
         "",
-        "| Board ID | Enabled | Name | Weight |",
+        "| 板块 ID | 启用 | 名称 | 权重 |",
         "|---|---:|---|---:|",
     ]
     for board in _sequence_of_mappings(controls.get("boards")):
         lines.append(
-            f"| `{board.get('board_id')}` | `{_bool_text(board.get('enabled'))}` | {board.get('name')} | {board.get('weight')} |"
+            f"| `{board.get('board_id')}` | {_bool_text_zh(board.get('enabled'))} | {board.get('name')} | {board.get('weight')} |"
         )
-    lines.extend(["", "## Sources", "", "| Source ID | Board | Enabled | Name | Method | Tier | Frequency | Weight | Health |", "|---|---|---:|---|---|---|---|---:|---|"])
+    lines.extend(["", "## 来源", "", "| 来源 ID | 板块 | 启用 | 名称 | 采集方式 | 层级 | 频率 | 权重 | 健康状态 |", "|---|---|---:|---|---|---|---|---:|---|"])
     for source in _sequence_of_mappings(controls.get("sources")):
         lines.append(
             "| "
-            f"`{source.get('source_id')}` | `{source.get('board_id')}` | `{_bool_text(source.get('enabled'))}` | "
+            f"`{source.get('source_id')}` | `{source.get('board_id')}` | {_bool_text_zh(source.get('enabled'))} | "
             f"{source.get('name')} | `{source.get('access_method')}` | `{source.get('tier')}` | "
-            f"`{source.get('frequency')}` | {source.get('weight')} | `{source.get('health_status')}` |"
+            f"`{source.get('frequency')}` | {source.get('weight')} | {_health_status_text_zh(source.get('health_status'))} |"
         )
     return "\n".join(lines) + "\n"
 
@@ -422,6 +422,21 @@ def _sequence_of_mappings(value: Any) -> list[Mapping[str, Any]]:
 
 def _bool_text(value: Any) -> str:
     return "true" if value is True else "false" if value is False else str(value)
+
+
+def _bool_text_zh(value: Any) -> str:
+    return "是" if value is True else "否" if value is False else str(value)
+
+
+def _health_status_text_zh(value: Any) -> str:
+    status = str(value or "")
+    labels = {
+        "active": "已启用",
+        "stage2_test": "影子测试",
+        "planned": "规划中",
+    }
+    label = labels.get(status, status or "未填写")
+    return f"{label} (`{status}`)" if status else label
 
 
 def _comma_list(values: Sequence[Any]) -> str:
